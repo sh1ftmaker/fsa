@@ -139,7 +139,7 @@ void GreatFairy_804AF338::draw() {
             s32 frame = lbl_80475600[field_0x29c - 1];
             params.field_0x1d = 0;
             params.field_0x1c = 0;
-            mPos.set(field_0x284);
+            mPos.set(field_0x284.x, field_0x284.y, field_0x284.z);
             if (mState == 10 || mState == 11 || mState == 12) {
                 frame = lbl_80475600[field_0x29c + 10];
             }

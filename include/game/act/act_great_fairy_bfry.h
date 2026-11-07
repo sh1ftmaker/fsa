@@ -37,8 +37,10 @@ public:
     /* 0x26C */ s32 field_0x26c;
     /* 0x270 */ s32 field_0x270;
     /* 0x274 */ s32 field_0x274[4];
-    /* 0x284 */ JGeometry::TVec3f field_0x284;
-    /* 0x290 */ JGeometry::TVec3f field_0x290;
+    // Plain Vec (not TVec3f): a class-typed member would add constructor calls to the inline
+    // constructor tu_801F9484 runs, and its unit would no longer link byte-identical.
+    /* 0x284 */ Vec field_0x284;
+    /* 0x290 */ Vec field_0x290;
     /* 0x29C */ s32 field_0x29c;
     /* 0x2A0 */ JPABaseEmitter* field_0x2a0[2]; // released by the destructor
 }; // Size: 0x2A8

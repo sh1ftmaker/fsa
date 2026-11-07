@@ -13,41 +13,18 @@
 #include "game/act/act_magic_circle.h"
 #include "game/act/act_warp.h"
 
+// Cucco's Vec members are plain (see act_cucco.h).
+static inline void setVec(Vec& dst, const JGeometry::TVec3f& src) {
+    dst.x = src.x;
+    dst.y = src.y;
+    dst.z = src.z;
+}
+
 Cucco_804AB8C0::~Cucco_804AB8C0() {
     releaseEmitter_801EE434(mEmitter2f4);
     releaseEmitter_801EE434(mEmitter2f8);
     releaseEmitter_801EE434(mEmitter2fc);
     releaseEmitter_801EE434(mEmitter300);
-}
-
-// FIXME(shotgun): 90.1 %, missing/extra
-void Cucco_804AB8C0::vfunc_0x10() {
-    s32 serial = -1;
-    if (field_0x16c == -1) {
-        return;
-    }
-    while (true) {
-        s32 next = getActorManager_801F856C()->fn_801F78F4(ACTOR_NIWA, serial);
-        serial = next;
-        if (next < 0) {
-            return;
-        }
-        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(next);
-        if (other == NULL) {
-            continue;
-        }
-        if (other->mSerial == mSerial) {
-            continue;
-        }
-        if (other->field_0x16c != field_0x16c) {
-            continue;
-        }
-        if (fn_801F6758(&other->mPos, other->field_0x4, 16.0f) && other->field_0xc4 != 1) {
-            continue;
-        }
-        mAlive = false;
-        return;
-    }
 }
 
 // FIXME(shotgun): 90.79 %, missing/extra + reloc-name
@@ -86,7 +63,7 @@ void Cucco_804AB8C0::init() {
     field_0x2a4[0] = 1;
     field_0x2a4[1] = 1;
     field_0x290 = field_0x90 & 0xF;
-    field_0x2c4[1].set(mPos);
+    setVec(field_0x2c4[1], mPos);
     mLife = 1000;
     field_0x264 = 0;
     field_0x26c = 0;
@@ -101,7 +78,7 @@ void Cucco_804AB8C0::init() {
     field_0x278 = 0;
     field_0x27c = 0x32;
     field_0x280 = 0;
-    field_0x2c4[2].set(mPos);
+    setVec(field_0x2c4[2], mPos);
     field_0x294 = field_0x4;
     field_0x268 = 10;
     mEmitter2f4 = NULL;
@@ -123,12 +100,16 @@ void Cucco_804AB8C0::init() {
         }
     }
     field_0x2a8 = 0;
-    field_0x2b8.set(0.0f, 0.0f, 0.0f);
+    field_0x2b8.x = 0.0f;
+    field_0x2b8.y = 0.0f;
+    field_0x2b8.z = 0.0f;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
-    field_0x2c4[0].set(0.0f, 0.0f, 0.0f);
+    field_0x2c4[0].x = 0.0f;
+    field_0x2c4[0].y = 0.0f;
+    field_0x2c4[0].z = 0.0f;
     field_0x184 = 20.0f;
     field_0x284 = 0;
-    field_0x2c4[3].set(mPos);
+    setVec(field_0x2c4[3], mPos);
     switch (field_0x290) {
     case 1: {
         s32 player;
@@ -192,7 +173,37 @@ void Cucco_804AB8C0::init() {
     }
 }
 
-// FIXME(shotgun): 88.23 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.1 %, missing/extra
+void Cucco_804AB8C0::vfunc_0x10() {
+    s32 serial = -1;
+    if (field_0x16c == -1) {
+        return;
+    }
+    while (true) {
+        s32 next = getActorManager_801F856C()->fn_801F78F4(ACTOR_NIWA, serial);
+        serial = next;
+        if (next < 0) {
+            return;
+        }
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(next);
+        if (other == NULL) {
+            continue;
+        }
+        if (other->mSerial == mSerial) {
+            continue;
+        }
+        if (other->field_0x16c != field_0x16c) {
+            continue;
+        }
+        if (fn_801F6758(&other->mPos, other->field_0x4, 16.0f) && other->field_0xc4 != 1) {
+            continue;
+        }
+        mAlive = false;
+        return;
+    }
+}
+
+// FIXME(shotgun): 79.15 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {
         return;
@@ -263,13 +274,13 @@ void Cucco_804AB8C0::fn_80332A60() {
                 field_0x258 = 0;
                 mPos.z = 0.0f;
                 field_0x3c.z = 0.0f;
-                field_0x2b8.set(field_0x3c);
-                field_0x2b8.normalize();
+                setVec(field_0x2b8, field_0x3c);
+                PSVECNormalize(&field_0x2b8, &field_0x2b8);
                 f32 speed = 2.0f;
                 if (field_0x2a3 == 1) {
                     speed = 4.0f;
                 }
-                field_0x2b8.scale(speed);
+                PSVECScale(&field_0x2b8, &field_0x2b8, speed);
             }
             field_0x230 = 1;
         }
@@ -300,7 +311,7 @@ void Cucco_804AB8C0::fn_803324A8() {
             field_0x258 = 0;
             mPos.z = 0.0f;
             field_0x3c.z = 0.0f;
-            field_0x2c4[2].set(mPos);
+            setVec(field_0x2c4[2], mPos);
             field_0x294 = field_0x4;
             field_0x230 = 1;
         } else {
@@ -313,7 +324,7 @@ void Cucco_804AB8C0::fn_803324A8() {
             f32 dx = mPos.x - field_0x2c4[2].x;
             f32 dy = mPos.y - field_0x2c4[2].y;
             field_0x294 = field_0x4;
-            field_0x2c4[2].set(mPos);
+            setVec(field_0x2c4[2], mPos);
             f32 distSq = dx * dx + dy * dy;
             if (field_0x294 != field_0x4 || !(distSq < 5.0f)) {
                 field_0x280 = 0;
@@ -488,8 +499,8 @@ void Cucco_804AB8C0::fn_80331E6C() {
     mPos.set(target);
     field_0x4 = newLayer;
     field_0x284 = 0x14;
-    field_0x2c4[3].set(target);
-    field_0x2c4[1].set(target);
+    setVec(field_0x2c4[3], target);
+    setVec(field_0x2c4[1], target);
     field_0x2a4[0] = 0;
     field_0x2a4[1] = 0;
     f32 mag = PSVECMag(&field_0x2b8);
