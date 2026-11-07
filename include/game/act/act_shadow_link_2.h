@@ -56,6 +56,9 @@ public:
     void fn_801C2E70();
     // act_shadow_link_2.cpp: switches to state 0xD (fn_801C3B7C only).
     void fn_801C26D8();
+    // act_shadow_link_2.cpp (0x801C27F0): passes mFlags bit 0x08000000 to the fn_801C0D70 object's
+    // fn_801C1374, then vfunc_0x24.
+    void fn_801C27F0();
     // act_shadow_link_2.cpp: switches to state 0xE unless mState is 0xE.
     void fn_801C26FC();
     // act_shadow_link_2.cpp (0x801C272C, not written yet): sets the byte at

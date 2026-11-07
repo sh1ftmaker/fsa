@@ -30,6 +30,16 @@ bool ShadowLink2_804A43E8::fn_801C53C4() {
     return result;
 }
 
+// FIXME(shotgun): 99 %, reloc-name
+bool ShadowLink2_804A43E8::fn_801C5348(f32 range) {
+    bool near = false;
+    s32 player = fn_801D05F8(&mPos, 0.0f);
+    if (player >= 0 && fn_801D0D50(player, &mPos, range)) {
+        near = true;
+    }
+    return near;
+}
+
 // Takes no arguments and ignores r3; callers test the result as a byte.
 bool fn_801C5340() {
     return 0;
@@ -61,6 +71,14 @@ void ShadowLink2_804A43E8::vfunc_0x84() {
     }
 }
 
+// FIXME(shotgun): 72 %, missing/extra
+void ShadowLink2_804A43E8::fn_801C27F0() {
+    bool flag = (mFlags & 0x08000000) != 0;
+    cls_801C0D70* tracker = fn_801C0D70();
+    tracker->fn_801C1374(flag);
+    vfunc_0x24();
+}
+
 // Member: switches to state 2 when mState is 0 or 1 and mFlags has bit 0x4000.
 void ShadowLink2_804A43E8::fn_801C27A8() {
     if (!(mFlags & 0x4000)) {
@@ -70,6 +88,18 @@ void ShadowLink2_804A43E8::fn_801C27A8() {
         return;
     }
     fn_801C3B7C(2);
+}
+
+// FIXME(shotgun): 100 %, matches
+void ShadowLink2_804A43E8::fn_801C272C() {
+    mDrawEnabled = true;
+    if (fn_801C0D70()->fn_801C11F0()) {
+        fn_801C3B7C(6);
+    } else if (fn_801C0D70()->field_0x0 & 1) {
+        fn_801C3B7C(7);
+    } else {
+        fn_801C3B7C(9);
+    }
 }
 
 // Member: switches to state 0xE unless the actor is already in it.
