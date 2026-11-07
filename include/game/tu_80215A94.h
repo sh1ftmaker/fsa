@@ -7,6 +7,7 @@
 
 #include "types.h"
 #include "game/tu_801ED3DC.h"
+#include "game/cls_8021BFA8.h"
 #include "game/cls_8021C024.h"
 
 // One entry of the table, one per player (fn_80216178 builds four with
@@ -17,9 +18,9 @@ struct cls_80216238 {
     /* 0x08 */ u8 mFlag8;  // read by fn_80215D38; must be set
     /* 0x09 */ u8 mFlag9;  // set by fn_80215D8C
     /* 0x0A */ u8 mFlagA;  // read by fn_80215D38; must be clear
-    /* 0x0C */ u8 field_0xc[0xC]; // a cls_8021BFA8 (tu_8021BFA8.cpp), reset by fn_8021C00C
+    /* 0x0C */ cls_8021BFA8 field_0xc; // reset by fn_8021C00C
     /* 0x18 */ cls_801ED3DC mWatch;
-    // 0x80215E18 (not written yet): fn_802162B8(mId, &mFlag8, mKey).
+    // 0x80215E18: fn_802162B8(&mFlag8, mId, mKey).
     void fn_80215E18();
 }; // Size: 0x24
 
@@ -76,6 +77,10 @@ struct cls_80215E48 {
     // field_0xa0.
     void fn_802160F4();
 }; // Size: 0xA4
+
+// A free function of this unit (0x802162B8, not written yet): works on an entry's flag byte,
+// its id and key.
+void fn_802162B8(u8* flag, s32 id, s32 key);
 
 // tu_80215A94 (0x80216178, not written yet): the table's constructor, called by
 // the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
