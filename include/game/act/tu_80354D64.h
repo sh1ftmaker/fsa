@@ -13,6 +13,11 @@
 // fn_801FFC84, which stores the vtable at 0x804ACD70 (lbl_804ACD70; there
 // is no symbol for it yet, so the class is named after the address). Only
 // the members act_npc_ride_switch reads are declared.
+// One per player. x/y/z are plain floats (not TVec3f): the constructor (init, fn_80356268) makes no
+// constructor calls for this range, it only stores 1 / 0.0f / 0.0f / 0.0f / 0 into each slot, and a
+// TVec3f member would add ctor calls to the inlined construction of Log_804ACD70. The 0x234..0x2D4 range
+// is carved from the former u8[0xA0] block (0x234 + 4*4 + 4*4 + 4*4 + 4 + 4*0x14 + 0x20 = 0x2D4), so
+// the class size 0x2E4 is unchanged.
 struct LogSlot_804ACD70 {
     /* 0x00 */ u8 field_0x0;
     /* 0x04 */ f32 x;

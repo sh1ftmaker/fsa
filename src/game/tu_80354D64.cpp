@@ -87,7 +87,7 @@ void Log_804ACD70::init() {
     mEmitter2e0 = NULL;
 }
 
-// FIXME(shotgun): 67.36 %, missing/extra
+// FIXME(shotgun): 67.6 %, missing/extra
 void Log_804ACD70::update() {
     JGeometry::TBox2f box;
     box.set(field_0x80.i.x + mPos.x, field_0x80.i.y + mPos.y, field_0x80.f.x + mPos.x,
@@ -120,8 +120,9 @@ void Log_804ACD70::update() {
             field_0x2d0 = -1;
             for (s32 i = 0; i < 4; i++) {
                 if (fn_8023F264(i)) {
-                    f32 px = getPlayerPos_8023E724(i)->x;
-                    f32 py = getPlayerPos_8023E724(i)->y;
+                    JGeometry::TVec3f* ppos = getPlayerPos_8023E724(i);
+                    f32 px = ppos->x;
+                    f32 py = ppos->y;
                     s32 dir = fn_80230CFC(i);
                     px += lbl_804722B0[dir][0];
                     py += lbl_804722B0[dir][1];
@@ -141,17 +142,17 @@ void Log_804ACD70::update() {
                     } else {
                         field_0x264[i] = 0;
                     }
-                }
-                if (field_0x264[i] == 1 && field_0x2d0 == -1) {
-                    if (field_0x2c0 == 0) {
-                        if (field_0x234[i] == 0 || field_0x234[i] == 1) {
+                    if (field_0x264[i] == 1 && field_0x2d0 == -1) {
+                        if (field_0x2c0 == 0) {
+                            if (field_0x234[i] == 0 || field_0x234[i] == 1) {
+                                break;
+                            }
+                        } else if (field_0x234[i] == 2 || field_0x234[i] == 3) {
                             break;
                         }
-                    } else if (field_0x234[i] == 2 || field_0x234[i] == 3) {
-                        break;
-                    }
-                    if (field_0x244[field_0x234[i]] >= 4) {
-                        field_0x2d0 = field_0x234[i];
+                        if (field_0x244[field_0x234[i]] >= 4) {
+                            field_0x2d0 = field_0x234[i];
+                        }
                     }
                 }
             }
@@ -241,11 +242,13 @@ void Log_804ACD70::update() {
             if (mPos.z >= 0.0f && !fn_801F2618(NULL, false)) {
                 u8 mask = fn_801F2740(-1);
                 bool hurt = false;
-                for (s32 i = 0; i < 4; i++) {
-                    if (field_0x234[i] != field_0x2d0 && (mask & (1 << i)) &&
-                        !fn_8022E438(field_0x254[0], i) && !fn_8022E438(field_0x254[1], i)) {
-                        fn_80238548(i, 0, (const JGeometry::TVec2f*)&mPos, 5);
-                        hurt = true;
+                if (mask > 0) {
+                    for (s32 i = 0; i < 4; i++) {
+                        if (field_0x234[i] != field_0x2d0 && (mask & (1 << i)) > 0 &&
+                            !fn_8022E438(field_0x254[0], i) && !fn_8022E438(field_0x254[1], i)) {
+                            fn_80238548(i, 0, (const JGeometry::TVec2f*)&mPos, 5);
+                            hurt = true;
+                        }
                     }
                 }
                 if (hurt == true || fn_801F2B20(0)) {
@@ -253,10 +256,9 @@ void Log_804ACD70::update() {
                 }
             } else {
                 if (mPos.z < 0.0f) {
-                    u16 tile = fn_80226850(&mPos, field_0x4);
-                    if (tile == 0x90) {
+                    if (fn_80226850(&mPos, field_0x4) == 0x90) {
                         gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x91);
-                    } else if (tile == 0x91) {
+                    } else if (fn_80226850(&mPos, field_0x4) == 0x91) {
                         gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x92);
                     }
                 }
@@ -323,6 +325,8 @@ void Log_804ACD70::draw() {
 
 // FIXME(shotgun): 92.56 %, missing/extra
 void Log_804ACD70::vfunc_0x24() {
+    // FIXME(shotgun): the asm leaves the three emitter ids unset when field_0x2c0/field_0x2c4 match no
+    // case (the original passes indeterminate values); they are zeroed here, a behaviour difference.
     s32 a = 0;
     s32 b = 0;
     s32 c = 0;
@@ -404,7 +408,7 @@ bool Log_804ACD70::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return fn_801F132C(layer, pos, &field_0x2b8);
 }
 
-// FIXME(shotgun): 70.73 %, missing/extra
+// FIXME(shotgun): 75.53 %, missing/extra
 void Log_804ACD70::fn_80354FE8() {
     if (field_0x2d4.squared() <= 32.0f * FLT_EPSILON) {
         if (field_0x2cc == 1) {
@@ -458,13 +462,29 @@ void Log_804ACD70::fn_80354FE8() {
                 field_0x2d4.y = lbl_804722B0[dir][1];
                 field_0x2d4.z = 0.0f;
                 if (field_0x2c8 == 0) {
-                    s32 id;
+                    // FIXME(shotgun): the asm leaves the id unset when field_0x2c0/field_0x2c4 match no case
+                    // (the original passes an indeterminate value); zeroed here, a behaviour difference.
+                    s32 id = 0;
                     switch (field_0x2c0) {
                     case 0:
-                        id = field_0x2c4 == 0 ? 0x327 : field_0x2c4 == 1 ? 0x325 : id;
+                        switch (field_0x2c4) {
+                        case 0:
+                            id = 0x327;
+                            break;
+                        case 1:
+                            id = 0x325;
+                            break;
+                        }
                         break;
                     case 1:
-                        id = field_0x2c4 == 0 ? 0x328 : field_0x2c4 == 1 ? 0x326 : id;
+                        switch (field_0x2c4) {
+                        case 0:
+                            id = 0x328;
+                            break;
+                        case 1:
+                            id = 0x326;
+                            break;
+                        }
                         break;
                     }
                     if (mEmitter2e0 == NULL) {
