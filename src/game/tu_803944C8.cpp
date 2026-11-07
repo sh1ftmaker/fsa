@@ -573,6 +573,214 @@ void cls_804AF72C::do_end() {
     field_0x2c0[field_0x2d0++] = -2;
 }
 
+// FIXME(shotgun): 99.03 %, different (the text pointer is formed before the clearing store)
+void cls_804AF72C::fn_8039F540(int c) {
+    char* text = field_0x2d8->field_0x3ab;
+    field_0x2d8->field_0x3ab[0] = 0;
+    if (field_0x2d8->field_0x1aa == 0) {
+        char newline[2];
+        newline[1] = 0;
+        if (c == '\n') {
+            field_0x2cc++;
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
+                field_0x2d6 = 1;
+                newline[0] = c;
+                strcat((char*)field_0x2c0, newline);
+                strcat((char*)field_0x2c4, newline);
+                field_0x2d0++;
+            }
+        }
+        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+            if (field_0x2d6 != 0) {
+                s32 index = field_0x2cc;
+                cls_804AF5A0* window = field_0x2d8;
+                if (!field_0x38.isMasked(index) && !(window->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                    f32 base;
+                    f32 pos;
+                    if (!(window->field_0x3b8->field_0x28 & 0x40)) {
+                        base = window->field_0xe8;
+                        pos = field_0x38.field_0x4c[index];
+                    } else {
+                        base = window->field_0xf0;
+                        pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+                    }
+                    s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
+                    if (offset > 0) {
+                        snprintf(lbl_8050E518, 15, "\033CR[%d]", offset);
+                        strcat((char*)field_0x2c0, lbl_8050E518);
+                        strcat((char*)field_0x2c4, lbl_8050E518);
+                        field_0x2d0 += strlen(lbl_8050E518);
+                    }
+                }
+                field_0x2d6 = 0;
+            }
+            if (c == '\n') {
+                return;
+            }
+            s32 length = 0;
+            s8 high = c >> 8;
+            if (high != 0) {
+                field_0x2d0++;
+                c &= 0xFF;
+                length = 1;
+                text[0] = high;
+            }
+            field_0x2d0++;
+            text[length] = c;
+            s32 shown = field_0x2d0 - (length + 1);
+            if (shown != field_0x2d8->field_0x170) {
+                field_0x2d8->field_0x170 = shown;
+            }
+            strcat((char*)field_0x2c0, text);
+            strcat((char*)field_0x2c4, text);
+        }
+    } else if (c == '\n') {
+        field_0x2cc++;
+        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
+            field_0x2c0[field_0x2d0++] = -1;
+            field_0x2c0[field_0x2d0++] = -0x10;
+            field_0x2d6 = 1;
+        }
+    } else if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+        if (field_0x2d6 != 0) {
+            s32 index = field_0x2cc;
+            if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                s32 offset = 0x1C - (s8)field_0x38.field_0x22d[index];
+                if (offset > 0 && offset < 0x1C) {
+                    field_0x2c0[field_0x2d0++] = -1;
+                    field_0x2c0[field_0x2d0++] = offset + 0xD0;
+                }
+            }
+            field_0x2d6 = 0;
+        }
+        appendGlyph(findGlyph(c));
+    }
+}
+
+// FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)
+void cls_804AF72C::fn_8039D30C(u8 value) {
+    s32 index = field_0x2cc;
+    s32 offset = 0;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        offset = (0x1C - (s8)field_0x38.field_0x22d[index]) / 2;
+    }
+    switch (field_0x2d4) {
+    case 0: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4];
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0x20 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x1f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    case 1: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x40;
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0x60 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x5f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    case 2: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x80;
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0xa0 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x9f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    }
+    field_0x2d8->field_0x3b2[field_0x2d4] = value;
+    field_0x2d4++;
+}
+
+// FIXME(shotgun): 82.41 %, different (schedule of the window load / int conversion)
+void cls_804AF72C::fn_8039D0DC(u8 value) {
+    s32 offset = 0;
+    s32 index = field_0x2cc;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        f32 base;
+        f32 pos;
+        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+            base = field_0x2d8->field_0xe8;
+            pos = field_0x38.field_0x4c[index];
+        } else {
+            base = field_0x2d8->field_0xf0;
+            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+        }
+        offset = (s32)((base - pos) * 0.5f + 0.5f);
+    }
+    cls_804AF5A0* window = field_0x2d8;
+    u8 slot = field_0x2d4;
+    window->field_0x124[slot] = (f32)offset + field_0x38.field_0x19c[slot];
+    window->field_0x130[slot] = (f32)(field_0x38.field_0x1ee[slot] - field_0x38.field_0x202[window->field_0x15c] - 1);
+    field_0x2d8->field_0x3b2[field_0x2d4] = value;
+    field_0x2d4++;
+}
+
+// FIXME(shotgun): 98.29 %, scheduling+regalloc
+void cls_804AF72C::fn_8039CDF8(u8 value) {
+    if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+        strcat((char*)field_0x2c0, "  ");
+        strcat((char*)field_0x2c4, "  ");
+        field_0x2d0 += 4;
+    } else {
+        field_0x2d5++;
+        return;
+    }
+    s32 index = field_0x2cc;
+    s32 offset = 0;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        f32 base;
+        f32 pos;
+        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+            base = field_0x2d8->field_0xe8;
+            pos = field_0x38.field_0x4c[index];
+        } else {
+            base = field_0x2d8->field_0xf0;
+            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+        }
+        offset = (s32)((base - pos) * 0.5f + 0.5f);
+    }
+    cls_804AF5A0* window = field_0x2d8;
+    u8 slot = field_0x2d5;
+    f32 x = (f32)offset + field_0x38.field_0x19c[slot + 3];
+    f32 y = (f32)(field_0x38.field_0x1ee[slot + 3] - (s8)field_0x38.field_0x202[window->field_0x15c] - 1);
+    for (int i = 0; i < 12; i++) {
+        if (window->field_0x68[i]->field_0x8 == 0xFF) {
+            window->field_0x68[i]->field_0x0 = x;
+            window->field_0x68[i]->field_0x4 = y;
+            window->field_0x68[i]->field_0x8 = value;
+            break;
+        }
+    }
+    field_0x2d5++;
+}
+
 // FIXME(shotgun): 99.55 %, regalloc-only
 void cls_804AF72C::fn_8039C9A0(s32 number) {
     bool started = false;
@@ -744,214 +952,6 @@ void cls_804AF72C::fn_8039C258(s32 number) {
         appendGlyph(findGlyph(digit + '0'));
     }
     appendGlyph(findGlyph(number + '0'));
-}
-
-// FIXME(shotgun): 98.29 %, scheduling+regalloc
-void cls_804AF72C::fn_8039CDF8(u8 value) {
-    if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
-        strcat((char*)field_0x2c0, "  ");
-        strcat((char*)field_0x2c4, "  ");
-        field_0x2d0 += 4;
-    } else {
-        field_0x2d5++;
-        return;
-    }
-    s32 index = field_0x2cc;
-    s32 offset = 0;
-    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
-        f32 base;
-        f32 pos;
-        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
-            base = field_0x2d8->field_0xe8;
-            pos = field_0x38.field_0x4c[index];
-        } else {
-            base = field_0x2d8->field_0xf0;
-            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
-        }
-        offset = (s32)((base - pos) * 0.5f + 0.5f);
-    }
-    cls_804AF5A0* window = field_0x2d8;
-    u8 slot = field_0x2d5;
-    f32 x = (f32)offset + field_0x38.field_0x19c[slot + 3];
-    f32 y = (f32)(field_0x38.field_0x1ee[slot + 3] - (s8)field_0x38.field_0x202[window->field_0x15c] - 1);
-    for (int i = 0; i < 12; i++) {
-        if (window->field_0x68[i]->field_0x8 == 0xFF) {
-            window->field_0x68[i]->field_0x0 = x;
-            window->field_0x68[i]->field_0x4 = y;
-            window->field_0x68[i]->field_0x8 = value;
-            break;
-        }
-    }
-    field_0x2d5++;
-}
-
-// FIXME(shotgun): 99.03 %, different (the text pointer is formed before the clearing store)
-void cls_804AF72C::fn_8039F540(int c) {
-    char* text = field_0x2d8->field_0x3ab;
-    field_0x2d8->field_0x3ab[0] = 0;
-    if (field_0x2d8->field_0x1aa == 0) {
-        char newline[2];
-        newline[1] = 0;
-        if (c == '\n') {
-            field_0x2cc++;
-            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
-                field_0x2d6 = 1;
-                newline[0] = c;
-                strcat((char*)field_0x2c0, newline);
-                strcat((char*)field_0x2c4, newline);
-                field_0x2d0++;
-            }
-        }
-        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
-            if (field_0x2d6 != 0) {
-                s32 index = field_0x2cc;
-                cls_804AF5A0* window = field_0x2d8;
-                if (!field_0x38.isMasked(index) && !(window->field_0x16c != 0 && field_0x38.isMasked(index))) {
-                    f32 base;
-                    f32 pos;
-                    if (!(window->field_0x3b8->field_0x28 & 0x40)) {
-                        base = window->field_0xe8;
-                        pos = field_0x38.field_0x4c[index];
-                    } else {
-                        base = window->field_0xf0;
-                        pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
-                    }
-                    s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
-                    if (offset > 0) {
-                        snprintf(lbl_8050E518, 15, "\033CR[%d]", offset);
-                        strcat((char*)field_0x2c0, lbl_8050E518);
-                        strcat((char*)field_0x2c4, lbl_8050E518);
-                        field_0x2d0 += strlen(lbl_8050E518);
-                    }
-                }
-                field_0x2d6 = 0;
-            }
-            if (c == '\n') {
-                return;
-            }
-            s32 length = 0;
-            s8 high = c >> 8;
-            if (high != 0) {
-                field_0x2d0++;
-                c &= 0xFF;
-                length = 1;
-                text[0] = high;
-            }
-            field_0x2d0++;
-            text[length] = c;
-            s32 shown = field_0x2d0 - (length + 1);
-            if (shown != field_0x2d8->field_0x170) {
-                field_0x2d8->field_0x170 = shown;
-            }
-            strcat((char*)field_0x2c0, text);
-            strcat((char*)field_0x2c4, text);
-        }
-    } else if (c == '\n') {
-        field_0x2cc++;
-        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
-            field_0x2c0[field_0x2d0++] = -1;
-            field_0x2c0[field_0x2d0++] = -0x10;
-            field_0x2d6 = 1;
-        }
-    } else if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
-        if (field_0x2d6 != 0) {
-            s32 index = field_0x2cc;
-            if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
-                s32 offset = 0x1C - (s8)field_0x38.field_0x22d[index];
-                if (offset > 0 && offset < 0x1C) {
-                    field_0x2c0[field_0x2d0++] = -1;
-                    field_0x2c0[field_0x2d0++] = offset + 0xD0;
-                }
-            }
-            field_0x2d6 = 0;
-        }
-        appendGlyph(findGlyph(c));
-    }
-}
-
-// FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)
-void cls_804AF72C::fn_8039D30C(u8 value) {
-    s32 index = field_0x2cc;
-    s32 offset = 0;
-    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
-        offset = (0x1C - (s8)field_0x38.field_0x22d[index]) / 2;
-    }
-    switch (field_0x2d4) {
-    case 0: {
-        field_0x2c0[field_0x2d0++] = -2;
-        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4];
-        field_0x2c0[field_0x2d0++] = -2;
-        cls_804AF5A0* window = field_0x2d8;
-        if (window->field_0x1a1 != 0) {
-            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
-            s8 first = field_0x38.field_0x202[window->field_0x15c];
-            if (lines - first == 1) {
-                field_0x2c0[field_0x2d0++] = lines + 0x20 - first;
-                break;
-            }
-        }
-        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x1f - (s8)field_0x38.field_0x202[window->field_0x15c];
-        break;
-    }
-    case 1: {
-        field_0x2c0[field_0x2d0++] = -2;
-        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x40;
-        field_0x2c0[field_0x2d0++] = -2;
-        cls_804AF5A0* window = field_0x2d8;
-        if (window->field_0x1a1 != 0) {
-            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
-            s8 first = field_0x38.field_0x202[window->field_0x15c];
-            if (lines - first == 1) {
-                field_0x2c0[field_0x2d0++] = lines + 0x60 - first;
-                break;
-            }
-        }
-        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x5f - (s8)field_0x38.field_0x202[window->field_0x15c];
-        break;
-    }
-    case 2: {
-        field_0x2c0[field_0x2d0++] = -2;
-        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x80;
-        field_0x2c0[field_0x2d0++] = -2;
-        cls_804AF5A0* window = field_0x2d8;
-        if (window->field_0x1a1 != 0) {
-            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
-            s8 first = field_0x38.field_0x202[window->field_0x15c];
-            if (lines - first == 1) {
-                field_0x2c0[field_0x2d0++] = lines + 0xa0 - first;
-                break;
-            }
-        }
-        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x9f - (s8)field_0x38.field_0x202[window->field_0x15c];
-        break;
-    }
-    }
-    field_0x2d8->field_0x3b2[field_0x2d4] = value;
-    field_0x2d4++;
-}
-
-// FIXME(shotgun): 82.41 %, different (schedule of the window load / int conversion)
-void cls_804AF72C::fn_8039D0DC(u8 value) {
-    s32 offset = 0;
-    s32 index = field_0x2cc;
-    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
-        f32 base;
-        f32 pos;
-        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
-            base = field_0x2d8->field_0xe8;
-            pos = field_0x38.field_0x4c[index];
-        } else {
-            base = field_0x2d8->field_0xf0;
-            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
-        }
-        offset = (s32)((base - pos) * 0.5f + 0.5f);
-    }
-    cls_804AF5A0* window = field_0x2d8;
-    u8 slot = field_0x2d4;
-    window->field_0x124[slot] = (f32)offset + field_0x38.field_0x19c[slot];
-    window->field_0x130[slot] = (f32)(field_0x38.field_0x1ee[slot] - field_0x38.field_0x202[window->field_0x15c] - 1);
-    field_0x2d8->field_0x3b2[field_0x2d4] = value;
-    field_0x2d4++;
 }
 
 // FIXME: 93.34. scheduling (+ the unsplit 0.0f literal): the original
