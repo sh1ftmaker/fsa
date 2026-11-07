@@ -635,6 +635,88 @@ void EscortBase_8049E0C8::fn_80122548() {
     }
 }
 
+// FIXME(shotgun): 96.7 %, different + reloc-name
+void EscortBase_8049E0C8::fn_80122148() {
+    if (fn_8012285C() >= 0) {
+        s32 state = fn_8012285C();
+        s32 slot = state;
+        for (s32 i = 0; i < 4; i++) {
+            if (state == fn_8023ECF0(i)) {
+                slot = i;
+                break;
+            }
+        }
+        bool hidden = fn_80234E30(slot) || fn_80235448(state);
+        if (hidden || !fn_8023BCD4(fn_8012285C())) {
+            mDrawEnabled = false;
+        } else {
+            mDrawEnabled = true;
+        }
+        field_0x331 = 0;
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(fn_8012285C());
+        s32 q = fn_8012285C();
+        s32 found;
+        if (!fn_8023E98C(q)) {
+            found = -1;
+        } else {
+            found = 0;
+            while (found < 4) {
+                if (fn_8023ED8C(found) && q == fn_8023ECF0(found) && fn_8022D75C(found)) {
+                    break;
+                }
+                found++;
+            }
+            if (found >= 4) {
+                found = -1;
+            }
+        }
+        if (found >= 0 && found != fn_8012285C()) {
+            pos.z = getPlayerPos_8023E724(found)->z;
+        }
+        field_0x98 = fn_80230CFC(fn_8012285C());
+        switch (field_0x98) {
+        case 0:
+            pos.x -= 16.0f;
+            break;
+        case 1:
+            pos.x += 16.0f;
+            break;
+        case 2:
+            pos.y -= 16.0f;
+            break;
+        case 3:
+            pos.y += 16.0f;
+            break;
+        }
+        field_0x37c = 0.5f;
+        s32 player = fn_8012285C();
+        s32 layer = fn_8023E10C(fn_8012285C());
+        if (getPlayerLayer_8023DE58(player) == layer) {
+            mPos.x = pos.x;
+            mPos.y = pos.y;
+            mPos.z = pos.z;
+        } else {
+            fn_801CD950(&mPos.x, pos.x, 5.0f);
+            fn_801CD950(&mPos.y, pos.y, 5.0f);
+        }
+        s32 dir = fn_80230CFC(fn_8012285C());
+        if (dir >= 0) {
+            field_0x364[4]++;
+            if (field_0x364[4] >= 10) {
+                field_0x364[4] = 10;
+            }
+            if (field_0x364[4] >= 10) {
+                field_0x364[4] = 0;
+                field_0x98 = dir;
+                if (dir != mAnim.mAnim) {
+                    mAnim.startAnim_801D22DC(dir, 2, false);
+                    mAnim.fn_801D1F14(0.0f);
+                }
+            }
+        }
+    }
+}
+
 void EscortBase_8049E0C8::fn_801220C4() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
