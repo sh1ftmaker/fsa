@@ -2,7 +2,9 @@
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
 #include "game/GameView.h"
+#include "game/ActorManager.h"
 #include "game/Camera.h"
+#include "game/cls_804AE9B0.h"
 #include "game/EnemyBase.h"
 #include "game/Map.h"
 #include "game/Message.h"
@@ -340,6 +342,106 @@ void cls_8049D83C::vfunc_0x54() {
         } else if (t == lbl_8046486C[10]) {
             vfunc_0x60(10);
         }
+    }
+}
+
+// 0x80113EC4.
+// FIXME(shotgun): 37.6 %, partly written: cases 3, 5, 6 (they index tables inside lbl_804647C8 /
+// lbl_8046486C that this file does not carve) and 11-17 are not written.
+void cls_8049D83C::vfunc_0x60(s32 arg) {
+    switch (arg) {
+    case 2:
+        field_0x234 = 0;
+        for (s32 i = 0; i < 5; i++) {
+            field_0x2d0[i]->becomeInvalidEmitter();
+            field_0x2d0[i] = NULL;
+        }
+        fn_8011921C()->field_0x2 = 1;
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+            fn_80230498(i, &playerPos, fn_8023CBC0(i), 0xFF, 0, 0, true);
+        }
+        break;
+    case 4:
+        if (field_0x238 == 6) {
+            gAudioMgr_8053AF80->fn_80458FF0(0x100000F, false, 0);
+        } else {
+            gAudioMgr_8053AF80->fn_80458FF0(0x100001C, false, 0);
+        }
+        field_0x233 = 1;
+        break;
+    case 7:
+        field_0x230 = 0;
+        field_0x232 = 1;
+        break;
+    case 8:
+        if (field_0x2e4 != NULL) {
+            field_0x2e4->becomeInvalidEmitter();
+            field_0x2e4 = NULL;
+        }
+        break;
+    case 9: {
+        fn_80119DD0()->fn_80119998(0xB4, 0, 0, 0, 1, 0, 0);
+        field_0x248 = 1;
+        JGeometry::TVec3f pos(mSpawnPos.x - 36.0f, mSpawnPos.y + 48.0f, mSpawnPos.z);
+        for (s32 i = 0; i < 4; i++) {
+            if (i > 0) {
+                pos.x += 24.0f;
+            }
+            fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            fn_80230BF4(i, 3);
+        }
+        if (field_0x238 == 0) {
+            fn_8011921C()->field_0x2 = 1;
+        } else {
+            field_0x232 = 0;
+        }
+        if (field_0x2a0 != NULL) {
+            releaseEmitter_801EE434(field_0x2a0);
+            field_0x2a0 = NULL;
+        }
+        if (field_0x29c != NULL) {
+            releaseEmitter_801EE434(field_0x29c);
+            field_0x29c = NULL;
+        }
+        for (s32 i = 0; i < 7; i++) {
+            releaseEmitter_801EE434(field_0x2a8[i]);
+            field_0x2a8[i] = NULL;
+            if (i < 2) {
+                releaseEmitter_801EE434(field_0x2e8[i]);
+                field_0x2e8[i] = NULL;
+            }
+            if (i < 3) {
+                releaseEmitter_801EE434(field_0x2c4[i]);
+                field_0x2c4[i] = NULL;
+            }
+            if (i < 5) {
+                releaseEmitter_801EE434(field_0x2d0[i]);
+                field_0x2d0[i] = NULL;
+            }
+        }
+        if (field_0x2a4 != NULL) {
+            releaseEmitter_801EE434(field_0x2a4);
+            field_0x2a4 = NULL;
+        }
+        if (field_0x2e4 != NULL) {
+            releaseEmitter_801EE434(field_0x2e4);
+            field_0x2e4 = NULL;
+        }
+        if (field_0x238 != 0 && field_0x238 < 6) {
+            JGeometry::TVec3f spawnPos(mSpawnPos.x, mSpawnPos.y, 20.0f);
+            getActorManager_801F856C()->spawnActor_801F9484('CRNV', field_0x4, &spawnPos, field_0x238, -1, -1);
+        }
+        break;
+    }
+    case 10:
+        lbl_8053AD70->fn_8037AD00(field_0x238);
+        field_0x248 = 0;
+        fn_801F3668();
+        if (field_0x244 > 0) {
+            getGameView_802D6A9C()->fn_802D8050(field_0x244, true, 0xFF);
+        }
+        break;
     }
 }
 
