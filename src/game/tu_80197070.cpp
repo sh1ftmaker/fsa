@@ -52,6 +52,8 @@ BOOL fn_8019CE40(s32 stage, s32 sub) {
     return isStageFlagSet(stage, sub);
 }
 
+// Same body as setStageFlag (StageFlag.h, inlined by tu_803A8DFC); not a wrapper call
+// because that compiles the early returns differently (90.87 %).
 void fn_8019CDE4(s32 stage, s32 sub) {
     if (stage < 0 || stage > 7) {
         return;

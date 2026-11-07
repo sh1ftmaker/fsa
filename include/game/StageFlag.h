@@ -22,7 +22,9 @@ inline BOOL isStageFlagSet(s32 stage, s32 sub) {
 
 // Sets bit (stage * 4 + sub) of the current save file's mFlags (stage 0-7,
 // sub 0-3, else nothing): the body of fn_8019CDE4 (tu_80197070), which
-// ResultScreen_804AF9A0::fn_803AB494 (tu_803A8DFC) inlines.
+// ResultScreen_804AF9A0::fn_803AB494 (tu_803A8DFC) inlines. fn_8019CDE4 itself keeps
+// its own copy of the body: as a wrapper calling this inline it compiles the early
+// returns to ble/blr (21 instrs, 90.87 %) instead of the original bltlr/bgtlr.
 inline void setStageFlag(s32 stage, s32 sub) {
     if (stage < 0 || stage > 7) {
         return;
