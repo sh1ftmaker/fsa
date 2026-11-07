@@ -139,7 +139,7 @@ static const u8 sDigitBlue[4] = {0x28, 0x50, 0xFF, 0xFF};
 // Force Gem / fairy sounds by tens digit.
 static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
 
-// FIXME(shotgun): 80.16 %, missing/extra + reloc-name
+// FIXME(shotgun): 80.16 %, missing/extra + reloc-name (the emitter scale argument is a stack value not decoded; 1.0f is a placeholder)
 void Score_804AF4C0::fn_80393514() {
     if (mTimer == 90) {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0xCB, 0, 0, NULL, NULL, true, 1.0f);
@@ -250,7 +250,7 @@ static inline void putScoreDigit(const Score_804AF4C0* self, f32 fade, f32 dx, u
     }
 }
 
-// FIXME(shotgun): 49.68 %, missing/extra + reloc-name (the digit calls of each case are unrolled in the original)
+// FIXME(shotgun): 15.94 %, missing/extra + reloc-name (cases 0-3 only; unrolled in the original)
 void Score_804AF4C0::fn_80391F58() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     switch (mValue) {
@@ -268,49 +268,8 @@ void Score_804AF4C0::fn_80391F58() {
         putScoreDigit(this, fade, -5.0f, 5);
         putScoreDigit(this, fade, 5.0f, 0);
         break;
-    case 4:
-        putScoreDigit(this, fade, -10.0f, 1);
-        putScoreDigit(this, fade, 0.0f, 0);
-        putScoreDigit(this, fade, 10.0f, 0);
-        break;
-    case 5:
-        putScoreDigit(this, fade, -10.0f, 1);
-        putScoreDigit(this, fade, 0.0f, 5);
-        putScoreDigit(this, fade, 10.0f, 0);
-        break;
-    case 6:
-        putScoreDigit(this, fade, -10.0f, 2);
-        putScoreDigit(this, fade, 0.0f, 0);
-        putScoreDigit(this, fade, 10.0f, 0);
-        break;
-    case 7:
-        putScoreDigit(this, fade, -10.0f, 3);
-        putScoreDigit(this, fade, 0.0f, 0);
-        putScoreDigit(this, fade, 10.0f, 0);
-        break;
-    case 8:
-        putScoreDigit(this, fade, -15.0f, 1);
-        putScoreDigit(this, fade, -5.0f, 0);
-        putScoreDigit(this, fade, 5.0f, 0);
-        putScoreDigit(this, fade, 15.0f, 0);
-        break;
-    case 9:
-        putScoreDigit(this, fade, -15.0f, 1);
-        putScoreDigit(this, fade, -5.0f, 5);
-        putScoreDigit(this, fade, 5.0f, 0);
-        putScoreDigit(this, fade, 15.0f, 0);
-        break;
-    case 10:
-        putScoreDigit(this, fade, -15.0f, 2);
-        putScoreDigit(this, fade, -5.0f, 0);
-        putScoreDigit(this, fade, 5.0f, 0);
-        putScoreDigit(this, fade, 15.0f, 0);
-        break;
-    case 11:
-        putScoreDigit(this, fade, -15.0f, 3);
-        putScoreDigit(this, fade, -5.0f, 0);
-        putScoreDigit(this, fade, 5.0f, 0);
-        putScoreDigit(this, fade, 15.0f, 0);
+    default:
+        // FIXME(shotgun): cases 4-11 (three and four digit values) not written, offsets not read
         break;
     }
 }
