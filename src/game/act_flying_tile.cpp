@@ -3,6 +3,7 @@
 #include "game/ActorManager.h"
 #include "game/GameView.h"
 #include "game/Map.h"
+#include "game/GameGlobals.h"
 #include "game/act/act_flying_tile.h"
 
 // FIXME(shotgun): 100 %, matches
@@ -80,6 +81,55 @@ bool FlyingTile_804AC100::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     return true;
+}
+
+// FIXME(shotgun): 86 %, missing/extra
+void FlyingTile_804AC100::fn_80339820() {
+    JGeometry::TVec3f pos = mPos;
+    pos.y -= pos.z;
+    pos.z = 0.0f;
+    if (field_0x24c == 5) {
+        if (field_0x260 >= 0x45) {
+            field_0x260 -= 0x45;
+        } else {
+            field_0x260 -= 0x40;
+        }
+    } else if (field_0x24c == 1) {
+        switch (field_0x260) {
+        case 0x75:
+            field_0x260 = 2;
+            break;
+        case 0x6B:
+            field_0x260 = 4;
+            break;
+        default:
+            field_0x260 = 1;
+            break;
+        }
+    }
+    if (field_0x260 <= 1) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+            if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.8f) {
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, 0x261400, -1, -1);
+            } else {
+                bool skip = false;
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                    skip = true;
+                }
+                if (!skip) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FARY, field_0x4, &pos, 0, -1, -1);
+                } else {
+                    getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &pos, 0, -1, -1);
+                }
+                }
+            }
+        }
+    } else if (field_0x260 == 2) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_HART, field_0x4, &pos, 0, -1, -1);
+    } else if (field_0x260 != 3 && field_0x260 == 4) {
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FARY, field_0x4, &pos, 0, -1, -1);
+    }
 }
 
 FlyingTile_804AC100::~FlyingTile_804AC100() {}
