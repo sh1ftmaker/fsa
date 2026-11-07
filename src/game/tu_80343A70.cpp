@@ -48,9 +48,30 @@ static inline void spreadPieces(cls_804AC600* self) {
     }
 }
 
+// The six trailing pieces pick a new heading every tenth frame of field_0x238 and
+// move at their own speed (update, states 2-5).
+static inline void steerPieces(cls_804AC600* self) {
+    for (s32 i = 1; i < 7; i++) {
+        if (self->field_0x238 % 10 == 0) {
+            self->field_0x296[i - 1] = (s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+            f32 x;
+            f32 y;
+            if (self->field_0x230 == 5 || (self->field_0x248 >= 0 && self->field_0x244 < 0)) {
+                x = -self->field_0x2a4[i].x;
+                y = -self->field_0x2a4[i].y;
+            } else {
+                x = 12.0f * JMath::sincosTable_.sinShort(self->field_0x296[i - 1]) + -self->field_0x2a4[i].x;
+                y = 12.0f * JMath::sincosTable_.cosShort(self->field_0x296[i - 1]) + -self->field_0x2a4[i].y;
+            }
+            self->field_0x296[i - 1] = (s32)(JMath::atanTable_.atan2_(x, y) * 10430.378f);
+        }
+        self->field_0x34c[i].x = self->field_0x278[i] * JMath::sincosTable_.sinShort(self->field_0x296[i - 1]);
+        self->field_0x34c[i].y = self->field_0x278[i] * JMath::sincosTable_.cosShort(self->field_0x296[i - 1]);
+    }
+}
+
 // 0x80343D90.
-// FIXME(shotgun): 16.9 %, partly written: states 2-6 of the state switch are not written
-// (0x80344570-0x80345038).
+// FIXME(shotgun): 92.6 %, missing/extra + reloc-name
 void cls_804AC600::update() {
     JGeometry::TVec3f diff;
     diff.x = diff.y = diff.z = 0.0f;
@@ -178,7 +199,124 @@ void cls_804AC600::update() {
             return;
         }
         break;
-    // FIXME(shotgun): states 2-6 not written (0x80344570-0x80345038).
+    case 2:
+    case 3:
+        if (field_0x238 <= 0) {
+            f32 best = 1024.0f;
+            s32 found = -1;
+            s32 count = getActorManager_801F856C()->mActorEnd;
+            for (s32 i = 0; i < count; i++) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+                if (actor != NULL && actor->mActorId == ACTOR_HBMB && actor->mAlive == 1 && actor->field_0x90 != 1 &&
+                    actor->field_0x90 != 2 && actor->field_0x90 != 4) {
+                    f32 d = PSVECDistance(&mPos, &actor->mPos);
+                    if (d < best) {
+                        found = actor->mSerial;
+                        best = d;
+                    }
+                }
+            }
+            field_0x248 = found;
+            if (field_0x248 >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x248);
+                if (actor != NULL) {
+                    JGeometry::TVec3f target = actor->mPos;
+                    diff.x = target.x - mPos.x;
+                    diff.y = target.y - mPos.y;
+                    steerPieces(this);
+                    if (PSVECMag(&diff) > 16.0f) {
+                        field_0x2a2 = (s32)(JMath::atanTable_.atan2_(diff.x, diff.y) * 10430.378f);
+                        field_0x34c[0].x = 2.0f * JMath::sincosTable_.sinShort(field_0x294);
+                        field_0x34c[0].y = 2.0f * JMath::sincosTable_.cosShort(field_0x294);
+                        field_0x238 = 5;
+                    } else {
+                        diff.scale(0.125f);
+                        field_0x34c[0] = diff;
+                        field_0x238 = 10;
+                    }
+                    for (s32 i = 0; i < 7; i++) {
+                        if (target.x > field_0x2a4[i].x) {
+                            field_0x254[i] = 0;
+                        } else {
+                            field_0x254[i] = 2;
+                        }
+                    }
+                }
+            } else {
+                if (field_0x230 == 2) {
+                    fn_801EEC98(mSerial, NULL, NULL, NULL, &field_0x244, 0, 0);
+                } else {
+                    fn_801EEC98(mSerial, NULL, NULL, NULL, &field_0x244, field_0x24c, 2);
+                }
+                if (field_0x244 >= 0) {
+                    diff.x = getPlayerPos_8023E724(field_0x244)->x - mPos.x;
+                    diff.y = getPlayerPos_8023E724(field_0x244)->y - mPos.y;
+                    field_0x2a2 = (s32)(JMath::atanTable_.atan2_(diff.x, diff.y) * 10430.378f);
+                }
+                steerPieces(this);
+            }
+        }
+        if (field_0x248 < 0) {
+            if (field_0x244 >= 0) {
+                field_0x34c[0].x = 2.0f * JMath::sincosTable_.sinShort(field_0x294);
+                field_0x34c[0].y = 2.0f * JMath::sincosTable_.cosShort(field_0x294);
+                if (getPlayerPos_8023E724(field_0x244)->x > field_0x2a4[0].x) {
+                    field_0x254[0] = 0;
+                } else {
+                    field_0x254[0] = 2;
+                }
+                for (s32 i = 1; i < 7; i++) {
+                    if (getPlayerPos_8023E724(field_0x244)->x > field_0x2a4[i].x) {
+                        field_0x254[i] = 0;
+                    } else {
+                        field_0x254[i] = 2;
+                    }
+                }
+            } else {
+                field_0x34c[0].x = 0.0f;
+                field_0x34c[0].y = 0.0f;
+            }
+            if (field_0x230 == 3 && field_0x244 != field_0x24c) {
+                field_0x230 = 2;
+                field_0x238 = 1;
+                field_0x24c = -1;
+                field_0x244 = field_0x24c;
+            }
+        }
+        if (field_0x238 <= 0) {
+            field_0x238 = 10;
+        }
+        break;
+    case 5:
+        if (field_0x238 <= 0) {
+            field_0x238 = 0;
+            field_0x230 = 2;
+            return;
+        }
+        steerPieces(this);
+        break;
+    case 4:
+        if (field_0x238 <= 0) {
+            field_0x238 = 0;
+            field_0x230 = 3;
+            return;
+        }
+        steerPieces(this);
+        break;
+    case 6:
+        if (fn_801F6758(&mPos, field_0x4, 16.0f)) {
+            bool gone = true;
+            for (s32 i = 1; i < 7; i++) {
+                if (!fn_801F6758(&field_0x2a4[i], field_0x4, 16.0f)) {
+                    gone = false;
+                    break;
+                }
+            }
+            if (gone) {
+                mAlive = false;
+            }
+        }
+        break;
     }
     field_0x23c--;
     if (field_0x23c <= 0) {
