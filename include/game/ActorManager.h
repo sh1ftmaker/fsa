@@ -317,7 +317,7 @@ public:
     /* 0x3044 */ s32 mParamColumnNum;
     /* 0x3048 */ s32 mParamRowNum;
     /* 0x304C */ u32* mParamRowIds;    // ActorId per row
-    /* 0x3050 */ void* field_0x3050;
+    /* 0x3050 */ char** mParamRowNames; // second CSV field of each row, NUL-terminated in place
     /* 0x3054 */ u32* mParamColumnIds; // 4-character column keys ('life', ...)
     /* 0x3058 */ s32* mParamValues;    // [row * mParamColumnNum + column];
                                        // row 0 holds the defaults

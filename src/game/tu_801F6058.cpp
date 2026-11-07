@@ -14,13 +14,14 @@
 #include "game/Player.h"
 #include "game/cls_804AE9B0.h"
 #include "game/tu_801E9AFC.h"
+#include "game/act/tu_8028DD78.h"
 
 // The position every per-slot sound object starts at (the constructor zeroes it).
 static JGeometry::TVec3f lbl_804CABD8;
 
 // Whether two boxes overlap (edges touching counts), on a copy of `a`: inlined
 // the same way, with no store back to either box, into fn_801F7F58,
-// fn_801F8108 (not written yet) and fn_801F82CC.
+// fn_801F8108 and fn_801F82CC.
 static inline bool boxesOverlap(const JGeometry::TBox2f& a, const JGeometry::TBox2f& b) {
     JGeometry::TBox2f overlap(a);
     return overlap.intersect(b);
@@ -98,7 +99,7 @@ ActorManager_804A5800::~ActorManager_804A5800() {
         }
     }
     delete[] mParamRowIds;
-    delete[] field_0x3050;
+    delete[] mParamRowNames;
     delete[] mParamColumnIds;
     delete[] mParamValues;
     mHeap->destroy();
@@ -230,6 +231,13 @@ s32 ActorManager_804A5800::fn_801F82CC(ActorBase_804A5770* actor, u8 includeArij
     return found;
 }
 
+// FIXME(shotgun): 92.6 %, the id list literal is loaded from .sdata2 instead of built on the stack
+extern "C" s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz) {
+    u32 ids[2] = {id, ACTOR_NULL};
+    return getActorManager_801F856C()->fn_801F7F58(const_cast<ActorBase_804A5770*>(actor), ids,
+                                                  excludeSerial, maxDz);
+}
+
 s32 ActorManager_804A5800::fn_801F7F58(ActorBase_804A5770* actor, const u32* ids, s32 excludeSerial,
                                        f32 maxDz) const {
     s32 found = -1;
@@ -274,6 +282,92 @@ void ActorManager_804A5800::fn_801F7E88() {
             actor->mAlive = false;
         }
     }
+}
+
+// FIXME(shotgun): 98.7 %, regalloc-only
+void ActorManager_804A5800::fn_801F7CAC() {
+    GameView_804A9950* view = getGameView_802D6A9C();
+    for (s32 i = 0; i < 4; i++) {
+        getGameView_802D6A9C()->fn_802D39B8(i, -1);
+        if (fn_8023EBB8(i)) {
+            s32 v = fn_8023EF50(i);
+            getGameView_802D6A9C()->fn_802D39B8(i, v);
+        }
+    }
+    s32 end = mActorEnd;
+    for (s32 i = 0; i < end; i++) {
+        ActorBase_804A5770* actor = mActors[i];
+        if (actor == NULL || !actor->mAlive || actor->field_0x4 != 0) {
+            continue;
+        }
+        if (actor->mActorId == ACTOR_TZOK || actor->mActorId == ACTOR_FAZR ||
+            actor->mActorId == ACTOR_DMGA) {
+            continue;
+        }
+        if (contains(view->mVisibleBox, actor->mPos)) {
+            continue;
+        }
+        s32 serial = actor->mSerial;
+        if (serial == getGameView_802D6A9C()->field_0x131a8[0] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[1] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[2] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[3]) {
+            continue;
+        }
+        actor = mActors[i];
+        if (actor->mActorId == ACTOR_RANK || actor->mActorId == ACTOR_GBAO) {
+            continue;
+        }
+        if (actor->mActorId == ACTOR_RASN) {
+            if (static_cast<cls_804A7A68*>(actor)->field_0x230 == 0) {
+                actor->mAlive = false;
+            }
+        } else {
+            actor->mAlive = false;
+        }
+    }
+    fn_80204638()->fn_802048F4();
+}
+
+// FIXME(shotgun): 94.1 %, missing/extra
+void ActorManager_804A5800::fn_801F7B18() {
+    for (s32 i = 0; i < 4; i++) {
+        getGameView_802D6A9C()->fn_802D39B8(i, -1);
+        if (fn_8023EBB8(i)) {
+            s32 v = fn_8023EF50(i);
+            getGameView_802D6A9C()->fn_802D39B8(i, v);
+        }
+    }
+    s32 end = mActorEnd;
+    for (s32 i = 0; i < end; i++) {
+        ActorBase_804A5770* actor = mActors[i];
+        if (actor == NULL || !actor->mAlive) {
+            continue;
+        }
+        if (actor->mActorId == ACTOR_TZOK) {
+            continue;
+        }
+        s32 serial = actor->mSerial;
+        if (serial == getGameView_802D6A9C()->field_0x131a8[0] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[1] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[2] ||
+            serial == getGameView_802D6A9C()->field_0x131a8[3]) {
+            continue;
+        }
+        actor = mActors[i];
+        if (actor->mActorId == ACTOR_RANK || actor->mActorId == ACTOR_GBAO ||
+            actor->mActorId == ACTOR_ENDM || actor->mActorId == ACTOR_DMGA) {
+            continue;
+        }
+        if (actor->mActorId == ACTOR_RASN) {
+            if (static_cast<cls_804A7A68*>(actor)->field_0x230 == 0) {
+                actor->mAlive = false;
+            }
+        } else {
+            actor->mAlive = false;
+        }
+    }
+    fn_80204638()->fn_802048F4();
 }
 
 // FIXME: 97.7 %, regalloc only: the target counts down mActorEnd in r0 and
@@ -651,6 +745,91 @@ ActorSoundObj_804578F4* ActorManager_804A5800::fn_801F6644(s32 slot) {
     return field_0x200c;
 }
 
+// FIXME(shotgun): 96 %, missing/extra (one extra move of the resource pointer)
+void ActorManager_804A5800::fn_801F62AC(JKRHeap* heap) {
+    char* data = (char*)gGameRoot_8053AAF8->field_0xa4->getResource('ENM ', "EnemyParam.csv");
+    s32 size = gGameRoot_8053AAF8->field_0xa4->getResSize(
+        gGameRoot_8053AAF8->field_0xa4->getResource('ENM ', "EnemyParam.csv"));
+
+    // The header row gives the column count, the newlines the row count.
+    mParamColumnNum = 0;
+    for (char* p = data;; p++) {
+        if (*p == ',') {
+            mParamColumnNum++;
+        } else if (*p == '\n') {
+            break;
+        }
+    }
+    mParamColumnNum--;
+    mParamRowNum = 0;
+    for (s32 i = 0; i <= size; i++) {
+        if ((u8)data[i] == '\n') {
+            mParamRowNum++;
+        }
+    }
+    mParamRowNum--;
+
+    mParamRowIds = new (heap, 0) u32[(mParamRowNum + 0x1f) & ~0x1f];
+    mParamRowNames = new (heap, 0) char*[(mParamRowNum + 0x1f) & ~0x1f];
+    mParamColumnIds = new (heap, 0) u32[(mParamColumnNum + 0x1f) & ~0x1f];
+    mParamValues = new (heap, 0) s32[(mParamRowNum * mParamColumnNum + 0x1f) & ~0x1f];
+
+    // Header: the first two fields are the id and name columns, the rest are 4-character keys.
+    s32 fields = 0;
+    s32 start = 0;
+    for (s32 i = 0;; i++) {
+        char c = data[i];
+        if (c == ',' || c == '\n') {
+            if (fields > 1) {
+                mParamColumnIds[fields - 2] = ((u8)data[start] << 24) | ((u8)data[start + 1] << 16) |
+                                              ((u8)data[start + 2] << 8) | (u8)data[start + 3];
+            }
+            if (c != ',') {
+                break;
+            }
+            fields++;
+            start = i + 1;
+        }
+    }
+
+    // Rows: column 0 is the ActorId, column 1 the name, the others decimal values.
+    s32 col = 0;
+    s32 row = 0;
+    start = 0;
+    char* p = data;
+    for (s32 i = 0; i <= size; i++, p++) {
+        char c = *p;
+        if (c == ',' || c == '\n' || c == 0) {
+            if (row > 0 && (c != 0 || col >= 2)) {
+                if (col == 0) {
+                    mParamRowIds[row - 1] = ((u8)data[start] << 24) | ((u8)data[start + 1] << 16) |
+                                            ((u8)data[start + 2] << 8) | (u8)data[start + 3];
+                } else if (col == 1) {
+                    mParamRowNames[row - 1] = data + start;
+                    *p = 0;
+                } else {
+                    s32 value = 0;
+                    for (s32 j = start; j < i; j++) {
+                        char ch = data[j];
+                        if (ch >= '0' && ch <= '9') {
+                            value = value * 10 + (ch - '0');
+                        }
+                    }
+                    mParamValues[(row - 1) * mParamColumnNum + col - 2] = value;
+                }
+            }
+            if (c == ',' || c == 0) {
+                col++;
+                start = i + 1;
+            } else if (c == '\n') {
+                start = i + 1;
+                col = 0;
+                row++;
+            }
+        }
+    }
+}
+
 // FIXME: 96.4 %, scheduling+regalloc: the target keeps the column count in r7,
 // value in r8, col in r9 and the key pointer in r6 (ours: r6, r7, r8, r9),
 // so the two increments come out in the other order.
@@ -681,6 +860,45 @@ s32 ActorManager_804A5800::fn_801F620C(u32 id, u32 column) {
 
 void ActorManager_804A5800::fn_801F6204(u8 value) {
     field_0x305c = value;
+}
+
+// FIXME(shotgun): 87 %, missing/extra (the original masks the bit test to a byte)
+void ActorManager_804A5800::fn_801F6068() {
+    s32 count = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (1 << i)) {
+            field_0x3020[i] = fn_80236228(i);
+            field_0x3030[i] = i;
+            count++;
+        } else {
+            field_0x3020[i] = -9999;
+            field_0x3030[i] = 3;
+        }
+    }
+    // Selection sort, highest value first.
+    for (s32 i = 0; i < count - 1; i++) {
+        s32 best = i;
+        for (s32 j = i + 1; j < count; j++) {
+            if (field_0x3020[best] < field_0x3020[j]) {
+                s32 v = field_0x3020[best];
+                field_0x3020[best] = field_0x3020[j];
+                field_0x3020[j] = v;
+                s32 p = field_0x3030[best];
+                field_0x3030[best] = field_0x3030[j];
+                field_0x3030[j] = p;
+                best = j;
+            }
+        }
+    }
+    // The entries past the last player repeat it.
+    if (count < 4) {
+        s32 lastValue = field_0x3020[count - 1];
+        s32 lastPlayer = field_0x3030[count - 1];
+        for (s32 i = count; i < 4; i++) {
+            field_0x3020[i] = lastValue;
+            field_0x3030[i] = lastPlayer;
+        }
+    }
 }
 
 s32 ActorManager_804A5800::fn_801F6058(s32 i) {
