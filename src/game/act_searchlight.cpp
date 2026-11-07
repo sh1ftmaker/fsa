@@ -44,15 +44,15 @@ void Searchlight_804A0FF8::init() {
     field_0x3c.z = 0.0f;
     field_0x3c.y = 0.0f;
     field_0x3c.x = 0.0f;
-    field_0x34c[0].x = mPos.x;
-    field_0x34c[0].y = mPos.y;
-    field_0x34c[0].z = mPos.z;
-    field_0x34c[1].x = mPos.x;
-    field_0x34c[1].y = mPos.y;
-    field_0x34c[1].z = mPos.z;
-    field_0x34c[2].x = mPos.x;
-    field_0x34c[2].y = mPos.y;
-    field_0x34c[2].z = mPos.z;
+    field_0x34c.x = mPos.x;
+    field_0x34c.y = mPos.y;
+    field_0x34c.z = mPos.z;
+    field_0x358.x = mPos.x;
+    field_0x358.y = mPos.y;
+    field_0x358.z = mPos.z;
+    field_0x364.x = mPos.x;
+    field_0x364.y = mPos.y;
+    field_0x364.z = mPos.z;
     field_0x348 = 50.0f;
     field_0x30c = 100;
     switch (field_0x90) {
@@ -89,8 +89,8 @@ void Searchlight_804A0FF8::init() {
         field_0x2fc = field_0x2f8;
     } else {
         if (field_0x90 >= 4 && field_0x90 <= 11) {
-            mPos.x = field_0x348 * JMath::sincosTable_.sinShort(field_0x340) + field_0x34c[0].x;
-            mPos.y = field_0x348 * JMath::sincosTable_.cosShort(field_0x340) + field_0x34c[0].y;
+            mPos.x = field_0x348 * JMath::sincosTable_.sinShort(field_0x340) + field_0x34c.x;
+            mPos.y = field_0x348 * JMath::sincosTable_.cosShort(field_0x340) + field_0x34c.y;
             field_0x2f8 = 1;
         } else {
             field_0x300 = 300;
@@ -111,8 +111,8 @@ void Searchlight_804A0FF8::draw() {
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x431, &params, -1, 1.0f, 1.0f);
         fn_801F02BC("enemy_gc_sob.bin", 0x431, &params, -1, 0, false, 1.0f, 1.0f);
     } else {
-        gGameRoot2_8053AB10->field_0x2c->fn_80158624(&field_0x34c[0], &mPos, JUtility::TColor(0x3F3F1F7F), 0.7f * field_0x344);
-        gGameRoot2_8053AB10->field_0x2c->fn_80158624(&field_0x34c[0], &mPos, JUtility::TColor(0x3F3F1F3F), field_0x344);
+        gGameRoot2_8053AB10->field_0x2c->fn_80158624(&field_0x34c, &mPos, JUtility::TColor(0x3F3F1F7F), 0.7f * field_0x344);
+        gGameRoot2_8053AB10->field_0x2c->fn_80158624(&field_0x34c, &mPos, JUtility::TColor(0x3F3F1F3F), field_0x344);
     }
 }
 

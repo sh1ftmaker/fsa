@@ -38,7 +38,9 @@ public:
     /* 0x342 */ u8 field_0x342[2]; // not yet known
     /* 0x344 */ f32 field_0x344; // the beam radius
     /* 0x348 */ f32 field_0x348; // 50.0f after init
-    /* 0x34C */ JGeometry::TVec3f field_0x34c[3]; // the beam's top (and two more points)
+    /* 0x34C */ JGeometry::TVec3f field_0x34c; // the beam's top
+    /* 0x358 */ JGeometry::TVec3f field_0x358; // (separate members: an array would add a construct loop to the spawner's inline constructor)
+    /* 0x364 */ JGeometry::TVec3f field_0x364;
     /* 0x370 */ JGeometry::TVec3f field_0x370;
 }; // Size: 0x37C
 
