@@ -195,6 +195,8 @@ public:
     /* 0xA0 */ virtual void vfunc_0xA0();
 
     void fn_801D63D0();
+    // 0x801D5B70 (a plain `fn_801D5B70` symbol): picks the next state once mStateTimer reaches field_0x250.
+    void fn_801D5B70();
     // 0x801E4D88 (game/tu_801E4D54.cpp, a plain symbol there, not written): per-frame brain.
     void fn_801E4D88();
     void fn_801D4C70();

@@ -192,6 +192,48 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_801D5B70)
+void VaatiBoss_804A4958::fn_801D5B70() {
+    if (mStateTimer >= field_0x250) {
+        if (fn_801CD2F8(field_0x4)) {
+            if (field_0x5d0 == 0) {
+                fn_801D5D84(0x15);
+            } else if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                bool found = false;
+                s32 player = fn_801D05F8(&mPos, 160.0f);
+                if (player >= 0) {
+                    const JGeometry::TVec3f* p = getPlayerPos_8023E724(player);
+                    found = true;
+                    JGeometry::TVec2f d(p->x - mPos.x, p->y - mPos.y);
+                    if (d.squared() <= JGeometry::TUtilf::epsilon()) {
+                        d.set(1.0f, 0.0f);
+                    }
+                    d.normalize();
+                    field_0x5c4 = mPos.x;
+                    field_0x5c8 = mPos.y;
+                    field_0x5c4 += d.x * 10000.0f;
+                    field_0x5c8 += d.y * 10000.0f;
+                }
+                if (found) {
+                    fn_801D5D84(0x11);
+                } else {
+                    fn_801D5D84(0xF);
+                }
+            } else {
+                fn_801D5D84(0xF);
+            }
+        } else if (field_0x5d0 == 0) {
+            if (mLife <= 12) {
+                fn_801D5D84(0xC);
+            } else {
+                fn_801D5D84(0x17);
+            }
+        } else {
+            fn_801D5D84(0xC);
+        }
+    }
+}
+
 void VaatiBoss_804A4958::vfunc_0x94() {
     switch (mState) {
     case 6:
@@ -249,6 +291,96 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
         fn_801CE2BC(mapHit);
     }
     field_0x448.fn_8021798C();
+}
+
+// The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
+// FIXME(shotgun): not measurable (symbol name)
+void VaatiBoss_804A4958::vfunc_0x98() {
+    bool step = false;
+    if (field_0x5d1 != 0) {
+        field_0x5d1--;
+        if (field_0x5d1 == 0) {
+            field_0x448.fn_80217CD8();
+            field_0x3c.x = 1.4f * JMASSin(field_0x5d2);
+            field_0x3c.y = 1.4f * JMASCos(field_0x5d2);
+        }
+    }
+    switch (mState) {
+    case 0:
+    case 0xB:
+    case 0x17:
+    case 0x18:
+    case 0x19:
+    case 0x1A:
+        break;
+    case 6:
+        if (mFlags & 1) {
+            mPos.z = mPrevPos.z;
+            field_0x3c.z = mPrevVel.z;
+        }
+        step = true;
+        break;
+    case 7:
+        mPos.z = 500.0f;
+        break;
+    default: {
+        f32 oldX = field_0x5bc;
+        f32 oldY = field_0x5c0;
+        switch (field_0x5b8) {
+        case 0:
+            field_0x5bc += 2.5f;
+            break;
+        case 1:
+            field_0x5bc -= 2.5f;
+            break;
+        case 2:
+            field_0x5c0 += 2.5f;
+            break;
+        case 3:
+            field_0x5c0 -= 2.5f;
+            break;
+        }
+        bool turn = false;
+        JGeometry::TVec3f probe(field_0x5bc, field_0x5c0, 0.0f);
+        if (vfunc_0x4C(field_0x4, &probe)) {
+            field_0x5bc = oldX;
+            field_0x5c0 = oldY;
+            turn = true;
+        } else {
+            field_0x5b4++;
+            if (field_0x5b4 >= 0x3C) {
+                turn = true;
+            }
+        }
+        if (turn) {
+            field_0x5b8 = fn_801CD580(field_0x5b8);
+            field_0x5b4 = 0;
+        }
+        if (!(mFlags & 7)) {
+            step = true;
+        }
+        break;
+    }
+    }
+    if (step) {
+        fn_801CE32C();
+    }
+    if (mState == 1) {
+        if (mPos.z < 90.0f) {
+            mPos.z = 90.0f;
+        }
+    } else if (!fn_801CD2F8(field_0x4)) {
+        f32 z = mPos.z;
+        if (z > 500.0f) {
+            z = 500.0f;
+        } else if (z < 31.9f) {
+            z = 31.9f;
+        }
+        mPos.z = z;
+    }
+    fn_801E4A18(&field_0x52c.field_0x0);
+    fn_801E4A18(&field_0x52c.field_0x14);
+    fn_801E4A18(&field_0x52c.field_0x28);
 }
 
 // FIXME(shotgun): 83.41 %, missing/extra + reloc-name (the follow flag and target selection are shaped differently)
@@ -463,3 +595,5 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
 void VaatiBoss_804A4958::vfunc_0x24() {}
 
 VaatiBoss_804A4958::~VaatiBoss_804A4958() {}
+
+// fn_801D5D84 (0x64C) and the update fn_801D5390 (0x7E0): not written (budget).
