@@ -71,6 +71,10 @@ public:
     // `const TVec3f*` (here and below) is a guess: the asm can't tell it from
     // a reference or a non-const pointer.
     void fn_802A381C(const JGeometry::TVec3f* pos, s32 layer, u16 tile);
+    // 2 units (act_item_pedestal, tu_802D39B8). Writes a pair of tiles (tileA, then the cell
+    // 16 columns left, or 0x110 back at a screen edge, gets tileB) on layer + layerOffset and
+    // marks the view cell.
+    void fn_8029EC84(s32 cell, s32 layer, s32 layerOffset, u16 tileA, u16 tileB);
     // 8 units / 31 calls. The same write, remembering the cell in
     // field_0x20, then fn_802D782C(1) on the view, and when the tile code
     // is an actor id slot of the layer (fn_802D4C10(layer, (u16)cell) !=
