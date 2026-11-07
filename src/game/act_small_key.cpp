@@ -541,8 +541,6 @@ bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
-
 // The key's registration with the view (fn_802D6D70): the key's value packs its mode,
 // flag, state, id and layer.
 // FIXME(shotgun): 79.96 %, missing/extra
@@ -583,3 +581,6 @@ void SmallKey_804A8CD8::fn_802C1674() {
         field_0x2af = 0;
     }
 }
+
+// 0x802C1614.
+SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
