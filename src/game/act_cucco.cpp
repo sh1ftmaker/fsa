@@ -203,7 +203,7 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 79.15 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.84 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {
         return;
@@ -266,15 +266,17 @@ void Cucco_804AB8C0::fn_80332A60() {
                 mPos.z = 0.0f;
                 field_0x3c.z = 0.0f;
                 if (PSVECMag(&field_0x3c) > 4.0f) {
-                    field_0x3c.setLength(4.0f);
+                    field_0x3c.normalize();
+                    field_0x3c.scale(4.0f);
                 }
-                field_0x3c.scale(4.0f);
             } else {
                 field_0x238 = field_0x240;
                 field_0x258 = 0;
                 mPos.z = 0.0f;
                 field_0x3c.z = 0.0f;
                 setVec(field_0x2b8, field_0x3c);
+                // FIXME(shotgun): the asm has no PSVECNormalize/PSVECScale calls here; it inlines
+                // TVec3f::normalize() (epsilon check) and scale() on 0x2B8, which is a plain Vec.
                 PSVECNormalize(&field_0x2b8, &field_0x2b8);
                 f32 speed = 2.0f;
                 if (field_0x2a3 == 1) {

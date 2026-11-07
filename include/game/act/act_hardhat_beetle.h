@@ -14,8 +14,9 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x230 */ s32 mState; // draw builds the rotated sprite in state 2
-    // SHARED-EDIT: five countdowns (update decrements them in a loop), were field_0x234..field_0x244.
-    /* 0x234 */ s32 field_0x234[5]; // [1] and [3] are reloaded by update
+    // SHARED-EDIT: four countdowns (update decrements them in a loop), were field_0x234..field_0x240.
+    /* 0x234 */ s32 field_0x234[4]; // [1] and [3] are reloaded by update
+    /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 mFrame;  // draw: "SOB " frame mFrame + 0x92

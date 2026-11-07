@@ -505,9 +505,8 @@ void CrystalBall_804AB308::vfunc_0x40() {
     }
 }
 
-// FIXME(shotgun): 53.54 %, missing/extra + reloc-name (partial)
-// FIXME(shotgun): states 1, 5, 6 and 7 (0x803218B8 onward: 0x80321D14, 0x80321EE4, 0x80322010) and the
-// end of state 4 (0x80321CCC onward) are not written.
+// FIXME(shotgun): 54.18 %, missing/extra + reloc-name (partial)
+// FIXME(shotgun): states 4, 5, 6 and 7 (0x80321AF8, 0x80321D14, 0x80321EE4, 0x80322010) are not written.
 void CrystalBall_804AB308::update() {
     switch (field_0x230) {
     case 1:
@@ -563,9 +562,10 @@ void CrystalBall_804AB308::update() {
                     field_0x3c.x = 0.0f;
                 }
             }
-            if (field_0x230 == 0) {
-                fn_801F2618(NULL, false);
+            if (field_0x230 != 0) {
+                break;
             }
+            fn_801F2618(NULL, false);
         } else {
             JGeometry::TVec3f hitNormal(0.0f, 0.0f, 0.0f);
             fn_801F2618(&hitNormal, false);
@@ -614,9 +614,9 @@ void CrystalBall_804AB308::update() {
             if (gGameRoot_8053AAF8->field_0x7f == 1) {
                 if (fn_802308E0(field_0x29c) == true) {
                     field_0x23c = field_0x29c;
-                    const JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(field_0x29c);
-                    JGeometry::TVec3f target(playerPos->x, playerPos->y - 12.0f, playerPos->z);
-                    fn_80230498(field_0x29c, &target, 0xED, 0xFF, -0x80, -0x80, true);
+                    JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(field_0x29c);
+                    JGeometry::TVec3f target(playerPos.x, playerPos.y - 12.0f, playerPos.z);
+                    fn_80230498(field_0x29c, &playerPos, 0xED, 0xFF, -0x80, -0x80, true);
                     mPos.set(target);
                     field_0x258 = 0x5A;
                     field_0x25c = 10;
@@ -686,10 +686,14 @@ void CrystalBall_804AB308::update() {
             field_0x230 = 4;
         }
         break;
+    case 3:
+        field_0x230 = 4;
+        break;
     case 4:
         // FIXME(shotgun): the body of state 4 (0x80321AF8) is not written.
         break;
     }
+    fn_803226EC();
 }
 
 // FIXME(shotgun): 97.0 %, missing/extra: a few instructions

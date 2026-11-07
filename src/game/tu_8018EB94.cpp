@@ -103,7 +103,7 @@ void cls_804A1FA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 80.47 %, missing/extra + reloc-name
+// FIXME(shotgun): 80.83 %, missing/extra + reloc-name
 void cls_804A1FA0::update() {
     JGeometry::TVec3f savedPos = mPos;
     f32 z0 = mPos.z;
@@ -135,7 +135,7 @@ void cls_804A1FA0::update() {
             if (fn_801F2618(NULL, false) && field_0x234[1] == 0) {
                 field_0x98 = (field_0x98 + 8) & 0xF;
                 if (field_0x264 == field_0x98) {
-                    field_0x98 = (field_0x98 + field_0x254) & 0xF;
+                    field_0x98 = (field_0x98 + field_0x254 * 4) & 0xF;
                 }
                 field_0x264 = field_0x260;
                 field_0x260 = field_0x98;
@@ -179,7 +179,7 @@ void cls_804A1FA0::update() {
             fn_801EEC98(mSerial, &outAngle, NULL, NULL, NULL, 0, 0);
             f32 a = (f32)outAngle;
             s32 idx = 0;
-            for (u8 i = 0; i < 12; i++) {
+            for (u8 i = 0; i < 15; i++) {
                 a -= 4000.0f;
                 if (a < 0.0f) {
                     break;

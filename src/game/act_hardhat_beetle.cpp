@@ -14,7 +14,7 @@
 void HardhatBeetle_804A06C0::init() {
     mBox.set(-6.0f, -6.0f, 6.0f, 6.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
-    field_0x234[4] = 0;
+    field_0x244 = 0;
     field_0x248 = 0;
     field_0x24c = 0;
     field_0x234[0] = 0;
@@ -35,7 +35,7 @@ void HardhatBeetle_804A06C0::init() {
     mState = 0;
 }
 
-// FIXME(shotgun): 92.67 %, missing/extra
+// FIXME(shotgun): 95.61 %, missing/extra
 void HardhatBeetle_804A06C0::update() {
     u16 angle = 0;
     s32 outDir = 0;
@@ -82,7 +82,7 @@ void HardhatBeetle_804A06C0::update() {
         }
         fn_801F2618(NULL, false);
     }
-    for (u8 i = 0; i < 5; i++) {
+    for (u8 i = 0; i < 4; i++) {
         if (field_0x234[i] > 0) {
             field_0x234[i]--;
         }
@@ -132,7 +132,7 @@ void HardhatBeetle_804A06C0::update() {
                 startSound_801F0E34(0x400D4, 0);
                 field_0x234[3] = 8;
             }
-            angle += (s32)(4096.0f - 8192.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
+            angle += (s32)(4096.0f - 8192.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             field_0x3c.x = -6.0f * JMath::sincosTable_.sinShort(angle);
             field_0x3c.y = -6.0f * JMath::sincosTable_.cosShort(angle);
             field_0x26c.set(0.0f, 0.0f, 0.0f);
@@ -179,6 +179,13 @@ void HardhatBeetle_804A06C0::update() {
         }
         break;
     }
+    }
+    if (mState != 2 && field_0x234[0] == 0) {
+        field_0x234[0] = 6;
+        mFrame++;
+        if (mFrame > 2) {
+            mFrame = 0;
+        }
     }
 }
 
