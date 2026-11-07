@@ -82,6 +82,15 @@ public:
     // into field_0x32c, mPos and mPrevPos, steps the rail (fn_800FD818) in the
     // direction of its field_0x1, then fn_801C8BC4(1) and fn_801C3B7C 0x17/0x18.
     void fn_801C79A0();
+    // game/tu_801C71BC.cpp (0x801C7EE4): sets mFlags 0x400000 when the rail point
+    // is out of reach (z too far on view layers with the flag, or fn_801CF888 blocked).
+    void fn_801C7EE4();
+    // game/tu_801C71BC.cpp (0x801C71BC): picks a neighbouring rail point (fn_800FD4C0), else
+    // resets (fn_801C8B50) and turns by a random angle.
+    void fn_801C71BC();
+    // game/tu_801C71BC.cpp (0x801C8B50): resets the path and the rail, then turns
+    // toward field_0x32c.
+    void fn_801C8B50();
     // game/tu_801C71BC.cpp (not written yet): called with (0, 1) and (0, 0),
     // the arguments are literals; s32 is a guess until its body is read.
     void fn_801C8C84(s32, s32);
