@@ -73,7 +73,11 @@ struct GameRootSub20_801902C0 {
     // Eight magic circles at 0x4AC (ak_magicCircle.*).
     struct MagicCircle {
         /* 0x00 */ JGeometry::TVec3f mPos;
-        /* 0x0C */ u8 field_0xc[8]; // not yet known
+        // SHARED-EDIT (act_magic_circle): MagicCircle_804A7960::update()
+        // stores its clamped colour/type index at 0x0C (stw) and (f32)field_0x244
+        // at 0x10 (stfs).
+        /* 0x0C */ s32 field_0xc;
+        /* 0x10 */ f32 field_0x10;
         /* 0x14 */ J3DModel* mModel;
         /* 0x18 */ J3DAnmTextureSRTKey* mBtk;
         /* 0x1C */ J3DAnmTextureSRTKey* mBtkApp; // ak_magicCircleApp.btk

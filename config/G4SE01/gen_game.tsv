@@ -11,8 +11,6 @@ act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_magic_circle	dtor_emit	__dt__20MagicCircle_804A7960Fv	MagicCircle_804A7960	0x804A7960	new	new
-act_magic_circle	sinit	__sinit_act_magic_circle_cpp	-	-	new	-
 act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
 act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
