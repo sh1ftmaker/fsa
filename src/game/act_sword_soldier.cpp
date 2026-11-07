@@ -475,7 +475,7 @@ bool SwordSoldier_8049FCA0::vfunc_0x54() {
     return false;
 }
 
-// FIXME(shotgun): 93.12 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.61 %, missing/extra + reloc-name
 void SwordSoldier_8049FCA0::update() {
     JGeometry::TBox2f boxD8;
     fn_801546F4(&boxD8, &field_0x80);
@@ -524,14 +524,19 @@ void SwordSoldier_8049FCA0::update() {
 
     if (field_0x94 == 5 || field_0x94 == 3) {
         if (mPos.z > 0.0f) {
-            field_0x3c.z -= 1.0f;
             if (field_0x94 == 5) {
-                if (field_0x3c.z < -3.0f) {
-                    field_0x3c.z = -3.0f;
+                if (0.0f != field_0x3c.z) {
+                    field_0x3c.z -= 1.0f;
+                    if (field_0x3c.z < -10.0f) {
+                        field_0x3c.z = -10.0f;
+                    }
                 }
             } else {
-                if (field_0x3c.z < -8.0f) {
-                    field_0x3c.z = -8.0f;
+                if (0.0f != field_0x3c.z) {
+                    field_0x3c.z -= 1.0f;
+                    if (field_0x3c.z < -8.0f) {
+                        field_0x3c.z = -8.0f;
+                    }
                 }
             }
             fn_801545F0(&mPos, &field_0x3c);
@@ -1210,9 +1215,9 @@ void SwordSoldier_8049FCA0::update() {
             }
         }
         if (field_0x23c == 0) {
-            addCalc2_801F71A4(&field_0x48.y, 5.0f, 0.3f, 3.0f);
-            addCalc2_801F71A4(&field_0x48.x, 0.0f, 0.3f, 0.1f);
-            if (field_0x48.x < 0.1f) {
+            addCalc2_801F71A4(&field_0x54.y, 5.0f, 0.3f, 3.0f);
+            addCalc2_801F71A4(&field_0x54.x, 0.0f, 0.3f, 0.1f);
+            if (field_0x54.x < 0.1f) {
                 fn_801F3668();
             }
         }
