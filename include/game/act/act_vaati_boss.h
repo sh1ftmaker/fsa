@@ -213,6 +213,13 @@ public:
     // 0x801E4348: runs the attack-state checks for one player in range and
     // returns whether it acted (game/tu_801E3618.cpp).
     bool fn_801E4348();
+    // Shotgun pass (game/tu_801E3618.cpp), named by address: the area checks, the
+    // attack hooks and the hit box setters.
+    bool fn_801E3618(s32 layer, const JGeometry::TVec2f* pos);
+    u8 fn_801E3A4C();
+    u8 fn_801E4094();
+    bool fn_801E44CC(const JGeometry::TBox2f* area, JGeometry::TVec2f* pos, JGeometry::TVec3f* outDir);
+    void fn_801E4618(JGeometry::TBox2f* out, bool region);
     // 0x801E4D54 (game/tu_801E4D54.cpp): clears mFlags' 0x4000 bit, zeroes
     // field_0x5ce and sets the float at 0x4BC (field_0x464's field_0x58) to 0.
     void fn_801E4D54();
