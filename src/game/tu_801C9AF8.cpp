@@ -46,6 +46,9 @@ bool ShadowLink2_804A43E8::fn_801CAED4(int player) {
     return ok;
 }
 
+// game/tu_801CB270.cpp: hit spark at `pos` on `layer`.
+void fn_801CB4A4(s32 layer, const JGeometry::TVec3f* pos, s32 a, s32 b);
+
 // The contact checks of the shadow's body: a player touching the hit box (or a side box in the
 // wall states) knocks the player back and starts the matching reaction state; a player touching
 // the body box when the actor is not locked starts state 0x21.

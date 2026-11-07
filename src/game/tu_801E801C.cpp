@@ -280,7 +280,8 @@ void cls_804A5568::fn_801E8C74(s32 arg) {
 
 // Draws one strip of the chain (two vertices) at `center`, from angle `ang` to `ang + span`, `a` and
 // `b` scaling the texture coordinate.
-// FIXME(shotgun): 69 %, missing/extra + reloc-name
+// FIXME(shotgun): 69 %, missing/extra + reloc-name (wrapped: compiled, it moves the literal pool and drops __ct__ and vfunc_0x60 by 0.1 %)
+#ifdef NONMATCHING
 void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 span) {
     static f32 sZ = -256.0f;
     f32 h = 0.5f * (f32)(s32)(ang + span);
@@ -300,6 +301,7 @@ void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 spa
     GXPosition3f32(center->x + -dx, sZ + (center->y + -dy), sZ);
     GXTexCoord2f32(0.0f, v);
 }
+#endif
 
 // FIXME(shotgun): 99.20 %, reloc-name
 void cls_804A5568::fn_801E801C() {

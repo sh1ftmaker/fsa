@@ -461,7 +461,9 @@ void PrincessZeldaDemo_8049D208::draw() {
 
 // Starts the demo scene for the GameView scenario `key` (fn_8011921C()'s field_0x8): maps it to the
 // scene's first state, per demo variant (field_0x234) and chapter (field_0x4).
-// FIXME(shotgun): 98 %, missing/extra
+// FIXME(shotgun): 98 %, missing/extra (wrapped: compiled, it inlines fn_8010F478 (the original calls it out of line) and
+// a not-inlined pragma would stop init from inlining it, dropping init from 98.6 % to 82 %)
+#ifdef NONMATCHING
 void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
     s32 key = fn_8011921C()->field_0x8;
     switch (field_0x234) {
@@ -602,6 +604,7 @@ void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
         break;
     }
 }
+#endif
 
 s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
@@ -647,7 +650,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
             field_0x260[1] -= 0x10000;
         }
         PSMTXIdentity(mtx);
-        mtx[2][3] = 4.0f * JMath::sincosTable_.sinShort(field_0x260[1]);
+        mtx[2][3] = 2.0f * JMath::sincosTable_.sinShort(field_0x260[1]);
         params.mMtx = mtx;
     }
     if (arg == 0x21B) {
@@ -730,9 +733,6 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
 
 #pragma auto_inline reset
 
-// Not auto-inlined: fn_8010FA8C calls fn_8010F478 out of line in the original (docs/INLINING.md,
-// pragma rule 1).
-#pragma auto_inline off
 // FIXME(shotgun): 94.4 %, missing/extra
 void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     switch (field_0x234) {
@@ -746,7 +746,6 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     }
     field_0x238 = arg;
 }
-#pragma auto_inline reset
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
@@ -843,7 +842,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     case 0x37:
         field_0x24c = 0;
         field_0x274 = 96.0f;
-        field_0x278 = 2.0f;
+        field_0x278 = -16.0f;
         mAnim0.startAnim_801D22DC(0xD, 0, false);
         mAnim0.fn_801D1F14(0.0f);
         break;
