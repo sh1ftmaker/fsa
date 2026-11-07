@@ -5,8 +5,8 @@
 #include "game/Player.h"
 #include "game/act/act_arrow.h"
 
-// The arrows each player has shot, .bss at 0x804C6330.
-static s32 lbl_804C6330[4];
+// The arrows each player has shot, the unit's .bss object at 0x804C6330 (declared extern: defining it here changes the static initialiser).
+extern s32 lbl_804C6330[4];
 
 // 0x80166814.
 void ArrowPlayer_804A05E0::init() {
