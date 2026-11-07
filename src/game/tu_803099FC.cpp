@@ -168,12 +168,11 @@ f32 cls_804AA8C8::fn_80309F20(s32 slot) {
     return x;
 }
 
-// FIXME(shotgun): 49.4 %, missing/extra (the original inlines fn_80309F20 / fn_80309FCC; ours calls them)
 // 0x80309D90
 f32 cls_804AA8C8::fn_80309D90(s32 slot) {
     f32 x = fn_80309F20(slot);
     f32 y = fn_80309FCC(slot);
-    return std::sqrtf(x * x + y * y);
+    return JGeometry::TUtil<f32>::sqrt(y * y + x * x);
 }
 
 // 0x80309D6C
