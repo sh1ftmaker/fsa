@@ -1271,24 +1271,32 @@ extern "C" cls_801C0D70* fn_801C0D70();
 // update sets it to 1 (and the actor manager's reset functions call the getter).
 class ActorBase_804A5770;
 struct cls_80204638 {
-    // 0x802046FC (not written yet).
-    bool fn_802046FC(JGeometry::TVec3f* vel, const JGeometry::TVec3f* pos);
-    // 0x80204834 (not written yet).
+    // The inlined constructor (fn_80204638's first call): zeroes everything, the TVec3f array
+    // is built by __construct_array.
+    cls_80204638();
+    // 0x802046FC: records `pos` as the next entry; with earlier ones, the nearest is
+    // pushed away through fn_801CB85C first. `vel` is passed on the same way.
+    bool fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos);
+    // 0x80204834: clears mAlive of every actor in the table.
     void fn_80204834();
-    // 0x80204ABC (not written yet): with reset, clears the byte at 0x0 and the
-    // words 0x4-0x50 (GameView_804A9950::fn_802D8328 passes its first flag).
+    // 0x802048F4: drops the layer-0 actors in the table that left the view box.
+    void fn_802048F4();
+    // 0x80204ABC: with reset, clears the byte at 0x0 and the words 0x4-0x50 (the table;
+    // GameView_804A9950::fn_802D8328 passes its first flag).
     void fn_80204ABC(bool reset);
-    // 0x802049E0 (not written yet). Removes the actor from the slot the byte
+    // 0x802049E0. Removes the actor from the slot the byte
     // at its 0x34a selects in the table (0x4 + 8 * slot): clears the first
     // slot holding it, else the second. Called by act_thief's destructor on
     // fn_80204638()'s result.
     void fn_802049E0(ActorBase_804A5770* actor);
-    // 0x80204A20 (not written yet).
+    // 0x80204A20: puts the actor in the first free half of its slot.
     void fn_80204A20(ActorBase_804A5770* actor);
 
     /* 0x00 */ u8 field_0x0;
-    // The inlined constructor writes up to 0xD0 (a TVec3f[10] at 0x58), but the
-    // .bss symbol is 0x1D0 bytes: the real size is not known, so none is claimed.
+    /* 0x04 */ ActorBase_804A5770* mSlots[10][2];
+    /* 0x54 */ s32 mCount;
+    /* 0x58 */ JGeometry::TVec3f mPositions[10];
+    // The .bss symbol is 0x1D0 bytes (the JAudio pools registered by __sinit follow at 0xD0).
 };
 // Getter of that object (returns its address).
 extern "C" cls_80204638* fn_80204638();
