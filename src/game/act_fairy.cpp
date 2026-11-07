@@ -5,6 +5,7 @@
 #include "game/act/act_fairy.h"
 #include "game/tu_803B8C74.h"
 
+// 0x80161638.
 Fairy_804A03B8::~Fairy_804A03B8() {
     releaseEmitter_801EE434(mEmitter290);
     releaseEmitter_801EE434(mEmitter294);
@@ -114,5 +115,15 @@ void Fairy_804A03B8::draw() {
             frame = 0x7D;
         }
         fn_803075AC(mSerial, field_0x4, &mPos, frame + field_0x250, false, 2, -1, 1, 0, 1);
+    }
+}
+
+// 0x801615EC.
+void Fairy_804A03B8::vfunc_0x44() {
+    if (mEmitter290 != NULL) {
+        mEmitter290->setGlobalTranslation(mPos);
+    }
+    if (mEmitter294 != NULL) {
+        mEmitter294->setGlobalTranslation(mPos);
     }
 }
