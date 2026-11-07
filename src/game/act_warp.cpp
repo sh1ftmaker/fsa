@@ -27,9 +27,10 @@ static inline bool boxesOverlap(const JGeometry::TBox2f& a, const JGeometry::TBo
     return overlap.intersect(b);
 }
 
-// The box `ofs` (relative to pos) in top-down screen space (x, y - z).
+// The box `ofs` (relative to pos) in top-down screen space: the top edge shifts by z, the
+// bottom edge by z / 2 (read from fn_80227290's asm).
 static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& ofs, const Vec& pos) {
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z * 0.5f);
 }
 
 // The spawn parameter of the WARP that init() creates for the paired kinds 0x19-0x1C: this warp's
@@ -48,7 +49,7 @@ static inline u32 pairParam(u32 param, s32 layer, f32 dx, f32 dy, u32 kind) {
 // 0x80228B60. Decodes the spawn parameter (field_0x90: kind in the low 7 bits, layer, a 6-bit cell
 // offset to the destination), sets the destination (field_0x238) and the trigger box, and for the
 // paired kinds 0x19-0x1C spawns the other warp and turns this one into the matching kind.
-// FIXME(shotgun): 66.41 %, missing/extra + reloc-name
+// FIXME(shotgun): 66.65 %, missing/extra + reloc-name
 void Warp_804A6DC8::init() {
     field_0x256 = 0;
     field_0x278 = 0;
@@ -208,7 +209,7 @@ static inline bool nearZero(f32 d) {
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 77.76 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.80 %, missing/extra + reloc-name
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
@@ -379,21 +380,21 @@ void Warp_804A6DC8::update() {
         }
     }
     id = actor->mActorId;
-    if (id == 'HNRY' || id == 'BOME' || id == 'PCDM' || id == 'SWBM' || id == 'FIRE') {
-        if (((actor->field_0x90 >> 6) & 7) != 1) {
-            kind = field_0x90 & 0x7F;
-            if (kind == 4 || kind == 0x20 || kind == 0x24) {
-                if (actor->mPos.z > 0.0f) {
-                    return;
-                }
+    if (id == 'HNRY' || id == 'BOME' || id == 'PCDM' || id == 'SWBM' ||
+        (id == 'FIRE' && ((actor->field_0x90 >> 6) & 7) != 1))
+    {
+        kind = field_0x90 & 0x7F;
+        if (kind == 4 || kind == 0x20 || kind == 0x24) {
+            if (actor->mPos.z > 0.0f) {
+                return;
             }
-            JGeometry::TVec3f dest = field_0x238;
-            dest.x += actor->mPos.x - mPos.x;
-            dest.y += actor->mPos.y - mPos.y;
-            dest.z += actor->mPos.z;
-            actor->fn_801F349C(warpLayer(field_0x90), &dest);
-            return;
         }
+        JGeometry::TVec3f dest = field_0x238;
+        dest.x += actor->mPos.x - mPos.x;
+        dest.y += actor->mPos.y - mPos.y;
+        dest.z += actor->mPos.z;
+        actor->fn_801F349C(warpLayer(field_0x90), &dest);
+        return;
     }
     if (actor->mActorId == 'ESRY') {
         kind = field_0x90 & 0x7F;
@@ -610,7 +611,7 @@ void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
 
 // 0x80227290. The serial of a live actor on the warp's layer (not excludeSerial, one of `ids`, within
 // maxDz in z unless the layer ignores z) whose box overlaps the warp's, or -1.
-// FIXME(shotgun): 64.46 %, missing/extra
+// FIXME(shotgun): 63.62 %, missing/extra
 s32 Warp_804A6DC8::fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial) {
     s32 found = -1;
     u8 anyZ = viewLayerFlag(field_0x4);

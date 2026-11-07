@@ -30,7 +30,7 @@ struct GoalTables_8046EA10 {
 extern const GoalTables_8046EA10 lbl_8046EA10;
 
 // 0x802E3B2C.
-// FIXME(shotgun): 79.6 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.30 %, missing/extra + reloc-name
 void cls_804A9C20::init() {
     field_0x238 = field_0x90 & 0x1F;
     field_0x240 = (field_0x90 >> 12) & 0x1F;
@@ -119,7 +119,7 @@ static inline void shiftBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& box
 }
 
 // 0x802E2C28.
-// FIXME(shotgun): 48.56 %, missing/extra + reloc-name
+// FIXME(shotgun): 49.01 %, missing/extra + reloc-name
 void cls_804A9C20::update() {
     if (field_0x230 < 1) {
         field_0x248++;
@@ -169,14 +169,14 @@ void cls_804A9C20::update() {
     case 3:
     case 5:
         break;
-    default:
-        if (field_0x230 == 2) {
-            field_0x2c4--;
-            if (field_0x2c4 == 0) {
-                lbl_8053AC00 = 1;
-                field_0x230 = 0;
-            }
+    case 2:
+        field_0x2c4--;
+        if (field_0x2c4 == 0) {
+            lbl_8053AC00 = 1;
+            field_0x230 = 0;
         }
+        // fallthrough
+    case 0:
         {
             s32 downCount = 0;
             for (s32 i = 0; i < 4; i++) {
@@ -329,6 +329,8 @@ void cls_804A9C20::update() {
                 field_0x234 = 20;
             }
         }
+        break;
+    default:
         break;
     }
     if (field_0x230 < 4) {

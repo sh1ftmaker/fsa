@@ -3,7 +3,7 @@
 #include "game/Player.h"
 #include "game/GameGlobals.h"
 
-// FIXME(shotgun): update (0x8028E1EC) is a skeleton under NONMATCHING below
+// FIXME(shotgun): update (0x8028E1EC, size 0x16A4) is not written (empty stub under NONMATCHING below)
 
 // FIXME(shotgun): 98.6 %, reloc-name
 void cls_804A7A68::init() {
@@ -43,7 +43,7 @@ void cls_804A7A68::init() {
 
 #ifdef NONMATCHING
 // 0x8028E1EC.
-// FIXME(shotgun): not compiled, nothing written. The 0x16A4-byte sequencer switches on
+// FIXME(shotgun): not written, not compiled. The 0x16A4-byte sequencer switches on
 // field_0x230 (jump table); its per-state conditions were not read in full.
 void cls_804A7A68::update() {
     // FIXME(shotgun): states 0-4 not written
