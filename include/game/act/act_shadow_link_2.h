@@ -90,6 +90,12 @@ public:
     bool fn_801CAED4(int player);
     u8 fn_801C976C();
     bool fn_801CAEF4(const JGeometry::TVec3f* pos, s32 layer);
+    // game/tu_801C9AF8.cpp (0x801CA0F8): hits the actor overlapping this one
+    // (fn_801F82CC) with fn_801F37AC unless it is 'SWBM' or 'FLME'; true if it hit.
+    bool fn_801CA0F8();
+    // game/tu_801C9AF8.cpp (0x801C9AF8): whether the tile/box at `pos` on `layer` blocks
+    // this actor (states 0x11 and 0x17 pass through some tile codes).
+    bool fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos);
     // game/tu_801D3320.cpp: picks the next waypoint of the rail in
     // field_0x358 and moves field_0x32c toward it.
     void fn_801D3320();
