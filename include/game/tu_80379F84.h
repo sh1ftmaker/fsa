@@ -5,6 +5,9 @@
 #include "game/tu_803A8DFC.h"
 
 class JKRArchive;
+class J2DScreen;
+class J2DPicture;
+class PaneCtrl_804AF86C;
 
 // The four screen objects whose constructors store them in .sbss globals
 // (lbl_8053ADA0, lbl_8053ADA8, lbl_8053ADC0, lbl_8053ADB8). Each is named after
@@ -37,10 +40,32 @@ public:
     void fn_803D8364();
     void fn_803D8670();
     void fn_803D87C0();
+    // 0x803D8718: steps the fade of the screen: mode 6 fades the picture in (field_0x77 += 10), 5 out
+    // (then mode 2); mode 2 runs fn_803D75B0.
+    void fn_803D8718();
+    void fn_803D75B0();
 
-    /* 0x04 */ u8 field_0x4[0x76 - 0x4];
+    /* 0x04 */ J2DScreen* field_0x4;
+    /* 0x08 */ J2DScreen* field_0x8;
+    /* 0x0C */ u8 field_0xc[0x1C - 0xC];
+    /* 0x1C */ J2DPicture* field_0x1c; // the fade picture
+    /* 0x20 */ J2DPicture* field_0x20; // the dark picture (alpha field_0x81)
+    /* 0x24 */ PaneCtrl_804AF86C* field_0x24;
+    /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
+    /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
+    /* 0x30 */ u8 field_0x30[0x6C - 0x30];
+    /* 0x6C */ s16 field_0x6c; // frame counter (0-59)
+    /* 0x6E */ s16 field_0x6e; // frame of the bounce (0-10), 0 when idle
+    /* 0x70 */ u8 field_0x70[0x76 - 0x70];
     /* 0x76 */ u8 field_0x76; // mode, read by fn_8037A120
-}; // Size: at least 0x77
+    /* 0x77 */ u8 field_0x77; // the fade picture's alpha
+    /* 0x78 */ u8 field_0x78;
+    /* 0x79 */ u8 field_0x79;
+    /* 0x7A */ u8 field_0x7a[0x7F - 0x7A];
+    /* 0x7F */ u8 field_0x7f;
+    /* 0x80 */ u8 field_0x80;
+    /* 0x81 */ u8 field_0x81;
+}; // Size: at least 0x82
 
 // Vtable 0x804B0288; constructor fn_803D58E0, destructor fn_803D5710
 // (game/tu_803D2C34.cpp). The constructor stores the object in lbl_8053ADB8.
