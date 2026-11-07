@@ -18,6 +18,8 @@ public:
     // Game/tu_802B7C78.cpp. idx (0 or 1) selects field_0x260 / field_0x268;
     // arg is stored to field_0x230 on the paths that set it.
     void fn_802B7D1C(s32 idx, s32 arg);
+    // 0x802B8078 (a plain `fn_802B8078` symbol): follows player field_0x298 to its layer.
+    void fn_802B8078();
 
     /* 0x230 */ s32 field_0x230; // draw() shows the sprite only when nonzero
     /* 0x234 */ JGeometry::TVec3f field_0x234; // copy of mPos
@@ -37,9 +39,9 @@ public:
     /* 0x27C */ s32 field_0x27c; // init: 0
     /* 0x280 */ s32 field_0x280; // init: 0
     /* 0x284 */ JGeometry::TVec2f field_0x284; // direction to the player, normalized
-    /* 0x28C */ u8 field_0x28c[0xC]; // not yet known
+    /* 0x28C */ JGeometry::TVec3f field_0x28c; // fn_802B8078: where it left the other layer
     /* 0x298 */ s32 field_0x298; // a player index (init: 4)
-    /* 0x29C */ u8 field_0x29c[0x4]; // not yet known
+    /* 0x29C */ s32 field_0x29c; // fn_802B8078: the layer of player field_0x298
     /* 0x2A0 */ s32 field_0x2a0[4]; // init: fn_801F6058(i) for each i
 }; // Size: 0x2B0
 
