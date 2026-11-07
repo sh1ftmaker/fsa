@@ -1748,6 +1748,11 @@ struct GameRootSub24_8016A3AC {
     void fn_8016D284();
     void fn_8016D2E0();
     void fn_8016D33C();
+    // game/tu_8016A2B4.cpp, not written yet: draw passes called by fn_8016DB60 (this only).
+    void fn_8016B4D4();
+    void fn_8016B910();
+    void fn_8016C2FC();
+    void fn_8016CB14();
     // 0x8016B8AC.
     void fn_8016B8AC();
     // 0x8016B0B0: places the six models of field_0x3c against the 2D camera.

@@ -70,10 +70,34 @@ void GameRootSub24_8016A3AC::fn_8016DCEC() {
     }
 }
 
-// FIXME: 75.2 %. The original calls fn_8016ADE0 and fn_8016AD84 (bl); here MWCC inlines
-// fn_8016AD84 (defined earlier in the unit), so the call is a copy of its body.
-// Defining fn_8016AD84 after this function gives 100 %, but breaks address
-// order, so the original's call likely survives for a reason not yet known.
+// FIXME(shotgun): 100 %
+void GameRootSub24_8016A3AC::fn_8016DB60() {
+    if (isGameModeSet()) {
+        fn_8016D33C();
+        fn_8016D2E0();
+        fn_8016D284();
+        fn_8016CB14();
+        fn_8016C2FC();
+        fn_8016B910();
+        fn_8016B8AC();
+        fn_8016B4D4();
+        fn_8016B248();
+        fn_8016B0B0();
+        fn_8016ACCC();
+        fn_8016AD28();
+        fn_8016AC70();
+        fn_8016AC14();
+        fn_8016B054();
+        fn_8016ABB8();
+        fn_8016AB5C();
+        fn_8016AAA4();
+        fn_8016A9EC();
+        fn_8016AB00();
+        fn_8016AA48();
+    }
+}
+
+// 100 % since the draw passes below are kept out of line (pragma region at fn_8016D33C).
 void GameRootSub24_8016A3AC::fn_8016DA6C() {
     if (isGameModeSet()) {
         fn_8016ADE0();
@@ -81,6 +105,9 @@ void GameRootSub24_8016A3AC::fn_8016DA6C() {
     }
 }
 
+// Not auto-inlined: fn_8016DB60 and fn_8016DA6C call these draw passes out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void GameRootSub24_8016A3AC::fn_8016D33C() {
     if (field_0x1c4) {
         JGeometry::TVec3f pos(256.0f, 256.0f, 0.0f);
@@ -299,6 +326,7 @@ void GameRootSub24_8016A3AC::fn_8016A9EC() {
         fn_8016A7DC(field_0xec, pos, -1, true, true, 0.5f, 10.0f);
     }
 }
+#pragma auto_inline reset
 
 // FIXME: 98.3. regalloc only: the original keeps the camera in r4 and the 0x4330
 // conversion constant in r3 (ours swaps them) and the float temporaries in f3/f5.
