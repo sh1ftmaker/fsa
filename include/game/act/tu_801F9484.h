@@ -739,18 +739,79 @@ public:
 }; // Size: 0x27C
 
 // Spawned for 'DCR2'.
-class cls_804AE088 : public ActorBase_804A5770 {
+class Navi54MaidenCrystalCutscene_804ADFE8;
+class J2DPicture;
+class cls_804AE088 : public cls_8049D140 {
 public:
     cls_804AE088();
     /* 0x08 */ virtual ~cls_804AE088();
-    // 0x54-0x5C: unused here, they only keep vfunc_0x60 in its slot (Navi54MaidenCrystalCutscene update calls it with li 10 / 12).
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54();
-    /* 0x58 */ virtual void vfunc_0x58();
-    /* 0x5C */ virtual void vfunc_0x5c();
+    /* 0x58 */ virtual s32 vfunc_0x58();
+    /* 0x5C */ virtual s32 vfunc_0x5C();
     /* 0x60 */ virtual void vfunc_0x60(s32 arg);
 
-    /* 0x230 */ ActorBase_804A5770* mNaviActor;
-    /* 0x234 */ u8 field_0x234[0x1E0];
+    void fn_8036AC58(s32 arg);
+    void fn_8036AA60();
+    void fn_8036A894();
+    void fn_8036A65C();
+    void fn_80369DDC();
+    void fn_80368CD8();
+    void fn_80368660();
+    void fn_803683AC();
+    void fn_80368198();
+
+    /* 0x230 */ Navi54MaidenCrystalCutscene_804ADFE8* mNaviActor;
+    /* 0x234 */ u8 field_0x234;
+    /* 0x235 */ u8 field_0x235;
+    /* 0x236 */ u8 field_0x236;
+    /* 0x237 */ u8 field_0x237;
+    /* 0x238 */ u8 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ f32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ s32 field_0x264;
+    /* 0x268 */ s32 field_0x268;
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ u8 field_0x270;
+    /* 0x274 */ s32 field_0x274;
+    /* 0x278 */ f32 field_0x278;
+    /* 0x27C */ f32 field_0x27c;
+    /* 0x280 */ f32 field_0x280;
+    /* 0x284 */ f32 field_0x284;
+    /* 0x288 */ f32 field_0x288;
+    /* 0x28C */ s32 field_0x28c;
+    /* 0x290 */ f32 field_0x290;
+    /* 0x294 */ s32 field_0x294[5];
+    /* 0x2A8 */ JGeometry::TVec3f field_0x2a8[6];
+    /* 0x2F0 */ s32 field_0x2f0;
+    /* 0x2F4 */ cls_804A9C20* field_0x2f4;
+    /* 0x2F8 */ s32 field_0x2f8[6];
+    /* 0x310 */ void* field_0x310;
+    /* 0x314 */ J2DPicture* field_0x314;
+    /* 0x318 */ SpriteAnim_801D267C field_0x318;
+    /* 0x350 */ JPABaseEmitter* field_0x350;
+    /* 0x354 */ JPABaseEmitter* field_0x354;
+    /* 0x358 */ JPABaseEmitter* field_0x358;
+    /* 0x35C */ JPABaseEmitter* field_0x35c[7];
+    /* 0x378 */ JPABaseEmitter* field_0x378[3];
+    /* 0x384 */ JPABaseEmitter* field_0x384[5];
+    /* 0x398 */ JPABaseEmitter* field_0x398;
+    /* 0x39C */ JPABaseEmitter* field_0x39c[6];
+    /* 0x3B4 */ JPABaseEmitter* field_0x3b4[2];
+    /* 0x3BC */ JPABaseEmitter* field_0x3bc[6];
+    /* 0x3D4 */ JPABaseEmitter* field_0x3d4[6];
+    /* 0x3EC */ JPABaseEmitter* field_0x3ec[5];
+    /* 0x400 */ JPABaseEmitter* field_0x400[5];
 }; // Size: 0x414
 
 class cls_8031709C;
