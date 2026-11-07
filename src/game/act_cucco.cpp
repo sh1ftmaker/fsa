@@ -184,3 +184,64 @@ void Cucco_804AB8C0::fn_803319B8() {
         }
     }
 }
+
+// FIXME(shotgun): 74.05 %, missing/extra + reloc-name
+bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    s32 serial = mSerial;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+        return true;
+    }
+    if (fn_801F6758(pos, layer, -8.0f)) {
+        return true;
+    }
+    u16 tile = fn_80226850(pos, layer);
+    if (tile == 0x19C || tile == 0x19D) {
+        return true;
+    }
+    u16 code = fn_8022461C(pos, layer);
+    if (code == 0x20 && mPos.z > 8.0f) {
+        return false;
+    }
+    if ((code >= 0x10 && code <= 0x16) || code == 0x17) {
+        if (mPos.z > 8.0f) {
+            field_0x270 = 300;
+            return false;
+        }
+    }
+    if (code == 0) {
+        field_0x2b4 = 0.0f;
+        return false;
+    }
+    bool blocked;
+    if (code == 3 && tile != 0xC) {
+        blocked = false;
+    } else if (code == 0x27 || code == 2 || code == 0x39) {
+        blocked = false;
+    } else if (code == 0x28 && (s32)pos->y % 16 > 4) {
+        blocked = false;
+    } else if (code == 0x29 && (s32)pos->y % 16 < 12) {
+        blocked = false;
+    } else if (code == 0x2C && (s32)pos->y % 16 > 4) {
+        blocked = false;
+    } else if (code == 0x2D && (s32)pos->y % 16 < 12) {
+        blocked = false;
+    } else if (code == 0x2A && (s32)pos->x % 16 > 4) {
+        blocked = false;
+    } else if (code == 0x2B && (s32)pos->x % 16 < 12) {
+        blocked = false;
+    } else if (code == 0x2E && (s32)pos->x % 16 > 4) {
+        blocked = false;
+    } else if (code == 0x2F && (s32)pos->x % 16 < 12) {
+        blocked = false;
+    } else {
+        blocked = true;
+    }
+    if (field_0x270 > 0) {
+        if (blocked) {
+            field_0x270--;
+        }
+        return false;
+    }
+    return blocked;
+}
