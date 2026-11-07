@@ -4,6 +4,9 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/cls_8049D740.h"
+#include "game/Camera.h"
+#include "game/EnemyBase.h"
+#include "game/Player.h"
 #include "game/GameRootSub20.h"
 #include "game/SpriteParams.h"
 #include "JSystem/JMath/JMath.h"
@@ -125,6 +128,195 @@ void PrincessZeldaDemo_8049D208::update() {
     mAnim1.fn_801D1C18();
     if (field_0x230 != 0) {
         fn_8010F4DC();
+    }
+}
+
+// The two camera requests the demo states make (inlined in the original): a focus range on the
+// view (field_0x840) and a movement box (field_0x7f4), each taken only while free.
+static inline void camRange(f32 x, f32 y0, f32 y1) {
+    Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+    if (cam->field_0x840 == 0) {
+        cam->field_0x840 = 1;
+        cam->field_0x844.i.x = x;
+        cam->field_0x844.i.y = y0;
+        cam->field_0x844.f.x = x;
+        cam->field_0x844.f.y = y1;
+        cam->field_0x854 = 1.0f;
+        cam->field_0x1d4 = -1.0f;
+        cam->field_0x1d8 = -1.0f;
+    }
+}
+
+static inline void camBox(f32 x, f32 y0, f32 y1) {
+    Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+    if (cam->field_0x7f5 == 0) {
+        cam->field_0x7f4 = 1;
+        cam->field_0x7f8 = 5;
+        cam->field_0x808.i.x = x;
+        cam->field_0x808.i.y = y0;
+        cam->field_0x808.f.x = x;
+        cam->field_0x808.f.y = y1;
+        cam->field_0x7f6 = 0;
+    }
+}
+
+// The camera for the demo states 3-28: which part of the stage stays in view (player, spawn point
+// or the maiden), per state.
+// FIXME(shotgun): 97 %, missing/extra + reloc-name
+void PrincessZeldaDemo_8049D208::fn_80110454() {
+    switch (field_0x238) {
+    case 3:
+    case 4:
+    case 5: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = *getPlayerPos_8023E724(0);
+        p.y = p.y + -8.0f;
+        camRange(p.x, p.y - 96.0f, 96.0f + p.y);
+        break;
+    }
+    case 6:
+    case 7: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = *getPlayerPos_8023E724(0);
+        p.y = p.y + field_0x278;
+        camBox(p.x, p.y - 96.0f, 96.0f + p.y);
+        break;
+    }
+    case 8:
+    case 9:
+    case 10: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = *getPlayerPos_8023E724(0);
+        fn_801CD950(&field_0x278, -8.0f, 1.0f);
+        p.y = p.y + field_0x278;
+        camBox(p.x, p.y - 96.0f, 96.0f + p.y);
+        break;
+    }
+    case 11:
+    case 12:
+    case 13:
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        gGameRoot2_8053AB10->field_0x24->field_0x17d = 1;
+        break;
+    case 14:
+    case 15: {
+        gGameRoot2_8053AB10->field_0x24->field_0x17c = 1;
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = mSpawnPos;
+        p.y = p.y + -40.0f;
+        camRange(p.x, p.y - 180.0f, 180.0f + p.y);
+        break;
+    }
+    case 16:
+    case 17:
+    case 18:
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        camRange(mSpawnPos.x, mSpawnPos.y - 80.0f, 80.0f + mSpawnPos.y);
+        break;
+    case 19:
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        camRange(field_0x2d0.x, field_0x2d0.y - 80.0f, 80.0f + field_0x2d0.y);
+        break;
+    case 20: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = mPos;
+        p.y = p.y + -75.0f;
+        camRange(p.x, p.y - 130.0f, 130.0f + p.y);
+        break;
+    }
+    case 21:
+    case 22:
+    case 23: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = mPos;
+        p.y = p.y + -75.0f;
+        camBox(p.x, p.y - 130.0f, 130.0f + p.y);
+        break;
+    }
+    case 24:
+    case 25:
+    case 26:
+    case 27:
+    case 28: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x179 == 0) {
+            cam->field_0x17a = 1;
+            cam->field_0x179 = 0;
+        }
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        Camera_804AA9E4* cam2 = gGameRoot2_8053AB10->field_0x24;
+        if (cam2->field_0x840 == 0) {
+            cam2->field_0x840 = 1;
+            cam2->field_0x844.f.x = mPos.x;
+            cam2->field_0x844.i.x = mPos.x;
+            cam2->field_0x844.f.y = mPos.y;
+            cam2->field_0x844.i.y = mPos.y;
+            cam2->field_0x854 = 1.0f;
+            cam2->field_0x1d4 = -1.0f;
+            cam2->field_0x1d8 = -1.0f;
+        }
+        break;
+    }
+    }
+}
+
+// The camera for the demo states 0x26-0x3C (the second set of scenes).
+// FIXME(shotgun): 91 %, scheduling+regalloc + reloc-name
+void PrincessZeldaDemo_8049D208::fn_80110210() {
+    switch (field_0x238) {
+    case 0x26:
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        break;
+    case 0x27:
+    case 0x28:
+    case 0x29:
+    case 0x2A:
+    case 0x2B: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        f32 y = mPos.y + field_0x278;
+        camBox(mPos.x, y - field_0x274, field_0x274 + y);
+        break;
+    }
+    case 0x2C:
+    case 0x2D:
+    case 0x2E: {
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        f32 y = mPos.y + field_0x278;
+        camBox(mPos.x, y - field_0x274, field_0x274 + y);
+        break;
+    }
+    case 0x2F:
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        break;
+    case 0x30:
+    case 0x31:
+    case 0x32:
+    case 0x33: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x7f4 == 0) {
+            cam->field_0x7f5 = 1;
+        }
+        break;
+    }
+    case 0x34:
+    case 0x35:
+    case 0x36:
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        camRange(mPos.x, mPos.y - field_0x274, mPos.y + field_0x274);
+        break;
+    case 0x37:
+    case 0x38:
+    case 0x39:
+    case 0x3A:
+    case 0x3B:
+    case 0x3C: {
+        gGameRoot2_8053AB10->field_0x24->field_0x17c = 1;
+        gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+        JGeometry::TVec3f p = mSpawnPos;
+        p.y = p.y + field_0x278;
+        camBox(p.x, p.y - field_0x274, p.y + field_0x274);
+        break;
+    }
     }
 }
 
