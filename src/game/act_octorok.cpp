@@ -18,7 +18,8 @@ static s32 lbl_8049F1F8[4] = {1, 2, 0, 3};
 
 s32 lbl_8053AB28;
 
-// FIXME: 97.4 % (scheduling+regalloc). Prologue constant scheduling and register swap in mRandom.get_ufloat_1().
+// FIXME: 97.41 % (scheduling+regalloc). The 1.0f literal load (lfs f5) is scheduled earlier than in the
+// original, and the zero, LCG multiplier (0x660d) and 3 constants take r8/r7/r6 instead of r7/r6/r5.
 void Octorok_8049F208::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, 0.0f, 8.0f, 8.0f);
@@ -88,7 +89,8 @@ void Octorok_8049F208::init() {
     field_0x230 = 0;
 }
 
-// FIXME: 99.9 % (regalloc-only). Register swap (r4/r5) in inlined mRandom.get_ufloat_1().
+// FIXME: 99.94 % (regalloc-only). r4/r5 swapped for the LCG multiplier and seed loads in the inlined
+// mRandom.get_ufloat_1() calls (0x8B8-0x8C4, 0x910-0x928).
 void Octorok_8049F208::update() {
     JGeometry::TVec3f focusPos = mPos;
     s32 dir = -1;
@@ -360,7 +362,9 @@ void Octorok_8049F208::update() {
     }
 }
 
-// FIXME: 92.3 % (scheduling+regalloc). Instruction scheduling and register allocation in view->mVisibleBox copy and sprite index arithmetic.
+// FIXME: 92.33 % (scheduling+regalloc). The view->mVisibleBox copy and the pos TVec3f stores are
+// scheduled/allocated differently (0x1A8-0x210), and the (field_0x234 >> 3) & 1 / field_0x98 * 2 index
+// arithmetic swaps registers and operand order (0x26C-0x330).
 void Octorok_8049F208::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
