@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/act/act_knight_of_hyrule.h"
 #include "game/act/tu_802ED538.h"
+#include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/BgRewrite.h"
 #include "game/Camera.h"
@@ -42,7 +43,7 @@ void KnightOfHyrule_804AABA8::vfunc_0x10() {
     s32 end = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < end; i++) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-        if (actor != NULL && actor->mActorId == 'GNEF') {
+        if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
             field_0x278 = i;
             mPos.x = actor->mPos.x;
             mPos.y = actor->mPos.y;
@@ -116,7 +117,7 @@ void KnightOfHyrule_804AABA8::update() {
             s32 slot = field_0x278;
             if (slot >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->field_0x276 = 1;
                 }
             }
@@ -217,7 +218,7 @@ void KnightOfHyrule_804AABA8::update() {
             s32 slot = field_0x278;
             if (slot >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->field_0x277 = 1;
                 }
             }
@@ -237,7 +238,7 @@ void KnightOfHyrule_804AABA8::update() {
         s32 slot = field_0x278;
         if (slot >= 0) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-            if (actor != NULL && actor->mActorId == 'GNEF') {
+            if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 if (static_cast<cls_804AA350*>(actor)->fn_802ED7F0(mPos.z)) {
                     mPos.z += field_0x3c.z;
                     addCalc2_801F71A4(&field_0x3c.z, 0.01f, 0.008f, 0.005f);
@@ -253,7 +254,7 @@ void KnightOfHyrule_804AABA8::update() {
             s32 slot = field_0x278;
             if (slot >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->field_0x278 = 1;
                 }
             }
@@ -283,7 +284,7 @@ void KnightOfHyrule_804AABA8::update() {
             s32 slot = field_0x278;
             if (slot >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->fn_802ED7F0(mPos.z);
                 }
             }
@@ -299,7 +300,7 @@ void KnightOfHyrule_804AABA8::update() {
         s32 slot = field_0x278;
         if (slot >= 0) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-            if (actor != NULL && actor->mActorId == 'GNEF') {
+            if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 static_cast<cls_804AA350*>(actor)->fn_802ED7F0(mPos.z);
             }
         }
@@ -310,7 +311,7 @@ void KnightOfHyrule_804AABA8::update() {
             s32 slot2 = field_0x278;
             if (slot2 >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot2];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->fn_802ED7D8();
                     field_0x27d = 1;
                 }
@@ -382,7 +383,7 @@ void KnightOfHyrule_804AABA8::update() {
         s32 slot = field_0x278;
         if (slot >= 0) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-            if (actor != NULL && actor->mActorId == 'GNEF') {
+            if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 static_cast<cls_804AA350*>(actor)->fn_802ED7F0(mPos.z);
             }
         }
@@ -453,13 +454,13 @@ void KnightOfHyrule_804AABA8::update() {
         if (field_0x280 >= field_0x282) {
             field_0x280 = field_0x282;
             gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x280;
-            gGameRoot2_8053AB10->field_0x2c->field_0xe = field_0x280;
+            gGameRoot2_8053AB10->field_0x2c->field_0xd[1] = field_0x280;
         }
     }
 
     if (field_0x280 != field_0x282) {
         gGameRoot2_8053AB10->field_0x2c->field_0xc = field_0x280;
-        gGameRoot2_8053AB10->field_0x2c->field_0xe = field_0x280;
+        gGameRoot2_8053AB10->field_0x2c->field_0xd[1] = field_0x280;
     }
 }
 
@@ -490,7 +491,7 @@ void KnightOfHyrule_804AABA8::draw() {
             s32 slot = field_0x278;
             if (slot >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
-                if (actor != NULL && actor->mActorId == 'GNEF') {
+                if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<cls_804AA350*>(actor)->fn_802ED7F0(mPos.z);
                 }
             }
