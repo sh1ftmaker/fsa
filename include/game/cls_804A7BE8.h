@@ -20,6 +20,10 @@ public:
     // the player and view state; no arguments read.
     virtual void init();
 
+    // 0x8029C584 (game/tu_8029C584.cpp): vtable slot 0x20. Keeps the sprite position on screen
+    // (clamped to the view box), then draws the sprite and the shadow.
+    /* 0x20 */ virtual void draw();
+
     /* 0x230 */ s32 field_0x230; // 0x3D/0x3F or 0x43/0x44 by viewLayerFlag(layer)
     /* 0x234 */ s32 field_0x234; // 1 after init
     /* 0x238 */ s32 field_0x238; // 0 after init

@@ -4,6 +4,8 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
+#include "game/Camera.h"
+#include "game/SpriteParams.h"
 
 // FIXME: 96.58 %. The loop: the original keeps the index in r30 and a byte
 // offset (mr r28, r30 after the end load, stepped by 4) for mActors[i]; ours
@@ -64,6 +66,63 @@ void UnknownFORM_804A7BE8::init() {
         if (actor != NULL && actor->mActorId == 'FGAL' && actor->mAlive == true) {
             field_0x254 = actor;
         }
+    }
+}
+
+// Keeps x inside [lo, hi): below lo it becomes lo, from hi up it becomes hi.
+static inline void clampX(f32& x, f32 lo, f32 hi) {
+    if (x < lo) {
+        x = lo;
+    } else if (x >= hi) {
+        x = hi;
+    }
+}
+
+// FIXME(shotgun): 88 %, different + reloc-name
+void UnknownFORM_804A7BE8::draw() {
+    JGeometry::TBox2f box;
+    JGeometry::TVec3f pos(mPos);
+    if (field_0x4 == 0) {
+        box = gGameRoot2_8053AB10->field_0x24->field_0x164;
+        if (pos.y - pos.z < 28.0f + box.i.y) {
+            pos.y += 52.0f;
+        }
+        if (field_0x24c) {
+            clampX(pos.x, 68.0f + box.i.x, box.f.x - 60.0f);
+        } else {
+            clampX(pos.x, 52.0f + box.i.x, box.f.x - 44.0f);
+        }
+    } else {
+        fn_8022B8EC(field_0x248, &box);
+        if (pos.y - pos.z < 28.0f + box.i.y) {
+            pos.y += 52.0f;
+        }
+        if (field_0x24c) {
+            if (fn_8022C8EC(field_0x90 & 3)) {
+                clampX(pos.x, 52.0f + box.i.x, box.f.x - 52.0f);
+            } else {
+                clampX(pos.x, 80.0f + box.i.x, box.f.x - 80.0f);
+            }
+        } else {
+            if (fn_8022C8EC(field_0x90 & 3)) {
+                clampX(pos.x, 36.0f + box.i.x, box.f.x - 36.0f);
+            } else {
+                clampX(pos.x, 66.0f + box.i.x, box.f.x - 66.0f);
+            }
+        }
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x1c = 2;
+    params.field_0x2d = 1;
+    s32 id = field_0x230;
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+    }
+    if (fn_8022C8EC(field_0x90 & 3)) {
+        fn_80307AC8(mSerial, field_0x4, &pos, field_0x230, 0, 0, -1);
+    } else {
+        fn_80307AC8(mSerial, field_0x4, &pos, field_0x230, 1, 0, -1);
     }
 }
 
