@@ -125,6 +125,16 @@ public:
     // Ndata10 is hidden.
     void fn_80404648();
     void fn_804049DC();
+    // 0x80405D00 / 0x80405B10 (called by fn_80409FDC with the stick direction): with
+    // more than one sub-stage of field_0x340 open (bits of field_0x38c), move field_0x348
+    // (D00, through lbl_80543880 / lbl_80543888 / lbl_8048C90C / lbl_8048C924) or
+    // field_0x34c (B10, lbl_8048C93C / lbl_8048C94C, then field_0x348 from
+    // lbl_8048C88C) one step when dir is the table's direction.
+    void fn_80405D00(s32 dir);
+    void fn_80405B10(s32 dir);
+    // Dead-stripped (fn_80405D00 and fn_80405B10 inline it six times): hides the
+    // field_0x120 panes again if field_0x65e is set and plays sound 0x26.
+    void subStageChanged();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -166,7 +176,7 @@ public:
     /* 0x340 */ s32 field_0x340; // the selected stage (0-7; fn_80404270)
     /* 0x344 */ s32 field_0x344; // the stage selected before field_0x340 (fn_80408114)
     /* 0x348 */ s32 field_0x348; // sub-stage of field_0x340 (0-3; fn_80409450)
-    /* 0x34C */ u8 field_0x34c[0x350 - 0x34C];
+    /* 0x34C */ s32 field_0x34c; // row of field_0x348 in lbl_8048C88C (fn_80405B10)
     /* 0x350 */ s32 field_0x350; // state
     /* 0x354 */ u8 field_0x354[0x358 - 0x354];
     /* 0x358 */ s32 field_0x358;
@@ -220,7 +230,8 @@ public:
     /* 0x65A */ u8 field_0x65a;
     /* 0x65B */ u8 field_0x65b[0x65D - 0x65B];
     /* 0x65D */ u8 field_0x65d;
-    /* 0x65E */ u8 field_0x65e[0x662 - 0x65E];
+    /* 0x65E */ u8 field_0x65e; // 1 while the field_0x120 panes are shown (subStageChanged)
+    /* 0x65F */ u8 field_0x65f[0x662 - 0x65F];
     /* 0x662 */ u8 field_0x662;
     /* 0x663 */ u8 field_0x663;
     /* 0x664 */ u8 field_0x664;

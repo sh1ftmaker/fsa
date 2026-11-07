@@ -749,6 +749,85 @@ void MapScreen_804B1288::fn_80408114() {
     }
 }
 
+// FIXME: 96.30. Missing/extra: the original keeps field_0x340 in r5 from the stage test
+// through the table reads (lbl_80543880 / 88 / lbl_8048C90C); ours loads it again after the
+// test (and before lbl_8048C90C), two instructions more. A `stage` local folds 0-5 instead
+// of the original's 0 / 1-5 / 6 (98.26 %, different).
+void MapScreen_804B1288::fn_80405D00(s32 dir) {
+    s32 count = 0;
+    for (int i = 0; i < 4; i++) {
+        if (field_0x38c & (1 << (field_0x340 * 4 + i))) {
+            count++;
+        }
+    }
+    if (count == 1) {
+        return;
+    }
+    if ((field_0x340 == 0 || field_0x340 == 1 || field_0x340 == 2 || field_0x340 == 3 || field_0x340 == 4 ||
+         field_0x340 == 5 || field_0x340 == 6) &&
+        !(field_0x38c & (1 << (field_0x340 * 4 + 1))))
+    {
+        if (field_0x348 == 0) {
+            if (lbl_80543880[field_0x340] == dir) {
+                field_0x348 = 2;
+                field_0x34c = field_0x348;
+                subStageChanged();
+            }
+        } else if (field_0x348 == 2) {
+            if (lbl_80543888[field_0x340] == dir) {
+                field_0x348 = 0;
+                field_0x34c = field_0x348;
+                subStageChanged();
+            }
+        }
+        return;
+    }
+    if (field_0x348 < count - 1 && dir == lbl_8048C90C[field_0x340][field_0x348]) {
+        field_0x348++;
+        field_0x34c = field_0x348;
+        subStageChanged();
+    }
+    if (field_0x348 > 0 && dir == lbl_8048C924[field_0x340][field_0x348 - 1]) {
+        field_0x348--;
+        field_0x34c = field_0x348;
+        subStageChanged();
+    }
+}
+
+void MapScreen_804B1288::fn_80405B10(s32 dir) {
+    s32 count = 0;
+    for (int i = 0; i < 4; i++) {
+        if (field_0x38c & (1 << (field_0x340 * 4 + i))) {
+            count++;
+        }
+    }
+    if (count == 1) {
+        return;
+    }
+    if (field_0x34c < count - 1 && dir == lbl_8048C93C[field_0x340][field_0x34c]) {
+        field_0x34c++;
+        field_0x348 = lbl_8048C88C[field_0x340][field_0x34c];
+        subStageChanged();
+    }
+    if (field_0x34c > 0 && dir == lbl_8048C94C[field_0x340][field_0x34c - 1]) {
+        field_0x34c--;
+        field_0x348 = lbl_8048C88C[field_0x340][field_0x34c];
+        subStageChanged();
+    }
+}
+
+// Dead-stripped: fn_80405D00 and fn_80405B10 inline it after every change of the
+// sub-stage (six identical copies).
+void MapScreen_804B1288::subStageChanged() {
+    if (field_0x65e == 1) {
+        field_0x120[0]->field_0x22 = 0;
+        field_0x120[0]->field_0x26 = 0;
+        field_0x120[1]->field_0x26 = 0;
+        field_0x65e = 0;
+    }
+    gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+}
+
 void MapScreen_804B1288::fn_80404D70() {
     field_0x370 = 0;
     if (fn_803B8EBC(7)) {
