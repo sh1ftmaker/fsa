@@ -22,6 +22,7 @@ public:
     // Slots 0x54-0x5C: the callers test 0x54's byte result (escort woman's 0x6C-state code);
     // 0x58 is a flag, 0x5C returns a state number (3 here).
     // 0x80123E9C: false on the eight tile ids of lbl_80464D84 (0x2C-0x2F, 0x28-0x2B), else the base's.
+    /* 0x20 */ virtual void draw(); // fn_80123F9C: the life meters above the escort, then her sprite
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     /* 0x54 */ virtual bool vfunc_0x54();
     /* 0x58 */ virtual bool vfunc_0x58();
@@ -45,7 +46,7 @@ public:
     // override calls it for states 4 and 5.
     /* 0x78 */ virtual s32 vfunc_0x78() const;
     /* 0x7C */ virtual void vfunc_0x7C();
-    /* 0x80 */ virtual void vfunc_0x80();
+    /* 0x80 */ virtual s32 vfunc_0x80(); // fn_80123B94: 0 while no hurtful actor is near, else loses 2 life and returns 1
     /* 0x84 */ virtual s32 vfunc_0x84();
     /* 0x88 */ virtual s32 vfunc_0x88();
     /* 0x8C */ virtual void vfunc_0x8C();

@@ -11,6 +11,7 @@
 #include "game/GameView.h"
 #include "game/tu_80131D98.h"
 #include <string.h>
+#include "JSystem/JMath/JMath.h"
 #include "game/tu_801213EC.h"
 #include "game/act/act_life_meter.h"
 
@@ -18,6 +19,9 @@
 static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
     return fn_8038AD24(player, msg, serial, layer, pos, flags);
 }
+
+// The ids vfunc_0x80 asks fn_801F26CC about (0xAC bytes of 'PEAC', 'OKTA', 'AMOS', ... ids).
+extern const u32 lbl_80464CD8[43];
 
 static const u16 lbl_80464D84[8] = {0x2C, 0x2D, 0x2E, 0x2F, 0x28, 0x29, 0x2A, 0x2B};
 
@@ -182,6 +186,32 @@ void EscortBase_8049E0C8::update() {
     vfunc_0x90();
 }
 
+// FIXME(shotgun): 97.2 %, scheduling+regalloc + reloc-name
+void EscortBase_8049E0C8::draw() {
+    ActorBase_804A5770::draw();
+    if (field_0x332) {
+        JGeometry::TVec3f pos(mPos);
+        pos.x -= 6.0f * (field_0x360 - 1);
+        pos.y += -28.0f;
+        for (s32 i = 0; i < field_0x360; i++) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x364[i]);
+            if (actor == NULL) {
+                field_0x364[i] = -1;
+            } else {
+                if (i > 0) {
+                    pos.x += 12.0f;
+                }
+                actor->mPos = pos;
+            }
+        }
+    }
+    SpriteParams_801F5AE0 params;
+    if (field_0x333) {
+        params.field_0x10.a = (s32)(255.0f * JMath::sincosTable_.sinDegree((f32)(field_0x354 * 60)));
+    }
+    fn_801F02BC(mSobName, field_0x338 + mAnim.mCel, &params, 0x407, 0, false, 1.0f, 1.0f);
+}
+
 bool EscortBase_8049E0C8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u16 tile = fn_8022461C(pos, layer);
     for (s32 i = 0; i < 8; i++) {
@@ -224,6 +254,47 @@ void EscortBase_8049E0C8::vfunc_0x7C() {
         field_0x360 = 4;
     }
     mLife = field_0x360 * 4;
+}
+
+// FIXME(shotgun): 97 %, missing/extra + reloc-name
+s32 EscortBase_8049E0C8::vfunc_0x80() {
+    if (!(u8)vfunc_0x78()) {
+        return 0;
+    }
+    s32 serial = fn_801F26CC(lbl_80464CD8);
+    if (serial < 0) {
+        return 0;
+    }
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+    if (actor != NULL) {
+        switch (actor->mActorId) {
+        case ACTOR_FIRE: {
+            u32 kind = (actor->field_0x90 >> 6) & 0xF;
+            if (kind <= 1 || kind == 5 || kind == 6) {
+                return 0;
+            }
+        }
+        // fall through
+        case ACTOR_OKTM:
+            // The state word the two actors share (EnemyBase::mFlags is the closest known name).
+            if (static_cast<EnemyBase_804A4808*>(actor)->mFlags == 2) {
+                return 0;
+            }
+            break;
+        }
+    }
+    mLife -= 2;
+    if (mLife > 0) {
+        if (serial >= 0) {
+            ActorBase_804A5770* target = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (target != NULL) {
+                JGeometry::TVec3f pos = target->mPos;
+                field_0x98 = fn_801F681C((u16)(s32)(JMath::atanTable_.atan2_(pos.x - mPos.x, (pos.y - pos.z) - (mPos.y - mPos.z)) * 10430.378f));
+            }
+        }
+        vfunc_0x94();
+    }
+    return 1;
 }
 
 // FIXME(shotgun): 99.9 %, stack layout (dist/who slots swapped)
