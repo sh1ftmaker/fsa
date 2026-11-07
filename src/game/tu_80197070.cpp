@@ -298,8 +298,9 @@ void fn_8019C4F4(JGeometry::TVec2f* v, f32 x, f32 y) {
     v->set(x, y);
 }
 
-// FIXME(shotgun): 79.82 %, missing/extra + reloc-name.
+// FIXME(shotgun): 80.13 %, missing/extra + reloc-name.
 void cls_804A2944::fn_80198828() {
+    JGeometry::TVec3f savedPos;
     fn_801F3D94(1);
     if (field_0x23c == 0 && (mState == 0x1F || mState == 0x21)) {
         if (fn_801F2DB4('NULL', 'NULL', NULL) && mLife != 10000) {
@@ -1007,6 +1008,8 @@ void cls_804A2944::fn_80198828() {
                 fn_8017EC70(&focusPos, 1.0f);
                 fn_8017EB1C(0.05f);
             }
+            ganon->getPos();
+            ganon->getPos();
             if (ganon->fn_8018A590() == 3) {
                 field_0x280[1].x = mPos.x;
                 field_0x280[1].y = mPos.y;
@@ -1539,7 +1542,6 @@ void cls_804A2944::fn_80198828() {
         break;
     }
     case 0x3C: {
-        JGeometry::TVec3f savedPos;
         fn_8019CECC(&savedPos, &mPos);
         addCalc2_801F71A4(&field_0x2d4[0].y, field_0x280[2].y, 0.3f, 1.0f);
         fn_80230BF4(0, 3);
@@ -1569,6 +1571,7 @@ void cls_804A2944::fn_80198828() {
                 field_0x238 = 0;
                 field_0x248 = 0;
                 fn_80230FD0(0, 0x2000E);
+                fn_8019CECC(&mPos, &savedPos);
                 mState = 0x3E;
             }
         }
