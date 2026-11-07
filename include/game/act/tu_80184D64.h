@@ -29,7 +29,7 @@ public:
     /* 0x264 */ s32 field_0x264; // sprite frame offset
     /* 0x268 */ s32 field_0x268;
     /* 0x26C */ f32 field_0x26c;
-    /* 0x270 */ s16 field_0x270;
+    /* 0x270 */ u16 field_0x270;
     /* 0x272 */ u16 field_0x272;
     /* 0x274 */ s16 field_0x274[10];
     /* 0x288 */ f32 field_0x288[3];

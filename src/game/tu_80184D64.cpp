@@ -4,7 +4,7 @@
 #include "game/act/tu_80184D64.h"
 
 // 0x80186D24.
-// FIXME(shotgun): 77.73 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.08 %, missing/extra + reloc-name
 void cls_804A18E0::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -29,13 +29,21 @@ void cls_804A18E0::init() {
     field_0x384[0] = mPos.x;
     field_0x384[1] = mPos.y;
     field_0x384[2] = mPos.z;
-    field_0x270 = -1;
+    field_0x270 = 0xFFFF;
     for (s32 i = 0; i < 5; i++) {
-        field_0x294[i * 2] = mPos;
-        field_0x30c[i * 2] = mPos;
+        field_0x294[i * 2].x = mPos.x;
+        field_0x294[i * 2].y = mPos.y;
+        field_0x294[i * 2].z = mPos.z;
+        field_0x30c[i * 2].x = mPos.x;
+        field_0x30c[i * 2].y = mPos.y;
+        field_0x30c[i * 2].z = mPos.z;
         field_0x274[i * 2] = 0;
-        field_0x294[i * 2 + 1] = mPos;
-        field_0x30c[i * 2 + 1] = mPos;
+        field_0x294[i * 2 + 1].x = mPos.x;
+        field_0x294[i * 2 + 1].y = mPos.y;
+        field_0x294[i * 2 + 1].z = mPos.z;
+        field_0x30c[i * 2 + 1].x = mPos.x;
+        field_0x30c[i * 2 + 1].y = mPos.y;
+        field_0x30c[i * 2 + 1].z = mPos.z;
         field_0x274[i * 2 + 1] = 0;
     }
     field_0x26c = 0.0f;
@@ -47,19 +55,26 @@ void cls_804A18E0::init() {
 }
 
 // 0x80184DC4.
-// FIXME(shotgun): 31.76 %, missing/extra
 void cls_804A18E0::draw() {
     SpriteParams_801F5AE0 params;
     JGeometry::TVec3f savedPos = mPos;
-    s32 start = 0;
+    s32 i = 0;
     if (field_0x260 >= 0) {
-        start = 1;
+        i = 1;
     }
-    for (s32 i = start; i < 9; i++) {
-        mPos = field_0x294[i];
+    for (; i < 9; i++) {
+        mPos.x = field_0x294[i].x;
+        mPos.y = field_0x294[i].y;
+        mPos.z = field_0x294[i].z;
+        params.field_0x20 = 0;
+        params.field_0x1d = -1;
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x13B, &params, 7, 1.0f, 1.0f);
     }
-    mPos = savedPos;
+    mPos.x = savedPos.x;
+    mPos.y = savedPos.y;
+    mPos.z = savedPos.z;
+    params.field_0x20 = 0;
+    params.field_0x1d = 0;
     drawSprite_801F06F0("enemy_gc_sob.bin", field_0x264 + 0x134, &params, 0, 1.0f, 1.0f);
 }
 
