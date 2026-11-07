@@ -1431,6 +1431,7 @@ bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4);
 // owner game/tu_803FF2C4.cpp. main allocates it in the main heap and calls
 // fn_803FF420 / fn_803FFAA8 each frame while mState is below 4, then
 // fn_803FF2C4 (which frees its archives) once it reaches 4.
+class JKRArchive;
 class cls_804B0F50 {
 public:
     cls_804B0F50();
@@ -1439,7 +1440,16 @@ public:
     void fn_803FFAA8();
 
     /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
-    /* 0x04 */ u8 field_0x4[0x60 - 0x4];
+    /* 0x04 */ u8 field_0x4[0x18 - 0x4];
+    // The loader's seven archives; fn_803FF2C4 (and the destructor) delete them.
+    /* 0x18 */ JKRArchive* field_0x18;
+    /* 0x1C */ JKRArchive* field_0x1c;
+    /* 0x20 */ JKRArchive* field_0x20;
+    /* 0x24 */ JKRArchive* field_0x24;
+    /* 0x28 */ JKRArchive* field_0x28;
+    /* 0x2C */ JKRArchive* field_0x2c;
+    /* 0x30 */ JKRArchive* field_0x30;
+    /* 0x34 */ u8 field_0x34[0x60 - 0x34];
     /* 0x60 */ u8 field_0x60; // tested by cls_804AA8C8::fn_8030A43C
     /* 0x61 */ u8 field_0x61[0x78 - 0x61];
     /* 0x78 */ u8 mState;

@@ -62,7 +62,7 @@ public:
     void fn_8029D8F0(const JGeometry::TVec3f* pos, s32 layer, s32 layerOffset, s32 pattern);
     // 4 units (Player_804A6F38::fn_802870C8, act_block, act_somaria_block,
     // tu_8028FBA0). Reads pos x/y; player and layer follow.
-    void fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer);
+    bool fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer);
     // 15 units / 78 calls. Writes tile code `tile` into the cell at pos on
     // `layer` (fn_80226BC4(pos', layer & 0xFE), then fn_802F9974(layer,
     // cell, tile)); nothing else. this unused. pos: callers pass
@@ -140,6 +140,10 @@ public:
     // next 16-column block) or the cell below (+0x10, +0x110 across the
     // 0x100 boundary). this unused.
     void fn_8029DEBC(s32 layer, s32 cell, s32 vertical, s32 a, s32 b);
+    // 2 units (see above). As fn_8029DEBC for four (DD50) or six (DB2C) tile codes in a row
+    // or column (u16 each, clrlwi 16). this unused.
+    void fn_8029DD50(s32 layer, s32 cell, s32 vertical, u16 a, u16 b, u16 c, u16 d);
+    void fn_8029DB2C(s32 layer, s32 cell, s32 vertical, u16 a, u16 b, u16 c, u16 d, u16 e, u16 f);
     // 2 units (act_door, tu_802D39B8). The 2 x 2 block of tile codes a..d at
     // cell (right neighbour and the row below as in fn_8029DEBC). this unused.
     void fn_8029DF80(s32 cell, s32 layer, s32 a, s32 b, s32 c, s32 d);
@@ -147,12 +151,17 @@ public:
     // this unused.
     void fn_8029E928(const JGeometry::TVec3f* pos, s32 layer, s32 tile);
     // 1 unit (act_block, init). Stores the tile it reads into this+0x20 / +0x24.
+    // 0x8029E248 (game/tu_8029D898.cpp): the tile on pos is 0x19C / 0x19D (a pair of halves); rewrites it to 0x19E / 0x19F.
+    bool fn_8029E248(const JGeometry::TVec3f* pos, s32 layer);
     void fn_8029E9EC(const JGeometry::TVec3f* pos, s32 layer, u16 tile, s32 arg4, u8 dir);
     // 1 unit (tu_802957CC, 2 calls each). Read the tile under pos on layer 0
     // into fields 0x20 / 0x24; true when its lbl_8046CB88 collision code is 0
     // or fn_8022461C gives 0x22 while GameView field_0x170 is clear
     // (fn_802A1554 also for a list of tile codes and the codes 0xE / 3).
     bool fn_802A1490(const JGeometry::TVec3f* pos);
+    // 0x802A1688 (game/tu_8029D898.cpp): the tile on pos is 0x81: unless tag is 'SBAL', rewrites it to 0x9D and spawns
+    // a 'KMRI' actor (layers 8 and up) or two emitters; plays sound 0x50045. Returns fn_802A3164(pos, -1, layer).
+    bool fn_802A1688(const JGeometry::TVec3f* pos, s32 layer, u32 tag);
     bool fn_802A1554(const JGeometry::TVec3f* pos);
     // Called by fn_802A01F0 / fn_802A02A8 for tile codes 0x16 / 0x17 with
     // their player and layer (r4, r5); the body is not written yet (the

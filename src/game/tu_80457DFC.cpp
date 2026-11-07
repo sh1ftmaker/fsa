@@ -213,6 +213,51 @@ void AudioMgr_8045A080::fn_804594E4(u32 mode) {
     JASDriver::setOutputMode(mode);
 }
 
+// FIXME(shotgun): 100 %
+void AudioMgr_8045A080::fn_804593D4() {
+    field_0x8e = 1;
+    fn_80458744(1);
+    field_0x34->getCategory(1)->pause(true);
+    field_0x34->getCategory(2)->pause(true);
+    field_0x34->getCategory(3)->pause(true);
+    field_0x34->getCategory(4)->pause(true);
+    field_0x34->getCategory(5)->pause(true);
+    field_0x34->getCategory(6)->pause(true);
+    field_0x34->getCategory(1)->getParams()->moveVolume(0.0f, 3);
+    field_0x34->getCategory(2)->getParams()->moveVolume(0.0f, 3);
+    field_0x34->getCategory(3)->getParams()->moveVolume(0.0f, 3);
+    field_0x34->getCategory(4)->getParams()->moveVolume(0.0f, 3);
+    field_0x34->getCategory(5)->getParams()->moveVolume(0.0f, 3);
+    field_0x34->getCategory(6)->getParams()->moveVolume(0.0f, 3);
+}
+
+// FIXME(shotgun): 100 %
+void AudioMgr_8045A080::fn_80459274() {
+    field_0x8e = 0;
+    if (field_0x8c != 0) {
+        fn_80458744(2);
+    } else {
+        fn_80458744(0);
+    }
+    field_0x34->getCategory(1)->pause(false);
+    field_0x34->getCategory(2)->pause(false);
+    if (field_0x8a == 1) {
+    field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
+    } else {
+    field_0x34->getCategory(3)->pause(false);
+    field_0x34->getCategory(4)->pause(false);
+    field_0x34->getCategory(5)->pause(false);
+    field_0x34->getCategory(6)->pause(false);
+    field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(3)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(4)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(5)->getParams()->moveVolume(1.0f, 3);
+    field_0x34->getCategory(6)->getParams()->moveVolume(1.0f, 3);
+    }
+}
+
 // 0x80458FF0
 // FIXME: 99.91, reloc-name only: jumptable_804B1FB4, as fn_80458744's.
 // Inlines fn_80458408 (case 0x100001A).
