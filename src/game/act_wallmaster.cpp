@@ -577,6 +577,46 @@ void cls_804A3E44::vfunc_0x90(u8 mapHit) {
     }
 }
 
+void cls_804A3E44::vfunc_0x88() {
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    switch (mState) {
+    case 1:
+    case 2:
+        field_0x3c.z = -0.7f;
+        if (field_0x2b8 >= 0) {
+            JGeometry::TVec2f d;
+            fn_801D00B4(field_0x2b8, &d, 1.0f);
+            field_0x3c.x = d.x;
+            field_0x3c.y = d.y;
+        }
+        break;
+    case 4:
+        field_0x3c.z = 0.3f;
+        break;
+    case 5:
+        field_0x3c.z = 0.5f;
+        break;
+    case 6: {
+        JGeometry::TVec2f d;
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b0, &d, 0.5f);
+        field_0x3c.x = d.x;
+        field_0x3c.y = d.y;
+        break;
+    }
+    case 7:
+        field_0x3c.z = 0.3f;
+        break;
+    case 8:
+        field_0x3c.z = -0.5f;
+        break;
+    case 10:
+        EnemyBase_804A4808::vfunc_0x88();
+        break;
+    }
+}
+
 // vfunc_0x88 left unwritten: state 6 passes field_0x2b0 (a TVec2f slot) to
 // fn_801D01A0, whose target parameter is typed TVec3f* in EnemyBase.
 
@@ -588,6 +628,14 @@ void cls_804A3E44::vfunc_0x78() {
         }
         field_0x2b8 = -1;
     }
+}
+
+// FIXME(shotgun): 96.43 %, missing/extra
+u8 cls_804A3E44::vfunc_0x60() {
+    if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f) {
+        return fn_801CEA60();
+    }
+    return EnemyBase_804A4808::vfunc_0x60();
 }
 
 // vfunc_0x60 left unwritten: the target returns fn_801CEA60's r3 unconverted

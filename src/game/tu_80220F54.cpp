@@ -184,6 +184,14 @@ void ShadowLinkBase_804A6A00::fn_80221334() {
     }
 }
 
+void ShadowLinkBase_804A6A00::fn_80221250() {
+    JGeometry::TVec2f d;
+    fn_801D01A0((const JGeometry::TVec3f*)&field_0x2b0, &d, mSpeed);
+    field_0x3c.x = d.x;
+    field_0x3c.y = d.y;
+    vfunc_0x84();
+}
+
 void ShadowLinkBase_804A6A00::fn_802212AC() {
     if (mStateTimer == 0x2D) {
         mTargetSpeed = 1.0f;
