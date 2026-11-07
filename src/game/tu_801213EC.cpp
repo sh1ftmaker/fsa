@@ -594,6 +594,47 @@ void EscortBase_8049E0C8::fn_80122730(s32 anim, bool shifted, bool throttled) {
     }
 }
 
+// FIXME(shotgun): 99.7 %, reloc-name
+void EscortBase_8049E0C8::fn_80122548() {
+    if (fn_8012285C() >= 0) {
+        field_0x331 = 0;
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(fn_8012285C());
+        field_0x98 = fn_80230CFC(fn_8012285C());
+        switch (field_0x98) {
+        case 0:
+            pos.x -= 16.0f;
+            break;
+        case 1:
+            pos.x += 16.0f;
+            break;
+        case 2:
+            pos.y -= 16.0f;
+            break;
+        case 3:
+            pos.y += 16.0f;
+            break;
+        }
+        field_0x37c = 0.5f;
+        fn_801CD950(&mPos.x, pos.x, 2.0f);
+        fn_801CD950(&mPos.y, pos.y, 2.0f);
+        s32 dir = fn_80230CFC(fn_8012285C());
+        if (dir >= 0) {
+            field_0x364[4]++;
+            if (field_0x364[4] >= 10) {
+                field_0x364[4] = 10;
+            }
+            if (field_0x364[4] >= 10) {
+                field_0x364[4] = 0;
+                field_0x98 = dir;
+                if (dir != mAnim.mAnim) {
+                    mAnim.startAnim_801D22DC(dir, 2, false);
+                    mAnim.fn_801D1F14(0.0f);
+                }
+            }
+        }
+    }
+}
+
 void EscortBase_8049E0C8::fn_801220C4() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
