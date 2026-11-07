@@ -135,6 +135,10 @@ public:
     // Dead-stripped (fn_80405D00 and fn_80405B10 inline it six times): hides the
     // field_0x120 panes again if field_0x65e is set and plays sound 0x26.
     void subStageChanged();
+    // 0x80405FC0 (called by fn_80411230): draws the four players (player_sob.bin)
+    // around the cursor field_0x394 / field_0x398, the frame picked by the state, and
+    // starts the emitters 0xCB / 0xCC of field_0x2cc / field_0x2dc at frame 26 of state 0x14.
+    void fn_80405FC0();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -235,7 +239,8 @@ public:
     /* 0x662 */ u8 field_0x662;
     /* 0x663 */ u8 field_0x663;
     /* 0x664 */ u8 field_0x664;
-    /* 0x665 */ u8 field_0x665[0x668 - 0x665];
+    /* 0x665 */ u8 field_0x665; // alpha of the player sprites in state 4 (fn_80405FC0)
+    /* 0x666 */ u8 field_0x666[0x668 - 0x666];
     /* 0x668 */ s32 field_0x668; // fn_8040F474 returns it
 }; // Size: 0x66C
 

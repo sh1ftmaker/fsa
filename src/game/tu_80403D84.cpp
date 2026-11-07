@@ -19,6 +19,9 @@
 #include "JSystem/J2D/J2DAnimation.h"
 #include "std/math.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "game/Map.h"
+#include "game/SpriteParams.h"
+#include "game/Effect.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -745,6 +748,77 @@ void MapScreen_804B1288::fn_80408114() {
         for (int i = 0; i < 8; i++) {
             field_0x40e[i] = 0;
             field_0xc->search(lbl_8048C2B8[i])->setAlpha(0);
+        }
+    }
+}
+
+// FIXME: 99.98. regalloc-only: the original keeps the render mode's fbWidth (read before
+// the first search) in r24, ours in r26.
+void MapScreen_804B1288::fn_80405FC0() {
+    f32 offset = 384.0f * (0.5f * (field_0x10->search('Pli02')->getBounds()->i.x -
+                                   field_0x10->search('Pli01')->getBounds()->i.x)) /
+                 (s32)JUTVideo::getManager()->getFbWidth();
+    // Computed but never used (the players are offset by `offset` both ways); only
+    // its two search calls are left.
+    f32 offsetY = 288.0f * (0.5f * (field_0x10->search('Pli01')->getBounds()->i.y -
+                                    field_0x10->search('Pli03')->getBounds()->i.y)) /
+                  (s32)JUTVideo::getManager()->getEfbHeight();
+    for (int i = 0; i < 4; i++) {
+        JGeometry::TVec3f pos;
+        pos.x = lbl_8050DB0C.field_0x4c[274] +
+                384.0f * field_0x394 / (s32)JUTVideo::getManager()->getFbWidth();
+        pos.y = lbl_8050DB0C.field_0x4c[275] +
+                288.0f * field_0x398 / (s32)JUTVideo::getManager()->getEfbHeight() + field_0x39c;
+        pos.z = 0.0f;
+        if (i % 2) {
+            pos.x += offset;
+        } else {
+            pos.x -= offset;
+        }
+        if (i < 2) {
+            pos.y += offset;
+        } else {
+            pos.y -= offset;
+        }
+        SpriteParams_801F5AE0 params;
+        params.field_0x0[7] = i + 12;
+        params.field_0x26 = 0;
+        if (field_0x350 == 0x14 || field_0x350 == 0x16) {
+            s32 frame = field_0x41e / 2;
+            if (frame <= 13) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame + 0xDB, &params, 1.0f, 1.0f);
+                if (field_0x41e == 26) {
+                    if (field_0x2cc[i] == NULL) {
+                        JGeometry::TVec3f p(7.0f + pos.x, pos.y - 27.0f, pos.z);
+                        field_0x2cc[i] = spawnEmitter_8013CC50(0, &p, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                        field_0x2cc[i]->setStatus(JPAEMIT_Immortal);
+                    }
+                    if (field_0x2dc[i] == NULL) {
+                        JGeometry::TVec3f p(7.0f + pos.x, pos.y - 27.0f, pos.z);
+                        field_0x2dc[i] = spawnEmitter_8013CC50(0, &p, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                        field_0x2dc[i]->setStatus(JPAEMIT_Immortal);
+                    }
+                }
+            } else {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0xE8, &params, 1.0f, 1.0f);
+            }
+        } else if (field_0x350 == 2) {
+            s32 frame = lbl_8048CC0C[(field_0x358 / 5) % 4];
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+        } else if (field_0x350 == 4) {
+            params.field_0x10.a = field_0x665;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0xE8, &params, 1.0f, 1.0f);
+        } else {
+            if (field_0x358 >= 30) {
+                field_0x358 = 0;
+            }
+            s32 frame = field_0x360 + lbl_8048CB94[field_0x358];
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
         }
     }
 }
