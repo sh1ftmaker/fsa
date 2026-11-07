@@ -13,13 +13,6 @@ s32 lbl_80539FD8[2] = {8, 14};
 s32 lbl_80539FE0[2] = {3, 5};
 
 
-// Destructor at 0x8018FB24.
-cls_804A1FA0::~cls_804A1FA0() {
-    for (int i = 0; i < 3; i++) {
-        releaseEmitter_801EE434(mEmitters[i]);
-    }
-}
-
 // FIXME(shotgun): 85.97 %, missing/extra + reloc-name
 void cls_804A1FA0::init() {
     field_0x80.i.x = -6.0f;
@@ -86,55 +79,28 @@ void cls_804A1FA0::init() {
     field_0x288[5].y += 6.0f * JMath::sincosTable_.cosShort(angle);
 }
 
-// FIXME(shotgun): 89.85 %, missing/extra + reloc-name
-void cls_804A1FA0::draw() {
-    SpriteParams_801F5AE0 params;
-    Mtx mtx;
-    f32 z0 = mPos.z;
-    if (field_0x234[3] & 1) {
-        params.field_0x14.set(0x80, 0x80, 0x80, 0);
+// Destructor at 0x8018FB24.
+cls_804A1FA0::~cls_804A1FA0() {
+    for (int i = 0; i < 3; i++) {
+        releaseEmitter_801EE434(mEmitters[i]);
     }
-    params.field_0x1d = 1;
-    PSMTXIdentity(mtx);
-    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
-    params.mMtx = mtx;
-    mPos.set(field_0x288[2]);
-    mPos.z = z0;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x29, &params, -1, 1.0f, 1.0f);
+}
 
-    PSMTXIdentity(mtx);
-    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
-    params.mMtx = mtx;
-    mPos.set(field_0x288[1]);
-    mPos.z = z0;
-    params.field_0x1d = 2;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x27, &params, -1, 1.0f, 1.0f);
-
-    PSMTXIdentity(mtx);
-    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
-    params.mMtx = mtx;
-    mPos.set(field_0x288[0]);
-    mPos.z = z0;
-    params.field_0x1d = 3;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x26, &params, -1, 1.0f, 1.0f);
-
-    params.field_0x1d = 4;
-    PSMTXIdentity(mtx);
-    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
-    params.mMtx = mtx;
-    mPos.set(field_0x288[4]);
-    mPos.z = z0;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
-
-    PSMTXIdentity(mtx);
-    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
-    params.mMtx = mtx;
-    mPos.set(field_0x288[5]);
-    mPos.z = z0;
-    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
-
-    mPos.set(field_0x288[0]);
-    mPos.z = z0;
+// 0x8018FAB4.
+// FIXME(shotgun): 67.61 %, missing/extra
+void cls_804A1FA0::vfunc_0x44() {
+    if (mEmitters[0] != NULL) {
+        mEmitters[0]->becomeInvalidEmitter();
+        mEmitters[0] = NULL;
+    }
+    if (mEmitters[1] != NULL) {
+        mEmitters[1]->becomeInvalidEmitter();
+        mEmitters[1] = NULL;
+    }
+    if (mEmitters[2] != NULL) {
+        mEmitters[2]->becomeInvalidEmitter();
+        mEmitters[2] = NULL;
+    }
 }
 
 // FIXME(shotgun): 80.47 %, missing/extra + reloc-name
@@ -244,19 +210,53 @@ void cls_804A1FA0::update() {
     }
 }
 
-// 0x8018FAB4.
-// FIXME(shotgun): 67.61 %, missing/extra
-void cls_804A1FA0::vfunc_0x44() {
-    if (mEmitters[0] != NULL) {
-        mEmitters[0]->becomeInvalidEmitter();
-        mEmitters[0] = NULL;
+// FIXME(shotgun): 89.85 %, missing/extra + reloc-name
+void cls_804A1FA0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    f32 z0 = mPos.z;
+    if (field_0x234[3] & 1) {
+        params.field_0x14.set(0x80, 0x80, 0x80, 0);
     }
-    if (mEmitters[1] != NULL) {
-        mEmitters[1]->becomeInvalidEmitter();
-        mEmitters[1] = NULL;
-    }
-    if (mEmitters[2] != NULL) {
-        mEmitters[2]->becomeInvalidEmitter();
-        mEmitters[2] = NULL;
-    }
+    params.field_0x1d = 1;
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[2]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x29, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[1]);
+    mPos.z = z0;
+    params.field_0x1d = 2;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x27, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[0]);
+    mPos.z = z0;
+    params.field_0x1d = 3;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x26, &params, -1, 1.0f, 1.0f);
+
+    params.field_0x1d = 4;
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[4]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[5]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
+
+    mPos.set(field_0x288[0]);
+    mPos.z = z0;
 }
