@@ -969,7 +969,7 @@ void OBJLift_804ACA00::update() {
     field_0x29c = field_0x3c.z;
 }
 
-// FIXME(shotgun): 84.1 %, missing/extra + reloc-name (state 0x13 rotation is a stand-in)
+// FIXME(shotgun): 91.96 %, missing/extra + reloc-name
 void OBJLift_804ACA00::draw() {
     s32 alpha = 0xFF;
     if (field_0x230 == 4) {
@@ -1024,9 +1024,23 @@ void OBJLift_804ACA00::draw() {
         mtx[2][1] = 0.0f;
         mtx[2][2] = scale;
     } else if (field_0x258 == 0x13) {
-        // FIXME: the original builds this rotation from sincosTable_ entries directly.
-        JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
-        setRotScaleMtx(mtx, rot, scale);
+        // Euler rotation (0, 270 deg, 0) from sincosTable_ entries (the original reads them
+        // at run time: table index 0 and index 1536).
+        f32 sx = JMath::sincosTable_.sinShort(0);
+        f32 cx = JMath::sincosTable_.cosShort(0);
+        f32 sy = JMath::sincosTable_.sinShort(-0x4000);
+        f32 cy = JMath::sincosTable_.cosShort(-0x4000);
+        f32 sz = sx;
+        f32 cz = cx;
+        mtx[0][0] = scale * (cy * cz);
+        mtx[1][0] = scale * (cy * sz);
+        mtx[2][0] = scale * -sy;
+        mtx[0][1] = scale * (sx * sy * cz - cx * sz);
+        mtx[1][1] = scale * (sx * sy * sz + cx * cz);
+        mtx[2][1] = scale * (sx * cy);
+        mtx[0][2] = scale * (cx * cz * sy + sx * sz);
+        mtx[1][2] = scale * (cx * sz * sy - sx * cz);
+        mtx[2][2] = scale * (cx * cy);
     } else if (field_0x258 == 5) {
         f32 angle = 2.0f * (3.14f * (1.0f - scale));
         JGeometry::TVec3f rot(angle, angle, 0.0f);
