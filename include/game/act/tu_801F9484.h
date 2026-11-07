@@ -69,18 +69,7 @@ public:
 }; // Size: 0x2F0
 
 // Spawned for 'DMGA'.
-class cls_8049DD68 : public cls_8049D140 {
-public:
-    cls_8049DD68() : field_0x230(0), field_0x234(0), field_0x238(0.0f), field_0x23c(0.0f) {}
-    /* 0x08 */ virtual ~cls_8049DD68();
-    /* 0x230 */ u8 field_0x230;
-    /* 0x231 */ u8 field_0x231[0x3];
-    /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ f32 field_0x238;
-    /* 0x23C */ f32 field_0x23c;
-    /* 0x240 */ u8 field_0x240[0x34];
-    /* 0x274 */ SpriteAnim_801D267C field_0x274;
-}; // Size: 0x2AC
+#include "game/act/tu_8011CEC8.h"
 
 // Spawned for 'RNBW'.
 #include "game/act/act_rainbow_bridge.h"
