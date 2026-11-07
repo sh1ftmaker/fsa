@@ -9,6 +9,7 @@
 extern s32 lbl_804C6330[4];
 
 // 0x80166814.
+// FIXME(shotgun): 99.46 %, reloc-name
 void ArrowPlayer_804A05E0::init() {
     field_0x98 = (field_0x90 >> 4) & 3;
     field_0x94 = (field_0x90 >> 8) & 0xF;
@@ -73,6 +74,7 @@ ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
 }
 
 // 0x8016545C.
+// FIXME(shotgun): 99.39 %, missing/extra + reloc-name
 void ArrowPlayer_804A05E0::draw() {
     if (field_0x94 != 3) {
         if (field_0x24c >= 50 || (field_0x24c & 2) == 0) {
