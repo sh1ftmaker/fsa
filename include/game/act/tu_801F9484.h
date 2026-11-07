@@ -134,7 +134,13 @@ class cls_804A00C8 : public ActorBase_804A5770 {
 public:
     cls_804A00C8() {}
     /* 0x08 */ virtual ~cls_804A00C8();
-    /* 0x230 */ u8 field_0x230[0x94];
+    /* 0x230 */ u8 field_0x230[8];
+    // SHARED-EDIT: written by the 'SLR4' actor (game/act_chief_soldier.cpp).
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ u8 field_0x240[0x40];
+    /* 0x280 */ s32 field_0x280;
+    /* 0x284 */ u8 field_0x284[0x40];
 }; // Size: 0x2C4
 
 // Spawned for 'BPOH'.
