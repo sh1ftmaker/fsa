@@ -1069,8 +1069,9 @@ public:
     // floats at 0x1C0, sets its alpha (vtable slot 0x24) and flags 0x254.
     void fn_8043A208(u8 alpha, f32 a, f32 b, f32 c, f32 d);
     // 0x8043ABCC (game/tu_8043A0E8.cpp): shows the rank picture `index` (0-3, clamped
-    // at 0) on the pane "Pdf01" of field_0x8.
-    void fn_8043ABCC(s32 index);
+    // at 0) on the pane "Pdf01" of field_0x8. tu_8028DD78's update passes 0 in r5 for
+    // `unused`, which the body never reads.
+    void fn_8043ABCC(s32 index, s32 unused);
     // 0x8043CEA0 (game/tu_8043A0E8.cpp): counts field_0x104 down; at 0 (or when
     // GameRoot's mode is not 7) resets the twelve panes' step counters, state 3.
     void fn_8043CEA0();

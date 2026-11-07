@@ -80,7 +80,7 @@ static inline s32 field4(u32 f) {
     return (f & 0x80) ? (s32)((f >> 4) & 7) - 8 : (s32)((f >> 4) & 7);
 }
 
-// FIXME(shotgun): 85.21 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.94 %, missing/extra + reloc-name
 // The four-player gate sequence: 0 waits until every player stands in mBox (on this layer),
 // then lines them up (fn_8028DDD8) at 16-unit spacing; 1 fades field_0x268 out and walks them
 // half a unit per frame for 64 (40) frames; 2 sends them 384 units on (kinds 0 / 1) or to the
@@ -328,12 +328,10 @@ void cls_804A7A68::update() {
                                        16.0f * offsetY(field_0x90) + field_0x238[0].y));
             break;
         }
-        // FIXME(shotgun): the original also passes 0 in r5 to fn_8043ABCC (a second
-        // parameter the header does not declare).
         if (field4(field_0x90) == -8) {
             lbl_8053AED0->fn_8043A608();
         } else if (field4(field_0x90) != 0) {
-            lbl_8053AED0->fn_8043ABCC(field4(field_0x90));
+            lbl_8053AED0->fn_8043ABCC(field4(field_0x90), 0);
         }
         gGameRoot_8053AAF8->fn_80136798(0x13, 0);
         field_0x230 = 3;
@@ -405,8 +403,6 @@ void cls_804A7A68::update() {
                 switch (field_0x90 & 0xF) {
                 case 0:
                 case 1:
-                    fn_8022CA6C(i, 5, false);
-                    break;
                 case 4:
                 case 5:
                     fn_8022CA6C(i, 5, false);
@@ -414,9 +410,9 @@ void cls_804A7A68::update() {
                 case 6:
                 case 7:
                     fn_8022CA6C(i, 5, false);
-                    fn_80230224(i, 0);
                     break;
                 }
+                fn_80230224(i, 0);
             }
         }
         mAlive = false;

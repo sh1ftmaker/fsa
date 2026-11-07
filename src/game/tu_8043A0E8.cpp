@@ -836,7 +836,7 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
     return true;
 }
 
-void cls_804B1920::fn_8043ABCC(s32 index) {
+void cls_804B1920::fn_8043ABCC(s32 index, s32 unused) {
     index = index < 0 ? 0 : index;
     void* res;
     if (index != 1) {
