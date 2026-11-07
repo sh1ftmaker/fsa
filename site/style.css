@@ -120,6 +120,7 @@ h2 { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .glyph { width: 10px; height: 10px; display: inline-block; flex: none; }
 .legend .fillkey { width: 26px; height: 14px; border-radius: 3px; border: 1px solid var(--line2); background: linear-gradient(0deg, var(--gold) 45%, rgba(210,154,46,.15) 45%); }
+.legend .wfillkey { width: 26px; height: 14px; border-radius: 3px; border: 1px solid var(--line2); background: linear-gradient(0deg, var(--gold) 30%, rgba(210,154,46,.4) 30%, rgba(210,154,46,.4) 65%, rgba(210,154,46,.15) 65%); }
 .legend .dashkey { width: 26px; height: 14px; border-radius: 3px; border: 1px dashed var(--ink3); }
 
 /* treemap */

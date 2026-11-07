@@ -393,8 +393,12 @@ def add_fn(rec, f, addr, tail, w=0):
     else:
         rec["wm"] += w  # partial credit (tools/structural.py), bytes
     rec["addr"] = addr if rec["addr"] is None else min(rec["addr"], addr)
-    # [name, address, size, matched-ness: 100 = matched, else floor of fuzzy %, -1 = not split yet]
-    rec["fns"].append([name, addr, size, -1 if tail else (100 if matched else int(fuzzy))])
+    # [name, address, size, matched-ness: 100 = matched, else floor of fuzzy %, -1 = not split yet,
+    #  and, for a structurally matched function, its partial credit in bytes]
+    row = [name, addr, size, -1 if tail else (100 if matched else int(fuzzy))]
+    if not matched and w > 0:
+        row.append(round(w))
+    rec["fns"].append(row)
 
 
 def write(report, files, data_unsplit, subject):
@@ -430,6 +434,8 @@ def write(report, files, data_unsplit, subject):
                 detail[str(i)] = r["fns"]
                 row = {"n": r["name"], "p": r["path"], "a": r["addr"], "s": r["status"],
                        "c": r["code"], "cm": r["cm"], "f": r["fn"], "fm": r["fm"]}
+                if r["wm"] > 0:  # weighted: honest plus partial credit (tools/structural.py)
+                    row["wm"] = round(r["cm"] + r["wm"])
                 if r["data"]:
                     row["d"], row["dm"] = r["data"], r["dm"]
                 if any(fn[3] == -1 for fn in r["fns"]) and r["status"] != "U":

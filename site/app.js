@@ -47,6 +47,8 @@ const hex = (a) => "0x" + a.toString(16).toUpperCase().padStart(8, "0");
 
 // a node's colour: its game part's, else its region's
 const colOf = (n) => (n.part && PART[n.part] ? PART[n.part].color : REGION[n.region].color);
+// weighted bytes: honest plus partial credit for structurally matched functions
+const wOf = (n) => Math.max(n.cm, n.wm ?? n.cm);
 const gradOf = (n) => (n.part && PART[n.part] ? `tg-p-${n.part}` : `tg-${n.region}`);
 function partGlyph(key, size = 10) {
   const s = size, h = s / 2;
@@ -80,7 +82,7 @@ function buildTree(summary) {
     byId.set(rn.id, rn);
     const fileNode = (ln, f, i, src, srcIdx) => {
       const fnode = { id: `${ln.id}/${i}`, idx: i, kind: "file", region: r.id, part: ln.part, name: f.n, path: f.p, addr: f.a, s: f.s,
-        c: f.c, cm: f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, u: !!f.u, bp: f.bp, src, srcIdx, parent: ln, children: null };
+        c: f.c, cm: f.cm, wm: f.wm ?? f.cm, f: f.f, fm: f.fm, d: f.d || 0, dm: f.dm || 0, t: f.t || 0, u: !!f.u, bp: f.bp, src, srcIdx, parent: ln, children: null };
       ln.children.push(fnode);
       byId.set(fnode.id, fnode);
       return fnode;
@@ -94,18 +96,17 @@ function buildTree(summary) {
     }
     if (r.id !== "game") continue;
     GROUPS.cat.libs = rn.children.slice();
-    // the boot-path view: the same files regrouped by their "bp" part (no number changes;
-    // weighted progress is only known per category, so these groups show honest numbers)
+    // the boot-path view: the same files regrouped by their "bp" part (no number changes)
     for (const b of summary.bootpath || []) {
       PART[b.key] = { color: HUE[b.hue] || HUE.gold, name: b.n, desc: b.desc, short: PART_SHORT[b.key] || b.n };
       const ln = { id: `game/game-${b.key}`, lib: `game-${b.key}`, kind: "lib", region: "game", part: b.key, group: "boot", desc: b.desc, name: b.n,
-        c: 0, cm: 0, f: 0, fm: 0, parent: rn, children: [], loaded: false };
+        c: 0, cm: 0, wm: 0, f: 0, fm: 0, parent: rn, children: [], loaded: false };
       const files = GROUPS.cat.libs.flatMap((cl) => cl.children.map((fn) => [cl, fn])).filter(([, fn]) => fn.bp === b.key)
         .sort((a, b2) => (a[1].addr || 0) - (b2[1].addr || 0));
       files.forEach(([cl, fn], i) => {
-        const x = fileNode(ln, { n: fn.name, p: fn.path, a: fn.addr, s: fn.s, c: fn.c, cm: fn.cm, f: fn.f, fm: fn.fm, d: fn.d, dm: fn.dm, t: fn.t, u: fn.u, bp: fn.bp }, i, cl.lib, fn.srcIdx);
+        const x = fileNode(ln, { n: fn.name, p: fn.path, a: fn.addr, s: fn.s, c: fn.c, cm: fn.cm, wm: fn.wm, f: fn.f, fm: fn.fm, d: fn.d, dm: fn.dm, t: fn.t, u: fn.u, bp: fn.bp }, i, cl.lib, fn.srcIdx);
         x.cat = cl.part;
-        for (const k of ["c", "cm", "f", "fm"]) ln[k] += fn[k];
+        for (const k of ["c", "cm", "wm", "f", "fm"]) ln[k] += fn[k];
       });
       byId.set(ln.id, ln);
       GROUPS.boot.libs.push(ln);
@@ -133,9 +134,9 @@ async function ensureLoaded(lib) {
     const d = data.get(file.src || lib.lib), k = String(file.srcIdx ?? file.idx);
     const fns = d.files[k] || [];
     if (d.ev && d.ev[k]) [file.conf, file.ev] = d.ev[k];
-    file.children = fns.map(([name, addr, size, m], j) => ({
+    file.children = fns.map(([name, addr, size, m, w], j) => ({
       id: `${file.id}/${j}`, kind: "fn", region: file.region, part: file.part, name, addr, c: size, cm: m === 100 ? size : 0,
-      m, f: 1, fm: m === 100 ? 1 : 0, parent: file,
+      wm: m === 100 ? size : w || 0, m, f: 1, fm: m === 100 ? 1 : 0, parent: file,
     }));
   }
   lib.loaded = true;
@@ -321,7 +322,7 @@ function drawLayer(focus) {
   head.append("text").attr("class", "grp-label").attr("x", (d) => d.x0 + 6).attr("y", (d) => d.y0 + 13)
     .each(function (d) {
       const n = d.data.node, w = d.x1 - d.x0 - 12;
-      const p = ` ${pct(ratio(n.cm, n.c))}`;
+      const p = ` ${pct(ratio(n.cm, n.c))}${wOf(n) > n.cm ? ` (${pct(ratio(wOf(n), n.c))} w)` : ""}`;
       const label = fit(n.name, w - p.length * 6.6, 6.8);
       const t = d3.select(this);
       t.append("tspan").text(label);
@@ -340,6 +341,16 @@ function drawLayer(focus) {
     .attr("fill", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.07 : 0.16 }))
     .attr("stroke", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.45 : 0.4 }))
     .attr("stroke-dasharray", (d) => (unsplit(d.data.node) && d.x1 - d.x0 > 10 ? "3 2" : null));
+  // weighted share (partial credit for structurally matched functions): a paler liquid
+  // under the honest one, so the solid part stays byte-identical bytes only
+  lg.filter((d) => wOf(d.data.node) > d.data.node.cm).append("rect").attr("class", "wfill")
+    .attr("x", (d) => d.x0).attr("width", (d) => d.x1 - d.x0)
+    .attr("y", (d) => d.y1).attr("height", 0)
+    .attr("fill", (d) => tileFill(d.data.node).copy({ opacity: 0.32 }))
+    .attr("pointer-events", "none")
+    .transition().delay((d, i) => (REDUCED ? 0 : 200 + Math.min(i, 200) * 2)).duration(REDUCED ? 0 : 800).ease(d3.easeCubicOut)
+    .attr("y", (d) => d.y1 - (d.y1 - d.y0) * (wOf(d.data.node) / d.data.node.c))
+    .attr("height", (d) => (d.y1 - d.y0) * (wOf(d.data.node) / d.data.node.c));
   // the liquid: matched share fills the tile from the bottom (area-exact)
   lg.filter((d) => d.data.node.cm > 0).append("rect").attr("class", "fill")
     .attr("x", (d) => d.x0).attr("width", (d) => d.x1 - d.x0)
@@ -361,7 +372,8 @@ function drawLayer(focus) {
     if (!name) return;
     g.append("text").attr("class", "tl").attr("x", d.x0 + 5).attr("y", d.y0 + 14).text(name);
     if (d.y1 - d.y0 > 34) g.append("text").attr("class", "tl p").attr("x", d.x0 + 5).attr("y", d.y0 + 28)
-      .text(n.kind === "fn" ? fit(bytes(n.c), w, 6) : fit(`${pct(ratio(n.cm, n.c))} · ${bytes(n.c)}`, w, 6));
+      .text(fit(n.kind === "fn" ? (n.m > 0 && n.m < 100 ? `${n.m} % · ${bytes(n.c)}` : bytes(n.c))
+        : `${pct(ratio(n.cm, n.c))}${wOf(n) > n.cm ? ` · ${pct(ratio(wOf(n), n.c))} w` : ""} · ${bytes(n.c)}`, w, 6));
   });
   // unconfirmed category (low confidence in docs/names/categories.tsv): a small dashed ring
   // with "?" in the top-right corner of the file's tile (a leaf, or a group of its functions)
@@ -496,12 +508,13 @@ function tipHTML(n) {
   if (n.kind === "fn") {
     const st = n.m === 100 ? "matched" : n.m === -1 ? "not split yet" : n.m > 0 ? `${n.m} % similar, not matched` : "not matched";
     return `<div class="t-name">${esc(n.name)}</div><div class="t-path">${esc(n.parent.path)} &middot; ${hex(n.addr)}</div>
-      <dl><dt>Size</dt><dd>${num(n.c)} bytes</dd><dt>Of the DOL</dt><dd>${pct(share)}</dd><dt>Status</dt><dd>${st}</dd></dl>`;
+      <dl><dt>Size</dt><dd>${num(n.c)} bytes</dd><dt>Of the DOL</dt><dd>${pct(share)}</dd><dt>Status</dt><dd>${st}</dd>${
+        n.m !== 100 && n.wm > 0 ? `<dt>Weighted</dt><dd>${pct(ratio(n.wm, n.c))} (${bytes(n.wm)}, structurally matched)</dd>` : ""}</dl>`;
   }
   const rows = [
     ["Size", `${bytes(n.c)}`], ["Of the DOL", pct(share)],
     ["Matched", `${pct(ratio(n.cm, n.c))} (${bytes(n.cm)})`],
-    ...(n.wm != null && n.wm > n.cm ? [["Weighted", pct(ratio(n.wm, n.c))]] : []),
+    ...(wOf(n) > n.cm ? [["Weighted", `${pct(ratio(wOf(n), n.c))} (${bytes(wOf(n))})`]] : []),
     ["Functions", `${num(n.fm)} / ${num(n.f)}`],
   ];
   if (n.kind === "file") {
@@ -591,7 +604,7 @@ function initMap() {
 function drawLegend() {
   $("#legend").innerHTML = gameGroups().map((l) => `<span>${partGlyph(l.part)} ${esc(PART[l.part].name)}</span>`).join("")
     + `<span>${glyph("jsystem")} Libraries</span>`
-    + `<span><i class="fillkey"></i> matched share</span><span><i class="dashkey"></i> not split yet</span>`
+    + `<span><i class="fillkey"></i> matched share</span><span><i class="wfillkey"></i> weighted (partial credit)</span><span><i class="dashkey"></i> not split yet</span>`
     + `<span><i class="unconfkey">?</i> category unconfirmed</span>`;
 }
 
