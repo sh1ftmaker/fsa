@@ -184,7 +184,6 @@ bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s
     return result;
 }
 
-// FIXME(shotgun): 99.5 %, regalloc-only
 // FIXME(shotgun): 99.8 %, regalloc-only
 bool BgRewrite_804A7C98::fn_802A1D44(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
@@ -263,6 +262,7 @@ s32 BgRewrite_804A7C98::fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s3
     return 0;
 }
 
+// FIXME(shotgun): 99.5 %, regalloc-only
 bool BgRewrite_804A7C98::fn_802A1688(const JGeometry::TVec3f* pos, s32 layer, u32 tag) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
