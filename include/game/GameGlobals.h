@@ -1882,6 +1882,9 @@ public:
     // 0x8042EF9C: lays the text `id` of the message window out into `str`
     // (game/tu_8042E964.cpp, not written yet). Called by fn_80431900 / fn_80431A9C.
     void fn_8042EF9C(char* str, s32 id, u8 value);
+    // 0x80430518: the width of the counted noun fn_80430368 appends, at
+    // `scale` (sums the font's width entries of its characters); `this` is not read.
+    f32 fn_80430518(u8 noun, s32 count, f32 scale);
     // 0x8042F6DC: second layout pass over the same window (not written yet).
     void fn_8042F6DC();
     // 0x80430368: appends the counted noun (the nouns of cls_804AF774::fn_803A2CB0) to out; 0.0f.
@@ -1897,15 +1900,15 @@ public:
     // Frame sizes copied from the panes' 0x112 (fn_80431D84): per bb pane (field_0x10) and wb pane (field_0x24) four pairs.
     /* 0x38 */ JGeometry::TVec2<s16> field_0x38[16];
     /* 0x78 */ JGeometry::TVec2<s16> field_0x78[16];
-    /* 0xB8 */ u8 field_0xb8[0xBC - 0xB8];
     // SHARED-EDIT: floats read by fn_80431174 (cursor placement): the window's
-    // pane sizes and offsets, laid out by fn_8042F6DC.
-    /* 0xBC */ f32 field_0xbc;
-    /* 0xC0 */ f32 field_0xc0;
-    /* 0xC4 */ u8 field_0xc4[0xC8 - 0xC4];
-    /* 0xC8 */ f32 field_0xc8;
-    /* 0xCC */ f32 field_0xcc;
-    /* 0xD0 */ f32 field_0xd0;
+    // pane sizes and offsets, laid out by fn_8042F6DC. fn_8042EF9C stores the
+    // widest line in [0] and the width of choice 1 / 2 in [1] / [2]
+    // (stfsx at 0xB8 + choice * 4).
+    /* 0xB8 */ f32 field_0xb8[3];
+    /* 0xC4 */ f32 field_0xc4; // cleared by fn_8042EF9C
+    /* 0xC8 */ f32 field_0xc8; // width of the last line (fn_8042EF9C)
+    // fn_8042EF9C: the line width where choice 0 / 1 starts (stfs at 0xCC + choice * 4).
+    /* 0xCC */ f32 field_0xcc[2];
     /* 0xD4 */ u8 field_0xd4[0xD8 - 0xD4];
     /* 0xD8 */ f32 field_0xd8[2];       // indexed by the cursor (0 or 1; fn_8042F6DC's loop stores i < 2)
     /* 0xE0 */ u8 field_0xe0[0xE4 - 0xE0];

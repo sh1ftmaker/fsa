@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
@@ -17,6 +18,22 @@ public:
     /* 0x0CC */ u8 field_0xcc[0x112 - 0xCC];
     /* 0x112 */ JGeometry::TVec2<s16> mCoords[4];
 };
+
+// The text box 'Twt01' of warning_window.blo: fn_8042EF9C reads a float at 0x11C, past our
+// J2DTextBox (0x100 bytes); its exact class is not identified, so the field is a member of this
+// stand-in subclass (the pane is never constructed as it).
+class WarningTextBox : public J2DTextBox {
+public:
+    /* 0x100 */ u8 field_0x100[0x11C - 0x100];
+    /* 0x11C */ f32 field_0x11c;
+};
+
+// The width of character c in the message font (an int: the asm converts it signed).
+static inline int charWidth(int c) {
+    JUTFont::TWidth w;
+    lbl_8053AD78->mFont->getWidthEntry(c, &w);
+    return w.w1;
+}
 
 cls_804B1634* lbl_8053AEC0;
 cls_804B1600* lbl_8053AEC4;
@@ -220,10 +237,10 @@ bool cls_804B1634::fn_80431174(u8 cursor) {
         J2DPane* textY = field_0x8->search(0x0000005477743031ull);
         y = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getBounds()->i.y + textY->getHeight() * 0.5f;
         if (cursor == 0) {
-            x += (field_0xbc - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f;
+            x += (field_0xb8[1] - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f;
         } else {
-            x += (field_0xc0 - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f +
-                 (field_0xd0 - field_0xcc);
+            x += (field_0xb8[2] - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f +
+                 (field_0xcc[1] - field_0xcc[0]);
         }
         f32 curHeight = field_0x8->search(0x0050776375723031ull)->getHeight();
         y += (field_0xd8[cursor] - (f32)field_0xe4 * 0.5f - 1.0f) *
@@ -256,6 +273,77 @@ void cls_804B1634::fn_804310CC() {
 void cls_804B1634::fn_804310BC() {
     field_0xe8 = 0;
     field_0xec = 0;
+}
+
+// FIXME(shotgun): 100 %, matches
+// The width of the noun fn_80430368 appends (only nouns 1-5; the space is the font's 0xA0).
+f32 cls_804B1634::fn_80430518(u8 noun, s32 count, f32 scale) {
+    f32 total = 0.0f;
+    switch (noun) {
+    case 1:
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('F');
+        total += scale * charWidth('o');
+        total += scale * charWidth('r');
+        total += scale * charWidth('c');
+        total += scale * charWidth('e');
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('G');
+        total += scale * charWidth('e');
+        total += scale * charWidth('m');
+        if (count != 1) {
+            total += scale * charWidth('s');
+        }
+        break;
+    case 2:
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('C');
+        total += scale * charWidth('u');
+        total += scale * charWidth('c');
+        total += scale * charWidth('c');
+        total += scale * charWidth('o');
+        if (count != 1) {
+            total += scale * charWidth('s');
+        }
+        break;
+    case 3:
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('b');
+        total += scale * charWidth('a');
+        total += scale * charWidth('d');
+        total += scale * charWidth('d');
+        if (count == 1) {
+            total += scale * charWidth('y');
+        } else {
+            total += scale * charWidth('i');
+            total += scale * charWidth('e');
+            total += scale * charWidth('s');
+        }
+        break;
+    case 4:
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('t');
+        total += scale * charWidth('i');
+        total += scale * charWidth('m');
+        total += scale * charWidth('e');
+        if (count != 1) {
+            total += scale * charWidth('s');
+        }
+        break;
+    case 5:
+        total += scale * charWidth(0xA0);
+        total += scale * charWidth('s');
+        total += scale * charWidth('y');
+        total += scale * charWidth('s');
+        total += scale * charWidth('t');
+        total += scale * charWidth('e');
+        total += scale * charWidth('m');
+        if (count != 1) {
+            total += scale * charWidth('s');
+        }
+        break;
+    }
+    return total;
 }
 
 // FIXME(shotgun): 99.10 %, operands (string literal pool offsets)
@@ -326,6 +414,160 @@ f32 cls_804B1634::fn_80430368(u8 noun, s32 count, char* out) {
         break;
     }
     return 0.0f;
+}
+
+// FIXME(shotgun): 93.21 %, missing/extra + reloc-name
+// Lays message `id` out into `str` with each line centred in 428 (a "\x1BCR[n]" prefix), the
+// 0x1A size-3 commands replaced by the digit `value` and its counted noun; on the way it
+// measures the lines and the two choices (0x1A size-2 commands) into field_0xb8-field_0xe4.
+void cls_804B1634::fn_8042EF9C(char* str, s32 id, u8 value) {
+    MessageInf1_804AF070* inf1 =
+        &static_cast<MessageFile_804AF070*>(gGameRoot_8053AAF8->field_0xa8->getResource('????', "gc_four_swords_text_e.bmg"))->inf1;
+    const char* text = (const char*)inf1 + (inf1->size + inf1->entries[id].textOffset + 8);
+    f32 fontSize = static_cast<WarningTextBox*>(field_0x8->search('Twt01'))->field_0x11c;
+    f32 scale = fontSize / (f32)lbl_8053AD78->mFont->getCellWidth();
+    lbl_8053AD78->mFont->getCellHeight();
+    field_0xea = 0xFF;
+    field_0xe4 = 1;
+    u8 digit = value + '0';
+    s32 i = 0;
+    s32 code = 0;
+    u8 choice = 0;
+    f32 lineW = 0.0f;
+    f32 spaceW = 0.0f;
+    field_0xb8[0] = 0.0f;
+    field_0xb8[1] = 0.0f;
+    field_0xb8[2] = 0.0f;
+    field_0xc4 = 0.0f;
+    field_0xc8 = 0.0f;
+    f32 widths[10];
+    widths[0] = 0.0f;
+    widths[1] = 0.0f;
+    widths[2] = 0.0f;
+    widths[3] = 0.0f;
+    widths[4] = 0.0f;
+    widths[5] = 0.0f;
+    widths[6] = 0.0f;
+    widths[7] = 0.0f;
+    widths[8] = 0.0f;
+    widths[9] = 0.0f;
+    const char* p;
+    while ((p = text + i)[0] != 0) {
+        if (p[0] == '\n') {
+            if (field_0xb8[0] < lineW) {
+                field_0xb8[0] = lineW;
+            }
+            i++;
+            widths[field_0xe4++ - 1] = lineW;
+            lineW = 0.0f;
+        } else if (p[0] == 0x1A) {
+            if (p[2] == 2) {
+                if (p[4] == 0 || p[4] == 10 || p[4] == 0x12 || p[4] == 0x19) {
+                    if (choice == 1) {
+                        field_0xb8[1] -= spaceW;
+                        spaceW = 0.0f;
+                    }
+                    if (choice < 2) {
+                        field_0xcc[choice] = lineW;
+                        field_0xd8[choice++] = field_0xe4;
+                    }
+                } else if (p[4] == 1 || p[4] == 9 || p[4] == 0x11 || p[4] == 0x1A) {
+                    if (choice == 1) {
+                        field_0xb8[1] -= spaceW;
+                        spaceW = 0.0f;
+                    }
+                    if (choice < 2) {
+                        field_0xcc[choice] = lineW;
+                        field_0xd8[choice] = field_0xe4;
+                        field_0xea = choice;
+                        choice++;
+                    }
+                }
+            } else if (p[2] == 3) {
+                code = digit;
+                lineW += scale * charWidth(digit);
+                if (choice != 0) {
+                    field_0xb8[choice] += scale * charWidth(digit);
+                }
+                f32 nounW = fn_80430518(p[5], value, scale);
+                lineW += nounW;
+                if (choice != 0) {
+                    field_0xb8[choice] += nounW;
+                }
+            }
+            i += p[1];
+        } else {
+            code = (u8)p[0];
+            i++;
+            if (lbl_8053AD78->mFont->isLeadByte(code)) {
+                code = (code << 8) | (u8)text[i];
+                i++;
+            }
+            lineW += scale * charWidth(code);
+            if (choice != 0) {
+                if (code == ' ' || code == 0x8140) {
+                    spaceW += scale * charWidth(code);
+                }
+                field_0xb8[choice] += scale * charWidth(code);
+            }
+        }
+    }
+    widths[field_0xe4 - 1] = lineW;
+    if (field_0xb8[0] < lineW) {
+        field_0xb8[0] = lineW;
+    }
+    field_0xc8 = lineW;
+    field_0xe4 = 1;
+    i = 0;
+    char ch[3];
+    ch[2] = 0;
+    ch[1] = 0;
+    ch[0] = 0;
+    str[0] = 0;
+    char prefix[16];
+    s32 pad = (s32)((428.0f - widths[field_0xe4 - 1]) * 0.5f + 0.5f);
+    if (pad > 0) {
+        snprintf(prefix, 15, "\x1B" "CR[%d]", pad);
+        strcat(str, prefix);
+    }
+    while ((p = text + i)[0] != 0) {
+        if (p[0] == '\n') {
+            ch[0] = p[0];
+            ch[1] = 0;
+            strcat(str, ch);
+            i++;
+            field_0xe4++;
+            pad = (s32)((428.0f - widths[field_0xe4 - 1]) * 0.5f + 0.5f);
+            if (pad > 0) {
+                snprintf(prefix, 15, "\x1B" "CR[%d]", pad);
+                strcat(str, prefix);
+            }
+        } else if (p[0] == 0x1A) {
+            if ((u8)p[2] == 3) {
+                ch[0] = digit;
+                code = digit;
+                ch[1] = 0;
+                strcat(str, ch);
+                fn_80430368(p[5], value, str);
+            }
+            i += p[1];
+        } else if (lbl_8053AD78->mFont->isLeadByte(code)) {
+            // The original tests the previous character's code here (r31), not p[0].
+            ch[0] = p[0];
+            ch[1] = p[1];
+            ch[2] = 0;
+            strcat(str, ch);
+            i += 2;
+        } else {
+            ch[0] = p[0];
+            ch[1] = 0;
+            strcat(str, ch);
+            i++;
+        }
+    }
+    ch[0] = p[0];
+    ch[1] = 0;
+    strcat(str, ch);
 }
 
 cls_804B1600::~cls_804B1600() {
