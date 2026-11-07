@@ -15,7 +15,9 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ u8 field_0x230; // field_0x90's low byte: 2, 4 or other (spawn timer range)
+    /* 0x231 */ u8 field_0x231[3];
+    /* 0x234 */ s32 field_0x234; // a timer
 }; // Size: 0x238
 
 // Named after its vtable, 0x8049C4C0.
@@ -27,7 +29,17 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x30]; // not yet known
+    /* 0x230 */ u8 field_0x230; // the state update() switches on (0-5)
+    /* 0x231 */ u8 field_0x231[3];
+    /* 0x234 */ u8 field_0x234[8]; // not yet known
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ u8 field_0x24c[0x260 - 0x24C]; // not yet known
+    // game/tu_800F46C0.cpp (not written yet): update()'s state 3 and states 0.
+    void fn_800F555C();
+    void fn_800F5E08();
 }; // Size: 0x260
 
 #endif
