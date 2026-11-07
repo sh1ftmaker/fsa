@@ -1842,7 +1842,6 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
     return widest;
 }
 
-// FIXME(shotgun): 99.99 %, reloc-name (the jump table is not split into this unit)
 // The width (in mFont units times scale) of the counter noun fn_8037F580 writes for command
 // 1-9 after a number: " Force Gem(s)", " Cucco(s)", " baddy / baddies", " time(s)",
 // " system(s)", " thief / thieves", " mole(s)", " return(s)", " Force Fairy / Fairies"
