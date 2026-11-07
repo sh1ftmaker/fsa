@@ -14,6 +14,50 @@
 #include "game/Message.h"
 
 // J2DPane::search tags, as u64 (the names are padded with leading zeros).
+// The tables are defined in address order.
+
+// The heart panes of player 0 on the main screen: "Php1lf01".., "Php1lk01".., "Php1lf09".., "Php1lk09".. (fn_8041DD24).
+// FIXME(shotgun): table not written out (more literals than the gate allows without a
+// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
+extern const u64 lbl_8048D468[4][8];
+
+// "Ph1ps01" .. "Ph1ps05" and "Ph1psk01" .. "Ph1psk05": the Force Gem digits (fn_8041CC04).
+static const u64 lbl_8048D658[5] = {
+    0x0050683170733031ull,
+    0x0050683170733032ull,
+    0x0050683170733033ull,
+    0x0050683170733034ull,
+    0x0050683170733035ull,
+};
+static const u64 lbl_8048D680[5] = {
+    0x50683170736B3031ull,
+    0x50683170736B3032ull,
+    0x50683170736B3033ull,
+    0x50683170736B3034ull,
+    0x50683170736B3035ull,
+};
+
+// "Phbrak01", "Phbra01", "Phbrak02", "Phbra02" (fn_8041FC2C).
+static const u64 lbl_8048D6B8[4] = {
+    0x50686272616B3031ull,
+    0x0050686272613031ull,
+    0x50686272616B3032ull,
+    0x0050686272613032ull,
+};
+
+// "P1s01" .. "P4r06" and "P1sk01" .. "P4rk06": the Force Gem digits per player (fn_8041C0C0;
+// player 4 has the r tags).
+// FIXME(shotgun): table not written out (more literals than the gate allows without a
+// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
+extern const u64 lbl_8048D6D8[4][5];
+// FIXME(shotgun): table not written out (more literals than the gate allows without a
+// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
+extern const u64 lbl_8048D778[4][5];
+
+// FIXME(shotgun): the tags "P1brak01", "P1bra01", "P1brak02", "P1bra02" .. "P4bra02" inside
+// dtk's merged .rodata object lbl_8048D454 (at 0x8048DCF8); not split out yet.
+extern const u64 lbl_8048DCF8[4][4];
+
 static const u64 lbl_8048DDD0[6] = {
     0x00000050746B3031ull, /* "Ptk01" */
     0x0000000050743031ull, /* "Pt01" */
@@ -34,47 +78,6 @@ static const u64 lbl_8048DE00[4] = {
 // FIXME(shotgun): pane-tag tables of this unit's .rodata (0x8048DE20, 0x398 bytes) not
 // written out yet; fn_80418D08 reads four 8-entry tables at [0x24], [0x2C], [0x34], [0x3C].
 extern const u64 lbl_8048DE20[0x398 / 8];
-// "Ph1ps01" .. "Ph1ps05" and "Ph1psk01" .. "Ph1psk05": the Force Gem digits (fn_8041CC04).
-static const u64 lbl_8048D658[5] = {
-    0x0050683170733031ull,
-    0x0050683170733032ull,
-    0x0050683170733033ull,
-    0x0050683170733034ull,
-    0x0050683170733035ull,
-};
-static const u64 lbl_8048D680[5] = {
-    0x50683170736B3031ull,
-    0x50683170736B3032ull,
-    0x50683170736B3033ull,
-    0x50683170736B3034ull,
-    0x50683170736B3035ull,
-};
-
-// "P1s01" .. "P4r06" and "P1sk01" .. "P4rk06": the Force Gem digits per player (fn_8041C0C0;
-// player 4 has the r tags).
-// FIXME(shotgun): table not written out (more literals than the gate allows without a
-// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
-extern const u64 lbl_8048D6D8[4][5];
-// FIXME(shotgun): table not written out (more literals than the gate allows without a
-// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
-extern const u64 lbl_8048D778[4][5];
-
-// The heart panes of player 0 on the main screen: "Php1lf01".., "Php1lk01".., "Php1lf09".., "Php1lk09".. (fn_8041DD24).
-// FIXME(shotgun): table not written out (more literals than the gate allows without a
-// blobs.txt array line); it sits inside dtk's merged .rodata object lbl_8048D454.
-extern const u64 lbl_8048D468[4][8];
-
-// "Phbrak01", "Phbra01", "Phbrak02", "Phbra02" (fn_8041FC2C).
-static const u64 lbl_8048D6B8[4] = {
-    0x50686272616B3031ull,
-    0x0050686272613031ull,
-    0x50686272616B3032ull,
-    0x0050686272613032ull,
-};
-
-// FIXME(shotgun): the tags "P1brak01", "P1bra01", "P1brak02", "P1bra02" .. "P4bra02" inside
-// dtk's merged .rodata object lbl_8048D454 (at 0x8048DCF8); not split out yet.
-extern const u64 lbl_8048DCF8[4][4];
 
 // The digit textures fn_8041918C passes to fn_804030C4 ('TIMG').
 const char* lbl_804B139C[10] = {
@@ -453,11 +456,11 @@ void cls_804B13D4::fn_8041E8B4(s32 player) {
     u8 bit = 1 << player;
     if (lbl_80529DEC.field_0x239 & bit) {
         lbl_80529DEC.field_0xd8[player] = fn_80237774(player);
-    for (s32 i = 0; i < 4; i++) {
-        if (i != player && fn_8022F514(i) && player == fn_8022F3DC(i)) {
-            lbl_80529DEC.field_0xd8[i] = lbl_80529DEC.field_0xd8[player];
+        for (s32 i = 0; i < 4; i++) {
+            if (i != player && fn_8022F514(i) && player == fn_8022F3DC(i)) {
+                lbl_80529DEC.field_0xd8[i] = lbl_80529DEC.field_0xd8[player];
+            }
         }
-    }
         field_0x28a |= bit;
         field_0x198[player] = 0;
         field_0x21a[player] = lbl_8050DB0C.field_0x4c[20] * lbl_8050DB0C.field_0x4c[21] + 30;
@@ -828,7 +831,7 @@ void cls_804B13D4::fn_8041C67C() {
     }
 }
 
-// FIXME(shotgun): 80.24 %, missing/extra
+// FIXME(shotgun): 68.65 %, missing/extra + reloc-name
 void cls_804B13D4::fn_8041C0C0(s32 player) {
     if (!(field_0x28b & (u8)(1 << player))) {
         return;
