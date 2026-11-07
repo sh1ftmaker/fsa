@@ -2,6 +2,7 @@
 #define GAME_CLS_8016ED88_H
 
 #include "types.h"
+#include "JSystem/JGeometry.h"
 
 class ActorSoundObj_804578F4;
 class JPABaseEmitter;
@@ -14,8 +15,10 @@ struct cls_8016FDE0 {
     cls_8016FDE0();
 
     /* 0x00 */ JPABaseEmitter* field_0x0;  // cleared by cls_8016ED88::fn_8016ED88
-    /* 0x04 */ u8 field_0x4[0x14 - 0x4];
-    /* 0x14 */ void* field_0x14; // cleared by cls_8016ED88::fn_8016ED88
+    /* 0x04 */ JGeometry::TVec3f field_0x4;
+    /* 0x10 */ u16 field_0x10;
+    /* 0x12 */ u8 field_0x12[2];
+    /* 0x14 */ s32 field_0x14; // cleared by cls_8016ED88::fn_8016ED88
     // Title_804AF820's constructor puts a new ActorSoundObj_804578F4(NULL,
     // NULL, 8) here; its destructor deletes it.
     /* 0x18 */ ActorSoundObj_804578F4* field_0x18;

@@ -105,9 +105,116 @@ void GameRootSub24_8016A3AC::fn_8016EDB0() {
 void cls_8016ED88::fn_8016ED88() {
     for (int i = 0; i < 4; i++) {
         mEntries[i].field_0x0 = NULL;
-        mEntries[i].field_0x14 = NULL;
+        mEntries[i].field_0x14 = 0;
     }
 }
+
+#ifdef NONMATCHING
+static const s16 lbl_8050DD28[4] = {0x048F, 0x0490, 0x0491, 0x0492};
+
+// FIXME(shotgun): missing/extra
+void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entries, s32* timer1,
+                 s32* timer2, u8* flag, J3DAnmTextureSRTKey** btk, J3DAnmTevRegKey** brk, f32 scale) {
+    s32 maxTimer = -1;
+    if (*timer2 > 0) {
+        (*timer2)--;
+    } else if (*flag != 0) {
+        *flag = 0;
+        for (s32 i = 0; i < 4; i++) {
+            cls_8016FDE0* entry = &entries->mEntries[i];
+            if (entry->field_0x0 == NULL) {
+                entry->field_0x4.set(576.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 0.5f),
+                                     384.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 0.5f), 0.0f);
+                entry->field_0x10 = (s16)((s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3);
+                u32 groupId = arg2 ? 0 : 12;
+                entry->field_0x0 = spawnEmitter_8013CC50(groupId, &entry->field_0x4, lbl_8050DD28[entry->field_0x10],
+                                                         0, 0, NULL, NULL, true, 1.0f);
+                entry->field_0x0->setStatus(JPAEMIT_Immortal);
+                entry->field_0x14 = 60;
+                if (entry->field_0x18 != NULL) {
+                    entry->field_0x18->startSound(0x30078);
+                }
+                break;
+            }
+        }
+    } else if (*timer1 > 0) {
+        (*timer1)--;
+    } else {
+        for (s32 i = 0; i < 4; i++) {
+            cls_8016FDE0* entry = &entries->mEntries[i];
+            if (entry->field_0x0 == NULL) {
+                entry->field_0x4.set(576.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 0.5f),
+                                     384.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 0.5f), 0.0f);
+                entry->field_0x10 = (s16)((s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) & 3);
+                u32 groupId = arg2 ? 0 : 12;
+                entry->field_0x0 = spawnEmitter_8013CC50(groupId, &entry->field_0x4, lbl_8050DD28[entry->field_0x10],
+                                                         0, 0, NULL, NULL, true, 1.0f);
+                entry->field_0x0->setStatus(JPAEMIT_Immortal);
+                entry->field_0x14 = 60;
+                if (entry->field_0x18 != NULL) {
+                    entry->field_0x18->startSound(0x30031);
+                }
+                break;
+            }
+        }
+        *timer1 = 60 + (s32)(150.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        if ((s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) < 50) {
+            *flag = 1;
+            *timer2 = 5 + (s32)(5.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        }
+    }
+
+    for (s32 i = 0; i < 4; i++) {
+        cls_8016FDE0* entry = &entries->mEntries[i];
+        if (entry->field_0x18 != NULL) {
+            entry->field_0x18->process();
+        }
+        if (entry->field_0x0 != NULL) {
+            if (entry->field_0x0->isEnableDeleteEmitter()) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(entry->field_0x0);
+                entry->field_0x0 = NULL;
+                entry->field_0x14 = 0;
+            } else {
+                JGeometry::TVec3f s(scale, scale, scale);
+                entry->field_0x0->setGlobalScale(s);
+                if (!arg2) {
+                    f32 z = -640.0f;
+                    JGeometry::TVec3f trans(-view[0][3] + entry->field_0x4.x, 32.0f + (z - view[1][3]),
+                                            entry->field_0x4.y + z);
+                    entry->field_0x0->setGlobalTranslation(trans);
+                } else {
+                    JGeometry::TVec3f trans(300.0f + entry->field_0x4.x, 220.0f + entry->field_0x4.y, -513.0f);
+                    entry->field_0x0->setGlobalTranslation(trans);
+                }
+                if (entry->field_0x14 > 0) {
+                    entry->field_0x14--;
+                    if (entry->field_0x14 > maxTimer) {
+                        maxTimer = entry->field_0x14;
+                    }
+                }
+            }
+        }
+    }
+
+    if (maxTimer < 0) {
+        maxTimer = 0;
+    }
+    for (s32 i = 0; i < 6; i++) {
+        if (i == 3 && !arg3) {
+            continue;
+        }
+        if ((i == 1 || i == 2) && arg3) {
+            continue;
+        }
+        if (btk[i] != NULL) {
+            btk[i]->setFrame((f32)(frame % btk[i]->getTotalFrameCount()));
+        }
+        if (brk[i] != NULL) {
+            brk[i]->setFrame((f32)((brk[i]->getTotalFrameCount() * maxTimer) / 60));
+        }
+    }
+}
+#endif
 
 void GameRootSub24_8016A3AC::fn_8016DCEC() {
     if (isGameModeSet() && field_0x1cf && gGameRoot_8053AAF8->field_0x4c != 0xB) {
@@ -176,12 +283,339 @@ void GameRootSub24_8016A3AC::fn_8016D284() {
     }
 }
 
+#ifdef NONMATCHING
+// FIXME(shotgun): missing/extra
+void GameRootSub24_8016A3AC::fn_8016CB14() {
+    if (field_0x1c7 && field_0xf8 != NULL && field_0xfc != NULL) {
+        f32 width = (s32)JUTVideo::getManager()->getFbWidth();
+        f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
+        f32 scroll = 0.00048828125f * (f32)(field_0x1c0 & 0x7FF);
+        JGeometry::TVec3f center;
+        JGeometry::TVec3f half;
+        getMapTexView(center, half);
+        gGameRoot2_8053AB10->fn_8013B460();
+        gGameRoot2_8053AB10->fn_8013B1E8();
+        field_0xf8->load(GX_TEXMAP0);
+        field_0xfc->load(GX_TEXMAP1);
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+        GXSetNumChans(0);
+        GXSetNumTexGens(2);
+        GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetNumTevStages(2);
+        GXColor color1 = lbl_8053D910;
+        GXSetTevColor(GX_TEVREG0, color1);
+        GXColor color2 = lbl_8053D914;
+        GXSetTevColor(GX_TEVREG1, color2);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_TEXA);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_C0, GX_CC_C1, GX_CC_APREV, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_TEXA, GX_CA_APREV, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_OR, GX_GREATER, 0);
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        GXSetZCompLoc(GX_FALSE);
+        GXSetCullMode(GX_CULL_NONE);
+        JGeometry::TVec3f center2(center);
+        JGeometry::TVec3f half2(half);
+        center.x -= scroll;
+        center.y -= scroll;
+        center2.x += scroll;
+        center2.y += scroll;
+        center2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXEnd();
+    }
+}
+
+// FIXME(shotgun): missing/extra
+void GameRootSub24_8016A3AC::fn_8016C2FC() {
+    if (field_0x1c9 && field_0x100 != NULL && field_0x104 != NULL) {
+        f32 width = (s32)JUTVideo::getManager()->getFbWidth();
+        f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
+        f32 scroll = 0.00048828125f * (f32)(field_0x1c0 & 0x7FF);
+        JGeometry::TVec3f center;
+        JGeometry::TVec3f half;
+        getMapTexView(center, half);
+        gGameRoot2_8053AB10->fn_8013B460();
+        gGameRoot2_8053AB10->fn_8013B1E8();
+        field_0x100->load(GX_TEXMAP0);
+        field_0x104->load(GX_TEXMAP1);
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+        GXSetNumChans(0);
+        GXSetNumTexGens(2);
+        GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetNumTevStages(2);
+        GXColor color1 = lbl_8053D918;
+        GXSetTevColor(GX_TEVREG0, color1);
+        GXColor color2 = lbl_8053D91C;
+        GXSetTevColor(GX_TEVREG1, color2);
+        GXColor color3 = lbl_8053D920;
+        GXSetTevColor(GX_TEVREG2, color3);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_C0, GX_CC_C1, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_A0, GX_CA_A1, GX_CA_TEXA, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_CPREV, GX_CC_C2, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_APREV, GX_CA_A2, GX_CA_TEXA, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_OR, GX_GREATER, 0);
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        GXSetZCompLoc(GX_FALSE);
+        GXSetCullMode(GX_CULL_NONE);
+        JGeometry::TVec3f center2(center);
+        JGeometry::TVec3f half2(half);
+        center.x -= scroll;
+        center.y -= scroll;
+        center.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        center2.x -= scroll;
+        center2.y -= scroll;
+        center2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXEnd();
+    }
+}
+
+// FIXME(shotgun): missing/extra
+void GameRootSub24_8016A3AC::fn_8016B910() {
+    if (field_0x1ca && field_0x10c != NULL && field_0x108 != NULL && field_0x100 != NULL && field_0x104 != NULL) {
+        f32 width = (s32)JUTVideo::getManager()->getFbWidth();
+        f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
+        f32 scroll = 0.00048828125f * (f32)(field_0x1c0 & 0x7FF);
+        JGeometry::TVec3f center;
+        JGeometry::TVec3f half;
+        getMapTexView(center, half);
+        gGameRoot2_8053AB10->fn_8013B460();
+        gGameRoot2_8053AB10->fn_8013B1E8();
+        field_0x100->load(GX_TEXMAP0);
+        field_0x104->load(GX_TEXMAP1);
+        field_0x108->load(GX_TEXMAP2);
+        field_0x10c->load(GX_TEXMAP3);
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX2, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX3, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX2, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX3, GX_TEX_ST, GX_F32, 0);
+        GXSetNumChans(0);
+        GXSetNumTexGens(4);
+        GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_TEX2, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD3, GX_TG_MTX2x4, GX_TG_TEX3, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetNumTevStages(3);
+        GXColor color1 = lbl_8053D924;
+        GXSetTevColor(GX_TEVREG0, color1);
+        GXColor color2 = lbl_8053D928;
+        GXColor color3 = lbl_8053D92C;
+        GXSetTevColor(GX_TEVREG1, color3);
+        GXColor color4 = lbl_8053D930;
+        GXColor color5 = lbl_8053D934;
+        GXSetTevColor(GX_TEVREG2, color5);
+        GXSetTevKColor(GX_KCOLOR0, color2);
+        GXSetTevKColor(GX_KCOLOR1, color4);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD2, GX_TEXMAP2, GX_COLOR_NULL);
+        GXSetTevKColorSel(GX_TEVSTAGE0, GX_TEV_KCSEL_K0);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_C0, GX_CC_KONST, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_A0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_TEXA);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_CPREV, GX_CC_C1, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_APREV, GX_CA_A1, GX_CA_TEXA, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE2, GX_CC_CPREV, GX_CC_C2, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_APREV, GX_CA_A2, GX_CA_TEXA, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
+        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_OR, GX_GREATER, 0);
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        GXSetZCompLoc(GX_FALSE);
+        GXSetCullMode(GX_CULL_NONE);
+        JGeometry::TVec3f center2(center);
+        JGeometry::TVec3f half2(half);
+        JGeometry::TVec3f center3(center);
+        JGeometry::TVec3f half3(half);
+        JGeometry::TVec3f center4(center);
+        JGeometry::TVec3f half4(half);
+        center.x -= scroll;
+        center.y -= scroll;
+        center.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        center2.x -= scroll;
+        center2.y -= scroll;
+        center2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        center3.x -= 0.7f * scroll;
+        center3.y -= 0.7f * scroll;
+        center3.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half3.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        center4.x -= 0.7f * scroll;
+        center4.y -= 0.7f * scroll;
+        center4.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        half4.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXTexCoord2f32(center3.x - half3.x, center3.y - half3.y);
+        GXTexCoord2f32(center4.x - half4.x, center4.y - half4.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y - half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXTexCoord2f32(center3.x + half3.x, center3.y - half3.y);
+        GXTexCoord2f32(center4.x + half4.x, center4.y - half4.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center.x + half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXTexCoord2f32(center3.x + half3.x, center3.y + half3.y);
+        GXTexCoord2f32(center4.x + half4.x, center4.y + half4.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center.x - half.x, center.y + half.y);
+        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXTexCoord2f32(center3.x - half3.x, center3.y + half3.y);
+        GXTexCoord2f32(center4.x - half4.x, center4.y + half4.y);
+        GXEnd();
+    }
+}
+#endif
+
 void GameRootSub24_8016A3AC::fn_8016B8AC() {
     if (field_0x1cb[0]) {
         JGeometry::TVec3f pos(256.0f, 256.0f + field_0x1e4, 0.0f);
         fn_8016A7DC(field_0x34, pos, 1, true, false, 1.0f, 102.4f);
     }
 }
+
+#ifdef NONMATCHING
+// FIXME(shotgun): missing/extra
+void GameRootSub24_8016A3AC::fn_8016B4D4() {
+    bool cond1 = false;
+    bool cond2 = false;
+    if (field_0x110 != NULL && field_0x114 != NULL && field_0x1cb[1]) {
+        cond1 = true;
+    }
+    if (field_0x118 != NULL && field_0x11c != NULL && field_0x1cb[2]) {
+        cond2 = true;
+    }
+    if (cond1 || cond2) {
+        f32 width = (s32)JUTVideo::getManager()->getFbWidth();
+        f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
+        JGeometry::TVec3f center;
+        JGeometry::TVec3f half;
+        getMapTexView(center, half);
+        center.x -= 1.5f;
+        center.y -= 1.0f;
+        center.mul(JGeometry::TVec3f(0.5f, 0.5f, 1.0f));
+        center.x += 0.5f;
+        center.y += 1.0f;
+        half.mul(JGeometry::TVec3f(1.0f, 1.0f, 1.0f));
+        gGameRoot2_8053AB10->fn_8013B460();
+        gGameRoot2_8053AB10->fn_8013B1E8();
+        f32 midX = width * (0.5f - center.x) / (2.0f * half.x) + 0.5f * width;
+        if (midX > 0.0f) {
+            if (midX > width) {
+                midX = width;
+            }
+            if (cond1) {
+                field_0x114->load(GX_TEXMAP0);
+            } else {
+                field_0x11c->load(GX_TEXMAP0);
+            }
+            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+            GXPosition3f32(0.0f, 0.0f, 0.0f);
+            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y - half.y);
+            GXPosition3f32(midX, 0.0f, 0.0f);
+            GXTexCoord2f32(1.0f, center.y - half.y);
+            GXPosition3f32(midX, height, 0.0f);
+            GXTexCoord2f32(1.0f, center.y + half.y);
+            GXPosition3f32(0.0f, height, 0.0f);
+            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y + half.y);
+            GXEnd();
+        }
+        if (midX < width) {
+            if (midX < 0.0f) {
+                midX = 0.0f;
+            }
+            if (cond1) {
+                field_0x110->load(GX_TEXMAP0);
+            } else {
+                field_0x118->load(GX_TEXMAP0);
+            }
+            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+            GXPosition3f32(midX, 0.0f, 0.0f);
+            GXTexCoord2f32(0.0f, center.y - half.y);
+            GXPosition3f32(width, 0.0f, 0.0f);
+            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y - half.y);
+            GXPosition3f32(width, height, 0.0f);
+            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y + half.y);
+            GXPosition3f32(midX, height, 0.0f);
+            GXTexCoord2f32(0.0f, center.y + half.y);
+            GXEnd();
+        }
+    }
+}
+#endif
 
 #pragma auto_inline reset
 
