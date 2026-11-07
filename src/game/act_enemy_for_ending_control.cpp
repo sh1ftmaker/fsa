@@ -77,6 +77,7 @@ void EnemyForEndingControl_804AD48C::init() {
 
 void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
 
+// FIXME: 99.19%. regalloc-only: f2/f0, f0/f1, f3/f2, f1/f3
 void EnemyForEndingControl_804AD48C::update() {
     f32 y = field_0x23c.y;
     f32 h = field_0x254;
@@ -140,6 +141,63 @@ bool cls_804A5958::fn_8035C15C(s32 seq) {
         field_0x24c++;
     }
     return false;
+}
+
+// FIXME: 99.37%. regalloc-only: r28/r27, f1/f0
+void EnemyForEndingControl_804AD48C::fn_8035BE24() {
+    gGameRoot_8053AAF8->fn_801365C8(0);
+    gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+    f32 y = field_0x23c.y;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    f32 h = field_0x254;
+    f32 y1 = y + h;
+    f32 x = field_0x23c.x;
+    f32 y0 = y - h;
+    if (camera->field_0x840 == 0) {
+        camera->field_0x840 = 1;
+        camera->field_0x844.set(x, y0, x, y1);
+        camera->field_0x854 = 1.0f;
+        camera->field_0x1d4 = -1.0f;
+        camera->field_0x1d8 = -1.0f;
+    }
+
+    mActors[0] = getActorManager_801F856C()->spawnActor_801F9484(
+        ACTOR_EZLD, field_0x4, &(mPos + JGeometry::TVec3f(0.0f, -37.0f, 0.0f)), 0, -1, -1);
+    s32 zelda = mActors[0];
+    if (zelda >= 0) {
+        cls_804A5958* actor =
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(zelda));
+        actor->field_0x23c = mSerial;
+    }
+
+    for (s32 i = 0; i < 6; i++) {
+        mActors[i + 1] = getActorManager_801F856C()->spawnActor_801F9484(
+            ACTOR_EMIK, field_0x4, &mPos, i, -1, -1);
+        s32 serial = mActors[i + 1];
+        if (serial >= 0) {
+            cls_804A5958* maiden =
+                static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+            maiden->field_0x23c = mSerial;
+        }
+    }
+
+    s32 zeldaSerial = mActors[0];
+    mActors[7] = getActorManager_801F856C()->spawnActor_801F9484(
+        ACTOR_ELNK, field_0x4, &(mPos + JGeometry::TVec3f(-48.0f, 200.0f, 0.0f)), zeldaSerial, -1, -1);
+    s32 link = mActors[7];
+    if (link >= 0) {
+        cls_804A5958* actor =
+            static_cast<cls_804A5958*>(getActorManager_801F856C()->findActorBySerial_801F666C(link));
+        actor->field_0x23c = mSerial;
+    }
+
+    fn_80230498(0, &(mPos + JGeometry::TVec3f(0.0f, 200.0f, 0.0f)), 0, 0xFF, -0x80, -0x80, true);
+
+    for (s32 i = 0; i < 3; i++) {
+        fn_80230498(i + 1, &(mPos + JGeometry::TVec3f(0.0f, 200.0f, 0.0f)), 0, 0xFF, -0x80, -0x80, true);
+    }
+
+    field_0x230 = 1;
 }
 
 // Empty phase handler in the member-pointer table lbl_804AD3A0 (read by fn_8035C650).
