@@ -420,10 +420,10 @@ void MaidenEnding_804AD5B8::fn_8035C940() {
                     // Both branches are in the original asm (written without the else: 83.8 %).
                     partner->field_0x230 = 5;
                     if (partner->field_0x230 == 5) {
-                        partner->field_0x258 = (1765.0f - partner->field_0x240) / 130.0f;
+                        partner->field_0x258 = (1765.0f - partner->field_0x23c.y) / 130.0f;
                         partner->field_0x25c = (partner->field_0x254 - 125.0f) / 130.0f;
                     } else {
-                        partner->field_0x258 = (1781.0f - partner->field_0x240) / 100.0f;
+                        partner->field_0x258 = (1781.0f - partner->field_0x23c.y) / 100.0f;
                         partner->field_0x25c = (partner->field_0x254 - 110.0f) / 100.0f;
                     }
                 }
