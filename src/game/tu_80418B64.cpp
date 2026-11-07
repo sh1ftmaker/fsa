@@ -1491,176 +1491,149 @@ void cls_804B13D4::fn_8041A868(bool arg) {
     }
 }
 
-// FIXME(shotgun): 56.39 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.69 %, missing/extra + reloc-name
 void cls_804B13D4::fn_80419C38(s32 player, bool arg) {
-    u8 bit = 1 << player;
-    f32 prev0 = field_0x108[player];
     f32 prev1 = field_0x118[player];
     f32 prev2 = field_0x138[player];
     f32 prev3 = field_0x148[player];
-    f32 prev4 = field_0x158[player];
-    JGeometry::TVec2f screenPos[4];
-    for (s32 i = 0; i < 4; i++) {
-        if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) && getPlayerLayer_8023DE58(fn_8022EA0C(i)) < 8) {
-            Vec screen;
-            gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-            screenPos[i].x = screen.x;
-            screenPos[i].y = screen.y;
-        } else {
-            screenPos[i].x = 0.0f;
-            screenPos[i].y = 0.0f;
-        }
+    if (player >= 2) {
+        field_0x74[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D57C());
+        field_0x84[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+        field_0x94[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+        field_0xa4[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D57C());
+        field_0xb4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D57C());
+        field_0xc4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D57C());
+        field_0xd4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D57C());
+        field_0xe4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D57C());
+    } else {
+        field_0x74[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D514());
+        field_0x84[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+        field_0x94[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+        field_0xa4[player]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
+        field_0xb4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D514());
+        field_0xc4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D514());
+        field_0xd4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D514());
+        field_0xe4[player]->moveFromCentre_80402E08(field_0xf8[player], lbl_8053AED0->fn_8043D514());
     }
-    bool overlap = false;
-    for (s32 i = 0; i < 4; i++) {
-        if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) &&
-            screenPos[i].x > lbl_8048E020[player][0] && screenPos[i].x < lbl_8048E020[player][1] &&
-            screenPos[i].y > lbl_8048E020[player][2] && screenPos[i].y < lbl_8048E020[player][3]) {
-            overlap = true;
-            break;
-        }
-    }
-    if (overlap || !(field_0x28f & bit)) {
-        if (prev0 > 0.0f) {
-            field_0x108[player] -= 0.1f;
-        } else {
-            field_0x108[player] = 0.0f;
-        }
-        if (prev1 > 0.0f) {
+    fn_8037EB4C();
+    u8 bit = 1 << player;
+    if (!(field_0x28f & bit) || (lbl_8053AED0->field_0xdc & bit) ||
+        gGameRoot2_8053AB10->field_0x30->field_0x284 != 0 || gGameRoot_8053AAF8->field_0x85 != 0) {
+        if (field_0x118[player] > 0.1f) {
             field_0x118[player] -= 0.1f;
         } else {
             field_0x118[player] = 0.0f;
         }
-        if (prev2 > 0.0f) {
+        if (field_0x138[player] > 0.1f) {
             field_0x138[player] -= 0.1f;
         } else {
             field_0x138[player] = 0.0f;
         }
-        if (prev3 > 0.0f) {
+        if (field_0x148[player] > 0.1f) {
             field_0x148[player] -= 0.1f;
         } else {
             field_0x148[player] = 0.0f;
         }
-        if (!fn_8022B160()) {
-            if (field_0x158[player] > 0.0f) {
-                field_0x158[player] -= 0.1f;
-            } else {
-                field_0x158[player] = 0.0f;
-            }
-        }
         gGameRoot2_8053AB10->field_0x20->field_0x217[player] = 1;
     } else if (lbl_80529DEC.field_0xd8[player] == 0 && lbl_8053AEC8->field_0x5e == 0) {
-        if (prev0 > 0.6f) {
-            field_0x108[player] -= 0.1f;
-            if (field_0x108[player] <= 0.6f) {
-                field_0x108[player] = 0.6f;
-            }
-        } else if (prev0 < 0.6f) {
-            field_0x108[player] += 0.1f;
-            if (field_0x108[player] >= 0.6f) {
-                field_0x108[player] = 0.6f;
-            }
-        }
-        if (prev1 > 0.6f) {
+        if (field_0x118[player] > 0.6f) {
             field_0x118[player] -= 0.1f;
             if (field_0x118[player] <= 0.6f) {
                 field_0x118[player] = 0.6f;
             }
-        } else if (prev1 < 0.6f) {
+        } else if (field_0x118[player] < 0.6f) {
             field_0x118[player] += 0.1f;
             if (field_0x118[player] >= 0.6f) {
                 field_0x118[player] = 0.6f;
             }
         }
-        if (prev2 > 0.6f) {
-            field_0x138[player] -= 0.1f;
-            if (field_0x138[player] <= 0.6f) {
-                field_0x138[player] = 0.6f;
+        if (gGameRoot2_8053AB10->field_0x20->field_0x14c[player] != 0) {
+            if (field_0x138[player] < 0.9f) {
+                field_0x138[player] += 0.1f;
+            } else {
+                field_0x138[player] = 1.0f;
             }
-        } else if (prev2 < 0.6f) {
-            field_0x138[player] += 0.1f;
-            if (field_0x138[player] >= 0.6f) {
-                field_0x138[player] = 0.6f;
+            if (field_0x148[player] > 0.6f) {
+                field_0x148[player] -= 0.1f;
+                if (field_0x148[player] <= 0.6f) {
+                    field_0x148[player] = 0.6f;
+                }
+            } else if (field_0x148[player] < 0.6f) {
+                field_0x148[player] += 0.1f;
+                if (field_0x148[player] >= 0.6f) {
+                    field_0x148[player] = 0.6f;
+                }
             }
-        }
-        if (prev3 > 0.6f) {
-            field_0x148[player] -= 0.1f;
-            if (field_0x148[player] <= 0.6f) {
-                field_0x148[player] = 0.6f;
+        } else {
+            if (field_0x138[player] > 0.1f) {
+                field_0x138[player] -= 0.1f;
+            } else {
+                field_0x138[player] = 0.0f;
             }
-        } else if (prev3 < 0.6f) {
-            field_0x148[player] += 0.1f;
-            if (field_0x148[player] >= 0.6f) {
-                field_0x148[player] = 0.6f;
-            }
-        }
-        if (prev4 > 0.6f) {
-            field_0x158[player] -= 0.1f;
-            if (field_0x158[player] <= 0.6f) {
-                field_0x158[player] = 0.6f;
-            }
-        } else if (prev4 < 0.6f) {
-            field_0x158[player] += 0.1f;
-            if (field_0x158[player] >= 0.6f) {
-                field_0x158[player] = 0.6f;
+            if (field_0x148[player] > 0.1f) {
+                field_0x148[player] -= 0.1f;
+            } else {
+                field_0x148[player] = 0.0f;
             }
         }
     } else {
-        if (prev0 < 1.0f) {
-            field_0x108[player] += 0.1f;
-        } else {
-            field_0x108[player] = 1.0f;
-        }
-        if (prev1 < 1.0f) {
+        if (field_0x118[player] < 0.9f) {
             field_0x118[player] += 0.1f;
         } else {
             field_0x118[player] = 1.0f;
         }
-        if (prev2 < 1.0f) {
-            field_0x138[player] += 0.1f;
+        if (gGameRoot2_8053AB10->field_0x20->field_0x14c[player] != 0) {
+            if (field_0x138[player] < 0.9f) {
+                field_0x138[player] += 0.1f;
+            } else {
+                field_0x138[player] = 1.0f;
+            }
+            if (field_0x148[player] < 0.9f) {
+                field_0x148[player] += 0.1f;
+            } else {
+                field_0x148[player] = 1.0f;
+            }
         } else {
-            field_0x138[player] = 1.0f;
-        }
-        if (prev3 < 1.0f) {
-            field_0x148[player] += 0.1f;
-        } else {
-            field_0x148[player] = 1.0f;
-        }
-        if (prev4 < 1.0f) {
-            field_0x158[player] += 0.1f;
-        } else {
-            field_0x158[player] = 1.0f;
+            if (field_0x138[player] > 0.1f) {
+                field_0x138[player] -= 0.1f;
+            } else {
+                field_0x138[player] = 0.0f;
+            }
+            if (field_0x148[player] > 0.1f) {
+                field_0x148[player] -= 0.1f;
+            } else {
+                field_0x148[player] = 0.0f;
+            }
         }
     }
-    if (prev0 == field_0x108[player] && prev1 == field_0x118[player] && prev2 == field_0x138[player] &&
-        prev3 == field_0x148[player] && prev4 == field_0x158[player] && !arg) {
+    if (prev1 == field_0x118[player] && prev2 == field_0x138[player] && prev3 == field_0x148[player] && !arg) {
         return;
     }
-    field_0x4->search(lbl_8048D818[player][0])->setAlpha(field_0x24c[0] * field_0x138[player]);
-    field_0x4->search(lbl_8048D818[player][1])->setAlpha(field_0x24c[1] * field_0x138[player]);
+    field_0x4->search(lbl_8048D818[player][0])->setAlpha(field_0x24c[0] * field_0x118[player]);
+    field_0x4->search(lbl_8048D818[player][1])->setAlpha(field_0x24c[1] * field_0x118[player]);
     for (s32 i = 0; i < 5; i++) {
-        field_0x4->search(lbl_8048D6D8[player][i])->setAlpha(field_0x24c[2] * field_0x158[player]);
-        field_0x4->search(lbl_8048D778[player][i])->setAlpha(field_0x24c[3] * field_0x158[player]);
-    }
-    for (s32 i = 0; i < 12; i++) {
-        field_0x4->search(lbl_8048D858[player][i])->setAlpha(field_0x25e * field_0x148[player]);
-        field_0x4->search(lbl_8048D9D8[player][i])->setAlpha(field_0x25f * field_0x148[player]);
+        field_0x4->search(lbl_8048D6D8[player][i])->setAlpha(field_0x24c[2] * field_0x118[player]);
+        field_0x4->search(lbl_8048D778[player][i])->setAlpha(field_0x24c[3] * field_0x118[player]);
     }
     for (s32 i = 0; i < 3; i++) {
-        field_0x4->search(lbl_8048DB58[player][i])->setAlpha(field_0x258[i] * field_0x148[player]);
-        field_0x4->search(lbl_8048DBB8[player][i])->setAlpha(field_0x25b[i] * field_0x148[player]);
+        field_0x4->search(lbl_8048DB58[player][i])->setAlpha(field_0x258[i] * field_0x118[player]);
+        field_0x4->search(lbl_8048DBB8[player][i])->setAlpha(field_0x25b[i] * field_0x118[player]);
+    }
+    for (s32 i = 0; i < 12; i++) {
+        field_0x4->search(lbl_8048D858[player][i])->setAlpha(field_0x25e * field_0x118[player]);
+        field_0x4->search(lbl_8048D9D8[player][i])->setAlpha(field_0x25f * field_0x118[player]);
     }
     for (s32 i = 0; i < 6; i++) {
-        field_0x4->search(lbl_8048DC18[player][i])->setAlpha(field_0x260[i] * field_0x108[player]);
+        field_0x4->search(lbl_8048DC18[player][i])->setAlpha(field_0x260[i] * field_0x118[player]);
     }
-    field_0x4->search(lbl_8048DE20[0x8 + player])->setAlpha(field_0x266 * field_0x108[player]);
-    field_0x18->search(lbl_8048DE20[0x4 + player])->setAlpha(field_0x267 * field_0x108[player]);
-    field_0x18->search(lbl_8048DE00[player])->setAlpha(field_0x268 * field_0x138[player]);
-    field_0x18->search(lbl_8048DE20[player])->setAlpha(field_0x269 * field_0x138[player]);
-    field_0x4->search(lbl_8048DE20[0x14 + player])->setAlpha(field_0x26b * field_0x148[player]);
-    field_0x4->search(lbl_8048DCD8[player])->setAlpha(field_0x26a * field_0x148[player]);
+    field_0x4->search(lbl_8048DE20[0x8 + player])->setAlpha(field_0x266 * field_0x138[player]);
+    field_0x18->search(lbl_8048DE20[0x4 + player])->setAlpha(field_0x267 * field_0x148[player]);
+    field_0x18->search(lbl_8048DE00[player])->setAlpha(field_0x268 * field_0x118[player]);
+    field_0x18->search(lbl_8048DE20[player])->setAlpha(field_0x269 * field_0x118[player]);
+    field_0x4->search(lbl_8048DE20[0x10 + player])->setAlpha(field_0x26a * field_0x118[player]);
+    field_0x4->search(lbl_8048DE20[0x14 + player])->setAlpha(field_0x26b * field_0x118[player]);
     for (s32 i = 0; i < 4; i++) {
-        field_0x4->search(lbl_8048DCF8[player][i])->setAlpha(field_0x26c[i] * field_0x148[player]);
+        field_0x4->search(lbl_8048DCF8[player][i])->setAlpha(field_0x26c[i] * field_0x118[player]);
     }
 }
 
