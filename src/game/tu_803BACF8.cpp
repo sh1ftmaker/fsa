@@ -72,7 +72,8 @@ static inline u32 calcSectorChecksum(const u8* buf) {
     return ((u32)sum << 16) | inv;
 }
 
-// 0x803BBF08
+// FIXME(shotgun): 40.6 %, not verified against the asm; reviewer moved under NONMATCHING (casts into the save buffers)
+#ifdef NONMATCHING
 s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 bodySize) {
     snprintf((char*)(lbl_805222C0 + 0x1C00), 0x20, "Four Swords Adventures");
     OSCalendarTime cal;
@@ -173,7 +174,10 @@ s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 body
     return res;
 }
 
-// 0x803BAEF4
+#endif
+
+// FIXME(shotgun): 62.5 %, halfword clamp loop and sector-header store not written; reviewer moved under NONMATCHING (empty filler loop, casts)
+#ifdef NONMATCHING
 s32 fn_803BAEF4(CARDFileInfo* file, void* dst, void* bodyDst, u32 size, u32 bodySize) {
     u8* img1 = lbl_8051E2C0;
     u8* img2 = lbl_805202C0;
@@ -388,8 +392,7 @@ s32 fn_803BAEF4(CARDFileInfo* file, void* dst, void* bodyDst, u32 size, u32 body
         }
         // FIXME(shotgun): halfword clamping loop over field_0x18[0..0x3F] not written
         if (dirty) {
-            for (int j = 0; j < 0xC0; j++) {
-            }
+            // FIXME(shotgun): dirty-flag write-back not written
         }
     }
 
@@ -405,6 +408,7 @@ s32 fn_803BAEF4(CARDFileInfo* file, void* dst, void* bodyDst, u32 size, u32 body
     lbl_8051C1A0.field_0x1ff8 = serial;
     return 0;
 }
+#endif
 
 // Reads the save image at card offset 0x2000, or at 0x4000 when that fails, into
 // lbl_8051E2C0; on success keeps its bytes 3 and 4 in the game state. Returns the card result.
