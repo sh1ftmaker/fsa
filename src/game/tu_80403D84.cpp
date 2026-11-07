@@ -1472,9 +1472,8 @@ void MapScreen_804B1288::fn_80408F38(f32 alpha) {
     }
 }
 
-// FIXME: 96.04. Missing/extra (one instruction): ours moves fn_80403184's result through
-// r0 into r26 (mr, mr) where the original keeps it in r28; the zoom divisions load
-// field_0x18 before the lbl_8048C850 entry in the original (order only). The tail after the
+// FIXME: 96.04. scheduling+regalloc: the zoom divisions load field_0x18 before the
+// lbl_8048C850 entry in the original, and registers differ around fn_80403184. The tail after the
 // stage branch is in both branches: the original has its own copy in the stage 7 branch.
 void MapScreen_804B1288::fn_8040873C() {
     if (field_0x340 == 7) {
@@ -1678,11 +1677,12 @@ void MapScreen_804B1288::fn_80406F68(f32 x, f32 y) {
 }
 #endif
 
-// FIXME: 96.30. Order and registers only: setRotScaleMtx's six sin / cos results land in
+// FIXME: 96.30, different (NONMATCHING): setRotScaleMtx's six sin / cos results land in
 // other saved FPRs (target sx f28, sy f27, sz f26, cx f31, cy f30, scale f29) and its
 // products are scheduled differently (unproven inline, see game/RotMatrix.h); and the
 // else branch of the stage choice reloads field_0x340 where the original copies the
 // compared register (mr r30, r3).
+#ifdef NONMATCHING
 void MapScreen_804B1288::fn_804069E8() {
     SpriteParams_801F5AE0 params;
     s32 picked = -1;
@@ -1743,6 +1743,7 @@ void MapScreen_804B1288::fn_804069E8() {
         }
     }
 }
+#endif
 
 void MapScreen_804B1288::fn_80406634(s32 stage, bool raised) {
     SpriteParams_801F5AE0 params;
