@@ -15,7 +15,18 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0xFC]; // not yet known
+    /* 0x230 */ u8 field_0x230[0xC8]; // not yet known
+    /* 0x2F8 */ s32 field_0x2f8; // init: 3, or 0 / 4 by field_0x94
+    /* 0x2FC */ u8 field_0x2fc[4];
+    /* 0x300 */ s32 field_0x300;
+    /* 0x304 */ s32 field_0x304;
+    /* 0x308 */ s32 field_0x308; // init: spawn parameter bits 8-15
+    /* 0x30C */ s32 field_0x30c;
+    /* 0x310 */ s32 field_0x310;
+    /* 0x314 */ s32 field_0x314;
+    /* 0x318 */ s32 field_0x318; // draw: added to the frame
+    /* 0x31C */ s32 field_0x31c; // init: spawn parameter bit 4 (draw: the bigger sprite)
+    /* 0x320 */ u8 field_0x320[0xC];
 }; // Size: 0x32C
 
 #endif
