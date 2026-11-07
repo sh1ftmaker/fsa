@@ -2,6 +2,8 @@
 #include "game/EmitterDelete.h"
 #include "game/GameView.h"
 #include "game/GameGlobals.h"
+#include "game/GameState.h"
+#include "game/Player.h"
 #include "game/cls_804A8638.h"
 #include "game/tu_802EF76C.h"
 #include "game/ActorManager.h"
@@ -10,6 +12,8 @@
 #include "game/Camera.h"
 #include "game/EmitterDelete.h"
 #include "JSystem/JParticle/JPAEmitter.h"
+
+u8 lbl_8053A1A0[8] = {10, 60, 80, 100, 210, 0, 0, 0};
 
 // The two emitters that start the rain; their 0x28 float (field_0x2c0[0], [1]) is not stored
 // (JPABaseEmitter in include/JSystem/JParticle/JPAEmitter.h has mEmitterRot (s16) at 0x24..0x29
@@ -281,6 +285,612 @@ cls_804A8638::~cls_804A8638() {
         releaseEmitter_801EE434(mEmitter);
     }
     delete mSoundObj;
+}
+
+// 0x802B3AB8.
+// GameRootSub24_8016A3AC's 0x1E0 and 0x1E8 floats are not declared in GameGlobals.h (only 0x1E4 is),
+// and JPABaseEmitter's 0x28 float / 0xF4 status word differ from include/JSystem/JParticle/JPAEmitter.h,
+// so those stores are omitted or call JPA's methods.
+// FIXME(shotgun): 94.06 %, missing/extra
+void cls_804A8638::update() {
+    bool paused = false;
+    if ((gGameRoot_8053AAF8->field_0x7f != 0 &&
+         (fn_80236B50(0) && fn_80236B50(1) && fn_80236B50(2) && fn_80236B50(3) ||
+          (gGameRoot_8053AAF8->field_0x4c == 0xB || gGameRoot_8053AAF8->field_0x88 == 2))) ||
+        lbl_80529DEC.field_0x240 != 0) {
+        paused = true;
+    }
+    if (field_0x264 == 0) {
+        if (field_0x2d0[0] != 0) {
+            field_0x2d0[0]--;
+        }
+    } else if (field_0x2d0[0] < field_0x2d0[1]) {
+        field_0x2d0[0]++;
+    }
+    fn_8016A3AC()->field_0x1ec = field_0x2d0[0];
+    if (field_0x268 == 0) {
+        if (field_0x2d0[2] != 0) {
+            field_0x2d0[2]--;
+        }
+    } else if (field_0x2d0[2] < field_0x26c) {
+        field_0x2d0[2]++;
+    }
+    fn_8016A3AC()->field_0x1ed = field_0x2d0[2];
+    if (field_0x270 != 0) {
+        fn_8016A3AC()->field_0x1c7 = 1;
+    }
+    if (field_0x274 != 0) {
+        fn_8016A3AC()->field_0x1ee = 0xFF;
+        if (gGameRoot_8053AAF8->field_0x4c != 0xB) {
+            mSoundObj->startSound(0x3001F);
+        }
+        fn_8016A3AC()->field_0x1c4 = 1;
+    }
+    if (field_0x278 != 0) {
+        fn_8016A3AC()->field_0x1c8 = 1;
+    }
+    if (field_0x27c != 0) {
+        fn_8016A3AC()->field_0x1c9 = 1;
+    }
+    if (field_0x280 == 0) {
+        if (field_0x2d0[3] != 0) {
+            field_0x2d0[3]--;
+        }
+    } else if (field_0x2d0[3] < field_0x284) {
+        field_0x2d0[3]++;
+    }
+    fn_8016A3AC()->field_0x1f1 = field_0x2d0[3];
+    if (field_0x28c != 0) {
+        f32 y = mPos.y - 16.0f;
+        GameRootSub24_8016A3AC* sub24 = fn_8016A3AC();
+        sub24->field_0x1cb[0] = 1;
+        sub24->field_0x1e4 = y;
+    }
+    if (field_0x298 != 0) {
+        fn_8016A3AC()->field_0x1cb[1] = 1;
+    }
+    if (field_0x29c != 0) {
+        fn_8016A3AC()->field_0x1cb[3] = 1;
+    }
+    if (field_0x2a0 != 0) {
+        GameRootSub24_8016A3AC* sub24 = fn_8016A3AC();
+        sub24->field_0x1cf = 1;
+        sub24->field_0x1d0 = 1;
+    }
+    if (field_0x2a4 != 0) {
+        fn_8016A3AC()->field_0x1cb[2] = 1;
+    }
+    if (field_0x2a8 != 0) {
+        fn_8016A3AC()->field_0x1c5 = 1;
+    }
+    if (field_0x2ac == 0) {
+        if (field_0x2d0[4] != 0) {
+            field_0x2d0[4]--;
+        }
+    } else if (field_0x2d0[4] < field_0x2b0) {
+        field_0x2d0[4]++;
+    }
+    fn_8016A3AC()->field_0x1f0 = field_0x2d0[4];
+    if (field_0x2b4 != 0) {
+        fn_8016A3AC()->field_0x1c6 = 1;
+    }
+    if (field_0x2b8 == 0) {
+        if (field_0x2d0[5] != 0) {
+            field_0x2d0[5]--;
+        }
+    } else if (field_0x2d0[5] < field_0x2bc) {
+        field_0x2d0[5]++;
+    }
+    fn_8016A3AC()->field_0x1ef = field_0x2d0[5];
+    field_0x254.x = -gGameRoot2_8053AB10->field_0x24->field_0x4[0][3];
+    field_0x254.y = -gGameRoot2_8053AB10->field_0x24->field_0x4[1][3];
+    field_0x254.z = 0.0f;
+    switch (field_0x2d8) {
+    case 0: {
+        fn_80128C58((u8)field_0x310);
+        u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+        fn_8013A884(&color);
+        break;
+    }
+    case 1:
+        switch (field_0x240) {
+        case 0:
+            vfunc_0x58();
+            break;
+        case 0xC:
+            vfunc_0x5C();
+            break;
+        case 9: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    case 2:
+        switch (field_0x240) {
+        case 0:
+            gGameRoot_8053AAF8->fn_80138B7C();
+            field_0x240 = 0xC;
+            break;
+        case 0xC:
+            vfunc_0x5C();
+            break;
+        case 9: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    case 3:
+        mSoundObj->startSound(0x3001E);
+        switch (field_0x240) {
+        case 0:
+            if (getActorManager_801F856C()->field_0x305c == 1) {
+                field_0x248 = 20;
+                field_0x240 = 1;
+            }
+            break;
+        case 1:
+            field_0x248--;
+            if (field_0x248 == 0) {
+                field_0x240 = 0xC;
+            }
+            break;
+        case 0xC:
+            vfunc_0x5C();
+            break;
+        case 9: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    case 4: {
+        mSoundObj->startSound(0x3001E);
+        switch (field_0x240) {
+        case 0xB:
+            vfunc_0x58();
+            if (field_0x240 == 9) {
+                field_0x334 = 0;
+                field_0x338 = 0;
+                field_0x240 = 0xC;
+            }
+            break;
+        case 0xC:
+            if (getActorManager_801F856C()->field_0x305c == 1) {
+                field_0x248 = 20;
+                field_0x240 = 1;
+            }
+            break;
+        case 1:
+            field_0x248--;
+            if (field_0x248 == 0) {
+                vfunc_0x54(0xFF, 0xFF, 0xFF, 0, 0xFF, 0);
+                field_0x240 = 0;
+            }
+            break;
+        case 0:
+            vfunc_0x5C();
+            if (field_0x240 == 9) {
+                field_0x240 = 2;
+                vfunc_0x30(0xFF, true);
+            }
+            break;
+        case 2:
+            if (!vfunc_0x34()) {
+                vfunc_0x54(0xFF, 0x80, 0xFF, 0, 10, 0);
+                field_0x240 = 6;
+            }
+            break;
+        case 6:
+            vfunc_0x58();
+            field_0x240 = 3;
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000004, false, 0);
+            break;
+        case 3:
+            vfunc_0x58();
+            if (field_0x240 == 9) {
+                field_0x240 = 4;
+            }
+            break;
+        case 4:
+            if (getActorManager_801F856C()->field_0x305c == 0) {
+                field_0x240 = 5;
+            }
+            break;
+        case 5:
+            if (getActorManager_801F856C()->field_0x305c == 1) {
+                field_0x248 = 30;
+                field_0x240 = 7;
+            }
+            break;
+        case 7:
+            field_0x248--;
+            if (field_0x248 == 0) {
+                vfunc_0x54(0xFF, 0xFF, 0xFF, 0, 0xFF, 0);
+                field_0x240 = 8;
+                fn_801F34DC();
+            }
+            break;
+        case 8:
+            vfunc_0x5C();
+            break;
+        }
+        fn_80128C58((u8)field_0x310);
+        u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+        fn_8013A884(&color);
+        break;
+    }
+    case 5:
+        switch (field_0x240) {
+        case 0:
+            vfunc_0x58();
+            break;
+        case 0xC:
+            vfunc_0x5C();
+            break;
+        case 9: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    case 6:
+        switch (field_0x240) {
+        case 0xB: {
+            bool found = false;
+            s32 end = getActorManager_801F856C()->mActorEnd;
+            for (s32 i = 0; i < end; i++) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+                if (actor != NULL && actor->mActorId == 'BPH2') {
+                    u32 p = actor->field_0x90;
+                    found = true;
+                    field_0x324[0] = p >> 27;
+                    field_0x324[1] = (p >> 22) & 0x1F;
+                    field_0x324[2] = (p >> 17) & 0x1F;
+                    field_0x324[3] = (p >> 12) & 0x1F;
+                    break;
+                }
+            }
+            if (found) {
+                field_0x240 = 0;
+            }
+            break;
+        }
+        case 0:
+            vfunc_0x58();
+            if (field_0x240 == 9) {
+                field_0x248 = 100;
+                field_0x334 = 0;
+                field_0x338 = 0;
+                field_0x240 = 0xC;
+            }
+            break;
+        case 0xC: {
+            field_0x338 = 0;
+            for (s32 i = 0; i < 4; i++) {
+                if (getGameView_802D6A9C()->fn_802D800C(field_0x324[i])) {
+                    field_0x338++;
+                }
+            }
+            field_0x334 = field_0x338;
+            field_0x314 = lbl_8053A1A0[field_0x334];
+            if (field_0x310 < field_0x314) {
+                field_0x310 += 5;
+                if (field_0x310 >= field_0x314) {
+                    field_0x310 = field_0x314;
+                }
+            } else if (field_0x310 > field_0x314) {
+                field_0x310 -= 5;
+                if (field_0x310 <= field_0x314) {
+                    field_0x310 = field_0x314;
+                }
+            }
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    case 7:
+    case 9:
+    case 10:
+    case 13:
+    case 14:
+    case 15: {
+        fn_80128C58((u8)field_0x310);
+        u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+        fn_8013A884(&color);
+        break;
+    }
+    case 8:
+        break;
+    case 11: {
+        switch (field_0x240) {
+        case 0: {
+            if ((field_0x90 >> 27) == 0 || vfunc_0x34()) {
+                vfunc_0x54(0xFF, 0xFF, 0xFF, 0, 0xFF, 0);
+                field_0x240 = 1;
+            }
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        case 1:
+            vfunc_0x5C();
+            if (field_0x240 == 9) {
+                field_0x2b8 = 0;
+                field_0x240 = 9;
+            }
+            break;
+        case 9:
+        default: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    }
+    case 12: {
+        switch (field_0x240) {
+        case 0:
+            if ((field_0x90 >> 27) == 0 || vfunc_0x34()) {
+                field_0x240 = 1;
+            }
+            break;
+        case 1:
+            vfunc_0x5C();
+            break;
+        case 9:
+        default: {
+            fn_80128C58((u8)field_0x310);
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        }
+        break;
+    }
+    }
+
+    if (field_0x288 != 0) {
+        mPos = *getPlayerPos_8023E724(0);
+        if (field_0x288 != 1 || (field_0x90 >> 27) == 0 || vfunc_0x34() == true) {
+            if (!paused) {
+                field_0x24c--;
+                if (field_0x24c == 0) {
+                    if (gGameRoot_8053AAF8->field_0x4c != 0xB) {
+                        mSoundObj->startSound(0x30031);
+                    }
+                    spawnEmitter_8013CC50(field_0x4, &field_0x254, 0x488, 1, 0, NULL, NULL, true, 1.0f);
+                    field_0x24c = fn_801CD664(0x97) + 50;
+                    if (fn_802DEBF8()) {
+                        field_0x24c += fn_801CD664(0xDD) + 80;
+                    }
+                }
+            }
+        }
+    }
+
+    switch (field_0x288) {
+    case 1:
+        if ((field_0x90 >> 27) != 0 && vfunc_0x34() != true) {
+            break;
+        }
+        if (field_0x250 == 0) {
+            field_0x250 = 20;
+            if (!paused) {
+                if (field_0x234 == NULL) {
+                    field_0x234 = spawnEmitter_8013CC50(field_0x4, &field_0x254, 0x3A1, 1, 0, NULL, NULL, true, 1.0f);
+                    field_0x238 = spawnEmitter_8013CC50(field_0x4, &field_0x254, 0x3A2, 1, 0, NULL, NULL, true, 1.0f);
+                    getGameView_802D6A9C()->fn_802D6BF8(1);
+                    vfunc_0x60();
+                }
+                if (field_0x2c0[0] < 10.0f) {
+                    field_0x2c0[0] += field_0x2c0[2];
+                    if (field_0x2c0[0] > 10.0f) {
+                        field_0x2c0[0] = 10.0f;
+                    }
+                }
+                if (field_0x2c0[1] < 30.0f) {
+                    field_0x2c0[1] += field_0x2c0[3];
+                    if (field_0x2c0[1] > 30.0f) {
+                        field_0x2c0[1] = 30.0f;
+                    }
+                }
+                setEmitterPos_8013CB44(field_0x234, &field_0x254, 1, 1, true);
+                setEmitterPos_8013CB44(field_0x238, &field_0x254, 1, 1, true);
+            }
+        } else if (field_0x250 != 0) {
+            field_0x250--;
+        }
+        switch (field_0x244) {
+        case 0: {
+            getGameView_802D6A9C()->fn_802D6BF8(1);
+            s32 changed = 0;
+            if (field_0x2e0 != field_0x2f0) {
+                if (field_0x2e0 > field_0x2f0) {
+                    field_0x2e0 -= 4;
+                    if (field_0x2e0 <= field_0x2f0) {
+                        field_0x2e0 = field_0x2f0;
+                    }
+                } else {
+                    field_0x2e0 += 4;
+                    if (field_0x2e0 >= field_0x2f0) {
+                        field_0x2e0 = field_0x2f0;
+                    }
+                }
+                changed = 1;
+            }
+            if (field_0x2e4 != field_0x2f4) {
+                if (field_0x2e4 > field_0x2f4) {
+                    field_0x2e4 -= 4;
+                    if (field_0x2e4 <= field_0x2f4) {
+                        field_0x2e4 = field_0x2f4;
+                    }
+                } else {
+                    field_0x2e4 += 4;
+                    if (field_0x2e4 >= field_0x2f4) {
+                        field_0x2e4 = field_0x2f4;
+                    }
+                }
+                changed = 1;
+            }
+            if (field_0x2e8 != field_0x2f8) {
+                if (field_0x2e8 > field_0x2f8) {
+                    field_0x2e8 -= 4;
+                    if (field_0x2e8 <= field_0x2f8) {
+                        field_0x2e8 = field_0x2f8;
+                    }
+                } else {
+                    field_0x2e8 += 4;
+                    if (field_0x2e8 >= field_0x2f8) {
+                        field_0x2e8 = field_0x2f8;
+                    }
+                }
+                changed = 1;
+            }
+            if (changed == 0) {
+                field_0x244 = 1;
+            }
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+            break;
+        }
+        case 1:
+            if (field_0x2c0[0] == 10.0f && field_0x2c0[1] == 30.0f) {
+                field_0x288 = 2;
+            }
+            break;
+        }
+        break;
+    case 3:
+        if (field_0x250 == 0 && ((field_0x90 >> 27) == 0 || !vfunc_0x34())) {
+            field_0x250 = 20;
+            if (field_0x2c0[0] > 1.0f) {
+                field_0x2c0[0] -= field_0x2c0[2];
+                if (field_0x2c0[0] < 1.0f) {
+                    field_0x2c0[0] = 1.0f;
+                }
+            }
+            if (field_0x2c0[1] > 1.0f) {
+                field_0x2c0[1] -= field_0x2c0[3];
+                if (field_0x2c0[1] < 1.0f) {
+                    field_0x2c0[1] = 1.0f;
+                }
+            }
+            setEmitterPos_8013CB44(field_0x234, &field_0x254, 1, 1, true);
+            setEmitterPos_8013CB44(field_0x238, &field_0x254, 1, 1, true);
+        } else if (field_0x250 != 0) {
+            field_0x250--;
+        }
+        if (field_0x244 == 0) {
+            field_0x24c = 100;
+            s32 changed = 0;
+            if (field_0x2e0 != field_0x300) {
+                if (field_0x2e0 > field_0x300) {
+                    field_0x2e0 -= 4;
+                    if (field_0x2e0 <= field_0x300) {
+                        field_0x2e0 = field_0x300;
+                    }
+                } else {
+                    field_0x2e0 += 4;
+                    if (field_0x2e0 >= field_0x300) {
+                        field_0x2e0 = field_0x300;
+                    }
+                }
+                changed = 1;
+            }
+            if (field_0x2e4 != field_0x304) {
+                if (field_0x2e4 > field_0x304) {
+                    field_0x2e4 -= 4;
+                    if (field_0x2e4 <= field_0x304) {
+                        field_0x2e4 = field_0x304;
+                    }
+                } else {
+                    field_0x2e4 += 4;
+                    if (field_0x2e4 >= field_0x304) {
+                        field_0x2e4 = field_0x304;
+                    }
+                }
+                changed = 1;
+            }
+            if (field_0x2e8 != field_0x308) {
+                if (field_0x2e8 > field_0x308) {
+                    field_0x2e8 -= 4;
+                    if (field_0x2e8 <= field_0x308) {
+                        field_0x2e8 = field_0x308;
+                    }
+                } else {
+                    field_0x2e8 += 4;
+                    if (field_0x2e8 >= field_0x308) {
+                        field_0x2e8 = field_0x308;
+                    }
+                }
+                changed = 1;
+            }
+            if (changed == 0) {
+                field_0x288 = 0;
+                getGameView_802D6A9C()->fn_802D6BF8(0);
+                if (field_0x234 != NULL) {
+                    field_0x234->becomeInvalidEmitter();
+                    field_0x234 = NULL;
+                }
+                if (field_0x238 != NULL) {
+                    field_0x238->becomeInvalidEmitter();
+                    field_0x238 = NULL;
+                }
+                gGameRoot_8053AAF8->fn_80138B7C();
+            }
+            u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+            fn_8013A884(&color);
+        }
+        break;
+    case 2: {
+        if ((getGameView_802D6A9C()->field_0x4 != 4 || getGameView_802D6A9C()->field_0x8 != 1) && vfunc_0x34()) {
+            field_0x288 = 3;
+            field_0x244 = 0;
+        }
+        field_0x2e0 = 0x9F;
+        field_0x2e4 = 0xAF;
+        field_0x2e8 = 0xFF;
+        getGameView_802D6A9C()->fn_802D6BF8(1);
+        if (gGameRoot_8053AAF8->field_0x4c != 0xB) {
+            mSoundObj->startSound(0x30030);
+        }
+        setEmitterPos_8013CB44(field_0x234, &field_0x254, 1, 1, true);
+        setEmitterPos_8013CB44(field_0x238, &field_0x254, 1, 1, true);
+        u32 color = (field_0x2e0 << 24) | (field_0x2e4 << 16) | (field_0x2e8 << 8) | field_0x2ec;
+        fn_8013A884(&color);
+        vfunc_0x60();
+        break;
+    }
+    }
+
+    if (field_0x290 != 0 || field_0x294 != 0) {
+        if (field_0x294 != 0 && gGameRoot_8053AAF8->field_0x4c != 0xB) {
+            mSoundObj->startSound(0x30032);
+        }
+        setEmitterPos_8013CB44(mEmitter, &field_0x254, 1, 1, true);
+    }
+
+    if (field_0x310 == 0xFF) {
+        getGameView_802D6A9C()->fn_802D6BE0(0);
+    } else {
+        getGameView_802D6A9C()->fn_802D6BE0(1);
+    }
 }
 
 // 0x802B3AB4.

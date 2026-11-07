@@ -19,6 +19,7 @@ public:
     // 0x802B5360 (slot 0x0C): decodes field_0x90 and starts the preset.
     /* 0x0C */ virtual void init();
     /* 0x10 */ virtual void vfunc_0x10();
+    /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x54 */ virtual void vfunc_0x54(s32 a, s32 b, s32 c, s32 d, s32 e, s32 state);
     /* 0x58 */ virtual void vfunc_0x58();
@@ -93,7 +94,7 @@ public:
     /* 0x318 */ s32 field_0x318;
     /* 0x31C */ s32 field_0x31c;
     /* 0x320 */ s32 field_0x320;
-    /* 0x324 */ u8 field_0x324[0x334 - 0x324]; // not yet known
+    /* 0x324 */ s32 field_0x324[4];
     /* 0x334 */ s32 field_0x334;
     /* 0x338 */ s32 field_0x338;
 }; // Size: 0x33C
