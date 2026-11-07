@@ -7,6 +7,10 @@
 #include "game/GameMath.h"
 #include "game/Message.h"
 #include "game/Player.h"
+#include "game/Camera.h"
+#include "game/GameView.h"
+#include "game/tu_80131D98.h"
+#include <string.h>
 #include "game/tu_801213EC.h"
 #include "game/act/act_life_meter.h"
 
@@ -16,6 +20,167 @@ static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeome
 }
 
 static const u16 lbl_80464D84[8] = {0x2C, 0x2D, 0x2E, 0x2F, 0x28, 0x29, 0x2A, 0x2B};
+
+// FIXME(shotgun): 99.8 %, reloc-name
+EscortBase_8049E0C8::EscortBase_8049E0C8(const char* sobName, s32 arg2, s32 arg3) {
+    field_0x330 = 1;
+    field_0x331 = 1;
+    field_0x332 = arg3;
+    field_0x333 = 0;
+    field_0x334 = 0;
+    field_0x335 = 0;
+    field_0x336 = 0;
+    field_0x338 = arg2;
+    field_0x33c = 0;
+    field_0x340 = 0;
+    field_0x344 = -1;
+    field_0x348 = -1;
+    field_0x34c = -1;
+    field_0x350 = 0;
+    field_0x354 = 0;
+    field_0x358 = 0;
+    field_0x360 = 1;
+    field_0x364[4] = -1;
+    field_0x378 = 0;
+    field_0x37c = 1.0f;
+    field_0x380 = 0.0f;
+    field_0x364[0] = -1;
+    field_0x364[1] = -1;
+    field_0x364[2] = -1;
+    field_0x364[3] = -1;
+    strcpy(mSobName, sobName);
+}
+
+// FIXME(shotgun): 100 %, matches
+EscortBase_8049E0C8::~EscortBase_8049E0C8() {
+    lbl_80539F30 = -1;
+}
+
+// The escort's answer to a screen change (see the header); 0x5C is called without the direction
+// argument the original passes in r4 (the slot's signature is not known).
+// FIXME(shotgun): 86.1 %, missing/extra (the slot-0x5C call lacks its r4 argument)
+s32 fn_80124600(const JGeometry::TVec2<s32>* dir) {
+    s32 count = fn_80131F0C()->mCount;
+    if (count == 0) {
+        s32 serial = lbl_80539F30;
+        if (serial < 0) {
+            return 3;
+        }
+        EscortBase_8049E0C8* escort = static_cast<EscortBase_8049E0C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (escort == NULL) {
+            return 3;
+        }
+        escort->field_0x334 = 1;
+        return escort->vfunc_0x5C();
+    }
+    bool flag = false;
+    for (s32 i = 0; i < count; i++) {
+        EscortBase_8049E0C8* escort = static_cast<EscortBase_8049E0C8*>(fn_80131F0C()->fn_80131E30(i));
+        if (escort != NULL && escort->mActorId == ACTOR_FAZR) {
+            escort->field_0x334 = 1;
+            switch (escort->vfunc_0x5C()) {
+            case 1:
+                return 1;
+            case 2:
+                flag = false;
+                break;
+            case 3:
+                break;
+            default:
+                flag = false;
+                break;
+            }
+        }
+    }
+    if (flag) {
+        return 3;
+    }
+    return 2;
+}
+
+// FIXME(shotgun): 99.4 %, regalloc-only + reloc-name
+void EscortBase_8049E0C8::fn_80124448() {
+    ActorBase_804A5770::init();
+    lbl_80539F30 = mSerial;
+    vfunc_0x64();
+    mBox.i.x = -7.0f;
+    mBox.i.y = -7.0f;
+    mBox.f.x = 7.0f;
+    mBox.f.y = 7.0f;
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
+    field_0x80.i.x = mBox.i.x;
+    field_0x80.i.y = mBox.i.y;
+    field_0x80.f.x = mBox.f.x;
+    field_0x80.f.y = mBox.f.y;
+    field_0xb8 = 2;
+    vfunc_0x70();
+    vfunc_0x74();
+    getGameView_802D6A9C()->fn_802D7440(0);
+    if (field_0x332) {
+        vfunc_0x7C();
+        if (field_0x332) {
+            JGeometry::TVec3f pos(mPos);
+            pos.x -= 16.0f;
+            for (s32 i = 0; i < field_0x360; i++) {
+                pos.x += 8.0f;
+                field_0x364[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LIMT, field_0x4, &pos, 0, -1, -1);
+                s32 serial = field_0x364[i];
+                if (serial < 0) {
+                    break;
+                }
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor) {
+                    actor->mDrawEnabled = false;
+                }
+            }
+        }
+    }
+}
+
+// FIXME(shotgun): 94.1 %, scheduling+regalloc + reloc-name
+void EscortBase_8049E0C8::update() {
+    ActorBase_804A5770::update();
+    field_0x37c = 1.0f;
+    field_0x331 = 1;
+    JGeometry::TBox2f box(mBox);
+    box.addPos(mPos.x, mPos.y);
+    vfunc_0x80();
+    if (field_0x333) {
+        field_0x354++;
+        if (field_0x354 >= 300) {
+            field_0x333 = 0;
+            field_0x354 = 0;
+        }
+    }
+    if (field_0x335) {
+        field_0x378++;
+        if (field_0x378 >= 90) {
+            field_0x335 = 0;
+            field_0x378 = 0;
+        }
+    }
+    vfunc_0x68();
+    if (field_0x330) {
+        fn_80239914(&box, field_0x4, mSerial);
+    }
+    JGeometry::TVec3f out;
+    if (field_0x331) {
+        fn_801F2618(&out, false);
+    }
+    JGeometry::TVec3f dir;
+    dir.x = dir.y = dir.z = 0.0f;
+    if (fn_80121438(&dir)) {
+        mPos.add(dir);
+    }
+    mAnim.mFrameCtrl.setRate(field_0x37c);
+    mAnim.fn_801D1C18();
+    fn_801217EC(mLife == 0);
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    vfunc_0x90();
+}
 
 bool EscortBase_8049E0C8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u16 tile = fn_8022461C(pos, layer);

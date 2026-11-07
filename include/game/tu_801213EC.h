@@ -160,4 +160,7 @@ public:
 // 0 or 1. const is a guess (dir goes on to the virtual call).
 s32 fn_80124600(const JGeometry::TVec2<s32>* dir);
 
+// .sdata word (not in this unit): the serial of the escort the destructor forgets (-1 when none).
+extern s32 lbl_80539F30;
+
 #endif
