@@ -7,9 +7,10 @@
 #include "game/Effect.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/tu_80184D64.h"
+#include "std/math.h"
 
 // 0x80186D24.
-// FIXME(shotgun): 95.08 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.31 %, missing/extra
 void cls_804A18E0::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -60,7 +61,7 @@ void cls_804A18E0::init() {
 }
 
 // 0x80184FC0.
-// FIXME(shotgun): 83.50 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.20 %, missing/extra
 void cls_804A18E0::update() {
     f32 box80_ix = field_0x80.i.x;
     f32 box80_iy = field_0x80.i.y;
@@ -155,7 +156,7 @@ void cls_804A18E0::update() {
     case 1: {
         f32 dy = mPos.y - field_0x384[1];
         f32 dx = mPos.x - field_0x384[0];
-        if (JGeometry::TUtil<f32>::sqrt(dx * dx + dy * dy) >= 48.0f) {
+        if (std::sqrtf(dx * dx + dy * dy) >= 48.0f) {
             mPos.x = field_0x294[9].x;
             mPos.y = field_0x294[9].y;
             mPos.z = field_0x294[9].z;
@@ -241,7 +242,7 @@ void cls_804A18E0::update() {
         }
         f32 dy = mPos.y - field_0x384[1];
         f32 dx = mPos.x - field_0x384[0];
-        if (JGeometry::TUtil<f32>::sqrt(dx * dx + dy * dy) < 64.0f) {
+        if (std::sqrtf(dx * dx + dy * dy) < 64.0f) {
             break;
         }
         field_0x288[2] = 0.0f;
@@ -284,7 +285,7 @@ void cls_804A18E0::update() {
             mPos.z = 0.0f;
             field_0x3c.z = 3.0f;
         }
-        if (JGeometry::TUtil<f32>::sqrt(dx * dx + dy * dy) < 24.0f) {
+        if (std::sqrtf(dx * dx + dy * dy) < 24.0f) {
             field_0x240 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 20;
             field_0x230 = 0;
         }
@@ -299,7 +300,7 @@ void cls_804A18E0::update() {
         f32 distSq = dx * dx + dy * dy;
         field_0x288[0] = 2.0f * JMath::sincosTable_.sinShort(field_0x272);
         field_0x288[1] = 2.0f * JMath::sincosTable_.cosShort(field_0x272);
-        if (JGeometry::TUtil<f32>::sqrt(distSq) < 16.0f) {
+        if (std::sqrtf(distSq) < 16.0f) {
             field_0x288[2] = 0.0f;
             field_0x288[1] = 0.0f;
             field_0x288[0] = 0.0f;
