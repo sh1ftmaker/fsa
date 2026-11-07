@@ -31,6 +31,7 @@ public:
     void fn_8010F7EC(s32 arg);
     void fn_8010F4DC();
     void fn_8010F9F0();
+    void fn_8010FA8C();
     void fn_8011093C();
     void fn_80110454();
     void fn_80110210();

@@ -65,6 +65,8 @@ PrincessZeldaDemo_8049D208::~PrincessZeldaDemo_8049D208() {
 // The animation key tables (lbl_8049D1A0, 26 of them; lbl_80539EF8, 2) are in this unit's data.
 extern const s16* lbl_8049D1A0[26];
 extern const s16* lbl_80539EF8[2];
+// The scenario keys of the demo (rodata 0x80464550).
+extern const s32 lbl_80464550[];
 
 // FIXME(shotgun): 98.6 %, missing/extra
 void PrincessZeldaDemo_8049D208::init() {
@@ -457,6 +459,150 @@ void PrincessZeldaDemo_8049D208::draw() {
     }
 }
 
+// Starts the demo scene for the GameView scenario `key` (fn_8011921C()'s field_0x8): maps it to the
+// scene's first state, per demo variant (field_0x234) and chapter (field_0x4).
+// FIXME(shotgun): 98 %, missing/extra
+void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
+    s32 key = fn_8011921C()->field_0x8;
+    switch (field_0x234) {
+    case 0:
+        if (fn_8011921C()->field_0x4 == 0) {
+            if (key == lbl_80464550[3]) {
+                fn_8010F478(0x3);
+            } else if (key == lbl_80464550[4]) {
+                fn_8010F478(0x4);
+            } else if (key == lbl_80464550[5]) {
+                fn_8010F478(0x5);
+            } else if (key == lbl_80464550[6]) {
+                fn_8010F478(0x6);
+            } else if (key == lbl_80464550[7]) {
+                fn_8010F478(0x7);
+            } else if (key == lbl_80464550[8]) {
+                fn_8010F478(0x8);
+            } else if (key == lbl_80464550[9]) {
+                fn_8010F478(0x9);
+            } else if (key == lbl_80464550[10]) {
+                fn_8010F478(0xA);
+            } else if (key == lbl_80464550[11]) {
+                fn_8010F478(0xB);
+            } else if (key == lbl_80464550[12]) {
+                fn_8010F478(0xC);
+            } else if (key == lbl_80464550[13]) {
+                fn_8010F478(0xD);
+                fn_8010F478(0x25);
+            }
+        }
+        break;
+    case 1:
+        if (fn_8011921C()->field_0x4 == 1) {
+            if (key == lbl_80464550[14]) {
+                fn_8010F478(0xE);
+            } else if (key == lbl_80464550[15]) {
+                fn_8010F478(0xF);
+            } else if (key == lbl_80464550[16]) {
+                fn_8010F478(0x10);
+            } else if (key == lbl_80464550[17]) {
+                fn_8010F478(0x11);
+            } else if (key == lbl_80464550[18]) {
+                fn_8010F478(0x12);
+            } else if (key == lbl_80464550[19]) {
+                fn_8010F478(0x13);
+            } else if (key == lbl_80464550[20]) {
+                fn_8010F478(0x14);
+            } else if (key == lbl_80464550[21]) {
+                fn_8010F478(0x15);
+            } else if (key == lbl_80464550[22]) {
+                fn_8010F478(0x16);
+            } else if (key == lbl_80464550[23]) {
+                fn_8010F478(0x17);
+            } else if (key == lbl_80464550[24]) {
+                fn_8010F478(0x18);
+            } else if (key == lbl_80464550[25]) {
+                fn_8010F478(0x19);
+            } else if (key == lbl_80464550[26]) {
+                fn_8010F478(0x1A);
+            } else if (key == lbl_80464550[27]) {
+                fn_8010F478(0x1B);
+            } else if (key == lbl_80464550[28]) {
+                fn_8010F478(0x1C);
+            } else if (key == lbl_80464550[29]) {
+                fn_8010F478(0x1D);
+            } else if (key == lbl_80464550[30]) {
+                fn_8010F478(0x1E);
+            } else if (key == lbl_80464550[31]) {
+                fn_8010F478(0x1F);
+            } else if (key == lbl_80464550[32]) {
+                fn_8010F478(0x20);
+            } else if (key == lbl_80464550[33]) {
+                fn_8010F478(0x21);
+            } else if (key == lbl_80464550[34]) {
+                fn_8010F478(0x22);
+            } else if (key == lbl_80464550[35]) {
+                fn_8010F478(0x23);
+            } else if (key == lbl_80464550[37]) {
+                fn_8010F478(0x3E);
+            }
+        }
+        break;
+    case 2:
+        switch (fn_8011921C()->field_0x4) {
+        case 0xD:
+            if (key == lbl_80464550[48]) {
+                fn_8010F478(0x30);
+            } else if (key == lbl_80464550[50]) {
+                fn_8010F478(0x32);
+            } else if (key == lbl_80464550[51]) {
+                fn_8010F478(0x33);
+            } else if (key == lbl_80464550[52]) {
+                fn_8010F478(0x34);
+            } else if (key == lbl_80464550[53]) {
+                fn_8010F478(0x35);
+            } else if (key == lbl_80464550[54]) {
+                fn_8010F478(0x36);
+            } else if (key == lbl_80464550[55]) {
+                fn_8010F478(0x37);
+            } else if (key == lbl_80464550[56]) {
+                fn_8010F478(0x38);
+            } else if (key == lbl_80464550[57]) {
+                fn_8010F478(0x39);
+            } else if (key == lbl_80464550[58]) {
+                fn_8010F478(0x3A);
+            } else if (key == lbl_80464550[59]) {
+                fn_8010F478(0x3B);
+            } else if (key == lbl_80464550[60]) {
+                fn_8010F478(0x3C);
+            } else if (key == lbl_80464550[61]) {
+                fn_8010F478(0x3D);
+            }
+            break;
+        case 0xF:
+            if (key == lbl_80464550[38]) {
+                fn_8010F478(0x26);
+            } else if (key == lbl_80464550[39]) {
+                fn_8010F478(0x27);
+            } else if (key == lbl_80464550[40]) {
+                fn_8010F478(0x28);
+            } else if (key == lbl_80464550[41]) {
+                fn_8010F478(0x29);
+            } else if (key == lbl_80464550[42]) {
+                fn_8010F478(0x2A);
+            } else if (key == lbl_80464550[43]) {
+                fn_8010F478(0x2B);
+            } else if (key == lbl_80464550[44]) {
+                fn_8010F478(0x2C);
+            } else if (key == lbl_80464550[45]) {
+                fn_8010F478(0x2D);
+            } else if (key == lbl_80464550[46]) {
+                fn_8010F478(0x2E);
+            } else if (key == lbl_80464550[47]) {
+                fn_8010F478(0x2F);
+            }
+            break;
+        }
+        break;
+    }
+}
+
 s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
 }
@@ -584,6 +730,9 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
 
 #pragma auto_inline reset
 
+// Not auto-inlined: fn_8010FA8C calls fn_8010F478 out of line in the original (docs/INLINING.md,
+// pragma rule 1).
+#pragma auto_inline off
 // FIXME(shotgun): 94.4 %, missing/extra
 void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     switch (field_0x234) {
@@ -597,6 +746,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     }
     field_0x238 = arg;
 }
+#pragma auto_inline reset
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
