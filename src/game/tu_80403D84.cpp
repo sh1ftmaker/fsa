@@ -23,6 +23,7 @@
 #include "game/SpriteParams.h"
 #include "game/Effect.h"
 #include "dolphin/gx.h"
+#include "game/RotMatrix.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -749,6 +750,72 @@ void MapScreen_804B1288::fn_80408114() {
         for (int i = 0; i < 8; i++) {
             field_0x40e[i] = 0;
             field_0xc->search(lbl_8048C2B8[i])->setAlpha(0);
+        }
+    }
+}
+
+// FIXME: 96.30. Order and registers only: setRotScaleMtx's six sin / cos results land in
+// other saved FPRs (target sx f28, sy f27, sz f26, cx f31, cy f30, scale f29) and its
+// products are scheduled differently (unproven inline, see game/RotMatrix.h); and the
+// else branch of the stage choice reloads field_0x340 where the original copies the
+// compared register (mr r30, r3).
+void MapScreen_804B1288::fn_804069E8() {
+    SpriteParams_801F5AE0 params;
+    s32 picked = -1;
+    s32 stage;
+    if (field_0x340 == 10 && field_0x348 == 2) {
+        stage = lbl_80529DEC.field_0x120;
+    } else {
+        stage = field_0x340;
+    }
+    Mtx mtx;
+    JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+    setRotScaleMtx(mtx, rot, lbl_8050DB0C.field_0x8);
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    params.mMtx = mtx;
+    for (int i = 0; i < 4; i++) {
+        if (fn_80404074(stage, i, &picked)) {
+            JGeometry::TVec3f pos;
+            pos.x = lbl_8048C95C[stage * 4 + i][0] * (384.0f / (s32)JUTVideo::getManager()->getFbWidth());
+            pos.y = lbl_8048C95C[stage * 4 + i][1] * (288.0f / (s32)JUTVideo::getManager()->getEfbHeight());
+            pos.z = 0.0f;
+            GXSetTevDirect(GX_TEVSTAGE0);
+            GXSetTevDirect(GX_TEVSTAGE1);
+            GXSetTevDirect(GX_TEVSTAGE2);
+            GXSetTevDirect(GX_TEVSTAGE3);
+            params.field_0x26 = 0;
+            params.field_0x1d = 1;
+            params.field_0x1c = 1;
+            params.field_0x10.a = 255.0f * field_0x400;
+            if (i == picked) {
+                if (field_0x35c == 10) {
+                    if (field_0x2ec[0] == NULL) {
+                        field_0x2ec[0] = spawnEmitter_8013CC50(0, &pos, 0x7B, 1, 0, NULL, NULL, true, 1.0f);
+                        field_0x2ec[0]->setStatus(JPAEMIT_Immortal);
+                    }
+                    if (field_0x2ec[1] == NULL) {
+                        field_0x2ec[1] = spawnEmitter_8013CC50(0, &pos, 0x7C, 1, 0, NULL, NULL, true, 1.0f);
+                        field_0x2ec[1]->setStatus(JPAEMIT_Immortal);
+                    }
+                    if (field_0x2ec[2] == NULL) {
+                        field_0x2ec[2] = spawnEmitter_8013CC50(0, &pos, 0x7D, 1, 0, NULL, NULL, true, 1.0f);
+                        field_0x2ec[2]->setStatus(JPAEMIT_Immortal);
+                    }
+                    if (field_0x2f8[i] != NULL) {
+                        field_0x2f8[i]->becomeInvalidEmitter();
+                        field_0x2f8[i] = NULL;
+                    }
+                }
+                if (field_0x35c <= 10) {
+                    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x25B, &params, 1.0f, 1.0f);
+                }
+            } else {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0x25A, &params, 1.0f, 1.0f);
+            }
         }
     }
 }

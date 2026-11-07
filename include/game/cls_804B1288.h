@@ -144,6 +144,11 @@ public:
     // lbl_8048CB68[stage] + 0-5) at the selected sub-stage's point of lbl_8048C95C
     // (50 higher unless `raised`) and keeps the emitters 0x32C / 0x184 of field_0x308 on it.
     void fn_80406634(s32 stage, bool raised);
+    // 0x804069E8: draws a marker (enemy_gc_sob.bin, frame 0x25A, 0x25B for the one
+    // fn_80404074 picks) on each sub-stage point of the stage (lbl_80529DEC's 0x120
+    // for stage 10 / sub-stage 2) that fn_80404074 lets through; at field_0x35c 10
+    // the picked one starts the emitters 0x7B-0x7D of field_0x2ec.
+    void fn_804069E8();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
