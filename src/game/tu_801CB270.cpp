@@ -12,6 +12,7 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/act/act_bombchu.h"
+#include "game/act/tu_801688AC.h"
 #include "game/Map.h"
 #include "game/ViewLayer.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -21,6 +22,10 @@
 
 // Forward declaration (defined at its place below fn_801CC9F8).
 f32 tileCenter(f32 v);
+
+// Shotgun pass: not declared in a header yet (C names in the original).
+extern "C" bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out);
+extern "C" bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep);
 
 
 
@@ -129,6 +134,53 @@ bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold) {
     return true;
 }
 
+// Moves *cur toward *target by `factor` of the way, the step clamped between minStep and
+// maxStep; true once the point is on the target.
+// FIXME(shotgun): 85.76 %, missing/extra
+bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep) {
+    if (factor > 1.0f) {
+        factor = 1.0f;
+    } else if (factor < 0.0f) {
+        factor = 0.0f;
+    }
+    JGeometry::TVec2f d(target->x - cur->x, target->y - cur->y);
+    f32 len = d.length();
+    if (len > 0.0f) {
+        f32 step = len * factor;
+        if (step < minStep) {
+            f32 f = (1.0f / len) * minStep;
+            if (f > 1.0f) {
+                f = 1.0f;
+            } else if (f < factor) {
+                f = factor;
+            }
+            factor = f;
+        } else if (step > maxStep) {
+            f32 f = (1.0f / len) * maxStep;
+            if (f > factor) {
+                f = factor;
+            } else if (f < 0.0f) {
+                f = 0.0f;
+            }
+            factor = f;
+        }
+        f32 fx = factor;
+        if (factor > 1.0f) {
+            fx = 1.0f;
+        }
+        cur->x = fx * (target->x - cur->x) + cur->x;
+        if (factor > 1.0f) {
+            factor = 1.0f;
+        }
+        cur->y = factor * (target->y - cur->y) + cur->y;
+    }
+    bool arrived = false;
+    if (cur->x == target->x && cur->y == target->y) {
+        arrived = true;
+    }
+    return arrived;
+}
+
 // Catmull-Rom spline through p1 (t = 0) and p2 (t = 1), with p0 and p3 as
 // the neighbours.
 f32 fn_801CD6D8(f32 p0, f32 p1, f32 p2, f32 p3, f32 t) {
@@ -155,6 +207,30 @@ s32 fn_801CD580(s32 except) {
         if (i != except) {
             *out++ = i;
             count++;
+        }
+    }
+    return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
+}
+
+// A random integer in [0, 4) other than a and b.
+// FIXME(shotgun): 69.26 %, missing/extra
+s32 fn_801CD398(s32 a, s32 b) {
+    s32 choices[4];
+    s32 count = 0;
+    s32* out = choices;
+    if (a == b) {
+        for (s32 i = 0; i < 4; i++) {
+            if (i != a) {
+                *out++ = i;
+                count++;
+            }
+        }
+    } else {
+        for (s32 i = 0; i < 4; i++) {
+            if (i != a && i != b) {
+                *out++ = i;
+                count++;
+            }
         }
     }
     return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
@@ -260,6 +336,25 @@ void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
     out->z = in->z;
 }
 
+// FIXME(shotgun): 98.14 %, missing/extra
+bool fn_801CCFE4(s32 player) {
+    bool result = false;
+    if (fn_8023F264(player)) {
+        if (!fn_80236B50(player) && !fn_8022DCD8(player) && !fn_80234C5C(player) && !fn_8023EA28(player) &&
+            !fn_80230188(player) && !fn_8022D534(player) && !fn_802349EC(player)) {
+            s32 mode = fn_8022CAF8(player);
+            if (mode < 6 && mode >= 4) {
+                if (!fn_8022F478(player)) {
+                    result = true;
+                }
+            } else {
+                result = true;
+            }
+        }
+    }
+    return result;
+}
+
 // Whether fn_80230188 holds for every player that takes part (fn_80138A30).
 bool fn_801CCF7C() {
     s32 count = gGameRoot_8053AAF8->fn_80138A30();
@@ -279,6 +374,24 @@ s32 fn_801CCF34(s32 player) {
         target = fn_8022F3DC(player);
     }
     return fn_80236228(target);
+}
+
+// FIXME(shotgun): 91.05 %, missing/extra
+s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer) {
+    s32 best = -1;
+    f32 bestDist = 3.4028235e38f;
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023F264(i) && layer == getPlayerLayer_8023DE58(i) && !fn_8022F514(i)) {
+            f32 dy = getPlayerPos_8023E724(i)->y - pos->y;
+            f32 dx = getPlayerPos_8023E724(i)->x - pos->x;
+            f32 d = dx * dx + dy * dy;
+            if (d < bestDist) {
+                bestDist = d;
+                best = i;
+            }
+        }
+    }
+    return best;
 }
 
 // The player (fn_8023F264) whose fn_80236228 value is the lowest, or -1 when
@@ -337,6 +450,22 @@ bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer) {
         break;
     }
     return result;
+}
+
+// FIXME(shotgun): 94.31 %, missing/extra
+bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer) {
+    JGeometry::TVec3f p;
+    p.x = pos->x;
+    p.y = pos->y;
+    bool found = false;
+    for (s32 i = 0; i < 2; i++) {
+        u16 tile = fn_80226998(&p, layer);
+        if (tile >= 0x19C && tile < 0x19E) {
+            found = true;
+        }
+        p.y -= 16.0f;
+    }
+    return found;
 }
 
 // Whether the tile (fn_802265FC) at pos (x, y - z) and the one 16 units further down are both
@@ -431,6 +560,109 @@ f32 tileCenter(f32 v) {
     return 8.0f + (u32)((s32)v & ~0xF);
 }
 
+// FIXME(shotgun): 95.47 %, scheduling+regalloc
+bool fn_801CC820(s32 player, JGeometry::TVec3f* out) {
+    bool found = false;
+    if (out != NULL) {
+        out->zero();
+    }
+    s32 serial = fn_8023B2B0(player);
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL && actor->mAlive && actor->mActorId == ACTOR_ARRW && actor->mLife > 0) {
+            found = true;
+            if (out != NULL) {
+                out->x = actor->field_0x3c.x;
+                out->y = actor->field_0x3c.y;
+                out->z = actor->field_0x3c.z;
+            }
+            actor->fn_801F3668();
+        }
+    }
+    return found;
+}
+
+// FIXME(shotgun): 96.22 %, scheduling+regalloc
+bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
+    bool found = false;
+    if (outPlayer != NULL) {
+        *outPlayer = -1;
+    }
+    if (outVel != NULL) {
+        outVel->zero();
+    }
+    s32 serial = fn_8023B2B0(player);
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL && actor->mAlive && actor->mActorId == ACTOR_ARRW && actor->mLife > 0) {
+            found = true;
+            if (outPlayer != NULL) {
+                *outPlayer = serial;
+            }
+            if (outVel != NULL) {
+                outVel->x = actor->field_0x3c.x;
+                outVel->y = actor->field_0x3c.y;
+                outVel->z = actor->field_0x3c.z;
+            }
+            actor->mLife = 0;
+        }
+    }
+    return found;
+}
+
+// FIXME(shotgun): 96.22 %, scheduling+regalloc
+bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
+    bool found = false;
+    if (outPlayer != NULL) {
+        *outPlayer = -1;
+    }
+    if (outVel != NULL) {
+        outVel->zero();
+    }
+    s32 serial = fn_8023B358(player);
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL && actor->mAlive && actor->mActorId == ACTOR_PCDM && actor->mLife > 0) {
+            found = true;
+            if (outPlayer != NULL) {
+                *outPlayer = serial;
+            }
+            if (outVel != NULL) {
+                outVel->x = actor->field_0x3c.x;
+                outVel->y = actor->field_0x3c.y;
+                outVel->z = actor->field_0x3c.z;
+            }
+            actor->mLife = 0;
+        }
+    }
+    return found;
+}
+
+// FIXME(shotgun): 77.73 %, missing/extra + reloc-name
+bool fn_801CC538(s32 player, const JGeometry::TVec2f* pos, JGeometry::TVec3f* out, s32* outPlayer) {
+    bool found = false;
+    if (outPlayer != NULL) {
+        *outPlayer = -1;
+    }
+    s32 serial = fn_8023B22C(player);
+    if (serial >= 0) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL && actor->mAlive && actor->mActorId == ACTOR_BOME) {
+            found = true;
+            if (outPlayer != NULL) {
+                *outPlayer = serial;
+            }
+            ((cls_804A0738*)actor)->field_0x254 = 1;
+            if (out != NULL) {
+                JGeometry::TVec3f v(pos->x, pos->y, 0.0f);
+                JGeometry::TVec3f d = actor->field_0x3c * 3.0f;
+                out->sub(v, d);
+            }
+        }
+    }
+    return found;
+}
+
 // Reflects the xy of *vel off *normal's xy (z is kept), at the original speed; straight back when
 // either is zero or the reflection is (nearly) zero.
 void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel) {
@@ -459,6 +691,35 @@ void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel) {
 // The distance between two angles as a fraction of a half turn (0-1).
 static inline f32 angleDistance(s16 a, s16 b) {
     return (1.0f / 32768.0f) * __fabsf((s16)(a - b));
+}
+
+// How far box a sticks out of box b, as the move that puts it back (out); true if it does.
+// FIXME(shotgun): 99.11 %, regalloc-only
+bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out) {
+    bool outside = false;
+    f32 d = a->i.x - b->i.x;
+    out->x = 0.0f;
+    out->y = 0.0f;
+    if (d > 0.0f) {
+        out->x += d;
+        outside = true;
+    }
+    d = b->f.x - a->f.x;
+    if (d > 0.0f) {
+        out->x -= d;
+        outside = true;
+    }
+    d = a->i.y - b->i.y;
+    if (d > 0.0f) {
+        out->y += d;
+        outside = true;
+    }
+    d = b->f.y - a->f.y;
+    if (d > 0.0f) {
+        out->y -= d;
+        outside = true;
+    }
+    return outside;
 }
 
 // FIXME: 96.55. Scheduling + regalloc: in both 45-degree turns the original computes the new y
@@ -556,6 +817,13 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
 void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
     spawnEmitter_8013CC50(layer, pos, 0x24A, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
     spawnEmitter_8013CC50(layer, pos, 0x24B, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
+}
+
+// FIXME(shotgun): 88.94 %, scheduling+regalloc
+void fn_801CB5CC(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6) {
+    spawnEmitter_8013CC50(layer, pos, 0xFF, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x100, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(layer, pos, 0x101, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
 }
 
 // FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
