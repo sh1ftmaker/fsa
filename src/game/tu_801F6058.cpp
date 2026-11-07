@@ -112,6 +112,17 @@ ActorManager_804A5800::~ActorManager_804A5800() {
     mHeap->destroy();
 }
 
+void ActorManager_804A5800::fn_801F8E4C() {
+    fn_801F857C();
+    field_0x200c->setField_0x31();
+    mSpawnCount = 0;
+    mLastSlot = -1;
+    mActorEnd = -1;
+    getActorManager_801F856C()->fn_801F6204(0);
+    mListHead = NULL;
+    field_0x3041 = 0;
+}
+
 // FIXME(shotgun): 96.6 %, missing/extra + reloc-name (fn_801A6160 named in C++)
 // The per-frame update pass. Clears the per-frame serial list (field_0x201c), steps the
 // collision box lists, then updates each live actor: with GameView's fn_802DCD0C only those
@@ -254,17 +265,6 @@ void ActorManager_804A5800::fn_801F871C() {
     if (count == 0) {
         getActorManager_801F856C()->fn_801F6204(1);
     }
-}
-
-void ActorManager_804A5800::fn_801F8E4C() {
-    fn_801F857C();
-    field_0x200c->setField_0x31();
-    mSpawnCount = 0;
-    mLastSlot = -1;
-    mActorEnd = -1;
-    getActorManager_801F856C()->fn_801F6204(0);
-    mListHead = NULL;
-    field_0x3041 = 0;
 }
 
 void ActorManager_804A5800::fn_801F8658() {
