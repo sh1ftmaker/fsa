@@ -1879,9 +1879,6 @@ extern "C" {
 // (game/tu_803A3484.cpp).
 void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entries, s32* timer1,
                  s32* timer2, u8* flag, J3DAnmTextureSRTKey** btk, J3DAnmTevRegKey** brk, f32 scale);
-// Owner: game/tu_801902C0.cpp (0x801902D0, not written yet). Takes the object
-// at field_0x20 of GameRootSub04_801F856C (fn_80139CC4), a GameRootSub20_801902C0.
-void fn_801902D0(void* self);
 // Owners not known (0x803B8C90, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 u8 fn_803B8C90(void);

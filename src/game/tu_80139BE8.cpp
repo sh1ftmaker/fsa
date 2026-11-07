@@ -250,7 +250,7 @@ void GameRootSub04_801F856C::fn_80139CC4() {
     gGameRoot2_8053AB10->fn_8013B438();
     fn_8023F2BC();
     mActorManager->fn_801F8658();
-    fn_801902D0(field_0x20);
+    field_0x20->fn_801902D0();
     if (gGameRoot2_8053AB10->field_0x39 == 0) {
         field_0x24->fn_8016DA6C();
     }
