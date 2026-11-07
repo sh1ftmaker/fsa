@@ -867,11 +867,13 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x14 = NULL;
     field_0x14 = new cls_804AF72C(field_0xc);
     field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getFont();
+    // Local only to match: the original loads field_0x14 once for the two buffer stores.
     cls_804AF72C* layout = field_0x14;
     layout->field_0x2c0 = field_0x1ab;
     layout->field_0x2c4 = field_0x2ab;
     field_0x14->field_0x2d8 = field_0x3c0;
 
+    // One 'Tm01' search serves both font-size loads (two searches: 99.12 %).
     J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20->search('Tm01'));
     field_0x60 = text->mFontSize.x;
     field_0x64 = text->mFontSize.y;
