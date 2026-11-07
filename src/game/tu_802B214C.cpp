@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/DrawShadow.h"
 #include "game/GameGlobals.h"
 #include "game/cls_804A8588.h"
 
@@ -58,6 +59,122 @@ u8 RotatingSkull_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) 
         field_0x27c = 0;
     }
     return result;
+}
+
+// The sign of a bounce: -1 when the push (`along`) and the other velocity component point
+// the way the axis needs, else 1.
+// FIXME(shotgun): fn_802B21EC is structure only (the original's symbol is the plain `fn_802B21EC`).
+void RotatingSkull_804A8588::fn_802B21EC() {
+    f32 sign = 1.0f;
+    JGeometry::TVec3f hitB(0.0f, 0.0f, 0.0f);
+    JGeometry::TVec3f hitA(0.0f, 0.0f, 0.0f);
+    JGeometry::TVec3f savedPos(mPos);
+    JGeometry::TVec3f savedVel(field_0x3c);
+    JGeometry::TVec3f savedVel2(field_0x270);
+    field_0x27c = 0;
+    mPos += field_0x3c;
+    u8 hit = fn_801F2618(&hitA, false);
+    if (field_0x270.x != 0.0f) {
+        field_0x27c = 1;
+        mPos += field_0x270;
+        u8 hit2 = fn_801F2618(&hitB, false);
+        if (hit == 1 && hitA.y != 0.0f) {
+            if (field_0x270.x > 0.0f) {
+                if (!(field_0x3c.y > 0.0f)) {
+                    sign = -1.0f;
+                }
+            } else if (field_0x3c.y > 0.0f) {
+                sign = -1.0f;
+            }
+            field_0x3c.x = -field_0x3c.y * sign;
+            field_0x270.y = field_0x270.x * sign;
+            field_0x3c.y = 0.0f;
+            field_0x270.x = 0.0f;
+        } else if (!hit2 || hitB.x == 0.0f) {
+            if (field_0x270.x > 0.0f) {
+                if (field_0x3c.y > 0.0f) {
+                    sign = -1.0f;
+                }
+            } else if (!(field_0x3c.y > 0.0f)) {
+                sign = -1.0f;
+            }
+            field_0x3c.x = -field_0x3c.y * sign;
+            field_0x270.y = field_0x270.x * sign;
+            field_0x3c.y = 0.0f;
+            field_0x270.x = 0.0f;
+            JGeometry::TVec3f prev(mPos);
+            mPos.x += field_0x3c.x * 3.0f + field_0x270.x;
+            mPos.y += field_0x3c.y * 3.0f + field_0x270.y;
+            mPos.z += field_0x3c.z * 3.0f + field_0x270.z;
+            JGeometry::TVec3f hitC(0.0f, 0.0f, 0.0f);
+            if (fn_801F2618(&hitC, false)) {
+                mPos = prev;
+            } else {
+                mPos = savedPos;
+                field_0x3c = savedVel;
+                field_0x270 = savedVel2;
+                mPos += field_0x3c;
+            }
+        }
+    } else if (field_0x270.y != 0.0f) {
+        field_0x27c = 1;
+        mPos += field_0x270;
+        u8 hit2 = fn_801F2618(&hitB, false);
+        if (hit == 1 && hitA.x != 0.0f) {
+            if (field_0x270.y > 0.0f) {
+                if (!(field_0x3c.x > 0.0f)) {
+                    sign = -1.0f;
+                }
+            } else if (field_0x3c.x > 0.0f) {
+                sign = -1.0f;
+            }
+            field_0x3c.y = -field_0x3c.x * sign;
+            field_0x270.x = field_0x270.y * sign;
+            field_0x3c.x = 0.0f;
+            field_0x270.y = 0.0f;
+        } else if (!hit2 || hitB.y == 0.0f) {
+            if (field_0x270.y > 0.0f) {
+                if (field_0x3c.x > 0.0f) {
+                    sign = -1.0f;
+                }
+            } else if (!(field_0x3c.x > 0.0f)) {
+                sign = -1.0f;
+            }
+            field_0x3c.y = -field_0x3c.x * sign;
+            field_0x270.x = field_0x270.y * sign;
+            field_0x3c.x = 0.0f;
+            field_0x270.y = 0.0f;
+            JGeometry::TVec3f prev(mPos);
+            mPos.x += field_0x3c.x * 3.0f + field_0x270.x;
+            mPos.y += field_0x3c.y * 3.0f + field_0x270.y;
+            mPos.z += field_0x3c.z * 3.0f + field_0x270.z;
+            JGeometry::TVec3f hitC(0.0f, 0.0f, 0.0f);
+            if (fn_801F2618(&hitC, false)) {
+                mPos = prev;
+            } else {
+                mPos = savedPos;
+                field_0x3c = savedVel;
+                field_0x270 = savedVel2;
+                mPos += field_0x3c;
+            }
+        }
+    }
+    if (field_0x27c == 1) {
+        mPos = savedPos;
+        field_0x3c = savedVel;
+        field_0x270 = savedVel2;
+    }
+}
+
+// FIXME(shotgun): 99.91 %, reloc-name (params is built and unused in the original)
+void RotatingSkull_804A8588::fn_802B2728() {
+    if (field_0x25c != 0) {
+        SpriteParams_801F5AE0 params;
+        params.field_0x1d = 0;
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x258 + 0x78, NULL, 1, 1.0f, 1.0f);
+        drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 128), 30.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x258 + 0x78, 0, 2, -1, false, 0, 0);
+    }
 }
 
 RotatingSkull_804A8588::~RotatingSkull_804A8588() {}

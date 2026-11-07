@@ -19,6 +19,10 @@ public:
     // then fn_803075AC.
     void fn_802B2728();
 
+    // 0x802B21EC (a plain `fn_802B21EC` symbol): moves by field_0x3c and field_0x270, bouncing
+    // off walls (field_0x27c = 1 while field_0x270 is in use).
+    void fn_802B21EC();
+
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ JGeometry::TVec3f field_0x234; // copy of mPos, made by init
     /* 0x240 */ s32 field_0x240; // (field_0x90 >> 7) & 0x1F; 1 and 2 pick init's branches
@@ -33,7 +37,7 @@ public:
     /* 0x264 */ f32 field_0x264;
     /* 0x268 */ u8 field_0x268[0x26C - 0x268]; // not yet identified
     /* 0x26C */ f32 field_0x26c;
-    /* 0x270 */ JGeometry::TVec3f field_0x270; // zero after init
+    /* 0x270 */ JGeometry::TVec3f field_0x270; // zero after init; the second velocity of fn_802B21EC
     /* 0x27C */ u8 field_0x27c; // flag: fn_802B21AC clears it, init sets it to 1
 };
 
