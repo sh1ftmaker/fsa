@@ -131,6 +131,10 @@ public:
     // field_0x34c (B10, lbl_8048C93C / lbl_8048C94C, then field_0x348 from
     // lbl_8048C88C) one step when dir is the table's direction.
     void fn_80405D00(s32 dir);
+    // 0x804054B8 (called by fn_80409FDC): shows the cursor pane 'Ndata10' at field_0x394 /
+    // field_0x398 and the Plicu arrows (lbl_8048C5D0[9..16], pairs per direction) in
+    // the directions fn_80405D00 / fn_80405B10 accept; blinks each pair every 15 frames.
+    void fn_804054B8();
     void fn_80405B10(s32 dir);
     // Dead-stripped (fn_80405D00, fn_80405B10 and fn_8040B388 inline it): resets the
     // field_0x120 panes if field_0x65e is set.
@@ -235,14 +239,18 @@ public:
     /* 0x3B0 */ f32 field_0x3b0; // y of it
     /* 0x3B4 */ u8 field_0x3b4[0x3B8 - 0x3B4];
     /* 0x3B8 */ f32 field_0x3b8; // y of field_0x208[field_0x340] (fn_8040B5A0)
-    /* 0x3BC */ u8 field_0x3bc[0x400 - 0x3BC];
+    // Home positions of the four Plicu arrow pairs (fn_804054B8 moves the panes there,
+    // plus lbl_8050DB0C's offsets): x of [dir][pane], then y.
+    /* 0x3BC */ f32 field_0x3bc[4][2];
+    /* 0x3DC */ f32 field_0x3dc[4][2];
+    /* 0x3FC */ u8 field_0x3fc[0x400 - 0x3FC];
     /* 0x400 */ f32 field_0x400; // alpha (0-1) of the cursor sprite (fn_80406634)
     /* 0x404 */ u8 field_0x404[0x40E - 0x404];
     /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ s16 field_0x420; // 0-179, the blend / turn cycle of field_0x23c (fn_80409014)
     /* 0x422 */ s16 field_0x422; // blink counter of field_0x228 (fn_80409014)
-    /* 0x424 */ u8 field_0x424[0x426 - 0x424];
+    /* 0x424 */ s16 field_0x424; // blink counter of the Plicu arrows (fn_804054B8)
     /* 0x426 */ s16 field_0x426; // frame counter of fn_8040C950 / fn_8040CE90
     /* 0x428 */ s16 field_0x428; // step of fn_8040B5A0 (0: drop in, 1: rise out)
     /* 0x42A */ s16 field_0x42a;

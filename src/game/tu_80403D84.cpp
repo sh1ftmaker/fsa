@@ -59,10 +59,13 @@ static const u64 lbl_8048C4F8[27] = {
     'Ttlv11', 'Ttlv12', 'Ptlvb11', 'Ptlvbk11', 'Ptlvb12', 'Ptlvbk12', 'Ptlvb13', 'Ptlvb14',
     'Ptlvb15', 'Ptlvbk13', 'Ptlvbk14',
 };
-static const u64 lbl_8048C5D0[17] = {
+static const u64 lbl_8048C5D0[9] = {
     'Penback', 'Psky', 'Pclo04', 'Pclo03', 'Pclo02', 'Pmapca', 'Pmaptou', 'Pclo01',
-    'Penback1', 'Plicu01', 'Plicu02', 'Plicu07', 'Plicu08', 'Plicu03', 'Plicu04', 'Plicu05',
-    'Plicu06',
+    'Penback1',
+};
+// The Plicu arrow pairs, one per stick direction (fn_804054B8 walks it from its start).
+static const u64 lbl_8048C618[4][2] = {
+    {'Plicu01', 'Plicu02'}, {'Plicu07', 'Plicu08'}, {'Plicu03', 'Plicu04'}, {'Plicu05', 'Plicu06'},
 };
 static const u64 lbl_8048C658[63] = {
     'Plv1b02', 'Plv1b01', 'Tlv01', 'Plv2b02', 'Plv2b01', 'Tlv02', 'Plv3b02', 'Plv3b01',
@@ -1439,6 +1442,79 @@ void MapScreen_804B1288::hideSubStagePanes() {
         field_0x120[0]->field_0x26 = 0;
         field_0x120[1]->field_0x26 = 0;
         field_0x65e = 0;
+    }
+}
+
+void MapScreen_804B1288::fn_804054B8() {
+    if (!field_0x10->search('Ndata10')->mIsVisible) {
+        field_0x10->search('Ndata10')->show();
+        field_0x10->search('Ndata10')->move(field_0x394, field_0x398);
+        field_0x424 = 0;
+        for (int i = 0; i < 4; i++) {
+            field_0x10->search(lbl_8048C618[i][0])->hide();
+            field_0x10->search(lbl_8048C618[i][1])->hide();
+        }
+        s32 count = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field_0x38c & (1 << (field_0x340 * 4 + i))) {
+                count++;
+            }
+        }
+        if (count > 1) {
+            s32 stage = field_0x340;
+            if (fn_804045F8(stage)) {
+                if ((stage == 0 || stage == 1 || stage == 2 || stage == 3 || stage == 4 || stage == 5 ||
+                     stage == 6) &&
+                    !(field_0x38c & (1 << (stage * 4 + 1))))
+                {
+                    if (field_0x34c == 0) {
+                        field_0x10->search(lbl_8048C618[lbl_80543880[stage]][0])->show();
+                    }
+                    if (field_0x34c == 2) {
+                        field_0x10->search(lbl_8048C618[lbl_80543888[field_0x340]][0])->show();
+                    }
+                } else {
+                    if (field_0x34c < count - 1) {
+                        field_0x10->search(lbl_8048C618[lbl_8048C90C[stage][field_0x34c]][0])->show();
+                    }
+                    if (field_0x34c > 0) {
+                        field_0x10->search(lbl_8048C618[lbl_8048C924[field_0x340][field_0x34c - 1]][0])
+                            ->show();
+                    }
+                }
+            } else {
+                if (count == 4) {
+                    count = 3;
+                }
+                if (field_0x34c < count - 1) {
+                    field_0x10->search(lbl_8048C618[lbl_8048C93C[stage][field_0x34c]][0])->show();
+                }
+                if (field_0x34c > 0) {
+                    field_0x10->search(lbl_8048C618[lbl_8048C94C[field_0x340][field_0x34c - 1]][0])->show();
+                }
+            }
+        }
+    }
+    field_0x424++;
+    if (field_0x424 >= 15) {
+        field_0x424 = 0;
+        for (int i = 0; i < 4; i++) {
+            if (field_0x10->search(lbl_8048C618[i][0])->mIsVisible) {
+                field_0x10->search(lbl_8048C618[i][0])->hide();
+                field_0x10->search(lbl_8048C618[i][1])->show();
+            } else if (field_0x10->search(lbl_8048C618[i][1])->mIsVisible) {
+                field_0x10->search(lbl_8048C618[i][0])->show();
+                field_0x10->search(lbl_8048C618[i][1])->hide();
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        field_0x10->search(lbl_8048C618[i][0])
+            ->move(field_0x3bc[i][0] + lbl_8050DB0C.field_0x4c[276 + i * 2],
+                   field_0x3dc[i][0] + lbl_8050DB0C.field_0x4c[277 + i * 2]);
+        field_0x10->search(lbl_8048C618[i][1])
+            ->move(field_0x3bc[i][1] + lbl_8050DB0C.field_0x4c[276 + i * 2],
+                   field_0x3dc[i][1] + lbl_8050DB0C.field_0x4c[277 + i * 2]);
     }
 }
 
