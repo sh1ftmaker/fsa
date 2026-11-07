@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/Player.h"
 #include "game/act/tu_801AE9C4.h"
 
 
@@ -266,6 +267,122 @@ void OkameSan_804A3448::init() {
         field_0x3c.zero();
         field_0xb0 = 0x0A042004;
         field_0x230 = 0;
+    }
+}
+
+// FIXME(shotgun): 95.44 %, missing/extra
+void OkameSan_804A3448::update() {
+    if (fn_801F3D94(1)) {
+        fn_801F2618(NULL, false);
+        return;
+    }
+    addCalc2_801F71A4(&field_0x3c.x, field_0x260, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x264, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x26c, field_0x278, 0.5f, 1.0f);
+    addCalc2_801F71A4(&field_0x270, field_0x27c, 0.5f, 1.0f);
+    mPos += field_0x3c;
+    fn_801AF1EC();
+    bool hit = fn_801F2618(NULL, false);
+
+    switch (field_0x230) {
+    case 0:
+        field_0x244 = -1;
+        field_0x268 = 0.0f;
+        field_0x264 = 0.0f;
+        field_0x260 = 0.0f;
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        field_0x238 = 0;
+        field_0x230 = 1;
+        // fall through
+    case 1:
+        if (hit) {
+            if (field_0x244 != 0 && field_0x258 != 0 && field_0x258 != 4) {
+                field_0x230 = 2;
+            }
+            field_0x260 *= -1.0f;
+            field_0x264 *= -1.0f;
+            field_0x3c.x *= -1.0f;
+            field_0x3c.y *= -1.0f;
+            break;
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i) && !fn_80235580(i) && !fn_8022F478(i) &&
+                !fn_80230188(i) && !fn_8022DCD8(i)) {
+                f32 dx = __fabsf(mPos.x - getPlayerPos_8023E724(i)->x);
+                f32 dy = __fabsf(mPos.y - getPlayerPos_8023E724(i)->y);
+                bool vertical = (field_0x98 & 2) != 0;
+                if ((!vertical && dy < 16.0f) || (vertical && dx < 16.0f)) {
+                    JGeometry::TVec3f out1;
+                    JGeometry::TVec3f out2;
+                    if (!fn_801F23BC(field_0x4, &mPos, getPlayerPos_8023E724(i), &mBox2, &out1, &out2, false)) {
+                        if (field_0x244 < 0 || field_0x244 == i) {
+                            if (field_0x238 != 0) {
+                                break;
+                            }
+                            field_0x244 = i;
+                            startSound_801F0E34(0x400D3, 0);
+                            if (field_0x250 == 0) {
+                                if (getPlayerPos_8023E724(i)->x > mPos.x) {
+                                    field_0x260 = 0.7f;
+                                } else {
+                                    field_0x260 = -0.7f;
+                                }
+                            } else {
+                                if (getPlayerPos_8023E724(i)->y > mPos.y) {
+                                    field_0x264 = 0.7f;
+                                } else {
+                                    field_0x264 = -0.7f;
+                                }
+                            }
+                            if (field_0x250 == 0) {
+                                fn_801AF7D0(1);
+                            } else {
+                                fn_801AF7D0(5);
+                            }
+                            field_0x238 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 50;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (field_0x244 == i) {
+                if (field_0x258 == 0 || field_0x258 == 4) {
+                    field_0x230 = 0;
+                } else {
+                    field_0x230 = 2;
+                }
+                break;
+            }
+        }
+        break;
+    case 2:
+        if (field_0x250 == 0) {
+            fn_801AF7D0(3);
+        } else {
+            fn_801AF7D0(7);
+        }
+        field_0x268 = 0.0f;
+        field_0x264 = 0.0f;
+        field_0x260 = 0.0f;
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        field_0x230 = 3;
+        // fall through
+    case 3:
+        if (field_0x25c == 1) {
+            field_0x230 = 0;
+        }
+        break;
+    }
+
+    fn_801AF678();
+    if (field_0x234 > 0) {
+        field_0x234--;
+    }
+    if (field_0x238 > 0) {
+        field_0x238--;
+    }
+    if (field_0x23c > 0) {
+        field_0x23c--;
     }
 }
 
