@@ -22,8 +22,8 @@ public:
     /* 0x240 */ s32 field_0x240;
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
-    /* 0x24C */ u8 field_0x24c[4];
-    /* 0x250 */ u8 field_0x250[4];
+    /* 0x24C */ u8 field_0x24c[4]; // per player: inside the box this frame
+    /* 0x250 */ u8 field_0x250[4]; // ... the frame before
     /* 0x254 */ JGeometry::TVec3f field_0x254[4]; // zeroed by init()
 }; // Size: 0x284
 
