@@ -163,6 +163,10 @@ public:
     // cross-fades field_0x23c's picture (setBlendRatio) over a 180-frame cycle and turns
     // it 90 / 270 degrees about its centre.
     void fn_80409014();
+    // Inline (fn_804096E8 twice, fn_8040C950, fn_8040CE90): the name of stage
+    // field_0x340 into field_0x438: message lbl_8048C1F8[0][stage] for stages 0-7, the
+    // debug names "Test-1", "ECTS", "E3", "Boss1-4", "Boss5-8" for 8-12, else "".
+    void setStageName();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -252,7 +256,8 @@ public:
     // Ttlv11 / Ttlv12; its length is not proven (it runs to field_0x5dc at most).
     /* 0x438 */ char field_0x438[0x5DC - 0x438];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
-    /* 0x5DD */ u8 field_0x5dd[0x641 - 0x5DD];
+    /* 0x5DD */ u8 field_0x5dd[0x640 - 0x5DD];
+    /* 0x640 */ u8 field_0x640; // set by fn_804096E8 (stage 7)
     /* 0x641 */ u8 field_0x641; // alpha of the Ppoint panes (fn_80404648)
     /* 0x642 */ u8 field_0x642[9]; // alpha of each pane of lbl_8048C5D0
     /* 0x64B */ u8 field_0x64b;

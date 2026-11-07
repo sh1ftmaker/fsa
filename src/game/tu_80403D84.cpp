@@ -211,6 +211,26 @@ static const s32 lbl_8048CC0C[4] = {
     60, 62, 61, 63,
 };
 
+// Inlined where the stage name changes (fn_804096E8 twice, fn_8040C950, fn_8040CE90); its
+// debug-name literals sit in fn_804096E8's block of .sdata2, so it is an inline.
+inline void MapScreen_804B1288::setStageName() {
+    if (field_0x340 < 8) {
+        getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
+    } else if (field_0x340 == 8) {
+        strcpy(field_0x438, "Test-1");
+    } else if (field_0x340 == 9) {
+        strcpy(field_0x438, "ECTS");
+    } else if (field_0x340 == 10) {
+        strcpy(field_0x438, "E3");
+    } else if (field_0x340 == 11) {
+        strcpy(field_0x438, "Boss1-4");
+    } else if (field_0x340 == 12) {
+        strcpy(field_0x438, "Boss5-8");
+    } else {
+        field_0x438[0] = 0;
+    }
+}
+
 bool fn_804149C0() {
     return lbl_8050EC80.getCurrentFile().field_0x67 & 1;
 }
@@ -611,21 +631,7 @@ void MapScreen_804B1288::fn_8040E278() {
 void MapScreen_804B1288::fn_8040CE90() {
     field_0x426++;
     if (field_0x426 >= 8) {
-        if (field_0x340 < 8) {
-            getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
-        } else if (field_0x340 == 8) {
-            strcpy(field_0x438, "Test-1");
-        } else if (field_0x340 == 9) {
-            strcpy(field_0x438, "ECTS");
-        } else if (field_0x340 == 10) {
-            strcpy(field_0x438, "E3");
-        } else if (field_0x340 == 11) {
-            strcpy(field_0x438, "Boss1-4");
-        } else if (field_0x340 == 12) {
-            strcpy(field_0x438, "Boss5-8");
-        } else {
-            field_0x438[0] = 0;
-        }
+        setStageName();
         strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
         strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
         fn_80411A94(1.0f);
@@ -654,21 +660,7 @@ void MapScreen_804B1288::fn_8040CE90() {
 void MapScreen_804B1288::fn_8040C950() {
     field_0x426++;
     if (field_0x426 >= 8) {
-        if (field_0x340 < 8) {
-            getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
-        } else if (field_0x340 == 8) {
-            strcpy(field_0x438, "Test-1");
-        } else if (field_0x340 == 9) {
-            strcpy(field_0x438, "ECTS");
-        } else if (field_0x340 == 10) {
-            strcpy(field_0x438, "E3");
-        } else if (field_0x340 == 11) {
-            strcpy(field_0x438, "Boss1-4");
-        } else if (field_0x340 == 12) {
-            strcpy(field_0x438, "Boss5-8");
-        } else {
-            field_0x438[0] = 0;
-        }
+        setStageName();
         strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
         strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
         fn_80411A94(1.0f);
@@ -827,6 +819,122 @@ void MapScreen_804B1288::fn_8040B388() {
     }
 }
 
+
+// FIXME: 96.44. Missing/extra (one instruction): in the field_0xd4 loop the original
+// multiplies scale * field_0x10 after fn_8040271C (keeping field_0x10 in f30), ours before
+// it (an extra fmr); the table / field_0x18 loads of each division are also swapped. The
+// "cleared" test after the stage branch is written in both branches: the original has
+// its own copy of it in the stage 7 branch.
+void MapScreen_804B1288::fn_804096E8() {
+    u8 faded = false;
+    u8 cleared = false;
+    u8 listed = false;
+    u8 moved = false;
+    field_0x41e++;
+    if (field_0x340 == 7) {
+        if (field_0x41e >= 0) {
+            // The original stores 0, then 1.
+            field_0x640 = 0;
+            field_0x640 = 1;
+            f32 t = field_0x41e / 20.0f;
+            if (t > 1.0f) {
+                t = 1.0f;
+            }
+            fn_80408F38(1.0f - t);
+            if (field_0x41e >= 20) {
+                faded = true;
+            }
+        }
+        if (field_0x41e == 1) {
+            hideSubStagePanes();
+        } else if (field_0x41e > 15) {
+            cleared = true;
+        }
+    } else {
+        if (field_0x340 < 7) {
+            if (field_0x41e >= 0) {
+                field_0xc8->fn_80402B10(20, 0, lbl_8048C86C[field_0x340], 0.0f);
+                field_0xc8->fn_80402940(20, 0, lbl_8048C87C[field_0x340], 0.0f);
+                faded = field_0xc8->fn_8040271C(20, lbl_8048C850[field_0x340] / field_0xc8->field_0x18, 1.0f);
+                f32 scale = lbl_8048C850[field_0x340] / field_0xc8->field_0x18 - 1.0f;
+                f32 dx = scale * (field_0xcc->field_0x10 - field_0xc8->field_0x10);
+                f32 dy = scale * (field_0xcc->field_0x14 - field_0xc8->field_0x14);
+                field_0xcc->fn_80402B10(20, 0, dx + lbl_8048C86C[field_0x340], 0.0f);
+                field_0xcc->fn_80402940(20, 0, dy + lbl_8048C87C[field_0x340], 0.0f);
+                field_0xcc->fn_8040271C(20, lbl_8048C850[field_0x340] / field_0xc8->field_0x18, 1.0f);
+                dx = scale * (field_0xd0->field_0x10 - field_0xc8->field_0x10);
+                dy = scale * (field_0xd0->field_0x14 - field_0xc8->field_0x14);
+                field_0xd0->fn_80402B10(20, 0, dx + lbl_8048C86C[field_0x340], 0.0f);
+                field_0xd0->fn_80402940(20, 0, dy + lbl_8048C87C[field_0x340], 0.0f);
+                field_0xd0->fn_8040271C(20, lbl_8048C850[field_0x340] / field_0xc8->field_0x18, 1.0f);
+                for (int i = 0; i < 18; i++) {
+                    dy = scale * field_0xd4[i]->field_0x14;
+                    dx = scale * field_0xd4[i]->field_0x10;
+                    field_0xd4[i]->fn_8040271C(20, lbl_8048C850[field_0x340] / field_0xc8->field_0x18, 1.0f);
+                    field_0xd4[i]->fn_80402B10(20, 0, dx, 0.0f);
+                    field_0xd4[i]->fn_80402940(20, 0, dy, 0.0f);
+                }
+            }
+        } else {
+            faded = true;
+        }
+        if (field_0x41e == 1) {
+            hideSubStagePanes();
+        } else if (field_0x41e > 15) {
+            cleared = true;
+        }
+    }
+    s32 rows = field_0x370;
+    if (rows >= 8) {
+        rows = 7;
+    }
+    if (field_0x41e >= 0 && field_0x41e <= rows * 2 + 16) {
+        for (int i = 0; i < rows + 1; i++) {
+            if (field_0x41e >= i * 2) {
+                field_0x28[i][0]->fn_80402B10(16, 0, -150.0f, 0.0f);
+                for (int j = 0; j < 3; j++) {
+                    field_0x28[i][j]->fn_80402628(16, 0, field_0x28[i][j]->field_0x28);
+                }
+            }
+        }
+    } else if (field_0x41e > rows * 2 + 16) {
+        listed = true;
+    }
+    if (field_0x657 == 0) {
+        if (field_0x41e >= 10 && field_0x41e <= 30) {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    moved = field_0x228[i][j]->fn_80402940(15, 0, -150.0f, 0.0f);
+                }
+            }
+            field_0x238->fn_80402940(15, 0, -150.0f, 0.0f);
+            field_0x23c->fn_80402940(15, 0, -150.0f, 0.0f);
+        } else if (field_0x41e > 30) {
+            moved = true;
+        }
+    } else {
+        moved = true;
+    }
+    if (faded && cleared && listed && moved) {
+        if (field_0x657) {
+            field_0x340 = field_0x364;
+            field_0x348 = 0;
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+            field_0x39c = -250.0f;
+            field_0x350 = 5;
+        } else {
+            field_0x350 = 0xB;
+        }
+    }
+    if (field_0x41e >= 0) {
+        gAudioMgr_8053AF80->fn_80458880(0x54, -1);
+    }
+}
 
 void MapScreen_804B1288::fn_80409450() {
     field_0x41e++;
