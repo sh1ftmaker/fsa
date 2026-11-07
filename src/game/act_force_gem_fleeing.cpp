@@ -6,8 +6,12 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/RotMatrix.h"
+#include "game/VecEpsilon.h"
 #include "game/act/act_force_gem_fleeing.h"
 
+
+// Frame thresholds per animation frame (field_0x254), compared with field_0x240[0] (update).
+static const s32 lbl_804716E0[] = {60, 62, 64, 66};
 
 // Sprite ids per kind (field_0x268), four per state group.
 static const s32 lbl_804AB130[] = {0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D};
@@ -136,9 +140,26 @@ bool FleeingForceGem_804AB170::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* po
     return true;
 }
 
+// The bob of states 3 and 4: field_0x26c advances by a random step and field_0x294.z
+// eases towards 3 + amp * sin(field_0x26c). The original has the state-4 test in both
+// states' copies.
+inline void bobForceGem(FleeingForceGem_804AB170* gem) {
+    f32 amp;
+    f32 step;
+    if (gem->field_0x230 == 4) {
+        amp = 3.0f;
+        step = 0.2f;
+        gem->field_0x26c += (s32)(592.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x500;
+    } else {
+        amp = 1.5f;
+        step = 0.1f;
+        gem->field_0x26c += (s32)(256.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x200;
+    }
+    addCalc2_801F71A4(&gem->field_0x294.z, 3.0f + amp * JMath::sincosTable_.sinShort(gem->field_0x26c), 0.1f, step);
+}
+
 // 0x8031C598.
-// FIXME(shotgun): 34.4 %. States 3-10 of the state switch (0x8031CD60-0x8031D8B8) and the end of the function
-// (the frame counter after field_0x240++, 0x8031D9B8-0x8031DA8C) are not written.
+// FIXME(shotgun): 90.0 %, missing/extra + reloc-name
 void FleeingForceGem_804AB170::update() {
     f32 dist = 0.0f;
     u16 angle = 0;
@@ -302,7 +323,178 @@ void FleeingForceGem_804AB170::update() {
                 fn_801F3668();
             }
             break;
-        // FIXME(shotgun): states 3-10 not written (0x8031CD60-0x8031D8B8).
+        case 3:
+            bobForceGem(this);
+            if (dist < 80.0f) {
+                field_0x240[1] = 0;
+                field_0x230 = 4;
+            }
+            if (field_0x3c.squared() > 0.1f) {
+                mPos += field_0x3c;
+            } else {
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+            }
+            fn_801F2618(NULL, false);
+            break;
+        case 4:
+            bobForceGem(this);
+            if (mPos.z <= 0.0f && field_0x3c.z <= 0.0f) {
+                s32 layer = field_0x4;
+                if (getGameView_802D6A9C()->field_0x131df[layer] == 0) {
+                    if (field_0x94 == 1) {
+                        field_0x94 = 0;
+                    }
+                    mPos.z = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    if (dist < 100.0f || field_0x240[4] != 0) {
+                        field_0x274 = field_0x276;
+                        s32 curLayer = field_0x4;
+                        GameView_804A9950* view = getGameView_802D6A9C();
+                        JGeometry::TBox2f rect = curLayer < 8 ? view->mVisibleBox : view->field_0xdc;
+                        if (mPos.x < rect.i.x + 23.0f || mPos.x > rect.f.x - 23.0f) {
+                            mPos += JGeometry::TVec3f(field_0x27c.x, 0.0f, 0.0f);
+                        } else if (mPos.y < rect.i.y + 23.0f || mPos.y > rect.f.y - 23.0f) {
+                            mPos += JGeometry::TVec3f(0.0f, field_0x27c.y, 0.0f);
+                        } else {
+                            mPos += field_0x27c;
+                            fn_801F2618(NULL, false);
+                        }
+                        if (rect.i.x - 20.0f > mPos.x || rect.f.x + 20.0f < mPos.x || rect.i.y - 20.0f > mPos.y ||
+                            rect.f.y + 20.0f < mPos.y) {
+                            fn_801F3668();
+                        }
+                        if (field_0x240[4] <= 0) {
+                            field_0x274 = angle + 0x8000;
+                            if (epsilonEquals(field_0x288, mPos, JGeometry::TUtil<f32>::epsilon()) &&
+                                field_0x240[1] == 0) {
+                                field_0x240[1] = 2;
+                                if ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) != 0) {
+                                    field_0x274 += 0x2000;
+                                } else {
+                                    field_0x274 -= 0x2000;
+                                }
+                            }
+                            field_0x276 = field_0x274;
+                            field_0x27c.x = 2.0f * JMath::sincosTable_.sinShort(field_0x274);
+                            field_0x27c.y = 2.0f * JMath::sincosTable_.cosShort(field_0x274);
+                        }
+                    } else {
+                        field_0x27c.x = 0.0f;
+                        field_0x27c.y = 0.0f;
+                        field_0x27c.z = 0.0f;
+                        field_0x230 = 3;
+                        fn_801F2618(NULL, false);
+                    }
+                } else {
+                    if (field_0x270 != field_0x4) {
+                        field_0x270 = field_0x4;
+                        field_0x27c.x = 0.0f;
+                        field_0x27c.y = 2.0f * JMath::sincosTable_.cosShort(field_0x276);
+                    }
+                    if (field_0x94 == 1) {
+                        field_0x94 = 0;
+                    }
+                    mPos.z = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    if (dist < 100.0f || field_0x174 != 0) {
+                        field_0x274 = field_0x276;
+                        mPos += field_0x27c;
+                        fn_801F2618(NULL, false);
+                        if (field_0x174 == 0 || field_0x240[1] == 0) {
+                            field_0x274 = angle + 0x8000;
+                            if (epsilonEquals(field_0x288, mPos, JGeometry::TUtil<f32>::epsilon())) {
+                                field_0x240[1] = 2;
+                                if ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) != 0) {
+                                    field_0x274 += 0x2000;
+                                } else {
+                                    field_0x274 -= 0x2000;
+                                }
+                            }
+                            field_0x276 = field_0x274;
+                            field_0x27c.x = 2.0f * JMath::sincosTable_.sinShort(field_0x274);
+                            field_0x27c.y = 2.0f;
+                        }
+                    } else {
+                        field_0x27c.x = 0.0f;
+                        field_0x27c.y = 0.0f;
+                        field_0x27c.z = 0.0f;
+                        field_0x230 = 3;
+                        fn_801F2618(NULL, false);
+                    }
+                }
+            }
+            break;
+        case 6:
+        case 7:
+            mPos += field_0x27c;
+            fn_801F2618(NULL, false);
+            if (field_0x240[2] <= 0) {
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                field_0x27c.z = 0.0f;
+                field_0x27c.y = 0.0f;
+                field_0x27c.x = 0.0f;
+                if (field_0x230 == 7) {
+                    bool splash = false;
+                    u16 effect1;
+                    u16 effect2;
+                    if (fn_802DEB58()) {
+                        startSound_801F0E34(0x5003F, 0);
+                        effect1 = 0x45E;
+                        effect2 = 0x45F;
+                        splash = true;
+                    } else if (fn_802DE9A0() == 1) {
+                        startSound_801F0E34(0x50040, 0);
+                        effect1 = 0x2A9;
+                        effect2 = 0x2AA;
+                        splash = true;
+                    } else {
+                        field_0x23c += 0.1f;
+                        field_0x238 -= 0.02f;
+                    }
+                    if (splash == true) {
+                        field_0x238 = 0.0f;
+                        spawnEmitter_8013CC50(field_0x4, &mPos, effect1, -1, 1, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &mPos, effect2, 0, 0, NULL, NULL, true, 1.0f);
+                    }
+                } else if (field_0x230 == 6) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 0, NULL, NULL, true, 1.0f);
+                    startSound_801F0E34(0x30022, 0);
+                }
+            }
+            // fall through: the original continues with state 5 (0x8031D7E8)
+        case 5:
+            if (field_0x230 == 5) {
+                field_0x23c += 0.1f;
+                field_0x238 -= 0.02f;
+            }
+            if (field_0x238 < 0.1f) {
+                fn_801F3668();
+            }
+            break;
+        case 8:
+            if (vfunc_0x34()) {
+                field_0x240[3] = 0;
+                field_0x230 = 9;
+            }
+            break;
+        case 9:
+            if (field_0x240[3] <= 0) {
+                field_0x268 = field_0x90 & 3;
+                field_0x230 = 10;
+                field_0x240[3] = 30;
+                fn_801F0D20(0x42);
+            }
+            break;
+        case 10:
+            if (field_0x240[3] <= 0) {
+                field_0x268 = field_0x90 & 3;
+                field_0x230 = 0;
+            }
+            break;
         }
     }
     if (field_0x3c.squared() > 0.1f) {
@@ -313,7 +505,28 @@ void FleeingForceGem_804AB170::update() {
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
     }
     field_0x240[0]++;
-    // FIXME(shotgun): the frame counter handling after field_0x240++ (0x8031D9B8-0x8031DA8C) is not written.
+    if (field_0x230 == 4 || field_0x230 == 7 || field_0x230 == 6) {
+        if (field_0x240[0] > lbl_804716E0[field_0x254]) {
+            field_0x254++;
+        }
+        if (field_0x254 >= 4) {
+            field_0x254 = 0;
+            field_0x240[0] = 0;
+        }
+    } else {
+        if (field_0x240[0] > lbl_804716E0[field_0x254]) {
+            field_0x254++;
+        }
+        if (field_0x254 >= 4) {
+            field_0x254 = 0;
+            field_0x240[0] = 0;
+        }
+    }
+    for (s32 i = 1; i < 5; i++) {
+        if (field_0x240[i] > 0) {
+            field_0x240[i]--;
+        }
+    }
 }
 
 // 0x8031C0B0.
