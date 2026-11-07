@@ -93,6 +93,7 @@ void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
     }
 }
 
+#ifdef NONMATCHING
 // Force Gem value brackets (rupee worth by kind) the burst hands out.
 static const s32 lbl_804AB630[12] = {1, 5, 20, 50, 100, 150, 200, 300, 1000, 1500, 2000, 3000};
 
@@ -102,7 +103,7 @@ static void releaseEmitter(JPABaseEmitter* emitter) {
     }
 }
 
-// FIXME(shotgun): 38.70 %, missing/extra. State 0 velocity maths and the state 1/4 timers are approximate (written in one pass)
+// FIXME(shotgun): 38.70 %, missing/extra (gated out: compiled, its literals move draw from 100 % to 99.92 %). State 0 velocity maths and the state 1/4 timers are approximate (written in one pass)
 void ForceGemSpawner_804AB660::update() {
     switch (field_0x230) {
     case 0: {
@@ -229,6 +230,8 @@ void ForceGemSpawner_804AB660::update() {
     }
     }
 }
+
+#endif
 
 void ForceGemSpawner_804AB660::draw() {
     if (field_0x230 == 3) {
