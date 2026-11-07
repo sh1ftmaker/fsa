@@ -30,6 +30,8 @@ public:
     // field_0x54.x and field_0x398 are not 0.0f, appends an entry to the
     // shared list fn_801902C0 returns; then, under the same test, plays
     // sound 0x30073 (startSound_801F0E34).
+    // 0x8021148C (slot 0x90, symbol was fn_8021148C): the state machine; runs the push on the players and the state-leave check first.
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
     // 0x80211C94 (not virtual; called by fn_8021148C with this). Only while
     // mState is 2 to 5: when field_0x2ac is 3 and field_0x2b0 is set but the

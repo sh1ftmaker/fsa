@@ -7,10 +7,9 @@
 #include "game/act/tu_80212E3C.h"
 #include "game/tu_80212AC0.h"
 
-// Ends the active state: state 1 hands the actor to fn_80212ECC and the view
-// bit on, state 6 clears it; then the actor gets mFlags 0x4000 and the state
-// becomes 6.
-static inline void leaveSand(cls_804A6270* sand) {
+// Releases the held view and partner on leaving a state: state 1 hands the
+// actor to fn_80212ECC and turns the view bit on, state 6 turns it off.
+static inline void releaseView(cls_804A6270* sand) {
     switch (sand->mState) {
     case 1: {
         s32 serial = sand->field_0x388;
@@ -34,6 +33,12 @@ static inline void leaveSand(cls_804A6270* sand) {
         break;
     }
     }
+}
+
+// Ends the active state: releaseView, then the actor gets mFlags 0x4000 and
+// the state becomes 6.
+static inline void leaveSand(cls_804A6270* sand) {
+    releaseView(sand);
     s32 serial = sand->field_0x388;
     if (serial >= 0) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -43,6 +48,16 @@ static inline void leaveSand(cls_804A6270* sand) {
     }
     sand->mStateTimer = 0;
     sand->mState = 6;
+}
+
+// Moves x towards target in `remaining` equal steps (jumps once it is under epsilon).
+static inline void approach(f32& x, f32 target, s32 remaining) {
+    f32 t = (f32)remaining;
+    if (t < JGeometry::TUtilf::epsilon()) {
+        x = target;
+    } else {
+        x = x + (1.0f / t) * (target - x);
+    }
 }
 
 cls_804A6270::cls_804A6270() {
@@ -257,6 +272,9 @@ void cls_804A6270::vfunc_0x54() {
     }
 }
 
+// Not auto-inlined: vfunc_0x90 calls fn_80211EB0 and fn_80211C94 out of line in the
+// original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME(shotgun): 94.06 %, missing/extra
 void cls_804A6270::fn_80211EB0() {
     if (mState != 0) {
@@ -293,6 +311,128 @@ void cls_804A6270::fn_80211C94() {
         }
         if (field_0x2ac == 4 && fn_801D05F8(&mPos, field_0x3a0) < 0) {
             leaveSand(this);
+        }
+        break;
+    }
+}
+
+#pragma auto_inline reset
+
+// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+void cls_804A6270::vfunc_0x90(u8 mapHit) {
+    fn_80211EB0();
+    fn_80211C94();
+    switch (mState) {
+    case 0: {
+        bool trigger = false;
+        switch (field_0x2ac) {
+        case 1:
+        case 4:
+            if (fn_801D05F8(&mPos, field_0x39c) >= 0) {
+                trigger = true;
+            }
+            break;
+        case 2:
+        case 3: {
+            s32 viewBit = field_0x2b0;
+            if (viewBit != 0 && getGameView_802D6A9C()->fn_802D800C(viewBit)) {
+                trigger = true;
+            }
+            break;
+        }
+        }
+        if (trigger) {
+            releaseView(this);
+            field_0x3ac = -1;
+            field_0x3b0 = 0;
+            if (mFlags & 0x4000) {
+                field_0x54.x = field_0x394;
+                field_0x54.y = field_0x394;
+                field_0x54.z = field_0x394;
+            } else {
+                field_0x54.x = field_0x390;
+                field_0x54.y = field_0x390;
+                field_0x54.z = field_0x390;
+            }
+            s32 serial = field_0x388;
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor != NULL) {
+                    static_cast<cls_804A6340*>(actor)->fn_80212F14();
+                }
+            }
+            mStateTimer = 0;
+            mState = 1;
+        }
+        break;
+    }
+    case 1:
+        if (mStateTimer >= 60) {
+            if (mFlags & 0x4000) {
+                releaseView(this);
+                mStateTimer = 0;
+                mState = 5;
+            } else {
+                releaseView(this);
+                mStateTimer = 0;
+                mState = 3;
+            }
+        } else {
+            approach(field_0x398, 1.0f, 60 - mStateTimer);
+        }
+        break;
+    case 2:
+        if (mStateTimer >= 60) {
+            releaseView(this);
+            mStateTimer = 0;
+            mState = 3;
+        } else {
+            approach(field_0x54.x, field_0x390, 60 - mStateTimer);
+            field_0x54.y = field_0x54.x;
+            field_0x54.z = field_0x54.x;
+        }
+        break;
+    case 3:
+        if (!(mFlags & 0x10000) && mStateTimer >= 180) {
+            releaseView(this);
+            mStateTimer = 0;
+            mState = 4;
+        }
+        break;
+    case 4:
+        if (mStateTimer >= 60) {
+            releaseView(this);
+            mStateTimer = 0;
+            mState = 5;
+        } else {
+            approach(field_0x54.x, field_0x394, 60 - mStateTimer);
+            field_0x54.y = field_0x54.x;
+            field_0x54.z = field_0x54.x;
+        }
+        break;
+    case 5:
+        if (!(mFlags & 0x10000) && mStateTimer >= 180) {
+            releaseView(this);
+            mStateTimer = 0;
+            mState = 2;
+        }
+        break;
+    case 6:
+        if (mStateTimer >= 30) {
+            releaseView(this);
+            field_0x3ac = -1;
+            field_0x3b0 = 0;
+            mStateTimer = 0;
+            mState = 0;
+            if (mFlags & 0x20000) {
+                s32 viewSerial = field_0x2b4;
+                if (viewSerial != 0) {
+                    getGameView_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
+                }
+                fn_801F3668();
+            }
+        } else {
+            approach(field_0x398, 0.0f, 30 - mStateTimer);
         }
         break;
     }
@@ -438,4 +578,3 @@ void cls_804A6270::fn_80210D90() {
     leaveSand(this);
 }
 
-// fn_8021148C (0x808 bytes, the state machine update): not written (size).
