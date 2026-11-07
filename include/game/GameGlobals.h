@@ -1951,6 +1951,8 @@ public:
     // 0x803A71F0 (not written yet): starts by setting the display's clear colour;
     // GameRoot's fn_80136828 calls it on lbl_8053AD90 in screen mode 5.
     void fn_803A71F0();
+    // 0x803A60E4: the wobble and slide of the two arrow panes (Par01 / Par02).
+    void fn_803A60E4();
     // 0x803A7708 is the destructor.
 
     /* 0x00 */ // vtable
@@ -1961,7 +1963,16 @@ public:
     /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
     /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
     /* 0x30 */ PaneCtrl_804AF86C* field_0x30;
-    /* 0x34 */ u8 field_0x34[0x80 - 0x34];
+    /* 0x34 */ u8 field_0x34[0x60 - 0x34];
+    /* 0x60 */ f32 field_0x60;
+    /* 0x64 */ s32 field_0x64;
+    /* 0x68 */ u8 field_0x68[0x6C - 0x68];
+    /* 0x6C */ s16 field_0x6c; // wobble timer
+    /* 0x6E */ s16 field_0x6e; // slide state of the two arrows (0 idle, +-1..10 moving)
+    /* 0x70 */ s16 field_0x70; // base angle of pane Par01
+    /* 0x72 */ s16 field_0x72; // base angle of pane Par02
+    /* 0x74 */ s16 field_0x74; // wobble, +-6
+    /* 0x76 */ u8 field_0x76[0x80 - 0x76];
     /* 0x80 */ s32 field_0x80; // returned by fn_803A65EC (5 without the screen)
     /* 0x84 */ u8 field_0x84[0];
 }; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
