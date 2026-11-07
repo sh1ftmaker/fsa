@@ -21,6 +21,11 @@ public:
     /* 0x233 */ u8 field_0x233[0x238 - 0x233]; // not yet known
     /* 0x238 */ s32 field_0x238; // index into the table draw reads
     /* 0x23C */ s32 field_0x23c; // returned by vfunc_0x58
-}; // Size: at least 0x240
+    /* 0x240 */ u8 field_0x240[0x248 - 0x240]; // not yet known
+    /* 0x248 */ s32 field_0x248; // fn_80113790 draws the darkening while positive (the alpha)
+    /* 0x24C */ u8 field_0x24c[0x260 - 0x24C]; // not yet known
+    /* 0x260 */ void* field_0x260; // "TIMG" resource of fn_80113790's image
+    /* 0x264 */ u8 field_0x264[0x2F0 - 0x264]; // not yet known
+}; // Size: 0x2F0 (the spawner's __nw__)
 
 #endif
