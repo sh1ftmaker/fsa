@@ -141,6 +141,7 @@ public:
     void fn_803D3B38();
     void fn_803D3C90();
     void fn_803D3D50();
+    void fn_803D3EC8();
     void fn_803D49A4();
     void fn_803D4DB0();
 
@@ -153,7 +154,7 @@ public:
     /* 0x0024 */ PaneCtrl_804AF86C* field_0x24;
     /* 0x0028 */ PaneCtrl_804AF86C* field_0x28;
     /* 0x002C */ PaneCtrl_804AF86C* field_0x2c[8];
-    /* 0x004C */ u8 field_0x4c[0x50 - 0x4C];
+    /* 0x004C */ PaneCtrl_804AF86C* field_0x4c;
     /* 0x0050 */ u32 field_0x50;
     /* 0x0054 */ s32 field_0x54; // the message the screen shows
     /* 0x0058 */ u8 field_0x58[0x78 - 0x58];
