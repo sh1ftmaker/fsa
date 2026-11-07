@@ -1788,6 +1788,8 @@ public:
     void fn_8042EF9C(char* str, s32 id, u8 value);
     // 0x8042F6DC: second layout pass over the same window (not written yet).
     void fn_8042F6DC();
+    // 0x80430368: appends the counted noun (the nouns of cls_804AF774::fn_803A2CB0) to out; 0.0f.
+    f32 fn_80430368(u8 noun, s32 count, char* out);
     // 0x804310BC: clears field_0xe8 and field_0xec (owner game/tu_8042E964.cpp).
     void fn_804310BC();
 
@@ -1796,7 +1798,10 @@ public:
     /* 0x0C */ PaneCtrl_804AF86C* field_0xc;  // pane wrapper
     /* 0x10 */ PaneCtrl_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
     /* 0x24 */ PaneCtrl_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
-    /* 0x38 */ u8 field_0x38[0xBC - 0x38]; // not decoded yet (TVec2<s> arrays at 0x38 and 0x78, floats from 0xB8)
+    // Frame sizes copied from the panes' 0x112 (fn_80431D84): per bb pane (field_0x10) and wb pane (field_0x24) four pairs.
+    /* 0x38 */ JGeometry::TVec2<s16> field_0x38[16];
+    /* 0x78 */ JGeometry::TVec2<s16> field_0x78[16];
+    /* 0xB8 */ u8 field_0xb8[0xBC - 0xB8];
     // SHARED-EDIT: floats read by fn_80431174 (cursor placement): the window's
     // pane sizes and offsets, laid out by fn_8042F6DC.
     /* 0xBC */ f32 field_0xbc;

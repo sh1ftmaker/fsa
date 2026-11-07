@@ -14,6 +14,8 @@ class PaneCtrl_804AF86C;
 // field_0x10 the frame counter and field_0x12 the "open" flag.
 class cls_804B1600 {
 public:
+    // Inline in cls_804B1634's constructor (game/tu_8042E964.cpp).
+    cls_804B1600();
     /* 0x08 */ virtual ~cls_804B1600();
 
     // Owner: game/tu_8042E964.cpp. Resets the counter and the flag.
