@@ -711,6 +711,667 @@ bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return blocked;
 }
 
+// FIXME(shotgun): 88.80 %, missing/extra + reloc-name
+void Cucco_804AB8C0::update() {
+    if (field_0x230 == 2) {
+        if (fn_8022F9E4(field_0x25c, mSerial, false, false) == 1) {
+            field_0x230 = 3;
+        }
+        return;
+    }
+    if (field_0x2a7 == 1) {
+        if (vfunc_0x34() == true) {
+            field_0x2a7 = 0;
+        }
+        return;
+    }
+    s32 outDir = -1;
+    bool r30 = false;
+    f32 outDist = 0.0f;
+    s32 r29 = -1;
+    s32 r28 = -1;
+    u16 outAngle = 0;
+    s32 outPlayer = -1;
+    field_0x26c++;
+    mLife = 1000;
+    if (mEmitter2f4 != NULL) {
+        mEmitter2f4->becomeInvalidEmitter();
+        mEmitter2f4 = NULL;
+    }
+    if (field_0x290 == 0 || field_0x290 == 6) {
+        fn_80332A60();
+        if (!field_0xc4) {
+            fn_803324A8();
+        }
+    }
+    addCalc2_801F71A4(&field_0x3c.x, field_0x2b8.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x2b8.y, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.z, field_0x2b8.z, 0.05f, 1.0f);
+    u8 r27 = 0;
+    mPos.add(field_0x3c);
+    if (!field_0xc4 && (field_0x290 == 0 || field_0x290 == 6)) {
+        r27 = fn_80332378();
+        fn_80331E6C();
+        fn_80331D38();
+    }
+    fn_80331C24();
+    fn_80331B40();
+    switch (field_0x230) {
+    case 0:
+        if (field_0x23c != 0) {
+            if (field_0x23c < 10 && fn_801F2B7C(field_0x114, -1, 5)) {
+                if (field_0x3c.x != 0.0f) {
+                    field_0x2b8.y = -3.0f;
+                    field_0x2b8.z = 3.0f;
+                } else if (field_0x3c.y != 0.0f) {
+                    if ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) != 0) {
+                        field_0x2b8.x = 3.0f;
+                    } else {
+                        field_0x2b8.x = -3.0f;
+                    }
+                    field_0x2b8.z = 3.0f;
+                }
+                field_0x2c4[0] = field_0x2b8;
+                field_0x2b8.z = 0.0f;
+                field_0x2b8.y = 0.0f;
+                field_0x2b8.x = 0.0f;
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                setVec(field_0x2c4[1], mPos);
+                field_0x23c = 0x14;
+                if (field_0x290 != 6) {
+                    field_0x290 = 0xFFFF;
+                    field_0x230 = 11;
+                } else {
+                    field_0x23c = 0;
+                }
+            } else if (r27) {
+                field_0x23c = 0;
+                setVec(field_0x2c4[1], mPos);
+                field_0x2b8.x = 0.0f;
+                field_0x2b8.y = 0.0f;
+                field_0x2b8.z = 0.0f;
+                field_0x2a4[1] = 1;
+            }
+        } else {
+            if (field_0x238 == 0) {
+                field_0x238 = (s32)(50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
+                field_0x258++;
+                field_0x258 &= 1;
+                field_0x2b8.x = 0.0f;
+                field_0x2b8.y = 0.0f;
+                field_0x2b8.z = 0.0f;
+                if (field_0x2a4[1] == 0) {
+                    setVec(field_0x2c4[1], mPos);
+                    field_0x2a4[1] = 1;
+                }
+                if (field_0x258 == 0) {
+                    f32 dy = mPos.y - field_0x2c4[1].y;
+                    f32 dx = mPos.x - field_0x2c4[1].x;
+                    if (JGeometry::TVec2f(dx, dy).length() > 48.0f && field_0x290 == 0) {
+                        outAngle = (s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
+                    } else {
+                        outAngle = (s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                    }
+                    f32 speed = 1.0f;
+                    if (field_0x2a3 == 1) {
+                        speed = 2.0f;
+                    }
+                    s32 layer = field_0x4;
+                    if (getGameView_802D6A9C()->field_0x131df[layer] && field_0x2b4 != 0.0f) {
+                        field_0x2b8.x = speed * JMath::sincosTable_.sinShort(outAngle);
+                    } else {
+                        field_0x2b8.x = speed * JMath::sincosTable_.sinShort(outAngle);
+                        field_0x2b8.y = speed * JMath::sincosTable_.cosShort(outAngle);
+                    }
+                    if (field_0x2b8.x >= 0.0f) {
+                        field_0x98 = 0;
+                    } else {
+                        field_0x98 = 1;
+                    }
+                }
+            }
+            if (mPos.z > 0.0f) {
+                field_0x3c.z -= 1.0f;
+            }
+            if (mPos.z <= 0.0f) {
+                mPos.z = 0.0f;
+                setVec(field_0x2c4[1], mPos);
+                field_0xb8 = 2;
+                fn_803319B8();
+                if (field_0x258 == 0) {
+                    field_0x3c.z = 3.0f;
+                }
+            }
+            s32 layer = field_0x4;
+            if (getGameView_802D6A9C()->field_0x131df[layer] == 1) {
+                if (field_0x23c <= 0) {
+                    field_0x2b8.y += field_0x2b4;
+                }
+                if (field_0x2b4 == 0.0f) {
+                    field_0x2a9 = 0;
+                } else {
+                    field_0x2a9 = 1;
+                }
+                field_0x2b4 = 0.3f;
+                field_0xb8 = 2;
+            }
+        }
+        break;
+    case 1:
+        if (field_0x240 == 0) {
+            if (field_0x268 <= 0 && field_0x290 != 6) {
+                fn_801EEC98(mSerial, &outAngle, NULL, NULL, NULL, 0, field_0x28c);
+                field_0x240 = 10;
+                field_0x2b8.x = -3.0f * JMath::sincosTable_.sinShort(outAngle);
+                field_0x2b8.y = -3.0f * JMath::sincosTable_.cosShort(outAngle);
+                field_0x2b8.z = 0.3f;
+                if (field_0x2b8.x >= 0.0f) {
+                    field_0x98 = 0;
+                } else {
+                    field_0x98 = 1;
+                }
+                field_0x230 = 7;
+                field_0x290 = 1;
+            } else {
+                field_0x2b0 = 0.0f;
+                field_0x268 = 10;
+                field_0x230 = 0;
+                fn_803319B8();
+                setVec(field_0x2c4[1], mPos);
+            }
+        } else {
+            if (field_0x238 == 0) {
+                f32 dist = 0.0f;
+                field_0x238 = 2;
+                fn_801EEC98(mSerial, &outAngle, &outDir, &dist, NULL, 0, 0);
+                if (outDir < 0 || field_0x174 > 0 || dist > 64.0f) {
+                    outAngle = (s32)(JMath::atanTable_.atan2_(-(mPos.x - field_0x2c4[1].x), -(mPos.y - field_0x2c4[1].y)) * 10430.378f);
+                }
+                outAngle += 0x8000;
+                if (r27 == 1) {
+                    s32 dir;
+                    if (field_0x2ac == 0) {
+                        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() > 0.5f) {
+                            dir = 1;
+                        } else {
+                            dir = -1;
+                        }
+                    } else {
+                        dir = field_0x2ac;
+                        if (field_0x2b0 >= dist) {
+                            dir = -dir;
+                        }
+                    }
+                    if (dir == 1) {
+                        outAngle += 0x2000;
+                        field_0x2ac = 1;
+                    } else {
+                        outAngle -= 0x2000;
+                        field_0x2ac = -1;
+                    }
+                    field_0x2b0 = dist;
+                    field_0x238 = 3;
+                } else {
+                    field_0x2b0 = 0.0f;
+                }
+                f32 speed = 2.0f;
+                if (field_0x2a3 == 1) {
+                    speed = 4.0f;
+                }
+                s32 layer = field_0x4;
+                if (getGameView_802D6A9C()->field_0x131df[layer] && field_0x2b4 != 0.0f) {
+                    field_0x2b8.x = speed * JMath::sincosTable_.sinShort(outAngle);
+                } else {
+                    field_0x2b8.x = speed * JMath::sincosTable_.sinShort(outAngle);
+                    field_0x2b8.y = speed * JMath::sincosTable_.cosShort(outAngle);
+                }
+            }
+            if (field_0x250 <= 0) {
+                if (field_0x2b8.x >= 0.0f) {
+                    field_0x98 = 0;
+                } else {
+                    field_0x98 = 1;
+                }
+                field_0x250 = 10;
+            }
+            if (field_0x268 <= 0 && field_0x240 % 2 == 1) {
+                if (field_0x2a0 == 1) {
+                    lbl_8053AED0->fn_8043D67C(0x1B6, 0, 0);
+                    field_0x2a0 = 0;
+                }
+                GameView_804A9950* view = getGameView_802D6A9C();
+                JGeometry::TVec3f spawnPos;
+                spawnPos.z = 16.0f;
+                switch ((s32)(3.99f * gGameRoot_8053AAF8->mRandom.get_ufloat_1())) {
+                case 0:
+                    spawnPos.x = view->mVisibleBox.i.x - 16.0f;
+                    spawnPos.y = (0.9f * (view->mVisibleBox.f.y - view->mVisibleBox.i.y) + view->mVisibleBox.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    break;
+                case 1:
+                    spawnPos.x = view->mVisibleBox.f.x + 16.0f;
+                    spawnPos.y = (0.9f * (view->mVisibleBox.f.y - view->mVisibleBox.i.y) + view->mVisibleBox.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    break;
+                case 2:
+                    spawnPos.y = view->mVisibleBox.i.y - 16.0f;
+                    spawnPos.x = (0.9f * (view->mVisibleBox.f.x - view->mVisibleBox.i.x) + view->mVisibleBox.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    break;
+                case 3:
+                    spawnPos.y = view->mVisibleBox.f.y + 16.0f;
+                    spawnPos.x = (0.9f * (view->mVisibleBox.f.x - view->mVisibleBox.i.x) + view->mVisibleBox.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+                    break;
+                }
+                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_NIWA, 0, &spawnPos, (field_0x2a1 << 12) | 1, -1, -1);
+            }
+            s32 layer = field_0x4;
+            if (getGameView_802D6A9C()->field_0x131df[layer] == 1) {
+                field_0x2b8.y += field_0x2b4;
+                if (field_0x2b4 == 0.0f) {
+                    field_0x2a9 = 0;
+                } else {
+                    field_0x2a9 = 1;
+                }
+                field_0x2b4 = 0.3f;
+            }
+        }
+        break;
+    case 2:
+        break;
+    case 3:
+        if (!field_0xc4) {
+            switch (field_0x290) {
+            case 2:
+            case 3:
+            case 8:
+                field_0x238 = 0;
+                field_0x240 = 1000;
+                field_0x29c = fn_801F6874((u16)fn_80230CFC(field_0x25c));
+                field_0x29e = field_0x29c;
+                if (field_0x290 == 2) {
+                    field_0x230 = 4;
+                } else if (field_0x290 == 8) {
+                    field_0x230 = 5;
+                } else {
+                    field_0x94 = 0xFFFF;
+                    s32 shift = 0;
+                    for (s32 i = 0; i < 4; i++, shift += 0x10) {
+                        if (i != field_0x25c && fn_8023F264(i)) {
+                            if (field_0x94 == 0xFFFF) {
+                                field_0x94 = i;
+                            } else {
+                                getActorManager_801F856C()->spawnActor_801F9484(ACTOR_NIWA, field_0x4, &mPos, (field_0x25c << 8) | shift | 4, -1, -1);
+                            }
+                        }
+                    }
+                    field_0x230 = 6;
+                }
+                break;
+            default: {
+                field_0x23c = 0x12;
+                field_0x2b8.x = field_0x3c.x;
+                field_0x2b8.y = field_0x3c.y;
+                field_0x2b8.z = field_0x3c.z;
+                s32 layer = field_0x4;
+                if (getGameView_802D6A9C()->field_0x131df[layer] == 1) {
+                    mPos.y -= mPos.z;
+                    mPos.z = 0.0f;
+                    field_0x2b8.y -= field_0x2b8.z;
+                    field_0x2b8.z = 0.0f;
+                    field_0x3c.y -= field_0x3c.z;
+                    field_0x3c.z = 0.0f;
+                }
+                if (fn_8022F514(field_0x25c) == 1) {
+                    field_0x25c = fn_8022F3DC(field_0x25c);
+                }
+                field_0x230 = 0;
+                break;
+            }
+            }
+        } else {
+            if (field_0x2a8 == 0) {
+                field_0x25c = field_0xc8;
+            }
+            field_0x98 = fn_80230CFC(field_0xc8);
+            mPos.set(*fn_8023E7B0(field_0xc8));
+            field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
+            field_0x288 = fn_8023BCD4(field_0xc8);
+        }
+        break;
+    case 4:
+    case 5:
+        if (field_0x238 == 0) {
+            field_0x94 = 0xFFFF;
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023F264(i) && i != field_0x25c && !fn_8022E438(i, field_0x25c) && !fn_8022F514(i) &&
+                    ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) != 0) &&
+                    (field_0x4 == getPlayerLayer_8023DE58(i) || getPlayerLayer_8023DE58(i) < 8) && !fn_80236B50(i))
+                {
+                    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+                        if (r29 < fn_80236228(i)) {
+                            r29 = fn_80236228(i);
+                            field_0x94 = i;
+                        }
+                    } else {
+                        if (r28 < fn_80237774(i)) {
+                            r28 = fn_80237774(i);
+                            field_0x94 = i;
+                        }
+                    }
+                }
+            }
+            if (field_0x94 <= 3) {
+                if (field_0x25c != fn_8022F3DC(field_0x94)) {
+                    fn_8032F148(mSerial, (u16*)&field_0x29e, &outDir, &outDist, &outPlayer, field_0x94);
+                }
+                if (outPlayer != field_0x94) {
+                    if (field_0x25c != fn_8022F340(field_0x94) && field_0x8 >= 8 &&
+                        (getPlayerLayer_8023DE58(field_0x94) < 8 || field_0x8 == getPlayerLayer_8023DE58(field_0x94)))
+                    {
+                        field_0x29e = (s32)(JMath::atanTable_.atan2_(-mPos.x, -mPos.y) * 10430.378f);
+                        outDir = -1;
+                        outDist = 10000.0f;
+                    } else {
+                        outDir = -1;
+                    }
+                }
+            } else {
+                field_0x29e = (s32)(JMath::atanTable_.atan2_(-mPos.x, -mPos.y) * 10430.378f);
+                outDir = -1;
+                outDist = 10000.0f;
+            }
+            if (field_0x230 == 4) {
+                field_0x298 = 300;
+            } else {
+                field_0x298 = 100;
+            }
+        }
+        // fallthrough
+    case 6:
+        if (field_0x94 <= 3 && field_0x230 == 6 && field_0x238 == 0) {
+            if (!fn_8022F514(field_0x94) && !fn_8022E438(field_0x94, field_0x25c)) {
+                fn_8032F148(mSerial, (u16*)&field_0x29e, &outDir, &outDist, &outPlayer, field_0x94);
+            }
+            field_0x298 = 100;
+            if (outPlayer != field_0x94) {
+                if (field_0x25c != fn_8022F3DC(field_0x94) && field_0x8 >= 8 &&
+                    (getPlayerLayer_8023DE58(field_0x94) < 8 || field_0x8 == getPlayerLayer_8023DE58(field_0x94)))
+                {
+                    field_0x29e = (s32)(JMath::atanTable_.atan2_(-mPos.x, -mPos.y) * 10430.378f);
+                    outDir = -1;
+                    outDist = 10000.0f;
+                } else {
+                    outDir = -1;
+                }
+            }
+        }
+        if (fn_801F6758(&mPos, field_0x4, 0.0f)) {
+            if (field_0x94 <= 3) {
+                if (field_0x4 != getPlayerLayer_8023DE58(field_0x94)) {
+                    if (getPlayerLayer_8023DE58(field_0x94) < 8) {
+                        field_0x4 = getPlayerLayer_8023DE58(field_0x94);
+                        s32 pLayer = getPlayerLayer_8023DE58(field_0x94);
+                        GameView_804A9950* view = getGameView_802D6A9C();
+                        JGeometry::TBox2f* box = pLayer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+                        mPos.x = box->i.x;
+                        mPos.y = box->i.y;
+                        field_0x3c.z = 0.0f;
+                        field_0x3c.y = 0.0f;
+                        field_0x3c.x = 0.0f;
+                        field_0x238 = 1;
+                        field_0x29c = 0;
+                        field_0x29e = 0;
+                    } else {
+                        mAlive = false;
+                    }
+                }
+            } else {
+                mAlive = false;
+            }
+        }
+        if (field_0x238 == 0) {
+            if (outDir >= 0 && field_0x94 <= 3 && field_0x4 == getPlayerLayer_8023DE58(field_0x94)) {
+                addCalcAngle2_801F714C((u16*)&field_0x29c, field_0x29e, 1, 0x1000);
+            }
+            field_0x238 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 2;
+        }
+        field_0x23c = 10000;
+        field_0x2b8.x = 3.0f * JMath::sincosTable_.sinShort((u16)field_0x29c);
+        field_0x2b8.y = 3.0f * JMath::sincosTable_.cosShort((u16)field_0x29c);
+        if (field_0x2b8.x >= 0.0f) {
+            field_0x98 = 0;
+        } else {
+            field_0x98 = 1;
+        }
+        if (outDir >= 0 && field_0x94 <= 3) {
+            u8 mask = fn_801F2740(field_0x25c);
+            s32 hitPlayer = -1;
+            if (mask != 0) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (mask & (1 << i)) {
+                        s32 p = i;
+                        if (fn_8022F514(i) == 1) {
+                            p = fn_8022F3DC(i);
+                        }
+                        if (field_0x94 == p) {
+                            if (field_0x290 == 2 || field_0x290 == 8) {
+                                hitPlayer = i;
+                                break;
+                            }
+                            if (field_0x94 == p) {
+                                hitPlayer = i;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (hitPlayer >= 0) {
+                    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+                        s32 v = fn_80236228(hitPlayer);
+                        if (v > field_0x298) {
+                            fn_802362C4(hitPlayer, -field_0x298);
+                        } else {
+                            fn_802362C4(hitPlayer, -v);
+                            field_0x298 = v;
+                        }
+                    } else {
+                        field_0x298 = fn_80237774(hitPlayer);
+                        if (field_0x290 == 2) {
+                            if (field_0x298 >= 4) {
+                                field_0x298 = 4;
+                            }
+                        } else {
+                            if (field_0x298 >= 2) {
+                                field_0x298 = 2;
+                            }
+                        }
+                    }
+                    if (gGameRoot_8053AAF8->field_0x7f == 0) {
+                        if (field_0x290 == 2) {
+                            fn_80238548(hitPlayer, 4, (const JGeometry::TVec2f*)&mPos, 1);
+                        } else {
+                            fn_80238548(hitPlayer, 2, (const JGeometry::TVec2f*)&mPos, 1);
+                        }
+                    } else {
+                        fn_801F2B7C(0, -1, 1);
+                    }
+                    r30 = true;
+                }
+            }
+        }
+        if (r30 && field_0x298 != 0) {
+            field_0x244 = 0x32;
+            field_0x230 = 9;
+            field_0x238 = 1;
+        } else if (field_0x240 == 0 || r30) {
+            field_0x230 = 8;
+        }
+        break;
+    case 7:
+        fn_801F2B7C(field_0x2a4[2] == 1 ? 1 : field_0x114, -1, 5);
+        // fallthrough
+    case 8:
+        if (field_0x290 == 0xFFFF) {
+            field_0x2b8.z += 0.1;
+        }
+        if (fn_801F6758(&mPos, field_0x4, 16.0f) || r27) {
+            mAlive = false;
+        }
+        break;
+    case 9:
+        if (field_0x238 == 0) {
+            if (field_0x4 == getPlayerLayer_8023DE58(field_0x25c) && fn_8023F264(field_0x25c) &&
+                !fn_8022DCD8(field_0x25c) && !fn_80236B50(field_0x25c) && !fn_8022D534(field_0x25c))
+            {
+                f32 dx = mPos.x - getPlayerPos_8023E724(field_0x25c)->x;
+                f32 dy = mPos.y - getPlayerPos_8023E724(field_0x25c)->y;
+                outDist = JGeometry::TVec2f(dx, dy).length();
+                field_0x29e = (s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
+                outPlayer = field_0x25c;
+                outDir = fn_801F681C((u16)field_0x29e);
+            } else {
+                outDir = -1;
+            }
+            field_0x238 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 2;
+            if (outPlayer != field_0x25c) {
+                field_0x29e = (s32)(JMath::atanTable_.atan2_(-mPos.x, -mPos.y) * 10430.378f);
+                outDir = 1;
+                outDist = 10000.0f;
+            }
+        }
+        if (fn_801F6758(&mPos, field_0x4, 0.0f)) {
+            if (field_0x4 != getPlayerLayer_8023DE58(field_0x25c)) {
+                field_0x4 = getPlayerLayer_8023DE58(field_0x25c);
+                s32 pLayer = getPlayerLayer_8023DE58(field_0x25c);
+                GameView_804A9950* view = getGameView_802D6A9C();
+                JGeometry::TBox2f* box = pLayer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+                mPos.x = box->i.x;
+                mPos.y = box->i.y;
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                field_0x238 = 1;
+                field_0x29c = 0;
+                field_0x29e = 0;
+            } else if (fn_80236B50(field_0x25c) == 1) {
+                mAlive = false;
+            }
+        }
+        if (outDir >= 0) {
+            addCalcAngle2_801F714C((u16*)&field_0x29c, field_0x29e, 1, 0x1000);
+        }
+        field_0x23c = 10000;
+        if (field_0x244 == 0) {
+            field_0x2b8.x = 3.0f * JMath::sincosTable_.sinShort((u16)field_0x29c);
+            field_0x2b8.y = 3.0f * JMath::sincosTable_.cosShort((u16)field_0x29c);
+        } else {
+            field_0x2b8.x = 0.0f;
+            field_0x2b8.y = 0.0f;
+        }
+        if (field_0x2b8.x >= 0.0f) {
+            field_0x98 = 0;
+        } else {
+            field_0x98 = 1;
+        }
+        if (outDir >= 0 && outDist <= 16.0f) {
+            if (gGameRoot_8053AAF8->field_0x7f == 1) {
+                s32 v = field_0x298;
+                if (v < 100) {
+                    fn_802362C4(fn_8022F340(field_0x25c), v);
+                } else {
+                    lbl_8053AED0->fn_8043D874(fn_8022F340(field_0x25c), v, 0);
+                }
+            } else {
+                fn_80236554(field_0x25c, field_0x298, false);
+                fn_80230EB8(field_0x25c, 9);
+            }
+            r30 = true;
+        }
+        if (r30) {
+            field_0x230 = 10;
+            field_0x248 = 0x1E;
+        }
+        break;
+    case 10:
+        field_0x3c.z = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.x = 0.0f;
+        mPos.z = 0.0f;
+        if (fn_8023F264(field_0x25c)) {
+            mPos.x = getPlayerPos_8023E724(field_0x25c)->x;
+            mPos.y = getPlayerPos_8023E724(field_0x25c)->y - 24.0f;
+        }
+        if (field_0x248 == 0) {
+            fn_801F3668();
+        }
+        break;
+    case 11:
+        if (field_0x23c <= 0) {
+            field_0x2b8 = field_0x2c4[0];
+            field_0x230 = 8;
+        }
+        break;
+    }
+    if (field_0x234 == 0 && field_0x258 == 0) {
+        field_0x234 = 8;
+        if (field_0x230 != 0) {
+            field_0x234 = 4;
+        }
+        field_0x254++;
+        field_0x254 &= 3;
+        fn_803319B8();
+    }
+    if (field_0x230 != 0 && field_0x230 != 1 && field_0x24c == 0) {
+        startSound_801F0E34(0x40001, 0);
+        bool emit = false;
+        if (!field_0xc4) {
+            emit = true;
+        } else {
+            s32 p = field_0xc8;
+            if (fn_8022F514(p) == 1) {
+                p = fn_8022F3DC(field_0xc8);
+            }
+            if (!fn_8022D75C(p)) {
+                emit = true;
+            } else if (fn_8022CAF8(field_0xc8) == 4 && fn_8022F478(field_0xc8) == 1) {
+                emit = true;
+            }
+        }
+        if (emit == 1) {
+            if (field_0x290 == 2 || field_0x2a1 == 1) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0xD2, 0, 0, NULL, NULL, true, 1.0f);
+            } else {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x348, 0, 0, NULL, NULL, true, 1.0f);
+            }
+        }
+        field_0x24c = 0x1E;
+    }
+    if (field_0x234 > 0) {
+        field_0x234--;
+    }
+    if (field_0x238 > 0) {
+        field_0x238--;
+    }
+    if (field_0x23c > 0) {
+        field_0x23c--;
+    }
+    if (field_0x240 > 0) {
+        field_0x240--;
+    }
+    if (field_0x244 > 0) {
+        field_0x244--;
+    }
+    if (field_0x248 > 0) {
+        field_0x248--;
+    }
+    if (field_0x24c > 0) {
+        field_0x24c--;
+    }
+    if (field_0x250 > 0) {
+        field_0x250--;
+    }
+}
+
 // FIXME(shotgun): 95.86 %, missing/extra + reloc-name
 void Cucco_804AB8C0::draw() {
     if (field_0x2a7 == 1 || field_0x288 == 0) {
