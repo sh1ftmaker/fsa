@@ -153,7 +153,7 @@ void cls_8049ED30::fn_801339EC() {
     for (s32 i = 0; i < 2; i++) {
         if (mEmitters[i] != NULL) {
             setEmitterPos_8013CB44(mEmitters[i], &mPos, 0, 0, true);
-            (void)colors[field_0x234];
+            // FIXME(shotgun): emitter color copy from colors[field_0x234] not written.
         }
     }
 }
