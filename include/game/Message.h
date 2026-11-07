@@ -406,8 +406,8 @@ public:
     bool fn_80389964(s32 exclude, u32 msg, u32 flags);
     // (this is the manager and is unused.)
 
-    // 0x8038C60C (not written: the inlined fn_803846BC loop comes out in another
-    // order, 82 %): fn_8038A984 with msg turned into its INF1 index.
+    // 0x8038C60C (the fn_803846BC loop inlined by hand, 100 %): fn_8038A984 with
+    // msg turned into its INF1 index.
     bool fn_8038C60C(s32 player, s32 actor, u32 msg, s32 serial, u32 flags);
     // 0x8038B8A8 (this unused; callers pass the manager): the variant without a
     // serial: the window goes to state 1 for flags with one of 0x91F, else when
@@ -488,7 +488,8 @@ extern MessageManager_804AF070* lbl_8053AD78;
 // store is the byte at 0x30D.
 class cls_804AF32C {
 public:
-    // The constructor (fn_8037DF68, constants only) is not written yet.
+    // The constructor (fn_8037DF68, constants only, game/tu_8037DF68.cpp).
+    cls_804AF32C();
     /* 0x08 */ virtual ~cls_804AF32C(); // fn_8038DBF0
 
     /* 0x000 */ // vtable
