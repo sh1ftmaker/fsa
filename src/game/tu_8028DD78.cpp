@@ -4,7 +4,6 @@
 #include "game/GameGlobals.h"
 #include "game/cls_804AE9B0.h"
 
-// FIXME(shotgun): 98.6 %, reloc-name
 void cls_804A7A68::init() {
     switch (field_0x90 & 0xF) {
     case 0:
