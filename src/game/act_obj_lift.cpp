@@ -9,6 +9,17 @@
 #include "std/math.h"
 #include "game/act/act_obj_lift.h"
 
+// The effect shown where the lift breaks or respawns: an emitter on the main layers, a KMRI
+// actor from layer 8 up (fn_803513C0 inlines it behind its own layer test).
+inline void OBJLift_804ACA00::showBreakEffect(s32 layer) {
+    if (layer < 8) {
+        spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
+    } else {
+        getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+        field_0x28c = 1.0f;
+    }
+}
+
 // Four strips along the lift's edges, then ten boxes by state (two per state from 16 on).
 static JGeometry::TBox2f lbl_8050ADF8[4] = {
     JGeometry::TBox2f(-31.0f, -31.0f, 31.0f, -17.0f),
@@ -29,13 +40,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 void OBJLift_804ACA00::fn_803513C0() {
     s32 layer = field_0x4;
     if (layer >= 8) {
-        // The effect helper of act_small_key's fn_802C1DFC, inlined with its own layer test.
-        if (layer < 8) {
-            spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-        } else {
-            getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
-            field_0x28c = 1.0f;
-        }
+        showBreakEffect(layer);
         startSound_801F0E34(0x30003, 0);
     } else {
         spawnEmitter_8013CC50(layer, &mPos, 0x459, 0, -3, NULL, NULL, true, 1.0f);
