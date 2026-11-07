@@ -80,6 +80,7 @@ public:
 // (game/tu_803D7098.cpp). The constructor stores the object in lbl_8053ADC0.
 class cls_804B03D8 {
 public:
+    cls_804B03D8(); // fn_803D901C
     /* 0x08 */ virtual ~cls_804B03D8();
     // game/tu_803D7098.cpp, not written yet; no other arguments.
     void fn_803D82EC();
@@ -117,6 +118,7 @@ public:
 // (game/tu_803D2C34.cpp). The constructor stores the object in lbl_8053ADB8.
 class cls_804B0288 {
 public:
+    cls_804B0288(JKRArchive* archive, bool flag); // fn_803D58E0
     /* 0x08 */ virtual ~cls_804B0288();
     // game/tu_803D2C34.cpp, not written yet; no other arguments.
     void fn_803D5090();
@@ -138,6 +140,9 @@ struct cls_804AE9A0 {
     cls_804AE9A0();
     /* 0x08 */ virtual ~cls_804AE9A0();
     bool fn_80379F84();
+    // 0x8037A174: the per-frame update: steps the active screen (the result screen's mode 5 asks fn_8037AA28
+    // for the next stage: 0x1A moves on, 0x19 goes back).
+    void fn_8037A174();
     void fn_8037A580();
     void fn_8037A664();
     void fn_8037A708();
@@ -145,11 +150,13 @@ struct cls_804AE9A0 {
     /* 0x04 */ ResultScreen_804AF9A0* field_0x4;
     /* 0x08 */ cls_804AFAB0* field_0x8;
     /* 0x0C */ cls_804B03D8* field_0xc;
-    /* 0x10 */ u8 field_0x10[0x18 - 0x10];
+    /* 0x10 */ cls_804B0288* field_0x10; // the fourth screen (always made)
+    /* 0x14 */ JKRArchive* field_0x14; // lbl_80529DEC's result archive; its resources are dropped by the destructor
     /* 0x18 */ JKRArchive* field_0x18; // the result screen's .blo/.btk archive (ResultScreen_804AF9A0's constructor)
     /* 0x1C */ u8 field_0x1c; // cleared by fn_8037A708
     /* 0x1D */ u8 field_0x1d; // set by ResultScreen_804AF9A0::fn_803A9830 when its fade-out ends
-}; // Size: at least 0x1E
+    /* 0x1E */ u8 field_0x1e;
+}; // Size: at least 0x1F
 
 // Owner: game/tu_80197070.cpp (0x8019CDE4 / 0x8019CE40). Set / test bit
 // stage * 4 + sub of the current save file's mFlags (game/tu_803B8C74.h; stage 0-7, sub 0-3;
