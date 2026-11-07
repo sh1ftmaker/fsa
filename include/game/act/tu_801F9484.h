@@ -13,6 +13,7 @@
 #include "game/act/act_gohma.h"
 #include "game/act/act_wallmaster.h"
 #include "game/act/act_wizzrobe.h"
+#include "game/act/act_zora_fish_herder.h"
 #include "game/act/tu_8018EB94.h"
 #include "game/act/tu_801B6C50.h"
 #include "game/act/tu_803D9944.h"
@@ -358,14 +359,6 @@ public:
     /* 0x08 */ virtual ~TennisShop_804A2BF4();
     /* 0x230 */ u8 field_0x230[0x124];
 }; // Size: 0x354
-
-// Spawned for 'SAYA'.
-class ZoraFishHerding_804A2E30 : public ActorBase_804A5770 {
-public:
-    ZoraFishHerding_804A2E30() {}
-    /* 0x08 */ virtual ~ZoraFishHerding_804A2E30();
-    /* 0x230 */ u8 field_0x230[0x44];
-}; // Size: 0x274
 
 // Spawned for 'ZLD3'. Code: game/tu_801B0A00.cpp.
 class cls_804A35AC : public ActorBase_804A5770 {

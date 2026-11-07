@@ -7,7 +7,6 @@ act_trick_floor	dtor	__dt__19TrickFloor_804A83A0Fv	TrickFloor_804A83A0	0x804A83A
 act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
 act_trick_floor_2	sinit	__sinit_act_trick_floor_2_cpp	-	-	new	new
-act_zora_fish_herder	sinit	__sinit_act_zora_fish_herder_cpp	-	-	new	-
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
 tu_8015F454	sinit	__sinit_tu_8015F454_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
