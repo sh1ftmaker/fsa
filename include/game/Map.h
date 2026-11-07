@@ -133,6 +133,7 @@ struct cls_804AA858Sub11C {
 // game/tu_80301CD0.cpp (owner unit, not written yet): per-player tables
 // filled by fn_802F53F4 (0x802F54AC) for the player `slot`, and the record
 // handler it calls last (0x802F5558; reads byte 2 like fn_802F53F4).
+extern cls_804AA858Sub11C lbl_80506DE8[4];
 extern u8 lbl_80506DA8[4][4];
 extern u8 lbl_80506DB8[4][4];
 extern u8 lbl_80506DC8[4][4];

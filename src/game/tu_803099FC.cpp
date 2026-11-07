@@ -1,5 +1,12 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GbaClient.h"
+#include "JSystem/JUtility/JUTGamePad.h"
+
+extern u8 lbl_8053ACE4[4];
+extern u8 lbl_8053AD08;
+extern u8 lbl_80541618[4];
+u8 fn_803006E8(u32 keys);
 
 static u8 lbl_8053AD38[8];
 
@@ -25,9 +32,6 @@ static inline void updateRepeat(const u32& held, const u32& pressed, u32& repeat
 // line of its own; precedent act_phantom_ganon_2.cpp) is 99.61 %: the JAudio pool records are
 // 0x10 lower in our .bss than in the original, whose first 0x10 bytes (0x805076E8) belong to a
 // static of the unwritten fn_8030A43C.
-//
-// Not written yet: fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll; both need
-// GbaClient_803007D0, which is private to tu_803006E8.cpp).
 
 // 0x8030AC4C
 cls_804AA8C8::cls_804AA8C8() {
@@ -79,6 +83,147 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
+// FIXME(shotgun): 14.5 %, missing/extra (percent is shifted by one spot: the original materialises
+// mState >= 4 as a value (li 4; subi; orc; srwi; subf; srwi.) as main in tu_801344C0 does; we emit cmplwi 4)
+// 0x8030A43C
+void cls_804AA8C8::fn_8030A43C() {
+    u32 resetMask = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x14[i] = field_0x4[i];
+        field_0x94[i] = field_0x84[i];
+        field_0x84[i] = field_0x24[i];
+    }
+    for (s32 i = 0; i < 4; i++) {
+        GbaClient_803007D0& client = lbl_804DB798[i];
+        lbl_8053AD34[i] = 0;
+        lbl_8053AD38[i] = 0;
+        if (field_0xdc[i] < 3) {
+            field_0xdc[i]++;
+        }
+        if (field_0xe0[i] < 3) {
+            field_0xe0[i]++;
+        }
+        if (client.field_0xd1 != 0) {
+            continue;
+        }
+        field_0xc4[i] = client.mState;
+        field_0xd4[i] = client.field_0xd3;
+        field_0xd8[i] = client.field_0xd8;
+        if (field_0xc4[i] == 0x40000) {
+            switch (field_0xd4[i]) {
+            case 0:
+                if (field_0xd8[i] == 0) {
+                    OSSendMessage(&client.mQueue, (OSMessage)7, 1);
+                    continue;
+                }
+                if (lbl_8053AAF0->mState >= 4 || lbl_8053AAF0->field_0x60 != 0) {
+                    lbl_8053AD34[i] = client.field_0xd6;
+                    u32 keys = client.mKeys;
+                    memcpy(client.mTransfer, &lbl_80506DE8[i], lbl_80541618[lbl_8053AD08] * 4);
+                    OSSendMessage(&client.mQueue, (OSMessage)10, 1);
+                    if (lbl_8053AD34[i] != 0 && (u8)keys == fn_803006E8((keys & 0xFF00) | ((keys >> 16) & 0xFF))) {
+                        field_0x4[i] = (((keys >> 20) & 1) ? 2 : 0) | (((keys >> 22) & 1) ? 8 : 0) | ((keys >> 21) & 1) |
+                                       (((keys >> 9) & 1) ? 0x40 : 0) | (((keys >> 23) & 1) ? 4 : 0) |
+                                       (((keys >> 8) & 1) ? 0x20 : 0) | (((keys >> 19) & 1) ? 0x1000 : 0) |
+                                       (((keys >> 18) & 1) ? 0x400 : 0) | (((keys >> 16) & 1) ? 0x100 : 0) |
+                                       (((keys >> 17) & 1) ? 0x200 : 0);
+                        field_0xe6[i] = (keys >> 15) & 1;
+                    }
+                }
+                field_0xdc[i] = 0;
+                break;
+            case 3:
+                client.mState = 0;
+                if ((u32)client.mMessage[0] == 7 && field_0xb4[i] < 0xFFFFFFFF) {
+                    field_0xb4[i]++;
+                }
+                break;
+            default:
+                client.mState = 0;
+                break;
+            }
+        } else if (field_0xc4[i] == 0) {
+            field_0x4[i] = 0;
+            if ((u32)client.mMessage[0] != 7) {
+                field_0xb4[i] = 0;
+            }
+            OSSendMessage(&client.mQueue, (OSMessage)6, 1);
+        } else {
+            field_0xb4[i] = 0;
+            if (client.field_0xde == 1) {
+                client.field_0xdd = 1;
+            }
+            field_0x4[i] = 0;
+            s32 slot = getPlayerInputSlot_8030AAF4(i);
+            JUTGamePad* pad = JUTGamePad::getGamePad(slot);
+            if (pad == NULL) {
+                continue;
+            }
+            if (JUTGamePad::mPadStatus[slot].err != 0) {
+                client.mState = 0;
+                resetMask |= 0x80000000 >> i;
+                continue;
+            }
+            lbl_8053AD38[i] = 1;
+            if (((pad->getButton() & 1) && gGameRoot_8053AAF8->fn_80136320()) ||
+                pad->getMainStickX() < -0.6f) {
+                field_0x4[i] |= 1;
+            }
+            if (((pad->getButton() & 2) && gGameRoot_8053AAF8->fn_80136320()) ||
+                pad->getMainStickX() > 0.6f) {
+                field_0x4[i] |= 2;
+            }
+            if (((pad->getButton() & 4) && gGameRoot_8053AAF8->fn_80136320()) ||
+                pad->getMainStickY() < -0.6f) {
+                field_0x4[i] |= 4;
+            }
+            if (((pad->getButton() & 8) && gGameRoot_8053AAF8->fn_80136320()) ||
+                pad->getMainStickY() > 0.6f) {
+                field_0x4[i] |= 8;
+            }
+            if ((pad->getButton() & 0x400) || ((pad->getButton() & 1) && !gGameRoot_8053AAF8->fn_80136320()) ||
+                ((pad->getButton() & 2) && !gGameRoot_8053AAF8->fn_80136320()) ||
+                ((pad->getButton() & 4) && !gGameRoot_8053AAF8->fn_80136320()) ||
+                ((pad->getButton() & 8) && !gGameRoot_8053AAF8->fn_80136320())) {
+                field_0x4[i] |= 0x400;
+            }
+            if (pad->getButton() & 0x800) {
+                field_0x4[i] |= 0x40;
+            }
+            if (field_0xe4[1] != 0) {
+                field_0xe4[1] = pad->getAnalogRf() > 0.6f;
+            } else {
+                field_0xe4[1] = pad->getAnalogRf() > 0.7f;
+            }
+            if (field_0xe4[1] != 0) {
+                field_0x4[i] |= 0x20;
+            }
+            if (field_0xe4[0] != 0) {
+                field_0xe4[0] = pad->getAnalogLf() > 0.6f;
+            } else {
+                field_0xe4[0] = pad->getAnalogLf() > 0.7f;
+            }
+            if (field_0xe4[0] != 0) {
+                field_0x4[i] |= 0x40;
+            }
+            if (pad->getButton() & 0x100) {
+                field_0x4[i] |= 0x100;
+            }
+            if (pad->getButton() & 0x200) {
+                field_0x4[i] |= 0x200;
+            }
+            if (pad->getButton() & 0x1000) {
+                field_0x4[i] |= 0x1000;
+            }
+            field_0xe0[i] = 0;
+        }
+    }
+    if (resetMask != 0) {
+        PADReset(resetMask);
+    }
+    fn_8030A078();
+}
+
 // FIXME: 87.14. The original's inlined fn_8030A308 ends in `if (byte == 1) result = 1 else 0`
 // (cmplwi 1 and branches); ours inlines the call's `== 1` as subfic/cntlzw/extrwi and
 // converts the byte result with neg/or/srwi.
@@ -126,6 +271,26 @@ u8 cls_804AA8C8::fn_8030A2E4(s32 slot) {
         return 0;
     }
     return field_0xdc[slot] < 3;
+}
+
+// 0x8030A258
+u8 cls_804AA8C8::fn_8030A258(s32 slot) {
+    if (slot == -0x3E7) {
+        return 0;
+    }
+    if (field_0xc4[slot] != 0x40000) {
+        return 0;
+    }
+    if (field_0xd4[slot] != 0) {
+        return 0;
+    }
+    if (field_0xd8[slot] == 0) {
+        return 0;
+    }
+    if (lbl_804DB798[slot].field_0xdc != 0) {
+        return 0;
+    }
+    return lbl_8053ACE4[slot];
 }
 
 // 0x8030A078

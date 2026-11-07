@@ -93,6 +93,9 @@ void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
 // (by value), r6 the constant 1, r7 entry index (clrlwi 24); game/act_zora_escort_goal.cpp state 11
 // passes the last entry (count - 1). What it computes is not yet known.
 void fn_800FDC70(JGeometry::TVec3f* out, cls_800FE3EC* rail, JGeometry::TVec3f pos, s32 arg4, u8 index);
+// game/RailBase.cpp (0x800FD998): the step of an arc from `from` to the rail point `index`
+// (0xFF: the current one), step `step` of `count` (count 0: the straight difference).
+void fn_800FD998(JGeometry::TVec3f* out, cls_800FE3EC* rail, JGeometry::TVec3f from, s32 step, s32 count, u8 index);
 
 }
 

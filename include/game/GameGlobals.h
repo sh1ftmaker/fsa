@@ -168,6 +168,8 @@ public:
     cls_804AA8B8();
     /* 0x00 */ virtual ~cls_804AA8B8();
     void fn_80308E90();
+    // game/tu_80301CD0.cpp (0x80304FB0, not written yet): the per-frame update; called by GameRoot's fn_80137300.
+    void fn_80304FB0();
 };
 class cls_804B0FC0;
 class J2DTextBox;
@@ -948,6 +950,8 @@ public:
     u32 fn_80309A9C(u32 mask, s32 slot);
     // 0x80309B74: the same "any player" test over field_0x4 (fn_80309D24).
     u32 fn_80309B74(u32 mask, s32 slot);
+    // game/tu_803099FC.cpp (0x8030A43C): the per-frame poll of the four pads and GBA links.
+    void fn_8030A43C();
 };
 extern cls_804AA8C8* lbl_8053AD30;
 // Owner: game/tu_80301CD0.cpp (its sbss, 0x8053AD34; dtk sized it 1 byte).
@@ -1164,6 +1168,8 @@ public:
     void fn_80438E10(u8 flag);
     // 0x80438C68: the per-frame state machine (field_0x58): spawns the TNGL actor, then the message and the DETH sweep.
     void fn_80438C68();
+    // 0x80438E94 (game/tu_80438C68.cpp): the per-frame update (field_0x40 states); returns the state.
+    u8 fn_80438E94();
     /* 0x04 */ J2DScreen* field_0x4;
     /* 0x08 */ J2DAnmBase* field_0x8;
     /* 0x0C */ JPABaseEmitter* field_0xc[10]; // 0xC..0x30; the last two are single emitters
@@ -1429,7 +1435,9 @@ public:
     void fn_803FFAA8();
 
     /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
-    /* 0x04 */ u8 field_0x4[0x78 - 0x4];
+    /* 0x04 */ u8 field_0x4[0x60 - 0x4];
+    /* 0x60 */ u8 field_0x60; // tested by cls_804AA8C8::fn_8030A43C
+    /* 0x61 */ u8 field_0x61[0x78 - 0x61];
     /* 0x78 */ u8 mState;
     /* 0x79 */ u8 field_0x79; // fn_802B1610 tests it
     /* 0x7A */ u8 field_0x7a[0x7C - 0x7A];
@@ -2002,6 +2010,8 @@ public:
 }; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
 // .sbss pointer the constructor sets (0x803A8350).
 extern cls_804AF860* lbl_8053AD90;
+// game/tu_803A60E4.cpp (defined there): lbl_8053AD90's field_0x80, or 5 without the screen.
+s32 fn_803A65EC();
 
 // game/act_searchlight.cpp (owner unit, .bss:0x804C0EA0, size 0x108).
 // Position of the searchlight / last broken pot.

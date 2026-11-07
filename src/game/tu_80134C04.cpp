@@ -28,6 +28,7 @@
 #include "JSystem/JUtility/JUTGamePad.h"
 
 void fn_80139958();
+void fn_80139D70(); // game/tu_80139BE8.cpp
 
 // The boss archives by stage and level (lbl_80529DEC's field_0x118 /
 // field_0x11c; fn_80135A04).
@@ -75,9 +76,13 @@ void fn_80139994(int port, void* arg) {
 }
 
 // The 2-bit field of field_0x83 for `index` (0-3), as the caller reads it.
+// Not auto-inlined: GameRoot_8049EF20::fn_80137300 calls fn_8013997C out of line (three bl in its asm;
+// docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 s32 fn_8013997C(s32 index) {
     return (gGameRoot_8053AAF8->field_0x83 >> (index * 2)) & 3;
 }
+#pragma auto_inline reset
 
 // Not auto-inlined: GameRoot_8049EF20::fn_80135020 calls fn_80139958 out of line in the original
 // (docs/INLINING.md, pragma rule 1).
@@ -332,6 +337,586 @@ s32 GameRoot_8049EF20::fn_80138A30() {
         }
     }
     return count;
+}
+
+// The per-frame update (the counterpart of fn_80136828): polls the pads, then runs the screen of the current
+// mode (field_0x4c) and, once it asks for another one (field_0x50), the fade and load sequence of field_0x58.
+//
+// FIXME(shotgun): 93.8 %, missing/extra (one fn_802DEBF8 call folded; the saved-register set differs). Also
+// lbl_8050EC80's slot flag (the `1 << (field_0x118 * 4 + field_0x11c)` bit that mode 10 sets in
+// the slot row at +0x28) is not written: the object has no declaration yet.
+void GameRoot_8049EF20::fn_80137300() {
+    field_0x5c++;
+    field_0x8->fn_8030A43C();
+    gGameRoot_8053AAF8->field_0x85 = 0;
+    JUTGamePad* pad = JUTGamePad::getGamePad(0);
+    if (field_0x108 != 0) {
+        if (field_0x10c == 0) {
+            JUTGamePad::CRumble::startMotor(pad->mPortNum);
+        }
+        field_0x108--;
+    } else {
+        JUTGamePad::CRumble::stopMotor(pad->mPortNum, false);
+    }
+    if (field_0x58 < 5) {
+        if (lbl_8053ACA8->fn_802B1DCC() && lbl_80529DEC.field_0x24c == 0) {
+            field_0x58 = 5;
+        }
+    }
+    u8 loading = field_0xfd;
+    if (loading == 0 && (field_0x58 == 0 || field_0x58 == 2 || field_0x58 == 3)) {
+        if (lbl_80529DEC.field_0x24c == 0) {
+            s32 mode = field_0x4c;
+            if (mode == 7 || (mode >= 8 && mode <= 0xF) || (mode >= 0x11 && mode <= 0x12) || mode == 6) {
+                s32 joiner;
+                s32 i = 0;
+                for (;;) {
+                    if (fn_8013997C(i) != 0) {
+                        if (!lbl_8053AD30->fn_8030A2E4(getPlayerInputSlot_8030AAF4(i)) &&
+                            !lbl_8053AD30->fn_8030A364(getPlayerInputSlot_8030AAF4(i))) {
+                            joiner = i + 1;
+                            break;
+                        }
+                        if (fn_8013997C(i) == 1 && !lbl_8053AD30->fn_8030A2E4(getPlayerInputSlot_8030AAF4(i))) {
+                            joiner = i + 1;
+                            break;
+                        }
+                        if (fn_8013997C(i) == 2 && !lbl_8053AD30->fn_8030A364(getPlayerInputSlot_8030AAF4(i))) {
+                            joiner = i + 1;
+                            break;
+                        }
+                    }
+                    i++;
+                    if (i >= 4) {
+                        joiner = 0;
+                        break;
+                    }
+                }
+                u8 allowed = 1;
+                if (field_0x4c == 0xC) {
+                    if (field_0x1c != NULL) {
+                        if (fn_8037A120() >= 5) {
+                            allowed = 0;
+                        }
+                    }
+                } else {
+                    u8 inSet;
+                    if (gGameRoot_8053AAF8->field_0x7f != 0) {
+                        inSet = isGameModeSetA(gGameRoot_8053AAF8->field_0x4c);
+                    } else {
+                        inSet = isGameModeSetB(gGameRoot_8053AAF8->field_0x4c);
+                    }
+                    if (inSet) {
+                        if (getGameView_802D6A9C()->fn_802DCD0C() == 1 && field_0xfc != 0) {
+                            allowed = 0;
+                        } else {
+                            u32 seq = gAudioMgr_8053AF80->field_0x58 - 0x1000000;
+                            if (fn_802DEBF8() && (seq == 0x2C || seq == 0x1D || seq - 0x1F <= 1 || seq == 0x2B)) {
+                                allowed = 0;
+                            } else if (fn_802DEBA0()) {
+                                u32 seq2 = gAudioMgr_8053AF80->field_0x58 - 0x1000000;
+                                if (seq2 == 0x26 || seq2 == 0x28) {
+                                    allowed = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (joiner != 0 && allowed) {
+                    lbl_8053AEE0->fn_80442254(field_0x4c, joiner);
+                    field_0x4c = 0x16;
+                }
+            }
+        }
+        switch (field_0x4c) {
+        case 0:
+            if (lbl_8053AAF0->mState >= 4) {
+                field_0x50 = 1;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+            }
+            break;
+        case 1:
+            if (field_0x87 == 0) {
+                field_0x87 = 1;
+                if (lbl_8053AD88 != NULL) {
+                    lbl_8053AD88->fn_803A5380();
+                }
+            }
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            if (lbl_8053AD88 != NULL) {
+                lbl_8053AD88->fn_803A34A0();
+            }
+            if (Title_804AF820::fn_803A3484() != 1) {
+                field_0x50 = Title_804AF820::fn_803A3484();
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+                field_0x60 = 0;
+            }
+            break;
+        case 2:
+            if (field_0x60 == 0) {
+                field_0x60 = 1;
+                lbl_8053ADD0->fn_803DF9E8();
+            }
+            lbl_8053ADD0->fn_803DF810();
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            if (GameMode_804B0688::fn_803DAC3C() != 2) {
+                if (GameMode_804B0688::fn_803DAC3C() == 1 || GameMode_804B0688::fn_803DAC3C() == 6) {
+                    field_0x50 = GameMode_804B0688::fn_803DAC3C();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                } else {
+                    field_0x50 = GameMode_804B0688::fn_803DAC3C();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                }
+                field_0x60 = 0;
+            }
+            break;
+        case 3:
+            if (field_0x60 == 0) {
+                field_0x60 = 1;
+                lbl_8053ADB0->fn_803CF504();
+            }
+            lbl_8053ADB0->fn_803CE9EC();
+            if (FileSelect_804AFF60::fn_803CE4B0() != 3) {
+                if (FileSelect_804AFF60::fn_803CE4B0() == 1 || FileSelect_804AFF60::fn_803CE4B0() == 6) {
+                    field_0x50 = FileSelect_804AFF60::fn_803CE4B0();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                } else {
+                    field_0x50 = FileSelect_804AFF60::fn_803CE4B0();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                }
+                field_0x60 = 0;
+            }
+            break;
+        case 4:
+            if (field_0x60 == 0) {
+                field_0x60 = 1;
+                lbl_8053AD98->fn_803A86A4();
+            }
+            lbl_8053AD98->fn_803A8600();
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            if (fn_803A85E4() != 4) {
+                if (fn_803A85E4() == 1 || fn_803A85E4() == 6) {
+                    field_0x50 = fn_803A85E4();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                } else {
+                    field_0x50 = fn_803A85E4();
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                }
+                field_0x60 = 0;
+            }
+            break;
+        case 5:
+            if (field_0x60 == 0) {
+                field_0x60 = 1;
+                lbl_8053AD90->fn_803A7280();
+            }
+            lbl_8053AD90->fn_803A6608();
+            if (fn_803A65EC() != 5) {
+                field_0x50 = fn_803A65EC();
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+            }
+            break;
+        case 6:
+            if (field_0x60 == 0) {
+                field_0x60 = 1;
+            }
+            lbl_8053AD80->fn_803900C8();
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            if (fn_8039003C() != 6) {
+                field_0x60 = 0;
+                field_0x64 = 0;
+                field_0x50 = fn_8039003C();
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+            }
+            break;
+        case 7:
+        case 8:
+            switch (field_0x60) {
+            case 0:
+                if (gGameRoot_8053AAF8->field_0x7e != 0) {
+                    field_0x64 = 0x12C;
+                } else {
+                    field_0x64 = 10;
+                }
+                field_0x60++;
+                field_0x8c = lbl_8050DB0C.field_0x4c[10];
+                field_0x90 = 30.0f;
+                field_0x68 = 0xFF;
+                field_0x6c = 0xFF;
+                if (gGameRoot_8053AAF8->field_0x7e != 0) {
+                    field_0x80 = 1;
+                    field_0xa0->fn_80458880(0x23, -1);
+                }
+                break;
+            case 1:
+                field_0x64--;
+                if (field_0x64 == 0) {
+                    field_0x64 = 0x28;
+                    field_0x60++;
+                    if (gGameRoot_8053AAF8->field_0x7e != 0) {
+                        field_0xa0->fn_80458880(0x24, -1);
+                    }
+                }
+                if (field_0x8c >= 1.0f) {
+                    field_0x8c -= 50.0f / lbl_8050DB0C.field_0x4c[11];
+                    if (field_0x8c < 1.0f) {
+                        field_0x8c = 1.0f;
+                    }
+                }
+                break;
+            case 2:
+                field_0x64--;
+                if (field_0x64 == 0) {
+                    field_0x64 = 0x1E;
+                    field_0x60++;
+                }
+                if (field_0x68 != 0) {
+                    field_0x68 -= 10;
+                    if (field_0x68 < 0) {
+                        field_0x68 = 0;
+                    }
+                }
+                if (field_0x90 > 1.0f) {
+                    field_0x90 -= 10.0f;
+                    if (field_0x90 < 1.0f) {
+                        field_0x90 = 1.0f;
+                        fn_80138B7C();
+                    }
+                }
+            case 3:
+                if (field_0x60 == 3) {
+                    field_0x6c -= 6;
+                    if (field_0x6c <= 0) {
+                        field_0x6c = 0;
+                        field_0x64 = 0;
+                        field_0x60++;
+                    }
+                }
+                break;
+            case 4:
+                fn_8043A0E8(false);
+                field_0x60++;
+                field_0x80 = 0;
+                break;
+            }
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4->fn_80139D9C();
+            fn_80139D70();
+            break;
+        case 9:
+            lbl_8053AD70->fn_8037AEAC();
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4c = fn_8037AE60();
+            if (field_0x4c != 9 && field_0x4c != 7) {
+                field_0x4c = 9;
+                field_0x50 = fn_8037AE60();
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+                field_0x60 = 0;
+                for (s32 player = 0; player < 4; player++) {
+                    fn_803037D4(player, 0x12);
+                }
+            }
+            break;
+        case 10:
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            fn_803B8C74(lbl_80529DEC.field_0x24f);
+            if (gGameRoot_8053AAF8->field_0x7f != 0 && gGameRoot_8053AAF8->field_0x7e == 0) {
+                s32 a = lbl_80529DEC.field_0x118;
+                s32 b = lbl_80529DEC.field_0x11c;
+                // FIXME(shotgun): the lbl_8050EC80 slot flag bit is not written here (see the function comment).
+                if (a < 8) {
+                    s32 next = b + 1;
+                    if (next > 3) {
+                        s32 nextRow = a + 1;
+                        next = 0;
+                        if (nextRow >= 8) {
+                            nextRow = 0;
+                        }
+                        lbl_80529DEC.field_0x118 = nextRow;
+                    } else if ((a == 0 && next == 2) || (a == 1 && next == 2) || (a == 2 && next == 2) ||
+                               (a == 3 && next == 2) || (a == 4 && next == 2) || (a == 5 && next == 2) ||
+                               (a == 6 && next == 2) || (a == 7 && next == 1)) {
+                        next++;
+                    }
+                    lbl_80529DEC.field_0x11c = next;
+                }
+                lbl_80529DEC.field_0x237 = 6;
+                field_0x50 = 6;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+            } else {
+                field_0x50 = 0xC;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+            }
+            lbl_8053AED0->fn_8043D644();
+            break;
+        case 11:
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4->fn_80139D9C();
+            fn_80139D70();
+            lbl_8053AED0->fn_8043D644();
+            switch (lbl_8053AEC8->fn_80438E94()) {
+            case 7:
+                field_0x4->fn_80139BE8();
+                gGameRoot2_8053AB10->fn_8013B4C0();
+                field_0x50 = 0xC;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+                lbl_80529DEC.field_0x237 = 8;
+                field_0x60 = 0;
+                break;
+            case 5:
+                gGameRoot2_8053AB10->fn_8013BBE0();
+                field_0x4->fn_80139D9C();
+                lbl_8053AEC8->fn_80438E10(0);
+                if (lbl_80529DEC.field_0x1ac != 0) {
+                    field_0xa0->fn_80458FF0(lbl_80529DEC.field_0x1ac, false, 0);
+                }
+                lbl_80529DEC.field_0x253 = 0;
+                field_0x4c = 7;
+                break;
+            }
+            break;
+        case 12:
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            fn_8038D570();
+            lbl_8053AD68->fn_8037A174();
+            if (fn_8037A120() == 7) {
+                if (lbl_80529DEC.field_0x24d != 0) {
+                    lbl_80529DEC.field_0x24d = 0;
+                    field_0x50 = 7;
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    lbl_80529DEC.field_0x118 = 9;
+                    lbl_80529DEC.field_0x11c = 3;
+                    field_0x84 = 1;
+                } else {
+                    field_0x50 = 1;
+                    field_0x58 = 1;
+                    lbl_8053ACA0->fn_802AC8AC(0);
+                    field_0x84 = 0;
+                    gGameRoot2_8053AB10->fn_8013B4C0();
+                    field_0xa0->fn_80458F9C(0xA);
+                }
+            } else if (fn_8037A120() == 8 || fn_8037A120() == 9) {
+                if (gGameRoot_8053AAF8->field_0x7e != 0) {
+                    if (gGameRoot_8053AAF8->field_0x7f != 0 &&
+                        ((lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 1 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 2 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 3 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 4 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 5 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 6 && lbl_80529DEC.field_0x11c == 2) ||
+                         (lbl_80529DEC.field_0x118 == 7 && lbl_80529DEC.field_0x11c == 1) ||
+                         (lbl_80529DEC.field_0x118 == 0xA && lbl_80529DEC.field_0x11c == 2) ||
+                         lbl_80529DEC.field_0x237 == 8)) {
+                        lbl_80529DEC.field_0x237 = 7;
+                    } else {
+                        lbl_80529DEC.field_0x237 = 6;
+                    }
+                } else if (lbl_80529DEC.field_0x237 == 8) {
+                    lbl_80529DEC.field_0x237 = 7;
+                } else {
+                    lbl_80529DEC.field_0x237 = 6;
+                }
+                field_0x50 = 6;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+                gGameRoot2_8053AB10->fn_8013B4C0();
+                field_0xa0->fn_80458F9C(0xA);
+            }
+            break;
+        case 13:
+            getGameView_802D6A9C()->fn_802DBD60();
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+            break;
+        case 14:
+            getGameView_802D6A9C()->fn_802DBD60();
+            field_0xa0->fn_80458880(0x38, -1);
+            fn_80138B7C();
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+            break;
+        case 15:
+            getGameView_802D6A9C()->fn_802DB6F0();
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+            break;
+        case 16:
+            getGameView_802D6A9C()->fn_802DA8DC();
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+            break;
+        case 17:
+            getGameView_802D6A9C()->fn_802DA788();
+            field_0x4c = 0x12;
+            break;
+        case 18:
+            if (!getGameView_802D6A9C()->fn_802DA630()) {
+                field_0x58 = 4;
+                field_0x4c = 7;
+            }
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4->fn_80139D9C();
+            break;
+        case 19:
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4->fn_80139D9C();
+            getGameView_802D6A9C()->fn_802DA010();
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+            break;
+        case 20:
+            if (!getGameView_802D6A9C()->fn_802DA000()) {
+                field_0x58 = 4;
+                field_0x4c = 7;
+            }
+            gGameRoot2_8053AB10->fn_8013BBE0();
+            field_0x4->fn_80139D9C();
+            break;
+        case 22: {
+            s32 result = lbl_8053AEE0->fn_80441A1C();
+            if (result == 1) {
+                field_0x50 = result;
+                field_0x58 = 1;
+                lbl_8053ACA0->fn_802AC8AC(0);
+                field_0x84 = 0;
+                field_0x60 = 0;
+                field_0x64 = 0;
+            } else {
+                field_0x4c = result;
+            }
+            break;
+        }
+        }
+        if (field_0x58 == 2) {
+            field_0x58 = 4;
+        }
+    } else if (loading != 0) {
+        if (loading == 1) {
+            fn_80135A04(field_0x50);
+            field_0xfd = 2;
+        }
+        fn_80135494(field_0x50);
+    } else if (lbl_8053ACA0->fn_802AC8B4()) {
+        s32 state = field_0x58;
+        if (state == 1) {
+            field_0x7c = 0;
+            if (field_0x4c == 9 || field_0x4c == 0x16 || field_0x84 != 0) {
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139BE8();
+                }
+                gGameRoot2_8053AB10->fn_8013B4C0();
+            }
+            fn_80135A04(field_0x50);
+            field_0x58 = 8;
+            fn_80135494(field_0x50);
+        } else if (state == 8) {
+            fn_80135494(field_0x50);
+        } else if (state == 2) {
+            field_0x58 = 4;
+        } else if (state == 4) {
+            field_0x58 = 0;
+        } else if (state == 5) {
+            field_0xa0->fn_80458F9C(0xA);
+            if (lbl_8053ACA8->fn_802B1DB0()) {
+                field_0xa0->fn_804595E4(false);
+            } else {
+                field_0xa0->fn_804595E4(true);
+            }
+            field_0x58 = 6;
+        } else if (state == 6) {
+            if (field_0xa0->fn_8045959C() == 2) {
+                field_0x58 = 7;
+            }
+        } else if (state == 7) {
+            lbl_80529DEC.mSaveRegion.bytes[5] = 0xA5;
+            if (lbl_8053ACA8->fn_802B1DB0()) {
+                if (field_0x4 != NULL) {
+                    field_0x4->fn_80139BE8();
+                    delete field_0x4;
+                    field_0x4 = NULL;
+                }
+                delete field_0x1c;
+                field_0x1c = NULL;
+                delete field_0x28;
+                field_0x28 = NULL;
+                delete field_0x24;
+                field_0x24 = NULL;
+                delete field_0x2c;
+                field_0x2c = NULL;
+                delete field_0x30;
+                field_0x30 = NULL;
+                delete field_0x20;
+                field_0x20 = NULL;
+                if (field_0x20 == NULL) {
+                    u8 group = field_0x98->changeGroupID(1);
+                    field_0x20 = new (field_0x98, 0) Title_804AF820();
+                    field_0x98->changeGroupID(group);
+                    field_0x87 = 0;
+                }
+                field_0xa0->fn_80459508();
+                field_0x4c = 1;
+                field_0x60 = 0;
+                field_0x64 = 0;
+                field_0x58 = 2;
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteAllEmitter();
+                lbl_8053ACA8->fn_802B1DE8();
+                JUTGamePad::C3ButtonReset::sResetOccurred = false;
+                JUTGamePad::C3ButtonReset::sCallback = fn_80139994;
+                JUTGamePad::C3ButtonReset::sCallbackArg = NULL;
+            } else {
+                lbl_8053ACA8->fn_802B1BE0(0, 0, false);
+            }
+        }
+    }
+    field_0xa0->fn_80459674();
+    if (field_0x95 == 1) {
+        field_0x95 = 0;
+        gAudioMgr_8053AF80->fn_80458658(false);
+    }
+    gGameRoot2_8053AB10->fn_8013BBBC();
+    field_0xc->fn_80304FB0();
+    gGameRoot_8053AAF8->mRandom.get();
 }
 
 // main calls it each frame between beginRender and endRender: draws the screen
@@ -1270,5 +1855,3 @@ void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar) {
     }
     JUTException::getManager()->setGamePad(NULL);
 }
-
-// fn_80137300 (0x1730, the mode-change load sequence) is not written yet.
