@@ -6,6 +6,8 @@
 #include "game/ActorBase.h"
 
 class JPABaseEmitter;
+class KaeporaGaeboraEnding_804ADAC8;
+class UnknownENDM_804AA0FC;
 
 // Spawned for 'ELK2' (Link 2, ending).
 class Link2Ending_804AE338 : public ActorBase_804A5770 {
@@ -17,6 +19,10 @@ public:
     /* 0x20 */ virtual void draw();
     // Force-deletes the emitters (field_0x258, field_0x2A8); the destructor inlines it.
     void fn_8036E544();
+    // update() helpers: put the sparkle emitters at `pos` in free slots of
+    // field_0x258; false when there are not enough free slots.
+    bool spawnSparkles(JGeometry::TVec3f pos);
+    bool spawnSparkles2(JGeometry::TVec3f pos, s32 kind);
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
@@ -26,12 +32,12 @@ public:
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24C; // 0x18 after init; marker id base (fn_80230498)
-    /* 0x250 */ ActorBase_804A5770* field_0x250; // the live EOWL actor (init)
-    /* 0x254 */ ActorBase_804A5770* field_0x254; // the live ENDM actor (init)
+    /* 0x250 */ KaeporaGaeboraEnding_804ADAC8* field_0x250; // the live EOWL actor (init)
+    /* 0x254 */ UnknownENDM_804AA0FC* field_0x254; // the live ENDM actor (init)
     /* 0x258 */ JPABaseEmitter* field_0x258[20];
     /* 0x2A8 */ JPABaseEmitter* field_0x2A8;
-    /* 0x2AC */ s32 field_0x2AC;
-    /* 0x2B0 */ s32 field_0x2B0;
+    /* 0x2AC */ s32 field_0x2AC; // last area picked (update state 6)
+    /* 0x2B0 */ s32 field_0x2B0; // frames until the next sparkle
     /* 0x2B4 */ s32 field_0x2B4;
 }; // Size: 0x2B8
 
