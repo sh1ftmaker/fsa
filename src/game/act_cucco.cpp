@@ -6,6 +6,7 @@
 #include "game/GameAudio.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/SpriteParams.h"
 #include "game/act/act_cucco.h"
 
 Cucco_804AB8C0::~Cucco_804AB8C0() {
@@ -244,4 +245,91 @@ bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     return blocked;
+}
+
+// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+void Cucco_804AB8C0::draw() {
+    if (field_0x2a7 == 1 || field_0x288 == 0) {
+        return;
+    }
+    SpriteParams_801F5AE0 params;
+    s32 flags = 7;
+    s32 held = 0;
+    s32 tint = 0;
+    if (mPos.z == 0.0f) {
+        if (fn_8022461C(&mPos, field_0x4) == 0x39) {
+            flags = 0;
+        }
+    }
+    params.field_0x20 = 0;
+    if (field_0x2a8 == 1) {
+        if (field_0x25c >= 0 && field_0x25c <= 3) {
+            tint = field_0x25c + 1;
+        }
+    }
+    switch (tint) {
+    case 1:
+        params.field_0x10.r = 200;
+        params.field_0x10.b = 150;
+        params.field_0x14.g = 20;
+        break;
+    case 2:
+        params.field_0x10.g = 200;
+        params.field_0x10.b = 170;
+        params.field_0x14.r = 20;
+        break;
+    case 3:
+        params.field_0x10.r = 180;
+        params.field_0x10.g = 200;
+        params.field_0x14.b = 20;
+        break;
+    case 4:
+        params.field_0x10.g = 195;
+        params.field_0x14.r = 20;
+        params.field_0x14.b = 20;
+        break;
+    }
+    if (field_0x230 == 3) {
+        params.field_0x1d = 1;
+        params.field_0x1c = 1;
+        if (field_0x290 != 0 && !(field_0x26c & 8)) {
+            params.field_0x0[0xB] = 9;
+        }
+    } else {
+        if (field_0x290 != 0 && field_0x290 != 6) {
+            params.field_0x0[0xB] = 9;
+        }
+        if (field_0x23c != 0) {
+            params.field_0x30 = 0x11;
+        }
+    }
+    if (field_0xc4) {
+        params.field_0x10.a = field_0x288;
+        flags = -1;
+        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
+        params.field_0x1c = fn_8023CA88(field_0xc8);
+        held = 1;
+    }
+    if (field_0x230 == 10) {
+        if (gGameRoot_8053AAF8->field_0x7f != 1) {
+            return;
+        }
+        params.field_0x1d = fn_8023CB24(field_0x25c) + 1;
+        params.field_0x1c = fn_8023CA88(field_0x25c);
+        if (field_0x290 == 2) {
+            drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + 0x1D, &params, -1, 1.0f, 1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, 0x1D, 0, 2, -1, 1, 0, 0);
+        } else {
+            drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + 0x11, &params, -1, 1.0f, 1.0f);
+            fn_803075AC(mSerial, field_0x4, &mPos, 0x11, 0, 2, -1, 1, 0, 0);
+        }
+        return;
+    }
+    if (field_0x290 == 2 || ((field_0x290 == 0 || field_0x290 == 6 || field_0x290 == 1) && field_0x2a1 == 1)) {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + 0x2C7, &params, flags, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x2C7, 0, 2, -1, held, 0, 0);
+    } else {
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + 0x2AF, &params, flags, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x2AF, 0, 2, -1, held, 0, 0);
+    }
 }
