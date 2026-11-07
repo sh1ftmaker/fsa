@@ -193,7 +193,6 @@ void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
 }
 
 // 0x80161F20.
-// FIXME(shotgun): 99.67 %, reloc-name
 void cls_804A0440::vfunc_0x24() {
     startSound_801F0E34(0x40015, 0);
     vfunc_0x28(7, 0.0f, 16.0f);
