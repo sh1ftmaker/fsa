@@ -32,7 +32,9 @@ public:
     /* 0x258 */ f32 field_0x258; // angle (fn_8011395C)
     /* 0x25C */ u8 field_0x25c[0x260 - 0x25C]; // not yet known
     /* 0x260 */ void* field_0x260; // "TIMG" resource of fn_80113790's image
-    /* 0x264 */ u8 field_0x264[0x2F0 - 0x264]; // not yet known
+    /* 0x264 */ u8 field_0x264[0x274 - 0x264]; // not yet known
+    /* 0x274 */ s32 field_0x274; // added to the sprite frame (fn_80113B54)
+    /* 0x278 */ u8 field_0x278[0x2F0 - 0x278]; // not yet known
 }; // Size: 0x2F0 (the spawner's __nw__)
 
 #endif

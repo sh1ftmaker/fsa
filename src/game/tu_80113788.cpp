@@ -4,6 +4,7 @@
 #include "game/cls_8049D83C.h"
 #include "game/GameRootSub20.h"
 #include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
 
 static const s32 lbl_80464830[15] = {
     0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3, 0x21B, 0x21B,
@@ -47,6 +48,25 @@ s32 cls_8049D83C::vfunc_0x5C() {
 #pragma auto_inline off
 // Darkens the screen: draws the image field_0x260 scaled by 96 with an alpha of field_0x248.
 // 0x80113790.
+// FIXME(shotgun): 74.0 %, missing/extra + reloc-name
+void cls_8049D83C::fn_80113B54(s32 arg) {
+    SpriteParams_801F5AE0 params;
+    SpriteParams_801F5AE0 params2;
+    JGeometry::TVec3f pos(mPos.x, mSpawnPos.y, mPos.z);
+    s32 frame = arg + field_0x274;
+    const char* name;
+    if (arg == 0x1D6) {
+        name = "enemy_both2_sob.bin";
+    } else {
+        name = "enemy_gc_sob.bin";
+    }
+    fn_801EF830(field_0x4, &pos, &params2, 7, name, frame, NULL);
+    if (field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+    }
+}
+
 // FIXME(shotgun): 84.8 %, missing/extra + reloc-name
 void cls_8049D83C::fn_8011395C() {
     Mtx mtx;
