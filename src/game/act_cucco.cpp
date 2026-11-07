@@ -50,6 +50,84 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
+// FIXME(shotgun): 91.63 %, missing/extra + reloc-name
+void Cucco_804AB8C0::fn_803324A8() {
+    s32 outDir = -1;
+    f32 outDist = 0.0f;
+    u16 outAngle = 0;
+    if (field_0x290 == 6 && field_0x230 == 0 && mPos.z < 8.0f && field_0x284 <= 0) {
+        fn_801EEC98(mSerial, NULL, &outDir, &outDist, NULL, 0, 0);
+        if (outDist < 48.0f && outDir >= 0) {
+            if (field_0x2a2 == 1) {
+                field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
+            } else {
+                field_0x240 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x64;
+            }
+            if (field_0x2a1 == 0) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x348, 0, 0, NULL, NULL, true, 1.0f);
+            } else {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0xD2, 0, 0, NULL, NULL, true, 1.0f);
+            }
+            startSound_801F0E34(0x40001, 0);
+            field_0x238 = 0;
+            field_0x258 = 0;
+            mPos.z = 0.0f;
+            field_0x3c.z = 0.0f;
+            field_0x2c4[2].set(mPos);
+            field_0x294 = field_0x4;
+            field_0x230 = 1;
+        } else {
+            field_0x280 = 0;
+        }
+    }
+    if (field_0x290 == 6 && field_0x230 == 1) {
+        field_0x280++;
+        if (field_0x240 % 4 == 0 && field_0x290 == 6) {
+            f32 dx = mPos.x - field_0x2c4[2].x;
+            f32 dy = mPos.y - field_0x2c4[2].y;
+            field_0x294 = field_0x4;
+            field_0x2c4[2].set(mPos);
+            f32 distSq = dx * dx + dy * dy;
+            if (field_0x294 != field_0x4 || !(distSq < 5.0f)) {
+                field_0x280 = 0;
+                return;
+            }
+        }
+        if ((field_0x2a3 == 1 && field_0x280 >= 10) || (field_0x2a3 == 0 && field_0x280 >= 0x2D)) {
+            fn_801EEC98(mSerial, &outAngle, &outDir, &outDist, NULL, 0, 0);
+            if (outDir >= 0 &&
+                ((field_0x2a3 == 0 && outDist < 64.0f) || (field_0x2a3 == 1 && outDist < 96.0f)))
+            {
+                field_0x238 = 0x32;
+                if (field_0x2a2 == 1) {
+                    field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
+                } else {
+                    field_0x240 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x64;
+                }
+                if (field_0x2a1 == 0) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x348, 0, 0, NULL, NULL, true, 1.0f);
+                } else {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xD2, 0, 0, NULL, NULL, true, 1.0f);
+                }
+                startSound_801F0E34(0x40001, 0);
+                f32 speed = 2.0f;
+                if (field_0x2a3 == 1) {
+                    speed = 4.0f;
+                }
+                s32 layer = field_0x4;
+                if (getGameView_802D6A9C()->field_0x131df[layer] && field_0x2b4 != 0.0f) {
+                    field_0x2b8[0] = speed * JMath::sincosTable_.sinShort(outAngle);
+                } else {
+                    outAngle += (s32)(5461.0f * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
+                    field_0x2b8[0] = speed * JMath::sincosTable_.sinShort(outAngle);
+                    field_0x2b8[1] = speed * JMath::sincosTable_.cosShort(outAngle);
+                }
+            }
+            field_0x280 = 0;
+        }
+    }
+}
+
 // FIXME(shotgun): 95.7 %, scheduling+regalloc
 u8 Cucco_804AB8C0::fn_80332378() {
     JGeometry::TVec3f out;

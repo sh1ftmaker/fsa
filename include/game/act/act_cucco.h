@@ -20,6 +20,7 @@ public:
     // 0x8032F148: a one-player version of ActorBase::fn_801EEC98 (angle, direction, distance of an actor seen from `player`).
     void fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
     void fn_80331E6C();
+    void fn_803324A8();
     u8 fn_80332378();
     void fn_80331D38();
     void fn_80331C24();
@@ -42,12 +43,14 @@ public:
     /* 0x274 */ s32 field_0x274;
     /* 0x278 */ s32 field_0x278;
     // SHARED-EDIT: carved from field_0x27c[0x14] (game/act_cucco.cpp draw).
-    /* 0x27C */ u8 field_0x27c[8]; // not yet known
+    /* 0x27C */ s32 field_0x27c; // not yet known
+    /* 0x280 */ s32 field_0x280; // a tick counter
     /* 0x284 */ s32 field_0x284; // a countdown
     /* 0x288 */ u8 field_0x288; // opacity
     /* 0x289 */ u8 field_0x289[7]; // not yet known
     /* 0x290 */ s32 field_0x290;
-    /* 0x294 */ u8 field_0x294[0xd]; // not yet known
+    /* 0x294 */ s32 field_0x294; // a layer
+    /* 0x298 */ u8 field_0x298[9]; // not yet known
     // Tested == 1 by the player's cucco glide (Player_804A6F38::fn_80263078, tu_8025EB18).
     /* 0x2A1 */ u8 field_0x2a1;
     /* 0x2A2 */ u8 field_0x2a2; // not yet known
