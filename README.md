@@ -45,11 +45,11 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 ## Progress
 
 <!-- progress:start -->
-As of 2026-11-06:
+As of 2026-11-07:
 
 - **Honest: 43.12 %** of the code is byte-identical, **9,105 / 11,557** functions (1,915,356 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 55.53 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 9,679 / 11,557 functions (same instructions, register or order differences only), +146 close.
+- **Weighted: 55.61 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 9,681 / 11,557 functions (same instructions, register or order differences only), +146 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -145,7 +145,7 @@ Dolphin); the progress site's *Group by* switch shows the game code that way
 too.
 
 <!-- game:start -->
-**29.9 %** of 3,573,784 bytes of game code and **4,392 / 6,789** functions match (weighted 45.1 %).
+**29.9 %** of 3,573,784 bytes of game code and **4,392 / 6,789** functions match (weighted 45.2 %).
 
 | Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |
 |---|--:|--:|--:|--:|--:|
@@ -154,7 +154,7 @@ too.
 | [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 24.6 % of 291,360 bytes | 36.0 % | 327 / 594 | 10 / 54 | 17 |
 | [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 28.6 % of 900,452 bytes | 40.3 % | 896 / 1,518 | 68 / 229 | 56 |
 | [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 14.1 % of 182,272 bytes | 30.5 % | 155 / 311 | 0 / 10 | 2 |
-| [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 18.8 % of 801,744 bytes | 36.3 % | 434 / 872 | 8 / 47 | 11 |
+| [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 18.8 % of 801,744 bytes | 36.8 % | 434 / 872 | 8 / 47 | 11 |
 | [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 50.0 % of 198,580 bytes | 64.0 % | 621 / 773 | 4 / 24 | 7 |
 | [Media & link](https://sh1ftmaker.github.io/fsa/#/game/game-media) | 39.3 % of 112,596 bytes | 46.2 % | 265 / 328 | 6 / 15 | 2 |
 
