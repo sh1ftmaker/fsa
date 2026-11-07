@@ -14,6 +14,15 @@ public:
     // 0x804446F0: stores r4 (a word) at 0x44 and sets up the text of the
     // text box 'Tmm01'. The map screen's fn_8040E298 passes 0.
     void fn_804446F0(s32 arg);
-};
+    // 0x804446A4: runs the state function lbl_804B1B30[field_0x4d] (__ptmf_scall)
+    // unless the state is 4; true when it is 4 (the map screen's fn_8040B93C waits on it).
+    bool fn_804446A4();
+
+    /* 0x00 */ // vtable
+    /* 0x04 */ u8 field_0x4[0x4C - 0x4];
+    /* 0x4C */ u8 field_0x4c; // fn_8040B93C (MapScreen_804B1288) tests it
+    /* 0x4D */ u8 field_0x4d; // state (fn_804446A4)
+    /* 0x4E */ u8 field_0x4e[0x50 - 0x4E];
+}; // Size: 0x50 (__nw__(0x50) in MapScreen_804B1288's constructor)
 
 #endif

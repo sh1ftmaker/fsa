@@ -17,6 +17,8 @@
 #include "game/cls_804B20F8.h"
 #include "game/EmitterDelete.h"
 #include "JSystem/J2D/J2DAnimation.h"
+#include "std/math.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -390,6 +392,34 @@ void MapScreen_804B1288::fn_8040F16C() {
     }
 }
 
+void MapScreen_804B1288::fn_8040E838() {
+    field_0x378++;
+    if (field_0x378 >= field_0x1c->getFrameMax()) {
+        field_0x378 = field_0x1c->getFrameMax() - 1;
+    }
+    field_0x37c++;
+    if (field_0x37c >= field_0x20->getFrameMax()) {
+        field_0x37c = field_0x20->getFrameMax() - 1;
+    }
+    field_0x1c->setFrame(field_0x378);
+    field_0xc->search('Ndata08')->animationTransform();
+    field_0x20->setFrame(field_0x37c);
+    field_0xc->animation();
+    if (field_0x378 >= field_0x364 * 200) {
+        for (int i = 0; i < 18; i++) {
+            field_0xd4[i]->fn_80402E70();
+        }
+        field_0xc->search('Ndata08')->setAnimation((J2DAnmTransform*)NULL);
+        field_0x378 = field_0x364 * 200;
+        field_0x37c = field_0x364 * 200;
+        hideStagePanes(field_0x364);
+        lbl_8050EC80.getCurrentFile().field_0x62[0] |= (u8)(1 << field_0x364);
+        field_0x350 = 0xB;
+        field_0x657 = 1;
+        field_0x663 = 1;
+    }
+}
+
 // FIXME: 92.84. scheduling+regalloc only: the original keeps `this` in r31 and the
 // counter in r29 (loaded in the prologue after the saves); ours swaps them.
 void MapScreen_804B1288::fn_8040E720() {
@@ -426,6 +456,52 @@ void MapScreen_804B1288::fn_8040E700() {
     }
 }
 
+// FIXME: 96.81. Missing/extra: ours extends the u16 angle again (clrlwi r0, r3, 16) before
+// the third range test; the original keeps the one clrlwi'd copy in r0. Pool literals
+// (3.4f, the sqrtf doubles, 50.0f, 32768/pi) are first used by unwritten functions below.
+void MapScreen_804B1288::fn_8040E3A0() {
+    f32 speed = 3.4f + lbl_8050DB0C.field_0x4c[311] / 100.0f;
+    f32 x = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+    f32 y = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+    f32 dx = x - field_0x394;
+    f32 dy = y - field_0x398;
+    f32 dist = std::sqrtf(dx * dx + dy * dy);
+    if (field_0x664) {
+        if (dist < speed + 50.0f) {
+            field_0x42c = 0;
+            field_0x350 = 9;
+        } else {
+            field_0x394 += speed * dx / dist;
+            field_0x398 += speed * dy / dist;
+            field_0x2b8[0]->startSound(JAISoundID(0x20064));
+        }
+    } else if (dist < speed) {
+        field_0x394 = x;
+        field_0x398 = y;
+        field_0x42c = 0;
+        field_0x350 = 9;
+    } else {
+        field_0x394 += speed * dx / dist;
+        field_0x398 += speed * dy / dist;
+        field_0x2b8[0]->startSound(JAISoundID(0x20064));
+    }
+    if (field_0x394 == x) {
+        field_0x360 = 0x10;
+    } else {
+        u16 angle = JMath::atanTable_.atan2_(-dx, -dy) *
+                    (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        if (angle < 0x2000 || angle >= 0xE000) {
+            field_0x360 = 0x18;
+        } else if (angle >= 0x2000 && angle < 0x6000) {
+            field_0x360 = 8;
+        } else if (angle >= 0x6000 && angle <= 0xA000) {
+            field_0x360 = 0x10;
+        } else {
+            field_0x360 = 0;
+        }
+    }
+}
+
 void MapScreen_804B1288::fn_8040E298() {
     field_0x42c++;
     if (field_0x42c > 60) {
@@ -452,6 +528,100 @@ void MapScreen_804B1288::fn_8040E298() {
 void MapScreen_804B1288::fn_8040E278() {
     if (++field_0x384 > 100) {
         field_0x350 = 0x15;
+    }
+}
+
+// FIXME: 99.81. regalloc-only: the original loads field_0x3b8 into f0 and the pane's
+// field_0xc into f2 for `offset`; ours swaps them. 0.5f / 400.0f are pooled by unwritten
+// functions.
+void MapScreen_804B1288::fn_8040B93C() {
+    if (!field_0x4->fn_804446A4()) {
+        return;
+    }
+    if (field_0x4->field_0x4c == 0) {
+        field_0x380 = 0;
+        field_0x428 = 0;
+        field_0x208[field_0x340]->mPane->show();
+        field_0x208[field_0x340]->mPane->setAlpha(field_0x208[field_0x340]->field_0x28);
+        field_0x3b8 = field_0x208[field_0x340]->field_0xc - 400.0f;
+        f32 offset = field_0x3b8 - field_0x208[field_0x340]->field_0xc;
+        field_0x208[field_0x340]->moveFromCentre_80402E08(0.0f, offset);
+        field_0x3ac = field_0x208[field_0x340]->mPane->mGlobalBounds.i.x +
+                      field_0x208[field_0x340]->mPane->getWidth() / 2;
+        field_0x3b0 = offset + (field_0x3b8 + field_0x10->search(lbl_8048C4F8[field_0x340])->getBounds()->i.y +
+                                field_0x208[field_0x340]->mPane->getHeight() / 2);
+        if (field_0x662 == 0) {
+            field_0x350 = 0x11;
+        } else {
+            field_0x208[field_0x340]->moveFromCentre_80402E08(0.0f, 0.0f);
+            lbl_8050EC80.getCurrentFile().field_0x5a[0] |= (u8)(1 << field_0x340);
+            if (field_0x340 == 7) {
+                field_0x38c |= 1 << (field_0x340 * 4 + 1);
+            } else {
+                field_0x38c |= 1 << (field_0x340 * 4 + 2);
+            }
+            lbl_8053AEC4->fn_8042EDAC(0x24F, 0);
+            field_0x350 = 0x12;
+        }
+    } else if (field_0x658) {
+        field_0x658 = 0;
+        field_0x350 = 0x15;
+    } else {
+        if (field_0x65d == 0) {
+            for (int i = 0; i < 15; i++) {
+                field_0x278[i]->field_0x26 = 0;
+                field_0x65d = 1;
+            }
+        }
+        field_0x350 = 0xF;
+    }
+}
+
+// FIXME: 99.68. regalloc-only: in state 1 the original loads field_0x3b8 into f0 and the
+// pane's field_0xc into f4 for `offset`; ours swaps them. The pool literals 2.0f, 0.5f,
+// 400.0f are first used by unwritten functions.
+void MapScreen_804B1288::fn_8040B5A0() {
+    field_0x380++;
+    s32 bob = (field_0x380 % 36) / 9;
+    switch (field_0x428) {
+    case 0:
+        field_0x3b8 += 2.0f;
+        if (field_0x3b8 >= field_0x208[field_0x340]->field_0xc) {
+            field_0x3b8 = field_0x208[field_0x340]->field_0xc;
+            field_0x208[field_0x340]->field_0x22 = 0;
+            field_0x208[field_0x340]->moveFromCentre_80402E08(0.0f, 0.0f);
+            field_0x428 = 1;
+            field_0x2c8->startSound(JAISoundID(0x30081));
+        } else {
+            field_0x208[field_0x340]->moveFromCentre_80402E08(
+                0.0f, field_0x3b8 - field_0x208[field_0x340]->field_0xc +
+                          lbl_80543890[bob] * JUTVideo::getManager()->getEfbHeight() / 192.0f);
+        }
+        field_0x3ac = field_0x208[field_0x340]->mPane->mGlobalBounds.i.x +
+                      field_0x208[field_0x340]->mPane->getWidth() / 2;
+        field_0x3b0 = field_0x3b8 + field_0x10->search(lbl_8048C4F8[field_0x340])->getBounds()->i.y +
+                      field_0x208[field_0x340]->mPane->getHeight() / 2;
+        break;
+    case 1:
+        field_0x3b8 -= 2.0f;
+        if (field_0x3b8 <= field_0x208[field_0x340]->field_0xc - 400.0f) {
+            lbl_8050EC80.getCurrentFile().field_0x5a[0] |= (u8)(1 << field_0x340);
+            if (field_0x340 == 7) {
+                field_0x38c |= 1 << (field_0x340 * 4 + 1);
+            } else {
+                field_0x38c |= 1 << (field_0x340 * 4 + 2);
+            }
+            field_0x428 = 0;
+            field_0x662 = 1;
+            lbl_8053AEC4->fn_8042EDAC(0x24F, 0);
+            field_0x350 = 0x12;
+        }
+        f32 offset = field_0x3b8 - field_0x208[field_0x340]->field_0xc;
+        field_0x3ac = field_0x208[field_0x340]->mPane->mGlobalBounds.i.x +
+                      field_0x208[field_0x340]->mPane->getWidth() / 2;
+        field_0x3b0 = offset + (field_0x3b8 + field_0x10->search(lbl_8048C4F8[field_0x340])->getBounds()->i.y +
+                                field_0x208[field_0x340]->mPane->getHeight() / 2);
+        break;
     }
 }
 
