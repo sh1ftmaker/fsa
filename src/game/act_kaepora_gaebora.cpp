@@ -3,6 +3,9 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/ViewLayer.h"
+#include "game/BoxTest.h"
+#include "game/Camera.h"
+#include "game/GameView.h"
 
 // FIXME: 99.52% (reloc-name). Floating-point literals pooled in sdata2.
 cls_804A6550::cls_804A6550()
@@ -241,4 +244,78 @@ u8 cls_804A6550::vfunc_0x5C() {
 
 u8 cls_804A6550::vfunc_0x60() {
     return 0;
+}
+
+// FIXME: 90.52. missing/extra: the original stores each __fsel result to pos straight from the
+// double register and rounds it (frsp) only where it is read again; ours rounds before the store
+// (4 extra frsp / moved stores). The `?:` forms give fcmpo / branch instead of fsel (80.0 %).
+// The camera: in states 4, 5, 8 and 9 the owl is kept in view (clamped into the view box by 0.001),
+// a scripted camera move to it (states 4 and 5 while field_0x2b4 is 0) or focus points (also
+// 24 units higher in states 8 and 9).
+void cls_804A6550::vfunc_0xA0() {
+    if (field_0x2b4 == 0 || field_0x2b4 == 3) {
+        switch (mState) {
+        case 4:
+        case 5:
+        case 8:
+        case 9: {
+            cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
+            if (!sub->field_0x284) {
+                sub->field_0x284 = 1;
+                sub->field_0x28c = 0.05f;
+            }
+            break;
+        }
+        }
+    }
+    if (mFlags & 0x10000) {
+        switch (mState) {
+        case 0:
+        case 1:
+            gGameRoot2_8053AB10->field_0x24->field_0x17d = 1;
+            break;
+        }
+        return;
+    }
+    if (field_0x2b4 == 0 || field_0x2b4 == 1) {
+        switch (mState) {
+        case 4:
+        case 5:
+        case 8:
+        case 9: {
+            s32 layer = field_0x4;
+            GameView_804A9950* view = getGameView_802D6A9C();
+            JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+            JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z, 0.0f);
+            // Kept 0.001 inside the box's left, top and right edges: max / min with fsel (the
+            // MWCC intrinsic, like __fabsf elsewhere), as the original's fsel / frsp show.
+            pos.y = __fsel(box->i.y + 0.001f - pos.y, box->i.y + 0.001f, pos.y);
+            pos.x = __fsel(box->i.x + 0.001f - pos.x, box->i.x + 0.001f, pos.x);
+            pos.x = __fsel(box->f.x - 0.001f - pos.x, pos.x, box->f.x - 0.001f);
+            if (containsPoint(*box, pos)) {
+                if (field_0x2b4 == 0 && (mState == 4 || mState == 5)) {
+                    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+                    if (camera->field_0x7f5 == 0) {
+                        camera->field_0x7f4 = 1;
+                        camera->field_0x7f8 = 4;
+                        camera->field_0x7fc.x = pos.x;
+                        camera->field_0x7fc.y = pos.y;
+                        camera->field_0x7fc.z = pos.z;
+                        camera->field_0x7f6 = 0;
+                    }
+                } else {
+                    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                    switch (mState) {
+                    case 8:
+                    case 9:
+                        pos.y = __fsel(box->i.y + 0.001f - (pos.y - 24.0f), box->i.y + 0.001f, pos.y - 24.0f);
+                        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        }
+    }
 }

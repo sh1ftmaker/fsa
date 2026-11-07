@@ -10,7 +10,7 @@
 
 // Named after its vtable, 0x804A6550 (an EnemyBase_804A4808 descendant).
 // The overrides below are the vtable slots that differ from EnemyBase's;
-// init, vfunc_0x90 and vfunc_0xA0 are not written yet (draw() is in tu_8021AF28).
+// init and vfunc_0x90 are not written yet (draw() is in tu_8021AF28).
 class cls_804A6550 : public EnemyBase_804A4808 {
 public:
     cls_804A6550();
