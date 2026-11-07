@@ -70,9 +70,48 @@ cls_804A6270::~cls_804A6270() {
     fn_80212AC0()->fn_80212BA0(mSerial);
 }
 
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_802121C8)
+void cls_804A6270::fn_802121C8() {
+    if (!(mFlags & 0x2000)) {
+        field_0x38c = getActorManager_801F856C()->fn_801F76F0('WARP', field_0x4, &mPos, -1);
+        s32 serial = field_0x38c;
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor == NULL) {
+                field_0x38c = -1;
+            } else {
+                f32 dx = actor->mPos.x - mPos.x;
+                f32 dy = actor->mPos.y - mPos.y;
+                if (square(dx) + square(dy) > 256.0f) {
+                    field_0x38c = -1;
+                }
+            }
+        }
+    }
+}
+
 void cls_804A6270::vfunc_0x54() {
     if (mFlags & 0x8000 && field_0x2bc != 0) {
         field_0x2c0.fn_800FE3EC(field_0x2bc, mPos, field_0x4);
+    }
+}
+
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_80211EB0)
+void cls_804A6270::fn_80211EB0() {
+    if (mState != 0) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_801D0B44(i)) {
+                if (fn_80211000(getPlayerPos_8023E724(i))) {
+                    if (!(fn_802373EC(i) == 1 && fn_8023725C(i) == 2 && fn_8023513C(i))) {
+                        JGeometry::TVec3f push;
+                        fn_80210E90(getPlayerPos_8023E724(i), &push);
+                        fn_8023DFF4(i, &push);
+                        fn_8022CD48(i);
+                        fn_80230FD0(i, 0x20045);
+                    }
+                }
+            }
+        }
     }
 }
 
