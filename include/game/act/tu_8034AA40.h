@@ -22,7 +22,7 @@ public:
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
     /* 0x23C */ s32 field_0x23c; // facing (0-3)
-    /* 0x240 */ u8 field_0x240[4]; // not yet known
+    /* 0x240 */ s32 field_0x240; // the player index of the message partner (update)
     /* 0x244 */ s32 field_0x244; // kind (low nibble of field_0x90)
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c; // bits 4-11 of field_0x90

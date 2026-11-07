@@ -6,6 +6,9 @@
 #include "game/GameState.h"
 #include "game/Unk_8045A080.h"
 #include "game/act/act_cucco.h"
+#include "game/Map.h"
+#include "game/Message.h"
+#include "game/tu_80447618.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/tu_8034AA40.h"
 
@@ -97,6 +100,63 @@ void cls_804AC8C0::vfunc_0x10() {
         getActorManager_801F856C()->findActorBySerial_801F666C(serials[(s32)((f32)count * roll)]));
     if (cucco != NULL) {
         cucco->field_0x2a3 = 1;
+    }
+}
+
+// FIXME(shotgun): 11.30 %, missing/extra (partial): only the preamble and state 0 are written; states 1 to 13 (the message
+// steps, the cucco counting, the rewards) are still missing.
+void cls_804AC8C0::update() {
+    s32 found = 0;
+    if (field_0x230 == 6 || field_0x230 == 7) {
+        for (s32 i = 0; i < 4; i++) {
+            if ((bool)(gGameRoot_8053AAF8->mPlayerMask & (1 << i))) {
+                lbl_8053AF08->field_0x28[i] = field_0x274[i];
+                lbl_8053AF08->field_0x28[4] |= (u8)(1 << i); // the shown-slot bits
+            }
+        }
+        found = fn_8034AAA0();
+    }
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    fn_80239914(&box, field_0x4, mSerial);
+    s32 serial = mSerial;
+    s32 layer = field_0x4;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    boxes->mLists[boxes->field_0x0].fn_8020D8C0(&box, layer, serial);
+    fn_8034ACF4();
+    switch (field_0x230) {
+    case 0: {
+        JGeometry::TBox2f area(24.0f, 8.0f, 88.0f, 72.0f);
+        area.i.x += mPos.x;
+        area.i.y += mPos.y;
+        area.f.x += mPos.x;
+        area.f.y += mPos.y;
+        bool any = false;
+        s32 cucco = -1;
+        while ((cucco = getActorManager_801F856C()->fn_801F78F4('NIWA', cucco)) >= 0) {
+            Cucco_804AB8C0* c = static_cast<Cucco_804AB8C0*>(getActorManager_801F856C()->findActorBySerial_801F666C(cucco));
+            if (c != NULL && field_0x4 == c->field_0x4 && c->mPos.z < 8.0f && containsPoint(area, c->mPos) == true &&
+                !c->field_0xc4) {
+                any = true;
+                break;
+            }
+        }
+        if (any == true) {
+            field_0x230 = 4;
+            break;
+        }
+        fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+        field_0x240 = fn_8022FD8C(mSerial);
+        if (field_0x240 >= 0 && fn_802300EC(field_0x240)) {
+            if (fn_8038AD24(field_0x240, field_0x2c0, mSerial, field_0x4, mPos, 0)) {
+                field_0x230 = 1;
+            }
+        }
+        break;
+    }
     }
 }
 
