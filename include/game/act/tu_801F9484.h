@@ -34,7 +34,22 @@ class ForceLike_8049C578 : public ActorBase_804A5770 {
 public:
     ForceLike_8049C578() {}
     /* 0x08 */ virtual ~ForceLike_8049C578();
-    /* 0x230 */ u8 field_0x230[0x38];
+    /* 0x0C */ virtual void init(); // game/act_force_like.cpp (0x800F7CC8)
+    // SHARED-EDIT: carved from field_0x230[0x38] (game/act_force_like.cpp).
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ u8 field_0x234;
+    /* 0x235 */ u8 field_0x235;
+    /* 0x236 */ u8 field_0x236[2];
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ u8 field_0x23c;
+    /* 0x23D */ u8 field_0x23d[3];
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ u8 field_0x248[4];
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ u8 field_0x250[0x10];
+    /* 0x260 */ f32 field_0x260;
+    /* 0x264 */ f32 field_0x264;
 }; // Size: 0x268
 
 // Spawned for 'SIBT'.
