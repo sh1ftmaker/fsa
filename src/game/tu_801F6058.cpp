@@ -16,6 +16,12 @@
 #include "game/tu_801E9AFC.h"
 #include "game/act/tu_8028DD78.h"
 #include "game/PlayerBit.h"
+#include "game/Map.h"
+#include "game/tu_8021F064.h"
+
+// game/tu_801A3C50.cpp (not written yet): nonzero while the actor is held (it then only
+// runs vfunc_0x18 when its 0xA4 is set). Name and return type from the call in fn_801F871C.
+s32 fn_801A6160(ActorBase_804A5770* actor);
 
 // The position every per-slot sound object starts at (the constructor zeroes it).
 static JGeometry::TVec3f lbl_804CABD8;
@@ -106,8 +112,150 @@ ActorManager_804A5800::~ActorManager_804A5800() {
     mHeap->destroy();
 }
 
-// FIXME(shotgun): fn_801F871C (0x730, the per-frame update pass) not written: reads a long
-// chain of GameView/GameRoot flags I did not decode in this pass.
+// FIXME(shotgun): 96.6 %, missing/extra + reloc-name (fn_801A6160 named in C++)
+// The per-frame update pass. Clears the per-frame serial list (field_0x201c), steps the
+// collision box lists, then updates each live actor: with GameView's fn_802DCD0C only those
+// flagged for it (0x11E / 0xC4 / 0xCC); otherwise all of them unless paused (0x11F keeps them
+// going; 'SWDL' in GameRoot 0x88 mode 2), and while GameRoot 0x94 / 0x96 holds only the
+// listed actor ids. Dead actors are deleted, the others checked against the collision boxes
+// (vfunc_0x24). Then fn_801F6A4C, the list pass (actors not re-linked this frame are unlinked)
+// and field_0x305c when no countable actor is left.
+void ActorManager_804A5800::fn_801F871C() {
+    s32 count = 0;
+    fn_801F6068();
+    field_0x3040 = 0;
+    for (u32 i = 0; i < 0x400; i++) {
+        field_0x201c[i] = -1;
+    }
+    field_0x301c = 0;
+    bool paused = false;
+    if ((gGameRoot_8053AAF8->field_0x7f != 0 && (fn_80239D38() || gGameRoot_8053AAF8->fn_80134CC8())) ||
+        lbl_80529DEC.field_0x240 != 0)
+    {
+        paused = true;
+    }
+    u8 limited = gGameRoot_8053AAF8->field_0x94;
+    if (gGameRoot_8053AAF8->field_0x96 != 0) {
+        limited = 1;
+    }
+    fn_8020D58C()->fn_8020D660();
+    fn_8021F064()->fn_8021F130();
+    fn_80204638()->mCount = 0;
+    if (!paused) {
+        fn_801C0D70()->fn_801C0DCC();
+    }
+    if (getGameView_802D6A9C()->fn_802DCD0C()) {
+        for (u32 i = 0; i < ACTOR_MANAGER_MAX_ACTORS; i++) {
+            if (mActors[i] == NULL) {
+                continue;
+            }
+            if (mActors[i]->mAlive) {
+                bool update = false;
+                if (mActors[i]->field_0x11e || mActors[i]->field_0xc4 || mActors[i]->field_0xcc) {
+                    update = true;
+                }
+                if (update) {
+                    mActors[i]->fn_801F32F4();
+                    mActors[i]->field_0x1dc.fn_801EAB0C();
+                    mActors[i]->savePrevPos();
+                    mActors[i]->fn_801F33C4();
+                    mActors[i]->update();
+                    mActors[i]->fn_801EE508();
+                }
+                mSounds[i]->fn_80456154();
+                if (mActors[i]->field_0x8 == 0 && mActors[i]->field_0x1a8 == true) {
+                    count++;
+                }
+            }
+            if (!mActors[i]->mAlive) {
+                deleteSlot(i);
+            }
+        }
+        field_0x200c->fn_80456154();
+    } else {
+        for (u32 i = 0; i < ACTOR_MANAGER_MAX_ACTORS; i++) {
+            if (mActors[i] == NULL) {
+                continue;
+            }
+            if (mActors[i]->mAlive) {
+                bool skip = false;
+                if (paused == true) {
+                    skip = true;
+                    if (mActors[i]->field_0x11f) {
+                        skip = false;
+                    }
+                    if (mActors[i]->field_0x8 == 0 && mActors[i]->field_0x1a8 == true) {
+                        count++;
+                    }
+                    if (gGameRoot_8053AAF8->field_0x88 == 2 && mActors[i]->mActorId == 'SWDL') {
+                        skip = false;
+                    }
+                }
+                if (!skip) {
+                    u32 id;
+                    if (!limited || (id = mActors[i]->mActorId) == 'FORM' || id == 'ALCE' ||
+                        id == 'IMUP' || id == 'SWEV' || id == 'SEV2' || id == 'LTEV' ||
+                        id == 'PRTC' || id == 'STPN' || id == 'TUGF' || id == 'TUTL' ||
+                        id == 'TUTM' || id == 'PEFF' || id == 'SWDL')
+                    {
+                        mActors[i]->fn_801F32F4();
+                        mActors[i]->field_0x1dc.fn_801EAB0C();
+                        if (fn_801A6160(mActors[i]) == 0) {
+                            mActors[i]->savePrevPos();
+                            mActors[i]->fn_801F33C4();
+                            mActors[i]->update();
+                        } else if (mActors[i]->field_0xa4 != 0) {
+                            mActors[i]->vfunc_0x18();
+                        }
+                        mActors[i]->fn_801EE508();
+                    }
+                    u8 kind = mActors[i]->field_0xb8;
+                    if (kind == 1 || kind == 2) {
+                        if (field_0x201c[field_0x301c] == -1) {
+                            field_0x201c[field_0x301c] = mActors[i]->mSerial;
+                            field_0x301c++;
+                        }
+                    }
+                    mSounds[i]->fn_80456154();
+                    if (mActors[i]->field_0x8 == 0 && mActors[i]->field_0x1a8 == true) {
+                        count++;
+                    }
+                }
+            }
+            ActorBase_804A5770* actor = mActors[i];
+            if (!actor->mAlive) {
+                deleteSlot(i);
+            } else if (actor->field_0x1a8 && !actor->field_0x196 &&
+                       actor->field_0x80.f.x - actor->field_0x80.i.x > 0.0f &&
+                       actor->field_0x80.f.y - actor->field_0x80.i.y > 0.0f && actor->mLife > 0)
+            {
+                s32 serial = actor->mSerial;
+                s32 layer = actor->field_0x4;
+                CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+                if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, &actor->mPos, serial, NULL)) {
+                    mActors[i]->vfunc_0x24();
+                }
+            }
+        }
+        field_0x200c->fn_80456154();
+    }
+    fn_801F6A4C();
+    ActorBase_804A5770* next;
+    for (ActorBase_804A5770* actor = mListHead; actor != NULL; actor = next) {
+        next = actor->mListNext;
+        if (actor->mAlive) {
+            if (!actor->mInList) {
+                getActorManager_801F856C()->fn_801F8448(actor);
+            } else {
+                actor->mInList = 0;
+            }
+        }
+    }
+    if (count == 0) {
+        getActorManager_801F856C()->fn_801F6204(1);
+    }
+}
+
 void ActorManager_804A5800::fn_801F8E4C() {
     fn_801F857C();
     field_0x200c->setField_0x31();
@@ -622,8 +770,6 @@ bool ActorManager_804A5800::fn_801F71E8(u32 group, ActorBase_804A5770** out, s32
     return true;
 }
 
-// FIXME(shotgun): fn_801F6A4C (0x700, a per-slot pairwise push/collision pass with 12 float
-// registers) not written in this pass.
 void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
     if (*value != target) {
         f32 delta = rate * (target - *value);
@@ -647,6 +793,82 @@ void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
         *value -= maxStep;
     } else {
         *value += delta;
+    }
+}
+
+// FIXME(shotgun): 67.3 %, missing/extra + reloc-name
+// The pairwise push pass over the actors fn_801F871C listed in field_0x201c: each pair on the
+// same layer whose boxes overlap (and the second's 0xBC is not lower) records the other's
+// serial in field_0x9c. Kind 2 (0xB8) only records it; the others are pushed out of the overlap
+// in random steps away from the other actor (up to 8 tries through fn_801F23BC), 'BOYO'
+// also knocking the actor back at 5 and flagging the BOYO's 0x94.
+void ActorManager_804A5800::fn_801F6A4C() {
+    for (s32 i = 0; i <= field_0x301c; i++) {
+        if (field_0x201c[i] == -1) {
+            return;
+        }
+        ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x201c[i]);
+        if (a == NULL || !a->mAlive) {
+            continue;
+        }
+        JGeometry::TBox2f boxA = a->mBox;
+        boxA.addPos(a->mPos.x, a->mPos.y);
+        a->field_0x9c = -1;
+        for (s32 j = 0; j < field_0x301c; j++) {
+            ActorBase_804A5770* b =
+                getActorManager_801F856C()->findActorBySerial_801F666C(field_0x201c[j]);
+            if (b == NULL || !b->mAlive) {
+                continue;
+            }
+            if (a->field_0x4 != b->field_0x4 || a->mSerial == b->mSerial ||
+                a->field_0xbc > b->field_0xbc)
+            {
+                continue;
+            }
+            JGeometry::TBox2f boxB = b->mBox;
+            boxB.addPos(b->mPos.x, b->mPos.y);
+            if ((u8)a->field_0xb8 == 2) {
+                JGeometry::TBox2f overlap = boxA;
+                if (overlap.intersect(boxB)) {
+                    a->field_0x9c = b->mSerial;
+                    j = 0x400;
+                }
+                continue;
+            }
+            s32 tries = 0;
+            while (true) {
+                JGeometry::TBox2f overlap = boxA;
+                if (!overlap.intersect(boxB) || tries >= 8) {
+                    break;
+                }
+                a->field_0x9c = b->mSerial;
+                JGeometry::TVec3f pos = a->mPos;
+                f32 dx = a->mPos.x - b->mPos.x;
+                f32 dy = a->mPos.y - b->mPos.y;
+                boxA = a->mBox;
+                s32 angle = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f) +
+                            (s32)(8192.0f - 16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                pos.x += JMath::sincosTable_.sinShort(angle);
+                pos.y += JMath::sincosTable_.cosShort(angle);
+                if (b->mActorId == 'BOYO') {
+                    f32 z = a->field_0x3c.z;
+                    f32 c = JMath::sincosTable_.cosShort(
+                        (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f));
+                    f32 s = JMath::sincosTable_.sinShort(
+                        (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f));
+                    JGeometry::TVec3f v(5.0f * s, 5.0f * c, z);
+                    a->field_0x3c = v;
+                    b->field_0x94 = 1;
+                }
+                if (!a->fn_801F23BC(a->field_0x4, &pos, &a->mPos, &a->field_0x80, NULL, NULL, false)) {
+                    tries++;
+                    a->mPos = pos;
+                    boxA.addPos(a->mPos.x, a->mPos.y);
+                } else {
+                    tries = 100;
+                }
+            }
+        }
     }
 }
 

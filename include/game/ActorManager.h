@@ -277,6 +277,8 @@ public:
     void fn_801F8658();
     // The update pass (0x730 bytes).
     void fn_801F871C();
+    // 0x801F6A4C: the pairwise push pass over field_0x201c, called by fn_801F871C.
+    void fn_801F6A4C();
     // fn_801F857C, then resets the spawn state: mSpawnCount = 0, mLastSlot
     // = mActorEnd = -1, mListHead = NULL, field_0x305c = field_0x3041 = 0.
     void fn_801F8E4C();
