@@ -2,11 +2,19 @@
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "game/cls_8049D83C.h"
+#include "game/GameRootSub20.h"
+#include "game/RotMatrix.h"
 
 static const s32 lbl_80464830[15] = {
     0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3, 0x21B, 0x21B,
     0x14C, 0x173, 0x20E, 0x21A, 0x29B, 0x2B1, 0x2CD,
 };
+
+// Frame tables of fn_8011395C (indexed by field_0x240): where the counter restarts, where the
+// stage ends, and the crystal slot of each field_0x238.
+static const s32 lbl_804648B4[3] = {0, 0xC9, 0x191};
+static const s32 lbl_804648C0[3] = {0xC8, 0x190, 0x258};
+static const s32 lbl_804648CC[7] = {1, 4, 0, 5, 3, 2, 6};
 
 // 0x80114C1C.
 void cls_8049D83C::draw() {
@@ -39,6 +47,52 @@ s32 cls_8049D83C::vfunc_0x5C() {
 #pragma auto_inline off
 // Darkens the screen: draws the image field_0x260 scaled by 96 with an alpha of field_0x248.
 // 0x80113790.
+// FIXME(shotgun): 84.8 %, missing/extra + reloc-name
+void cls_8049D83C::fn_8011395C() {
+    Mtx mtx;
+    PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
+    JGeometry::TVec3f axisX(1.0f, 0.0f, 0.0f);
+    fn_8010F668(mtx, &axisX, 0.08726646f);
+    Mtx rot;
+    for (s32 i = 0; i < 3; i++) {
+        for (s32 j = 0; j < 4; j++) {
+            rot[i][j] = 0.0f;
+        }
+    }
+    JGeometry::TVec3f axisZ(0.0f, 0.0f, 1.0f);
+    fn_8010F668(rot, &axisZ, field_0x258);
+    PSMTXConcat(mtx, rot, mtx);
+    if (field_0x234 != 0) {
+        field_0x24c++;
+    }
+    switch (field_0x240) {
+    case 0:
+    case 2:
+        if (field_0x24c >= lbl_804648C0[field_0x240]) {
+            field_0x24c = lbl_804648B4[field_0x240];
+        }
+        break;
+    case 1:
+        if (field_0x24c >= lbl_804648C0[field_0x240]) {
+            field_0x240 = 2;
+        }
+        break;
+    }
+    s32 frame = field_0x24c;
+    GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[lbl_804648CC[field_0x238]];
+    if (crystal.mModel != NULL && crystal.mActive == 0) {
+        crystal.mActive = 1;
+        crystal.mPos.x = 0.5f;
+        crystal.mPos.y = 0.5f;
+        crystal.mPos.z = 0.5f;
+        PSMTXCopy(mtx, crystal.mMtx);
+        crystal.field_0x48 = -1.0f;
+        crystal.field_0x4c = frame;
+        crystal.field_0x54 = 0;
+        crystal.field_0x58 = 2;
+    }
+}
+
 // FIXME(shotgun): 95.13 %, different + reloc-name
 void cls_8049D83C::fn_80113790() {
     if (field_0x248 > 0) {
