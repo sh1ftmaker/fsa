@@ -164,7 +164,7 @@ phases:
         title: Library holdouts
         desc: >-
           About fifty JSystem functions that resist (register allocation and
-          J3DMatBlock's word copies, kept honest with FIXMEs) and MSL's
+          J3DMatBlock's word copies, tagged with FIXMEs) and MSL's
           ansi_fp and strtoul. Most go to the crack pass.
         status: active
         covers: [jsystem, runtime]
