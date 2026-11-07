@@ -675,6 +675,42 @@ s32 EscortBase_8049E0C8::fn_80121D68() {
     return 1;
 }
 
+// FIXME(shotgun): 91 %, missing/extra + reloc-name
+bool EscortBase_8049E0C8::vfunc_0xC8(const JGeometry::TVec3f& vec, f32 speed) {
+    if (field_0x35c <= 0) {
+        return true;
+    }
+    u16 angle = 0;
+    JGeometry::TVec3f step;
+    step.x = step.y = step.z = 0.0f;
+    s32 layer = field_0x4;
+    JGeometry::TVec3f pos(mPos);
+    pos.x += vec.x;
+    pos.y += vec.y;
+    s32 result = mRail.fn_800FDEA0(&pos, speed, &step, &layer, &angle, 0x200);
+    field_0x3c = step;
+    mPos.add(field_0x3c);
+    s32 dir = fn_801F681C(angle);
+    if (dir >= 0) {
+        field_0x364[4]++;
+        if (field_0x364[4] >= 10) {
+            field_0x364[4] = 10;
+        }
+        if (field_0x364[4] >= 10) {
+            field_0x364[4] = 0;
+            field_0x98 = dir;
+            if (dir != mAnim.mAnim) {
+                mAnim.startAnim_801D22DC(dir, 2, false);
+                mAnim.fn_801D1F14(0.0f);
+            }
+        }
+    }
+    if (result == 3 || (result == 1 && (u8)mRail.fn_800FD894(-1, NULL, 0) == 1)) {
+        return true;
+    }
+    return false;
+}
+
 // FIXME: 99.1. Regalloc only: the original keeps the array pointer in r29 and the counter in r30; here they are swapped.
 void EscortBase_8049E0C8::fn_80121ABC() {
     lbl_8053AAA0 = 0;
