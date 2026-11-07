@@ -17,6 +17,16 @@
 static const u16 lbl_8053FB90[4] = {0x0413, 0x0414, 0x0415, 0x0000};
 static const u16 lbl_8053FB98[4] = {0x0418, 0x0419, 0x041A, 0x0000};
 
+// Copies the callback's vector into the particle (mOffsetPosition, at 0x18).
+// FIXME(shotgun): 100 %, matches
+void cls_804A64A8::execute(JPABaseEmitter*, JPABaseParticle* particle) {
+    if (field_0x10 == 0) {
+        particle->mOffsetPosition.x = field_0x4.x;
+        particle->mOffsetPosition.y = field_0x4.y;
+        particle->mOffsetPosition.z = field_0x4.z;
+    }
+}
+
 cls_802150B8::cls_802150B8() : field_0x0(0), field_0x18(0), field_0x30(-1), mOwner(0) {}
 
 // The two callbacks at 0x04 and 0x1C are destroyed after this body, as members.
