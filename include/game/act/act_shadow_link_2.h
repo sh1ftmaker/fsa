@@ -105,6 +105,9 @@ public:
     // game/tu_801C9AF8.cpp (0x801CA0F8): hits the actor overlapping this one
     // (fn_801F82CC) with fn_801F37AC unless it is 'SWBM' or 'FLME'; true if it hit.
     bool fn_801CA0F8();
+    u8 fn_801CA274();
+    bool fn_801C9EB8();
+    bool fn_801C9CB0();
     // game/tu_801C9AF8.cpp (0x801C9AF8): whether the tile/box at `pos` on `layer` blocks
     // this actor (states 0x11 and 0x17 pass through some tile codes).
     bool fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos);
