@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="182.4" height="354" viewBox="0 0 182.4 354" role="img" aria-label="Enemies &amp; bosses: 27.5 % of 679,252 bytes of code matched, 826 of 1,339 functions">
-<title>Enemies &amp; bosses: 27.5 % of 679,252 bytes of code matched, 826 of 1,339 functions</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="182.4" height="354" viewBox="0 0 182.4 354" role="img" aria-label="Enemies &amp; bosses: 27.6 % of 679,252 bytes of code matched, 830 of 1,339 functions">
+<title>Enemies &amp; bosses: 27.6 % of 679,252 bytes of code matched, 830 of 1,339 functions</title>
 <style>text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; } .mono { font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace; } text { paint-order: stroke; stroke: #161a34; stroke-opacity: 0.55; stroke-width: 2.5px; stroke-linejoin: round; } .rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) .2s both; } @keyframes rise { from { transform: scaleY(0); } } @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }</style>
 <rect x="3" y="3" width="176.4" height="348" rx="8" fill="#161a34"/>
 <rect x="6.5" y="6.5" width="47.8" height="42.5" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
@@ -59,7 +59,7 @@
 <rect x="6.5" y="177.7" width="25.0" height="22.8" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="6.5" y="191.9" width="25.0" height="8.5" fill="#c52607" fill-opacity="0.85"/>
 <rect x="32.5" y="177.7" width="24.9" height="22.8" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
-<rect class="rise" x="32.5" y="198.5" width="24.9" height="2.0" fill="#c52607" fill-opacity="0.85"/>
+<rect class="rise" x="32.5" y="196.8" width="24.9" height="3.7" fill="#c52607" fill-opacity="0.85"/>
 <rect x="58.4" y="177.7" width="23.9" height="22.8" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="58.4" y="195.0" width="23.9" height="5.4" fill="#c52607" fill-opacity="0.85"/>
 <rect x="83.3" y="177.7" width="23.8" height="22.8" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
@@ -91,7 +91,7 @@
 <rect x="74.5" y="201.4" width="20.2" height="19.0" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="74.5" y="217.0" width="20.2" height="3.4" fill="#c52607" fill-opacity="0.85"/>
 <rect x="95.8" y="201.4" width="19.9" height="19.0" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
-<rect class="rise" x="95.8" y="215.8" width="19.9" height="4.6" fill="#c52607" fill-opacity="0.85"/>
+<rect class="rise" x="95.8" y="214.8" width="19.9" height="5.6" fill="#c52607" fill-opacity="0.85"/>
 <rect x="116.7" y="201.4" width="19.3" height="19.0" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="116.7" y="215.9" width="19.3" height="4.5" fill="#c52607" fill-opacity="0.85"/>
 <rect x="137.0" y="201.4" width="19.1" height="19.0" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
@@ -163,7 +163,7 @@
 <rect x="162.5" y="239.9" width="13.4" height="16.0" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="162.5" y="248.3" width="13.4" height="7.5" fill="#c52607" fill-opacity="0.85"/>
 <rect x="83.4" y="256.8" width="13.8" height="14.9" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
-<rect class="rise" x="83.4" y="266.0" width="13.8" height="5.7" fill="#c52607" fill-opacity="0.85"/>
+<rect class="rise" x="83.4" y="264.9" width="13.8" height="6.8" fill="#c52607" fill-opacity="0.85"/>
 <rect x="83.4" y="272.7" width="13.8" height="14.3" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
 <rect class="rise" x="83.4" y="279.7" width="13.8" height="7.3" fill="#c52607" fill-opacity="0.85"/>
 <rect x="83.4" y="288.0" width="13.8" height="14.2" rx="1.5" fill="#c52607" fill-opacity="0.13"/>
@@ -283,5 +283,5 @@
 <rect x="3.75" y="3.75" width="174.9" height="346.5" rx="7.5" fill="none" stroke="#c52607" stroke-opacity="0.8" stroke-width="1.5"/>
 <rect x="100.0" y="324" width="74.4" height="22" rx="11" fill="#0b0d1a" fill-opacity="0.88" stroke="#c52607" stroke-opacity="0.7"/>
 <path d="M112.0 329L118.0 335L112.0 341L106.0 335Z" fill="#c52607"/>
-<text x="124.0" y="339.5" font-size="12" font-weight="700" fill="#eceefb">27.5 %</text>
+<text x="124.0" y="339.5" font-size="12" font-weight="700" fill="#eceefb">27.6 %</text>
 </svg>
