@@ -1,14 +1,19 @@
 #include "game/GameAudio.h"
+#include "game/ActorManager.h"
+#include "game/Camera.h"
+#include "game/GameView.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/RotMatrix.h"
 #include "game/act/act_force_gem_fleeing.h"
 
-// FIXME(shotgun): not written (size 0x1518): update (0x8031C598)
 
 // Sprite ids per kind (field_0x268), four per state group.
 static const s32 lbl_804AB130[] = {0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D};
+
+// Table indexed by field_0x268 (update, state 1).
+static const s32 lbl_804AB160[] = {100, 150, 200, 300};
 
 // FIXME(shotgun): 99.4 %, different
 void FleeingForceGem_804AB170::init() {
@@ -129,6 +134,185 @@ bool FleeingForceGem_804AB170::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* po
         return false;
     }
     return true;
+}
+
+// 0x8031C598.
+// FIXME(shotgun): 34.4 %. States 3-10 of the state switch (0x8031CD60-0x8031D8B8) and the end of the function
+// (the frame counter after field_0x240++, 0x8031D9B8-0x8031DA8C) are not written.
+void FleeingForceGem_804AB170::update() {
+    f32 dist = 0.0f;
+    u16 angle = 0;
+    s32 dir = 0;
+    s32 player = 0;
+    bool near = false;
+    JGeometry::TVec2f pos2(mPos.x, mPos.y);
+    field_0x288.x = mPos.x;
+    field_0x288.y = mPos.y;
+    field_0x288.z = mPos.z;
+    JGeometry::TBox2f box = mBox;
+    box.addPos(pos2);
+    if (field_0x94 != 1 && field_0x240[4] == 0) {
+        addCalc2_801F71A4(&field_0x3c.x, field_0x27c.x, 0.1f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, field_0x27c.y, 0.1f, 1.0f);
+    }
+    if (field_0x94 != 0) {
+        mPos += field_0x3c;
+    }
+    if (field_0x94 == 3 && field_0x230 != 7 && field_0x230 != 6) {
+        fn_801F2618(NULL, false);
+    }
+    if (field_0x230 == 0 || field_0x230 == 3 || field_0x230 == 4 || field_0x230 == 10) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023A51C(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
+                JGeometry::TVec3f* playerPos = fn_8023A478(i);
+                f32 dx = playerPos->x - mPos.x;
+                f32 dy = playerPos->y - mPos.y;
+                if (dx * dx + dy * dy <= 6400.0f) {
+                    near = true;
+                    break;
+                }
+            }
+        }
+        if (near && field_0x3c.z <= 0.0f && mPos.z <= 0.0f) {
+            field_0x3c.z = 5.0f;
+            switch (fn_8023A240()) {
+            case 0:
+                field_0x3c.set(-2.0f, 0.0f, field_0x3c.z);
+                break;
+            case 1:
+                field_0x3c.set(2.0f, 0.0f, field_0x3c.z);
+                break;
+            case 2:
+                field_0x3c.set(0.0f, -2.0f, field_0x3c.z);
+                break;
+            case 3:
+                field_0x3c.set(0.0f, 2.0f, field_0x3c.z);
+                break;
+            }
+            field_0x27c = field_0x3c;
+            field_0x94 = 3;
+        }
+        if (mPos.z > 0.0f) {
+            field_0x3c.z -= 0.5f;
+        } else if (mPos.z <= 0.0f && field_0x3c.z < 0.0f) {
+            mPos.z = 0.0f;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            field_0x94 = 0;
+            if (field_0x278 == 1) {
+                fn_801F0D20(0x42);
+                field_0x278 = 0;
+            }
+        }
+        s32 hit = fn_8023AF14(&box, field_0x4, false, mPos.z);
+        fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
+        if (hit < 0) {
+            for (s32 i = 0; i < 4; i++) {
+                if (!fn_80230188(i) && !fn_8023EA28(i)) {
+                    if (fn_8023B9CC(i, &box, field_0x4, &pos2, true) == 1 ||
+                        fn_8023B848(i, &box, field_0x4, &pos2) == 1) {
+                        hit = i;
+                        break;
+                    }
+                }
+            }
+        }
+        if (hit >= 0 && !fn_80234C5C(hit) && !fn_8022B7C4(hit) && !fn_80230188(hit) && !fn_80234ECC(hit) &&
+            !fn_8023EA28(hit)) {
+            if (fn_8022F514(hit) == 1) {
+                fn_8022F3DC(hit);
+            }
+            if (field_0x230 == 3 || field_0x230 == 4) {
+                if (fn_8023ED8C(hit) || fn_8023EBB8(hit) || fn_80233DA4(hit)) {
+                    field_0x264 = hit;
+                    field_0x230 = 1;
+                    field_0xb0 = 0;
+                } else if (fn_802308E0(hit) == 1) {
+                    JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(hit);
+                    JGeometry::TVec3f effectPos(playerPos.x, playerPos.y - 12.0f, playerPos.z);
+                    if (fn_80233E40(hit)) {
+                        fn_80230498(hit, &playerPos, 0x336, 0xFF, -0x80, -0x80, true);
+                    } else {
+                        fn_80230498(hit, &playerPos, 0xED, 0xFF, -0x80, -0x80, true);
+                    }
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'IMUP', field_0x4, &effectPos, (field_0x90 & 3) + 0xA00000 + (hit << 24) + (hit << 26) + 4, -1, -1);
+                    fn_801F3668();
+                    return;
+                }
+            }
+        }
+    }
+    if (field_0x17d != 0) {
+        field_0x240[4] = 20;
+        field_0x270 = field_0x4;
+        field_0x27c = field_0x3c;
+    }
+    if (player < 0 && field_0x240[4] == 0) {
+        field_0x27c.x = 0.0f;
+        field_0x27c.y = 0.0f;
+        if (field_0x230 == 4) {
+            field_0x268 = field_0x90 & 3;
+            field_0x230 = 3;
+        }
+        fn_801F2618(NULL, false);
+    } else {
+        switch (field_0x230) {
+        case 0:
+            if (dist < 80.0f) {
+                field_0x240[1] = 0;
+                field_0x230 = 4;
+            }
+            break;
+        case 1:
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
+            mPos.z = 0.0f;
+            field_0x240[1] = 30;
+            field_0x3c.z = 3.0f;
+            field_0x230 = 2;
+            {
+                s32 target = field_0x264;
+                if (fn_8022F514(field_0x264) == 1) {
+                    target = fn_8022F3DC(field_0x264);
+                }
+                lbl_8053AED0->fn_8043D874(target, lbl_804AB160[field_0x268], 0);
+                if (getPlayerLayer_8023DE58(target) >= 8 && gGameRoot_8053AAF8->field_0x7e == 1) {
+                    lbl_8053AED0->fn_8043D67C(0x194 - (field_0x90 & 3), target, 0);
+                }
+            }
+            fn_801F3604();
+            // fall through: the original continues with state 2 (0x8031CCB4)
+        case 2:
+            field_0x3c.z -= 0.5f;
+            if (mPos.z <= 0.0f && field_0x3c.z < 0.0f) {
+                field_0x3c.z = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.x = 0.0f;
+                mPos.z = 0.0f;
+            }
+            if (fn_8023F264(field_0x264)) {
+                mPos.x = getPlayerPos_8023E724(field_0x264)->x;
+                mPos.y = getPlayerPos_8023E724(field_0x264)->y - 24.0f;
+            } else if (field_0x240[1] == 0) {
+                vfunc_0x30(0xFF, true);
+                fn_801F3668();
+            }
+            break;
+        // FIXME(shotgun): states 3-10 not written (0x8031CD60-0x8031D8B8).
+        }
+    }
+    if (field_0x3c.squared() > 0.1f) {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x345, 0, 0, NULL, NULL, true, 1.0f);
+    }
+    if (field_0x230 != 8 && field_0x230 != 9 && field_0x4 < 8) {
+        JGeometry::TVec3f focus(mPos.x, mPos.y - mPos.z, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+    }
+    field_0x240[0]++;
+    // FIXME(shotgun): the frame counter handling after field_0x240++ (0x8031D9B8-0x8031DA8C) is not written.
 }
 
 // 0x8031C0B0.
