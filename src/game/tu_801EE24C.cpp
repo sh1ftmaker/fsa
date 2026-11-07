@@ -1853,6 +1853,26 @@ void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0*
     }
 }
 
+// FIXME(shotgun): 60 %, missing/extra (the original copies the params field by field through registers)
+extern "C" void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
+                            SpriteParams_801F5AE0* params) {
+    SpriteParams_801F5AE0 sp;
+    if (params != NULL) {
+        sp = *params;
+    }
+    sp.field_0x10.r = 0;
+    sp.field_0x10.g = 0;
+    sp.field_0x10.b = 0;
+    sp.field_0x10.a = sp.field_0x10.a >> 1;
+    sp.field_0x28 = 1;
+    sp.field_0x2e = 0x3F;
+    sp.field_0x2c = 0;
+    sp.field_0x2d = -2;
+    sp.field_0x30 = 0;
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', sobName);
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, arg1, &sp, 1.0f, 1.0f);
+}
+
 // fn_801F2DB4 over the 17 actor ids below (the list is copied to the stack).
 // FIXME: 99.0. Instructions identical; the list is an @NNN literal here but lbl_80469FC8 in the
 // target (rodata order: the unit's earlier .rodata users are unwritten).
