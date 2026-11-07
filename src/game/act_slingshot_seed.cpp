@@ -3,6 +3,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Map.h"
+#include "game/ActorId.h"
 #include "game/act/act_slingshot_seed.h"
 
 // 0x80324AC4.
@@ -90,6 +91,118 @@ void SlingshotSeed_804AB3A8::init() {
     field_0x230 = 0;
     field_0x26a = 0;
 }
+
+// The "hit a wall tile" counter step shared by the tile cases of vfunc_0x4C: while the seed is
+// still flying, the 21st contact reports a hit.
+static inline bool seedBump(SlingshotSeed_804AB3A8* seed) {
+    if (seed->field_0x250 == 0) {
+        seed->field_0x264++;
+        if (seed->field_0x264 > 0x14) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// FIXME(shotgun): 86 %, missing/extra + reloc-name; NONMATCHING because compiling it lowers init from 99.25 to 98.86 %
+#ifdef NONMATCHING
+bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    u32 ids[2] = {'TOMI', ACTOR_NULL};
+    s32 serial = mSerial;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ids) == 1) {
+        return true;
+    }
+    u16 tile = fn_8022461C(pos, layer);
+    u16 code = fn_80226850(pos, layer);
+    if ((u16)(tile - 0x10) <= 7 || (code >= 0x140 && code <= 0x15F)) {
+        if (field_0x250 == 0) {
+            field_0x250 = 1;
+            field_0x260 = 6;
+            field_0x268 = 1;
+            field_0x269 = 1;
+            return false;
+        }
+        if (field_0x94 == 0) {
+            field_0x268 = 1;
+            if (field_0x268 != field_0x269) {
+                return true;
+            }
+        }
+    }
+    if (field_0x94 == 0 && field_0x250 == 1) {
+        return false;
+    }
+    if ((u16)(code - 0x230) <= 1 || code == 0x234) {
+        field_0x250 = 0;
+        return false;
+    }
+    if (tile != 0 && tile != 4 && tile != 5 && tile != 6 && tile != 7 && tile != 2 &&
+        tile != 3 && tile != 0x50 && tile != 0xE && tile != 0xC && tile != 0x27 &&
+        tile != 0x28 && tile != 0x29 && tile != 0x2A && tile != 0x2B && tile != 0x2C &&
+        tile != 0x2D && tile != 0x2E && tile != 0x2F && tile != 0x20 && tile != 0xD &&
+        tile != 0x23 && tile != 0x39 && tile != 0x3A && tile != 0x3B && tile != 0x4C &&
+        tile != 0x4D && tile != 0x4E && tile != 0x4F && tile != 0x24) {
+        if (tile == 7 || tile == 8 || tile == 0xA) {
+            if (field_0x98 == 1) {
+                return false;
+            }
+            return seedBump(this);
+        }
+        if (tile == 6 || tile == 9 || tile == 0xB) {
+            if (field_0x98 == 0) {
+                return false;
+            }
+            return seedBump(this);
+        }
+        if (tile == 4) {
+            if (field_0x98 == 2) {
+                return false;
+            }
+            return seedBump(this);
+        }
+        if (tile == 5) {
+            if (field_0x98 == 3) {
+                return false;
+            }
+            return seedBump(this);
+        }
+        if ((u16)fn_80226850(pos, layer) == 0x3A || (u16)fn_80226850(pos, layer) == 0x3D) {
+            field_0x250 = 0;
+            return false;
+        }
+        if (tile == 0x25) {
+            if (field_0x250 == 0 && getGameView_802D6A9C()->field_0x171 == 0) {
+                return true;
+            }
+            field_0x250 = 0;
+            return false;
+        }
+        if (tile == 0x26) {
+            if (field_0x250 == 0 && getGameView_802D6A9C()->field_0x171 == 1) {
+                return true;
+            }
+            field_0x250 = 0;
+            return false;
+        }
+        if (field_0x250 == 0 && (tile != 0x22 || getGameView_802D6A9C()->field_0x170 == 1)) {
+            return true;
+        }
+        if (field_0x250 != 0) {
+            return false;
+        }
+    }
+    if (field_0x250 == 1) {
+        field_0x268 = 1;
+        if (field_0x260 < 0) {
+            field_0x260 = 0;
+            field_0x250 = 0;
+        }
+    }
+    return false;
+}
+
+#endif
 
 // Destructor at 0x80324570.
 SlingshotSeed_804AB3A8::~SlingshotSeed_804AB3A8() {
