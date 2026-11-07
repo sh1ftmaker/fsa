@@ -738,14 +738,20 @@ public:
     void fn_8015F9C0();
     // 0x8015F8FC (not written yet): (layer, position, 1) from the player's
     // update fn_80253E6C; layers 8 and up are ignored.
-    void fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode);
+    bool fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode);
     void fn_8016005C();
     void fn_801601E0();
-    /* 0x004 */ u8 field_0x4[0x284 - 0x4];
+    // Spot slots: the mode given to fn_8015F8FC, the position and the frames left.
+    /* 0x004 */ s32 field_0x4[0x20];
+    /* 0x084 */ JGeometry::TVec3f field_0x84[0x20];
+    /* 0x204 */ s32 field_0x204[0x20];
     /* 0x284 */ u8 field_0x284; // 0 until set to 1 (tu_801286C0 update)
-    /* 0x285 */ u8 field_0x285[0x28C - 0x285];
+    /* 0x285 */ u8 field_0x285[0x288 - 0x285];
+    /* 0x288 */ f32 field_0x288;
     /* 0x28C */ f32 field_0x28c; // set to 0.05f with the flag
-    /* 0x290 */ u8 field_0x290[0x298 - 0x290]; // not yet known
+    // circle.bti / circle2.bti
+    /* 0x290 */ JUTTexture* field_0x290;
+    /* 0x294 */ JUTTexture* field_0x294;
 };
 
 struct J3DDrawBuffer; // JSystem/J3D/J3DDrawBuffer.h
