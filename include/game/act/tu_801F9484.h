@@ -352,14 +352,35 @@ public:
     /* 0x230 */ u8 field_0x230[0x44];
 }; // Size: 0x274
 
-// Spawned for 'ZLD3'.
+// Spawned for 'ZLD3'. Code: game/tu_801B0A00.cpp.
 class cls_804A35AC : public ActorBase_804A5770 {
 public:
     cls_804A35AC() {}
     /* 0x08 */ virtual ~cls_804A35AC();
-    /* 0x230 */ u8 field_0x230[0x58];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    // 0x801B2000: moves the players' positions (mode 0) or eases them to y - yOffset (mode 1).
+    void fn_801B2000(f32 yOffset, s32 mode);
+    void fn_801B2138(s32 arg);
+    /* 0x230 */ s32 field_0x230; // state
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ u8 field_0x258;
+    /* 0x259 */ u8 field_0x259;
+    /* 0x25A */ u8 field_0x25a[2]; // not yet known
+    /* 0x25C */ f32 field_0x25c;
+    /* 0x260 */ f32 field_0x260;
+    /* 0x264 */ f32 field_0x264[9]; // three positions copied from mPos by init
     /* 0x288 */ JGeometry::TVec3f field_0x288[4];
-    /* 0x2B8 */ u8 field_0x2b8[0x8];
+    /* 0x2B8 */ JPABaseEmitter* mEmitters[2];
 }; // Size: 0x2C0
 
 // Spawned for 'ZLD4'.
