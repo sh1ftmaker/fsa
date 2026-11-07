@@ -12,7 +12,9 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 
 // The two emitters that start the rain; their 0x28 float (field_0x2c0[0], [1]) is not stored
-// (the emitter type has no field there yet).
+// (JPABaseEmitter in include/JSystem/JParticle/JPAEmitter.h has mEmitterRot (s16) at 0x24..0x29
+// and mVolumeType at 0x2A, so no float field at 0x28 is identifiable; the two stfs are
+// omitted, a behaviour difference until the real field is known).
 // FIXME(shotgun): 88.00 %, missing/extra + reloc-name
 void cls_804A8638::init() {
     field_0x234 = NULL;

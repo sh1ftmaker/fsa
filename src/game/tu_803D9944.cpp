@@ -122,7 +122,8 @@ void cls_804B0478::update() {
             fn_8022FEB8(&box, field_0x4, mSerial, false, false);
             field_0x244 = fn_8022FD8C(mSerial);
             if (field_0x244 >= 0) {
-                // The original passes an uninitialised vector here.
+                // FIXME(shotgun): the original passes an uninitialised stack vector here; we zero it
+                // (passing an indeterminate float vector by value would be undefined behaviour).
                 JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
                 if (fn_8038BD08(field_0x244, 0x406, field_0x4, pos, 0x28)) {
                     mState = 2;
