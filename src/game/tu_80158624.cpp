@@ -6,8 +6,37 @@
 
 GXLightObj lbl_804BFB60[20];
 
-// FIXME: 99.92 %. The tev colour's stack slot is 0xC where the original has
-// 0x10, and the 0.0f literal is @NNN (.sdata2 not split). The u16 sizes are
+ShadowCircle_804A0160::ShadowCircle_804A0160(JKRHeap* heap) : field_0x4() {
+    field_0x8 = new (heap, 0) JUTTexture(
+        static_cast<const ResTIMG*>(gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', "circle.bti")), 0);
+}
+
+ShadowCircle_804A0160::~ShadowCircle_804A0160() {
+    delete field_0x8;
+}
+
+void ShadowCircle_804A0160::fn_8015945C() {
+    field_0x4.set(0xFF, 0xFF, 0xFF, 0);
+    field_0xc = 0xFF;
+    field_0xd[0] = 0;
+    field_0xd[1] = 0xFF;
+}
+
+// The mode tests are isGameMode / isGameModeSet (game/GameMode.h).
+void ShadowCircle_804A0160::fn_80159330() {
+    if (isGameMode(GAME_MODE_C)) {
+        return;
+    }
+    if (!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) {
+        if (gGameRoot_8053AAF8->field_0x94 == 0 && gGameRoot_8053AAF8->field_0x96 == 0) {
+            field_0xd[0] = 0;
+        }
+    }
+    field_0xd[1] = 0xFF;
+}
+
+// FIXME: 99.98 %. The tev colour's stack slot is 0xC where the original has
+// 0x10. The u16 sizes are
 // converted with the signed (xoris 0x8000) form: an explicit (s32).
 void ShadowCircle_804A0160::fn_80158F70() {
     if (field_0x4.toUInt32() == 0xFFFFFF00 && field_0xc >= 0xFF) {
@@ -76,8 +105,22 @@ void ShadowCircle_804A0160::fn_80158F70() {
     }
 }
 
-// FIXME: 99.95%. Only the .sdata2 literals differ: lbl_8053D450 (-1.0f) and
-// lbl_8053D43C (1.0f) are @560 and @474 in ours.
+void ShadowCircle_804A0160::fn_80158E88() {
+    GXInitLightPos(&lbl_804BFB60[0], -100000.0f, -100000.0f, 100000.0f);
+    GXInitLightAttn(&lbl_804BFB60[0], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+    GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};
+    GXInitLightColor(&lbl_804BFB60[0], white);
+    GXLoadLightObjImm(&lbl_804BFB60[0], GX_LIGHT0);
+    GXInitLightPos(&lbl_804BFB60[0], 100000.0f, -100000.0f, 100000.0f);
+    GXColor grey = {0x7F, 0x7F, 0x7F, 0x7F};
+    GXInitLightColor(&lbl_804BFB60[0], grey);
+    GXLoadLightObjImm(&lbl_804BFB60[0], GX_LIGHT1);
+    GXColor amb = {0x67, 0x67, 0x67, 0x67};
+    GXSetChanAmbColor(GX_COLOR0A0, amb);
+    GXColor mat = {0xFF, 0xFF, 0xFF, 0xFF};
+    GXSetChanMatColor(GX_COLOR0A0, mat);
+}
+
 void ShadowCircle_804A0160::drawShadow_80158B5C(s32 layer, const JGeometry::TVec3f* pos, JUtility::TColor color, f32 scale) {
     if (layer >= 8) {
         return;
@@ -128,54 +171,84 @@ void ShadowCircle_804A0160::drawShadow_80158B5C(s32 layer, const JGeometry::TVec
     GXTexCoord2f32(-1.0f, 1.0f);
 }
 
-// The mode tests are isGameMode / isGameModeSet (game/GameMode.h).
-void ShadowCircle_804A0160::fn_80159330() {
-    if (isGameMode(GAME_MODE_C)) {
-        return;
-    }
-    if (!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) {
-        if (gGameRoot_8053AAF8->field_0x94 == 0 && gGameRoot_8053AAF8->field_0x96 == 0) {
-            field_0xd[0] = 0;
-        }
-    }
-    field_0xd[1] = 0xFF;
-}
-
-// FIXME: 99.48%. Only the .sdata2 float literals differ: the original's
-// lbl_8053D454, lbl_8053D458 and lbl_8053D440 are @472, @473 and @475 in ours.
-void ShadowCircle_804A0160::fn_80158E88() {
-    GXInitLightPos(&lbl_804BFB60[0], -100000.0f, -100000.0f, 100000.0f);
-    GXInitLightAttn(&lbl_804BFB60[0], 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
-    GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};
-    GXInitLightColor(&lbl_804BFB60[0], white);
-    GXLoadLightObjImm(&lbl_804BFB60[0], GX_LIGHT0);
-    GXInitLightPos(&lbl_804BFB60[0], 100000.0f, -100000.0f, 100000.0f);
-    GXColor grey = {0x7F, 0x7F, 0x7F, 0x7F};
-    GXInitLightColor(&lbl_804BFB60[0], grey);
-    GXLoadLightObjImm(&lbl_804BFB60[0], GX_LIGHT1);
-    GXColor amb = {0x67, 0x67, 0x67, 0x67};
-    GXSetChanAmbColor(GX_COLOR0A0, amb);
-    GXColor mat = {0xFF, 0xFF, 0xFF, 0xFF};
-    GXSetChanMatColor(GX_COLOR0A0, mat);
-}
-
-ShadowCircle_804A0160::~ShadowCircle_804A0160() {
-    delete field_0x8;
-}
-
-ShadowCircle_804A0160::ShadowCircle_804A0160(JKRHeap* heap) : field_0x4() {
-    field_0x8 = new (heap, 0) JUTTexture(
-        static_cast<const ResTIMG*>(gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', "circle.bti")), 0);
-}
-
-void ShadowCircle_804A0160::fn_8015945C() {
-    field_0x4.set(0xFF, 0xFF, 0xFF, 0);
-    field_0xc = 0xFF;
-    field_0xd[0] = 0;
-    field_0xd[1] = 0xFF;
-}
-
 void ShadowCircle_804A0160::fn_80158B3C() {
     field_0x4.set(0xFF, 0xFF, 0xFF, 0);
     field_0xc = 0xFF;
+}
+
+
+// The 33 rim vertices of a beam fan: (0, radius, 0) turned about z in 32
+// steps, its y halved, around `base`; vertex colour = the colour's alpha.
+static inline void drawRing(const JGeometry::TVec3f* base, f32 radius, const JUtility::TColor& color) {
+    for (int i = 0; i < 33; i++) {
+        f32 angle = 2.0f * (i * 3.1415927f) / 32.0f;
+        f32 s = sin(angle);
+        f32 c = cos(angle);
+        Mtx m;
+        m[0][0] = c;
+        m[0][1] = -s;
+        m[1][0] = s;
+        m[1][1] = c;
+        m[2][2] = 1.0f;
+        m[0][2] = 0.0f;
+        m[0][3] = 0.0f;
+        m[1][2] = 0.0f;
+        m[1][3] = 0.0f;
+        m[2][0] = 0.0f;
+        m[2][1] = 0.0f;
+        m[2][3] = 0.0f;
+        JGeometry::TVec3f v(0.0f, radius, 0.0f);
+        JGeometry::TVec3f p;
+        PSMTXMultVec(m, &v, &p);
+        p.y *= 0.5f;
+        p += *base;
+        GXPosition3f32(p.x, p.y, p.z);
+        GXColor4u8(color.a, color.a, color.a, color.a);
+    }
+}
+
+// FIXME: 96.86 %. Missing/extra: the original zeroes the loop counter (r29)
+// and the first vertex's colour bytes (r0) with two `li`, ours shares one; the
+// rest is register choice, the order of a few loads (the int->float constant
+// and pi, base->y/z) and stack slots (the original puts both rings' outputs
+// above both rotated vectors) and the order of the matrix's zero stores.
+// The searchlight beam (act_searchlight, tu_8018A8D8): a fan from `top`
+// (alpha 0) to a 32-segment ring of `radius` around `base` (the colour's
+// alpha), then the disc at `base` itself. The ring's y is halved.
+void ShadowCircle_804A0160::fn_80158624(const JGeometry::TVec3f* top, const JGeometry::TVec3f* base,
+                                       JUtility::TColor color, f32 radius) {
+    if (field_0xc >= 0xFF) {
+        return;
+    }
+    gGameRoot2_8053AB10->fn_8013B438();
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGBA, GX_RGBA8, 0);
+    GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_VTX, 0, GX_DF_NONE, GX_AF_NONE);
+    GXSetNumChans(1);
+    GXSetNumTexGens(0);
+    GXSetTevColor(GX_TEVREG0, color);
+    GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR0A0);
+    GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_C0, GX_CC_RASC, GX_CC_ZERO);
+    GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_A0, GX_CA_RASA, GX_CA_ZERO);
+    GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_2, GX_TRUE, GX_TEVPREV);
+    GXSetNumTevStages(1);
+    GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_ONE, GX_LO_SET);
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetZCompLoc(GX_TRUE);
+    GXSetAlphaCompare(GX_ALWAYS, 0, GX_AOP_AND, GX_ALWAYS, 0);
+    GXSetColorUpdate(GX_TRUE);
+    GXSetAlphaUpdate(GX_TRUE);
+    GXSetCullMode(GX_CULL_BACK);
+    GXBegin(GX_TRIANGLEFAN, GX_VTXFMT0, 34);
+    GXPosition3f32(top->x, top->y, top->z);
+    GXColor4u8(0, 0, 0, 0);
+    drawRing(base, radius, color);
+    GXBegin(GX_TRIANGLEFAN, GX_VTXFMT0, 34);
+    GXPosition3f32(base->x, base->y, base->z);
+    GXColor4u8(color.a, color.a, color.a, color.a);
+    drawRing(base, radius, color);
 }

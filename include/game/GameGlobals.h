@@ -664,6 +664,11 @@ public:
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
     /* 0xD */ u8 field_0xd[3];   // not yet known
 
+    // 0x80158624 (game/tu_80158624.cpp): draws a searchlight beam, a fan
+    // from `top` to a ring of `radius` around `base`, then the disc at `base`
+    // (act_searchlight, tu_8018A8D8). Skipped when 0xC is 0xFF.
+    void fn_80158624(const JGeometry::TVec3f* top, const JGeometry::TVec3f* base, JUtility::TColor color, f32 radius);
+
     // 0x80158B3C (owner unit game/tu_80158624.cpp, not written yet). Resets
     // the colour bytes: 0x4-0x6 = 0xFF, 0x7 = 0, 0xC = 0xFF. `this` is
     // gGameRoot2_8053AB10->0x2C; called by tu_8039003C's constructor.
