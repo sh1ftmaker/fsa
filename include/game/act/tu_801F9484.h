@@ -652,10 +652,8 @@ public:
     /* 0x254 */ s32 field_0x254;
     /* 0x258 */ s32 field_0x258;
     /* 0x25C */ s32 field_0x25c;
-    /* 0x260 */ f32 field_0x260;
-    /* 0x264 */ f32 field_0x264;
-    /* 0x268 */ f32 field_0x268;
-    /* 0x26C */ s16 field_0x26c;
+    /* 0x260 */ JGeometry::TVec3f field_0x260; // the last player position seen (update)
+    /* 0x26C */ s16 field_0x26c; // heading (sincosTable_ index)
     /* 0x26E */ u8 field_0x26e[2];
 }; // Size: 0x270
 
