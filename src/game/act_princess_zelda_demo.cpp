@@ -142,6 +142,16 @@ s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
 }
 
+bool PrincessZeldaDemo_8049D208::fn_8010FA54() const {
+    switch (field_0x238) {
+    case 0x2f:
+    case 0x3d:
+    case 0x3e:
+        return true;
+    }
+    return false;
+}
+
 void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
     switch (field_0x234) {
     case 0:
@@ -155,16 +165,6 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
         break;
     }
     field_0x238 = 0x31;
-}
-
-bool PrincessZeldaDemo_8049D208::fn_8010FA54() const {
-    switch (field_0x238) {
-    case 0x2f:
-    case 0x3d:
-    case 0x3e:
-        return true;
-    }
-    return false;
 }
 
 // FIXME(shotgun): 94.4 %, missing/extra
