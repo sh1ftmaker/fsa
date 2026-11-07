@@ -1733,7 +1733,7 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
-// FIXME(shotgun): 63.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 71.4 %, missing/extra + reloc-name
 // 0x80134DE4
 void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     if (lbl_80529DEC.field_0x246 == 0) {

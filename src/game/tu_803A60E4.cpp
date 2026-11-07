@@ -69,7 +69,7 @@ cls_804AF860::cls_804AF860() {
     field_0x68 = 0;
     field_0x74 = -6;
     field_0x77 = lbl_80529DEC.field_0x245;
-    field_0x78 = lbl_80529DEC.field_0x246[0];
+    field_0x78 = lbl_80529DEC.field_0x246;
     if (field_0x77 == 1) {
         getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x98, 0, NULL, NULL);
     } else {
@@ -139,7 +139,7 @@ void cls_804AF860::fn_803A7280() {
     field_0x34->moveFromCentre_80402E08(0.0f, -448.0f);
     field_0x34->field_0x22 = 0;
     field_0x77 = lbl_80529DEC.field_0x245;
-    field_0x78 = lbl_80529DEC.field_0x246[0];
+    field_0x78 = lbl_80529DEC.field_0x246;
     if (field_0x77 == 1) {
         getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x98, 0, NULL, NULL);
     } else {
@@ -205,7 +205,7 @@ void cls_804AF860::fn_803A6608() {
     }
     if (lbl_8053AD30->fn_80309C4C(0x1100, 1)) {
         lbl_80529DEC.field_0x245 = field_0x77;
-        lbl_80529DEC.field_0x246[0] = field_0x78;
+        lbl_80529DEC.field_0x246 = field_0x78;
         field_0x80 = 2;
         gAudioMgr_8053AF80->fn_80458880(11, -1);
     } else if (lbl_8053AD30->fn_80309C4C(0x200, 1)) {
