@@ -344,7 +344,6 @@ void cls_804AC950::update() {
     }
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void cls_804AC950::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x1d = -1;
