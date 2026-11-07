@@ -16,7 +16,7 @@ public:
     /* 0x08 */ virtual ~cls_804A1E50();
     /* 0x0C */ virtual void init();   // fn_8018E5E4, not written yet
     /* 0x14 */ virtual void update(); // fn_8018AFFC, not written yet
-    /* 0x20 */ virtual void draw();   // fn_8018A930, not written yet
+    /* 0x20 */ virtual void draw();   // fn_8018A930
     /* 0x24 */ virtual void vfunc_0x24();
 
     void fn_8018E894(s32 value);

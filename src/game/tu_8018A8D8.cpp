@@ -10,10 +10,14 @@
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
+#include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
 
 // Animation lengths in frames (.data 0x804A1B70, not written as source here), indexed by
 // field_0x270 + field_0x264.
 extern const s32 lbl_804A1B70[];
+// Sprite names of the animation frames (.data 0x804A1D24), indexed like lbl_804A1B70.
+extern const char* const lbl_804A1D24[];
 extern JGeometry::TVec3f lbl_804C18B8;
 extern s32 lbl_80539FC8;
 extern s32 lbl_80539FCC;
@@ -435,10 +439,85 @@ cls_804A1E50::~cls_804A1E50() {
     }
 }
 
+// FIXME(shotgun): 87.03 %, missing/extra + reloc-name
+void cls_804A1E50::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (field_0x26c == 0) {
+        if (mState == 0) {
+            return;
+        }
+        params.field_0x1f = 0;
+        void* res = fn_804032E8('BIGP', "boss_p_rantan.bti");
+        setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x28c, 0.0f), 1.0f);
+        params.field_0x1d = 2;
+        params.field_0x1c = 1;
+        params.mMtx = mtx;
+        params.field_0x10.a = (u8)(s32)field_0x288;
+        fn_801EFD34(res, &params, -1, -46.0f, 33.0f, 0.0f);
+
+        JGeometry::TVec3f top = mPos;
+        top.x -= 46.0f;
+        top.y += 24.0f;
+        JGeometry::TVec3f shadow(top.x, top.y + 8.0f, top.z);
+        JUtility::TColor shadowColor(0, 0, 0, (u8)(s32)(0.5f * field_0x288));
+        gGameRoot2_8053AB10->field_0x2c->drawShadow_80158B5C(field_0x4, &shadow, shadowColor, 80.0f);
+
+        top.x += -16.0f * JMath::sincosTable_.sinShort((s32)(8192.0f * field_0x28c));
+        if (field_0x27c < 0) {
+            field_0x2c4[2].x = top.x;
+            field_0x2c4[2].y = top.y;
+            field_0x2c4[2].z = top.z;
+            field_0x2c4[2].x += -16.0f * JMath::sincosTable_.sinShort((s32)(8192.0f * field_0x28c));
+            field_0x2c4[2].y += 16.0f;
+            field_0x2c4[2].z = 0.0f;
+        }
+        if (field_0x284 != 255.0f) {
+            JUtility::TColor color(0x3F3F1F7F);
+            gGameRoot2_8053AB10->field_0x2c->fn_80158624(&top, &field_0x2c4[1], color, 48.0f);
+        }
+
+        params.field_0x1d = 2;
+        params.field_0x1c = 1;
+        u8 alpha = (u8)(s32)field_0x280;
+        params.field_0x10.a = alpha;
+        JGeometry::TVec3f base = mPos;
+        base.x -= 8.0f;
+        if (alpha == 255) {
+            params.field_0x26 = 1;
+            params.field_0x30 = 0x11;
+        } else {
+            params.field_0x26 = 0;
+        }
+        JUtility::TColor shadowColor2(0, 0, 0, (u8)(s32)(0.5f * field_0x280));
+        gGameRoot2_8053AB10->field_0x2c->drawShadow_80158B5C(field_0x4, &base, shadowColor2, 120.0f);
+
+        setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, 0.0f, 0.0f), field_0x294);
+        params.mMtx = mtx;
+        res = fn_804032E8('BIGP', lbl_804A1D24[field_0x270 + field_0x264]);
+        fn_801EFD34(res, &params, -1, 0.0f, -8.0f, 0.0f);
+        if (field_0x268 == 2) {
+            res = fn_804032E8('BIGP', lbl_804A1D24[0xE8 / 4]);
+            params.field_0x26 = 1;
+            params.field_0x1d = 1;
+            params.field_0x1c = 0;
+            fn_801EFD34(res, &params, -1, 0.0f, -8.0f, 0.0f);
+        }
+    } else if (field_0x26c == 1) {
+        if (lbl_80539FCC >= 0) {
+            params.field_0x1d = 0;
+            params.field_0x1c = 1;
+            fn_801F02BC("enemy_both2_sob.bin", field_0x264 + 0x1B1, NULL, 0, 0, false, 1.0f, 1.0f);
+        }
+    }
+}
+
 void cls_804A1E50::vfunc_0x24() {
     startSound_801F0E34(0x40015, 0);
     vfunc_0x28(2, 0.0f, 16.0f);
 }
 
-// FIXME(shotgun): draw (fn_8018A930, 0x6CC bytes), update (fn_8018AFFC, 0x29D8 bytes) and the
-// out-of-line TBox2<f32> constructor (fn_8018E890) are not written.
+// FIXME(shotgun): update (0x8018AFFC, 0x29D8 bytes) is not written yet.
