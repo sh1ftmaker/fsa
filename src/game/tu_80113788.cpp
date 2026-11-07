@@ -14,6 +14,10 @@
 #include "game/GameRootSub20.h"
 #include "game/RotMatrix.h"
 #include "game/SpriteParams.h"
+#include "game/ActorId.h"
+#include "game/cls_804A8638.h"
+#include "game/act/act_environment_control_2.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 static const s32 lbl_80464830[15] = {
     0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3, 0x21B, 0x21B,
@@ -95,6 +99,15 @@ extern const u16 lbl_804648E8[5];
 extern const s32 lbl_804648F4[5];
 extern const char* lbl_80539F00;
 extern const s32 lbl_8046486C[18];
+// FIXME(shotgun): vfunc_0x60's effect id tables (u16, read with lhz). They sit inside the
+// 0x74-byte lbl_804648F4 of symbols.txt (after its five words), which this file does not carve
+// yet; declared by address until it does.
+extern const u16 lbl_80464908[7];
+extern const u16 lbl_80464918[];
+extern const u16 lbl_80464928[];
+extern const u16 lbl_80464938[];
+extern const u16 lbl_80464948[];
+extern const u16 lbl_80464958[];
 
 // 0x80115248.
 // FIXME(shotgun): 95.5 %, scheduling+regalloc + reloc-name
@@ -346,8 +359,7 @@ void cls_8049D83C::vfunc_0x54() {
 }
 
 // 0x80113EC4.
-// FIXME(shotgun): 36.7 %, partly written: cases 3, 5, 6 (they index tables inside lbl_804647C8 /
-// lbl_8046486C that this file does not carve) and 11-17 are not written.
+// FIXME(shotgun): 84.4 %, missing/extra + reloc-name
 void cls_8049D83C::vfunc_0x60(s32 arg) {
     switch (arg) {
     case 2:
@@ -362,6 +374,27 @@ void cls_8049D83C::vfunc_0x60(s32 arg) {
             fn_80230498(i, &playerPos, fn_8023CBC0(i), 0xFF, 0, 0, true);
         }
         break;
+    case 3: {
+        field_0x234 = 1;
+        field_0x240 = 1;
+        field_0x24c = lbl_804648B4[1];
+        field_0x2c4[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AE, 0, 2, NULL, NULL, true, 0.5f);
+        field_0x2c4[1] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464938[field_0x238], 0, 2, NULL, NULL, true, 0.5f);
+        field_0x2c4[2] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464948[field_0x238], 0, 2, NULL, NULL, true, 0.5f);
+        field_0x2a4 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464958[field_0x238], 0, 2, NULL, NULL, true, 1.0f);
+        s32 swevSerial = getActorManager_801F856C()->fn_801F7A08(ACTOR_SWEV);
+        ActorBase_804A5770* swev = getActorManager_801F856C()->findActorBySerial_801F666C(swevSerial);
+        if (swev != NULL) {
+            static_cast<cls_804A8638*>(swev)->fn_802B3A3C();
+        }
+        s32 sev2Serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_SEV2);
+        ActorBase_804A5770* sev2 = getActorManager_801F856C()->findActorBySerial_801F666C(sev2Serial);
+        if (sev2 != NULL) {
+            static_cast<EnvironmentControl2_804A9CD0*>(sev2)->fn_802E43E0();
+        }
+        startSound_801F0E34(0x400D5, 0);
+        break;
+    }
     case 4:
         if (field_0x238 == 6) {
             gAudioMgr_8053AF80->fn_80458FF0(0x100000F, false, 0);
@@ -369,6 +402,28 @@ void cls_8049D83C::vfunc_0x60(s32 arg) {
             gAudioMgr_8053AF80->fn_80458FF0(0x100001C, false, 0);
         }
         field_0x233 = 1;
+        break;
+    case 5: {
+        JGeometry::TVec3f pos;
+        pos.z = 0.0f;
+        pos.y = (s32)JUTVideo::getManager()->getRenderMode()->efbHeight * 0.5f + -16.0f;
+        pos.x = (s32)JUTVideo::getManager()->getRenderMode()->fbWidth * 0.5f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        // The message ids per field_0x238 are the last seven words of lbl_80464830.
+        if (fn_8038BD08(0, lbl_80464830[8 + field_0x238], field_0x4, pos, 0x62)) {
+            fn_8011921C()->fn_80118454();
+        }
+        break;
+    }
+    case 6:
+        field_0x233 = 0;
+        for (s32 i = 0; i < 7; i++) {
+            field_0x2a8[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464908[i], 0, 2, NULL, NULL, true, 0.5f);
+        }
+        field_0x29c = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464918[field_0x238], 0, 2, NULL, NULL, true, 0.5f);
+        field_0x2a0 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80464928[field_0x238], 0, 2, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x30082, 0);
+        fn_8011921C()->field_0x2 = 0;
         break;
     case 7:
         field_0x230 = 0;
@@ -440,6 +495,58 @@ void cls_8049D83C::vfunc_0x60(s32 arg) {
         fn_801F3668();
         if (field_0x244 > 0) {
             getGameView_802D6A9C()->fn_802D8050(field_0x244, true, 0xFF);
+        }
+        break;
+    case 11:
+        field_0x232 = 1;
+        field_0x254 = 0.0f;
+        mAnim.startAnim_801D22DC(4, 2, false);
+        mAnim.fn_801D1F14(0.0f);
+        break;
+    case 12:
+        mAnim.startAnim_801D22DC(5, 0, false);
+        mAnim.fn_801D1F14(0.0f);
+        break;
+    case 13:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x14B, field_0x4, JGeometry::TVec3f(0.0f, -16.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 15:
+        mDrawEnabled = false;
+        mPos.z = 20.0f;
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x20, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x21, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D9, 0);
+        break;
+    case 16:
+        mDrawEnabled = true;
+        field_0x2e8[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32C, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x2e8[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x183, 0, 0, NULL, NULL, true, 1.0f);
+        mAnim.startAnim_801D22DC(2, 2, false);
+        mAnim.fn_801D1F14(0.0f);
+        break;
+    case 17:
+        fn_8011921C()->field_0x2 = 0;
+        lbl_8053AD70->fn_8037AD00(field_0x238);
+        field_0x248 = 0;
+        if (field_0x2e8[0] != NULL) {
+            field_0x2e8[0]->becomeInvalidEmitter();
+            field_0x2e8[0] = NULL;
+        }
+        if (field_0x2e8[1] != NULL) {
+            field_0x2e8[1]->becomeInvalidEmitter();
+            field_0x2e8[1] = NULL;
+        }
+        fn_801F3668();
+        if (field_0x244 > 0) {
+            getGameView_802D6A9C()->fn_802D8050(field_0x244, true, 0xFF);
+            if (field_0x238 < 6) {
+                JGeometry::TVec3f spawnPos = mSpawnPos;
+                spawnPos.z = 20.0f;
+                getActorManager_801F856C()->spawnActor_801F9484('CRNV', field_0x4, &spawnPos, field_0x238, -1, -1);
+            }
         }
         break;
     }
