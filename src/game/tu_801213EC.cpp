@@ -228,7 +228,7 @@ bool EscortBase_8049E0C8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return ActorBase_804A5770::vfunc_0x4C(layer, pos);
 }
 
-s32 EscortBase_8049E0C8::vfunc_0x5C() {
+s32 EscortBase_8049E0C8::vfunc_0x5C(const s32*) {
     return 3;
 }
 

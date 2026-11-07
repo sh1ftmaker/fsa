@@ -27,7 +27,7 @@ public:
     // else 2 when vfunc_0x58 holds, else 1).
     /* 0x54 */ virtual bool vfunc_0x54();
     /* 0x58 */ virtual bool vfunc_0x58();
-    /* 0x5C */ virtual s32 vfunc_0x5C();
+    /* 0x5C */ virtual s32 vfunc_0x5C(const s32* dir);
     // 0x8011FFB8: returns 0 (the base slot's u8 result).
     /* 0x60 */ virtual u8 vfunc_0x60();
     // fn_80120F38: sets field_0x3c4 to 1 when field_0x90 bit 0 is set; field_0x35c and field_0x3d0

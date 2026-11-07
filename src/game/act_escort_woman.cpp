@@ -5,7 +5,13 @@
 #include "game/GameView.h"
 #include "game/Message.h"
 #include "game/Player.h"
+#include "game/tu_8012FF9C.h"
 #include "game/act/act_escort_woman.h"
+
+// Passes the position on by value (the original loads the other arguments before its copy).
+static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
+    return fn_8038AD24(player, msg, serial, layer, pos, flags);
+}
 
 // The escort's animation keys: (cel, frames) s16 pairs, ended by a cel of -1.
 static const s16 lbl_80464D98[10] = {8, 10, 9, 7, 10, 10, 9, 7, -1, -1};
@@ -66,6 +72,40 @@ bool EscortWoman_8049E1D0::vfunc_0x58() {
         break;
     }
     return false;
+}
+
+// FIXME: 99.85%, scheduling: mSerial (0x198) and field_0x4 (0x4) are loaded in the reverse order before the talk call.
+s32 EscortWoman_8049E1D0::vfunc_0x5C(const s32* dir) {
+    if (field_0x33c == 17) {
+        return 3;
+    }
+    if (!vfunc_0x54()) {
+        return 0;
+    }
+    if (!fn_8012FF9C()->fn_80130030(dir)) {
+        switch (field_0x33c) {
+        case 0:
+        case 3:
+            break;
+        default:
+            fn_8022FE80(fn_8022EA0C(fn_8012285C()), field_0x4, mSerial, false, false);
+            s32 player = fn_8022FD8C(mSerial);
+            if (player >= 0) {
+                if (talk(player, 0x442, mSerial, field_0x4, mPos, 0x28)) {
+                    field_0x3d0 = field_0x33c;
+                    vfunc_0x6C(3);
+                }
+            }
+            break;
+        }
+        return 1;
+    }
+    bool flag = vfunc_0x58();
+    s32 result = 1;
+    if (flag) {
+        result = 2;
+    }
+    return result;
 }
 
 u8 EscortWoman_8049E1D0::vfunc_0x60() {

@@ -84,7 +84,7 @@ bool ZoraEscort_8049DF78::vfunc_0x58() {
     return false;
 }
 
-s32 ZoraEscort_8049DF78::vfunc_0x5C() {
+s32 ZoraEscort_8049DF78::vfunc_0x5C(const s32*) {
     if (field_0x33c == 0 || field_0x33c == 0xF) {
         return 3;
     }

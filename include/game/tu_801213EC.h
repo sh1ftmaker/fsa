@@ -20,13 +20,13 @@ public:
     /* 0x08 */ virtual ~EscortBase_8049E0C8();
     /* 0x14 */ virtual void update(); // fn_80124278; the vtable's update slot
     // Slots 0x54-0x5C: the callers test 0x54's byte result (escort woman's 0x6C-state code);
-    // 0x58 is a flag, 0x5C returns a state number (3 here).
+    // 0x58 is a flag, 0x5C returns a state number (3 here). fn_80124600 passes dir in r4.
     // 0x80123E9C: false on the eight tile ids of lbl_80464D84 (0x2C-0x2F, 0x28-0x2B), else the base's.
     /* 0x20 */ virtual void draw(); // fn_80123F9C: the life meters above the escort, then her sprite
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     /* 0x54 */ virtual bool vfunc_0x54();
     /* 0x58 */ virtual bool vfunc_0x58();
-    /* 0x5C */ virtual s32 vfunc_0x5C();
+    /* 0x5C */ virtual s32 vfunc_0x5C(const s32* dir);
     // Returns a byte: the escort woman's override (act_escort_woman.h) does,
     // and fn_80131D98 reads it as bool.
     /* 0x60 */ virtual u8 vfunc_0x60();
