@@ -5,6 +5,8 @@
 #include "game/GameGlobals.h"
 #include "game/GameMath.h"
 #include "game/Map.h"
+#include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
@@ -686,4 +688,93 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
 }
 
 // Destructor at 0x8034EDDC.
+// FIXME(shotgun): 84.1 %, missing/extra + reloc-name (state 0x13 rotation is a stand-in)
+void OBJLift_804ACA00::draw() {
+    s32 alpha = 0xFF;
+    if (field_0x230 == 4) {
+        return;
+    }
+    if (field_0x282 == 1 && field_0x24c % 40 < 20) {
+        return;
+    }
+    if (field_0x254 > 0) {
+        return;
+    }
+    if (field_0x28c <= 0.0f) {
+        return;
+    }
+    if (field_0x250 > 0x78) {
+        s32 phase = field_0x250 % 40;
+        if (field_0x4 < 8) {
+            if (phase > 20) {
+                alpha = (s32)(255.0f * (((f32)phase - 20.0f) / 20.0f));
+            } else {
+                alpha = (s32)(255.0f * ((20.0f - (f32)phase) / 20.0f));
+            }
+        } else if (phase < 20) {
+            return;
+        }
+    }
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    PSMTXIdentity(mtx);
+    params.field_0x10.a = alpha;
+    params.field_0x20 = 0;
+    f32 scale = field_0x28c;
+    if (field_0x258 == 0xB) {
+        f32 big = 1.5f * scale;
+        mtx[0][0] = big;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = big;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = big;
+    } else if (field_0x258 == 0x11) {
+        mtx[0][0] = -scale;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = scale;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = scale;
+    } else if (field_0x258 == 0x13) {
+        // FIXME: the original builds this rotation from sincosTable_ entries directly.
+        JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+        setRotScaleMtx(mtx, rot, scale);
+    } else if (field_0x258 == 5) {
+        f32 angle = 2.0f * (3.14f * (1.0f - scale));
+        JGeometry::TVec3f rot(angle, angle, 0.0f);
+        setRotScaleMtx(mtx, rot, scale);
+    } else {
+        mtx[0][0] = scale;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = scale;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = scale;
+    }
+    params.mMtx = mtx;
+    params.field_0x21 = 1;
+    if ((field_0x258 <= 4 && field_0x268 == 2 && (field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 6)) ||
+        (field_0x268 == 3 && (((field_0x230 == 1 || field_0x230 == 3) && field_0x244 > 0) || field_0x230 == 5))) {
+        params.field_0x1c = -1;
+    } else {
+        params.field_0x1c = 0;
+    }
+    params.field_0x1d = -3;
+    if (field_0x258 == 0xB) {
+        params.field_0x1d = -4;
+    }
+    drawSprite_801F06F0("enemy_both_sob.bin", field_0x240 + 0x14, &params, -1, 1.0f, 1.0f);
+    fn_80307AC8(mSerial, field_0x4, &mPos, field_0x240 + 0x14, 0, 0, -1);
+}
+
 OBJLift_804ACA00::~OBJLift_804ACA00() {}
