@@ -674,7 +674,9 @@ public:
     /* 0x4 */ JUtility::TColor field_0x4; // colour: fn_80158B3C sets r,g,b = 0xFF, a = 0
     /* 0x8 */ JUTTexture* field_0x8;
     /* 0xC */ u8 field_0xc;      // act_post_warp_pillar_handling init stores 0xFF
-    /* 0xD */ u8 field_0xd[3];   // not yet known
+    /* 0xD */ u8 field_0xd[1];   // cleared by fn_80159330; set by act_torch
+    /* 0xE */ u8 field_0xe;      // act_knight_of_hyrule update stores u8
+    /* 0xF */ u8 field_0xf;      // not yet known
 
     // 0x80158624 (game/tu_80158624.cpp): draws a searchlight beam, a fan
     // from `top` to a ring of `radius` around `base`, then the disc at `base`
