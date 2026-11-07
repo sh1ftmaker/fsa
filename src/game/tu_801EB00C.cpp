@@ -71,6 +71,38 @@ static inline void updateEmitter(JPABaseEmitter** emitter, const JGeometry::TVec
     }
 }
 
+// fn_801EB710: restarts the ring: stores *pos in field_0x0, clears field_0x5c and
+// spawns, on effect layer `layer`, the seven emitters (ids 0x233 + i, 14 away from
+// *pos, 0x1F70 apart) with field_0x54 as their alpha, plus id 0x23A once at the first.
+// FIXME(shotgun): 92.83 %, missing/extra
+void cls_801EB8CC::fn_801EB710(s32 layer, const JGeometry::TVec3f* pos) {
+    field_0x0.set(*pos);
+    field_0x5c = 0;
+    u8 alpha = field_0x54;
+    JGeometry::TVec2f offset(0.0f, 14.0f);
+    for (s32 i = 0; i < 7; i++) {
+        s16 angle = -(s16)(field_0x5e + i * 0x1F70);
+        f32 s = JMASSin(angle);
+        f32 c = JMASCos(angle);
+        JGeometry::TVec3f spot;
+        spot.z = pos->z;
+        spot.x = pos->x + (offset.x * c - offset.y * s);
+        spot.y = pos->y + (offset.x * s + offset.y * c);
+        if (field_0x34[i] == NULL) {
+            field_0x34[i] = spawnEmitter_8013CC50(layer, &spot, 0x233 + i, field_0xc.field_0x0, field_0xc.field_0x4, 0, NULL, true, 1.0f);
+            if (field_0x34[i] != NULL) {
+                field_0x34[i]->setGlobalAlpha(alpha);
+            }
+        }
+        if (i == 0 && field_0x50 == NULL) {
+            field_0x50 = spawnEmitter_8013CC50(layer, &spot, 0x23A, field_0xc.field_0x0, field_0xc.field_0x4, 0, NULL, true, 1.0f);
+            if (field_0x50 != NULL) {
+                field_0x50->setGlobalAlpha(alpha);
+            }
+        }
+    }
+}
+
 // fn_801EB418: follows *pos with the ring of seven emitters (radius 14, turning
 // 0x16A a frame, 0x1F70 apart) and the one at 0x50 on the first spot; field_0x54
 // eases towards field_0x58 and is the emitters' alpha. Once it reaches 0 with
