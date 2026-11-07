@@ -426,6 +426,8 @@ struct GameRoot_8049EF20 {
     // fn_8037F1E4(0) holds the game.
     void fn_80136500();
     // 0x80136364 (game/tu_80134C04.cpp): called by GameRootSub04's fn_80139D9C.
+    // 0x80135494: applies the requested mode (field_0x50) once its archives are loaded.
+    void fn_80135494(s32 mode);
     void fn_80136364();
     // Owner: game/tu_80134C04.cpp (0x8013665C; act_tingle_tower, tu_8044C7F0).
     // fn_801365E8(a, b, 0), then stage (10, 2) also sets lbl_80529DEC's 0x24B

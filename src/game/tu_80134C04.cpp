@@ -1,7 +1,9 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
+#include "game/GameMode.h"
 #include "game/Message.h"
+#include "game/GameView.h"
 #include "game/cls_804A8390.h"
 #include "game/cls_804AE9B0.h"
 #include "game/cls_804AF480.h"
@@ -11,6 +13,7 @@
 #include "game/act/tu_80440BF4.h"
 #include "game/tu_80379F84.h"
 #include "game/tu_803A3484.h"
+#include "game/tu_803B8C74.h"
 #include "game/tu_803BC6F0.h"
 #include "game/tu_803DAC3C.h"
 #include "JSystem/JKernel/JKRHeap.h"
@@ -55,6 +58,13 @@ static const u32 lbl_804652F0[39] = {
     0x01000001, 0x01000029, 0x01000009, 0x01000026, 0x01000018, 0x0100000A,
     0x0100002A, 0x0100002E, 0x01000030,
 };
+
+// The pad rumble patterns (.data of this unit; not written as source yet).
+extern u8 lbl_8049EE58[];
+extern u8 lbl_8049EEE0[];
+extern u8 lbl_8049EEF0[];
+extern u8 lbl_8049EF00[];
+extern u8 lbl_8049EF10[];
 
 // Forward declarations.
 void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar);
@@ -663,6 +673,174 @@ void GameRoot_8049EF20::fn_80136500() {
     }
 }
 
+// The stage music request of the stage-change path (also for mode 0xE).
+static inline void playStageMusic(GameRoot_8049EF20* self) {
+    u8 count = getGameView_802D6A9C()->field_0x1328c;
+    s32 sound = getGameView_802D6A9C()->field_0x34;
+    if (sound == 0x11) {
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        if (sound == 0x14 || sound == 0x1E) {
+            self->field_0xa0->fn_80458F04(lbl_804652F0[sound]);
+        } else {
+            self->field_0xa0->fn_80458FF0(lbl_804652F0[sound], false, count);
+            getGameView_802D6A9C()->field_0x1328c = count + 1;
+        }
+    } else if (sound != 0x19) {
+        if (self->field_0x86 == 0) {
+            self->field_0xa0->fn_80458FF0(0x1000004, false, 0);
+        } else {
+            self->field_0xa0->fn_80458FF0(0x100000D, false, 0);
+        }
+    } else {
+        self->field_0xa0->fn_80458FF0(0x1000019, false, 0);
+    }
+}
+
+// FIXME(shotgun): 93.7 %, missing/extra
+// 0x80135494
+void GameRoot_8049EF20::fn_80135494(s32 mode) {
+    bool changed = false;
+    bool ready = false;
+    if (mode == 2 && field_0x4c != 2 && field_0x4c != 5) {
+        ready = true;
+    } else if (mode == 5 && field_0x4c != 2 && field_0x4c != 5) {
+        ready = true;
+    } else if (mode == 3 || mode == 4 || mode == 6) {
+        ready = true;
+    } else if (mode == 7 && field_0x4 == 0) {
+        ready = true;
+    }
+    if (ready) {
+        if (field_0xac->field_0x4 != 1) {
+            return;
+        }
+        if (field_0xb0 != NULL && field_0xb0->field_0x4 != 1) {
+            return;
+        }
+        switch (mode) {
+        case 7:
+            lbl_80529DEC.field_0x10 = field_0xac->field_0x14;
+            lbl_80529DEC.field_0x4c = field_0xb0->field_0x14;
+            fn_80135020(7);
+            break;
+        case 2:
+        case 5:
+            if (field_0x4c != 2 && field_0x4c != 5) {
+                lbl_80529DEC.field_0x2c = field_0xac->field_0x14;
+                fn_80135020(2);
+            }
+            break;
+        case 3:
+            lbl_80529DEC.field_0x30 = field_0xac->field_0x14;
+            fn_80135020(3);
+            break;
+        case 4:
+            lbl_80529DEC.field_0x28 = field_0xac->field_0x14;
+            fn_80135020(4);
+            break;
+        case 6:
+            lbl_80529DEC.field_0x34 = field_0xac->field_0x14;
+            fn_80135020(6);
+            lbl_8053AD80->fn_80390088();
+            break;
+        }
+        delete field_0xac;
+        delete field_0xb0;
+        changed = true;
+    } else if (mode == 12 && lbl_80529DEC.field_0x24d == 1 && field_0x7c < 0x78) {
+        field_0x7c++;
+        return;
+    }
+    if (!changed) {
+        if (field_0x50 == 1 || field_0x50 == 5 || field_0x50 == 2 || field_0x50 == 12) {
+            field_0x60 = 0;
+        }
+    }
+    field_0x4c = field_0x50;
+    if (field_0x4c == 1 || field_0x4c == 6) {
+        gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+    }
+    field_0x64 = 0;
+    if (field_0xfd == 0) {
+        if (field_0x50 == 0x11) {
+            field_0x58 = 3;
+        } else {
+            field_0x58 = 2;
+        }
+    } else {
+        field_0xfd = 0;
+    }
+    if (field_0x4c != 7) {
+        return;
+    }
+    if (changed) {
+        gGameRoot_8053AAF8->field_0xfe = 1;
+        gGameRoot_8053AAF8->field_0xfc = 0;
+        gGameRoot_8053AAF8->field_0xf8 = 0;
+        if (getGameView_802D6A9C()->field_0x3c != 0) {
+            field_0x60 = 0;
+            return;
+        }
+        field_0x60 = 4;
+        if (getGameView_802D6A9C()->field_0x4 == 0 && getGameView_802D6A9C()->field_0x8 == 0) {
+            if (getGameView_802D6A9C()->field_0x4 != 0 || getGameView_802D6A9C()->field_0x8 != 0) {
+                return;
+            }
+            if (!(lbl_8050EC80.getCurrentFile().mFlags & 1)) {
+                return;
+            }
+        }
+        playStageMusic(this);
+    } else if (field_0x50 == 0xE) {
+        field_0x60 = 4;
+        playStageMusic(this);
+    }
+}
+
+// FIXME(shotgun): 97.7 %, missing/extra
+// 0x80136364
+void GameRoot_8049EF20::fn_80136364() {
+    if (field_0xfe != 1 || getGameView_802D6A9C()->fn_802DCD0C() || gGameRoot_8053AAF8->field_0x4c == GAME_MODE_B) {
+        return;
+    }
+    if (lbl_8053AD30->fn_80309C4C(0x1000, -1) == 0) {
+        return;
+    }
+    if (lbl_8053AD70->fn_8037AD34() || lbl_8053AD70->fn_8037ACC4()) {
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x85 == 1) {
+        if (field_0x54 == 7) {
+            s32 sub = field_0x78;
+            s32 stage = field_0x74;
+            field_0x50 = 7;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            lbl_80529DEC.field_0x118 = stage;
+            lbl_80529DEC.field_0x11c = sub;
+            field_0x84 = 1;
+        } else {
+            field_0x50 = field_0x54;
+            field_0x58 = 1;
+            lbl_8053ACA0->fn_802AC8AC(0);
+            field_0x84 = 0;
+        }
+    } else if (!fn_802DEBF8() && lbl_8053AD70->fn_8037ADD8()) {
+        field_0x4c = 9;
+        lbl_8053AD70->fn_8037ADA4();
+        lbl_8053AD70->field_0xc = 1;
+        field_0xa0->fn_80458880(1, -1);
+        field_0xa0->fn_804593D4();
+        JUTGamePad* pad = JUTGamePad::getGamePad(0);
+        field_0x10c = 0;
+        field_0x108 = 0;
+        pad->mRumble.stopMotor(pad->getPortNum(), false);
+        pad->mRumble.stopPatternedRumble(pad->getPortNum());
+    }
+}
+
 // Whether the game mode (field_0x4c) is one of 0 - 6, 9 or 12.
 // FIXME: 85.9. The target tests mode == 0 separately and then folds 1-6 into one
 // range (subi; cmplwi 5), reusing r3 for the mode; ours folds 0-6 into one range.
@@ -968,6 +1146,61 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
+// FIXME(shotgun): 63.8 %, missing/extra + reloc-name
+// 0x80134DE4
+void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
+    if (lbl_80529DEC.field_0x246 == 0) {
+        return;
+    }
+    JUTGamePad* pad = JUTGamePad::getGamePad(0);
+    field_0x10c = 0;
+    switch (kind) {
+    case 1:
+        field_0x108 = 0x1E;
+        break;
+    case 2:
+        field_0x108 = 0x3C;
+        break;
+    case 3:
+        field_0x108 = 0x5A;
+        break;
+    case 4:
+        field_0x108 = 0x78;
+        break;
+    case 5:
+        pad->mRumble.startPatternedRumble(lbl_8049EE58, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        field_0x10c = 1;
+        field_0x108 = 0x41A;
+        break;
+    case 6:
+        pad->mRumble.startPatternedRumble(lbl_8049EEE0, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        field_0x10c = 1;
+        field_0x108 = 0x5B;
+        break;
+    case 7:
+        pad->mRumble.startPatternedRumble(lbl_8049EEF0, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        field_0x10c = 1;
+        field_0x108 = 0x5B;
+        break;
+    case 8:
+        pad->mRumble.startPatternedRumble(lbl_8049EF00, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        field_0x10c = 1;
+        field_0x108 = 0x5B;
+        break;
+    case 9:
+        pad->mRumble.startPatternedRumble(lbl_8049EF10, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        field_0x10c = 1;
+        field_0x108 = 0x5B;
+        break;
+    case 10:
+        field_0x108 = frames != 0 ? frames : 0x78;
+        break;
+    default:
+        field_0x108 = kind;
+        break;
+    }
+}
+
 void GameRoot_8049EF20::fn_80134DC0() {
     if (field_0x86 == 0) {
         field_0x86 = 1;
@@ -1037,3 +1270,5 @@ void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar) {
     }
     JUTException::getManager()->setGamePad(NULL);
 }
+
+// fn_80137300 (0x1730, the mode-change load sequence) is not written yet.
