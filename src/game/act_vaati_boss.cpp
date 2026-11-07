@@ -192,6 +192,187 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
+// FIXME(shotgun): 97.35 %, different + reloc-name
+void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
+    switch (state) {
+    case 1:
+    case 2:
+        mTargetSpeed = 0.0f;
+        break;
+    case 3:
+        field_0x448.fn_80217CD8();
+        startSound_801F0E34(0x40089, 0);
+        mTargetSpeed = 0.0f;
+        break;
+    case 4:
+        mTargetSpeed = 0.0f;
+        field_0x250 = fn_801CD664(1) + 30;
+        break;
+    case 5:
+        fn_801E4D74();
+        mTargetSpeed = 0.7f;
+        if (field_0x5b0 == -1) {
+            field_0x250 = fn_801CD664(0xB5) + 0x3C;
+        } else {
+            field_0x250 = fn_801CD664(0xF1) + 0x78;
+        }
+        break;
+    case 6:
+        fn_801E4D54();
+        field_0x464.field_0x5c = 1;
+        field_0x464.field_0x58 = 0.0f;
+        mTargetSpeed = 0.0f;
+        break;
+    case 7:
+        mTargetSpeed = 0.0f;
+        break;
+    case 8: {
+        mLife = 0x32;
+        mFlags |= 0x2000;
+        mFlags &= ~0x300;
+        field_0x5b0 = -1;
+        field_0x98 = 3;
+        JGeometry::TBox2f box;
+        fn_801E4618(&box, fn_801CD2F8(field_0x4));
+        field_0x60c.x = 0.5f * (box.f.x - box.i.x) + box.i.x;
+        field_0x60c.y = 0.5f * (box.f.y - box.i.y) + box.i.y;
+        field_0x60c.z = 0.0f;
+        field_0x5bc = (box.f.x - box.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.x;
+        field_0x5c0 = (box.f.y - box.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.y;
+        field_0x5d0 = fn_801CD664(2) + 1;
+        mTargetSpeed = 0.0f;
+        break;
+    }
+    case 9:
+        mTargetSpeed = 0.0f;
+        break;
+    case 10:
+        if (fn_801CD2F8(field_0x4)) {
+            mTargetSpeed = 1.4f;
+            field_0x250 = fn_801CD664(0xB5) + 0xB4;
+        } else {
+            mTargetSpeed = gGameRoot_8053AAF8->field_0x7e != 0 ? 1.4f : 1.0f;
+            field_0x250 = fn_801CD664(0x1E1) + 0xF0;
+        }
+        break;
+    case 11:
+        if (field_0x4c4.field_0x44 != 4) {
+            field_0x4c4.fn_801D7638();
+            // The original runs the constructor again here (__ct__12cls_801D7730Fv).
+            field_0x4c4.fn_801D77B4();
+        }
+        field_0x448.fn_80217A74();
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x5d1 = 0;
+        break;
+    case 12:
+        mTargetSpeed = gGameRoot_8053AAF8->field_0x7e != 0 ? 1.4f : 1.0f;
+        field_0x250 = fn_801CD664(0x79) + 0x78;
+        field_0x4c4.fn_801D74E0(&mPos, field_0x4);
+        break;
+    case 13:
+        mTargetSpeed = 0.0f;
+        if (field_0x4c4.field_0x44 == 3) {
+            field_0x4c4.field_0x58 = 1;
+        }
+        field_0x5cf = 0;
+        break;
+    case 14:
+        mTargetSpeed = 0.0f;
+        break;
+    case 15:
+        mTargetSpeed = 0.0f;
+        field_0x5cf = 0;
+        field_0x4c4.fn_801D74E0(&mPos, field_0x4);
+        startSound_801F0E34(0x40068, 0);
+        break;
+    case 16:
+        mTargetSpeed = 0.0f;
+        break;
+    case 17:
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        break;
+    case 18:
+        mTargetSpeed = 0.0f;
+        startSound_801F0E34(0x40061, 0);
+        break;
+    case 19:
+        mTargetSpeed = 7.0f;
+        mAnim.startAnim_801D22DC(1, 2, false);
+        startSound_801F0E34(0x40062, 0);
+        break;
+    case 20:
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(0, 2, false);
+        break;
+    case 23: {
+        field_0x5fc = field_0x5dc;
+        field_0x600.z = 0.0f;
+        if (fn_801CD2F8(field_0x4)) {
+            field_0x5fc = field_0x5d8;
+            field_0x600.z = 31.9f;
+        }
+        JGeometry::TBox2f box;
+        fn_801E4618(&box, fn_801CD2F8(field_0x5fc));
+        field_0x600.x = (box.f.x - box.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.x;
+        field_0x600.y = (box.f.y - box.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.y;
+        fn_801E44CC(&box, &field_0x600, NULL);
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x5d1 = 0;
+        if (!fn_801CD2F8(field_0x4)) {
+            field_0x448.fn_80217A74();
+            field_0x448.fn_80217DE8();
+            field_0x448.fn_80217BC8();
+            startSound_801F0E34(0x5003E, 0);
+        } else {
+            field_0x448.fn_80217AB8();
+            fn_801CDCD0(field_0x5fc, &field_0x60c, 0x5003D);
+        }
+        break;
+    }
+    case 24:
+        mBox.i.x = 1.0f;
+        mBox.i.y = 1.0f;
+        mBox.f.x = -1.0f;
+        mBox.f.y = -1.0f;
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
+        field_0x80.i.x = 1.0f;
+        field_0x80.i.y = 1.0f;
+        field_0x80.f.x = -1.0f;
+        field_0x80.f.y = -1.0f;
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        field_0x5d1 = 0;
+        break;
+    case 25:
+        startSound_801F0E34(0x4008A, 0);
+        field_0x448.fn_80217ED4();
+        break;
+    case 26:
+        field_0x568.fn_801E6A84(0);
+        fn_801F3668();
+        mAlive = true;
+        break;
+    }
+    mStateTimer = 0;
+    mState = state;
+}
+
 // FIXME(shotgun): 88.96 %, different + reloc-name
 void VaatiBoss_804A4958::fn_801D5B70() {
     if (mStateTimer >= field_0x250) {
@@ -231,6 +412,224 @@ void VaatiBoss_804A4958::fn_801D5B70() {
         } else {
             fn_801D5D84(0xC);
         }
+    }
+}
+
+// Collects the players (other than the current target) that are in play and not
+// flagged in field_0x2a8, and picks one at random; -1 when there is none.
+static inline s32 pickTarget(VaatiBoss_804A4958* boss) {
+    s32 found[4];
+    s32 count = 0;
+    s32 chosen = -1;
+    for (s32 i = 0; i < 4; i++) {
+        if (i != boss->field_0x5b0 && boss->field_0x2a8[i].field_0x0 == 0 && boss->fn_801D0B44(i)) {
+            found[count] = i;
+            count++;
+        }
+    }
+    if (count > 0) {
+        chosen = found[fn_801CD664(count)];
+    }
+    return chosen;
+}
+
+// FIXME(shotgun): 99.37 %, different + reloc-name
+void VaatiBoss_804A4958::vfunc_0x90(u8 mapHit) {
+    switch (mState) {
+    case 0:
+        if (fn_801CD228(field_0x4) && getActorManager_801F856C()->fn_801F68E0() != 0) {
+            fn_801D5D84(1);
+        }
+        break;
+    case 1:
+        if (mPos.z <= 90.0f) {
+            mPos.z = 90.0f;
+            fn_801D5D84(2);
+        }
+        break;
+    case 2:
+        if (mStateTimer >= 180) {
+            fn_801D5D84(3);
+        }
+        break;
+    case 3:
+        if (mStateTimer >= 60) {
+            getActorManager_801F856C()->fn_801F6884();
+            gAudioMgr_8053AF80->fn_80458FF0(0x1000004, true, 0);
+            fn_801D5D84(4);
+        }
+        break;
+    case 4:
+        if (mStateTimer >= field_0x250) {
+            field_0x5b0 = pickTarget(this);
+            fn_801D5D84(5);
+        }
+        break;
+    case 5:
+        if (field_0x5b0 == -1 || field_0x2a8[field_0x5b0].field_0x0 != 0 || !fn_801D0B44(field_0x5b0)) {
+            field_0x5b0 = pickTarget(this);
+            fn_801D5D84(5);
+        } else if (mStateTimer >= field_0x250) {
+            s32 chosen = pickTarget(this);
+            if (field_0x5b0 == -1 && chosen == -1) {
+                break;
+            }
+            field_0x5b0 = chosen;
+            fn_801D5D84(5);
+        }
+        break;
+    case 6:
+        if (mPos.z >= 500.0f) {
+            mPos.z = 500.0f;
+            fn_801D5D84(7);
+        }
+        break;
+    case 7:
+        if (!(mFlags & 1) && mStateTimer >= 30) {
+            fn_801D5D84(8);
+        }
+        break;
+    case 8:
+        if (mPos.z <= 31.9f) {
+            mPos.z = 31.9f;
+            fn_801D5D84(9);
+        }
+        break;
+    case 9:
+        if (mStateTimer >= 120) {
+            fn_801D5D84(10);
+        }
+        break;
+    case 10:
+        fn_801D5B70();
+        break;
+    case 11:
+        if (mStateTimer >= 180) {
+            if (fn_801CD2F8(field_0x4)) {
+                fn_801D5D84(15);
+            } else {
+                field_0x448.fn_80217CD8();
+                fn_801D5D84(12);
+            }
+        }
+        break;
+    case 12:
+        if (mStateTimer >= field_0x250) {
+            fn_801D5D84(13);
+        }
+        break;
+    case 13:
+        if (field_0x5cf != 0) {
+            field_0x5cf--;
+            if (field_0x5cf == 0) {
+                field_0x4c4.fn_801D72C0(&mPos);
+                startSound_801F0E34(0x40060, 0);
+                fn_801D5D84(14);
+            }
+        } else if (field_0x3c.x < 0.001f && field_0x3c.y < 0.001f) {
+            field_0x5cf = 10;
+        }
+        break;
+    case 14:
+        if (mStateTimer >= 6) {
+            if (field_0x5d0 != 0 && (mFlags & 0x10000)) {
+                field_0x5d0--;
+            }
+            fn_801D5D84(10);
+        }
+        break;
+    case 15:
+        if (field_0x5cf != 0) {
+            field_0x5cf--;
+            if (field_0x5cf == 0) {
+                field_0x4c4.fn_801D70BC(&mPos, fn_801D05F8(&mPos, 0.0f));
+                startSound_801F0E34(0x40069, 0);
+                fn_801D5D84(16);
+            }
+        } else if (field_0x3c.x < 0.001f && field_0x3c.y < 0.001f) {
+            field_0x5cf = 10;
+        }
+        break;
+    case 16:
+        if (mStateTimer >= 6) {
+            if (field_0x5d0 != 0 && (mFlags & 0x10000)) {
+                field_0x5d0--;
+            }
+            fn_801D5D84(10);
+        }
+        break;
+    case 17:
+        if (mStateTimer >= 15) {
+            fn_801D5D84(18);
+        }
+        break;
+    case 18:
+        if (mStateTimer >= 15) {
+            fn_801D5D84(19);
+        }
+        break;
+    case 19:
+        if (mStateTimer >= 50) {
+            fn_801D5D84(20);
+        }
+        break;
+    case 20:
+        if (mStateTimer >= 15) {
+            fn_801D5D84(10);
+        }
+        break;
+    case 21:
+        if (__fabsf(mPos.x - field_0x5ec) < 0.1f && __fabsf(mPos.y - field_0x5f0) < 0.1f) {
+            fn_801D5D84(22);
+        }
+        break;
+    case 22:
+        if (__fabsf(mPos.x - field_0x5f4) < 0.1f && __fabsf(mPos.y - field_0x5f8) < 0.1f) {
+            fn_801D5D84(23);
+        }
+        break;
+    case 23:
+        if (mStateTimer >= 50) {
+            field_0x5b4 = 0;
+            field_0x5b8 = fn_801CD664(4);
+            field_0x5bc = field_0x600.x;
+            field_0x5c0 = field_0x600.y;
+            field_0x4 = field_0x5fc;
+            mPos = field_0x600;
+            mPrevPos = field_0x600;
+            fn_801E4790(fn_801CD2F8(field_0x4));
+            if (fn_801CD2F8(field_0x4)) {
+                field_0x5d0 = fn_801CD664(4) + 3;
+                field_0x448.fn_80217A30();
+            } else {
+                field_0x5d0 = fn_801CD664(2) + 1;
+                field_0x448.fn_802179EC();
+                field_0x448.fn_80217DE8();
+                field_0x448.fn_80217CD8();
+            }
+            fn_801D5D84(10);
+        } else if (fn_801CD2F8(field_0x5fc)) {
+            field_0x448.fn_80217874((f32)(50 - mStateTimer));
+        } else {
+            field_0x448.fn_8021775C((f32)(50 - mStateTimer));
+        }
+        break;
+    case 24:
+        if (getActorManager_801F856C()->fn_801F68E0() != 0) {
+            gGameRoot_8053AAF8->fn_80134DE4(3, 0);
+            fn_801D5D84(25);
+        }
+        break;
+    case 25:
+        if (mStateTimer >= 450) {
+            fn_801D5D84(26);
+        } else if (mStateTimer == 200) {
+            mDrawEnabled = false;
+        }
+        break;
+    case 26:
+        field_0x568.fn_801E667C();
+        break;
     }
 }
 
@@ -597,5 +996,3 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
 void VaatiBoss_804A4958::vfunc_0x24() {}
 
 VaatiBoss_804A4958::~VaatiBoss_804A4958() {}
-
-// fn_801D5D84 (0x64C) and the update fn_801D5390 (0x7E0): not written (budget).
