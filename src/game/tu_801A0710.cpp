@@ -135,11 +135,31 @@ TennisShop_804A2BF4::~TennisShop_804A2BF4() {
     }
 }
 
-// FIXME(shotgun): 37.7 %, missing/extra + reloc-name (skeleton: the state machine, the ball-hit search (fn_801F2740, fn_801F285C,
-// fn_801F2B7C), the bounce and the hit counters are written; the pane-colour part of the selection screen
-// and the pause-menu branch of states 0xE / 0xF are approximated)
+// Highest set bit of a player mask (the original computes it with a shift loop).
+static inline s32 highestPlayer(s32 mask) {
+    s32 p = 0;
+    while (mask > 0) {
+        mask >>= 1;
+        p++;
+    }
+    p--;
+    if (p < 0) {
+        p = 0;
+    }
+    return p;
+}
+
+static inline void bumpCount(s32* count) {
+    (*count)++;
+    if (*count > 999) {
+        *count = 999;
+    }
+}
+
+// FIXME(shotgun): 92.0 %, missing/extra (rewritten against the asm: 0xE-0x11 follow the switch; the p < 0 test of the id-range check and the
+// duplicated count clamp are not reproduced exactly)
 void TennisShop_804A2BF4::fn_801A0F90() {
-    bool grounded = false;
+    bool dead = false;
     mPos.x += field_0x3c.x;
     mPos.y += field_0x3c.y;
     mPos.z += field_0x3c.z;
@@ -147,7 +167,6 @@ void TennisShop_804A2BF4::fn_801A0F90() {
     switch (field_0x230) {
     case 0xE:
         field_0x230 = 0xF;
-        // fall through
     case 0xF:
         if (field_0x3c.x == 0.0f && field_0x3c.y == 0.0f) {
             if (mPos.z <= 0.0f) {
@@ -157,11 +176,8 @@ void TennisShop_804A2BF4::fn_801A0F90() {
             } else {
                 field_0x3c.z -= 0.5f;
             }
-        } else {
-            field_0x3c.z -= 0.5f;
+            break;
         }
-        break;
-    case 0x10: {
         if (mPos.z <= 0.0f) {
             startSound_801F0E34(0x3004C, 0);
             mPos.z = 0.0f;
@@ -170,21 +186,114 @@ void TennisShop_804A2BF4::fn_801A0F90() {
             field_0x3c.z -= 0.3f;
         }
         addCalc2_801F71A4(&mPos.z, 16.0f, 0.3f, 2.0f);
-        if (field_0x238[1] == 0) {
-            mBox.i.x = -4.0f;
-            mBox.i.y = -4.0f;
-            mBox.f.x = 4.0f;
-            mBox.f.y = 4.0f;
-            if (fn_801F2740(-1)) {
-                s32 player = 0;
-                if (field_0x264 != player && field_0x264 != fn_8022F3DC(player)) {
-                    break;
-                }
+        if (field_0x238[1] != 0) {
+            break;
+        }
+        mBox.i.x = -4.0f;
+        mBox.i.y = -4.0f;
+        mBox.f.x = 4.0f;
+        mBox.f.y = 4.0f;
+        if (u8 mask = fn_801F2740(-1)) {
+            s32 p = highestPlayer(mask);
+            if (field_0x264 == p || field_0x264 == fn_8022F3DC(p)) {
                 if (fn_801F2B7C(0, -1, 1)) {
                     startSound_801F0E34(0x3004D, 0);
-                    grounded = true;
+                    dead = true;
                     lbl_8053ABC5 = 1;
+                    break;
                 }
+            }
+        }
+        mBox.i.x = -10.0f;
+        mBox.i.y = -10.0f;
+        mBox.f.x = 10.0f;
+        mBox.f.y = 10.0f;
+        field_0x278 = fn_801F285C(NULL, NULL, true, -1);
+        if (field_0x278 < 0) {
+            break;
+        }
+        if (field_0x264 == field_0x278 || field_0x264 == fn_8022F3DC(field_0x278)) {
+            u16 id = fn_8023CBC0(field_0x278);
+            if (id >= 0x43 && id < 0x6F) {
+                break;
+            }
+            f32 speed = lbl_8053A0F8[0];
+            if (fn_802353AC(field_0x264)) {
+                speed *= 1.5f;
+            }
+            field_0x264++;
+            if (field_0x264 >= gGameRoot_8053AAF8->fn_80138A30()) {
+                field_0x264 = 0;
+            }
+            field_0x248++;
+            fn_8023B6CC(field_0x278);
+            fn_80230FD0(field_0x278, 0x2003F);
+            if (field_0x248 < gGameRoot_8053AAF8->fn_80138A30()) {
+                if (fn_8023F264(field_0x264) && field_0x4 == getPlayerLayer_8023DE58(field_0x264) && !fn_80230188(field_0x264)) {
+                    u16 angle;
+                    fn_801EEC98(mSerial, &angle, NULL, NULL, NULL, field_0x264, 2);
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                        angle -= 0x600;
+                    } else {
+                        angle += 0x600;
+                    }
+                    field_0x3c.x = speed * JMath::sincosTable_.sinShort(angle);
+                    field_0x3c.y = speed * JMath::sincosTable_.cosShort(angle);
+                    field_0x238[1] = 30;
+                    if (field_0x320 >= 0) {
+                        TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x320));
+                        if (shop != NULL) {
+                            bumpCount(&shop->field_0x24c[2]);
+                            bumpCount(&shop->field_0x26c);
+                            if (shop->field_0x24c[2] > 999) {
+                                shop->field_0x24c[2] = 999;
+                            }
+                        }
+                    }
+                } else {
+                    dead = true;
+                }
+            } else if (field_0x320 >= 0) {
+                TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x320));
+                if (shop != NULL) {
+                    field_0x248 = 0;
+                    field_0x264 = 4;
+                    if (gGameRoot_8053AAF8->fn_80138A30() > 1) {
+                        bumpCount(&shop->field_0x24c[2]);
+                        bumpCount(&shop->field_0x26c);
+                    }
+                    getPlayerPos_8023E724(0);
+                    getPlayerPos_8023E724(0);
+                    if (field_0x278 >= 0) {
+                        u16 angle = (s32)(JMath::atanTable_.atan2_(shop->mPos.x - mPos.x, shop->mPos.y - mPos.y) * 10430.378f);
+                        field_0x3c.x = lbl_8053A0F8[0] * JMath::sincosTable_.sinShort(angle);
+                        field_0x3c.y = lbl_8053A0F8[0] * JMath::sincosTable_.cosShort(angle);
+                        field_0x230 = 0x10;
+                    } else {
+                        dead = true;
+                    }
+                } else {
+                    dead = true;
+                }
+            } else {
+                dead = true;
+            }
+        }
+        break;
+    case 0x10: {
+        s32 target = fn_801F2718(0x54454E4E);
+        if (mPos.z <= 0.0f) {
+            startSound_801F0E34(0x3004C, 0);
+            mPos.z = 0.0f;
+            field_0x3c.z = 3.0f;
+        } else {
+            field_0x3c.z -= 0.3f;
+        }
+        if (lbl_8053ABC4 == 1 && target >= 0) {
+            TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(target));
+            if (shop != NULL) {
+                shop->field_0x24c[3] = 1;
+                field_0x230 = 0xE;
             }
         }
         break;
@@ -198,30 +307,27 @@ void TennisShop_804A2BF4::fn_801A0F90() {
         } else {
             field_0x3c.z -= 0.5f;
         }
-        if (field_0x238[1] != 0 && field_0x340 < 1.0f) {
+        if (field_0x238[1] == 0 || field_0x340 < 1.0f) {
             mAlive = false;
         }
         break;
     }
     if (field_0x230 != 0x11) {
-        if ((mLife == 0 || grounded) || fn_801F6758(&mPos, field_0x4, 20.0f)) {
+        if (mLife == 0 || dead || fn_801F6758(&mPos, field_0x4, -16.0f)) {
             field_0x238[1] = 50;
-            if (mLife != 0) {
-                s32 serial = field_0x320;
-                if (serial >= 0) {
-                    ActorBase_804A5770* shop = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-                    if (shop != NULL) {
-                        // the shop keeper counts the missed ball for the player
-                        field_0x268 = field_0x264;
-                    }
+            if (mLife != 0 && field_0x320 >= 0) {
+                TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x320));
+                if (shop != NULL) {
+                    shop->field_0x268 = field_0x264;
+                    shop->field_0x28c[field_0x264]++;
                 }
-                field_0x3c.x *= -0.5f;
-                field_0x3c.y *= -0.5f;
-                field_0x3c.z = 3.0f;
-                startSound_801F0E34(0x3004D, 0);
-                lbl_8053ABC0 = 1;
-                field_0x230 = 0x11;
             }
+            field_0x3c.x *= -0.5f;
+            field_0x3c.y *= -0.5f;
+            field_0x3c.z = 3.0f;
+            startSound_801F0E34(0x3004D, 0);
+            lbl_8053ABC0 = 1;
+            field_0x230 = 0x11;
         }
     }
     if (field_0x238[0] > 0) {
