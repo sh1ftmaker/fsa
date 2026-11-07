@@ -15,7 +15,16 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x24]; // not yet known
+    /* 0x230 */ s32 field_0x230; // cleared by init
+    /* 0x234 */ s32 mType; // field_0x90 & 0xF; picks the box and the tile-block counts
+    /* 0x238 */ s32 field_0x238; // (field_0x90 >> 4) & 0xF
+    /* 0x23C */ u8 field_0x23c[4]; // not yet known
+    /* 0x240 */ s32 field_0x240; // (field_0x90 >> 12) & 0xFFF
+    /* 0x244 */ s32 field_0x244; // 20 after init
+    /* 0x248 */ f32 field_0x248; // 0, or -0.06 for type 3
+    /* 0x24C */ u8 field_0x24c[4]; // not yet known
+    /* 0x250 */ u8 field_0x250[2]; // not yet known
+    /* 0x252 */ s16 field_0x252; // 12 when gGameRoot_8053AAF8->field_0x7f == 1, else 13
 }; // Size: 0x254
 
 #endif
