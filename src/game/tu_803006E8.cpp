@@ -55,7 +55,7 @@ u8 fn_803006E8(u32 data) {
             crc ^= 0xCD;
         }
     }
-    for (int i = 0; i < 8; i++) {
+    for (u32 i = 0; i < 8; i++) {
         crc <<= 1;
         if (crc & 0x100) {
             crc ^= 0xCD;
