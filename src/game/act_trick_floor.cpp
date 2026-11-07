@@ -89,10 +89,9 @@ void TrickFloor_804A83A0::init() {
     field_0x230 = 0;
 }
 
-bool fn_80234F68(s32 player);
-
-// FIXME(shotgun): 16.59 %, missing/extra. States 3-8 (the tile rewrite and the fall) are not written.
+// FIXME(shotgun): 17.86 %, missing/extra. States 2-8 are not written.
 void TrickFloor_804A83A0::update() {
+    JGeometry::TVec3f savedPos = mPos;
     switch (field_0x234) {
     case 2:
         mPos.x += 48.0f;
@@ -113,6 +112,7 @@ void TrickFloor_804A83A0::update() {
         mPos.y += 48.0f;
         box.addPos(mPos.x, mPos.y);
         fn_80239914(&box, field_0x4, mSerial);
+        mPos = savedPos;
         mPos.y += 48.0f;
         mBox.i.x = -16.0f;
         mBox.i.y = -50.0f;
@@ -133,10 +133,10 @@ void TrickFloor_804A83A0::update() {
         const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
         if (p->x >= box.i.x && p->y >= box.i.y && p->x < box.f.x && p->y < box.f.y) {
             standing = i;
-            if (fn_8022F478(i)) {
-                standing = -1;
+            if (!fn_8022F478(i)) {
+                break;
             }
-            break;
+            standing = -1;
         }
     }
     if (field_0x23c == 1 && standing >= 0 && !fn_80234F68(standing)) {
@@ -151,6 +151,7 @@ void TrickFloor_804A83A0::update() {
             pushers++;
         }
     }
+    mPos = savedPos;
 
     switch (field_0x230) {
     case 0: {
@@ -192,6 +193,7 @@ void TrickFloor_804A83A0::update() {
             startSound_801F0E34(0x3001B, 0);
         }
         break;
+    // FIXME(shotgun): states 2-8 not written
     }
 }
 

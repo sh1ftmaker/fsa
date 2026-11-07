@@ -139,11 +139,13 @@ static const u8 sDigitBlue[4] = {0x28, 0x50, 0xFF, 0xFF};
 // Force Gem / fairy sounds by tens digit.
 static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
 
-// FIXME(shotgun): 80.16 %, missing/extra + reloc-name (the emitter scale argument is a stack value not decoded; 1.0f is a placeholder)
+// FIXME(shotgun): 90.91 %, missing/extra + reloc-name
 void Score_804AF4C0::fn_80393514() {
     if (mTimer == 90) {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCB, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCC, 0, 0, NULL, NULL, true, 1.0f);
+        // The original copies this 12-entry table (rodata 0x80475738) to the stack and passes entry 0.
+        const f32 emitScale[12] = {0.3f, 0.3f, 0.3f, 0.35f, 0.35f, 0.4f, 0.45f, 0.5f, 0.55f, 0.6f, 0.6f, 0.6f};
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCB, 0, 0, NULL, NULL, true, emitScale[0]);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCC, 0, 0, NULL, NULL, true, emitScale[0]);
         s32 idx = 9;
         if (mValue < 10) {
             idx = mValue - 1;
@@ -238,7 +240,6 @@ void Score_804AF4C0::fn_80393228() {
     }
 }
 
-// Digits of the Force Gem value brackets (1, 5, 20, 50, 100, 150, 200, 300, 1000, 1500, 2000, 3000) by mValue.
 // Draws one digit of the gem value at x + dx, in the gem-yellow colour.
 static inline void putScoreDigit(const Score_804AF4C0* self, f32 fade, f32 dx, u8 digit) {
     Vec pos;
@@ -250,7 +251,7 @@ static inline void putScoreDigit(const Score_804AF4C0* self, f32 fade, f32 dx, u
     }
 }
 
-// FIXME(shotgun): 15.94 %, missing/extra + reloc-name (cases 0-3 only; unrolled in the original)
+// FIXME(shotgun): 15.94 %, missing/extra + reloc-name (cases 0-3 of the 12-entry jump table only; unrolled in the original)
 void Score_804AF4C0::fn_80391F58() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     switch (mValue) {
@@ -269,7 +270,7 @@ void Score_804AF4C0::fn_80391F58() {
         putScoreDigit(this, fade, 5.0f, 0);
         break;
     default:
-        // FIXME(shotgun): cases 4-11 (three and four digit values) not written, offsets not read
+        // FIXME(shotgun): cases 4-11 not written
         break;
     }
 }

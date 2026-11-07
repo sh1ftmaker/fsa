@@ -157,8 +157,10 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
             }
             mState = 6;
         }
+        // FIXME(shotgun): states 6-8 not written (state 5 falls through into state 6 in the asm)
         break;
     case 9:
+        // FIXME(shotgun): camera/focus setup before the timer check not written (asm 0x801B486C-0x801B491C)
         if (field_0x234 == 0) {
             for (s32 i = 0; i < 4; i++) {
                 if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
