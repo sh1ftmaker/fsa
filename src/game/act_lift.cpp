@@ -63,6 +63,54 @@ void Lift_804A6F6C::init() {
     }
 }
 
+// FIXME(shotgun): 66.9 %, missing/extra: the player-position vector arithmetic, the atan2 argument order and the tile-index math are scheduled differently
+bool Lift_804A6F6C::fn_802565BC(s32 index) {
+    if (getPlayerLayer_8023DE58(index) != field_0x4) {
+        return false;
+    }
+    for (s32 i = 0; i < 8; i++) {
+        JGeometry::TVec3f p;
+        fn_8022E088(index, i, &p);
+        p.x -= mPos.x;
+        p.y -= mPos.y;
+        p.z -= mPos.z;
+        p.z = 0.0f;
+        s32 angle = JMath::atanTable_.atan2_(p.y, p.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        angle -= field_0x238;
+        f32 len = JGeometry::TVec2f(p.x, p.y).length();
+        JGeometry::TVec3f q(len * JMath::sincosTable_.cosShort(angle), len * JMath::sincosTable_.sinShort(angle), 0.0f);
+        bool inside = false;
+        if (q.x >= mBox.i.x && q.y >= mBox.i.y && q.x < mBox.f.x && q.y < mBox.f.y) {
+            inside = true;
+        }
+        if (inside) {
+            ResTIMG* res = static_cast<ResTIMG*>(field_0x23c);
+            s32 px = (s32)q.x + (res->mSizeX >> 1);
+            s32 py = (s32)q.y + (res->mSizeY >> 1);
+            bool hit = false;
+            if (px >= 0 && px < res->mSizeX && py >= 0 && py < res->mSizeY && res->mTextureFormat == 8) {
+                if (res->mLutFormat == 2) {
+                    s32 tilesPerRow = ((res->mSizeX + 7) & 0xFFF8) >> 3;
+                    s32 offset = (((px >> 3) + (py >> 3) * tilesPerRow) << 6) + ((py & 7) << 3) + (px & 7);
+                    u8 byte = ((u8*)res)[res->mImageDataOffset + (offset >> 1)];
+                    u32 paletteIndex = (px & 1) == 0 ? (byte >> 4) & 7 : byte & 7;
+                    u16 color = *(u16*)((u8*)res + res->mPaletteOffset + (paletteIndex & 0xFF) * 2);
+                    if ((color & 0x8000) || (color & 0xF000) == 0x7000) {
+                        hit = true;
+                    }
+                } else if (res->mLutFormat < 2 && res->mLutFormat >= 1) {
+                    hit = true;
+                }
+            }
+            if (hit) {
+                fn_8022DF48(index);
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 void Lift_804A6F6C::fn_80256410() {
     if (field_0x234 != 0) {
         field_0x234--;
