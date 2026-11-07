@@ -577,7 +577,9 @@ public:
     /* 0x240 */ s32 field_0x240; // bits 12-16 of field_0x90
     /* 0x244 */ s32 field_0x244; // bit 7 of field_0x90
     /* 0x248 */ s32 field_0x248;
-    /* 0x24C */ JGeometry::TVec3f field_0x24c; // mPos at init
+    // mPos at init. Plain floats: a TVec3f member would add construct calls to the inline
+    // constructor the spawner (tu_801F9484) emits, which has none.
+    /* 0x24C */ f32 field_0x24c[3];
     /* 0x258 */ JGeometry::TVec3f field_0x258[4];
     /* 0x288 */ s32 field_0x288[4]; // per sprite: 1 picks frame 0x25A, else 0x25B
     /* 0x298 */ s32 field_0x298[4];

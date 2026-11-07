@@ -6,16 +6,6 @@
 #include "game/ActorBase.h"
 #include "game/act/tu_801F9484_elems.h"
 
-// Two trails of five recorded points (stride 0x18): two (x, y) records and their layers.
-struct TrailPoint_804A0738 {
-    f32 x0;
-    f32 y0;
-    f32 x1;
-    f32 y1;
-    s32 layer0;
-    s32 layer1;
-};
-
 // Named after its vtable, 0x804A0738.
 class cls_804A0738 : public ActorBase_804A5770 {
 public:
@@ -46,10 +36,12 @@ public:
     /* 0x268 */ s32 field_0x268;
     /* 0x26C */ s32 field_0x26c;
     /* 0x270 */ s32 field_0x270;
-    /* 0x274 */ TrailPoint_804A0738 field_0x274[5];
-    /* 0x2EC */ TrailPoint_804A0738 field_0x2ec[5];
+    /* 0x274 */ Elem_80203594 field_0x274[5];
+    /* 0x2EC */ Elem_80203594 field_0x2ec[5];
     /* 0x364 */ f32 field_0x364[3];
-    /* 0x370 */ JGeometry::TBox2f field_0x370; // fn_8016890C's result
+    // fn_8016890C's result (i.x, i.y, f.x, f.y). Plain floats: a TBox2f member would add
+    // construct calls to the inline constructor the spawner (tu_801F9484) emits.
+    /* 0x370 */ f32 field_0x370[4];
 }; // Size: 0x380
 
 #endif

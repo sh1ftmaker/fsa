@@ -1851,7 +1851,7 @@ public:
     void fn_804310BC();
 
     /* 0x04 */ cls_804B1600* field_0x4;  // new in fn_80431D84, a 0x14-byte object
-    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
+    /* 0x08 */ J2DScreen* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
     /* 0x0C */ PaneCtrl_804AF86C* field_0xc;  // pane wrapper
     /* 0x10 */ PaneCtrl_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
     /* 0x24 */ PaneCtrl_804AF86C* field_0x24[5];  // panes "wb01".."wb05"

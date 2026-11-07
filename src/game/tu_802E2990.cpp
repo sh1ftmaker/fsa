@@ -68,9 +68,13 @@ void cls_804A9C20::init() {
         }
         field_0x230 = 0;
         field_0x234 = 0;
-        field_0x24c = mPos;
+        field_0x24c[0] = mPos.x;
+        field_0x24c[1] = mPos.y;
+        field_0x24c[2] = mPos.z;
     } else {
-        field_0x24c = mPos;
+        field_0x24c[0] = mPos.x;
+        field_0x24c[1] = mPos.y;
+        field_0x24c[2] = mPos.z;
         field_0x230 = 5;
     }
     if (field_0x238 == 5) {
@@ -120,7 +124,9 @@ void cls_804A9C20::update() {
     if (field_0x230 < 1) {
         field_0x248++;
     }
-    mPos = field_0x24c;
+    mPos.x = field_0x24c[0];
+    mPos.y = field_0x24c[1];
+    mPos.z = field_0x24c[2];
     JGeometry::TVec3f savedPos = mPos;
     switch (field_0x230) {
     case 1:

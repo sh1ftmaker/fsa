@@ -43,9 +43,15 @@ struct Elem_80200A84 {
     s32 field_0x14; // -1 after cls_804AC950::init
 };
 
+// A recorded chaser trail point (cls_804A0738): two (x, y) records and their layers.
 struct Elem_80203594 {
     Elem_80203594() {}
-    u8 data[0x18];
+    f32 x0;
+    f32 y0;
+    f32 x1;
+    f32 y1;
+    s32 layer0;
+    s32 layer1;
 };
 
 #endif

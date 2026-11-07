@@ -54,7 +54,7 @@ void cls_804A0738::init() {
     field_0x3c.z = 0.0f;
     field_0x3c.y = 0.0f;
     field_0x3c.x = 0.0f;
-    fn_8016890C(&mPos, field_0x4, &field_0x370);
+    fn_8016890C(&mPos, field_0x4, (JGeometry::TBox2f*)field_0x370);
     s32 angle = lbl_804A0718[field_0x98];
     JGeometry::TVec2f dir(1000.0f * JMASinShort(angle), 1000.0f * JMACosShort(angle));
     dir.normalize();
@@ -186,7 +186,7 @@ void cls_804A0738::update() {
                     field_0x274[field_0x264].x0 = mPos.x;
                     field_0x274[field_0x264].y0 = mPos.y;
                 }
-                fn_8016890C(&mPos, field_0x4, &field_0x370);
+                fn_8016890C(&mPos, field_0x4, (JGeometry::TBox2f*)field_0x370);
             }
         }
         {
@@ -194,8 +194,8 @@ void cls_804A0738::update() {
             if (field_0x4 == 0 && fn_801F6758(&mPos, field_0x4, -16.0f) == 1) {
                 stop = true;
             } else if (field_0x4 >= 8) {
-                if (mPos.x <= field_0x370.i.x + 9.0f || mPos.x >= field_0x370.f.x - 9.0f ||
-                    mPos.y <= field_0x370.i.y + 9.0f || mPos.y >= field_0x370.f.y - 9.0f) {
+                if (mPos.x <= field_0x370[0] + 9.0f || mPos.x >= field_0x370[2] - 9.0f ||
+                    mPos.y <= field_0x370[1] + 9.0f || mPos.y >= field_0x370[3] - 9.0f) {
                     stop = true;
                 }
             }
@@ -277,7 +277,7 @@ void cls_804A0738::update() {
             aimVelocity(this, d, field_0x25c > 0 && field_0x261 == 0);
             if ((field_0x264 > 0 && field_0x26c > 0) || (field_0x268 > 0 && field_0x270 < field_0x268)) {
                 bool fromFirst;
-                TrailPoint_804A0738* pt;
+                Elem_80203594* pt;
                 if (field_0x264 > 0 && field_0x26c > 0) {
                     pt = &field_0x274[field_0x26c - 1];
                     fromFirst = true;
