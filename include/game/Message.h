@@ -310,7 +310,10 @@ public:
     /* 0x00 */ // vtable
     // fn_8038D870 stores the manager's mBmg here.
     /* 0x04 */ MessageFile_804AF070* field_0x4;
-    /* 0x08 */ u8 field_0x8[0x18 - 0x8];
+    /* 0x08 */ s32 field_0x8;
+    /* 0x0C */ const u8* field_0xc; // read cursor in the message data (fn_80390C6C)
+    /* 0x10 */ s32 field_0x10;
+    /* 0x14 */ s32 field_0x14;
     /* 0x18 */ s32 mIndex;
     /* 0x1C */ s32 field_0x1c;
     // fn_80390E40 stores its word argument here while the state is 0 or the
@@ -319,7 +322,8 @@ public:
     // Window state byte (fn_80384C58 compares it with 5 and 8; callers of
     // fn_8037F1E4, which returns it, compare with 1, 3 and 5).
     /* 0x24 */ u8 field_0x24;
-    /* 0x25 */ u8 field_0x25[0x28 - 0x25];
+    /* 0x25 */ u8 field_0x25;
+    /* 0x26 */ u16 field_0x26; // fn_80390C6C's result
     // Option flags, read by fn_80390E68: 0x2 gates the update, 0x40 picks
     // fn_80394690 over fn_8039499C (which gets 0x2000 as its flag).
     /* 0x28 */ u16 field_0x28;
@@ -330,7 +334,10 @@ public:
     /* 0x38 */ s32 field_0x38; // fn_8038911C: the same
     /* 0x3C */ s16 field_0x3c; // fn_803894BC: clamped to 9
     /* 0x3E */ s16 field_0x3e; // fn_8038938C: clamped to 9999
-    /* 0x40 */ u8 field_0x40[0x44 - 0x40];
+    /* 0x40 */ u8 field_0x40;
+    /* 0x41 */ u8 field_0x41; // step of fn_80390C6C
+    /* 0x42 */ u8 field_0x42;
+    /* 0x43 */ u8 field_0x43;
     /* 0x44 */ u8 field_0x44;
     /* 0x48 */ cls_804AF5A0* field_0x48;
     /* 0x4C */ cls_804AF5A0* field_0x4c;
@@ -345,6 +352,8 @@ public:
     // resets it.
     u16 fn_80390C6C();
     void fn_80391678();
+    // 0x803908D0: releases the chests the windows' serials refer to; false if one is not released yet.
+    bool fn_803908D0();
     // Placeholder name: called by fn_8038D570 each frame for a player that
     // takes part (game/tu_80390818.cpp, not written yet).
     void fn_80390EBC();
