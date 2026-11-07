@@ -60,7 +60,7 @@ public:
     // Parameters read off its register use: r4 (tested >= 0), f1, f2, f3 and f5 (f4 is not
     // read).
     /* 0x9C */ virtual void vfunc_0x9C(s32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
-    /* 0xA0 */ virtual void vfunc_0xA0();
+    /* 0xA0 */ virtual void vfunc_0xA0(u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
     /* 0xA4 */ virtual void vfunc_0xA4(f32* x, f32* y, s32* player);
     /* 0xA8 */ virtual void vfunc_0xA8(f32* x, f32* y, s32* player); // fn_80122E34
     /* 0xAC */ virtual void vfunc_0xAC(f32* x, f32* y, s32* player); // fn_80122D38
