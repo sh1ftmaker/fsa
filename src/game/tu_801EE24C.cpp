@@ -1752,6 +1752,63 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
     gAudioMgr_8053AF80->fn_80458880(id, -1);
 }
 
+// FIXME(shotgun): 67.5 %, missing/extra + reloc-name (params copied differently, scale literals)
+void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params,
+                                     s32 flags, s32 mode, bool arg, f32 scaleX, f32 scaleY) {
+    if (params != NULL && params->field_0x10.a == 0) {
+        return;
+    }
+    if (field_0x4 <= 8) {
+        if (mode == 0) {
+            drawSprite_801F06F0(name, frame, params, flags, scaleX, scaleY);
+        } else {
+            Mtx m;
+            if (mode == 2) {
+                PSMTXScale(m, 1.0f, 1.0f, 0.5f);
+            } else {
+                PSMTXScale(m, 2.0f, 2.0f, 2.0f);
+            }
+            if (params != NULL) {
+                SpriteParams_801F5AE0 sp = *params;
+                if (params->mMtx != NULL) {
+                    PSMTXConcat(params->mMtx, m, m);
+                }
+                sp.mMtx = m;
+                drawSprite_801F06F0(name, frame, &sp, flags, scaleX, scaleY);
+            } else {
+                SpriteParams_801F5AE0 sp;
+                sp.mMtx = m;
+                drawSprite_801F06F0(name, frame, &sp, flags, scaleX, scaleY);
+            }
+        }
+    }
+    if (field_0x4 >= 8) {
+        JGeometry::TVec3f pos = mPos;
+        bool visible = true;
+        bool dying = false;
+        if (field_0xd8 > 0) {
+            if (field_0xd8 <= field_0xdc - 0x19 || field_0xdc < 0x19) {
+                if (field_0xd8 & 2) {
+                    visible = false;
+                } else if (field_0xd8 & 4) {
+                    pos.x += 1.0f;
+                } else {
+                    pos.x -= 1.0f;
+                }
+            }
+        } else if (field_0xe0 > 0) {
+            dying = true;
+        }
+        if (visible) {
+            if (name[10] == '2') {
+                fn_803075AC(mSerial, field_0x4, &pos, frame, mode, 2, -1, arg, dying, 0);
+            } else {
+                fn_80307AC8(mSerial, field_0x4, &pos, frame, mode, dying, -1);
+            }
+        }
+    }
+}
+
 // FIXME: 93.3. One instruction extra: MWCC keeps the .rodata base
 // (lbl_80469FA8 and the two strings) in r30 from the prologue (one more
 // saved register, shifting r20-r30); the original addresses each with its
