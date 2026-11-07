@@ -57,20 +57,7 @@ static inline u16 rawTileAt(const V* pos, s32 layer) {
 // (7, 3) (0xE -> 0x51).
 template <class V>
 static inline u16 collisionCodeAt(const V* pos, s32 layer) {
-    u16 raw;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f box;
-    box = *src;
-    if (!insideBox(box, pos)) {
-        raw = 0xF;
-    } else {
-        s32 x = (s32)(pos->x - box.i.x);
-        s32 y = (s32)(pos->y - box.i.y);
-        clampCell(x);
-        clampCell(y);
-        raw = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, ((y & 0x100) << 1) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF)) & 0x3FF;
-    }
+    u16 raw = rawTileAt(pos, layer);
     u16 code = lbl_8046CB88[raw];
     if (getGameView_802D6A9C()->field_0x131df[layer] != 0) {
         if (code == 0) {
@@ -125,37 +112,15 @@ s32 fn_80226AE0(const JGeometry::TVec3f* pos, s32 layer) {
 }
 
 // The same as fn_80226850 (only the register allocation differs in the original).
-// FIXME(shotgun): 97 %, scheduling+regalloc
+// FIXME(shotgun): 96.1 %, scheduling+regalloc
 u16 fn_80226998(const JGeometry::TVec3f* pos, s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f box;
-    box = *src;
-    if (!insideBox(box, pos)) {
-        return 0xF;
-    }
-    s32 x = (s32)(pos->x - box.i.x);
-    s32 y = (s32)(pos->y - box.i.y);
-    clampCell(x);
-    clampCell(y);
-    return gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, ((y & 0x100) << 1) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF)) & 0x3FF;
+    return rawTileAt(pos, layer);
 }
 
 // The raw tile code at pos, 0xF outside the layer's box.
-// FIXME(shotgun): 96.1 %, scheduling+regalloc
+// FIXME(shotgun): 97 %, scheduling+regalloc
 u16 fn_80226850(const JGeometry::TVec3f* pos, s32 layer) {
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f box;
-    box = *src;
-    if (!insideBox(box, pos)) {
-        return 0xF;
-    }
-    s32 x = (s32)(pos->x - box.i.x);
-    s32 y = (s32)(pos->y - box.i.y);
-    clampCell(x);
-    clampCell(y);
-    return gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, ((y & 0x100) << 1) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF)) & 0x3FF;
+    return rawTileAt(pos, layer);
 }
 
 // The same result as fn_8022461C (compiled branch-free in the original).
