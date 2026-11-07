@@ -76,6 +76,10 @@ public:
     // Multiplies pos by the Mtx at +0x74 (PSMTXMultVec) and writes x, y and a
     // constant z to out: a world-to-screen projection. With the 2nd argument
     // false it scales by JUTVideo's frame size (progress/game__tu_8045BA84.md).
+    // Screen point (the screen rect when flag is set, else the whole screen) to the camera box.
+    void fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeometry::TVec3f* out);
+    // Sets the orthographic projection and view for the box (depth: the view's distance).
+    void fn_8030CB10(const JGeometry::TBox2f* box, f64 depth);
     void fn_8030C5F0(const Vec* pos, bool, bool, Vec* out);
     // 2 units / 10 calls (this unused: the body reads the camera through
     // gGameRoot2_8053AB10 again). Sets field_0x180 to the box of half-size
@@ -139,7 +143,7 @@ public:
     // 3 units copy it word by word to the stack (tu_8029C584 0x8029C5CC);
     // tu_8023FBF0 reads its floats.
     /* 0x164 */ JGeometry::TBox2f field_0x164;
-    /* 0x174 */ u8 field_0x174[0x178 - 0x174];
+    /* 0x174 */ s32 field_0x174; // index of the 0x24-byte table entry at lbl_804AA8E8 (fn_8030C9E4)
     // Request flags, each set to 1 by actors (stb) and polled by the unit:
     // 0x178 6 units, 0x179 9 units (also read: act_vaati_boss sets 0x178
     // only while 0x179 is 0, 0x801D4A58), 0x17A 3, 0x17B 1, 0x17C 2,
@@ -156,7 +160,7 @@ public:
     /* 0x1A0 */ u8 field_0x1a0[0x1B4 - 0x1A0];
     // fn_8030C85C sets all four floats to one constant.
     /* 0x1B4 */ JGeometry::TBox2f field_0x1b4;
-    /* 0x1C4 */ u8 field_0x1c4[0x1D4 - 0x1C4];
+    /* 0x1C4 */ s32 field_0x1c4[4]; // cleared by fn_8030E5BC
     // 19 units store both (act_escort_woman 0x80125048), next to
     // field_0x840.
     /* 0x1D4 */ f32 field_0x1d4;
@@ -166,7 +170,8 @@ public:
     /* 0x1DC */ JGeometry::TVec3f field_0x1dc;
     // Read by GameView fn_802DCD0C / fn_802DA000; cleared by fn_8030C85C.
     /* 0x1E8 */ u8 field_0x1e8;
-    /* 0x1E9 */ u8 field_0x1e9[0x1F0 - 0x1E9];
+    /* 0x1E9 */ u8 field_0x1e9[0x1EC - 0x1E9];
+    /* 0x1EC */ s32 field_0x1ec; // 30 when fn_8030C9E4 arms the transition
     /* 0x1F0 */ JGeometry::TVec3f field_0x1f0[0x80]; // addFocusPoint_8030C210's points
     /* 0x7F0 */ s32 field_0x7f0;                     // their count
     // A scripted camera move, set by 37 units when field_0x7f5 is 0: 0x7F4 = 1,
@@ -179,7 +184,9 @@ public:
     /* 0x7F8 */ s32 field_0x7f8;
     /* 0x7FC */ JGeometry::TVec3f field_0x7fc;
     /* 0x808 */ JGeometry::TBox2f field_0x808;
-    /* 0x818 */ u8 field_0x818[0x840 - 0x818];
+    /* 0x818 */ u8 field_0x818[0x838 - 0x818];
+    /* 0x838 */ s32 field_0x838; // -1 after fn_8030E5BC
+    /* 0x83C */ s32 field_0x83c; // -1 after fn_8030E5BC
     // Set by 19 units when 0 (act_escort_woman 0x80125010-0x80125044),
     // with a position in both corners of field_0x844 (TBox2f is a guess:
     // the stores are four stfs), a float in field_0x854 and field_0x1d4 /
