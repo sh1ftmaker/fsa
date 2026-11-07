@@ -583,7 +583,8 @@ public:
     /* 0x298 */ s32 field_0x298[4];
     /* 0x2A8 */ s32 field_0x2a8[4];
     /* 0x2B8 */ u16 field_0x2b8[4]; // emitter ids of the second set
-    /* 0x2C0 */ u8 field_0x2c0[0x2C8 - 0x2C0];
+    /* 0x2C0 */ u8 field_0x2c0[4]; // per-sprite alpha
+    /* 0x2C4 */ s32 field_0x2c4; // countdown
     /* 0x2C8 */ JPABaseEmitter* mEmitters2c8[4]; // released by the destructor
     /* 0x2D8 */ JPABaseEmitter* mEmitters2d8[4];
     /* 0x2E8 */ JPABaseEmitter* mEmitter2e8;
