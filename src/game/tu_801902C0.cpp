@@ -5,6 +5,8 @@
 #include "game/GameRootSub20.h"
 #include "game/GameState.h"
 #include "game/GameView.h"
+#include "JSystem/J3D/J3DAnmTextureSRTKey.h"
+#include "JSystem/J3D/J3DAnmTevRegKey.h"
 #include <stdio.h>
 
 // FIXME: 99.43. Only the .rodata offsets of the string literals: the original
@@ -147,6 +149,102 @@ void GameRootSub20_801902C0::fn_801914C4() {
         mIceRequest.mActive = 0;
     }
     field_0x4++;
+}
+
+// FIXME(shotgun): 97.9 %, missing/extra (the two small requests are unrolled in the target)
+void GameRootSub20_801902C0::fn_80190DC8() {
+    s32 frame = field_0x4;
+    for (s32 i = 0; i < 7; i++) {
+        Crystal& c = mCrystals[i];
+        if (c.mBtk != NULL && c.mActive != 0) {
+            c.mBtk->mCurrentFrame = (f32)(frame % c.mBtk->mTotalFrameCount);
+            if (c.field_0x48 >= 0.0f) {
+                if (c.field_0x48 == 0.0f) {
+                    c.mBrk->mCurrentFrame = 201.0f;
+                } else if (c.field_0x48 < 1.0f) {
+                    c.mBrk->mCurrentFrame = 200.0f * c.field_0x48 + 201.0f;
+                } else {
+                    c.field_0x50++;
+                    c.mBrk->mCurrentFrame = (f32)(c.field_0x50 % 200 + 401);
+                }
+            } else if (c.field_0x4c >= 0) {
+                c.mBrk->mCurrentFrame = (f32)c.field_0x4c;
+            }
+        }
+    }
+    for (s32 i = 0; i < 2; i++) {
+        SmallRequest& r = mSmallRequests[i];
+        if (r.field_0x14 != NULL && r.mActive != 0) {
+            r.field_0x14->mCurrentFrame = (f32)(frame % r.field_0x14->mTotalFrameCount);
+        }
+    }
+    if (mRequests[0].field_0x10 != NULL && mRequests[0].mActive != 0) {
+        mRequests[0].field_0x10->mCurrentFrame = 121.0f * mRequests[0].mValue;
+    }
+    if (mRequests[1].field_0x10 != NULL && mRequests[1].mActive != 0) {
+        mRequests[1].field_0x10->mCurrentFrame = (f32)(s32)(37.0f * mRequests[1].mValue);
+    }
+    if (mRequests[2].field_0x10 != NULL && mRequests[2].mActive != 0) {
+        if (mRequests[2].mValue < 1.0f) {
+            mRequests[2].field_0x10->mCurrentFrame = 121.0f * mRequests[2].mValue;
+            mRequests[2].field_0x18 = 0;
+        } else {
+            mRequests[2].field_0x10->mCurrentFrame = (f32)(mRequests[2].field_0x18 % 120 + 121);
+            mRequests[2].field_0x18++;
+        }
+    }
+    for (s32 i = 0; i < mQuicksandCount; i++) {
+        QuicksandEntry& e = mQuicksandEntries[i];
+        if (e.mBtk != NULL) {
+            e.mBtk->mCurrentFrame = (f32)((s32)((f32)frame * e.field_0x14) % e.mBtk->mTotalFrameCount);
+            e.mBrk->mCurrentFrame = (f32)(s32)(60.0f - 59.0f * e.field_0x10);
+        }
+    }
+    for (s32 i = 0; i < field_0x5ec; i++) {
+        MagicCircle& m = mMagicCircles[i];
+        if (m.mBtk != NULL) {
+            m.mBtk->mCurrentFrame = (f32)(frame % m.mBtk->mTotalFrameCount);
+            m.mBtkApp->mCurrentFrame = m.field_0x10;
+            m.mBrk->mCurrentFrame = (f32)(frame % m.mBrk->mTotalFrameCount);
+            m.mBrkColor->mCurrentFrame = (f32)m.field_0xc;
+        }
+    }
+    for (s32 i = 0; i < mQueuedPosCount; i++) {
+        if (mQueuedPos[i].mBtk != NULL) {
+            mQueuedPos[i].mBtk->mCurrentFrame = (f32)(frame % mQueuedPos[i].mBtk->mTotalFrameCount);
+        }
+    }
+    for (s32 i = 0; i < field_0x79c; i++) {
+        if (mSandFalls[i].mBtk != NULL) {
+            mSandFalls[i].mBtk->mCurrentFrame = (f32)(frame % mSandFalls[i].mBtk->mTotalFrameCount);
+        }
+    }
+    if (field_0x7b0 != NULL && field_0x7a8 != 0) {
+        field_0x7b0->mCurrentFrame = (f32)(frame % field_0x7b0->mTotalFrameCount);
+        if (field_0x7a4 > 0) {
+            field_0x7a4--;
+        } else if (field_0x7a0 < field_0x7b4->mTotalFrameCount) {
+            field_0x7a0++;
+        } else {
+            field_0x7a0 = 0;
+            field_0x7a4 = (s32)(120.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        }
+        if (field_0x7a0 == 0) {
+            field_0x7b4->mCurrentFrame = (f32)field_0x7b4->mTotalFrameCount;
+        } else {
+            field_0x7b4->mCurrentFrame = (f32)(field_0x7a0 - 1);
+        }
+    }
+    if (field_0x7c8 != NULL) {
+        if (field_0x7c0 != 0 || (field_0x7bc > 0 && field_0x7bc < field_0x7c8->mTotalFrameCount)) {
+            field_0x7bc++;
+        }
+        field_0x7c8->mCurrentFrame = (f32)field_0x7bc;
+    }
+    if (mIceRequest.field_0x14 != NULL && mIceRequest.mActive != 0) {
+        mIceRequest.field_0x14->mCurrentFrame = (f32)mIceRequest.mPercent;
+        mIceRequest.field_0x18->mCurrentFrame = (f32)mIceRequest.mPercent;
+    }
 }
 
 GameRootSub20_801902C0* fn_801902C0() {

@@ -31,7 +31,7 @@ struct GameRootSub20_801902C0 {
         /* 0x40 */ J3DAnmTextureSRTKey* mBtk;
         /* 0x44 */ J3DAnmTevRegKey* mBrk;
         /* 0x48 */ f32 field_0x48;
-        /* 0x4C */ u8 field_0x4c[4]; // not yet known
+        /* 0x4C */ s32 field_0x4c; // brk frame while field_0x48 is negative (fn_80190DC8)
         /* 0x50 */ s32 field_0x50;
         /* 0x54 */ s32 field_0x54;
         /* 0x58 */ s32 field_0x58;
@@ -122,7 +122,8 @@ struct GameRootSub20_801902C0 {
     void fn_8019169C();
     // 0x801914C4: the per-frame reset, then counts field_0x4.
     void fn_801914C4();
-    // 0x80190DC8 (not written yet): called by GameRootSub04's fn_80139D9C.
+    // 0x80190DC8: steps every loaded texture / register animation to its frame for this tick
+    // (field_0x4), each entry only while it is active / present. Called by GameRootSub04's fn_80139D9C.
     void fn_80190DC8();
 
     /* 0x000 */ JKRSolidHeap* mHeap;
