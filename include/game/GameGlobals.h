@@ -1008,14 +1008,25 @@ public:
     /* 0x10E */ u8 pad_0x10e[0x110 - 0x10E];
     /* 0x110 */ f32 field_0x110; // where fn_8043DC98 moves 'Ndata05' of field_0xc
     /* 0x114 */ f32 field_0x114;
-    /* 0x118 */ u8 pad_0x118[0x1C0 - 0x118];
+    // The number queue of fn_8043CB24, one entry per slot (field_0x252 counts them).
+    /* 0x118 */ f32 field_0x118[10]; // x
+    /* 0x140 */ f32 field_0x140[10]; // y
+    /* 0x168 */ f32 field_0x168[10]; // scale
+    /* 0x190 */ u8 pad_0x190[0x1C0 - 0x190];
     /* 0x1C0 */ f32 field_0x1c0; // four floats set by fn_8043A208, zero at construction
     /* 0x1C4 */ f32 field_0x1c4;
     /* 0x1C8 */ f32 field_0x1c8;
     /* 0x1CC */ f32 field_0x1cc;
     /* 0x1D0 */ u8 pad_0x1d0[0x1F0 - 0x1D0];
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
-    /* 0x1F4 */ u8 field_0x1f4[0x254 - 0x1F4]; // not yet known
+    /* 0x1F4 */ u8 field_0x1f4[5][10]; // fn_8043CB24: digit i of slot j (0xFF = blank)
+    /* 0x226 */ u8 field_0x226[10];    // its digit count
+    /* 0x230 */ u8 pad_0x230[0x23A - 0x230]; // not yet known
+    /* 0x23A */ u8 field_0x23a[10];    // its arg3 (at most 5)
+    /* 0x244 */ u8 field_0x244[10];    // its arg2
+    /* 0x24E */ u8 pad_0x24e[0x252 - 0x24E];
+    /* 0x252 */ u8 field_0x252;        // queued numbers
+    /* 0x253 */ u8 pad_0x253;
     /* 0x254 */ u8 field_0x254; // set to 1 by fn_8043A208
     /* 0x255 */ u8 field_0x255; // cleared by fn_8043EDF8
     // SHARED-EDIT (act_battle_royale_end_check draw, 0x256 = the byte its
