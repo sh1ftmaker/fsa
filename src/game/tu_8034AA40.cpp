@@ -1,6 +1,11 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Player.h"
+#include "game/ActorManager.h"
+#include "game/BoxTest.h"
+#include "game/GameState.h"
+#include "game/Unk_8045A080.h"
+#include "game/act/act_cucco.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/tu_8034AA40.h"
 
@@ -76,6 +81,25 @@ void cls_804AC8C0::init() {
     }
 }
 
+// FIXME(shotgun): 82.66 %, missing/extra + reloc-name
+void cls_804AC8C0::vfunc_0x10() {
+    s32 serials[30];
+    s32 count = 0;
+    s32 serial = -1;
+    while ((serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial)) >= 0) {
+        if (count < 30) {
+            serials[count] = serial;
+            count++;
+        }
+    }
+    f32 roll = gGameRoot_8053AAF8->mRandom.get_ufloat_1();
+    Cucco_804AB8C0* cucco = static_cast<Cucco_804AB8C0*>(
+        getActorManager_801F856C()->findActorBySerial_801F666C(serials[(s32)((f32)count * roll)]));
+    if (cucco != NULL) {
+        cucco->field_0x2a3 = 1;
+    }
+}
+
 // 0x8034AFE8.
 // FIXME(shotgun): 82.03 %, missing/extra + reloc-name
 void cls_804AC8C0::draw() {
@@ -92,6 +116,91 @@ void cls_804AC8C0::draw() {
         break;
     }
     drawSprite_801F06F0(name, frame, NULL, 0, 1.0f, 1.0f);
+}
+
+// The counts per stage (.rodata 0x80472158, whose strings follow).
+static const s32 lbl_80472158[3] = {10, 5, 1};
+
+// FIXME(shotgun): 77.78 %, missing/extra + reloc-name
+void cls_804AC8C0::fn_8034ACF4() {
+    JGeometry::TBox2f box(9.0f, -7.0f, 103.0f, 87.0f);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023EA28(i) == 1) {
+            field_0x288[i] = 1;
+            field_0x290[i] = *getPlayerPos_8023E724(i);
+        } else if (field_0x288[i] == 1) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.x > field_0x290[i].x) {
+                field_0x260[i] = 0;
+            } else if (pos.x < field_0x290[i].x) {
+                field_0x260[i] = 1;
+            } else if (pos.y > field_0x290[i].y) {
+                field_0x260[i] = 2;
+            } else {
+                field_0x260[i] = 3;
+            }
+            field_0x288[i] = 0;
+        }
+        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+        if (pos.z <= 1.0f && containsPoint(box, pos) == true) {
+            lbl_8053AED0->fn_8043D67C(0x410, 0, 0);
+            JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
+            switch (field_0x260[i]) {
+            case 0:
+                push.set(-2.0f, 0.0f, 5.0f);
+                break;
+            case 1:
+                push.set(2.0f, 0.0f, 5.0f);
+                break;
+            case 2:
+                push.set(0.0f, -2.0f, 5.0f);
+                break;
+            case 3:
+                push.set(0.0f, 2.0f, 5.0f);
+                break;
+            }
+            fn_802314D8(i, push);
+        }
+    }
+}
+
+// FIXME(shotgun): 68.97 %, missing/extra + reloc-name
+s32 cls_804AC8C0::fn_8034AAA0() {
+    JGeometry::TBox2f box(24.0f, 8.0f, 88.0f, 72.0f);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    s32 count = 0;
+    field_0x274[0] = 0;
+    field_0x274[1] = 0;
+    field_0x274[2] = 0;
+    field_0x274[3] = 0;
+    s32 serial = -1;
+    while ((serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial)) >= 0) {
+        Cucco_804AB8C0* cucco = static_cast<Cucco_804AB8C0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (cucco != NULL && field_0x4 == cucco->field_0x4 && cucco->mPos.z < 8.0f &&
+            containsPoint(box, cucco->mPos) == true && !cucco->field_0xc4) {
+            cucco->field_0x2a8 = 1;
+            count++;
+            field_0x274[cucco->field_0x25c]++;
+        }
+    }
+    if (lbl_80472158[field_0x25c] >= field_0x24c - count && field_0x28c[field_0x25c] == 0) {
+        lbl_8053AED0->fn_8043D67C(0x42A, 0, 0);
+        field_0x28c[field_0x25c] = 1;
+        if (field_0x25c == 2) {
+            gAudioMgr_8053AF80->fn_80458508(1);
+        }
+        if (field_0x25c < 2) {
+            field_0x25c++;
+        }
+    }
+    return count;
 }
 
 // Destructor at 0x8034AA40.

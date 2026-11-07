@@ -14,6 +14,10 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+    // 0x8034AAA0: marks the cuccos ('NIWA') inside the area and counts them; true progress rewards.
+    s32 fn_8034AAA0();
+    // 0x8034ACF4: per player, the facing they left by and the push into the area.
+    void fn_8034ACF4();
     /* 0x230 */ s32 field_0x230; // state
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
