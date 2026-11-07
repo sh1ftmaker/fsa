@@ -3,6 +3,8 @@
 #include "game/GameMode.h"
 #include "game/GameState.h"
 #include "game/Message.h"
+#include <stdio.h>
+#include <string.h>
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/JUtility/JUTFont.h"
 #include "JSystem/JUtility/JUTVideo.h"
@@ -684,6 +686,171 @@ f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out
 }
 
 #undef PUT_CHAR
+
+f32 fn_80381560(u8 command, s32 value, f32 scale);
+
+// Appends s to the buffer of the text part that is being written.
+static inline void appendPart(char* out, char* out2, char* out3, u8 part, const char* s) {
+    if (part == 1 && out2 != NULL) {
+        strcat(out2, s);
+    } else if (part == 2 && out3 != NULL) {
+        strcat(out3, s);
+    } else {
+        strcat(out, s);
+    }
+}
+
+// The "\x1BCR[n]" prefix that centres a line of the given width in the 358-unit box.
+static inline void centreLine(char* out, f32 width) {
+    char prefix[16];
+    s32 pad = (s32)((358.0f - width) * 0.5f + 0.5f);
+    if (pad > 0) {
+        snprintf(prefix, 15, "\x1B" "CR[%d]", pad);
+        strcat(out, prefix);
+    }
+}
+
+// FIXME(shotgun): 87.31 %, missing/extra + reloc-name
+// The same text copy as getMessageText_803832BC, with every line centred by a "\x1BCR[n]" prefix
+// (the widths of the lines are measured first). Returns the widest line. out2 / out3 are written
+// (the header declares them const to keep the mangled name the caller's unit expects).
+f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* out3c) {
+    char* out2 = (char*)out2c;
+    char* out3 = (char*)out3c;
+    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
+    const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
+    f32 lineWidth[12];
+    s32 len = 0;
+    s32 pos = 0;
+    s32 lines = 1;
+    f32 width = 0.0f;
+    f32 widest = 0.0f;
+    u8 part = 0;
+    for (s32 i = 1; i < 11; i++) {
+        lineWidth[i] = 0.0f;
+    }
+    char c;
+    while ((c = text[pos]) != 0) {
+        const char* p = &text[pos];
+        if (c == '\n') {
+            lineWidth[lines] = width;
+            if (width > widest) {
+                widest = width;
+            }
+            width = 0.0f;
+            lines++;
+            pos++;
+        } else if (c == 0x1A) {
+            if (p[2] == 3) {
+                width += lbl_8053AD78->mFont->JUTFont::getWidth(value + '0');
+                width += fn_80381560(p[5], value, 0.7692308f);
+            }
+            pos += p[1];
+        } else {
+            u32 code = (u8)c;
+            pos++;
+            if (lbl_8053AD78->mFont->isLeadByte(code)) {
+                code = (code << 8) | (u8)text[pos];
+                pos++;
+            }
+            width += lbl_8053AD78->mFont->JUTFont::getWidth(code);
+        }
+    }
+    lineWidth[lines] = width;
+    if (width > widest) {
+        widest = width;
+    }
+    pos = 0;
+    lines = 1;
+    width = 0.0f;
+    len = 0;
+    out[0] = 0;
+    if (out2 != NULL) {
+        out2[0] = 0;
+    }
+    if (out3 != NULL) {
+        out3[0] = 0;
+    }
+    centreLine(out, lineWidth[1]);
+    while ((c = text[pos]) != 0) {
+        const char* p = &text[pos];
+        if (c == '\n') {
+            char one[2];
+            one[0] = c;
+            one[1] = 0;
+            appendPart(out, out2, out3, part, one);
+            lines++;
+            pos++;
+            centreLine(out, lineWidth[lines]);
+            width = 0.0f;
+        } else if (c == 0x1A) {
+            if (p[2] == 2) {
+                if (p[4] == 0 || p[4] == 10 || p[4] == 0x12 || p[4] == 0x19) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = width;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        part++;
+                    }
+                } else if (p[4] == 1 || p[4] == 9 || p[4] == 0x11 || p[4] == 0x1A) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = width;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        lbl_8053AD78->field_0xe6 = part;
+                        part++;
+                    }
+                }
+            } else if (p[2] == 3) {
+                char digit[2];
+                s32 d = value + '0';
+                digit[0] = d;
+                digit[1] = 0;
+                appendPart(out, out2, out3, part, digit);
+                width += lbl_8053AD78->mFont->JUTFont::getWidth(d);
+                width += fn_8037F580(p[5], value, out, &len, 0.7692308f);
+            }
+            pos += p[1];
+        } else {
+            u32 code = (u8)c;
+            char two[3];
+            if (lbl_8053AD78->mFont->isLeadByte(code)) {
+                two[0] = c;
+                two[1] = text[pos + 1];
+                two[2] = 0;
+                code <<= 8;
+                if (part == 1 && out2 != NULL) {
+                    if (c != ' ') {
+                        strcat(out2, two);
+                    }
+                } else if (part == 2 && out3 != NULL) {
+                    strcat(out3, two);
+                } else {
+                    strcat(out, two);
+                }
+                pos += 2;
+                code |= (u8)text[pos - 1];
+            } else {
+                two[0] = c;
+                two[1] = 0;
+                if (part == 1 && out2 != NULL) {
+                    if (c != ' ') {
+                        strcat(out2, two);
+                    }
+                } else if (part == 2 && out3 != NULL) {
+                    strcat(out3, two);
+                } else {
+                    strcat(out, two);
+                }
+                pos++;
+            }
+            width += lbl_8053AD78->mFont->JUTFont::getWidth(code);
+        }
+    }
+    char end[2];
+    end[0] = c;
+    end[1] = 0;
+    appendPart(out, out2, out3, part, end);
+    return widest;
+}
 
 // Shows message msg in the manager's text box at (x, y) with a font of
 // width x height and the colour color, or, when frames is not 0, scrolling in

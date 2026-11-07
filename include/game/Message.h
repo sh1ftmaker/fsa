@@ -598,7 +598,7 @@ bool fn_80388CAC(s32 player, s32 serial);
 // expansion. Returns the text width summed from mFont's getWidth per character.
 // 0x80382B48 (not written yet; C++ linkage). Used by cls_804B0288::fn_803D4DB0 (game/tu_803D2C34.cpp):
 // builds message `id` into dst, given the "yes" / "no" answer texts.
-void fn_80382B48(char* dst, u32 id, s32 flag, const char* yes, const char* no);
+f32 fn_80382B48(char* dst, u32 id, s32 flag, const char* yes, const char* no);
 f32 getMessageText_803832BC(char* out, u32 msg, s32 value, char* out2, char* out3);
 // 1 unit (tu_80139BE8's fn_80139C5C). Draws the open windows in the order
 // they were opened (field_0xfc), then the text box when field_0xe4 is set.
