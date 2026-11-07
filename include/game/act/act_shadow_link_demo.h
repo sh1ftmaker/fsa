@@ -6,11 +6,13 @@
 // field vfunc_0x58 returns is known, and vfunc_0x5C tests it.
 
 #include "game/act/tu_8010DF44.h"
+#include "game/cls_800FE8C0.h"
 
 class cls_8049DB90 : public cls_8049D140 {
 public:
     cls_8049DB90();
     /* 0x08 */ virtual ~cls_8049DB90();
+    /* 0x0C */ virtual void init();
     /* 0x54 */ virtual void vfunc_0x54(); // compares fn_8011921C()'s field_0x8 with lbl_80464AF8
     /* 0x58 */ virtual s32 vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C(); // 1 or 0, as cls_8049D140::vfunc_0x5C
@@ -32,7 +34,8 @@ public:
     /* 0x254 */ f32 field_0x254; // cleared by the constructor
     /* 0x258 */ f32 field_0x258; // cleared by the constructor
     /* 0x25C */ f32 field_0x25c; // cleared by the constructor
-    /* 0x260 */ u8 field_0x260[0x290 - 0x260]; // not yet known (size: the spawner's __nw__)
+    /* 0x260 */ u8 field_0x260[0x278 - 0x260]; // not yet known
+    /* 0x278 */ cls_800FE8C0 mSequencer; // 0x18 bytes (the size of the spawner's __nw__ ends here)
 }; // Size: 0x290
 
 #endif
