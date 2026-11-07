@@ -49,8 +49,8 @@ static inline void spreadPieces(cls_804AC600* self) {
 }
 
 // 0x80343D90.
-// FIXME(shotgun): states 2-6 are not written (0x80344570-0x80345038), and the pre-switch part is
-// written only for the states the first switch reaches.
+// FIXME(shotgun): 16.9 %, partly written: states 2-6 of the state switch are not written
+// (0x80344570-0x80345038).
 void cls_804AC600::update() {
     JGeometry::TVec3f diff;
     diff.x = diff.y = diff.z = 0.0f;
