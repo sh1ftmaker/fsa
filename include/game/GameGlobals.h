@@ -1851,7 +1851,7 @@ public:
     void fn_804310BC();
 
     /* 0x04 */ cls_804B1600* field_0x4;  // new in fn_80431D84, a 0x14-byte object
-    /* 0x08 */ J2DScreen* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;     // "warning_window.blo", drawn by fn_804316EC
     /* 0x0C */ PaneCtrl_804AF86C* field_0xc;  // pane wrapper
     /* 0x10 */ PaneCtrl_804AF86C* field_0x10[5];  // panes "bb01".."bb05" (fn_80431D84)
     /* 0x24 */ PaneCtrl_804AF86C* field_0x24[5];  // panes "wb01".."wb05"
@@ -1953,26 +1953,37 @@ public:
     void fn_803A71F0();
     // 0x803A60E4: the wobble and slide of the two arrow panes (Par01 / Par02).
     void fn_803A60E4();
+    // 0x803A7280: puts the arrow and text panes back in place.
+    void fn_803A7280();
     // 0x803A7708 is the destructor.
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* field_0x4;
-    /* 0x08 */ J2DScreen* field_0x8;
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;
     /* 0x0C */ PaneCtrl_804AF86C* field_0xc[6];
     /* 0x24 */ PaneCtrl_804AF86C* field_0x24;
     /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
     /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
     /* 0x30 */ PaneCtrl_804AF86C* field_0x30;
-    /* 0x34 */ u8 field_0x34[0x60 - 0x34];
+    /* 0x34 */ PaneCtrl_804AF86C* field_0x34;
+    /* 0x38 */ u8 field_0x38[0x60 - 0x38];
     /* 0x60 */ f32 field_0x60;
     /* 0x64 */ s32 field_0x64;
-    /* 0x68 */ u8 field_0x68[0x6C - 0x68];
+    /* 0x68 */ s16 field_0x68;
+    /* 0x6A */ s16 field_0x6a; // second wobble timer
     /* 0x6C */ s16 field_0x6c; // wobble timer
     /* 0x6E */ s16 field_0x6e; // slide state of the two arrows (0 idle, +-1..10 moving)
     /* 0x70 */ s16 field_0x70; // base angle of pane Par01
     /* 0x72 */ s16 field_0x72; // base angle of pane Par02
     /* 0x74 */ s16 field_0x74; // wobble, +-6
-    /* 0x76 */ u8 field_0x76[0x80 - 0x76];
+    /* 0x76 */ u8 field_0x76;
+    /* 0x77 */ u8 field_0x77; // sound mode flag (lbl_80529DEC + 0x245)
+    /* 0x78 */ u8 field_0x78; // (lbl_80529DEC + 0x246)
+    /* 0x79 */ u8 field_0x79;
+    /* 0x7A */ u8 field_0x7a;
+    /* 0x7B */ u8 field_0x7b;
+    /* 0x7C */ u8 field_0x7c;
+    /* 0x7D */ u8 field_0x7d[0x80 - 0x7D];
     /* 0x80 */ s32 field_0x80; // returned by fn_803A65EC (5 without the screen)
     /* 0x84 */ u8 field_0x84[0];
 }; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
