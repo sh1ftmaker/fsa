@@ -283,7 +283,8 @@ public:
     /* 0x290 */ f32 field_0x290[3];
     /* 0x29C */ JGeometry::TVec3f field_0x29c[10];
     /* 0x314 */ JGeometry::TVec3f field_0x314; // the shell's draw position
-    /* 0x320 */ u8 field_0x320[0x32C - 0x320]; // not yet known
+    // SHARED-EDIT: carved from field_0x320[0xC] (game/tu_80170008.cpp). Plain Vec, not TVec3f, so the spawner's inline ctor does not emit a construct call.
+    /* 0x320 */ Vec field_0x320;
     /* 0x32C */ f32 field_0x32c[3]; // copy of mPos made by init
 }; // Size: 0x338
 
