@@ -1,6 +1,13 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/Effect.h"
+#include "game/GameView.h"
+#include "game/Camera.h"
+#include "game/EnemyBase.h"
 #include "game/Map.h"
+#include "game/Message.h"
+#include "game/Player.h"
+#include "game/StageFlag.h"
 #include "game/cls_8049D83C.h"
 #include "game/GameRootSub20.h"
 #include "game/RotMatrix.h"
@@ -17,6 +24,253 @@ static const s32 lbl_804648B4[3] = {0, 0xC9, 0x191};
 static const s32 lbl_804648C0[3] = {0xC8, 0x190, 0x258};
 static const s32 lbl_804648CC[7] = {1, 4, 0, 5, 3, 2, 6};
 
+// 0x80115590.
+// FIXME(shotgun): 99.9 %, reloc-name
+cls_8049D83C::cls_8049D83C()
+    : field_0x230(1), field_0x231(1), field_0x232(0), field_0x233(0), field_0x234(1), field_0x238(0),
+      field_0x23c(0), field_0x240(0), field_0x244(0), field_0x248(0), field_0x24c(0), field_0x250(0.0f),
+      field_0x254(0.0f), field_0x258(0.0f), field_0x25c(0.0f), field_0x260(NULL) {
+    field_0x29c = NULL;
+    field_0x2a0 = NULL;
+    field_0x2a4 = NULL;
+    field_0x2e4 = NULL;
+    for (s32 i = 0; i < 7; i++) {
+        field_0x2a8[i] = NULL;
+        if (i < 2) {
+            field_0x2e8[i] = NULL;
+        }
+        if (i < 3) {
+            field_0x2c4[i] = NULL;
+        }
+        if (i < 5) {
+            field_0x2d0[i] = NULL;
+        }
+    }
+    gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+}
+
+// 0x80115430.
+// FIXME(shotgun): 99.0 %, regalloc-only
+cls_8049D83C::~cls_8049D83C() {
+    if (field_0x2a0 != NULL) {
+        releaseEmitter_801EE434(field_0x2a0);
+        field_0x2a0 = NULL;
+    }
+    if (field_0x29c != NULL) {
+        releaseEmitter_801EE434(field_0x29c);
+        field_0x29c = NULL;
+    }
+    for (s32 i = 0; i < 7; i++) {
+        releaseEmitter_801EE434(field_0x2a8[i]);
+        field_0x2a8[i] = NULL;
+        if (i < 2) {
+            releaseEmitter_801EE434(field_0x2e8[i]);
+            field_0x2e8[i] = NULL;
+        }
+        if (i < 3) {
+            releaseEmitter_801EE434(field_0x2c4[i]);
+            field_0x2c4[i] = NULL;
+        }
+        if (i < 5) {
+            releaseEmitter_801EE434(field_0x2d0[i]);
+            field_0x2d0[i] = NULL;
+        }
+    }
+    if (field_0x2a4 != NULL) {
+        releaseEmitter_801EE434(field_0x2a4);
+        field_0x2a4 = NULL;
+    }
+    if (field_0x2e4 != NULL) {
+        releaseEmitter_801EE434(field_0x2e4);
+        field_0x2e4 = NULL;
+    }
+}
+
+// FIXME(shotgun): the next three tables and lbl_80539F00 are declared, not defined: this file does not
+// carve their .rodata / .data / .sdata yet.
+extern const s16* lbl_8049D820[7];
+extern const u16 lbl_804648E8[5];
+extern const s32 lbl_804648F4[5];
+extern const char* lbl_80539F00;
+extern const s32 lbl_8046486C[18];
+
+// 0x80115248.
+// FIXME(shotgun): 95.5 %, scheduling+regalloc + reloc-name
+void cls_8049D83C::init() {
+    cls_8049D140::init();
+    field_0x238 = field_0x90 & 0xFF;
+    field_0x244 = (field_0x90 >> 22) & 0x1F;
+    field_0x260 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_80539F00);
+    mAnim.fn_801D2608(lbl_8049D820, 7);
+    switch (field_0x238) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        mAnim.startAnim_801D22DC(4, 2, false);
+        break;
+    case 6:
+    default:
+        mAnim.startAnim_801D22DC(6, 2, false);
+        break;
+    }
+    mAnim.fn_801D1F14(0.0f);
+    mPos.y -= 32.0f;
+    JGeometry::TVec3f pos[5];
+    pos[0] = mPos;
+    pos[1] = JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y - 48.0f, 0.0f);
+    pos[2] = JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y - 48.0f, 0.0f);
+    pos[3] = JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y + 48.0f, 0.0f);
+    pos[4] = JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y + 48.0f, 0.0f);
+    for (s32 i = 0; i < 5; i++) {
+        field_0x2d0[i] = spawnEmitter_8013CC50(field_0x4, &pos[i], lbl_804648E8[i], 0, lbl_804648F4[i], NULL, NULL, true, 1.0f);
+    }
+    getGameView_802D6A9C()->fn_802D7440(0);
+}
+
+// 0x80114C98.
+// FIXME(shotgun): 96.7 %, missing/extra (case 5: the original keeps the flag test and the input test in a bool temporary)
+void cls_8049D83C::update() {
+    cls_8049D140::update();
+    switch (field_0x23c) {
+    case 0:
+    case 1:
+    case 10:
+    case 17:
+        break;
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16: {
+        JGeometry::TVec3f focus = mPos;
+        focus.y += 32.0f;
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x7f5 == 0) {
+            camera->field_0x7f4 = 1;
+            camera->field_0x7f8 = 4;
+            camera->field_0x7fc.x = focus.x;
+            camera->field_0x7fc.y = focus.y;
+            camera->field_0x7fc.z = focus.z;
+            camera->field_0x7f6 = 0;
+        }
+        break;
+    }
+    default: {
+        JGeometry::TVec3f focus = mPos;
+        focus.y += 16.0f + (mSpawnPos.y - mPos.y - 32.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (camera->field_0x7f5 == 0) {
+            camera->field_0x7f4 = 1;
+            camera->field_0x7f8 = 4;
+            camera->field_0x7fc.x = focus.x;
+            camera->field_0x7fc.y = focus.y;
+            camera->field_0x7fc.z = focus.z;
+            camera->field_0x7f6 = 0;
+        }
+        break;
+    }
+    }
+    switch (field_0x23c) {
+    case 0:
+        gAudioMgr_8053AF80->fn_80458FF0(0x100001B, false, 0);
+        vfunc_0x60(1);
+        break;
+    case 3:
+        for (s32 i = 0; i < 4; i++) {
+            s32 level = fn_8023BCD4(i) - 2;
+            if (level <= 0x1E) {
+                level = 0;
+            }
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+            fn_80230498(i, &playerPos, fn_8023CBC0(i), level, -0x80, -0x80, true);
+        }
+        if (fn_8011921C()->field_0x8 == 0x1B8) {
+            gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+        }
+        if (fn_8016A3AC()->field_0x1ef == 0 && field_0x2e4 == NULL) {
+            field_0x2e4 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54C, 0, 0, NULL, NULL, true, 1.0f);
+        }
+        break;
+    case 4: {
+        fn_801CD950(&field_0x25c, 0.02f, 0.0004f);
+        fn_801CD950(&field_0x254, 0.15f, 0.01f);
+        mPos.y -= field_0x254;
+        f32 limit = mSpawnPos.y - 48.0f;
+        if (mPos.y <= limit) {
+            mPos.y = limit;
+        }
+        field_0x248 += 2;
+        if (field_0x248 >= 0xE1) {
+            field_0x248 = 0xE1;
+        }
+        break;
+    }
+    case 5:
+        if (isStageFlagSet(field_0x238, 3)) {
+            gGameRoot_8053AAF8->field_0x85 = 2;
+        }
+        field_0x248 = 0xE1;
+        if (fn_8011921C()->field_0x1 == 0) {
+            fn_801CD950(&field_0x25c, 0.0f, -0.0002f);
+        }
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+            break;
+        }
+        if (isStageFlagSet(field_0x238, 3) && lbl_8053AD30->fn_80309C4C(0x1000, -1) != 0) {
+            fn_80387494(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 6:
+        switch (fn_8011921C()->field_0x8) {
+        case 0x43D:
+            startSound_801F0E34(0x30082, 0);
+            break;
+        case 0x46A:
+            startSound_801F0E34(0x30082, 0);
+            startSound_801F0E34(0x30083, 0);
+            break;
+        }
+        break;
+    case 11:
+        fn_801CD950(&mPos.y, mSpawnPos.y, 0.3f);
+        break;
+    case 13:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 16:
+        for (s32 i = 0; i < 2; i++) {
+            if (field_0x2e8[i] != NULL) {
+                setEmitterPos_8013CB44(field_0x2e8[i], &mPos, 0, 0, true);
+                field_0x2e8[i]->mGlobalEnvClr.r = 0x2D;
+                field_0x2e8[i]->mGlobalEnvClr.g = 0x78;
+                field_0x2e8[i]->mGlobalEnvClr.b = 0xFF;
+            }
+        }
+        break;
+    }
+    if (field_0x233 != 0) {
+        field_0x258 += field_0x25c;
+    }
+    mAnim.fn_801D1C18();
+    if (field_0x230 != 0) {
+        fn_8011395C();
+    }
+}
+
 // 0x80114C1C.
 void cls_8049D83C::draw() {
     cls_8049D140::draw();
@@ -30,6 +284,62 @@ void cls_8049D83C::draw() {
             fn_80113B54(lbl_80464830[field_0x238]);
         }
         break;
+    }
+}
+
+// 0x80114860.
+// FIXME(shotgun): 99.5 %, missing/extra
+void cls_8049D83C::vfunc_0x54() {
+    cls_801192AC* sub = fn_8011921C();
+    s32 t = sub->field_0x8;
+    if (field_0x238 == 0) {
+        if (t == lbl_8046486C[2]) {
+            vfunc_0x60(2);
+        } else if (t == lbl_8046486C[3]) {
+            vfunc_0x60(3);
+        } else if (t == lbl_8046486C[4]) {
+            vfunc_0x60(4);
+        } else if (t == lbl_8046486C[5]) {
+            vfunc_0x60(5);
+        } else if (t == lbl_8046486C[6]) {
+            vfunc_0x60(6);
+        } else if (t == lbl_8046486C[7]) {
+            vfunc_0x60(7);
+        } else if (t == lbl_8046486C[9]) {
+            vfunc_0x60(9);
+        } else if (t == lbl_8046486C[11]) {
+            vfunc_0x60(11);
+        } else if (t == lbl_8046486C[12]) {
+            vfunc_0x60(12);
+        } else if (t == lbl_8046486C[13]) {
+            vfunc_0x60(13);
+        } else if (t == lbl_8046486C[14]) {
+            vfunc_0x60(14);
+        } else if (t == lbl_8046486C[15]) {
+            vfunc_0x60(15);
+        } else if (t == lbl_8046486C[16]) {
+            vfunc_0x60(16);
+        } else if (t == lbl_8046486C[17]) {
+            vfunc_0x60(17);
+        }
+    } else {
+        if (t == lbl_8046486C[2]) {
+            vfunc_0x60(2);
+        } else if (t == lbl_8046486C[3]) {
+            vfunc_0x60(3);
+        } else if (t == lbl_8046486C[4]) {
+            vfunc_0x60(4);
+        } else if (t == lbl_8046486C[5]) {
+            vfunc_0x60(5);
+        } else if (t == lbl_8046486C[6]) {
+            vfunc_0x60(6);
+        } else if (t == lbl_8046486C[7]) {
+            vfunc_0x60(7);
+        } else if (t == lbl_8046486C[9]) {
+            vfunc_0x60(9);
+        } else if (t == lbl_8046486C[10]) {
+            vfunc_0x60(10);
+        }
     }
 }
 
@@ -53,7 +363,7 @@ void cls_8049D83C::fn_80113B54(s32 arg) {
     SpriteParams_801F5AE0 params;
     SpriteParams_801F5AE0 params2;
     JGeometry::TVec3f pos(mPos.x, mSpawnPos.y, mPos.z);
-    s32 frame = arg + field_0x274;
+    s32 frame = arg + mAnim.mCel;
     const char* name;
     if (arg == 0x1D6) {
         name = "enemy_both2_sob.bin";

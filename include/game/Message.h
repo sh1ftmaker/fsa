@@ -616,6 +616,8 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 height);
 bool fn_80384C58(s32 player, s32 serial);
 // 31 units. Returns 0 or 1; fn_80388EEC calls it.
 bool fn_803865B8(s32 player);
+// 0x80387494 (0x1818 bytes, not written yet); act_maiden_demo calls it with player 0 and ignores the result.
+bool fn_80387494(s32 player);
 // Returns 0 or 1 (fn_80388EEC returns it; this unit, not written yet).
 bool fn_80385960(s32 player);
 
