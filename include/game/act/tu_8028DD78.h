@@ -13,6 +13,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+    // Code: game/tu_8028DD78.cpp.
+    void fn_8028DDD8(s32* out);
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ JGeometry::TVec3f field_0x238[4];
