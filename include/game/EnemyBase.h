@@ -358,7 +358,7 @@ bool fn_801CD2F8(s32 layer);
 // not reached the target (cls_804A61C8::fn_80210A6C tests r3 with cmpwi).
 s32 fn_801CD950(f32* value, f32 target, f32 step);
 // game/tu_801CB270.cpp: finds the closest active player on layer `layer` to *pos, or -1.
-s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer);
+extern "C" s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer);
 // game/tu_801CB270.cpp: 2D step toward target.
 bool fn_801CD754(JGeometry::TVec2f* value, const JGeometry::TVec2f* target, f32 factor, f32 threshold, f32 maxStep);
 // Moves *value towards target by the fraction `factor` (at most 1) of the

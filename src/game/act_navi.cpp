@@ -180,6 +180,115 @@ void cls_804A6708::init() {
     }
 }
 
+// FIXME: 98.88% (missing/extra: ours has 2 fewer instrs (216 vs 218)). In case 3, the compiler merges
+// the two "flag = true" assignments into a single branch.
+void cls_804A6708::vfunc_0x90(u8 mapHit) {
+    switch (mState) {
+    case 0:
+        if (mStateTimer >= 5) {
+            fn_8021DFAC(1);
+        }
+        break;
+    case 1:
+        if (mStateTimer >= 45) {
+            fn_8021DFAC(2);
+        }
+        break;
+    case 2:
+        if (mStateTimer >= 45) {
+            field_0x2b4 = fn_801CCE3C(&mPos, field_0x4);
+            if (field_0x2b4 < 0) {
+                field_0x2b4 = 0;
+            }
+            fn_8021DFAC(5);
+        }
+        break;
+    case 3: {
+        field_0x2b4 = fn_801D05F8(&mPos, field_0x2ad * 16.0f);
+        if (field_0x2b4 < 0) {
+            break;
+        }
+        s32 param = field_0x2b0;
+        bool flag = false;
+        if (param == 0 || getGameView_802D6A9C()->fn_802D800C(param)) {
+            flag = true;
+        }
+        if (flag && fn_8023077C()) {
+            fn_8021DFAC(4);
+        }
+        break;
+    }
+    case 4:
+        if (mStateTimer >= 120) {
+            fn_8021DFAC(5);
+        } else {
+            fn_8021E4F8();
+        }
+        break;
+    case 5: {
+        if (!(mFlags & 0x2000)) {
+            break;
+        }
+        if ((mFlags & 0x4000) && !fn_8021F064()->fn_8021F094()) {
+            break;
+        }
+        fn_8022FE80(field_0x2b4, field_0x4, mSerial, false, false);
+        if (field_0x2b4 == fn_8022FD8C(mSerial)) {
+            if (fn_8038C678(field_0x2b4, field_0x2a8, mSerial, field_0x4, JGeometry::TVec3f(0.0f, 16.0f, 0.0f), 0x4002)) {
+                if (mFlags & 0x4000) {
+                    fn_8021F064()->mFlags |= 1;
+                } else {
+                    fn_8021DFAC(6);
+                }
+            }
+        }
+        break;
+    }
+    case 6:
+        if (!(mFlags & 0x2000)) {
+            break;
+        }
+        fn_8022FE80(field_0x2b4, field_0x4, mSerial, false, false);
+        if (fn_803865B8(field_0x2b4) && fn_80384C58(field_0x2b4, mSerial)) {
+            if (mFlags & 0x4000) {
+                fn_8021F064()->mFlags |= 2;
+            } else if (mFlags & 0x8000) {
+                fn_8021DFAC(10);
+            } else {
+                fn_8021DFAC(7);
+            }
+        }
+        break;
+    case 7:
+        if (mStateTimer >= 120) {
+            fn_8021DFAC(3);
+        } else {
+            fn_8021E4F8();
+        }
+        break;
+    case 10:
+        if (mStateTimer >= 240) {
+            fn_8021DFAC(3);
+        } else if (mStateTimer == 120) {
+            if (!(mFlags & 0x40000) && (mFlags & 0x2000)) {
+                fn_80230534(false);
+                mFlags |= 0x40000;
+            }
+        }
+        break;
+    case 8:
+        if (mStateTimer >= field_0x250) {
+            fn_8021DFAC(9);
+        }
+        break;
+    case 9:
+        if (mPos.z >= 350.0f) {
+            fn_8021DFAC(3);
+        }
+        break;
+    }
+}
+
 // FIXME: 96.5%. Only the two setEmitterPos_8013CB44 flag arguments differ in branch shape (ours bne over li 1,
 // the original beq; b over li 1), and the .sdata2 literals are not split.
 void cls_804A6708::vfunc_0x9C(u8 mapHit) {
