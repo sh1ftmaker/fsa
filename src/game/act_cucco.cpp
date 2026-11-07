@@ -50,6 +50,148 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
+// FIXME(shotgun): 90.79 %, missing/extra + reloc-name
+void Cucco_804AB8C0::init() {
+    u16 angle = 0;
+    mBox.i.x = -7.0f;
+    mBox.i.y = -7.0f;
+    mBox.f.x = 7.0f;
+    mBox.f.y = 7.0f;
+    field_0x80.i.x = -7.0f;
+    field_0x80.i.y = -7.0f;
+    field_0x80.f.x = 7.0f;
+    field_0x80.f.y = 7.0f;
+    field_0x254 = 0;
+    field_0x258 = 0;
+    field_0x25c = 0;
+    field_0x260 = 0;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    field_0x23c = 0;
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x94 = (field_0x90 >> 4) & 0xF;
+    field_0x25c = (field_0x90 >> 8) & 3;
+    field_0x2a1 = (field_0x90 >> 12) & 1;
+    field_0x2a2 = (field_0x90 >> 13) & 1;
+    field_0x2a3 = (field_0x90 >> 15) & 1;
+    field_0x2a7 = (field_0x90 >> 14) & 1;
+    field_0x2a8 = 0;
+    if (vfunc_0x34() == true) {
+        field_0x2a7 = 0;
+    }
+    field_0x2a4[0] = 1;
+    field_0x2a4[1] = 1;
+    field_0x290 = field_0x90 & 0xF;
+    field_0x2c4[1].set(mPos);
+    mLife = 1000;
+    field_0x264 = 0;
+    field_0x26c = 0;
+    field_0x29c = (s32)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x29e = 0;
+    field_0x288 = 0xFF;
+    field_0x2b0 = 0.0f;
+    field_0x2ac = 0;
+    field_0x298 = 0;
+    field_0x270 = 0;
+    field_0x274 = 0;
+    field_0x278 = 0;
+    field_0x27c = 0x32;
+    field_0x280 = 0;
+    field_0x2c4[2].set(mPos);
+    field_0x294 = field_0x4;
+    field_0x268 = 10;
+    mEmitter2f4 = NULL;
+    mEmitter2f8 = NULL;
+    mEmitter2fc = NULL;
+    mEmitter300 = NULL;
+    field_0x2a0 = 1;
+    field_0x2a9 = 1;
+    field_0x2b4 = 0.3f;
+    field_0x28c = 1;
+    if (gGameRoot_8053AAF8->field_0x7f == 0) {
+        field_0x28c = 4;
+        s32 players = gGameRoot_8053AAF8->fn_80138A30();
+        for (s32 i = 0; i < players; i++) {
+            if (((gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3) == 2) {
+                field_0x2a0 = 0;
+                break;
+            }
+        }
+    }
+    field_0x2a8 = 0;
+    field_0x2b8.set(0.0f, 0.0f, 0.0f);
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x2c4[0].set(0.0f, 0.0f, 0.0f);
+    field_0x184 = 20.0f;
+    field_0x284 = 0;
+    field_0x2c4[3].set(mPos);
+    switch (field_0x290) {
+    case 1: {
+        s32 player;
+        fn_801EEC98(mSerial, &angle, NULL, NULL, &player, 0, field_0x28c);
+        field_0x240 = 10;
+        if (player == -1) {
+            GameView_804A9950* view = getGameView_802D6A9C();
+            f32 midX = 0.5f * (view->mVisibleBox.i.x - view->mVisibleBox.f.x) + view->mVisibleBox.f.x;
+            f32 midY = 0.5f * (view->mVisibleBox.i.y - view->mVisibleBox.f.y) + view->mVisibleBox.f.y;
+            angle = (s32)(JMath::atanTable_.atan2_(midX - mPos.x, midY - mPos.y) * 10430.378f);
+        }
+        field_0x2b8.x = 3.0f * JMath::sincosTable_.sinShort(angle);
+        field_0x2b8.y = 3.0f * JMath::sincosTable_.cosShort(angle);
+        if (field_0x2b8.x >= 0.0f) {
+            field_0x98 = 0;
+        } else {
+            field_0x98 = 1;
+        }
+        field_0x2a8 = 1;
+        field_0x230 = 7;
+        break;
+    }
+    case 2:
+    case 3:
+    case 8:
+        field_0x230 = 3;
+        break;
+    case 4:
+        field_0x290 = 1;
+        field_0x240 = 1000;
+        field_0x230 = 6;
+        break;
+    case 5:
+        field_0xb8 = 2;
+        field_0x290 = 0;
+        fn_8023061C(field_0x25c, false);
+        if (fn_8022F9E4(field_0x25c, mSerial, false, false) == 1) {
+            field_0x230 = 3;
+        } else {
+            field_0x230 = 2;
+        }
+        break;
+    case 6:
+    case 7:
+        field_0x230 = 0;
+        field_0xb8 = 2;
+        if (field_0x290 == 7) {
+            field_0x290 = 6;
+            field_0x230 = 1;
+            if (field_0x2a2 == 1) {
+                field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
+            } else {
+                field_0x240 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x64;
+            }
+        }
+        break;
+    default:
+        field_0x230 = 0;
+        field_0xb8 = 2;
+        break;
+    }
+}
+
 // FIXME(shotgun): 88.23 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {

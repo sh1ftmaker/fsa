@@ -28,15 +28,18 @@ public:
     void fn_80331B40();
     void fn_803319B8();
     /* 0x230 */ s32 field_0x230; // state
-    /* 0x234 */ u8 field_0x234[4]; // not yet known
+    /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
     /* 0x23C */ s32 field_0x23c;
     /* 0x240 */ s32 field_0x240;
-    /* 0x244 */ u8 field_0x244[0x10]; // not yet known
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
     /* 0x254 */ s32 field_0x254;
     /* 0x258 */ s32 field_0x258;
     /* 0x25C */ s32 field_0x25c;
-    /* 0x260 */ u8 field_0x260[4]; // not yet known
+    /* 0x260 */ s32 field_0x260;
     /* 0x264 */ s32 field_0x264;
     /* 0x268 */ s32 field_0x268;
     /* 0x26C */ s32 field_0x26c;
@@ -48,10 +51,14 @@ public:
     /* 0x280 */ s32 field_0x280; // a tick counter
     /* 0x284 */ s32 field_0x284; // a countdown
     /* 0x288 */ u8 field_0x288; // opacity
-    /* 0x289 */ u8 field_0x289[7]; // not yet known
+    /* 0x289 */ u8 field_0x289[3]; // not yet known
+    /* 0x28C */ s32 field_0x28c; // 1, or 4 in mode 0
     /* 0x290 */ s32 field_0x290;
     /* 0x294 */ s32 field_0x294; // a layer
-    /* 0x298 */ u8 field_0x298[9]; // not yet known
+    /* 0x298 */ s32 field_0x298;
+    /* 0x29C */ s16 field_0x29c; // a random angle
+    /* 0x29E */ s16 field_0x29e;
+    /* 0x2A0 */ u8 field_0x2a0;
     // Tested == 1 by the player's cucco glide (Player_804A6F38::fn_80263078, tu_8025EB18).
     /* 0x2A1 */ u8 field_0x2a1;
     /* 0x2A2 */ u8 field_0x2a2; // not yet known
@@ -60,7 +67,9 @@ public:
     /* 0x2A7 */ u8 field_0x2a7;
     /* 0x2A8 */ u8 field_0x2a8;
     /* 0x2A9 */ u8 field_0x2a9;
-    /* 0x2AA */ u8 field_0x2aa[10]; // not yet known
+    /* 0x2AA */ u8 field_0x2aa[2]; // not yet known
+    /* 0x2AC */ s32 field_0x2ac;
+    /* 0x2B0 */ f32 field_0x2b0;
     /* 0x2B4 */ f32 field_0x2b4;
     /* 0x2B8 */ JGeometry::TVec3f field_0x2b8;
     /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[4];
