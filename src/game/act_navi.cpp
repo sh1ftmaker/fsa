@@ -183,7 +183,8 @@ void cls_804A6708::init() {
 }
 
 
-// FIXME(shotgun): 30.1 %, missing/extra + reloc-name (sqrt written with std::sqrtf, 0x2c0 TVec2f step through a copy)
+// FIXME(shotgun): 35.9 %, missing/extra + reloc-name (structure and constants are the asm's; the original passes the TVec2f at 0x2c0 to
+// fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies; sqrt is written with std::sqrtf)
 void cls_804A6708::fn_8021E4F8() {
     if (mState == 4) {
         f32 d = (f32)(0x78 - mStateTimer);
@@ -203,20 +204,25 @@ void cls_804A6708::fn_8021E4F8() {
     f32 dy = field_0x2c0.y - field_0x2cc;
     f32 dx = field_0x2c0.x - field_0x2c0.z;
     f32 len2 = dx * dx + dy * dy;
-    f32 inv = len2;
     if (len2 > 32.0f * FLT_EPSILON) {
-        inv = 1.0f / std::sqrtf(len2);
+        f32 inv = len2;
+        if (len2 > 0.0f) {
+            inv = 1.0f / std::sqrtf(len2);
+        }
+        dx = dx * inv;
+        dy = dy * inv;
     }
-    dx = dx * inv * field_0x2bc;
-    dy = dy * inv * field_0x2bc;
+    dx = dx * field_0x2bc;
+    dy = dy * field_0x2bc;
     bool follow = false;
     if (field_0x2b4 >= 0 && (mFlags & 0x30000)) {
         follow = true;
     }
     f32 tx, ty;
     if (follow) {
-        tx = getPlayerPos_8023E724(field_0x2b4)->x;
-        ty = getPlayerPos_8023E724(field_0x2b4)->y;
+        const JGeometry::TVec3f* target = getPlayerPos_8023E724(field_0x2b4);
+        tx = target->x;
+        ty = target->y;
     } else {
         tx = mSpawnPos.x;
         ty = mSpawnPos.y;
