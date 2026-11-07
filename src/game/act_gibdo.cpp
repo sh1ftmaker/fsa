@@ -3,10 +3,7 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
-
-// Not written yet: vfunc_0x24 (0x801B99C0; its copy of a colour to the
-// emitter's bytes 0xB8-0xBA has no declared field) and fn_801B9DD4 (0x801B9DD4,
-// a state machine with a jump table, jumptable_804A3D24).
+#include "JSystem/JParticle/JPAEmitter.h"
 
 // Animation sequences of (cel, duration) pairs, ended by -1.
 static const s16 lbl_804691B0[10] = {0, 8, 1, 0x12, 0, 8, 2, 0x12, -1, -1};
@@ -302,21 +299,19 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): the colour copy to the emitter (bytes 0xB8-0xBA from the fade
-// object's +4) is missing; the function body is NONMATCHING-gated until a field exists.
-#ifdef NONMATCHING
+// FIXME(shotgun): 100.00 %, matched
 void Gibdo_804A3BF8::vfunc_0x24() {
     if (mFlags & 0x4000) {
-        EnemyBase_804A4808::vfunc_0x24();
+        ActorBase_804A5770::vfunc_0x24();
         JPABaseEmitter* emitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32B, 1, 1, NULL, NULL, true, 1.0f);
         if (emitter != NULL) {
-            // emitter->setColorRGB(fade.r, fade.g, fade.b);
+            JUtility::TColor color = gGameRoot2_8053AB10->field_0x2c->field_0x4;
+            emitter->setColorRGB(color.r, color.g, color.b);
         }
     } else {
         fn_801B9DD4(3);
     }
 }
-#endif
 
 void Gibdo_804A3BF8::vfunc_0x98() {
     bool step = false;
