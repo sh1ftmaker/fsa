@@ -176,7 +176,6 @@ void ShadowCircle_804A0160::fn_80158B3C() {
     field_0xc = 0xFF;
 }
 
-
 // The 33 rim vertices of a beam fan: (0, radius, 0) turned about z in 32
 // steps, its y halved, around `base`; vertex colour = the colour's alpha.
 static inline void drawRing(const JGeometry::TVec3f* base, f32 radius, const JUtility::TColor& color) {

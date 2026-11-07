@@ -139,9 +139,10 @@ void cls_8049E8A0::draw() {
 // and 0). Their literals (16.0f, 1.0f, then 0.5f, -0.005f, 0.1f, -0.05f) lead
 // the unit's .sdata2 pool ahead of draw's, so the code using them sat in plain
 // functions below draw (docs/RULES_CARD.md, literals before their first visible
-// use (3)). Where the original drew the helpers' edges is not known: these are
-// the case bodies that hold the literals; the whole switch as one helper is too
-// big for update to inline.
+// use (3)). The helper boundaries are inferred from that pool order (melt's
+// 16.0f / 1.0f lowest, then shrink's run) and from inlining (update stays at
+// 100 % with no new bl; the whole switch as one helper is not inlined): each
+// is exactly the case body update inlines, nothing else is proven.
 void cls_8049E8A0::shrink() {
     mDrawEnabled = false;
     bool done;
