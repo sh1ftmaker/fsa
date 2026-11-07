@@ -673,132 +673,6 @@ void GameRoot_8049EF20::fn_80136500() {
     }
 }
 
-// The stage music request of the stage-change path (also for mode 0xE).
-static inline void playStageMusic(GameRoot_8049EF20* self) {
-    u8 count = getGameView_802D6A9C()->field_0x1328c;
-    s32 sound = getGameView_802D6A9C()->field_0x34;
-    if (sound == 0x11) {
-        return;
-    }
-    if (gGameRoot_8053AAF8->field_0x7f == 1) {
-        if (sound == 0x14 || sound == 0x1E) {
-            self->field_0xa0->fn_80458F04(lbl_804652F0[sound]);
-        } else {
-            self->field_0xa0->fn_80458FF0(lbl_804652F0[sound], false, count);
-            getGameView_802D6A9C()->field_0x1328c = count + 1;
-        }
-    } else if (sound != 0x19) {
-        if (self->field_0x86 == 0) {
-            self->field_0xa0->fn_80458FF0(0x1000004, false, 0);
-        } else {
-            self->field_0xa0->fn_80458FF0(0x100000D, false, 0);
-        }
-    } else {
-        self->field_0xa0->fn_80458FF0(0x1000019, false, 0);
-    }
-}
-
-// FIXME(shotgun): 93.7 %, missing/extra
-// 0x80135494
-void GameRoot_8049EF20::fn_80135494(s32 mode) {
-    bool changed = false;
-    bool ready = false;
-    if (mode == 2 && field_0x4c != 2 && field_0x4c != 5) {
-        ready = true;
-    } else if (mode == 5 && field_0x4c != 2 && field_0x4c != 5) {
-        ready = true;
-    } else if (mode == 3 || mode == 4 || mode == 6) {
-        ready = true;
-    } else if (mode == 7 && field_0x4 == 0) {
-        ready = true;
-    }
-    if (ready) {
-        if (field_0xac->field_0x4 != 1) {
-            return;
-        }
-        if (field_0xb0 != NULL && field_0xb0->field_0x4 != 1) {
-            return;
-        }
-        switch (mode) {
-        case 7:
-            lbl_80529DEC.field_0x10 = field_0xac->field_0x14;
-            lbl_80529DEC.field_0x4c = field_0xb0->field_0x14;
-            fn_80135020(7);
-            break;
-        case 2:
-        case 5:
-            if (field_0x4c != 2 && field_0x4c != 5) {
-                lbl_80529DEC.field_0x2c = field_0xac->field_0x14;
-                fn_80135020(2);
-            }
-            break;
-        case 3:
-            lbl_80529DEC.field_0x30 = field_0xac->field_0x14;
-            fn_80135020(3);
-            break;
-        case 4:
-            lbl_80529DEC.field_0x28 = field_0xac->field_0x14;
-            fn_80135020(4);
-            break;
-        case 6:
-            lbl_80529DEC.field_0x34 = field_0xac->field_0x14;
-            fn_80135020(6);
-            lbl_8053AD80->fn_80390088();
-            break;
-        }
-        delete field_0xac;
-        delete field_0xb0;
-        changed = true;
-    } else if (mode == 12 && lbl_80529DEC.field_0x24d == 1 && field_0x7c < 0x78) {
-        field_0x7c++;
-        return;
-    }
-    if (!changed) {
-        if (field_0x50 == 1 || field_0x50 == 5 || field_0x50 == 2 || field_0x50 == 12) {
-            field_0x60 = 0;
-        }
-    }
-    field_0x4c = field_0x50;
-    if (field_0x4c == 1 || field_0x4c == 6) {
-        gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
-    }
-    field_0x64 = 0;
-    if (field_0xfd == 0) {
-        if (field_0x50 == 0x11) {
-            field_0x58 = 3;
-        } else {
-            field_0x58 = 2;
-        }
-    } else {
-        field_0xfd = 0;
-    }
-    if (field_0x4c != 7) {
-        return;
-    }
-    if (changed) {
-        gGameRoot_8053AAF8->field_0xfe = 1;
-        gGameRoot_8053AAF8->field_0xfc = 0;
-        gGameRoot_8053AAF8->field_0xf8 = 0;
-        if (getGameView_802D6A9C()->field_0x3c != 0) {
-            field_0x60 = 0;
-            return;
-        }
-        field_0x60 = 4;
-        if (getGameView_802D6A9C()->field_0x4 == 0 && getGameView_802D6A9C()->field_0x8 == 0) {
-            if (getGameView_802D6A9C()->field_0x4 != 0 || getGameView_802D6A9C()->field_0x8 != 0) {
-                return;
-            }
-            if (!(lbl_8050EC80.getCurrentFile().mFlags & 1)) {
-                return;
-            }
-        }
-        playStageMusic(this);
-    } else if (field_0x50 == 0xE) {
-        field_0x60 = 4;
-        playStageMusic(this);
-    }
-}
-
 // FIXME(shotgun): 97.7 %, missing/extra
 // 0x80136364
 void GameRoot_8049EF20::fn_80136364() {
@@ -993,6 +867,132 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
         }
         field_0xb0 = NULL;
         break;
+    }
+}
+
+// The stage music request of the stage-change path (also for mode 0xE).
+static inline void playStageMusic(GameRoot_8049EF20* self) {
+    u8 count = getGameView_802D6A9C()->field_0x1328c;
+    s32 sound = getGameView_802D6A9C()->field_0x34;
+    if (sound == 0x11) {
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        if (sound == 0x14 || sound == 0x1E) {
+            self->field_0xa0->fn_80458F04(lbl_804652F0[sound]);
+        } else {
+            self->field_0xa0->fn_80458FF0(lbl_804652F0[sound], false, count);
+            getGameView_802D6A9C()->field_0x1328c = count + 1;
+        }
+    } else if (sound != 0x19) {
+        if (self->field_0x86 == 0) {
+            self->field_0xa0->fn_80458FF0(0x1000004, false, 0);
+        } else {
+            self->field_0xa0->fn_80458FF0(0x100000D, false, 0);
+        }
+    } else {
+        self->field_0xa0->fn_80458FF0(0x1000019, false, 0);
+    }
+}
+
+// FIXME(shotgun): 93.7 %, missing/extra
+// 0x80135494
+void GameRoot_8049EF20::fn_80135494(s32 mode) {
+    bool changed = false;
+    bool ready = false;
+    if (mode == 2 && field_0x4c != 2 && field_0x4c != 5) {
+        ready = true;
+    } else if (mode == 5 && field_0x4c != 2 && field_0x4c != 5) {
+        ready = true;
+    } else if (mode == 3 || mode == 4 || mode == 6) {
+        ready = true;
+    } else if (mode == 7 && field_0x4 == 0) {
+        ready = true;
+    }
+    if (ready) {
+        if (field_0xac->field_0x4 != 1) {
+            return;
+        }
+        if (field_0xb0 != NULL && field_0xb0->field_0x4 != 1) {
+            return;
+        }
+        switch (mode) {
+        case 7:
+            lbl_80529DEC.field_0x10 = field_0xac->field_0x14;
+            lbl_80529DEC.field_0x4c = field_0xb0->field_0x14;
+            fn_80135020(7);
+            break;
+        case 2:
+        case 5:
+            if (field_0x4c != 2 && field_0x4c != 5) {
+                lbl_80529DEC.field_0x2c = field_0xac->field_0x14;
+                fn_80135020(2);
+            }
+            break;
+        case 3:
+            lbl_80529DEC.field_0x30 = field_0xac->field_0x14;
+            fn_80135020(3);
+            break;
+        case 4:
+            lbl_80529DEC.field_0x28 = field_0xac->field_0x14;
+            fn_80135020(4);
+            break;
+        case 6:
+            lbl_80529DEC.field_0x34 = field_0xac->field_0x14;
+            fn_80135020(6);
+            lbl_8053AD80->fn_80390088();
+            break;
+        }
+        delete field_0xac;
+        delete field_0xb0;
+        changed = true;
+    } else if (mode == 12 && lbl_80529DEC.field_0x24d == 1 && field_0x7c < 0x78) {
+        field_0x7c++;
+        return;
+    }
+    if (!changed) {
+        if (field_0x50 == 1 || field_0x50 == 5 || field_0x50 == 2 || field_0x50 == 12) {
+            field_0x60 = 0;
+        }
+    }
+    field_0x4c = field_0x50;
+    if (field_0x4c == 1 || field_0x4c == 6) {
+        gGameRoot2_8053AB10->field_0x2c->fn_80158B3C();
+    }
+    field_0x64 = 0;
+    if (field_0xfd == 0) {
+        if (field_0x50 == 0x11) {
+            field_0x58 = 3;
+        } else {
+            field_0x58 = 2;
+        }
+    } else {
+        field_0xfd = 0;
+    }
+    if (field_0x4c != 7) {
+        return;
+    }
+    if (changed) {
+        gGameRoot_8053AAF8->field_0xfe = 1;
+        gGameRoot_8053AAF8->field_0xfc = 0;
+        gGameRoot_8053AAF8->field_0xf8 = 0;
+        if (getGameView_802D6A9C()->field_0x3c != 0) {
+            field_0x60 = 0;
+            return;
+        }
+        field_0x60 = 4;
+        if (getGameView_802D6A9C()->field_0x4 == 0 && getGameView_802D6A9C()->field_0x8 == 0) {
+            if (getGameView_802D6A9C()->field_0x4 != 0 || getGameView_802D6A9C()->field_0x8 != 0) {
+                return;
+            }
+            if (!(lbl_8050EC80.getCurrentFile().mFlags & 1)) {
+                return;
+            }
+        }
+        playStageMusic(this);
+    } else if (field_0x50 == 0xE) {
+        field_0x60 = 4;
+        playStageMusic(this);
     }
 }
 

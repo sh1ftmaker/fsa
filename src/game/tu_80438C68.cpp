@@ -115,6 +115,16 @@ void cls_804B17A0::fn_804399A0() {
     }
 }
 
+// FIXME(shotgun): 90.8 %, missing/extra
+// 0x80438E10
+void cls_804B17A0::fn_80438E10(u8 flag) {
+    field_0x40 = flag;
+    if (flag) {
+        return;
+    }
+    fn_80439AB0();
+}
+
 // FIXME(shotgun): 89.3 %, missing/extra
 // 0x80438C68
 void cls_804B17A0::fn_80438C68() {
@@ -155,16 +165,6 @@ void cls_804B17A0::fn_80438C68() {
         }
         break;
     }
-}
-
-// FIXME(shotgun): 90.8 %, missing/extra
-// 0x80438E10
-void cls_804B17A0::fn_80438E10(u8 flag) {
-    field_0x40 = flag;
-    if (flag) {
-        return;
-    }
-    fn_80439AB0();
 }
 
 // fn_80438E94 (0xB0C, the per-state emitter / fade update) is not written yet.
