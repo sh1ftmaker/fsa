@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "game/tu_803A8DFC.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/JGeometry.h"
 
 class JKRArchive;
@@ -173,9 +174,9 @@ public:
     /* 0x0088 */ char field_0x88[0x1B4 - 0x88]; // the next message's text
     /* 0x01B4 */ u8 field_0x1b4;
     /* 0x01B5 */ u8 field_0x1b5[0x1C0 - 0x1B5];
-    /* 0x01C0 */ u8 field_0x1c0[0x258]; // the three save files read from / written to the card
+    /* 0x01C0 */ SaveFile_803B950C field_0x1c0[3]; // the three save files read from / written to the card
     /* 0x0418 */ u8 field_0x418[0x420 - 0x418];
-    /* 0x0420 */ u8 field_0x420[0x1D4C]; // their bodies
+    /* 0x0420 */ SaveFileBody_803B950C field_0x420[3]; // their bodies
     /* 0x216C */ u8 field_0x216c; // state, read by fn_8037AA28
     /* 0x216D */ u8 field_0x216d; // step within the state
     /* 0x216E */ u8 field_0x216e;

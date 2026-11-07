@@ -727,16 +727,16 @@ void cls_804B0288::fn_803D3460() {
 
 // FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
 void cls_804B0288::fn_803D335C() {
-    lbl_8050EC80.fn_803B93E8((SaveFile_803B950C*)field_0x1c0, (SaveFileBody_803B950C*)field_0x420, 0);
-    fn_803BACF8((SaveFile_803B950C*)field_0x1c0, 0);
-    lbl_8050EC80.fn_803B93E8((SaveFile_803B950C*)field_0x1c0, (SaveFileBody_803B950C*)field_0x420, 1);
-    fn_803BACF8((SaveFile_803B950C*)field_0x1c0, 1);
-    lbl_8050EC80.fn_803B93E8((SaveFile_803B950C*)field_0x1c0, (SaveFileBody_803B950C*)field_0x420, 2);
-    fn_803BACF8((SaveFile_803B950C*)field_0x1c0, 2);
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
+    fn_803BACF8(field_0x1c0, 0);
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 1);
+    fn_803BACF8(field_0x1c0, 1);
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 2);
+    fn_803BACF8(field_0x1c0, 2);
     lbl_8051C1A0.fn_803B9D54(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
     for (s32 i = 0; i < 3; i++) {
         if (i != lbl_8050EC80.mCurrentFile) {
-            memcpy(&lbl_8050EC80.mFiles[i], field_0x1c0 + i * 0xC8, 0xC8);
+            memcpy(&lbl_8050EC80.mFiles[i], &field_0x1c0[i], 0xC8);
         }
     }
     field_0x216c = 0x10;
@@ -757,8 +757,8 @@ void cls_804B0288::fn_803D3180() {
 }
 
 void cls_804B0288::fn_803D3108() {
-    memcpy(field_0x1c0, (u8*)&lbl_8050EC80 + 0x20, 0x258);
-    fn_803BACF8((SaveFile_803B950C*)field_0x1c0, lbl_8050EC80.mCurrentFile);
+    memcpy(field_0x1c0, lbl_8050EC80.mFiles, 0x258);
+    fn_803BACF8(field_0x1c0, lbl_8050EC80.mCurrentFile);
     lbl_8051C1A0.fn_803B9CCC(field_0x1c0, 0x258, 0);
     field_0x216c = 0x13;
 }
