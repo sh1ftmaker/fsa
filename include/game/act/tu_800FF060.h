@@ -20,14 +20,15 @@ public:
     /* 0x234 */ u8 field_0x234;
     /* 0x235 */ u8 field_0x235;
     /* 0x236 */ u8 field_0x236;
-    /* 0x237 */ u8 field_0x237[2]; // not yet known
+    /* 0x237 */ s8 field_0x237;
+    /* 0x238 */ u8 field_0x238;
     /* 0x239 */ u8 field_0x239; // bits 22..26 of field_0x90
     /* 0x23A */ u8 field_0x23a[2]; // not yet known
     /* 0x23C */ s32 field_0x23c;
     /* 0x240 */ s32 field_0x240;
-    /* 0x244 */ u8 field_0x244[4]; // not yet known
+    /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248; // frame counter
-    /* 0x24C */ u8 field_0x24c[4]; // not yet known
+    /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 field_0x250[4]; // the players' scores
     /* 0x260 */ s32 field_0x260; // 600 after init
     /* 0x264 */ s32 field_0x264[4]; // the players ordered by score, lowest first
@@ -35,7 +36,10 @@ public:
     /* 0x278 */ s32 field_0x278;
     /* 0x27C */ s32 field_0x27c;
     /* 0x280 */ s32 field_0x280;
-    /* 0x284 */ u8 field_0x284[0x28]; // not yet known
+    /* 0x284 */ s32 field_0x284;
+    /* 0x288 */ u32 field_0x288;
+    /* 0x28C */ s32 field_0x28c[4];
+    /* 0x29C */ s32 field_0x29c[4];
 }; // Size: 0x2AC
 
 #endif
