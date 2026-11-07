@@ -4,12 +4,37 @@
 #include "game/GameView.h"
 #include "game/Player.h"
 #include "game/act/tu_801F9484.h"
+#include "game/ActorManager.h"
+#include "game/Effect.h"
+#include "game/EnemyBase.h"
 
 // FIXME(shotgun): tables not written out (gate.py literal tripwire); extern-declared, sizes
 // from symbols.txt. lbl_8046C658 / lbl_8046C6C8: the x and y shake offsets of four steps per
 // shake kind (s32, 16 bytes per kind).
 extern const s32 lbl_8046C658[28];
 extern const s32 lbl_8046C6C8[88];
+// FIXME(shotgun): the drop offsets of state 1 (x, then y, by field_0x234), f32 tables inside
+// the lbl_8046C6C8 block (+0xA8 and +0xC0); extern-declared under their addresses.
+extern const f32 lbl_8046C770[6];
+extern const f32 lbl_8046C788[6];
+
+// The four burst effects at each shake offset; the actor then waits 10 frames in state 1.
+static inline void burst(cls_804A7EB0* self) {
+    JGeometry::TVec3f pos;
+    pos.z = self->mPos.z;
+    for (s32 i = 0; i < 4; i++) {
+        pos.x = self->mPos.x + (f32)lbl_8046C658[self->field_0x234 * 4 + i];
+        pos.y = self->mPos.y + (f32)lbl_8046C6C8[self->field_0x234 * 4 + i];
+        spawnEmitter_8013CC50(self->field_0x4, &pos, 0x202, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(self->field_0x4, &pos, 0x203, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(self->field_0x4, &pos, 0x204, 0, -4, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(self->field_0x4, &pos, 0x205, 1, 0, NULL, NULL, true, 1.0f);
+        self->field_0x30c = 60;
+        self->field_0x310 = 0;
+    }
+    self->field_0x244 = 10;
+    self->field_0x230 = 1;
+}
 
 // 0x802A6600.
 // FIXME(shotgun): 71.43 %, missing/extra + reloc-name; the player-mask test needs a bool form and the
@@ -71,9 +96,74 @@ cls_804A7EB0::~cls_804A7EB0() {
     }
 }
 
+// 0x802A4A4C.
+// FIXME(shotgun): 19.97 % (states 0-2 only), missing/extra + reloc-name
+void cls_804A7EB0::update() {
+    switch (field_0x230) {
+    case 0:
+        switch (field_0x238) {
+        case 0:
+            if (getActorManager_801F856C()->field_0x305c == 1) {
+                burst(this);
+            }
+            break;
+        case 1:
+            if (vfunc_0x34()) {
+                burst(this);
+            }
+            break;
+        case 2:
+            burst(this);
+            break;
+        }
+        break;
+    case 1:
+        vfunc_0x54();
+        field_0x244--;
+        if (field_0x244 == 0) {
+            if (field_0x23c != 0 && gGameRoot_8053AAF8->field_0x7e == 1) {
+                s32 r = fn_801CD664(100);
+                u32 id = 'CRTL';
+                u32 param = 0;
+                if (r < 0x21) {
+                    id = 'RUPY';
+                    param = 0x1C0007;
+                } else if (r < 0x42) {
+                    param = 9;
+                    id = 'HBMB';
+                }
+                JGeometry::TVec3f pos;
+                pos.x = mPos.x + lbl_8046C770[field_0x234];
+                pos.y = mPos.y + lbl_8046C788[field_0x234];
+                pos.z = 300.0f + mPos.z;
+                s32 serial = getActorManager_801F856C()->fn_801F8544(id, field_0x4, &pos, param);
+                if (id == 'HBMB') {
+                    ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (bomb != NULL) {
+                        bomb->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, -0.1f);
+                    }
+                }
+            }
+            getGameView_802D6A9C()->fn_802D8050(field_0x240, true, 0xFF);
+            field_0x230 = 2;
+            field_0x31c = 0xE6;
+            field_0x244 = 300;
+        }
+        break;
+    case 2:
+        vfunc_0x54();
+        field_0x244--;
+        if (field_0x244 == 0) {
+            field_0x230 = 3;
+        }
+        break;
+    // FIXME(shotgun): states 3-10 not written (0x802A504C-0x802A61B4: the player-slot
+    // assignment of state 3 and the states after it).
+    }
+}
+
 // 0x802A4780.
-// FIXME(shotgun): 83.12 %, different + reloc-name (gated: its 1.0f comes before update's literals, which aren't written, and drops init from 71.43 % to 71.39 %)
-#ifdef NONMATCHING
+// FIXME(shotgun): 83.12 %, different + reloc-name
 void cls_804A7EB0::draw() {
     if (field_0x230 >= 2 && field_0x230 < 9) {
         SpriteParams_801F5AE0 params;
@@ -102,7 +192,6 @@ void cls_804A7EB0::draw() {
         }
     }
 }
-#endif
 
 // 0x802A4654.
 // FIXME(shotgun): 90.76 %, different

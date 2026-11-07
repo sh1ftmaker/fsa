@@ -464,7 +464,8 @@ public:
     /* 0x238 */ s32 field_0x238; // bits 0-4
     /* 0x23C */ s32 field_0x23c; // bits 17-21
     /* 0x240 */ s32 field_0x240; // bits 22-26
-    /* 0x244 */ u8 field_0x244[0x24C - 0x244]; // not yet known
+    /* 0x244 */ s32 field_0x244; // state timer (update)
+    /* 0x248 */ u8 field_0x248[0x24C - 0x248]; // not yet known
     /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 field_0x250;
     /* 0x254 */ s32 field_0x254[4];
