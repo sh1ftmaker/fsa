@@ -4,6 +4,7 @@
 // Code: game/act_cloud.cpp.
 
 #include "game/ActorBase.h"
+#include "game/RailBase.h"
 #include "game/SpriteAnim.h"
 
 // The CLOD actor ("Cloud", docs/names/actors.tsv, med confidence): the
@@ -16,9 +17,10 @@ public:
     // 0x801053E8: whether player `player` is in the cloud (see act_cloud.cpp).
     bool fn_801053E8(s32 player);
     /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
 
-    /* 0x230 */ u8 field_0x230[0x2F8 - 0x230]; // not yet known
+    /* 0x230 */ cls_800FE3EC mRail; // the path the cloud follows
     /* 0x2F8 */ void* field_0x2f8[4]; // "SOB " resources by mSprite.mKey, drawn by draw()
     // The sprite parameters of draw() (the constructor is SpriteParams_801F5AE0's
     // inline one, run here at 0x308). Its field_0x1d is set to -1 by draw().

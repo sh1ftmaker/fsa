@@ -6,6 +6,7 @@
 #include "game/act/act_cloud.h"
 
 // Name of each state's sprite, four per state (the state is field_0x36c).
+// FIXME(shotgun): 99.95 %, reloc-name
 static const char* lbl_8049CBB0[3][4] = {
     {"lift_s_a.bti", "lift_s_b.bti", "lift_s_c.bti", "lift_s_d.bti"},
     {"lift_l_a.bti", "lift_l_b.bti", "lift_l_c.bti", "lift_l_d.bti"},
@@ -31,6 +32,8 @@ Cloud_8049CBE0::Cloud_8049CBE0()
     }
 }
 
+// FIXME(shotgun): 88.48 %, missing/extra + reloc-name
+// 0x80105A34.
 void Cloud_8049CBE0::init() {
     ActorBase_804A5770::init();
     field_0x354 = field_0x90 & 0xFF;
@@ -73,6 +76,73 @@ void Cloud_8049CBE0::init() {
     mSprite.fn_801D1F14(0.0f);
 }
 
+// 0x801056E4.
+// FIXME(shotgun): 88.35 %, missing/extra + reloc-name
+void Cloud_8049CBE0::update() {
+    ActorBase_804A5770::update();
+    s32 layer = field_0x4;
+    if (getGameView_802D6A9C()->field_0x131df[layer] != 0) {
+        JGeometry::TBox2f box(mBox);
+        box.addPos(mPos.x, mPos.y);
+        fn_80239914(&box, field_0x4, mSerial);
+    }
+    s32 bit = field_0x368;
+    if (bit > 0 && getGameView_802D6A9C()->fn_802D800C(bit)) {
+        mAlive = false;
+        return;
+    }
+    switch (field_0x370) {
+    case 0:
+        if (field_0x354 > 0) {
+            JGeometry::TVec3f pos = mPos;
+            mRail.fn_800FE3EC(field_0x354, pos, field_0x4);
+            if (field_0x354 > 0 && field_0x364 > 0) {
+                u8 count = mRail.fn_800FD894(-1, NULL, 0);
+                if (field_0x364 <= count && (u8)field_0x364 < mRail.field_0x2) {
+                    mRail.field_0x3 = field_0x364;
+                }
+            }
+        }
+        field_0x360 = 0;
+        field_0x370 = 1;
+        break;
+    case 1:
+        if (field_0x354 > 0) {
+            JGeometry::TVec3f step(0.0f, 0.0f, 0.0f);
+            JGeometry::TVec3f at = mPos;
+            s32 railLayer = field_0x4;
+            u16 angle;
+            s32 result = mRail.fn_800FDEA0(&at, 0.2f * field_0x358 + 0.5f, &step, &railLayer, &angle, 0x200);
+            field_0x3c.x = step.x;
+            field_0x3c.y = step.y;
+            field_0x3c.z = step.z;
+            mPos.add(field_0x3c);
+            if (result != 0 && mRail.fn_800FE21C(0xFF)) {
+                field_0x360 = 0;
+                field_0x3c.set(0.0f, 0.0f, 0.0f);
+                field_0x370 = 2;
+            }
+        }
+        break;
+    case 2:
+        field_0x360++;
+        if (field_0x360 >= 60) {
+            field_0x360 = 0;
+            field_0x370 = 1;
+        }
+        break;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && getPlayerPos_8023E724(i)->z <= 0.0f) {
+            JGeometry::TVec3f d = mPos - mPrevPos;
+            fn_8023DF68(i, &d);
+        }
+    }
+    mSprite.fn_801D1C18();
+}
+
+// FIXME(shotgun): 99.86 %, reloc-name
+// 0x80105654.
 void Cloud_8049CBE0::draw() {
     ActorBase_804A5770::draw();
     mParams.field_0x1d = -1;
