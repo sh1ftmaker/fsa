@@ -476,6 +476,341 @@ void ResultScreen_804AF9A0::fn_803B2FB0() {
     }
 }
 
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803B1B60() {
+    if (field_0x440 > 0) {
+        field_0x440--;
+    }
+    s32 t0 = 150 - lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2];
+    s32 t1 = 150 - lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2] - lbl_8050DB0C.field_0x4c[(0x246 - 0x4C) / 2];
+    s32 t2 = 150 - lbl_8050DB0C.field_0x4c[(0x24A - 0x4C) / 2];
+    s32 t3 = 150 - lbl_8050DB0C.field_0x4c[(0x24A - 0x4C) / 2] - lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2];
+    s32 t4 = 150 - lbl_8050DB0C.field_0x4c[(0x24A - 0x4C) / 2] - lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2] -
+             lbl_8050DB0C.field_0x4c[(0x246 - 0x4C) / 2];
+    if (field_0x440 == 0) {
+        if (field_0x450 == 1) {
+            if (field_0x4b8[0] == 0xFF && fn_80389BF0(0, 0x106)) {
+                field_0x4b8[0] = 1;
+            }
+            if (field_0x4b8[1] == 0xFF && fn_80389BF0(1, 0x107)) {
+                field_0x4b8[1] = 1;
+            }
+            if (field_0x4b8[2] == 0xFF && fn_80389BF0(2, 0x108)) {
+                field_0x4b8[2] = 1;
+            }
+            field_0x4b8[3] = 1;
+        } else {
+            if (field_0x4b8[0] == 0xFF && fn_80389BF0(0, 0xE2)) {
+                field_0x4b8[0] = 1;
+            }
+            if (field_0x4b8[1] == 0xFF && fn_80389BF0(1, 0xE3)) {
+                field_0x4b8[1] = 1;
+            }
+            if (field_0x4b8[2] == 0xFF && fn_80389BF0(2, 0xE4)) {
+                field_0x4b8[2] = 1;
+            }
+            if (field_0x4b8[3] == 0xFF && fn_80389BF0(3, 0xE5)) {
+                field_0x4b8[3] = 1;
+            }
+        }
+        if (field_0x4b8[0] == 1 && field_0x4b8[1] == 1 && field_0x4b8[2] == 1 && field_0x4b8[0] == 1) {
+            for (s32 i = 0; i < field_0x454; i++) {
+                field_0x4b8[i] = 0xFF;
+                field_0x460[i] = 0;
+            }
+            field_0x440 = 150;
+            field_0x4c1 = 3;
+        }
+    } else {
+        if (field_0x440 >= t0) {
+            f32 x = field_0x10[field_0x450]->search('Pmmwk02')->getBounds()->i.x;
+            s32 d = field_0x440 - t0;
+            s32 dur = lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2];
+            f32 offset = (200.0f + (f32)lbl_8050DB0C.field_0x4c[(0x248 - 0x4C) / 2]) *
+                         (1.0f - (f32)(d * d) / (f32)(dur * dur));
+            field_0x10[field_0x450]->search('Pmmwk02')->move(x, field_0x41c - 200.0f + offset);
+            f32 rate = 1.0f - (f32)(field_0x440 - t0) / (f32)lbl_8050DB0C.field_0x4c[(0x244 - 0x4C) / 2];
+            if (field_0x450 < 2) {
+                for (int i = 0; i < 13; i++) {
+                    field_0x10[field_0x450]->search(lbl_80476208[i])->setAlpha(field_0x4c9[i] * rate);
+                }
+            }
+        } else if (field_0x440 >= t1) {
+            f32 x = field_0x10[field_0x450]->search('Pmmwk02')->getBounds()->i.x;
+            s32 d = field_0x440 - t1;
+            s32 dur = lbl_8050DB0C.field_0x4c[(0x246 - 0x4C) / 2];
+            f32 offset = (f32)lbl_8050DB0C.field_0x4c[(0x248 - 0x4C) / 2] * ((f32)(d * d) / (f32)(dur * dur));
+            field_0x10[field_0x450]->search('Pmmwk02')->move(x, field_0x41c + offset);
+        }
+        if (field_0x440 <= t2) {
+            if (field_0x440 >= t3) {
+                s32 d = field_0x440 - t3;
+                s32 dur = lbl_8050DB0C.field_0x4c[(0x24C - 0x4C) / 2];
+                f32 offset = (40.0f + (f32)lbl_8050DB0C.field_0x4c[(0x250 - 0x4C) / 2]) *
+                             (1.0f - (f32)(d * d) / (f32)(dur * dur));
+                for (s32 i = 0; i < field_0x454; i++) {
+                    f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 - 40.0f + offset);
+                    f32 rate = 1.0f - (f32)(field_0x440 - t3) / (f32)lbl_8050DB0C.field_0x4c[(0x24C - 0x4C) / 2];
+                    if (field_0x450 < 2) {
+                        for (int j = 0; j < 3; j++) {
+                            field_0x10[field_0x450]->search(lbl_80476270[i][j])->setAlpha(field_0x4d6[j] * rate);
+                        }
+                    }
+                }
+            } else if (field_0x440 >= t4) {
+                s32 d = field_0x440 - t4;
+                s32 dur = lbl_8050DB0C.field_0x4c[(0x24E - 0x4C) / 2];
+                f32 offset = (f32)lbl_8050DB0C.field_0x4c[(0x250 - 0x4C) / 2] * ((f32)(d * d) / (f32)(dur * dur));
+                for (s32 i = 0; i < field_0x454; i++) {
+                    f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+                }
+            }
+        }
+    }
+}
+
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803B14F8() {
+    s32 done = 0;
+    s32 t1 = lbl_8050DB0C.field_0x4c[(0x252 - 0x4C) / 2];
+    s32 t2 = lbl_8050DB0C.field_0x4c[(0x254 - 0x4C) / 2];
+    s32 dy = lbl_8050DB0C.field_0x4c[(0x256 - 0x4C) / 2];
+    s32 period = lbl_8050DB0C.field_0x4c[(0x258 - 0x4C) / 2];
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x4b8[i] == 0xFF && fn_80388EEC(i)) {
+            field_0x460[i] = 0;
+            f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+            field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420);
+            field_0x4b8[i] = fn_803A8DFC(i);
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        }
+        if (field_0x4b8[i] != 0xFF) {
+            if (field_0x460[i] < t1 + t2) {
+                field_0x460[i]++;
+                if (field_0x460[i] <= t1) {
+                    f32 rate = (f32)(field_0x460[i] * field_0x460[i]) / (f32)(t1 * t1);
+                    f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 - 40.0f + (40.0f + dy) * rate);
+                    x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + dy * rate);
+                    rate = (f32)field_0x460[i] / (f32)t1;
+                    if (field_0x450 < 2) {
+                        for (int j = 0; j < 2; j++) {
+                            field_0x10[field_0x450]->search(lbl_804762D0[i][j])->setAlpha(field_0x4d9[j] * rate);
+                        }
+                    }
+                } else if (field_0x460[i] <= t1 + t2) {
+                    s32 rem = (t1 + t2) - field_0x460[i];
+                    f32 offset = dy * ((f32)(rem * rem) / (f32)(t2 * t2));
+                    f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 + offset);
+                    x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+                }
+            }
+            if (field_0x460[i] == t1 + t2) {
+                done++;
+            }
+        } else {
+            if (field_0x460[i] < period) {
+                field_0x460[i]++;
+            } else {
+                field_0x460[i] = 0;
+            }
+            f32 offset = 5.0f * JMath::sincosTable_.sinShort((s32)(65536.0f / (f32)period * (f32)field_0x460[i]));
+            f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+            field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+        }
+    }
+    if (done == field_0x454) {
+        field_0x440 = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x4bc[i] = 0xFF;
+            field_0x460[i] = 0;
+        }
+        field_0x4c1 = 4;
+    }
+}
+
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803B0FD4() {
+    field_0x440++;
+    s32 t1 = lbl_8050DB0C.field_0x4c[(0x25A - 0x4C) / 2];
+    s32 t2 = lbl_8050DB0C.field_0x4c[(0x25C - 0x4C) / 2];
+    s32 dy = lbl_8050DB0C.field_0x4c[(0x25E - 0x4C) / 2];
+    if (field_0x440 <= t1 + t2) {
+        if (field_0x440 <= t1) {
+            f32 offset = dy * ((f32)(field_0x440 * field_0x440) / (f32)(t1 * t1));
+            for (s32 i = 0; i < field_0x454; i++) {
+                f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 + offset);
+            }
+        } else if (field_0x440 <= t1 + t2) {
+            s32 d = field_0x440 - t1;
+            f32 offset = (40.0f + dy) * ((f32)(d * d) / (f32)(t2 * t2));
+            for (s32 i = 0; i < field_0x454; i++) {
+                f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 + dy - offset);
+                f32 rate = 1.0f - (f32)(field_0x440 - t1) / (f32)t2;
+                if (field_0x450 < 2) {
+                    for (int j = 0; j < 2; j++) {
+                        field_0x10[field_0x450]->search(lbl_804762D0[i][j])->setAlpha(field_0x4d9[j] * rate);
+                    }
+                }
+            }
+        }
+    }
+    if (field_0x440 >= t1 + t2) {
+        if (field_0x450 == 1) {
+            if (field_0x4bc[0] == 0xFF && fn_80389BF0(0, 0x103)) {
+                field_0x4bc[0] = 1;
+            }
+            if (field_0x4bc[1] == 0xFF && fn_80389BF0(1, 0x104)) {
+                field_0x4bc[1] = 1;
+            }
+            if (field_0x4bc[2] == 0xFF && fn_80389BF0(2, 0x105)) {
+                field_0x4bc[2] = 1;
+            }
+            field_0x4bc[3] = 1;
+        } else {
+            if (field_0x4bc[0] == 0xFF && fn_80389BF0(0, 0xDE)) {
+                field_0x4bc[0] = 1;
+            }
+            if (field_0x4bc[1] == 0xFF && fn_80389BF0(1, 0xDF)) {
+                field_0x4bc[1] = 1;
+            }
+            if (field_0x4bc[2] == 0xFF && fn_80389BF0(2, 0xE0)) {
+                field_0x4bc[2] = 1;
+            }
+            if (field_0x4bc[3] == 0xFF && fn_80389BF0(3, 0xE1)) {
+                field_0x4bc[3] = 1;
+            }
+        }
+        if (field_0x4bc[0] == 1 && field_0x4bc[1] == 1 && field_0x4bc[2] == 1 && field_0x4bc[3] == 1) {
+            for (s32 i = 0; i < field_0x454; i++) {
+                field_0x4bc[i] = 0xFF;
+                field_0x460[i] = 0;
+            }
+            field_0x4c1 = 6;
+        }
+    }
+}
+
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803B0978() {
+    s32 done = 0;
+    s32 t1 = lbl_8050DB0C.field_0x4c[(0x252 - 0x4C) / 2];
+    s32 t2 = lbl_8050DB0C.field_0x4c[(0x254 - 0x4C) / 2];
+    s32 dy = lbl_8050DB0C.field_0x4c[(0x256 - 0x4C) / 2];
+    s32 period = lbl_8050DB0C.field_0x4c[(0x258 - 0x4C) / 2];
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x4bc[i] == 0xFF && fn_80388EEC(i)) {
+            field_0x460[i] = 0;
+            f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+            field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420);
+            field_0x4bc[i] = fn_803A8DFC(i);
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        }
+        if (field_0x4bc[i] != 0xFF) {
+            if (field_0x460[i] < t1 + t2) {
+                field_0x460[i]++;
+                if (field_0x460[i] <= t1) {
+                    f32 rate = (f32)(field_0x460[i] * field_0x460[i]) / (f32)(t1 * t1);
+                    f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 - 40.0f + (40.0f + dy) * rate);
+                    x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + dy * rate);
+                    rate = (f32)field_0x460[i] / (f32)t1;
+                    if (field_0x450 < 2) {
+                        for (int j = 0; j < 2; j++) {
+                            field_0x10[field_0x450]->search(lbl_804762D0[i][j])->setAlpha(field_0x4d9[j] * rate);
+                        }
+                    }
+                } else if (field_0x460[i] <= t1 + t2) {
+                    s32 rem = (t1 + t2) - field_0x460[i];
+                    f32 offset = dy * ((f32)(rem * rem) / (f32)(t2 * t2));
+                    f32 x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 + offset);
+                    x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                    field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+                }
+            }
+            if (field_0x460[i] == t1 + t2) {
+                done++;
+            }
+        } else {
+            if (field_0x460[i] < period) {
+                field_0x460[i]++;
+            } else {
+                field_0x460[i] = 0;
+            }
+            f32 offset = 5.0f * JMath::sincosTable_.sinShort((s32)(65536.0f / (f32)period * (f32)field_0x460[i]));
+            f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+            field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+        }
+    }
+    if (done == field_0x454) {
+        field_0x440 = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x460[i] = 0;
+        }
+        field_0x4c1 = 7;
+    }
+}
+
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803B03E8() {
+    s32 t0 = lbl_8050DB0C.field_0x4c[(0x260 - 0x4C) / 2];
+    s32 t1 = lbl_8050DB0C.field_0x4c[(0x262 - 0x4C) / 2];
+    s32 t2 = lbl_8050DB0C.field_0x4c[(0x264 - 0x4C) / 2];
+    s32 t3 = lbl_8050DB0C.field_0x4c[(0x266 - 0x4C) / 2];
+    s32 t4 = lbl_8050DB0C.field_0x4c[(0x268 - 0x4C) / 2];
+    s32 end = t2 + t3 + t4 * (field_0x454 - 1);
+    if (end < t0 + t1) {
+        end = t0 + t1;
+    }
+    field_0x440++;
+    if (field_0x440 > t0 && field_0x440 <= t0 + t1) {
+        s32 d = field_0x440 - t0;
+        f32 x = field_0x10[field_0x450]->search('Pmmwk02')->getBounds()->i.x;
+        field_0x10[field_0x450]->search('Pmmwk02')->move(x, field_0x41c - 200.0f * ((f32)(d * d) / (f32)(t1 * t1)));
+        if (field_0x450 < 2) {
+            for (int i = 0; i < 13; i++) {
+                field_0x10[field_0x450]->search(lbl_80476208[i])->setAlpha(field_0x4c9[i] * (1.0f - (f32)d / (f32)t1));
+            }
+        }
+    }
+    if (field_0x440 > t2 && field_0x440 <= t2 + t3 + t4 * (field_0x454 - 1)) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x440 >= t2 + t4 * i) {
+                s32 d = field_0x440 - (t2 + t4 * i);
+                f32 offset = -200.0f * ((f32)(d * d) / (f32)(t3 * t3));
+                f32 x = field_0x10[field_0x450]->search(lbl_80476270[i][2])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_80476270[i][2])->move(x, field_0x420 + offset);
+                x = field_0x10[field_0x450]->search(lbl_804762D0[i][1])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_804762D0[i][1])->move(x, field_0x424 + offset);
+                if (field_0x450 < 2) {
+                    for (int j = 0; j < 3; j++) {
+                        field_0x10[field_0x450]->search(lbl_80476270[i][j])->setAlpha(field_0x4d6[j] * (1.0f - (f32)d / (f32)t3));
+                    }
+                }
+                if (field_0x450 < 2) {
+                    for (int j = 0; j < 2; j++) {
+                        field_0x10[field_0x450]->search(lbl_804762D0[i][j])->setAlpha(field_0x4d9[j] * (1.0f - (f32)d / (f32)t3));
+                    }
+                }
+            }
+        }
+    }
+    if (field_0x440 >= end) {
+        field_0x4c2 = 0;
+        field_0x440 = 150;
+        field_0x4c1 = 8;
+    }
+}
+
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803B0158() {
@@ -644,6 +979,47 @@ void ResultScreen_804AF9A0::fn_803AFA78() {
     if (field_0x4c8 == 0xFF || done) {
         field_0x4c8 = 0xFF;
         field_0x4c1 = 15;
+    }
+}
+
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803AF79C() {
+    field_0x440--;
+    if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+        if (field_0x440 >= 60) {
+            field_0x8c->hide();
+            f32 x = field_0x8c->getBounds()->i.x;
+            field_0x8c->move(x, field_0x3f8);
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+        field_0x440 = 0;
+    }
+    s32 timer = field_0x440;
+    if (timer == 0) {
+        s32 sum = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            sum += field_0x320[i];
+        }
+        field_0x440 = sum % 9 + (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 150;
+        field_0x4c4 = 0;
+        field_0x4c6 = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x3c0[i] = 62;
+        }
+        field_0x4c1 = 12;
+    } else if (timer >= 138) {
+        f32 offset = -150.0f * ((f32)(12 - (timer - 138)) / 12.0f);
+        f32 x = field_0x8c->getBounds()->i.x;
+        field_0x8c->move(x, field_0x3f8 + offset);
+        if (field_0x440 == 138) {
+            field_0x8c->hide();
+        }
+    } else if (timer >= 128) {
+        if (timer == 128) {
+            f32 x = field_0x8c->getBounds()->i.x;
+            field_0x8c->move(x, field_0x3f8);
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
     }
 }
 
@@ -1178,6 +1554,147 @@ void ResultScreen_804AF9A0::fn_803ADC0C() {
     }
 }
 
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803AD894() {
+    field_0x440--;
+    if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+        if (field_0x440 >= 60) {
+            if (field_0x94->isVisible()) {
+                field_0x94->hide();
+                f32 x = field_0x94->getBounds()->i.x;
+                field_0x94->move(x, field_0x400);
+            }
+            if (field_0xa0->isVisible()) {
+                field_0xa0->hide();
+                f32 x = field_0xa0->getBounds()->i.x;
+                field_0xa0->move(x, field_0x410);
+            }
+            field_0x9c->show();
+            f32 x = field_0x9c->getBounds()->i.x;
+            field_0x9c->move(x, field_0x404);
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+        field_0x440 = 0;
+    }
+    s32 timer = field_0x440;
+    if (timer == 0) {
+        field_0x440 = 150;
+        field_0x4c4 = 0;
+        field_0x4c6 = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x3c0[i] = 62;
+        }
+        field_0x4c1 = 23;
+    } else if (timer >= 138) {
+        f32 offset = -150.0f * ((f32)(12 - (timer - 138)) / 12.0f);
+        if (field_0x94->isVisible()) {
+            f32 x = field_0x94->getBounds()->i.x;
+            field_0x94->move(x, field_0x400 + offset);
+        }
+        if (field_0xa0->isVisible()) {
+            f32 x = field_0xa0->getBounds()->i.x;
+            field_0xa0->move(x, field_0x410 + offset);
+        }
+        if (field_0x440 == 138) {
+            if (field_0x94->isVisible()) {
+                field_0x94->hide();
+            }
+            if (field_0xa0->isVisible()) {
+                field_0xa0->hide();
+            }
+            field_0x9c->show();
+            f32 x = field_0x9c->getBounds()->i.x;
+            field_0x9c->move(x, field_0x404 + offset);
+        }
+    } else if (timer >= 128) {
+        f32 x = field_0x9c->getBounds()->i.x;
+        f32 offset = -150.0f * ((f32)(timer - 128) / 12.0f);
+        field_0x9c->move(x, field_0x404 + offset);
+        if (field_0x440 == 128) {
+            if (field_0x94->isVisible()) {
+                x = field_0x94->getBounds()->i.x;
+                field_0x94->move(x, field_0x400);
+            }
+            if (field_0xa0->isVisible()) {
+                x = field_0xa0->getBounds()->i.x;
+                field_0xa0->move(x, field_0x410);
+            }
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+    }
+}
+
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803AD4B0() {
+    s32 done = 0;
+    s32 rank = 0;
+    s32 worst = 0;
+    u8 votes[4];
+    for (s32 i = 0; i < field_0x454; i++) {
+        votes[i] = 0;
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        votes[field_0x4b8[i]]++;
+    }
+    s32 targets[4];
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (votes[i] == 3) {
+            targets[i] = -500;
+        } else if (votes[i] == 2) {
+            targets[i] = -300;
+        } else if (votes[i] == 1) {
+            targets[i] = -100;
+        } else {
+            targets[i] = 0;
+        }
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x3a0[i] > targets[i]) {
+            field_0x3a0[i] -= 2;
+        }
+        if (field_0x3a0[i] <= targets[i]) {
+            field_0x3a0[i] = targets[i];
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (worst > targets[i]) {
+                worst = targets[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (worst < 0 && worst == targets[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                field_0x4db |= (u8)(1 << i);
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+        field_0x438 = 0;
+        field_0x440 = 150;
+        field_0x4c1 = 24;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
+    }
+}
+
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803AD220() {
@@ -1222,6 +1739,241 @@ void ResultScreen_804AF9A0::fn_803AD220() {
             field_0x9c->move(x, field_0x404);
             gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
         }
+    }
+}
+
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803ACDA4() {
+    s32 done = 0;
+    s32 rank = 0;
+    s32 best = 0;
+    u8 votes[4];
+    for (s32 i = 0; i < field_0x454; i++) {
+        votes[i] = 0;
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        votes[field_0x4bc[i]]++;
+    }
+    s32 targets[4];
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (votes[i] == 3) {
+            targets[i] = 500;
+        } else if (votes[i] == 2) {
+            targets[i] = 300;
+        } else if (votes[i] == 1) {
+            targets[i] = 100;
+        } else {
+            targets[i] = 0;
+        }
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x3b0[i] < targets[i]) {
+            field_0x3b0[i] += 2;
+        }
+        if (field_0x3b0[i] >= targets[i]) {
+            field_0x3b0[i] = targets[i];
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < targets[i]) {
+                best = targets[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best > 0 && best == targets[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                field_0x4db |= (u8)(1 << (i + 4));
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+        if (field_0x454 == 3) {
+            if (field_0x4c8 == 0) {
+                lbl_80529DEC.field_0x64 = field_0x4ac[0];
+            } else {
+                s32 r = (s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                if (r >= 3) {
+                    r = 2;
+                }
+                lbl_80529DEC.field_0x64 = r;
+            }
+        }
+        field_0x438 = 0;
+        field_0x440 = 150;
+        field_0x4c1 = 27;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
+    }
+}
+
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803AC998() {
+    field_0x440--;
+    if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+        if (field_0x440 >= 60) {
+            if (field_0x450 < 2) {
+                field_0x98->hide();
+                f32 x = field_0x98->getBounds()->i.x;
+                field_0x98->move(x, field_0x408);
+            } else {
+                if (field_0x94->isVisible()) {
+                    field_0x94->hide();
+                    f32 x = field_0x94->getBounds()->i.x;
+                    field_0x94->move(x, field_0x400);
+                }
+                if (field_0xa0->isVisible()) {
+                    field_0xa0->hide();
+                    f32 x = field_0xa0->getBounds()->i.x;
+                    field_0xa0->move(x, field_0x410);
+                }
+            }
+            field_0xa4->show();
+            f32 x = field_0xa4->getBounds()->i.x;
+            field_0xa4->move(x, field_0x40c);
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+        field_0x440 = 0;
+    }
+    s32 timer = field_0x440;
+    if (timer == 0) {
+        field_0x440 = 150;
+        field_0x4c1 = 29;
+    } else if (timer >= 138) {
+        f32 offset = -150.0f * ((f32)(12 - (timer - 138)) / 12.0f);
+        if (field_0x450 < 2) {
+            f32 x = field_0x98->getBounds()->i.x;
+            field_0x98->move(x, field_0x408 + offset);
+        } else {
+            if (field_0x94->isVisible()) {
+                f32 x = field_0x94->getBounds()->i.x;
+                field_0x94->move(x, field_0x400 + offset);
+            }
+            if (field_0xa0->isVisible()) {
+                f32 x = field_0xa0->getBounds()->i.x;
+                field_0xa0->move(x, field_0x410 + offset);
+            }
+        }
+        if (field_0x440 == 138) {
+            if (field_0x450 < 2) {
+                field_0x98->hide();
+            } else {
+                if (field_0x94->isVisible()) {
+                    field_0x94->hide();
+                }
+                if (field_0xa0->isVisible()) {
+                    field_0xa0->hide();
+                }
+            }
+            field_0xa4->show();
+            f32 x = field_0xa4->getBounds()->i.x;
+            field_0xa4->move(x, field_0x40c + offset);
+        }
+    } else if (timer >= 128) {
+        f32 x = field_0xa4->getBounds()->i.x;
+        f32 offset = -150.0f * ((f32)(timer - 128) / 12.0f);
+        field_0xa4->move(x, field_0x40c + offset);
+        if (field_0x440 == 128) {
+            if (field_0x450 < 2) {
+                x = field_0x98->getBounds()->i.x;
+                field_0x98->move(x, field_0x408);
+            } else {
+                if (field_0x94->isVisible()) {
+                    x = field_0x94->getBounds()->i.x;
+                    field_0x94->move(x, field_0x400);
+                }
+                if (field_0xa0->isVisible()) {
+                    x = field_0xa0->getBounds()->i.x;
+                    field_0xa0->move(x, field_0x410);
+                }
+            }
+            gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+    }
+}
+
+// FIXME(shotgun): ResultScreen_804AF9A0
+void ResultScreen_804AF9A0::fn_803AC6FC() {
+    s32 done = 0;
+    s32 best = -999999;
+    s32 rank = 0;
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x320[i] < lbl_80529DEC.field_0x150[i]) {
+            if (field_0x1a8[i] == NULL) {
+                JGeometry::TVec3f pos(
+                    field_0x158[i]->getWidth() / 2 + field_0x158[i]->getGlobalBounds().i.x,
+                    0.0f, 0.0f);
+                field_0x1a8[i] = spawnEmitter_8013CC50(0, &pos, 0x3DD, 0, 0, NULL, NULL, true, 1.0f);
+            }
+            field_0x320[i] += 2;
+            if (field_0x320[i] >= lbl_80529DEC.field_0x150[i]) {
+                if (field_0x1a8[i] != NULL) {
+                    field_0x1a8[i]->becomeInvalidEmitter();
+                    field_0x1a8[i] = NULL;
+                }
+                done++;
+                field_0x320[i] = lbl_80529DEC.field_0x150[i];
+            }
+        } else if (field_0x320[i] > lbl_80529DEC.field_0x150[i]) {
+            field_0x320[i] -= 2;
+            if (field_0x320[i] <= lbl_80529DEC.field_0x150[i]) {
+                field_0x320[i] = lbl_80529DEC.field_0x150[i];
+                done++;
+            }
+        } else {
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < lbl_80529DEC.field_0x150[i]) {
+                field_0x4c8 = 0;
+                best = lbl_80529DEC.field_0x150[i];
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best == lbl_80529DEC.field_0x150[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+        field_0x438 = 0;
+        field_0x4c1 = 30;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
     }
 }
 
