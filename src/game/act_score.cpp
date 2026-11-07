@@ -1,4 +1,7 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
+#include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/GameView.h"
@@ -131,6 +134,108 @@ static const u8 sDigitRed[4] = {0x28, 0xFF, 0x32, 0xBE};
 static const u8 sDigitGreen[4] = {0xFF, 0x50, 0xC8, 0x78};
 static const u8 sDigitBlue[4] = {0x28, 0x50, 0xFF, 0xFF};
 
+// Force Gem / fairy sounds by tens digit.
+static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
+
+// FIXME(shotgun): 80.16 %, missing/extra + reloc-name
+void Score_804AF4C0::fn_80393514() {
+    if (mTimer == 90) {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCB, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xCC, 0, 0, NULL, NULL, true, 1.0f);
+        s32 idx = 9;
+        if (mValue < 10) {
+            idx = mValue - 1;
+        }
+        gAudioMgr_8053AF80->fn_80458880(sScoreSounds[idx], -1);
+    }
+    s16 angle = (mTimer % 60) << 10;
+    if (mState == 0) {
+        field_0x3c.x = 0.2f * JMASSin(angle);
+        mPos += field_0x3c;
+    } else {
+        field_0x248 += 0.2f * JMASSin(angle);
+        field_0x24c -= 0.2f;
+        mPos.x = getPlayerPos_8023E724(mPlayer)->x + field_0x248;
+        mPos.y = getPlayerPos_8023E724(mPlayer)->y + field_0x24c;
+    }
+    if (mTimer-- == 0) {
+        s32 tensNew = field_0x240 / 10;
+        s32 tensOld = field_0x244 / 10;
+        s32 n = tensNew - tensOld;
+        s32 kind = tensOld + 1;
+        for (s32 i = 0; i < n; i++, kind++) {
+            s32 serial = -1;
+            if (kind >= 1 && kind < 3) {
+                JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
+                serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 2);
+            } else if (kind >= 3 && kind < 6) {
+                JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
+                serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 3);
+            } else {
+                getActorManager_801F856C()->spawnActor_801F9484('FARY', field_0x4, getPlayerPos_8023E724(mPlayer), 0, -1, -1);
+            }
+            if (serial >= 0) {
+                ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (gem != NULL) {
+                    gem->field_0x3c.set(0.0f, 0.0f, -1.0f);
+                }
+            }
+        }
+        if (field_0x240 >= 15 && field_0x244 < 15) {
+            JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
+            s32 serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 2);
+            if (serial >= 0) {
+                ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (gem != NULL) {
+                    gem->field_0x3c.set(0.0f, 0.0f, -1.0f);
+                }
+            }
+        }
+        mAlive = false;
+    }
+}
+
+// FIXME(shotgun): 14.99 %, missing/extra + reloc-name (the original builds each TColor on the stack)
+void Score_804AF4C0::fn_80393228() {
+    f32 fade = 255.0f * ((f32)mTimer / 90.0f);
+    if (mValue < 10) {
+        if (field_0x4 < 8) {
+            Vec pos;
+            pos.x = mPos.x;
+            pos.y = mPos.y;
+            pos.z = mPos.z;
+            lbl_8053AF50->fn_80455770(0.5f, mValue, &pos,
+                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+        }
+    } else if (mValue < 100) {
+        if (field_0x4 < 8) {
+            Vec pos;
+            pos.x = mPos.x - 8.333f;
+            pos.y = mPos.y;
+            pos.z = mPos.z;
+            lbl_8053AF50->fn_80455770(0.5f, mValue / 10, &pos,
+                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+        }
+        if (field_0x4 < 8) {
+            Vec pos;
+            pos.x = 8.333f + mPos.x;
+            pos.y = mPos.y;
+            pos.z = mPos.z;
+            lbl_8053AF50->fn_80455770(0.5f, mValue - (mValue / 10) * 10, &pos,
+                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+        }
+    } else {
+        if (field_0x4 < 8) {
+            Vec pos;
+            pos.x = mPos.x;
+            pos.y = mPos.y;
+            pos.z = mPos.z;
+            lbl_8053AF50->fn_80455770(0.5f, 10, &pos,
+                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+        }
+    }
+}
+
 // Not auto-inlined: draw calls fn_80391D44 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // FIXME(shotgun): 63.6 %, missing/extra (the original builds a TVec3f copy of mPos and passes it on)
@@ -164,8 +269,6 @@ void Score_804AF4C0::fn_80391D44() {
     }
 }
 // FIXME(shotgun): not written (size 0x12D0): fn_80391F58
-// FIXME(shotgun): not written (size 0x2EC): fn_80393228
-// FIXME(shotgun): not written (size 0x438): fn_80393514
 #pragma auto_inline reset
 
 Score_804AF4C0::~Score_804AF4C0() {}
