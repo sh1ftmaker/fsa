@@ -75,7 +75,7 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
     }
 }
 
-// FIXME(shotgun): 55.4 %, missing/extra (54 more instrs; loop unroll differs)
+// FIXME(shotgun): 55.5 %, missing/extra (54 more instrs; loop unroll differs)
 void HammerShopMinigame_8049C858::draw() {
     if (field_0x230 == 4 || field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
         s32 count = gGameRoot_8053AAF8->fn_80138A30();

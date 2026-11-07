@@ -74,7 +74,7 @@ void Link2Ending_804AE338::init() {
     }
 }
 
-// FIXME(shotgun): 88.7 %, missing/extra
+// FIXME(shotgun): 88.8 %, missing/extra
 void Link2Ending_804AE338::update() {
     if (field_0x234 != 0) {
         field_0x234--;

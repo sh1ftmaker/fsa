@@ -43,7 +43,7 @@ extern const f32* const lbl_804AD900[];  // field_0x284 (flag 0x100 set)
 extern const f32* const lbl_804AD958[];  // field_0x284
 extern const KaeporaWaypoint* const lbl_804AD9B0[];  // field_0x298
 
-// FIXME(shotgun): 83.0 %, missing/extra
+// FIXME(shotgun): 84.2 %, missing/extra
 void KaeporaGaeboraEnding_804ADAC8::init() {
     field_0x3c.z = field_0x3c.y = field_0x3c.x = 0.0f;
     field_0x230 = 0;
@@ -644,7 +644,7 @@ void KaeporaGaeboraEnding_804ADAC8::fn_8035FF70() {
     }
 }
 
-// FIXME(shotgun): 98.3 %, scheduling+regalloc
+// FIXME(shotgun): 98.4 %, scheduling+regalloc
 void KaeporaGaeboraEnding_804ADAC8::fn_8035FD6C() {
     if (advanceStep() == true) {
         mPtmfIndex = 0;
