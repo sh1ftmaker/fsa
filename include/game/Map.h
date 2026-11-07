@@ -58,6 +58,8 @@ public:
     void fn_80432750(bool all, f32 x, f32 y, f32 w, f32 h);
     // 0x80432638: called by fn_802FF0EC after the panels when fn_80432750 ran.
     void fn_80432638();
+    // 0x80432AF8: updates the screens' animations and the timer digits.
+    void fn_80432AF8();
     // 0x80433718: follows GameView's field_0x131dc (bit 0x8000 = 'raised').
     void fn_80433718();
 

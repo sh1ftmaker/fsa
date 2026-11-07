@@ -4,12 +4,26 @@
 #include "game/GameView.h"
 #include "game/Message.h"
 #include "game/Map.h"
+#include "game/Player.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DAnmLoader.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J3D/J3DAnmTextureSRTKey.h"
 #include "JSystem/JKernel/JKRFileLoader.h"
+
+static const char* lbl_804B1640[10] = {
+    "kk_rupyNum_00.bti",
+    "kk_rupyNum_01.bti",
+    "kk_rupyNum_02.bti",
+    "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti",
+    "kk_rupyNum_05.bti",
+    "kk_rupyNum_06.bti",
+    "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti",
+    "kk_rupyNum_09.bti",
+};
 
 // The six pane tags the constructor reads the alphas of (Ptim01 twice).
 static const u64 lbl_8048F438[6] = {
@@ -138,6 +152,127 @@ void cls_804B1668::fn_80433718() {
         } else {
             field_0xa4 = 0;
         }
+    }
+}
+
+// FIXME(shotgun): 99.41 %
+void cls_804B1668::fn_80432AF8() {
+    field_0x90++;
+    field_0x94++;
+    if (field_0x90 >= field_0x10[0]->getFrameMax()) {
+        field_0x90 = 0;
+    }
+    field_0x10[0]->setFrame(field_0x90);
+    field_0x4[0]->animation();
+    if (field_0x94 >= field_0x10[1]->getFrameMax()) {
+        field_0x94 = 0;
+    }
+    field_0x10[1]->setFrame(field_0x94);
+    field_0x4[1]->animation();
+    field_0xac = 0;
+    s32 player = gGameRoot_8053AAF8->field_0x7e == 0 ? 0 : gGameRoot2_8053AB10->field_0x20->field_0x230;
+    if (player < 0) {
+        return;
+    }
+    if (!(gGameRoot_8053AAF8->field_0x4c == 11 ? true : (gGameRoot_8053AAF8->field_0x88 == 2)) &&
+        fn_80236768(fn_8022EA0C(player)) > 0 && fn_80236768(fn_8022EA0C(player)) < 900) {
+        s32 val = fn_80236768(fn_8022EA0C(player)) / 60 + 1;
+        if (val != field_0x98) {
+            if (val > 99) {
+                val = 99;
+            }
+            if (val < 0) {
+                val = 0;
+            }
+            if (val < 10) {
+                const ResTIMG* img = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == true) {
+                    field_0xc->search(lbl_8048F438[2])->hide();
+                    field_0xc->search(lbl_8048F438[3])->hide();
+                }
+            } else {
+                const ResTIMG* img10 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val / 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img10, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img10, 0);
+                const ResTIMG* img1 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val % 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[2]))->changeTexture(img1, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[3]))->changeTexture(img1, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == false) {
+                    field_0xc->search(lbl_8048F438[2])->show();
+                    field_0xc->search(lbl_8048F438[3])->show();
+                }
+            }
+        }
+        field_0x98 = val;
+        field_0xac = 1;
+    } else if (!(gGameRoot_8053AAF8->field_0x4c == 11 ? true : (gGameRoot_8053AAF8->field_0x88 == 2)) &&
+               fn_80236630(fn_8022EA0C(player)) > 0 && fn_80236630(fn_8022EA0C(player)) < 1200) {
+        s32 val = fn_80236630(fn_8022EA0C(player)) / 60 + 1;
+        if (val != field_0x98) {
+            if (val > 99) {
+                val = 99;
+            }
+            if (val < 0) {
+                val = 0;
+            }
+            if (val < 10) {
+                const ResTIMG* img = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == true) {
+                    field_0xc->search(lbl_8048F438[2])->hide();
+                    field_0xc->search(lbl_8048F438[3])->hide();
+                }
+            } else {
+                const ResTIMG* img10 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val / 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img10, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img10, 0);
+                const ResTIMG* img1 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val % 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[2]))->changeTexture(img1, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[3]))->changeTexture(img1, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == false) {
+                    field_0xc->search(lbl_8048F438[2])->show();
+                    field_0xc->search(lbl_8048F438[3])->show();
+                }
+            }
+        }
+        field_0x98 = val;
+        field_0xac = 1;
+    } else if (!(gGameRoot_8053AAF8->field_0x4c == 11 ? true : (gGameRoot_8053AAF8->field_0x88 == 2)) &&
+               fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {
+        s32 val = fn_802366CC(fn_8022EA0C(player)) / 60 + 1;
+        if (val != field_0x98) {
+            if (val > 99) {
+                val = 99;
+            }
+            if (val < 0) {
+                val = 0;
+            }
+            if (val < 10) {
+                const ResTIMG* img = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == true) {
+                    field_0xc->search(lbl_8048F438[2])->hide();
+                    field_0xc->search(lbl_8048F438[3])->hide();
+                }
+            } else {
+                const ResTIMG* img10 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val / 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[0]))->changeTexture(img10, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[1]))->changeTexture(img10, 0);
+                const ResTIMG* img1 = (const ResTIMG*)fn_804030C4('TIMG', lbl_804B1640[val % 10]);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[2]))->changeTexture(img1, 0);
+                static_cast<J2DPicture*>(field_0xc->search(lbl_8048F438[3]))->changeTexture(img1, 0);
+                if (field_0xc->search(lbl_8048F438[2])->isVisible() == false) {
+                    field_0xc->search(lbl_8048F438[2])->show();
+                    field_0xc->search(lbl_8048F438[3])->show();
+                }
+            }
+        }
+        field_0x98 = val;
+        field_0xac = 1;
     }
 }
 
