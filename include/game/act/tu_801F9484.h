@@ -106,7 +106,7 @@ public:
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ Vec field_0x238;
+    /* 0x238 */ JGeometry::TVec3f field_0x238;
     /* 0x244 */ f32 field_0x244;
     /* 0x248 */ f32 field_0x248;
     /* 0x24C */ f32 field_0x24c;

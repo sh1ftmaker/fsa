@@ -36,7 +36,7 @@ void BeeFormation_804AC7B8::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): update partially matched
+// FIXME(shotgun): 92.5 %, missing/extra
 void BeeFormation_804AC7B8::update() {
     BeeManager_804AC810* mgr = (BeeManager_804AC810*)getActorManager_801F856C()->findActorBySerial_801F666C(field_0x250);
     if (field_0x262 == 1) {

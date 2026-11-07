@@ -83,7 +83,7 @@ void Camera_804AA9E4::fn_8030E5BC() {
 // The per-frame update: picks the table entry for the pending request (flags 0x178-0x17B), lets
 // fn_8030CD18 work out the target box and depth, blends towards it while a transition is armed,
 // sets the view (fn_8030CB10) and the zoom, and tells the audio manager where the camera is.
-// FIXME(shotgun): missing/extra (audio center construction)
+// FIXME(shotgun): 68.2 %, missing/extra (audio center construction)
 void Camera_804AA9E4::fn_8030E154() {
     JGeometry::TBox2f box = field_0x154;
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
@@ -223,7 +223,7 @@ void Camera_804AA9E4::fn_8030DD20(const Mtx m) {
     GXLoadNrmMtxImm(tmp, GX_PNMTX9);
 }
 
-// FIXME(shotgun): missing/extra + regalloc
+// FIXME(shotgun): 86.7 %, missing/extra + regalloc
 void Camera_804AA9E4::fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraEntry_804AA8E8* entry,
                                   JGeometry::TBox2f* prevBox, JGeometry::TBox2f* outBox, f32* outDepth) {
     bool first = true;
@@ -795,7 +795,7 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
 // Starts the focus transition to the new box: arms the camera, clears the damping, builds the
 // focus state from the table entry for field_0x174 (fn_8030CD18), then the same bookkeeping as
 // fn_8030C928.
-// FIXME(shotgun): missing/extra (box copy order in inlined fn_8030C928)
+// FIXME(shotgun): 93.2 %, missing/extra (box copy order in inlined fn_8030C928)
 void Camera_804AA9E4::fn_8030C9E4(const JGeometry::TBox2f* box) {
     field_0x1e8 = 1;
     field_0x1ec = 30;
