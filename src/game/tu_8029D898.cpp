@@ -505,7 +505,7 @@ bool BgRewrite_804A7C98::fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s
 
 extern const s32 lbl_8046C4C8[16]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 73.1 %, regalloc/scheduling (cell kept in its own register, index a copy)
+// FIXME(shotgun): 76.8 %, regalloc/scheduling (cell kept in its own register, index a copy)
 void BgRewrite_804A7C98::fn_8029EC84(s32 cell, s32 layer, s32 layerOffset, u16 tileA, u16 tileB) {
     s32 layerPlus = layer + layerOffset;
     s32 index = cell;
@@ -538,6 +538,7 @@ void BgRewrite_804A7C98::fn_8029EC84(s32 cell, s32 layer, s32 layerOffset, u16 t
     case 0xFFF:
         getGameView_802D6A9C()->fn_802D7BE8(layer, value, tile - 0x96);
         break;
+    case 0:
     default:
         getGameView_802D6A9C()->fn_802D7BE8(layer, value, 1);
         break;
@@ -580,7 +581,7 @@ u8 BgRewrite_804A7C98::fn_8029E888(const JGeometry::TVec3f* pos, s32 player, s32
     return field_0x24 == 0x30;
 }
 
-// FIXME(shotgun): 80.1 %, missing/extra (the mask test and one inlined tile write differ)
+// FIXME(shotgun): 92.8 %, missing/extra (the player-mask test: the original keeps the bool and compares it with 1)
 bool BgRewrite_804A7C98::fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -600,11 +601,23 @@ bool BgRewrite_804A7C98::fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s
         }
         if (!blocked) {
             if (field_0x24 == 0x19D) {
-                gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x19F);
+                s32 cell = field_0x20;
+                getGameView_802D6A9C()->fn_802D782C(1);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19F);
+                s32 slot = getGameView_802D6A9C()->fn_802D4C10(layer, cell);
+                if (slot != -1) {
+                    getGameView_802D6A9C()->fn_802D7D00(layer, slot, true);
+                }
                 JGeometry::TVec3f left(pos->x - 16.0f, pos->y, 0.0f);
                 gBgRewrite_8053AC98->fn_802A3948(&left, 0, layer, 0x19E);
             } else {
-                gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x19E);
+                s32 cell = field_0x20;
+                getGameView_802D6A9C()->fn_802D782C(1);
+                gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19E);
+                s32 slot = getGameView_802D6A9C()->fn_802D4C10(layer, cell);
+                if (slot != -1) {
+                    getGameView_802D6A9C()->fn_802D7D00(layer, slot, true);
+                }
                 JGeometry::TVec3f right(16.0f + pos->x, pos->y, 0.0f);
                 gBgRewrite_8053AC98->fn_802A3948(&right, 0, layer, 0x19F);
             }
