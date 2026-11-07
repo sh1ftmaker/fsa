@@ -57,6 +57,8 @@ public:
     void fn_80364A88();
     // 0x80363880: follows the 'EOWL' owl, else wanders near field_0x27c[0].
     void fn_80363880();
+    // 0x803653EC: the departure formation: moves the three companions to their marks, one formation per step.
+    void fn_803653EC();
     // 0x80363880 / 0x803653EC / 0x80365B5C / 0x80366E60: see the definitions.
     // 0x80365AF0: counts timers down, calls member function of table lbl_804ADC38[field_0x234].
     void fn_80365AF0();

@@ -16,6 +16,7 @@ extern const s32 lbl_80474320[76];
 static const s32 lbl_80474450[42] = {20, 2, 20, 2, 12, 2, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 15, 0, 20, 0, 20, 0, 20, 0, 15, 2};
 extern const s32 lbl_804745B8[150];
 static const s32 lbl_80474598[4] = {6, 9, 3, 0};
+static const s32 lbl_80474A5C[3] = {907, 904, 910};
 static const s32 lbl_80474B58[4] = {937, 945, 929, 921};
 static const s32 lbl_80474B68[8] = {3, 3, 4, 3, 3, 3, 4, 3};
 static const s32 lbl_804745A8[4] = {910, 913, 907, 904};
@@ -80,6 +81,103 @@ void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
 #endif
+
+// FIXME(shotgun): 72 %, missing/extra (the function-local TVec3f statics are guarded with an out-of-line constructor here; the original initialises them inline; the formation offsets of cases 1-3 are guesses)
+void cls_804ADF28::fn_803653EC() {
+    if (field_0x238 < 0) {
+        if (field_0x248 >= 0x80) {
+            if (field_0x25c == 0) {
+                field_0x25c = field_0x260;
+                field_0x268++;
+                if (field_0x268 >= 4) {
+                    field_0x268 = 0;
+                }
+                field_0x264 = lbl_80474BC4[field_0x268];
+            }
+            mPos.add(field_0x3c);
+            field_0x27c[0].add(field_0x3c);
+            field_0x27c[1].add(field_0x3c);
+            field_0x27c[2].add(field_0x3c);
+            if (field_0x248 == 0x80) {
+                field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+                field_0x26c = 0x388;
+                field_0x264 = 0;
+            }
+            return;
+        }
+        if (field_0x248 != 0) {
+            return;
+        }
+        field_0x238 = 0;
+    }
+    if (field_0x25c == 0) {
+        field_0x25c = field_0x260;
+        field_0x268++;
+        if (field_0x268 >= 4) {
+            field_0x268 = 0;
+        }
+        field_0x264 = lbl_80474BC4[field_0x268];
+    }
+    if (field_0x248 == 0) {
+        field_0x248 = 0x80;
+        switch (field_0x238 & 3) {
+        case 0: {
+            field_0x26c = 0x391;
+            static JGeometry::TVec3f offsets[3] = {
+                JGeometry::TVec3f(-16.0f, 16.0f, 0.0f),
+                JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+                JGeometry::TVec3f(0.0f, 32.0f, 0.0f),
+            };
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = lbl_80474A5C[i];
+            }
+            break;
+        }
+        case 1:
+            field_0x26c = 0x388;
+            for (int i = 0; i < 3; i++) {
+                JGeometry::TVec3f offset(16.0f * (i + 1), 0.0f, 0.0f);
+                field_0x2a0[i] = mPos + offset;
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x388;
+            }
+            break;
+        case 2:
+            field_0x26c = 0x38E;
+            for (int i = 0; i < 3; i++) {
+                JGeometry::TVec3f offset(0.0f, 16.0f * (i + 1), 0.0f);
+                field_0x2a0[i] = mPos + offset;
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x38E;
+            }
+            break;
+        case 3: {
+            field_0x26c = 0x391;
+            static JGeometry::TVec3f offsets[3];
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x391;
+            }
+            break;
+        }
+        }
+        field_0x238++;
+    } else if (field_0x248 == 0x76) {
+        field_0x27c[0].z = field_0x2a0[0].z;
+        field_0x2c4[0].x = field_0x2c4[0].y = field_0x2c4[0].z = 0.0f;
+        field_0x27c[1].z = field_0x2a0[1].z;
+        field_0x2c4[1].x = field_0x2c4[1].y = field_0x2c4[1].z = 0.0f;
+        field_0x27c[2].z = field_0x2a0[2].z;
+        field_0x2c4[2].x = field_0x2c4[2].y = field_0x2c4[2].z = 0.0f;
+    }
+}
 
 // FIXME(shotgun): 82.82 %, missing/extra + reloc-name
 void cls_804ADF28::fn_80365274() {
