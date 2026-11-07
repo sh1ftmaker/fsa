@@ -53,13 +53,9 @@ public:
     /* 0x29C */ f32 field_0x29c;
     /* 0x2A0 */ JGeometry::TVec3f field_0x2a0;
     /* 0x2AC */ f32 field_0x2ac;
-    /* 0x2B0 */ f32 field_0x2b0;
-    /* 0x2B4 */ f32 field_0x2b4;
-    /* 0x2B8 */ f32 field_0x2b8;
+    /* 0x2B0 */ JGeometry::TVec3f field_0x2b0;
     /* 0x2BC */ JGeometry::TVec3f field_0x2bc;
-    /* 0x2C8 */ f32 field_0x2c8;
-    /* 0x2CC */ f32 field_0x2cc;
-    /* 0x2D0 */ f32 field_0x2d0;
+    /* 0x2C8 */ JGeometry::TVec3f field_0x2c8;
     /* 0x2D4 */ JGeometry::TVec3f field_0x2d4;
     /* 0x2E0 */ JGeometry::TVec3f field_0x2e0;
     /* 0x2EC */ s16 field_0x2ec;
