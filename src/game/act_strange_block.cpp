@@ -2,6 +2,11 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/act/act_strange_block.h"
+#include "game/Map.h"
+#include "game/Effect.h"
+#include "game/ActorManager.h"
+#include "game/BgRewrite.h"
+#include "game/Camera.h"
 
 // The push step of each direction (x, y, z), .rodata at 0x80471E28 (the rest of that object is
 // string literals of update/draw).
@@ -9,6 +14,7 @@ static const f32 lbl_80471E28[12] = {20.0f, 0.0f, 0.0f, -20.0f, 0.0f, 0.0f, 0.0f
 
 // .data at 0x804ABC80 (16 bytes, local to this unit).
 extern const s32 lbl_804ABC80[4];
+extern const s32 lbl_804ABCA0[16]; // sprite frame offsets by animation step (and, 4 per row, by phase)
 
 // 0x8033E188.
 // FIXME(shotgun): 94.71 %, missing/extra + reloc-name
@@ -135,6 +141,88 @@ bool StrangeBlock_804AC2D8::fn_8033D264(u8 dir) {
     mPos = savedPos;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     return movable;
+}
+
+// 0x8033CD44.
+// FIXME(shotgun): 97.0 %, missing/extra + reloc-name
+void StrangeBlock_804AC2D8::draw() {
+    switch (field_0x25c) {
+    case 0:
+    case 1:
+    case 5: {
+        const char* name;
+        s32 frame;
+        if (field_0x25c == 0) {
+            frame = lbl_804ABCA0[field_0x250] + 0x475;
+            name = "enemy_gc_sob.bin";
+        } else if (field_0x25c == 1) {
+            name = "enemy_both2_sob.bin";
+            frame = 0x1C1;
+        } else {
+            frame = 0x37C;
+            name = "enemy_both2_sob.bin";
+        }
+        drawSprite_801F06F0(name, frame, NULL, 3, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, frame, 0, 2, -1, false, 0, 0);
+        break;
+    }
+    case 2:
+    case 6: {
+        if (field_0x25c == 2) {
+            s32 frame = lbl_804ABCA0[field_0x254 * 4 + field_0x250] + 0x3B4;
+            for (s32 i = 0; i < 2; i++) {
+                for (s32 j = 0; j < 2; j++) {
+                    JGeometry::TVec3f saved = mPos;
+                    JGeometry::TVec3f offset(32.0f * i - 16.0f, 32.0f * j - 24.0f, 0.0f);
+                    mPos += offset;
+                    drawSprite_801F06F0("enemy_both2_sob.bin", frame, NULL, 3, 1.0f, 1.0f);
+                    mPos = saved;
+                }
+            }
+        } else {
+            JGeometry::TVec3f saved = mPos;
+            JGeometry::TVec3f offset(0.0f, -16.0f, 0.0f);
+            mPos += offset;
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x37D, NULL, 3, 1.0f, 1.0f);
+            mPos = saved;
+        }
+        s32 frame2;
+        if (field_0x25c == 2) {
+            frame2 = lbl_804ABCA0[field_0x250] + 0x3CA;
+        } else {
+            frame2 = 0x37D;
+        }
+        JGeometry::TVec3f saved = mPos;
+        JGeometry::TVec3f offset(0.0f, -16.0f, 0.0f);
+        mPos += offset;
+        fn_803075AC(mSerial, field_0x4, &mPos, frame2, 0, 2, -1, false, 0, 0);
+        mPos = saved;
+        break;
+    }
+    case 3: {
+        SpriteParams_801F5AE0 params;
+        Mtx mtx;
+        PSMTXIdentity(mtx);
+        mtx[0][0] = 2.0f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 2.0f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 2.0f;
+        params.mMtx = mtx;
+        drawSprite_801F06F0("enemy_both2_sob.bin", 0x1C1, &params, 3, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, 0x1C1, 1, 2, -1, false, 0, 0);
+        break;
+    }
+    case 4: {
+        void* res = fn_804032E8('TIMG', "kazari_piramid.bti");
+        fn_801EFD34(res, NULL, 7, 0.0f, 0.0f, 0.0f);
+        break;
+    }
+    }
 }
 
 // Destructor at 0x8033CCE4.
