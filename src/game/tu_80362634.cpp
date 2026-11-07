@@ -26,6 +26,23 @@ static const s32 lbl_80474BC4[4] = {0, 1, 0, 2};
 static const s32 lbl_80474B88[6] = {7, 10, 10, 7, 10, 10};
 static const s32 lbl_80474BA0[6] = {0, 1, 2, 0, 3, 4};
 
+// Read by fn_80364A88: the direction/animation words per heading (16-byte rows), then a row of
+// field_0x26c values for the idle state (all inside the original's lbl_80474534 / lbl_80474A5C ranges).
+static const s32 lbl_80474548[4][4] = {
+    {851, 854, 848, 845},
+    {904, 907, 901, 898},
+    {865, 868, 862, 859},
+    {879, 882, 876, 873},
+};
+static const s32 lbl_80474858[4] = {959, 962, 956, 953}; // sprite per heading (the original's table is 0x204 long)
+static const s32 lbl_80474588[4] = {843, 904, 857, 871};
+static const s32 lbl_80474A68[4] = {0, 1, 2, 1};
+static const s32 lbl_80474A78[4] = {9, 7, 9, 7};
+static const s32 lbl_80474A88[4] = {10, 7, 10, 7};
+
+static const s8 lbl_80542AD8[8] = {10, 7, 10, 7, -1, 0, 0, 0};
+static const s8 lbl_80542AC8[4] = {0, 1, 2, 1};
+
 static JGeometry::TVec3f lbl_8050C028[8];
 // bss 0x8050C088: four unit directions, filled by the unit's static initialiser.
 static JGeometry::TVec3f lbl_8050C088[4];
@@ -246,6 +263,69 @@ void cls_804ADF28::fn_80364D0C() {
     if (field_0x25c == 0) {
         field_0x25c = field_0x260;
         field_0x264 ^= 1;
+    }
+}
+
+// FIXME(shotgun): 98.2 %, missing/extra + reloc-name
+void cls_804ADF28::fn_80364A88() {
+    if (field_0x248 == 0) {
+        f32 speed = PSVECMag(&field_0x3c);
+        mPos.add(field_0x3c);
+        field_0x2f8 += speed;
+        if (field_0x2f4 != NULL) {
+            if (field_0x2f8 >= *field_0x2f4) {
+                field_0x2f8 = 0.0f;
+                field_0x2f4++;
+                field_0x23c++;
+                if (field_0x23c == 1) {
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = -1.0f * speed;
+                    field_0x3c.z = 0.0f;
+                    field_0x26c = lbl_80474548[field_0x238][1];
+                } else if (field_0x23c == 2) {
+                    field_0x3c.x = speed;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    field_0x26c = lbl_80474548[field_0x238][3];
+                } else if (field_0x23c == 3) {
+                    field_0x3c.x = 0.0f;
+                    field_0x3c.y = speed;
+                    field_0x3c.z = 0.0f;
+                    field_0x26c = lbl_80474548[field_0x238][0];
+                } else if (field_0x23c == 4) {
+                    field_0x3c.x = speed;
+                    field_0x3c.y = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    field_0x26c = lbl_80474548[field_0x238][3];
+                } else {
+                    field_0x26c = lbl_80474588[field_0x238];
+                    field_0x260 = 15;
+                    field_0x25c = 15;
+                    if (field_0x238 == 1) {
+                        field_0x264 = 1;
+                    } else {
+                        field_0x264 = 0;
+                    }
+                    field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+                    field_0x2f4 = NULL;
+                }
+            }
+            if (field_0x25c == 0) {
+                field_0x268++;
+                if (field_0x268 >= 4) {
+                    field_0x268 = 0;
+                }
+                if (field_0x238 == 1) {
+                    field_0x25c = lbl_80474A78[field_0x268];
+                } else {
+                    field_0x25c = lbl_80474A88[field_0x268];
+                }
+                field_0x264 = lbl_80474A68[field_0x268];
+            }
+        } else if (field_0x238 != 1 && field_0x25c == 0) {
+            field_0x25c = field_0x260;
+            field_0x264 ^= 1;
+        }
     }
 }
 
@@ -493,6 +573,132 @@ void cls_804ADF28::fn_80363F7C() {
         field_0x264 = lbl_80474BA0[field_0x268];
     }
     mPos.add(field_0x3c);
+}
+
+// FIXME(shotgun): 94 %, missing/extra + reloc-name
+void cls_804ADF28::fn_80363880() {
+    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
+    s32 slot = field_0x24c;
+    if (slot >= 0) {
+        ActorBase_804A5770* owl = getActorManager_801F856C()->mActors[slot];
+        if (owl != NULL) {
+            JGeometry::TVec3f target = owl->mPos;
+            if (PSVECDistance(&mPos, &target) >= 100.0f) {
+                field_0x24c = -1;
+                field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+                field_0x264 = 1;
+                field_0x268 = 0;
+                field_0x248 = 0x20;
+            } else {
+                target.z = 0.0f;
+                if (PSVECDistance(&mPos, &target) >= 10.0f) {
+                    field_0x240 = (s16)(JMath::atanTable_.atan2_(target.y - mPos.y, target.x - mPos.x) * 10430.378f);
+                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                }
+                u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
+                if (angle >= 0x2000 && angle < 0x6000) {
+                    field_0x23c = 0;
+                } else if (angle >= 0x6000 && angle < 0xa000) {
+                    field_0x23c = 2;
+                } else if (angle >= 0xa000 && angle < 0xe000) {
+                    field_0x23c = 1;
+                } else {
+                    field_0x23c = 3;
+                }
+                field_0x26c = lbl_80474858[field_0x23c];
+            }
+        } else {
+            field_0x24c = -1;
+            field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+            field_0x264 = 1;
+            field_0x268 = 0;
+            field_0x248 = 0x20;
+        }
+    } else {
+        s32 end = getActorManager_801F856C()->mActorEnd;
+        for (s32 i = 0; i < end; i++) {
+            EndingOwl_804ADF28* actor = static_cast<EndingOwl_804ADF28*>(getActorManager_801F856C()->mActors[i]);
+            if (actor != NULL && actor->mActorId == ACTOR_EOWL && actor->mAlive == true && actor->field_0x278 == 0) {
+                if (PSVECDistance(&mPos, &actor->mPos) >= 100.0f) {
+                    break;
+                }
+                field_0x24c = i;
+                JGeometry::TVec3f target = actor->mPos;
+                field_0x240 = (s16)(JMath::atanTable_.atan2_(actor->mPos.y - mPos.y, actor->mPos.x - mPos.x) * 10430.378f);
+                field_0x3c.x = 0.8f * sincos.cosShort(field_0x240);
+                field_0x3c.y = 0.8f * sincos.sinShort(field_0x240);
+                u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
+                if (angle >= 0x2000 && angle < 0x6000) {
+                    field_0x23c = 0;
+                } else if (angle >= 0x6000 && angle < 0xa000) {
+                    field_0x23c = 2;
+                } else if (angle >= 0xa000 && angle < 0xe000) {
+                    field_0x23c = 1;
+                } else {
+                    field_0x23c = 3;
+                }
+                field_0x26c = lbl_80474858[field_0x23c];
+                field_0x270 = lbl_80542AD8;
+                field_0x274 = lbl_80542AC8;
+                field_0x25c = field_0x270[0];
+                field_0x264 = field_0x274[0];
+                field_0x258 = 0;
+                break;
+            }
+        }
+        if (field_0x24c < 0) {
+            if (field_0x248 == 0) {
+                s32 r = fn_801CD664(3);
+                if (r == 0) {
+                    field_0x24c = -1;
+                    field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+                    field_0x264 = 1;
+                    field_0x268 = 0;
+                    field_0x248 = 0x20;
+                } else {
+                    if (field_0x3c.squared() <= 32.0f * FLT_EPSILON) {
+                        field_0x240 = fn_801CD664(0x10000);
+                    } else if (r == 1) {
+                        field_0x240 += 0x1000;
+                    } else {
+                        field_0x240 -= 0x1000;
+                    }
+                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                    field_0x248 = 0x40;
+                }
+            }
+            if (PSVECDistance(&mPos, &field_0x27c[0]) >= 60.0f) {
+                field_0x248 = 0x80;
+                field_0x240 = (s16)(JMath::atanTable_.atan2_(field_0x27c[0].y - mPos.y, field_0x27c[0].x - mPos.x) * 10430.378f);
+                field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
+                field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+            }
+        }
+    }
+    if (!(field_0x3c.squared() <= 32.0f * FLT_EPSILON)) {
+        u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
+        if (angle >= 0x2000 && angle < 0x6000) {
+            field_0x23c = 0;
+        } else if (angle >= 0x6000 && angle < 0xa000) {
+            field_0x23c = 2;
+        } else if (angle >= 0xa000 && angle < 0xe000) {
+            field_0x23c = 1;
+        } else {
+            field_0x23c = 3;
+        }
+        field_0x26c = lbl_80474858[field_0x23c];
+        mPos.add(field_0x3c);
+        if (field_0x25c == 0) {
+            field_0x268++;
+            if (field_0x270[field_0x268] < 0) {
+                field_0x268 = 0;
+            }
+            field_0x25c = field_0x270[field_0x268];
+            field_0x264 = field_0x274[field_0x268];
+        }
+    }
 }
 
 // FIXME(shotgun): 95.59 %, missing/extra + reloc-name
