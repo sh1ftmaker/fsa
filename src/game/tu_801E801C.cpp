@@ -12,8 +12,7 @@
 f32 fn_801CD6D8(f32 p0, f32 p1, f32 p2, f32 p3, f32 t);
 
 
-
-
+// FIXME(shotgun): 67.00 %, missing/extra + reloc-name
 cls_804A5568::cls_804A5568() {
     mMask = 0;
     field_0x2ac = 0;

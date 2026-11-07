@@ -9,6 +9,7 @@
 extern const s16* lbl_8053A148[]; // the animation table (.sdata, this unit)
 extern const char lbl_80469AA4[]; // "enemy_both_sob.bin"
 
+// FIXME(shotgun): 99.86 %, reloc-name
 cls_804A4EE8::cls_804A4EE8() {
     mTargetPlayer = -1;
     field_0x2ac = 0;

@@ -34,10 +34,6 @@ public:
     void fn_801E0CF4();
     void fn_801E002C(ActorBase_804A5770* target);
     void fn_801DF9D8(ActorBase_804A5770* target);
-    // game/tu_801E2D88 and neighbours (not written yet)
-    bool fn_801E2F40();
-    void fn_801E2EE4();
-    void fn_801E2D88();
 
     // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
     void draw();
