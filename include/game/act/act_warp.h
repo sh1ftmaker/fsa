@@ -21,7 +21,12 @@ public:
     /* 0x248 */ s32 field_0x248; // compared with GameView field_0x18
     /* 0x24C */ JPABaseEmitter* mEmitter24c; // released by the destructor
     /* 0x250 */ JPABaseEmitter* mEmitter250; // released by the destructor
-    /* 0x254 */ u8 field_0x254[0x38]; // not yet known
+    // Code: game/act_warp.cpp.
+    void fn_80226FC8(s32 player);
+    /* 0x254 */ u8 field_0x254;
+    /* 0x255 */ u8 field_0x255; // the warp effect has been spawned
+    /* 0x256 */ u8 field_0x256[0x27C - 0x256]; // not yet known
+    /* 0x27C */ ActorBase_804A5770* field_0x27c[4]; // per player: the actor that is being carried in
 }; // Size: 0x28C
 
 #endif
