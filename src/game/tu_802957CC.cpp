@@ -1267,7 +1267,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 53.6 %, missing/extra: the view-box copy (GameView 0xCC/0xDC, grown by 32) the original leaves dead on the stack is not written
+// FIXME(shotgun): 58.4 %, missing/extra: the view-box copy (GameView 0xCC/0xDC, grown by 32) the original leaves dead on the stack is not written
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;

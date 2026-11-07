@@ -12,7 +12,7 @@ extern void (SeesawLift_804AD348::*lbl_804AD30C[5])();
 
 static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
-// FIXME(shotgun): 70.9 %, missing/extra: the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored
+// FIXME(shotgun): 70.9 %, missing/extra: the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
     const u16* res = (const u16*)field_0x234;
@@ -260,7 +260,7 @@ void SeesawLift_804AD348::update() {
     (this->*lbl_804AD30C[(field_0x90 >> 7) & 0x1F])();
 }
 
-// FIXME(shotgun): 68.8 %, missing/extra: the Euler matrix is the plain RotMatrix.h product with table sin/cos; written by hand here
+// FIXME(shotgun): 68.8 %, missing/extra: the Euler matrix is the plain RotMatrix.h product with table sin/cos; written by hand here; the original also scales every element by a float (lbl_80542878) that is not modelled
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
