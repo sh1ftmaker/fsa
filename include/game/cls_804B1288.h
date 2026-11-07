@@ -132,9 +132,9 @@ public:
     // lbl_8048C88C) one step when dir is the table's direction.
     void fn_80405D00(s32 dir);
     void fn_80405B10(s32 dir);
-    // Dead-stripped (fn_80405D00 and fn_80405B10 inline it six times): hides the
-    // field_0x120 panes again if field_0x65e is set and plays sound 0x26.
-    void subStageChanged();
+    // Dead-stripped (fn_80405D00, fn_80405B10 and fn_8040B388 inline it): resets the
+    // field_0x120 panes if field_0x65e is set.
+    void hideSubStagePanes();
     // 0x80405FC0 (called by fn_80411230): draws the four players (player_sob.bin)
     // around the cursor field_0x394 / field_0x398, the frame picked by the state, and
     // starts the emitters 0xCB / 0xCC of field_0x2cc / field_0x2dc at frame 26 of state 0x14.
@@ -251,7 +251,7 @@ public:
     /* 0x65A */ u8 field_0x65a;
     /* 0x65B */ u8 field_0x65b[0x65D - 0x65B];
     /* 0x65D */ u8 field_0x65d;
-    /* 0x65E */ u8 field_0x65e; // 1 while the field_0x120 panes are shown (subStageChanged)
+    /* 0x65E */ u8 field_0x65e; // 1 while the field_0x120 panes are shown (hideSubStagePanes)
     /* 0x65F */ u8 field_0x65f[0x662 - 0x65F];
     /* 0x662 */ u8 field_0x662;
     /* 0x663 */ u8 field_0x663;

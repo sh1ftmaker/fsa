@@ -630,6 +630,51 @@ void MapScreen_804B1288::fn_8040B5A0() {
     }
 }
 
+void MapScreen_804B1288::fn_8040B388() {
+    switch (field_0x428) {
+    case 0:
+        if (lbl_8053AEC4->fn_8042EC7C()) {
+            field_0x428 = 1;
+            gAudioMgr_8053AF80->fn_80458880(0x57, -1);
+        }
+        break;
+    case 1:
+        if (lbl_8053AD30->fn_80309C4C(0x1300, -1)) {
+            if (field_0x340 == 0 || field_0x340 == 1 || field_0x340 == 2 || field_0x340 == 3 ||
+                field_0x340 == 4 || field_0x340 == 5 || field_0x340 == 6)
+            {
+                field_0x348 = 2;
+            } else {
+                field_0x348 = 1;
+            }
+            field_0x34c = field_0x348;
+            hideSubStagePanes();
+            field_0x394 = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+            field_0x398 = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+            field_0x428 = 2;
+        }
+        break;
+    case 2:
+        if (lbl_8053AEC4->fn_8042EBEC()) {
+            field_0x428 = 0;
+            if (field_0x658) {
+                field_0x658 = 0;
+                field_0x350 = 0x15;
+            } else {
+                if (field_0x65d == 0) {
+                    for (int i = 0; i < 15; i++) {
+                        field_0x278[i]->field_0x26 = 0;
+                        field_0x65d = 1;
+                    }
+                }
+                field_0x350 = 0xF;
+            }
+        }
+        break;
+    }
+}
+
+
 void MapScreen_804B1288::fn_80409450() {
     field_0x41e++;
     if (field_0x663 == 0) {
@@ -992,13 +1037,15 @@ void MapScreen_804B1288::fn_80405D00(s32 dir) {
             if (lbl_80543880[field_0x340] == dir) {
                 field_0x348 = 2;
                 field_0x34c = field_0x348;
-                subStageChanged();
+                hideSubStagePanes();
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
             }
         } else if (field_0x348 == 2) {
             if (lbl_80543888[field_0x340] == dir) {
                 field_0x348 = 0;
                 field_0x34c = field_0x348;
-                subStageChanged();
+                hideSubStagePanes();
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
             }
         }
         return;
@@ -1006,12 +1053,14 @@ void MapScreen_804B1288::fn_80405D00(s32 dir) {
     if (field_0x348 < count - 1 && dir == lbl_8048C90C[field_0x340][field_0x348]) {
         field_0x348++;
         field_0x34c = field_0x348;
-        subStageChanged();
+        hideSubStagePanes();
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
     if (field_0x348 > 0 && dir == lbl_8048C924[field_0x340][field_0x348 - 1]) {
         field_0x348--;
         field_0x34c = field_0x348;
-        subStageChanged();
+        hideSubStagePanes();
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
 }
 
@@ -1028,25 +1077,26 @@ void MapScreen_804B1288::fn_80405B10(s32 dir) {
     if (field_0x34c < count - 1 && dir == lbl_8048C93C[field_0x340][field_0x34c]) {
         field_0x34c++;
         field_0x348 = lbl_8048C88C[field_0x340][field_0x34c];
-        subStageChanged();
+        hideSubStagePanes();
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
     if (field_0x34c > 0 && dir == lbl_8048C94C[field_0x340][field_0x34c - 1]) {
         field_0x34c--;
         field_0x348 = lbl_8048C88C[field_0x340][field_0x34c];
-        subStageChanged();
+        hideSubStagePanes();
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
 }
 
-// Dead-stripped: fn_80405D00 and fn_80405B10 inline it after every change of the
-// sub-stage (six identical copies).
-void MapScreen_804B1288::subStageChanged() {
+// Dead-stripped: fn_80405D00, fn_80405B10 (each followed by sound 0x26) and fn_8040B388
+// inline it after every change of the sub-stage (seven identical copies).
+void MapScreen_804B1288::hideSubStagePanes() {
     if (field_0x65e == 1) {
         field_0x120[0]->field_0x22 = 0;
         field_0x120[0]->field_0x26 = 0;
         field_0x120[1]->field_0x26 = 0;
         field_0x65e = 0;
     }
-    gAudioMgr_8053AF80->fn_80458880(0x26, -1);
 }
 
 void MapScreen_804B1288::fn_80404D70() {
