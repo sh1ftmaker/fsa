@@ -31,6 +31,42 @@ bool cls_804A4C58::fn_801DE018() {
     return result;
 }
 
+// FIXME(shotgun): 98 %, missing/extra + reloc-name
+u8 cls_804A4C58::fn_801DD28C() {
+    u8 hit = 0;
+    f32 x0 = 1.0f;
+    f32 y0 = x0;
+    f32 x1 = -1.0f;
+    f32 y1 = x1;
+    if (mState == 9) {
+        x0 = -55.0f;
+        y0 = -32.0f;
+        x1 = 55.0f;
+        y1 = 12.0f;
+    }
+    if (x1 - x0 > 0.0f && (mFlags & 0x2000) && mSeq2a8.fn_801DA904()) {
+        f32 t = x0;
+        x0 = -x1;
+        x1 = -t;
+    }
+    if (x1 - x0 > 0.0f && y1 - y0 > 0.0f) {
+        f32 sx0 = mBox.i.x;
+        f32 sy0 = mBox.i.y;
+        f32 sx1 = mBox.f.x;
+        f32 sy1 = mBox.f.y;
+        mBox.i.x = x0;
+        mBox.i.y = y0;
+        mBox.f.x = x1;
+        mBox.f.y = y1;
+        hit = fn_801F2B7C(field_0x114, -1, 1);
+        mBox.i.x = sx0;
+        mBox.i.y = sy0;
+        mBox.f.x = sx1;
+        mBox.f.y = sy1;
+    }
+    return hit;
+}
+
 // FIXME(shotgun): 98 %, missing/extra
 bool cls_804A4C58::fn_801DD1AC() {
     bool clamped = false;
