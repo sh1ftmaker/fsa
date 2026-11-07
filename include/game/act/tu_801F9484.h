@@ -137,14 +137,48 @@ public:
     /* 0x284 */ u8 field_0x284[0x40];
 }; // Size: 0x2C4
 
-// Spawned for 'BPOH'.
+// Spawned for 'BPOH'. Code: game/tu_801618D0.cpp.
 class cls_804A0440 : public ActorBase_804A5770 {
 public:
     cls_804A0440() {}
     /* 0x08 */ virtual ~cls_804A0440();
-    /* 0x230 */ u8 field_0x230[0x88];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x24 */ virtual void vfunc_0x24();
+    // 0x80161F98: switches to colour set `set` (fading over `frames`; keeps fading when called again).
+    void fn_80161F98(s32 set, s32 frames);
+    /* 0x230 */ s32 field_0x230; // state
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ u8 field_0x264[4]; // not yet known
+    /* 0x268 */ s32 field_0x268; // kind (low 2 bits of field_0x90)
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ s32 field_0x270; // GameView bit set by vfunc_0x24 (bits 2-6 of field_0x90)
+    /* 0x274 */ f32 field_0x274;
+    /* 0x278 */ f32 field_0x278;
+    /* 0x27C */ f32 field_0x27c;
+    /* 0x280 */ f32 field_0x280;
+    /* 0x284 */ f32 field_0x284;
+    /* 0x288 */ f32 field_0x288;
+    /* 0x28C */ f32 field_0x28c;
+    /* 0x290 */ s16 field_0x290;
+    /* 0x292 */ u8 field_0x292[2]; // not yet known
+    /* 0x294 */ f32 field_0x294[9]; // three positions (x, y, z) copied from mPos by init
     /* 0x2B8 */ JGeometry::TVec3f field_0x2b8[4];
-    /* 0x2E8 */ u8 field_0x2e8[0xC];
+    /* 0x2E8 */ JPABaseEmitter* field_0x2e8;
+    /* 0x2EC */ s32 field_0x2ec; // colour set in use (-1: none yet)
+    /* 0x2F0 */ s32 field_0x2f0; // frames left of the fade
     /* 0x2F4 */ JUtility::TColor field_0x2f4[3];
 }; // Size: 0x300
 
