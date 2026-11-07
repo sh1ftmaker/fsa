@@ -49,6 +49,7 @@ static inline s32 checkTalk(cls_8049ED30* self, u32 msg) {
 }
 
 // 0x8013416C.
+// FIXME(shotgun): 99.80 %, reloc-name
 void cls_8049ED30::init() {
     ActorBase_804A5770::init();
     field_0x234 = field_0x90 & 0x1F;
@@ -73,6 +74,7 @@ void cls_8049ED30::init() {
 }
 
 // 0x80133DD0.
+// FIXME(shotgun): 26.11 %, missing/extra + reloc-name
 void cls_8049ED30::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
@@ -105,6 +107,7 @@ void cls_8049ED30::update() {
 }
 
 // 0x80133C6C.
+// FIXME(shotgun): 99.55 %, regalloc-only + reloc-name
 void cls_8049ED30::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
@@ -112,6 +115,7 @@ void cls_8049ED30::draw() {
 }
 
 // 0x80133B58.
+// FIXME(shotgun): 98.70 %, regalloc-only + reloc-name
 bool fn_80133B58() {
     bool res = true;
     s32 serial = getActorManager_801F856C()->fn_801F7A08('CRNV');
@@ -136,7 +140,7 @@ bool fn_80133B58() {
 }
 
 // 0x801339EC.
-// FIXME(shotgun): 3-byte emitter color copy at emitter+0xBC..0xBE not written (JPABaseEmitter header layout differs).
+// FIXME(shotgun): 86.15 %, missing/extra (3-byte emitter color copy at emitter+0xBC..0xBE not written; JPABaseEmitter header layout differs).
 void cls_8049ED30::fn_801339EC() {
     static JUtility::TColor colors[6] = {
         JUtility::TColor(0x2D, 0x78, 0xFF, 0xFF),
@@ -155,6 +159,7 @@ void cls_8049ED30::fn_801339EC() {
 }
 
 // 0x8013394C.
+// FIXME(shotgun): 89.62 %, different
 cls_8049ED30::~cls_8049ED30() {
     for (s32 i = 0; i < 2; i++) {
         releaseEmitter_801EE434(mEmitters[i]);
