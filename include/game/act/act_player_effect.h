@@ -15,7 +15,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ s32 field_0x230;
+    /* 0x230 */ u32 field_0x230; // frame counter; update compares it unsigned (cmplwi)
     /* 0x234 */ s32 field_0x234; // the sprite frame set by init (by kind)
 }; // Size: 0x238
 
