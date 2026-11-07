@@ -62,6 +62,11 @@ void cls_801D7730::fn_801D77B4() {
     field_0x64 = 0;
 }
 
+// FIXME(shotgun): 98.94 %, regalloc-only
+cls_801D7730::~cls_801D7730() {
+    fn_801D7638();
+}
+
 cls_801D7730::cls_801D7730() {
     field_0x0[0x0] = -1;
     field_0x0[0x1] = -1;
