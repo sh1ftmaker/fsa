@@ -865,6 +865,124 @@ const char* fn_80383E2C(u32 index, u8* out) {
         out[len] = (c);                      \
     }
 
+// Ends a line of the box text: centres it in `width` (scaled by `scale`), adds the
+// indent to the part widths that end on this line, and appends "\x1BCR[n]" and the line to out.
+static inline void flushLine(char* out, const char* line, s32 lines, f32 cur, f32 width, f32 scale) {
+    char prefix[16];
+    s32 pad = (s32)((width - cur * scale) * 0.5f + 0.5f);
+    if (lbl_8053AD78->field_0x5c[2] == (f32)(lines - 1)) {
+        lbl_8053AD78->field_0x5c[0] += (f32)pad;
+    }
+    if (lbl_8053AD78->field_0x5c[3] == (f32)(lines - 1)) {
+        lbl_8053AD78->field_0x5c[1] += (f32)pad;
+    }
+    if (pad > 0) {
+        snprintf(prefix, 15, "\x1B" "CR[%d]", pad);
+        strcat(out, prefix);
+    }
+    strcat(out, line);
+}
+
+// FIXME(shotgun): 83.26 %, missing/extra + reloc-name
+// The text of message msg for the box, line by line, each line centred in `width` (the widths are
+// scaled by `scale`); `a` is the player number the 0x1A size 3 commands write and `b` a number of up to
+// four digits. Returns the number of lines.
+s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
+    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
+    const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
+    char line[64];
+    s32 len = 0;
+    s32 pos = 0;
+    s32 lines = 1;
+    f32 cur = 0.0f;
+    u8 part = 0;
+    s32 number = b;
+    u8 playerBit = 1 << (a - 1);
+    s32 shift = (a - 1) * 2;
+    lbl_8053AD78->field_0x5c[0] = 0.0f;
+    lbl_8053AD78->field_0x5c[2] = 0.0f;
+    lbl_8053AD78->field_0x5c[1] = 0.0f;
+    lbl_8053AD78->field_0x5c[3] = 0.0f;
+    out[0] = 0;
+    char c;
+    while ((c = text[pos]) != 0) {
+        const char* p = &text[pos];
+        if (c == '\n') {
+            line[len] = c;
+            line[len + 1] = 0;
+            flushLine(out, line, lines, cur, width, scale);
+            len = 0;
+            cur = 0.0f;
+            lines++;
+            pos++;
+        } else if (c == 0x1A) {
+            if (p[2] == 2) {
+                if (p[4] == 0 || p[4] == 10 || p[4] == 0x12 || p[4] == 0x19) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = cur;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        part++;
+                    }
+                } else if (p[4] == 1 || p[4] == 9 || p[4] == 0x11 || p[4] == 0x1A) {
+                    if (part < 2) {
+                        lbl_8053AD78->field_0x5c[part] = cur;
+                        lbl_8053AD78->field_0x5c[part + 2] = lines - 1;
+                        lbl_8053AD78->field_0xe6 = part;
+                        part++;
+                    }
+                } else if (p[4] == 0x2E) {
+                    if (a >= 1 && a <= 4) {
+                        if (gGameRoot_8053AAF8->mPlayerMask & playerBit) {
+                            if (((gGameRoot_8053AAF8->field_0x83 >> shift) & 3) == 1) {
+                                if (getPlayerLayer_8023DE58(a - 1) >= 8) {
+                                    fn_80230E1C(a - 1, false);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if (p[2] == 3) {
+                if (p[4] == 0) {
+                    line[len++] = a + '0';
+                    cur += lbl_8053AD78->mFont->JUTFont::getWidth(a + '0');
+                    cur += fn_8037F580(p[5], a, line, &len, 1.0f);
+                } else if (p[4] == 2) {
+                    bool started = false;
+                    s32 div = 1000;
+                    for (s32 i = 0; i < 4; i++) {
+                        if (number >= div) {
+                            started = true;
+                        }
+                        if (started || div == 1) {
+                            s32 digit = number / div + '0';
+                            line[len++] = digit;
+                            cur += lbl_8053AD78->mFont->JUTFont::getWidth(digit);
+                        }
+                        number -= number / div * div;
+                        div /= 10;
+                    }
+                    cur += fn_8037F580(p[5], b, line, &len, 1.0f);
+                }
+            }
+            pos += p[1];
+        } else {
+            line[len++] = c;
+            u32 code = (u8)c;
+            pos++;
+            if (lbl_8053AD78->mFont->isLeadByte(code)) {
+                line[len++] = text[pos];
+                code <<= 8;
+                code |= (u8)text[pos];
+                pos++;
+            }
+            cur += lbl_8053AD78->mFont->JUTFont::getWidth(code);
+        }
+    }
+    line[len] = c;
+    flushLine(out, line, lines, cur, width, scale);
+    return lines;
+}
+
 // FIXME: 95.1. Structurally close (one instruction fewer, registers shifted): the
 // text address is summed as (offset + inf1) + 8 + size where the original adds
 // size + offset, then 8, then inf1 (as in fn_80383E2C); the loop's first
