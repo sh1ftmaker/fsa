@@ -2,13 +2,19 @@
 #define GAME_CLS_804B1B60_H
 
 #include "types.h"
+#include "JSystem/JUtility/TColor.h"
 
-// Vtable 0x804B1B60, defined in game/tu_80443B0C.cpp (not written yet). Its
+struct J2DScreen;
+class PaneCtrl_804AF86C;
+
+// Vtable 0x804B1B60, defined in game/tu_80443B0C.cpp. Its
 // constructor fn_80444B68 stores the vtable, makes a J2DScreen and PaneCtrl
 // panes; the map screen (MapScreen_804B1288, game/tu_80403D84.cpp) allocates it with
 // __nw__(0x50) and keeps it in field_0x4.
 class cls_804B1B60 {
 public:
+    typedef void (cls_804B1B60::*StateFunc)();
+
     cls_804B1B60(); // fn_80444B68
     /* 0x08 */ virtual ~cls_804B1B60();
 
@@ -21,9 +27,25 @@ public:
     // 0x80444650: unless the state (field_0x4d) is 4, draws its J2DScreen (0x4)
     // (the map screen's fn_80411230 calls it in state 0x10).
     void fn_80444650();
+    void fn_804445E0();
+    void fn_80444590();
+    void fn_80443DAC();
+    void fn_80443D5C();
+    void fn_80443B0C(char* dst, s32 msgId, s32 value);
 
     /* 0x00 */ // vtable
-    /* 0x04 */ u8 field_0x4[0x4C - 0x4];
+    /* 0x04 */ J2DScreen* mScreen;
+    /* 0x08 */ PaneCtrl_804AF86C* field_0x8;
+    /* 0x0C */ PaneCtrl_804AF86C* field_0xc;
+    /* 0x10 */ PaneCtrl_804AF86C* field_0x10[6];
+    /* 0x28 */ PaneCtrl_804AF86C* field_0x28[2];
+    /* 0x30 */ JUtility::TColor field_0x30;
+    /* 0x34 */ JUtility::TColor field_0x34;
+    /* 0x38 */ JUtility::TColor field_0x38;
+    /* 0x3C */ JUtility::TColor field_0x3c;
+    /* 0x40 */ f32 field_0x40;
+    /* 0x44 */ s32 field_0x44;
+    /* 0x48 */ s32 field_0x48;
     /* 0x4C */ u8 field_0x4c; // fn_8040B93C (MapScreen_804B1288) tests it
     /* 0x4D */ u8 field_0x4d; // state (fn_804446A4)
     /* 0x4E */ u8 field_0x4e[0x50 - 0x4E];
