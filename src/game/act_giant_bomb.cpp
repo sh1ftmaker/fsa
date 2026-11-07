@@ -7,6 +7,8 @@
 #include "game/Player.h"
 #include "game/RotMatrix.h"
 #include "game/ActorManager.h"
+#include "game/Camera.h"
+#include "game/EmitterDelete.h"
 #include "game/act/act_giant_bomb.h"
 
 static const char* lbl_804AC558[] = {
@@ -117,6 +119,198 @@ void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
     spawnEmitter_8013CC50(layer, pos, 0x38, 1, 1, NULL, NULL, true, 1.0f);
 
     startSound_801F0E34(0x30001, 0);
+}
+
+// 0x80342850.
+// FIXME(shotgun): 89.3 %, missing/extra + reloc-name
+void GiantBomb_804AC588::update() {
+    JGeometry::TVec2f pos2(mPos.x, mPos.y);
+    JGeometry::TBox2f box = mBox;
+    box.addPos(pos2);
+    mLife = 10000;
+    if (mState == 4) {
+        mPos += field_0x3c;
+    }
+    if (mTimer > 0) {
+        mTimer--;
+    }
+    if (mState != 2) {
+        Vec corner0;
+        Vec corner1;
+        corner0.x = mPos.x + mBox.i.x;
+        corner0.y = mPos.y + mBox.i.y;
+        corner0.z = mPos.z;
+        corner1.x = mPos.x + mBox.f.x;
+        corner1.y = mPos.y + mBox.f.y;
+        corner1.z = mPos.z;
+        lbl_8053AED0->fn_8043E398(&corner0, &corner1);
+    }
+    if (mState == 6 && mTimer > 0) {
+        fn_802397B4(&box, field_0x4, mSerial);
+        if (field_0x238 > 0) {
+            field_0x238--;
+        }
+        if (fn_801F3D94(0) == 0 && field_0x238 <= 0) {
+            field_0xb0 = 0x41304;
+            s32 hit0 = fn_801A4D1C(mSerial, &box, &pos2);
+            s32 hit1 = fn_801A6108(mSerial, &box, &pos2);
+            s32 hit2 = fn_801A4F5C(mSerial, &box, &pos2);
+            s32 hit3 = fn_801A46FC(mSerial, &box, &pos2);
+            if (fn_801F305C() || hit0 > 0 || hit1 > 0 || hit2 > 0 || hit3 > 0) {
+                mTimer -= 60;
+                field_0x238 = 15;
+                return;
+            }
+            field_0xb0 = 0;
+        }
+    } else if (mState == 5) {
+        s32 q = (15 - mTimer) / 15;
+        JGeometry::TBox2f scaled(mBox.i.x * q, mBox.i.y * q, mBox.f.x * q, mBox.f.y * q);
+        fn_802397B4(&scaled, field_0x4, mSerial);
+    }
+    switch (mState) {
+    case 0:
+        field_0x254.x += 0.75f / field_0x244;
+        field_0x254.y = field_0x254.x;
+        field_0x254.z = field_0x254.x;
+        mBox.i.x = -32.0f * field_0x254.x;
+        mBox.i.y = -32.0f * field_0x254.y;
+        mBox.f.x = 32.0f * field_0x254.x;
+        mBox.f.y = 32.0f * field_0x254.y;
+        if (field_0x254.x >= 0.75f) {
+            field_0x254.x = 0.75f;
+            field_0x254.y = 0.75f;
+            field_0x254.z = 0.75f;
+            mBox.i.x = -24.0f;
+            mBox.i.y = -24.0f;
+            mBox.f.x = 24.0f;
+            mBox.f.y = 24.0f;
+            mTimer = 8;
+            mState = 1;
+        }
+        field_0x80 = mBox;
+        mBox2 = mBox;
+        break;
+    case 1:
+        if (mTimer <= 0) {
+            field_0x3c.z = 3.0f;
+            mState = 4;
+        }
+        break;
+    case 2:
+        if (vfunc_0x34() == 1 || vfunc_0x3C() == 0) {
+            if (field_0x24c == 1 && getGameView_802D6A9C()->field_0x4 == 1 &&
+                getGameView_802D6A9C()->field_0x8 == 0) {
+                fn_801F3604();
+            }
+            mState = 4;
+            field_0x250 = gAudioMgr_8053AF80->field_0x58;
+        }
+        break;
+    case 3:
+        break;
+    case 4:
+        if (mPos.z <= 0.0f) {
+            getGameView_802D6A9C()->fn_802D79E8(field_0x4, 8.0f, 0.0f, false);
+            JGeometry::TVec3f pos = mPos;
+            pos.y += 16.0f;
+            spawnEmitter_8013CC50(field_0x4, &pos, 0x3CF, 0, -1, NULL, NULL, true, 2.5f);
+            startSound_801F0E34(0x3000F, 0);
+            if (field_0x261 == 1) {
+                gAudioMgr_8053AF80->fn_80458FF0(0x1000021, false, 0);
+            }
+            field_0x3c.z = 0.0f;
+            mTimer = 15;
+            if (field_0x248 == 0) {
+                lbl_8053AED0->fn_8043D67C(0x1A8, 0, 0);
+            } else if (field_0x248 == 1) {
+                lbl_8053AED0->fn_8043D67C(0x1C1, 0, 0);
+            }
+            mState = 5;
+        } else {
+            field_0x3c.z -= 0.2f;
+            if (field_0x24c != 2) {
+                fn_801F2B7C(1, -1, 2);
+                fn_801F2B20(0);
+            }
+        }
+        break;
+    case 5:
+        if (mTimer <= 0) {
+            mTimer = 600;
+            JGeometry::TVec3f pos = mPos;
+            pos.y -= 14.0f;
+            if (mEmitter264 == NULL) {
+                mEmitter264 = spawnEmitter_8013CC50(field_0x4, &pos, 0x39, 1, 1, NULL, NULL, true, 1.0f);
+            }
+            if (mEmitter268 == NULL) {
+                mEmitter268 = spawnEmitter_8013CC50(field_0x4, &pos, 0x3A, 1, 1, NULL, NULL, true, 1.0f);
+            }
+            field_0x254.x = 0.75f;
+            field_0x254.y = 0.75f;
+            field_0x254.z = 0.75f;
+            mState = 6;
+        } else {
+            fn_801F2B7C(1, -1, 2);
+            fn_801F2B20(0);
+            if (mTimer > 10) {
+                field_0x254.x = 0.75f * (1.0f + (0.2f * (15 - mTimer)) / 5.0f);
+                field_0x254.y = 0.75f * (1.0f - (0.2f * (15 - mTimer)) / 5.0f);
+                field_0x254.z = 0.75f * (1.0f - (0.2f * (15 - mTimer)) / 5.0f);
+            } else if (mTimer > 0) {
+                field_0x254.x = 0.75f * (1.0f + (0.2f * mTimer) / 10.0f);
+                field_0x254.y = 0.75f * (1.0f - (0.2f * mTimer) / 10.0f);
+                field_0x254.z = 0.75f * (1.0f - (0.2f * mTimer) / 10.0f);
+            }
+        }
+        break;
+    case 6:
+        fn_8020D58C()->addBox(mSerial);
+        startSound_801F0E34(0x50026, 0);
+        if (mTimer <= 0) {
+            releaseEmitter_801EE434(mEmitter264);
+            releaseEmitter_801EE434(mEmitter268);
+            fn_8034335C(field_0x4, &mPos);
+            mState = 7;
+            mTimer = 3;
+        } else {
+            JGeometry::TVec3f pos(mPos.x + 4.0f, mPos.y - (6.0f + (8.0f * mTimer) / 600.0f), mPos.z);
+            if (mEmitter264 != NULL) {
+                setEmitterPos_8013CB44(mEmitter264, &pos, 1, 1, true);
+            }
+            if (mEmitter268 != NULL) {
+                setEmitterPos_8013CB44(mEmitter268, &pos, 1, 1, true);
+            }
+        }
+        break;
+    case 7:
+        mBox = getGameView_802D6A9C()->mVisibleBox;
+        mBox.addPos(-mPos.x, -mPos.y);
+        fn_801F2B20(5);
+        if (mTimer <= 0) {
+            if (field_0x24c == 1 && getGameView_802D6A9C()->field_0x4 == 1 &&
+                getGameView_802D6A9C()->field_0x8 == 0) {
+                fn_801F3668();
+            } else {
+                mAlive = false;
+            }
+        }
+        break;
+    }
+    if (mState != 2) {
+        JGeometry::TVec3f focus(mPos.x, mPos.y - mPos.z, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+    }
+    if (mTimer < 300 && mState == 6) {
+        field_0x240++;
+        if (mTimer < 120 && (field_0x240 & 1)) {
+            field_0x240++;
+        }
+        field_0x240 &= 7;
+        if (field_0x240 == 0) {
+            field_0x23c ^= 1;
+        }
+    }
 }
 
 // FIXME: 98.45 %. Two extra `mr` around the getResource results and the float registers of the matrix scale (scheduling).
