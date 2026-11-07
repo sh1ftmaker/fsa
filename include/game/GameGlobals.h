@@ -77,6 +77,8 @@ struct J2DScreen;
 class PaneCtrl_804AF86C;
 class JAISoundID; // JSystem/JAudio/Interface/JAISound.h (AudioMgr_8045A080::fn_80457F80)
 class cls_804B17A0;
+class JPABaseEmitter;
+struct J2DAnmBase;
 class PlayerManager_804A6F28;
 struct GameRootSub20_801902C0;
 
@@ -1143,7 +1145,32 @@ public:
     // 0x804399A0 (not written yet): sets the ortho context (fn_8013B490) and
     // draws; GameRoot's fn_80136828 calls it in screen mode 11.
     void fn_804399A0();
-    /* 0x04 */ u8 field_0x4[0x5C - 0x4]; // a J2DScreen* at 0x4
+    // 0x80439AB0 (game/tu_80438C68.cpp): the state reset; also what fn_80438E10(flag = 0) does.
+    void fn_80439AB0();
+    // 0x80438E10: stores flag in field_0x40, then resets unless it is set.
+    void fn_80438E10(u8 flag);
+    // 0x80438C68: the per-frame state machine (field_0x58): spawns the TNGL actor, then the message and the DETH sweep.
+    void fn_80438C68();
+    /* 0x04 */ J2DScreen* field_0x4;
+    /* 0x08 */ J2DAnmBase* field_0x8;
+    /* 0x0C */ JPABaseEmitter* field_0xc[10]; // 0xC..0x30; the last two are single emitters
+    /* 0x34 */ J2DPicture* field_0x34;
+    /* 0x38 */ s32 field_0x38;
+    /* 0x3C */ s32 field_0x3c;
+    /* 0x40 */ u8 field_0x40; // state; 3 makes fn_804399A0 raise lbl_8053ADC8's flags
+    /* 0x41 */ u8 field_0x41;
+    /* 0x42 */ u8 field_0x42;
+    /* 0x43 */ u8 field_0x43;
+    /* 0x44 */ s32 field_0x44;
+    /* 0x48 */ s32 field_0x48;
+    /* 0x4C */ f32 field_0x4c;
+    /* 0x50 */ f32 field_0x50;
+    /* 0x54 */ s16 field_0x54;
+    /* 0x56 */ s16 field_0x56;
+    /* 0x58 */ u8 field_0x58;
+    /* 0x59 */ u8 field_0x59;
+    /* 0x5A */ u8 field_0x5a;
+    /* 0x5B */ u8 field_0x5b;
     // An alpha: TileMap_804AA858::fn_802FB69C draws black boxes with it while paused.
     /* 0x5C */ u8 field_0x5c;
     // SHARED-EDIT: tested by fn_801914C4 (game/tu_801902C0.cpp) through lbl_8053AEC8.
@@ -1771,7 +1798,6 @@ void fn_801902D0(void* self);
 // Owners not known (0x803B8C90, 0x80439AB0; not written yet). Called by
 // fn_8013A1A4 (game/tu_80139BE8.cpp); arguments are its fields.
 u8 fn_803B8C90(void);
-void fn_80439AB0(void* self);
 }
 // game/tu_8037DF68.cpp (0x8038D870); called by fn_8013A1A4 (game/tu_80139BE8.cpp).
 void fn_8038D870(void);

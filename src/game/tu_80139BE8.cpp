@@ -133,7 +133,7 @@ void GameRootSub04_801F856C::fn_8013A1A4() {
     lbl_8053ACD0 = 1;
     field_0x10->fn_802A3D80();
     field_0x14->fn_8043EDF8();
-    fn_80439AB0(field_0x18);
+    field_0x18->fn_80439AB0();
     field_0x1c->fn_8037AFC0();
     field_0x20->fn_8019169C();
     fn_8038D870();
