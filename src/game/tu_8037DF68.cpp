@@ -3,6 +3,10 @@
 #include "game/GameMode.h"
 #include "game/GameState.h"
 #include "game/Message.h"
+#include "game/ActorManager.h"
+#include "game/Player.h"
+#include "game/StageFlag.h"
+#include "game/act/act_small_key.h"
 #include <stdio.h>
 #include <string.h>
 #include "JSystem/J2D/J2DPane.h"
@@ -543,6 +547,279 @@ u32 fn_803846BC(u32 msg) {
 
 u16 fn_803846A4(s32 index) {
     return lbl_8053AD78->mBmg->inf1.entries[index].id;
+}
+
+// The condition commands of a message are byte streams: their operands are unaligned words.
+static inline s32 operand(const char* p, s32 offset) {
+    return *(const s32*)(p + offset);
+}
+
+// FIXME(shotgun): 80.97 %, missing/extra + reloc-name
+// Follows the conditional-message commands (0x1A size 2, the twelve commands fn_80383E2C finds)
+// from message msg for the player window `window`: each command picks one of its operands as the
+// next message id (by a key or other holdable the player carries, a random draw, the player
+// count, the player's slot, a stage flag, a view bit...). Returns the message that has no command.
+u32 fn_80383EB0(s32 window, u32 msg) {
+    s32 player = fn_8022EA0C(window);
+    bool listed;
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        s32 mode = gGameRoot_8053AAF8->field_0x4c;
+        listed = mode == 7 || mode == 8 || mode == 9 || mode == 0x16 || mode == 0xA || mode == 0xB;
+    } else {
+        s32 mode = gGameRoot_8053AAF8->field_0x4c;
+        listed = mode == 7 || mode == 8 || mode == 9 || mode == 0x16 || mode == 0xA || mode == 0xB || mode == 0xC;
+    }
+    s32 slot = window;
+    if (listed) {
+        s32 mapped = fn_8022F340(window);
+        if (mapped >= 0 && mapped < 4) {
+            slot = mapped;
+        }
+    }
+    u32 index = msg;
+    while (true) {
+        u8 command;
+        const char* p = fn_80383E2C(index, &command);
+        if (p == NULL) {
+            return index;
+        }
+        switch (command) {
+        case 7: {
+            s32 yes = operand(p, 6);
+            s32 no = operand(p, 10);
+            if (getGameView_802D6A9C()->fn_802D800C((u8)p[5])) {
+                index = yes;
+            } else {
+                index = no;
+            }
+            break;
+        }
+        case 0x10: {
+            u8 kind = p[5];
+            s32 target = operand(p, 6);
+            u8 consume = p[0xE];
+            s32 next = operand(p, 10);
+            switch (kind) {
+            case 0:
+            case 1:
+            case 2:
+            case 0x10:
+                if (fn_8023EEB4(player) == 'KEY0') {
+                    SmallKey_804A8CD8* key = static_cast<SmallKey_804A8CD8*>(
+                        getActorManager_801F856C()->findActorBySerial_801F666C(fn_8023EF50(player)));
+                    s32 state = key->field_0x280;
+                    if ((state == 0 && kind == 0) || (state == 1 && kind == 1) || (state == 2 && kind == 2) ||
+                        (state == 9 && kind == 0x10))
+                    {
+                        next = target;
+                        if (consume) {
+                            fn_8023EE28(player);
+                        }
+                    }
+                }
+                break;
+            case 3:
+                if (fn_8023EEB4(player) == 'BORD') {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            case 4:
+                if (fn_8023EEB4(player) == 'STON') {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            case 5:
+                if (fn_8023EEB4(player) == 'HBMB') {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            case 6:
+                if (fn_8023EEB4(player) == 'NIWA') {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            case 7:
+                if (fn_8023EEB4(player) == 'GRAS') {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            case 8:
+            case 9:
+            case 10:
+                if (fn_8023EEB4(player) == 'TUBO') {
+                    ActorBase_804A5770* pot =
+                        getActorManager_801F856C()->findActorBySerial_801F666C(fn_8023EF50(player));
+                    u32 type = (pot->field_0x90 >> 7) & 0x1F;
+                    if ((type == 0 && kind == 10) || (type == 1 && kind == 8) || (type == 2 && kind == 9)) {
+                        next = target;
+                        if (consume) {
+                            fn_8023EE28(player);
+                        }
+                    }
+                }
+                break;
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                if (fn_8023EEB4(player) == 'PLAY') {
+                    if ((fn_8023ECF0(slot) == 0 && kind == 11) || (fn_8023ECF0(slot) == 1 && kind == 12) ||
+                        (fn_8023ECF0(slot) == 2 && kind == 13) || (fn_8023ECF0(slot) == 3 && kind == 14))
+                    {
+                        next = target;
+                        if (consume) {
+                            fn_8023EE28(player);
+                        }
+                    }
+                }
+                break;
+            case 15:
+                if (!fn_8023EFEC(player)) {
+                    next = target;
+                    if (consume) {
+                        fn_8023EE28(player);
+                    }
+                }
+                break;
+            }
+            index = next;
+            break;
+        }
+        case 0x17: {
+            s32 count = (u8)p[5];
+            s32 pick = (s32)((f32)count * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 1;
+            if (pick > count) {
+                pick = count;
+            }
+            index = fn_803846BC(fn_803846A4(index) + pick);
+            break;
+        }
+        case 0x18: {
+            s32 a = operand(p, 5);
+            s32 b = operand(p, 9);
+            s32 c = operand(p, 13);
+            s32 d = operand(p, 17);
+            switch (gGameRoot_8053AAF8->fn_80138A30()) {
+            case 1:
+                index = a;
+                break;
+            case 2:
+                index = b;
+                break;
+            case 3:
+                index = c;
+                break;
+            case 4:
+                index = d;
+                break;
+            }
+            break;
+        }
+        case 0x1D: {
+            s32 limit = operand(p, 5);
+            s32 high = operand(p, 9);
+            index = operand(p, 13);
+            if (fn_80236100(slot) >= limit) {
+                index = high;
+            }
+            break;
+        }
+        case 0x20: {
+            s32 a = operand(p, 5);
+            s32 b = operand(p, 9);
+            s32 c = operand(p, 13);
+            s32 d = operand(p, 17);
+            switch (slot) {
+            case 0:
+                index = a;
+                break;
+            case 1:
+                index = b;
+                break;
+            case 2:
+                index = c;
+                break;
+            case 3:
+                index = d;
+                break;
+            }
+            break;
+        }
+        case 0x21: {
+            s32 yes = operand(p, 5);
+            s32 no = operand(p, 9);
+            if (isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c)) {
+                index = yes;
+            } else {
+                index = no;
+            }
+            break;
+        }
+        case 0x23: {
+            u8 kind = p[5];
+            u16 bit = *(const u16*)(p + 6);
+            s32 yes = operand(p, 8);
+            s32 no = operand(p, 12);
+            u8 which;
+            if (kind >= 1 && kind <= 4) {
+                which = kind - 1;
+            } else {
+                which = slot;
+            }
+            if (getGameView_802D6A9C()->fn_802D7E5C(which, bit)) {
+                index = yes;
+            } else {
+                index = no;
+            }
+            break;
+        }
+        case 0x2C: {
+            s32 yes = operand(p, 5);
+            s32 no = operand(p, 9);
+            if (((gGameRoot_8053AAF8->field_0x83 >> (slot * 2)) & 3) == 2) {
+                index = yes;
+            } else {
+                index = no;
+            }
+            break;
+        }
+        case 0x30: {
+            s32 notFour = operand(p, 5);
+            s32 four = operand(p, 9);
+            if (fn_8022CAF8(slot) != 4) {
+                index = notFour;
+            } else {
+                index = four;
+            }
+            break;
+        }
+        case 0x33: {
+            s32 yes = operand(p, 5);
+            s32 no = operand(p, 9);
+            if (fn_802373EC(slot) == 1) {
+                index = yes;
+            } else {
+                index = no;
+            }
+            break;
+        }
+        }
+    }
 }
 
 // FIXME: 99.1. Regalloc only (r3 / r5 / r6 rotated); the jump table's name waits
