@@ -27,7 +27,7 @@ Cucco_804AB8C0::~Cucco_804AB8C0() {
     releaseEmitter_801EE434(mEmitter300);
 }
 
-// FIXME(shotgun): 90.79 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.90 %, missing/extra + reloc-name
 void Cucco_804AB8C0::init() {
     u16 angle = 0;
     mBox.i.x = -7.0f;
@@ -173,7 +173,7 @@ void Cucco_804AB8C0::init() {
     }
 }
 
-// FIXME(shotgun): 90.1 %, missing/extra
+// FIXME(shotgun): 90.19 %, missing/extra
 void Cucco_804AB8C0::vfunc_0x10() {
     s32 serial = -1;
     if (field_0x16c == -1) {
@@ -203,7 +203,7 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 79.84 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.97 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {
         return;
@@ -290,7 +290,7 @@ void Cucco_804AB8C0::fn_80332A60() {
     field_0xb0 = 0x1000;
 }
 
-// FIXME(shotgun): 91.63 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.77 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_803324A8() {
     s32 outDir = -1;
     f32 outDist = 0.0f;
@@ -368,7 +368,7 @@ void Cucco_804AB8C0::fn_803324A8() {
     }
 }
 
-// FIXME(shotgun): 95.7 %, scheduling+regalloc
+// FIXME(shotgun): 95.86 %, scheduling+regalloc
 u8 Cucco_804AB8C0::fn_80332378() {
     JGeometry::TVec3f out;
     out.z = 0.0f;
@@ -403,7 +403,7 @@ u8 Cucco_804AB8C0::fn_80332378() {
     return r;
 }
 
-// FIXME(shotgun): 63.06 %, missing/extra + reloc-name
+// FIXME(shotgun): 63.12 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80331E6C() {
     if (field_0x2a4[0] != 1) {
         field_0x284--;
@@ -545,7 +545,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
     }
 }
 
-// FIXME(shotgun): 96.7 %, scheduling+regalloc
+// FIXME(shotgun): 96.82 %, scheduling+regalloc
 void Cucco_804AB8C0::fn_80331D38() {
     if (mPos.z < 8.0f && field_0x268 > 0) {
         JGeometry::TBox2f box;
@@ -578,7 +578,7 @@ void Cucco_804AB8C0::fn_80331D38() {
     }
 }
 
-// FIXME(shotgun): 99.0 %, different (literal pool)
+// FIXME(shotgun): 99.13 %, different
 void Cucco_804AB8C0::fn_80331C24() {
     if (field_0x290 == 0 || field_0x290 == 6) {
         if (fn_8022461C(&mPos, field_0x4) == 0x39) {
@@ -599,7 +599,6 @@ void Cucco_804AB8C0::fn_80331C24() {
     }
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void Cucco_804AB8C0::fn_80331B40() {
     if (field_0x2a3 == 1) {
         if (field_0x230 == 1) {
@@ -621,7 +620,6 @@ void Cucco_804AB8C0::fn_80331B40() {
     }
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void Cucco_804AB8C0::fn_803319B8() {
     const s32 tbl[4] = {0, 1, 0, 1};
     field_0x264 = ((field_0x98 & 1) << 1) + tbl[field_0x254];
@@ -650,7 +648,7 @@ void Cucco_804AB8C0::fn_803319B8() {
     }
 }
 
-// FIXME(shotgun): 74.05 %, missing/extra + reloc-name
+// FIXME(shotgun): 74.15 %, missing/extra
 bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -1372,7 +1370,7 @@ void Cucco_804AB8C0::update() {
     }
 }
 
-// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.94 %, missing/extra
 void Cucco_804AB8C0::draw() {
     if (field_0x2a7 == 1 || field_0x288 == 0) {
         return;
