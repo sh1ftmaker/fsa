@@ -19,15 +19,6 @@ struct cls_80453830 {
     /* 0xC */ s32 field_0xc;
 }; // Size: 0x10
 
-// An element of the arrays at 0x6C / 0x88 / 0xB0 of cls_804B1D58, seen only through its destructor
-// (fn_8045270C): it sets bit 0 of the word at 0xF4, writes 1 to 0x24 and drops the pointer.
-struct cls_804B1D58_Item {
-    /* 0x00 */ u8 field_0x0[0x24];
-    /* 0x24 */ s32 field_0x24;
-    /* 0x28 */ u8 field_0x28[0xF4 - 0x28];
-    /* 0xF4 */ u32 field_0xf4;
-};
-
 // Vtable 0x804B1D58 (one slot, the destructor), 0x188 bytes, defined in
 // game/tu_8044C7F0.cpp (not written yet). The constructor fn_80452A80 stores
 // `this` in lbl_8053AF40; tu_8037ACC4 allocates it with __nw__(0x188) when
@@ -49,8 +40,8 @@ public:
     // 0x8044C968: puts the pane controls back (slid out by 300, alpha 0) and moves 'Pcul01' to the
     // row field_0xf8; state 2.
     void fn_8044C968();
-    // 0x8044C7F0: flags the item slots for release (bit 0 of 0xF4, 0x24 = 1, pointer cleared) and
-    // deletes the emitters; the destructor inlines it.
+    // 0x8044C7F0: lets the emitters of 0x6C / 0x88 / 0xB0 run out (stopCreateParticle, setMaxFrame(1), pointer
+    // cleared) and deletes the ones of 0xA4 / 0xC0; the destructor inlines it.
     void fn_8044C7F0();
     // 0x80453848: bit 8 of field_0xf4 is set and field_0xd0 + field_0xdc is 0.
     bool fn_80453848();
@@ -61,10 +52,10 @@ public:
     /* 0x048 */ PaneCtrl_804AF86C* field_0x48[3];
     /* 0x054 */ PaneCtrl_804AF86C* field_0x54[3];
     /* 0x060 */ PaneCtrl_804AF86C* field_0x60[3];
-    /* 0x06C */ cls_804B1D58_Item* field_0x6c[7];
-    /* 0x088 */ cls_804B1D58_Item* field_0x88[7];
+    /* 0x06C */ JPABaseEmitter* field_0x6c[7];
+    /* 0x088 */ JPABaseEmitter* field_0x88[7];
     /* 0x0A4 */ JPABaseEmitter* field_0xa4[3];
-    /* 0x0B0 */ cls_804B1D58_Item* field_0xb0[4];
+    /* 0x0B0 */ JPABaseEmitter* field_0xb0[4];
     /* 0x0C0 */ JPABaseEmitter* field_0xc0[3];
     /* 0x0CC */ u8 field_0xcc[4];
     // 0xD0, 0xF4: fn_80453848 reads them as counts / flags (bit 8 of 0xF4), the destructor deletes
