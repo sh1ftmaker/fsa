@@ -1752,8 +1752,78 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
     gAudioMgr_8053AF80->fn_80458880(id, -1);
 }
 
-// FIXME(shotgun): drawSprite_801F06F0 (0x630: hit-flash colour blend on the params copy, then
-// fn_801EF830) and fn_801EFD34 (0x588, the same with a loaded resource) not written in this pass.
+// FIXME(shotgun): 57.1 %, missing/extra (the hit-colour and params copies are scheduled differently)
+// Draws frame `frame` of the "SOB " bank `name` at mPos: the shadow (fn_801EF830) unless
+// mSpriteParams.mMtx is set, then the sprite with a copy of params. While the hit timer
+// field_0xd8 runs (its last 25 frames, or all of it when shorter) the copy's 0x14 colour is
+// raised by the fade (minus 6 * mPos.z for a thrown actor, kind 2; red and half green for hit
+// type 5); otherwise the actor's own matrix is applied. Layer 8 draws through fn_801EF574
+// offset by the view box (not for names with 'g' at [6]).
+void ActorBase_804A5770::drawSprite_801F06F0(const char* name, s32 frame,
+                                             SpriteParams_801F5AE0* params, s32 flags, f32 scaleX,
+                                             f32 scaleY) const {
+    if (field_0x4 > 8) {
+        return;
+    }
+    if (mSpriteParams.mMtx == NULL) {
+        fn_801EF830(field_0x4, &mPos, params, flags, name, frame, NULL);
+    }
+    SpriteParams_801F5AE0 sp;
+    if (field_0xd8 > 0) {
+        if (params != NULL) {
+            sp = *params;
+        }
+        if (field_0xd8 > field_0xdc - 0x19 || field_0xdc < 0x19) {
+            s32 v;
+            if (field_0xdc < 0x19) {
+                v = field_0xd8 * 0xFF / field_0xdc;
+            } else {
+                v = (field_0xd8 - (field_0xdc - 0x19)) * 0xFF / 25;
+            }
+            if (field_0xf8 == 2) {
+                v = (s32)((f32)v - 6.0f * mPos.z);
+                v = v > 0 ? v : 0;
+            }
+            if (field_0xfc == 5) {
+                sp.field_0x14.r += v;
+                sp.field_0x14.g += v >> 1;
+            } else {
+                sp.field_0x14.r += v;
+                sp.field_0x14.g += v;
+                sp.field_0x14.b += v;
+            }
+        }
+    } else {
+        if (params != NULL) {
+            sp = *params;
+        } else {
+            sp.field_0x30 = mSpriteParams.field_0x30;
+        }
+        if (mSpriteParams.mMtx != NULL) {
+            if (sp.mMtx != NULL) {
+                // FIXME(shotgun): the original copies sp.mMtx inline (12 word pairs) after the
+                // identity; no Mtx struct type found for it.
+                Mtx m;
+                PSMTXIdentity(m);
+                PSMTXCopy(sp.mMtx, m);
+                PSMTXConcat(mSpriteParams.mMtx, m, m);
+                sp.mMtx = m;
+            } else {
+                sp.mMtx = mSpriteParams.mMtx;
+            }
+        }
+    }
+    if (field_0x4 < 8) {
+        void* r = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, r, frame, &sp, scaleX, scaleY);
+    } else if (field_0x4 == 8 && name[6] != 'g') {
+        GameView_804A9950* view = getGameView_802D6A9C();
+        JGeometry::TVec3f pos = mPos;
+        pos.x += view->mVisibleBox.i.x;
+        pos.y += view->mVisibleBox.i.y;
+        fn_801EF574(name, frame, &pos, &sp);
+    }
+}
 
 // FIXME(shotgun): 69 %, missing/extra + reloc-name (params copied differently, scale literals)
 void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params,
@@ -1809,6 +1879,69 @@ void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_8
                 fn_80307AC8(mSerial, field_0x4, &pos, frame, mode, dying, -1);
             }
         }
+    }
+}
+
+// FIXME(shotgun): 57.4 %, missing/extra
+// drawSprite_801F06F0 for a loaded resource `res` (fn_802F745C) at mPos + (x, y, z), below
+// layer 8. During the hit flash a fast knock-back (|field_0x3c|^2 > 1) sets the copy's 0x30 to 8;
+// otherwise the actor's matrix is used and the death countdown field_0x188 tints it (200, 0x41).
+void ActorBase_804A5770::fn_801EFD34(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 scaleX,
+                                     f32 scaleY, f32 arg_f3) {
+    if (field_0x4 >= 8) {
+        return;
+    }
+    if (mSpriteParams.mMtx == NULL) {
+        fn_801EF830(field_0x4, &mPos, params, flags, NULL, 0, res);
+    }
+    SpriteParams_801F5AE0 sp;
+    if (field_0xd8 > 0) {
+        if (params != NULL) {
+            sp = *params;
+        }
+        if (field_0xd8 > field_0xdc - 0x19 || field_0xdc < 0x19) {
+            s32 v;
+            if (field_0xdc < 0x19) {
+                v = field_0xd8 * 0xFF / field_0xdc;
+            } else {
+                v = (field_0xd8 - (field_0xdc - 0x19)) * 0xFF / 25;
+            }
+            if (field_0xf8 == 2) {
+                v = (s32)((f32)v - 6.0f * mPos.z);
+                v = v > 0 ? v : 0;
+            }
+            if (field_0xfc == 5) {
+                sp.field_0x14.r += v;
+                sp.field_0x14.g += v >> 1;
+            } else {
+                sp.field_0x14.r += v;
+                sp.field_0x14.g += v;
+                sp.field_0x14.b += v;
+            }
+        }
+        if (field_0x3c.squared() > 1.0f) {
+            sp.field_0x30 = 8;
+        }
+    } else {
+        if (params != NULL) {
+            sp = *params;
+        } else {
+            sp.field_0x30 = mSpriteParams.field_0x30;
+        }
+        if (mSpriteParams.mMtx != NULL) {
+            sp.mMtx = mSpriteParams.mMtx;
+        }
+        if (field_0x188 > 0) {
+            sp.field_0x14.r = 200;
+            sp.field_0x14.g = 0x41;
+        }
+    }
+    JGeometry::TVec3f pos = mPos;
+    pos.x += scaleX;
+    pos.y += scaleY;
+    pos.z += arg_f3;
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &sp);
     }
 }
 
