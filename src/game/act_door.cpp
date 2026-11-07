@@ -169,16 +169,16 @@ void Door_804A8D88::init() {
 }
 
 
-void Door_804A8D88::fn_802C59B0(const JGeometry::TVec3f* delta) {
-    field_0x258 += delta->x;
-    field_0x25c += delta->y;
-}
-
 // Plain TVec3 setter that update calls everywhere.
 void fn_802C7CB8(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
     v->set(x, y, z);
 }
 
 void Door_804A8D88::draw() {}
+
+void Door_804A8D88::fn_802C59B0(const JGeometry::TVec3f* delta) {
+    field_0x258 += delta->x;
+    field_0x25c += delta->y;
+}
 
 Door_804A8D88::~Door_804A8D88() {}
