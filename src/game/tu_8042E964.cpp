@@ -8,6 +8,16 @@
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
+// The panes 'Pwb01'-'Pwb05' / 'Pwbb01'-'Pwbb05' of warning_window.blo carry four s16 pairs at 0x112
+// (read by the constructor below). Their exact J2DPane subclass is not identified (our J2DPicture
+// has colours there), so the pairs are a member of this stand-in subclass; the panes are never
+// constructed as it.
+class WarningPane : public J2DPane {
+public:
+    /* 0x0CC */ u8 field_0xcc[0x112 - 0xCC];
+    /* 0x112 */ JGeometry::TVec2<s16> mCoords[4];
+};
+
 cls_804B1634* lbl_8053AEC0;
 cls_804B1600* lbl_8053AEC4;
 
@@ -33,7 +43,7 @@ inline cls_804B1600::cls_804B1600() {
     field_0x12 = 0;
 }
 
-// FIXME(shotgun): 93.05 %, missing/extra (loop counter and pointer registers)
+// FIXME(shotgun): 94.05 %, missing/extra (loop counter and pointer registers)
 cls_804B1634::cls_804B1634() {
     JUTResFont* font;
     lbl_8053AEC0 = this;
@@ -67,17 +77,15 @@ cls_804B1634::cls_804B1634() {
     for (s32 i = 0; i < 4; i++) {
         u8 k = 0;
         for (s32 j = 0; j < 2; j++) {
-            const JGeometry::TVec2<s16>* a = reinterpret_cast<const JGeometry::TVec2<s16>*>(
-                reinterpret_cast<const u8*>(field_0x10[i]->mPane) + 0x112);
-            const JGeometry::TVec2<s16>* b = reinterpret_cast<const JGeometry::TVec2<s16>*>(
-                reinterpret_cast<const u8*>(field_0x24[i]->mPane) + 0x112);
-            field_0x38[i * 4 + j * 2] = a[k];
-            field_0x78[i * 4 + j * 2] = b[k];
+            const WarningPane* a = static_cast<const WarningPane*>(field_0x10[i]->mPane);
+            const WarningPane* b = static_cast<const WarningPane*>(field_0x24[i]->mPane);
+            field_0x38[i * 4 + j * 2] = a->mCoords[k];
+            field_0x78[i * 4 + j * 2] = b->mCoords[k];
             k++;
-            a = reinterpret_cast<const JGeometry::TVec2<s16>*>(reinterpret_cast<const u8*>(field_0x10[i]->mPane) + 0x112);
-            b = reinterpret_cast<const JGeometry::TVec2<s16>*>(reinterpret_cast<const u8*>(field_0x24[i]->mPane) + 0x112);
-            field_0x38[i * 4 + j * 2 + 1] = a[k];
-            field_0x78[i * 4 + j * 2 + 1] = b[k];
+            a = static_cast<const WarningPane*>(field_0x10[i]->mPane);
+            b = static_cast<const WarningPane*>(field_0x24[i]->mPane);
+            field_0x38[i * 4 + j * 2 + 1] = a->mCoords[k];
+            field_0x78[i * 4 + j * 2 + 1] = b->mCoords[k];
             k++;
         }
     }
