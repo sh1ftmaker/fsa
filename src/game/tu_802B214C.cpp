@@ -3,7 +3,6 @@
 #include "game/GameGlobals.h"
 #include "game/cls_804A8588.h"
 
-
 // Two entries; field_0x248 indexes it when field_0x240 is 1.
 static const f32 lbl_805409C8[2] = {1.0f, -1.0f};
 
@@ -53,12 +52,15 @@ void RotatingSkull_804A8588::init() {
     field_0x230 = 0;
 }
 
-u8 RotatingSkull_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
-    bool result = ActorBase_804A5770::vfunc_0x4C(layer, pos);
-    if (!result) {
-        field_0x27c = 0;
+// FIXME(shotgun): 99.91 %, reloc-name (params is built and unused in the original)
+void RotatingSkull_804A8588::fn_802B2728() {
+    if (field_0x25c != 0) {
+        SpriteParams_801F5AE0 params;
+        params.field_0x1d = 0;
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x258 + 0x78, NULL, 1, 1.0f, 1.0f);
+        drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 128), 30.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x258 + 0x78, 0, 2, -1, false, 0, 0);
     }
-    return result;
 }
 
 // The sign of a bounce: -1 when the push (`along`) and the other velocity component point
@@ -166,15 +168,14 @@ void RotatingSkull_804A8588::fn_802B21EC() {
     }
 }
 
-// FIXME(shotgun): 99.91 %, reloc-name (params is built and unused in the original)
-void RotatingSkull_804A8588::fn_802B2728() {
-    if (field_0x25c != 0) {
-        SpriteParams_801F5AE0 params;
-        params.field_0x1d = 0;
-        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x258 + 0x78, NULL, 1, 1.0f, 1.0f);
-        drawShadow(field_0x4, &mPos, JUtility::TColor(0, 0, 0, 128), 30.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x258 + 0x78, 0, 2, -1, false, 0, 0);
+u8 RotatingSkull_804A8588::fn_802B21AC(s32 layer, const JGeometry::TVec3f* pos) {
+    bool result = ActorBase_804A5770::vfunc_0x4C(layer, pos);
+    if (!result) {
+        field_0x27c = 0;
     }
+    return result;
 }
 
 RotatingSkull_804A8588::~RotatingSkull_804A8588() {}
+
+// fn_802B28E4 (0x802B28E4, 0x660 bytes): not written (budget).
