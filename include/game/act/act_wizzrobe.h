@@ -17,6 +17,7 @@ public:
     Wizzrobe_804A0EDC() {}
     /* 0x08 */ virtual ~Wizzrobe_804A0EDC();
     /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x44 */ virtual void vfunc_0x44();
 
