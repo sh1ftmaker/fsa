@@ -134,6 +134,8 @@ static const u8 sDigitRed[4] = {0x28, 0xFF, 0x32, 0xBE};
 static const u8 sDigitGreen[4] = {0xFF, 0x50, 0xC8, 0x78};
 static const u8 sDigitBlue[4] = {0x28, 0x50, 0xFF, 0xFF};
 
+// Not auto-inlined: draw and update call these out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // Force Gem / fairy sounds by tens digit.
 static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
 
@@ -236,8 +238,83 @@ void Score_804AF4C0::fn_80393228() {
     }
 }
 
-// Not auto-inlined: draw calls fn_80391D44 out of line in the original (docs/INLINING.md, pragma rule 1).
-#pragma auto_inline off
+// Digits of the Force Gem value brackets (1, 5, 20, 50, 100, 150, 200, 300, 1000, 1500, 2000, 3000) by mValue.
+// Draws one digit of the gem value at x + dx, in the gem-yellow colour.
+static inline void putScoreDigit(const Score_804AF4C0* self, f32 fade, f32 dx, u8 digit) {
+    Vec pos;
+    pos.x = self->mPos.x + dx;
+    pos.y = self->mPos.y;
+    pos.z = self->mPos.z;
+    if (self->field_0x4 < 8) {
+        lbl_8053AF50->fn_80455770(0.3f, digit, &pos, JUtility::TColor(255, 0xD2, 0, (s32)fade));
+    }
+}
+
+// FIXME(shotgun): 49.68 %, missing/extra + reloc-name (the digit calls of each case are unrolled in the original)
+void Score_804AF4C0::fn_80391F58() {
+    f32 fade = 255.0f * ((f32)mTimer / 90.0f);
+    switch (mValue) {
+    case 0:
+        putScoreDigit(this, fade, 0.0f, 1);
+        break;
+    case 1:
+        putScoreDigit(this, fade, 0.0f, 5);
+        break;
+    case 2:
+        putScoreDigit(this, fade, -5.0f, 2);
+        putScoreDigit(this, fade, 5.0f, 0);
+        break;
+    case 3:
+        putScoreDigit(this, fade, -5.0f, 5);
+        putScoreDigit(this, fade, 5.0f, 0);
+        break;
+    case 4:
+        putScoreDigit(this, fade, -10.0f, 1);
+        putScoreDigit(this, fade, 0.0f, 0);
+        putScoreDigit(this, fade, 10.0f, 0);
+        break;
+    case 5:
+        putScoreDigit(this, fade, -10.0f, 1);
+        putScoreDigit(this, fade, 0.0f, 5);
+        putScoreDigit(this, fade, 10.0f, 0);
+        break;
+    case 6:
+        putScoreDigit(this, fade, -10.0f, 2);
+        putScoreDigit(this, fade, 0.0f, 0);
+        putScoreDigit(this, fade, 10.0f, 0);
+        break;
+    case 7:
+        putScoreDigit(this, fade, -10.0f, 3);
+        putScoreDigit(this, fade, 0.0f, 0);
+        putScoreDigit(this, fade, 10.0f, 0);
+        break;
+    case 8:
+        putScoreDigit(this, fade, -15.0f, 1);
+        putScoreDigit(this, fade, -5.0f, 0);
+        putScoreDigit(this, fade, 5.0f, 0);
+        putScoreDigit(this, fade, 15.0f, 0);
+        break;
+    case 9:
+        putScoreDigit(this, fade, -15.0f, 1);
+        putScoreDigit(this, fade, -5.0f, 5);
+        putScoreDigit(this, fade, 5.0f, 0);
+        putScoreDigit(this, fade, 15.0f, 0);
+        break;
+    case 10:
+        putScoreDigit(this, fade, -15.0f, 2);
+        putScoreDigit(this, fade, -5.0f, 0);
+        putScoreDigit(this, fade, 5.0f, 0);
+        putScoreDigit(this, fade, 15.0f, 0);
+        break;
+    case 11:
+        putScoreDigit(this, fade, -15.0f, 3);
+        putScoreDigit(this, fade, -5.0f, 0);
+        putScoreDigit(this, fade, 5.0f, 0);
+        putScoreDigit(this, fade, 15.0f, 0);
+        break;
+    }
+}
+
 // FIXME(shotgun): 63.6 %, missing/extra (the original builds a TVec3f copy of mPos and passes it on)
 void Score_804AF4C0::fn_80391D44() {
     s32 n = fn_8023BC38(mPlayer) / 60 + 1;
@@ -268,7 +345,6 @@ void Score_804AF4C0::fn_80391D44() {
         }
     }
 }
-// FIXME(shotgun): not written (size 0x12D0): fn_80391F58
 #pragma auto_inline reset
 
 Score_804AF4C0::~Score_804AF4C0() {}
