@@ -137,8 +137,7 @@ extern cls_804AFB30 lbl_8050EC80;
 // Half of cls_804AFB3C (0x45 bytes); the object holds two, 0x90 apart, and its
 // constructor clears both in the same loops.
 struct cls_804AFB3C_Half {
-    /* 0x00 */ u8 field_0x0[16];
-    /* 0x10 */ u8 field_0x10[0x20 - 0x10];
+    /* 0x00 */ u8 field_0x0[0x20];
     /* 0x20 */ u8 field_0x20[8];
     /* 0x28 */ u8 field_0x28;
     /* 0x29 */ u8 field_0x29[8];

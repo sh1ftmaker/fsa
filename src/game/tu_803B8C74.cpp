@@ -67,16 +67,11 @@ s32 cls_804AFB30::fn_803B933C(SaveFile_803B950C* files, s32 index) {
 
 extern const s32 lbl_80476548[8];
 
-// FIXME(shotgun): 60.7 %, missing/extra (the 32-byte clear loop and the 8-entry loop unroll differently from the original)
 // 0x803B9160
 cls_804AFB3C::cls_804AFB3C() {
-    for (s32 i = 0; i < 16; i++) {
+    for (u32 i = 0; i < 0x20; i++) {
         field_0x4.field_0x0[i] = 0;
         field_0x94.field_0x0[i] = 0;
-    }
-    for (s32 i = 0; i < 16; i++) {
-        field_0x4.field_0x10[i] = 0;
-        field_0x94.field_0x10[i] = 0;
     }
     for (s32 i = 0; i < 8; i++) {
         field_0x4.field_0x20[i] = 0;
