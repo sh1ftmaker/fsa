@@ -9,6 +9,7 @@
 // cls_804B1920 calls are declared.
 class cls_804B146C {
 public:
+    virtual ~cls_804B146C(); // fn_80426AD4
     // Owner: game/tu_8042165C.cpp (0x80425128). Called with only the object.
     void fn_80425128();
     // Owner: game/tu_8042165C.cpp (0x80425234). Called with the three
@@ -23,6 +24,8 @@ public:
     // Owner: game/tu_8042165C.cpp (0x80425F6C). Called with only the object by
     // cls_804B1920::fn_8043DC98 (its draw).
     void fn_80425F6C();
+    // Owner: game/tu_8042165C.cpp (0x80425F24). Called with only the object by cls_804B1920::fn_8043D39C.
+    void fn_80425F24();
 };
 
 #endif

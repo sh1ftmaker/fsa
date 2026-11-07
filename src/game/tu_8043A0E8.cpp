@@ -22,12 +22,44 @@
 #include "game/Message.h"
 #include "game/Player.h"
 #include <string.h>
+#include <math.h>
 
 // Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
 // original inlines no same-unit plain function. Checked: built with inlining off,
 // every written function's calls to this unit's functions equal the original's
 // `bl`s. The callers that need it: fn_8043E7CC calls fn_80440928 out of line.
 #pragma auto_inline off
+
+// The panel offsets and the box test the panel checks inline (fn_8043D514 / fn_8043D57C /
+// fn_8043DF24 as written out in fn_8043E398).
+static inline f32 topOffset(cls_804B1920* m) {
+    f32 result = 0.0f;
+    if (m->field_0x10b != 0 && m->field_0x10c == 1) {
+        result = -66.0f * (-87.0f - (m->field_0x40[9]->mPane->getBounds()->i.y - 13.0f)) / 100.0f;
+    }
+    return result;
+}
+
+static inline f32 bottomOffset(cls_804B1920* m) {
+    f32 result = 0.0f;
+    if (m->field_0x10b != 0 && m->field_0x10c == 0) {
+        result = -66.0f * (100.0f - (m->field_0x40[0]->mPane->getBounds()->i.y - m->field_0x40[0]->field_0xc)) / 100.0f;
+    }
+    return result;
+}
+
+static inline bool insideBox(f32 x, f32 y, f32 px, f32 py, f32 margin) {
+    JGeometry::TBox2f box(x - 94.0f, y - 61.5f, 94.0f + x, 61.5f + y);
+    box.i.x -= margin;
+    box.i.y -= margin;
+    box.f.x = margin + box.f.x;
+    box.f.y = margin + box.f.y;
+    if (px >= box.i.x && px <= box.f.x && py >= box.i.y && py <= box.f.y) {
+        return true;
+    }
+    return false;
+}
+
 
 void fn_804408F0(JGeometry::TVec3f* pos);
 void fn_80440928(f32 x, f32 y);
@@ -63,6 +95,110 @@ static const char* lbl_804B1900[] = {
 
 void fn_80440928(f32 x, f32 y) {
     lbl_8053AED0->fn_8043DF8C(x, y);
+}
+
+cls_804B1920::~cls_804B1920() {
+    if (field_0x290 != NULL) {
+        delete field_0x290;
+        field_0x290 = NULL;
+    }
+    if (field_0x294 != NULL) {
+        delete field_0x294;
+        field_0x294 = NULL;
+    }
+    if (field_0x298 != NULL) {
+        delete field_0x298;
+        field_0x298 = NULL;
+    }
+    if (field_0x2b8 != NULL) {
+        delete field_0x2b8;
+        field_0x2b8 = NULL;
+    }
+    if (field_0x2b0 != NULL) {
+        delete field_0x2b0;
+        field_0x2b0 = NULL;
+    }
+    if (field_0x29c != NULL) {
+        delete field_0x29c;
+        field_0x29c = NULL;
+    }
+    if (field_0x2a8 != NULL) {
+        delete field_0x2a8;
+        field_0x2a8 = NULL;
+    }
+    if (field_0x2b4 != NULL) {
+        delete field_0x2b4;
+        field_0x2b4 = NULL;
+    }
+    if (field_0x2ac != NULL) {
+        delete field_0x2ac;
+        field_0x2ac = NULL;
+    }
+    if (field_0x2a4 != NULL) {
+        delete field_0x2a4;
+        field_0x2a4 = NULL;
+    }
+    if (field_0x2a0 != NULL) {
+        delete field_0x2a0;
+        field_0x2a0 = NULL;
+    }
+    if (field_0x2bc != NULL) {
+        delete field_0x2bc;
+        field_0x2bc = NULL;
+    }
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    for (s32 i = 0; i < 12; i++) {
+        delete field_0x40[i];
+        field_0x40[i] = NULL;
+    }
+    delete field_0x70[0];
+    field_0x70[0] = NULL;
+    delete field_0x70[1];
+    field_0x70[1] = NULL;
+    delete field_0x258[0];
+    field_0x258[0] = NULL;
+    delete field_0x258[1];
+    field_0x258[1] = NULL;
+    delete field_0x258[2];
+    field_0x258[2] = NULL;
+    delete field_0x258[3];
+    field_0x258[3] = NULL;
+    delete field_0x258[4];
+    field_0x258[4] = NULL;
+    delete field_0x258[5];
+    field_0x258[5] = NULL;
+    delete field_0x258[6];
+    field_0x258[6] = NULL;
+    delete field_0x258[7];
+    field_0x258[7] = NULL;
+    delete field_0x258[8];
+    field_0x258[8] = NULL;
+    delete field_0x258[9];
+    field_0x258[9] = NULL;
+    delete field_0x280[0];
+    field_0x280[0] = NULL;
+    delete field_0x280[1];
+    field_0x280[1] = NULL;
+    delete field_0x280[2];
+    field_0x280[2] = NULL;
+    delete field_0x280[3];
+    field_0x280[3] = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0x14[i];
+        field_0x14[i] = NULL;
+    }
+    delete field_0x14[4];
+    field_0x14[4] = NULL;
+    if (field_0x10 != NULL) {
+        delete field_0x10;
+        field_0x10 = NULL;
+    }
+    lbl_8053AED0 = NULL;
 }
 
 void cls_804B1920::fn_8043EDF8() {
@@ -105,10 +241,114 @@ void cls_804B1920::fn_8043EDE8(s32 arg) {
     field_0xe4 = 30;
 }
 
+// FIXME(shotgun): 99.07 %, regalloc-only
+void cls_804B1920::fn_8043E80C(u32 digit, u8 alpha, u32 top, u32 bottom, f32 x, f32 y, f32 scale) {
+    f32 sx;
+    f32 sy;
+    if ((99.0f == scale) | ((90.0f == scale) | (91.0f == scale))) {
+        f32 size = 96.0f;
+        sx = size;
+        sy = size;
+    } else if (scale > 1.0f) {
+        f32 size = 24.0f * scale;
+        sx = size;
+        sy = size;
+    } else if (1.0f == scale) {
+        f32 size = 19.2f;
+        sx = size;
+        sy = size;
+    } else {
+        f32 size = 9.6f;
+        sx = size;
+        sy = size;
+    }
+    f32 px = (12.0f + x) - sx * 0.5f;
+    f32 py = (12.0f + y) - sy * 0.5f;
+    switch (digit) {
+    case 0:
+        field_0x258[0]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[0]->setAlpha(alpha);
+        field_0x258[0]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 1:
+        field_0x258[1]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[1]->setAlpha(alpha);
+        field_0x258[1]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 2:
+        field_0x258[2]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[2]->setAlpha(alpha);
+        field_0x258[2]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 3:
+        field_0x258[3]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[3]->setAlpha(alpha);
+        field_0x258[3]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 4:
+        field_0x258[4]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[4]->setAlpha(alpha);
+        field_0x258[4]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 5:
+        field_0x258[5]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[5]->setAlpha(alpha);
+        field_0x258[5]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 6:
+        field_0x258[6]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[6]->setAlpha(alpha);
+        field_0x258[6]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 7:
+        field_0x258[7]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[7]->setAlpha(alpha);
+        field_0x258[7]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 8:
+        field_0x258[8]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[8]->setAlpha(alpha);
+        field_0x258[8]->draw(px, py, sx, sy, false, false, false);
+        break;
+    case 9:
+        field_0x258[9]->setBlackWhite(JUtility::TColor(top), JUtility::TColor(bottom));
+        field_0x258[9]->setAlpha(alpha);
+        field_0x258[9]->draw(px, py, sx, sy, false, false, false);
+        break;
+    }
+}
+
 void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     Vec screen;
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
     fn_80440928(screen.x, screen.y);
+}
+
+// FIXME(shotgun): 88.13 %, missing/extra (the cx / cy and box bounds live in fewer float registers)
+void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
+    Vec screenA;
+    Vec screenB;
+    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(a, false, false, &screenA);
+    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(b, false, false, &screenB);
+    f32 dy = fabs(screenB.y - screenA.y);
+    f32 margin = fabs(screenB.x - screenA.x);
+    if (!(margin >= dy)) {
+        margin = dy;
+    }
+    f32 cx = (screenA.x + screenB.x) * 0.5f;
+    f32 cy = (screenA.y + screenB.y) * 0.5f;
+    if (insideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
+        lbl_8053AED0->field_0xdc |= 1;
+    }
+    if (insideBox(514.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
+        lbl_8053AED0->field_0xdc |= 2;
+    }
+    if (insideBox(93.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
+        lbl_8053AED0->field_0xdc |= 4;
+    }
+    if (insideBox(514.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
+        lbl_8053AED0->field_0xdc |= 8;
+    }
 }
 
 // FIXME: 96.0. Same instructions, float registers allocated differently (f0/f7/f8).
@@ -180,6 +420,31 @@ void cls_804B1920::fn_8043DC98() {
         field_0xc->search('Ndata05')->move(field_0x110 + lbl_8050DB0C.field_0x4c[(0x2A2 - 0x4C) / 2],
                                            field_0x114 + lbl_8050DB0C.field_0x4c[(0x2A4 - 0x4C) / 2]);
         field_0xc->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    }
+}
+
+// FIXME(shotgun): 99.38 %, reloc-name
+void cls_804B1920::fn_8043DB58() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    u8 mode = field_0x256;
+    if (mode != 0xFF) {
+        switch (mode) {
+        case 0:
+            field_0x14[0]->draw(179.5f, 173.0f, false, false, false);
+            break;
+        case 1:
+            field_0x14[1]->draw(179.5f, 173.0f, false, false, false);
+            break;
+        case 2:
+            field_0x14[2]->draw(179.5f, 173.0f, false, false, false);
+            break;
+        case 3:
+            field_0x14[3]->draw(179.5f, 173.0f, false, false, false);
+            break;
+        case 4:
+            field_0x14[4]->draw(179.5f, 173.0f, false, false, false);
+            break;
+        }
     }
 }
 
@@ -349,6 +614,29 @@ f32 cls_804B1920::fn_8043D514() {
         result = -66.0f * (-87.0f - (field_0x40[9]->mPane->getBounds()->i.y - 13.0f)) / 100.0f;
     }
     return result;
+}
+
+// FIXME(shotgun): 99.36 %, reloc-name
+void cls_804B1920::fn_8043D39C() {
+    if (gGameRoot_8053AAF8->field_0x7f) {
+        field_0x290->fn_8041F5FC();
+    } else {
+        field_0x294->fn_80425F24();
+    }
+    if (gGameRoot_8053AAF8->field_0xfe == 1 && field_0xe4 != 0) {
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0xe4--;
+        u8 tens = field_0xe0 / 10;
+        u8 ones = field_0xe0 % 10;
+        if (tens != 0) {
+            fn_8043E80C(tens, 0xFF, 0x0A280A00, 0x28FF28FF, 240.0f, 200.0f, 90.0f);
+            fn_8043E80C(ones, 0xFF, 0x0A280A00, 0x28FF28FF, 340.0f, 200.0f, 90.0f);
+        } else if (ones != 0) {
+            fn_8043E80C(ones, 0xFF, 0x50500000, 0xFFFF00FF, 300.0f, 200.0f, 91.0f);
+        } else {
+            fn_8043E80C(ones, 0xFF, 0x50282800, 0xFF5050FF, 300.0f, 200.0f, 99.0f);
+        }
+    }
 }
 
 // FIXME: 98.9. The original loads field_0x70[0]->field_0x18 (f1) before the 0xFC / 0x100 words for

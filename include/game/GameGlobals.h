@@ -952,12 +952,15 @@ public:
     // view; the first tests gGameRoot_8053AAF8->field_0x7f, the second sets the
     // ortho context (fn_8013B490) and switches on the byte at 0x256.
     void fn_8043D39C();
+    // 0x8043E80C: draws digit `digit` (0-9) at (x, y) scaled by `scale` in the two colours, with alpha.
+    void fn_8043E80C(u32 digit, u8 alpha, u32 top, u32 bottom, f32 x, f32 y, f32 scale);
     void fn_8043DB58();
     /* 0x004 */ J2DScreen* field_0x4;
     /* 0x008 */ J2DScreen* field_0x8;
     /* 0x00C */ J2DScreen* field_0xc; // its pane 'Ndata05' is moved and drawn by fn_8043DC98
     /* 0x010 */ J2DPicture* field_0x10; // "TIMG" resource, built in the constructor (mode 3)
-    /* 0x014 */ u8 pad_0x14[0x40 - 0x14];
+    /* 0x014 */ J2DPicture* field_0x14[5]; // fn_8043DB58 draws the one the byte at 0x256 selects
+    /* 0x028 */ u8 pad_0x28[0x40 - 0x28];
     /* 0x040 */ PaneCtrl_804AF86C* field_0x40[12]; // the destructor's loop
     /* 0x070 */ PaneCtrl_804AF86C* field_0x70[2]; // text panes (fn_8043D034 copies field_0x78 into both)
     /* 0x078 */ char field_0x78[0xDC - 0x78]; // message text (fn_803837A4 in fn_8043D034); ends at the next known field
@@ -1000,7 +1003,8 @@ public:
     // mFocus is stored into when mFocus is not 0xFF).
     /* 0x256 */ u8 field_0x256;
     /* 0x257 */ u8 field_0x257; // gGameRoot_8053AAF8->field_0x85 != 0, set by fn_8043D8B4
-    /* 0x258 */ u8 pad_0x258[0x290 - 0x258];
+    /* 0x258 */ J2DPicture* field_0x258[10]; // the digit pictures fn_8043E80C draws
+    /* 0x280 */ J2DPicture* field_0x280[4];
     /* 0x290 */ cls_804B13D4* field_0x290; // used when gGameRoot_8053AAF8->field_0x7f is set
     /* 0x294 */ cls_804B146C* field_0x294; // used otherwise
     // The objects fn_8043F504 allocates (by constructor); fn_8043EDF8 resets
@@ -1057,6 +1061,9 @@ public:
     // 0x8043DF24 (game/tu_8043A0E8.cpp): this is unused. True when (px, py) is
     // outside the box around (x, y), grown by margin.
     bool fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin);
+    // 0x8043E398 (act_giant_bomb calls it with two world positions): projects them to the screen and
+    // sets the bits of field_0xdc (1, 2, 4, 8) for the four panels (fn_8043DF24 boxes) the span's centre is inside.
+    void fn_8043E398(const Vec* a, const Vec* b);
     // 0x8043DF8C (game/tu_8043A0E8.cpp, not written yet): takes a screen x, y.
     void fn_8043DF8C(f32 x, f32 y);
     // 0x8043EDE8 (game/tu_8043A0E8.cpp): field_0xe0 = arg, field_0xe4 = 30.
