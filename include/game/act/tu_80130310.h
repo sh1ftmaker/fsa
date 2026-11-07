@@ -14,6 +14,8 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     s32 fn_8013056C(u16 msg, s32 mode, s32 value);
+    bool fn_80130370();
+    void setState(s32 state); // the state switch after every field_0x230 store (defined inline)
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
