@@ -25,9 +25,6 @@ HyruleCastleBarrier_8049DEE8::~HyruleCastleBarrier_8049DEE8() {
     field_0x254 = NULL;
 }
 
-// FIXME: 99.90% (reloc-name). Code matches; only the .sdata2 float literal
-// pool differs (try.py: lbl_8053C8FC and lbl_8053C920 in the original, @963
-// and @1191 in ours).
 void HyruleCastleBarrier_8049DEE8::init() {
     ActorBase_804A5770::init();
     if ((field_0x90 & 1) == 1) {
@@ -215,8 +212,6 @@ void HyruleCastleBarrier_8049DEE8::fn_8011F5C0(s32 arg) {
     }
 }
 
-// FIXME: 99.71% (reloc-name). Code matches; .sdata2 float literal pool order
-// puts 16.0f/0.0f/4503601774854144.0 after 1.0f/1.5707964f instead of before.
 void HyruleCastleBarrier_8049DEE8::fn_8011F314() {
     s32 i;
     for (i = 0; i < 3; i++) {
@@ -254,8 +249,6 @@ void HyruleCastleBarrier_8049DEE8::fn_8011F314() {
     }
 }
 
-// FIXME: 99.77% (reloc-name). Code matches; .sdata2 float literal pool order
-// puts 16.0f/0.0f/4503601774854144.0 after 1.0f/1.5707964f instead of before.
 void HyruleCastleBarrier_8049DEE8::fn_8011EEEC() {
     switch (field_0x234) {
     case 1: {
@@ -282,4 +275,39 @@ void HyruleCastleBarrier_8049DEE8::fn_8011EEEC() {
         }
         break;
     }
+}
+
+// The particle positions fn_8011EEEC inlines: plain functions at the bottom of the
+// file (their out-of-line copies were dead-stripped). Their literals lead the
+// unit's .sdata2 (32.0f, then 16.0f / 0.0f / the int-to-float double) ahead of
+// fn_8011EEEC's own 1.0f and pi / 2 (docs/RULES_CARD.md, "Literals before their
+// first visible use" (3)).
+const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getMidPos(s32 i) const {
+    return &JGeometry::TVec3f(mPos.x, mPos.y + 16.0f * (i - 1), 0.0f);
+}
+
+const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getEndPos2() const {
+    const JGeometry::TVec3f* p;
+    switch (field_0x234) {
+    case 1:
+        p = &JGeometry::TVec3f(mPos.x, mPos.y - 32.0f, mPos.z);
+        break;
+    default:
+        p = &JGeometry::TVec3f(mPos.x + 32.0f, mPos.y, mPos.z);
+        break;
+    }
+    return p;
+}
+
+const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getEndPos1() const {
+    const JGeometry::TVec3f* p;
+    switch (field_0x234) {
+    case 1:
+        p = &JGeometry::TVec3f(mPos.x, mPos.y + 32.0f, mPos.z);
+        break;
+    default:
+        p = &JGeometry::TVec3f(mPos.x - 32.0f, mPos.y, mPos.z);
+        break;
+    }
+    return p;
 }

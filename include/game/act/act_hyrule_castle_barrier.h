@@ -18,35 +18,11 @@ public:
     void fn_8011F314();
     void fn_8011F5C0(s32 arg);
 
-    // Inline helpers for fn_8011EEEC's particle positions (a switch inside an inline
-    // function produces the original's beq + b dispatch and stack slot layout).
-    inline const JGeometry::TVec3f* getEndPos1() const {
-        const JGeometry::TVec3f* p;
-        switch (field_0x234) {
-        case 1:
-            p = &JGeometry::TVec3f(mPos.x, mPos.y + 32.0f, mPos.z);
-            break;
-        default:
-            p = &JGeometry::TVec3f(mPos.x - 32.0f, mPos.y, mPos.z);
-            break;
-        }
-        return p;
-    }
-    inline const JGeometry::TVec3f* getEndPos2() const {
-        const JGeometry::TVec3f* p;
-        switch (field_0x234) {
-        case 1:
-            p = &JGeometry::TVec3f(mPos.x, mPos.y - 32.0f, mPos.z);
-            break;
-        default:
-            p = &JGeometry::TVec3f(mPos.x + 32.0f, mPos.y, mPos.z);
-            break;
-        }
-        return p;
-    }
-    inline const JGeometry::TVec3f* getMidPos(s32 i) const {
-        return &JGeometry::TVec3f(mPos.x, mPos.y + 16.0f * (i - 1), 0.0f);
-    }
+    // fn_8011EEEC's particle positions: plain functions of the .cpp (dead-stripped;
+    // every caller inlines them).
+    const JGeometry::TVec3f* getEndPos1() const;
+    const JGeometry::TVec3f* getEndPos2() const;
+    const JGeometry::TVec3f* getMidPos(s32 i) const;
 
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234; // (field_0x90 >> 4) & 0xF; 1 selects the first box set
