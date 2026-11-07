@@ -8,9 +8,39 @@
 #include "game/GameState.h"
 #include "game/cls_804B1600.h"
 #include "JSystem/J2D/J2DPane.h"
+#include "JSystem/J2D/J2DScreen.h"
+#include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/J2D/J2DGrafContext.h"
+#include "game/act/tu_80440BF4.h"
 
 typedef void (cls_804B0288::*StateFunc_804B0288)();
 extern StateFunc_804B0288 lbl_804B0168[24];
+
+// FIXME(shotgun): 99.9 %, reloc-name (the vtable symbol)
+cls_804B0288::~cls_804B0288() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    delete mScreen;
+    mScreen = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0x14;
+    field_0x14 = NULL;
+    delete field_0x18;
+    field_0x18 = NULL;
+    for (s32 i = 0; i < 2; i++) {
+        delete field_0x1c[i];
+        field_0x1c[i] = NULL;
+    }
+    delete field_0x24;
+    field_0x24 = NULL;
+    delete field_0x28;
+    field_0x28 = NULL;
+    for (s32 i = 0; i < 8; i++) {
+        delete field_0x2c[i];
+        field_0x2c[i] = NULL;
+    }
+    lbl_8053ADB8 = NULL;
+}
 
 // FIXME(shotgun): 99.86 %, reloc-name
 void cls_804B0288::fn_803D5554() {
@@ -56,6 +86,60 @@ void cls_804B0288::fn_803D5554() {
     }
     fn_803D49A4();
     lbl_80529DEC.field_0x243[0] = 0;
+}
+
+// FIXME(shotgun): 92.28 %, missing/extra (one more saved register: the bounce step)
+void cls_804B0288::fn_803D521C() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    if (field_0x216f == 3) {
+        f32 bounce = 0.0f;
+        if (field_0x82 > 0) {
+            if (field_0x82 == 1) {
+                field_0x80 = 30;
+            }
+            s32 step = field_0x82 < 5 ? field_0x82 : 10 - field_0x82;
+            bounce = 5.0f * (f32)(step * step) / 25.0f;
+            if (field_0x82 < 10) {
+                field_0x82++;
+            } else {
+                field_0x82 = 0;
+            }
+        }
+        field_0x80++;
+        if (field_0x80 >= 60) {
+            field_0x80 = 0;
+        }
+        f32 alpha;
+        if (field_0x80 < 30) {
+            alpha = ((f32)(field_0x80 * field_0x80) / 900.0f) * (f32)field_0x28->field_0x28;
+        } else {
+            s32 d = field_0x80 - 30;
+            alpha = (1.0f - (f32)(d * d) / 900.0f) * (f32)field_0x28->field_0x28;
+        }
+        field_0x28->mPane->setAlpha((s32)alpha);
+        mScreen->search('Paccur01')->setAlpha((s32)alpha);
+        if (field_0x2171 == 0) {
+            field_0x28->moveFromCentre_80402E08(0.0f, bounce);
+            field_0x1c[0]->moveFromCentre_80402E08(0.0f, bounce);
+            field_0x1c[1]->moveFromCentre_80402E08(0.0f, 0.0f);
+        } else {
+            field_0x28->moveFromCentre_80402E08(field_0x1c[1]->field_0x8 - field_0x1c[0]->field_0x8, bounce);
+            field_0x1c[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+            field_0x1c[1]->moveFromCentre_80402E08(0.0f, bounce);
+            if (0.0f == bounce && field_0x2171 != field_0x2170) {
+                field_0x2171 = field_0x2170;
+            }
+        }
+    }
+    mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    if (field_0x2174 != 0) {
+        field_0x8->setAlpha(field_0x2173);
+        field_0x8->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
+        lbl_8053AEC0->fn_804316EC();
+    }
+    if (field_0x2176 != 0) {
+        lbl_8053AED8->fn_80440EE8();
+    }
 }
 
 // FIXME(shotgun): 99.95 %, scheduling

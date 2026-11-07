@@ -144,7 +144,9 @@ public:
     void fn_803D49A4();
     void fn_803D4DB0();
 
-    /* 0x0004 */ u8 field_0x4[0x14 - 0x4];
+    /* 0x0004 */ J2DScreen* mScreen;
+    /* 0x0008 */ J2DPicture* field_0x8; // the dark overlay (alpha 0x2173)
+    /* 0x000C */ u8 field_0xc[0x14 - 0xC];
     /* 0x0014 */ PaneCtrl_804AF86C* field_0x14;
     /* 0x0018 */ PaneCtrl_804AF86C* field_0x18;
     /* 0x001C */ PaneCtrl_804AF86C* field_0x1c[2];
@@ -178,7 +180,7 @@ public:
     /* 0x2173 */ u8 field_0x2173;
     /* 0x2174 */ u8 field_0x2174;
     /* 0x2175 */ u8 field_0x2175;
-    /* 0x2176 */ u8 field_0x2176;
+    /* 0x2176 */ u8 field_0x2176; // the button-icon overlay (lbl_8053AED8) is drawn when set
     /* 0x2177 */ u8 field_0x2177;
 }; // Size: at least 0x2178
 
