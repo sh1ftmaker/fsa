@@ -146,8 +146,6 @@ public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
     cls_801D7730();
     ~cls_801D7730();
-    // 0x801D6E20: keeps the actors named by field_0x0 at *pos (not written).
-    void fn_801D6E20(const JGeometry::TVec3f* pos);
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
     // Shotgun pass: the ring's per-frame steps (names by address).
