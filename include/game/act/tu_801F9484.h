@@ -86,14 +86,52 @@ class cls_8049E770 : public ActorBase_804A5770 {
 public:
     cls_8049E770() {}
     /* 0x08 */ virtual ~cls_8049E770();
-    /* 0x230 */ u8 field_0x230[0x2C];
+    /* 0x0C */ virtual void init();
+    /* 0x10 */ virtual void reset();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+
+    void fn_8012C334();
+    void fn_8012C170();
+    void fn_8012C030();
+    void fn_8012BE2C();
+    void fn_8012BC40();
+    void fn_8012B218();
+    void fn_8012B0D8();
+    void fn_8012B02C();
+    void fn_8012AA84();
+    void fn_8012A9A0();
+    void fn_8012A8C0();
+    bool fn_8012A5EC();
+
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ Vec field_0x238;
+    /* 0x244 */ f32 field_0x244;
+    /* 0x248 */ f32 field_0x248;
+    /* 0x24C */ f32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
     /* 0x25C */ JGeometry::TVec3f field_0x25c[6];
-    /* 0x2A4 */ u8 field_0x2a4[0x24];
+    /* 0x2A4 */ s32 field_0x2a4[6];
+    /* 0x2BC */ s32 field_0x2bc;
+    /* 0x2C0 */ s32 field_0x2c0;
+    /* 0x2C4 */ s32 field_0x2c4;
     /* 0x2C8 */ JGeometry::TVec3f field_0x2c8[4];
     /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[4];
-    /* 0x328 */ u8 field_0x328[0x90];
+    /* 0x328 */ JPABaseEmitter* field_0x328[3][4];
+    /* 0x358 */ JPABaseEmitter* field_0x358[3][4];
+    /* 0x388 */ JPABaseEmitter* field_0x388[3][4];
     /* 0x3B8 */ JGeometry::TVec3f field_0x3b8[4];
-    /* 0x3E8 */ u8 field_0x3e8[0x20];
+    /* 0x3E8 */ s32 field_0x3e8;
+    /* 0x3EC */ s32 field_0x3ec;
+    /* 0x3F0 */ s32 field_0x3f0;
+    /* 0x3F4 */ f32 field_0x3f4;
+    /* 0x3F8 */ f32 field_0x3f8;
+    /* 0x3FC */ f32 field_0x3fc;
+    /* 0x400 */ f32 field_0x400;
+    /* 0x404 */ u8 field_0x404;
 }; // Size: 0x408
 
 // Spawned for 'SNWL'.
