@@ -533,6 +533,9 @@ bool fn_802265DC(const JGeometry::TVec3f* pos, s32 layer, bool flag);
 // 4-5 units each. Tile-code range tests at pos; return 0 or 1 (callers
 // clrlwi 24). fn_80224B88 also reads GameView byte 0x131F1.
 bool fn_8022517C(const JGeometry::TVec3f* pos, s32 layer);
+bool fn_80225000(const JGeometry::TVec3f* pos, s32 layer);
+bool fn_80224D0C(const JGeometry::TVec3f* pos, s32 layer);
+bool fn_80224A04(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224B88(const JGeometry::TVec3f* pos, s32 layer);
 bool fn_80224E88(const JGeometry::TVec3f* pos, s32 layer);
 // 1 unit (Player_804A6F38::fn_80285F44 picks the splash effects by it).
