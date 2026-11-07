@@ -4,25 +4,81 @@
 #include "game/tu_80215A94.h"
 #include "game/tu_801ED3DC.h"
 #include "game/tu_803B8C74.h"
+#include "game/GameView.h"
+#include "game/Player.h"
+#include <float.h>
 
 static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
 
-// FIXME(shotgun): not written (size 0x460): fn_802162B8(u8* flag, s32 id, s32 key). The parameter is &entry->mFlag8 and the body reaches the entry's cls_8021BFA8 4 bytes after it, which needs a typed parameter (the symbol name pins u8*); a draft with a cast was removed.
+// Moves v toward target by 1/d of the way (all the way once d is below epsilon).
+static inline void stepToward(f32& v, f32 target, f32 d) {
+    if (d >= FLT_EPSILON) {
+        v += (1.0f / d) * (target - v);
+    } else {
+        v = target;
+    }
+}
+
+static inline void fn_802162B8_loop(cls_80216238Sub* sub, s32 id, s32 key) {
+    s32 player = id;
+    if (fn_8022F514(player)) {
+        player = fn_8022F3DC(player);
+    }
+    u16 effect = fn_8023CBC0(player);
+    f32 yTarget = 16.0f * (17.5f + key);
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(i, id)) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(id);
+            if (key < 0) {
+                fn_80230498(i, &pos, effect, 0xFF, -0x80, -0x80, true);
+            } else if (sub->mFlagA == 30) {
+                fn_80230498(i, &pos, effect, 0xFF, -0x80, -0x80, true);
+            } else {
+                GameView_804A9950* view = getGameView_802D6A9C();
+                f32 d = sub->mFlagA;
+                stepToward(pos.x, 32.0f + view->mVisibleBox.i.x, d);
+                stepToward(pos.y, view->mVisibleBox.i.y + yTarget, d);
+                stepToward(pos.z, 0.0f, d);
+                fn_80230498(i, &pos, sub->field_0xc.field_0x0 + 0x33A, 0xFF, -0x80, -0x80, true);
+            }
+        }
+    }
+}
+
+// FIXME(shotgun): 85.1 %, cls_80216238Sub
+void cls_80216238Sub::fn_802162B8(s32 id, s32 key) {
+    if (mFlag8) {
+        if (mFlagA) {
+            field_0xc.fn_8021BFA8();
+            mFlagA--;
+            if (mFlagA) {
+                fn_802162B8_loop(this, id, key);
+            }
+        }
+    } else if (mFlag9) {
+        if (fn_802308E0(id)) {
+            mFlag8 = 1;
+            mFlag9 = 0;
+            mFlagA = 30;
+            fn_802162B8_loop(this, id, key);
+        }
+    }
+}
 
 // FIXME(shotgun): 96.9 %, missing/extra
 void cls_80216238::fn_80216238() {
-    field_0xc.fn_8021C00C();
-    mFlag8 = 0;
-    mFlag9 = 0;
-    mFlagA = 0;
-    field_0xc.fn_8021C00C();
+    mSub.field_0xc.fn_8021C00C();
+    mSub.mFlag8 = 0;
+    mSub.mFlag9 = 0;
+    mSub.mFlagA = 0;
+    mSub.field_0xc.fn_8021C00C();
     mWatch.fn_801ED80C();
     mId = 0;
     mKey = -1;
-    mFlag8 = 0;
-    mFlag9 = 0;
-    mFlagA = 0;
-    field_0xc.fn_8021C00C();
+    mSub.mFlag8 = 0;
+    mSub.mFlag9 = 0;
+    mSub.mFlagA = 0;
+    mSub.field_0xc.fn_8021C00C();
     mWatch.fn_801ED7F0();
 }
 
@@ -42,10 +98,10 @@ void cls_80215E48::fn_802160F4() {
     for (s32 i = 0; i < mCount; i++) {
         mEntries[i].mId = i;
         mEntries[i].mKey = -1;
-        mEntries[i].mFlag8 = 0;
-        mEntries[i].mFlag9 = 0;
-        mEntries[i].mFlagA = 0;
-        mEntries[i].field_0xc.fn_8021C00C();
+        mEntries[i].mSub.mFlag8 = 0;
+        mEntries[i].mSub.mFlag9 = 0;
+        mEntries[i].mSub.mFlagA = 0;
+        mEntries[i].mSub.field_0xc.fn_8021C00C();
         mEntries[i].mWatch.fn_801ED7F0();
     }
     field_0x94.fn_8021C078();
@@ -126,7 +182,7 @@ s32 cls_80215E48::fn_80215E48(s32 index) {
 // Not auto-inlined: fn_80215DB8 calls it out of line (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 void cls_80216238::fn_80215E18() {
-    fn_802162B8(&mFlag8, mId, mKey);
+    mSub.fn_802162B8(mId, mKey);
 }
 #pragma auto_inline reset
 
@@ -137,13 +193,13 @@ void cls_80215E48::fn_80215DB8() {
 }
 
 void cls_80215E48::fn_80215D8C(s32 index) {
-    if (mEntries[index].mFlag8 != 0) {
+    if (mEntries[index].mSub.mFlag8 != 0) {
         return;
     }
-    if (mEntries[index].mFlag9 != 0) {
+    if (mEntries[index].mSub.mFlag9 != 0) {
         return;
     }
-    mEntries[index].mFlag9 = 1;
+    mEntries[index].mSub.mFlag9 = 1;
 }
 
 bool cls_80215E48::fn_80215D38() {
@@ -151,8 +207,8 @@ bool cls_80215E48::fn_80215D38() {
     bool result = true;
     for (s32 i = 0; i < mCount; i++) {
         ready = false;
-        if (mEntries[i].mFlag8 != 0) {
-            if (mEntries[i].mFlagA == 0) {
+        if (mEntries[i].mSub.mFlag8 != 0) {
+            if (mEntries[i].mSub.mFlagA == 0) {
                 ready = true;
             }
         }

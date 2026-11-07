@@ -10,17 +10,22 @@
 #include "game/cls_8021BFA8.h"
 #include "game/cls_8021C024.h"
 
+struct cls_80216238Sub {
+    /* 0x00 */ u8 mFlag8;  // read by fn_80215D38; must be set
+    /* 0x01 */ u8 mFlag9;  // set by fn_80215D8C
+    /* 0x02 */ u8 mFlagA;  // read by fn_80215D38; must be clear
+    /* 0x04 */ cls_8021BFA8 field_0xc; // reset by fn_8021C00C
+    void fn_802162B8(s32 id, s32 key);
+}; // Size: 0x10
+
 // One entry of the table, one per player (fn_80216178 builds four with
 // __construct_array, stride 0x24); named after that constructor, fn_80216238.
 struct cls_80216238 {
     /* 0x00 */ s32 mId;    // the entry's index; passed to fn_8043D874
     /* 0x04 */ s32 mKey;   // -1 from the constructor; the value fn_80215E58 searches for
-    /* 0x08 */ u8 mFlag8;  // read by fn_80215D38; must be set
-    /* 0x09 */ u8 mFlag9;  // set by fn_80215D8C
-    /* 0x0A */ u8 mFlagA;  // read by fn_80215D38; must be clear
-    /* 0x0C */ cls_8021BFA8 field_0xc; // reset by fn_8021C00C
+    /* 0x08 */ cls_80216238Sub mSub;
     /* 0x18 */ cls_801ED3DC mWatch;
-    // 0x80215E18: fn_802162B8(&mFlag8, mId, mKey).
+    // 0x80215E18: mSub.fn_802162B8(mId, mKey).
     void fn_80215E18();
     // 0x80216238: the entry's constructor (the original passes it to __construct_array); resets
     // the entry twice over, to the state fn_802160F4 sets.
@@ -80,10 +85,6 @@ struct cls_80215E48 {
     // field_0xa0.
     void fn_802160F4();
 }; // Size: 0xA4
-
-// A free function of this unit (0x802162B8, not written yet): works on an entry's flag byte,
-// its id and key.
-void fn_802162B8(u8* flag, s32 id, s32 key);
 
 // tu_80215A94 (0x80216178, not written yet): the table's constructor, called by
 // the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
