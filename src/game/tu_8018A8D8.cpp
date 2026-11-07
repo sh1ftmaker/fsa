@@ -82,7 +82,7 @@ void cls_804A1E50::fn_8018E894(s32 value) {
     field_0x234 = value;
 }
 
-// FIXME(shotgun): 92.51 %, different + reloc-name.
+// FIXME(shotgun): 92.72 %, different + reloc-name.
 void cls_804A1E50::init() {
     mBox2.i.x = -8.0f;
     mBox2.i.y = -8.0f;
@@ -114,9 +114,9 @@ void cls_804A1E50::init() {
     field_0x268 = 0;
     field_0x27b = 0;
     field_0x29c = 0;
-    field_0x2b4 = 0.0f;
-    field_0x2b0 = 0.0f;
-    field_0x2ac = 0.0f;
+    field_0x2ac.z = 0.0f;
+    field_0x2ac.y = 0.0f;
+    field_0x2ac.x = 0.0f;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     field_0x2a0.set(mPos);
     field_0x2c4[0].set(mPos);
@@ -162,7 +162,7 @@ void cls_804A1E50::init() {
     }
 }
 
-// FIXME(shotgun): 97.65 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.85 %, missing/extra + reloc-name.
 void cls_804A1E50::fn_8018E30C(s32 anim) {
     JGeometry::TVec3f pos(mPos.x - 3.0f, mPos.y, mPos.z);
     if (field_0x26c == 1) {
@@ -346,7 +346,7 @@ void cls_804A1E50::fn_8018DFCC() {
     field_0x234 = lbl_804A1B70[field_0x270 + field_0x264];
 }
 
-// FIXME(shotgun): 91.80 %, missing/extra + reloc-name.
+// FIXME(shotgun): 92.00 %, missing/extra + reloc-name.
 void cls_804A1E50::fn_8018DC70(s32 mode) {
     if (field_0x26c == 1 || field_0x27a != 1) {
         return;
@@ -418,7 +418,7 @@ void cls_804A1E50::fn_8018DC70(s32 mode) {
     }
 }
 
-// FIXME(shotgun): 96.29 %, missing/extra + reloc-name.
+// FIXME(shotgun): 96.41 %, missing/extra + reloc-name.
 bool cls_804A1E50::fn_8018DA6C() {
     if (field_0x27b == 1) {
         return false;
@@ -496,7 +496,7 @@ void cls_804A1E50::update() {
     }
     if (fn_801F3D94(field_0x26c != 0)) {
         if (field_0x26c == 0) {
-            field_0x2b4 = 60.0f;
+            field_0x2ac.z = 60.0f;
             mPos.z = 60.0f;
             field_0x3c.z = 0.0f;
         }
@@ -514,17 +514,17 @@ void cls_804A1E50::update() {
     }
     addCalc2_801F71A4(&field_0x2c4[1].x, field_0x2c4[2].x, 0.3f, 2.0f);
     addCalc2_801F71A4(&field_0x2c4[1].y, field_0x2c4[2].y, 0.3f, 2.0f);
-    addCalc2_801F71A4(&field_0x3c.x, field_0x2ac, 0.1f, field_0x2b8);
-    addCalc2_801F71A4(&field_0x3c.y, field_0x2b0, 0.1f, field_0x2bc);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x2ac.x, 0.1f, field_0x2b8);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x2ac.y, 0.1f, field_0x2bc);
     addCalc2_801F71A4(&field_0x2b8, 1.0f, 0.1f, 0.1f);
     addCalc2_801F71A4(&field_0x2bc, 1.0f, 0.1f, 0.1f);
     if (field_0x26c == 0) {
-        field_0x2b4 = 60.0f + 6.0f * fn_801544E4(field_0x278);
+        field_0x2ac.z = 60.0f + 6.0f * fn_801544E4(field_0x278);
         field_0x278 += 0x300;
         field_0x28c = fn_801544FC((s16)field_0x250);
         field_0x250 += field_0x274;
         addCalc2_801F71A4(&field_0x280, field_0x284, 0.5f, 2.0f);
-        addCalc2_801F71A4(&mPos.z, field_0x2b4, 0.3f, field_0x2c0);
+        addCalc2_801F71A4(&mPos.z, field_0x2ac.z, 0.3f, field_0x2c0);
     }
     fn_801545F0(&mPos, &field_0x3c);
     if (field_0x26c == 0) {
@@ -545,7 +545,7 @@ void cls_804A1E50::update() {
             }
             if (mPos.y < box28.i.y + marginMinY) {
                 if (field_0x3c.y < 0.0f) {
-                    field_0x2b0 = 0.0f;
+                    field_0x2ac.y = 0.0f;
                     field_0x3c.y = 0.0f;
                     mPos.y = box28.i.y + marginMinY;
                 }
@@ -557,7 +557,7 @@ void cls_804A1E50::update() {
             }
             if (mPos.y > box28.f.y - marginMaxY) {
                 if (field_0x3c.y > 0.0f) {
-                    field_0x2b0 = 0.0f;
+                    field_0x2ac.y = 0.0f;
                     field_0x3c.y = 0.0f;
                     mPos.y = box28.f.y - marginMaxY;
                 }
@@ -566,7 +566,7 @@ void cls_804A1E50::update() {
             f32 marginX = 64.0f;
             if (mPos.x < marginX + box28.i.x) {
                 if (field_0x3c.x < 0.0f) {
-                    field_0x2ac = 0.0f;
+                    field_0x2ac.x = 0.0f;
                     field_0x3c.x = 0.0f;
                     mPos.x = marginX + box28.i.x;
                 }
@@ -575,7 +575,7 @@ void cls_804A1E50::update() {
             f32 marginMaxX = 64.0f;
             if (mPos.x > box28.f.x - marginMaxX) {
                 if (field_0x3c.x > 0.0f) {
-                    field_0x2ac = 0.0f;
+                    field_0x2ac.x = 0.0f;
                     field_0x3c.x = 0.0f;
                     mPos.x = box28.f.x - marginMaxX;
                 }
@@ -681,7 +681,7 @@ void cls_804A1E50::update() {
             fn_801542AC('LWSW', fn_8015461C(), switches, -1);
             for (s32 i = 0; i < 4; i++) {
                 ActorBase_804A5770* sw = switches[i];
-                if (sw != NULL && sw != NULL && sw->fn_8018A5B0()) {
+                if (sw != NULL && sw->fn_8018A5B0()) {
                     field_0x2e8[i] = sw->vfunc_0x3C();
                     fn_8018E8C0(&field_0x2f8[i], sw->fn_801544DC());
                 }
@@ -755,20 +755,20 @@ void cls_804A1E50::update() {
             if (field_0x238 < 30) {
                 field_0x238 = 30;
             }
-            field_0x2ac = 1.2f * fn_801544FC(fn_8015465C(dx, dy));
-            field_0x2b0 = 1.2f * fn_801544E4(fn_8015465C(dx, dy));
+            field_0x2ac.x = 1.2f * fn_801544FC(fn_8015465C(dx, dy));
+            field_0x2ac.y = 1.2f * fn_801544E4(fn_8015465C(dx, dy));
         } else if (field_0x238 == 0) {
-            if (fn_80154744() < 0.6f || (field_0x2ac == 0.0f && field_0x2b0 == 0.0f)) {
+            if (fn_80154744() < 0.6f || (field_0x2ac.x == 0.0f && field_0x2ac.y == 0.0f)) {
                 s32 ang = (s32)(65536.0f * fn_80154744());
                 field_0x238 = (s32)(300.0f * fn_80154744() + 300.0f);
-                field_0x2ac = 1.2f * fn_801544FC((s16)ang);
-                field_0x2b0 = 1.2f * fn_801544E4((s16)ang);
+                field_0x2ac.x = 1.2f * fn_801544FC((s16)ang);
+                field_0x2ac.y = 1.2f * fn_801544E4((s16)ang);
                 field_0x2b8 = 0.0f;
                 field_0x2bc = 0.0f;
             } else {
                 field_0x238 = (s32)(50.0f * fn_80154744() + 50.0f);
-                field_0x2ac = 0.0f;
-                field_0x2b0 = 0.0f;
+                field_0x2ac.x = 0.0f;
+                field_0x2ac.y = 0.0f;
                 field_0x2b8 = 0.0f;
                 field_0x2bc = 0.0f;
             }
@@ -778,8 +778,8 @@ void cls_804A1E50::update() {
     case 6:
         field_0x27b = 0;
         fn_8018E30C(12);
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         field_0x3c.x = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x258 = 0;
@@ -798,9 +798,9 @@ void cls_804A1E50::update() {
         fn_8018E8C0(&pos44, &mPos);
         mPos.y -= mPos.z;
         mPos.z = 0.0f;
-        if (field_0x27a == 1 && field_0x2ac == 0.0f && field_0x2b0 == 0.0f) {
-            field_0x2ac = 1.2f * fn_801544FC((s16)field_0x25c);
-            field_0x2b0 = 1.2f * fn_801544E4((s16)field_0x25c);
+        if (field_0x27a == 1 && field_0x2ac.x == 0.0f && field_0x2ac.y == 0.0f) {
+            field_0x2ac.x = 1.2f * fn_801544FC((s16)field_0x25c);
+            field_0x2ac.y = 1.2f * fn_801544E4((s16)field_0x25c);
         }
         if (r29 == true) {
             if (fn_80154744() < 0.5f) {
@@ -809,17 +809,17 @@ void cls_804A1E50::update() {
                 field_0x25c -= 0x2000;
             }
             field_0x25c = (u16)field_0x25c;
-            field_0x2ac = 1.2f * fn_801544FC((s16)field_0x25c);
-            field_0x2b0 = 1.2f * fn_801544E4((s16)field_0x25c);
-            field_0x3c.x = field_0x2ac;
-            field_0x3c.y = field_0x2b0;
+            field_0x2ac.x = 1.2f * fn_801544FC((s16)field_0x25c);
+            field_0x2ac.y = 1.2f * fn_801544E4((s16)field_0x25c);
+            field_0x3c.x = field_0x2ac.x;
+            field_0x3c.y = field_0x2ac.y;
         }
         fn_80154590(&mBox, -50.0f, -40.0f, 42.0f, 40.0f);
         if (fn_801F2FAC()) {
             for (s32 i = 0; i < 4; i++) {
                 s32 hit = fn_801F285C(NULL, NULL, true, i);
-                field_0x2ac = 0.0f;
-                field_0x2b0 = 0.0f;
+                field_0x2ac.x = 0.0f;
+                field_0x2ac.y = 0.0f;
                 field_0x3c.x = 0.0f;
                 field_0x3c.y = 0.0f;
                 if (hit >= 0) {
@@ -857,8 +857,8 @@ void cls_804A1E50::update() {
         }
         startSound_801F0E34(0x40014, 0);
         fn_8018E30C(9);
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         field_0x274 = 0x600;
         mState = 9;
         // fallthrough
@@ -875,8 +875,8 @@ void cls_804A1E50::update() {
         }
         // fallthrough
     case 10:
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         fn_8018E30C(3);
         field_0x258 = 0;
         field_0x25c = (s32)(65535.0f * fn_80154744());
@@ -907,17 +907,17 @@ void cls_804A1E50::update() {
                 field_0x29c = 0;
             }
             field_0x258++;
-            if (field_0x2ac == 0.0f && field_0x2b0 == 0.0f) {
-                field_0x2ac = 1.5f * fn_801544FC((s16)field_0x25c);
-                field_0x2b0 = 1.5f * fn_801544E4((s16)field_0x25c);
+            if (field_0x2ac.x == 0.0f && field_0x2ac.y == 0.0f) {
+                field_0x2ac.x = 1.5f * fn_801544FC((s16)field_0x25c);
+                field_0x2ac.y = 1.5f * fn_801544E4((s16)field_0x25c);
             }
             if (r29 == true) {
                 field_0x25c += field_0x260;
                 field_0x25c = (u16)field_0x25c;
-                field_0x2ac = 1.5f * fn_801544FC((s16)field_0x25c);
-                field_0x2b0 = 1.5f * fn_801544E4((s16)field_0x25c);
-                field_0x3c.x = field_0x2ac;
-                field_0x3c.y = field_0x2b0;
+                field_0x2ac.x = 1.5f * fn_801544FC((s16)field_0x25c);
+                field_0x2ac.y = 1.5f * fn_801544E4((s16)field_0x25c);
+                field_0x3c.x = field_0x2ac.x;
+                field_0x3c.y = field_0x2ac.y;
             }
             for (s32 i = 0; i < 4; i++) {
                 if ((field_0x258 & 0x1F) == 0 && fn_8018E930(field_0x2e8[i])) {
@@ -941,8 +941,8 @@ void cls_804A1E50::update() {
         }
         break;
     case 12:
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         startSound_801F0E34(0x40024, 0);
         field_0x274 = 0x600;
         mState = 13;
@@ -994,8 +994,8 @@ void cls_804A1E50::update() {
         }
         break;
     case 15:
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         field_0x274 = 0x600;
         field_0x284 = 100.0f;
         if (field_0x254 >= 0 && fn_8022D75C(field_0x254) == 1) {
@@ -1019,8 +1019,8 @@ void cls_804A1E50::update() {
         break;
     }
     case 18:
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         if (field_0x254 >= 0 && fn_8023F264(field_0x254) &&
             fn_8015461C() == getPlayerLayer_8023DE58(field_0x254)) {
             mState = 19;
@@ -1034,11 +1034,11 @@ void cls_804A1E50::update() {
             f32 dx = getPlayerPos_8023E724(field_0x254)->x - mPos.x;
             f32 dy = (getPlayerPos_8023E724(field_0x254)->y - 64.0f) - mPos.y;
             if (fn_80154378(dx * dx + dy * dy) > 16.0f) {
-                field_0x2ac = 3.0f * fn_801544FC(fn_8015465C(dx, dy));
-                field_0x2b0 = 3.0f * fn_801544E4(fn_8015465C(dx, dy));
+                field_0x2ac.x = 3.0f * fn_801544FC(fn_8015465C(dx, dy));
+                field_0x2ac.y = 3.0f * fn_801544E4(fn_8015465C(dx, dy));
             } else {
-                field_0x2ac = 0.0f;
-                field_0x2b0 = 0.0f;
+                field_0x2ac.x = 0.0f;
+                field_0x2ac.y = 0.0f;
                 fn_8022CA6C(field_0x254, 5, false);
                 if (fn_802308E0(field_0x254)) {
                     fn_8018E30C(1);
@@ -1058,8 +1058,8 @@ void cls_804A1E50::update() {
             fn_8015461C() == getPlayerLayer_8023DE58(field_0x254)) {
             fn_8018E8C0(&field_0x2c4[0], getPlayerPos_8023E724(field_0x254));
         }
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         field_0x258 = 1;
         field_0x25c = 0;
         field_0x238 = 400;
@@ -1178,15 +1178,15 @@ void cls_804A1E50::update() {
         fn_8018E8C0(&mPos, &pos44);
         if (field_0x254 >= 0 && fn_8023F264(field_0x254) && lbl_80539FCC == field_0x254) {
             if (!fn_80230188(field_0x254)) {
-                field_0x2ac = 2.0f * fn_8022C82C(field_0x254);
-                field_0x2b0 = -2.0f * fn_8022C76C(field_0x254);
+                field_0x2ac.x = 2.0f * fn_8022C82C(field_0x254);
+                field_0x2ac.y = -2.0f * fn_8022C76C(field_0x254);
             } else {
-                field_0x2ac = 0.0f;
-                field_0x2b0 = 0.0f;
+                field_0x2ac.x = 0.0f;
+                field_0x2ac.y = 0.0f;
             }
         } else {
-            field_0x2ac = 0.0f;
-            field_0x2b0 = 0.0f;
+            field_0x2ac.x = 0.0f;
+            field_0x2ac.y = 0.0f;
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             if (lbl_80539FD0 <= 0) {
@@ -1194,7 +1194,7 @@ void cls_804A1E50::update() {
                 s32 count = fn_801542AC('POOH', fn_8015461C(), poohs, -1);
                 for (s32 i = 0; i < count; i++) {
                     ActorBase_804A5770* pooh = poohs[i];
-                    if (pooh != NULL && pooh != NULL) {
+                    if (pooh != NULL) {
                         static_cast<cls_804A1E50*>(pooh)->fn_8018E894(1);
                     }
                 }
@@ -1265,8 +1265,8 @@ void cls_804A1E50::update() {
         if (lbl_80539FCC >= 0 && fn_8023F264(lbl_80539FCC)) {
             fn_801EEC98(fn_801545E8(), &outAngle, &outDir, &outDist, NULL, lbl_80539FCC, 2);
             if (r28 == 1 || outDist > 80.0f) {
-                field_0x2ac = 0.0f;
-                field_0x2b0 = 0.0f;
+                field_0x2ac.x = 0.0f;
+                field_0x2ac.y = 0.0f;
                 if (r28 == 1) {
                     field_0x3c.x *= -1.0f;
                     field_0x3c.y *= -1.0f;
@@ -1288,8 +1288,8 @@ void cls_804A1E50::update() {
             } else if (field_0x23c == 0) {
                 field_0x254 = outAngle + 0x8000;
             }
-            field_0x2ac = 2.5f * fn_801544FC((s16)(field_0x254 + field_0x250));
-            field_0x2b0 = 2.5f * fn_801544E4((s16)(field_0x254 + field_0x250));
+            field_0x2ac.x = 2.5f * fn_801544FC((s16)(field_0x254 + field_0x250));
+            field_0x2ac.y = 2.5f * fn_801544E4((s16)(field_0x254 + field_0x250));
         }
         if (field_0x234 == 0) {
             field_0x24c++;
@@ -1308,8 +1308,8 @@ void cls_804A1E50::update() {
         field_0x250 = 0;
         field_0x234 = lbl_804A1B70[0x164 / 4 + field_0x24c];
         field_0x264 = lbl_804A1B70[0x13C / 4 + field_0x24c];
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         mState = 30;
         // fallthrough
     case 30:
@@ -1353,8 +1353,8 @@ void cls_804A1E50::update() {
         field_0x234 = lbl_804A1B70[0x1A0 / 4 + field_0x24c];
         field_0x264 = lbl_804A1B70[0x18C / 4 + field_0x24c];
         fn_801546BC(&field_0x3c);
-        field_0x2ac = 0.0f;
-        field_0x2b0 = 0.0f;
+        field_0x2ac.x = 0.0f;
+        field_0x2ac.y = 0.0f;
         lbl_80539FD0--;
         field_0x258--;
         field_0x254 = lbl_80539FCC;
@@ -1423,7 +1423,7 @@ void cls_804A1E50::update() {
                 lbl_80539FC8 = fn_8015461C();
                 fn_8018E8C0(&lbl_804C18B8, &field_0x2a0);
                 lbl_80539FCC = -1;
-                fn_801546BC((JGeometry::TVec3f*)&field_0x2ac);
+                fn_801546BC(&field_0x2ac);
                 fn_801546BC(&field_0x3c);
                 mPos.z = 0.0f;
                 if (lbl_80539FD0 > 0) {
