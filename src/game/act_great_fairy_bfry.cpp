@@ -126,6 +126,91 @@ void GreatFairy_804AF338::init() {
     field_0x90 = field_0x90 & 0xF;
 }
 
+// FIXME(shotgun): 20.75 %, missing/extra + reloc-name (partial)
+// FIXME(shotgun): states 2-13 (0x8038E900 onward) and the tail of state 1 (0x8038E8D4 and the
+// end of the function at 0x8038F31C) are not written.
+void GreatFairy_804AF338::update() {
+    if (field_0x248 != 1) {
+        JGeometry::TBox2f box;
+        if (field_0x90 != 3) {
+            if (gGameRoot_8053AAF8->fn_80138A30() > 1 && field_0x4 >= 8) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (getPlayerLayer_8023DE58(i) == field_0x4 && !fn_8022F478(i) && !fn_80236B50(i) &&
+                        field_0x24c[fn_8022F340(i)] == 0)
+                    {
+                        fn_803037D4(fn_8022F340(i), 0x11);
+                        field_0x24c[fn_8022F340(i)] = 1;
+                    }
+                }
+            }
+            box = mBox;
+            box.i.x += mPos.x;
+            box.i.y += mPos.y;
+            box.f.x += mPos.x;
+            box.f.y += mPos.y;
+            fn_80239914(&box, field_0x4, mSerial);
+        }
+        JGeometry::TBox2f near(-24.0f + mSpawnPos.x, -24.0f + mSpawnPos.y, 24.0f + mSpawnPos.x, 24.0f + mSpawnPos.y);
+        JGeometry::TBox2f far(-36.0f + mSpawnPos.x, -36.0f + mSpawnPos.y, 36.0f + mSpawnPos.x, 36.0f + mSpawnPos.y);
+        switch (mState) {
+        case 0: {
+            for (s32 i = 0; i < 4; i++) {
+                if (field_0x238 != i && getPlayerPos_8023E724(i)->z == 0.0f && !fn_8023EFEC(i) && !fn_8023EA28(i) &&
+                    !fn_80236B50(i))
+                {
+                    if (!(gGameRoot_8053AAF8->field_0x7f == 0 && fn_80237060(fn_8022F340(i)) >= 2 &&
+                          (fn_8023725C(fn_8022F340(i)) >= 2 || fn_8023725C(fn_8022F340(i)) == 0)))
+                    {
+                        fn_8022FF8C(i, &near, field_0x4, mSerial, false, true);
+                    }
+                } else if (!fn_8023B0F4(i, &far, field_0x4, false, 500.0f)) {
+                    field_0x238 = -1;
+                }
+            }
+            field_0x234 = fn_8022FD8C(mSerial);
+            if (field_0x234 >= 0 && getPlayerPos_8023E724(field_0x234)->z == 0.0f) {
+                if (field_0x90 == 0) {
+                    field_0x260 = 0x25E;
+                } else {
+                    field_0x260 = 0x25F;
+                }
+                JGeometry::TVec3f at = mPos;
+                if (fn_8038AD24(field_0x234, field_0x260, mSerial, field_0x4, at, 0x2080)) {
+                    field_0x238 = field_0x234;
+                    mState = 1;
+                }
+            }
+            break;
+        }
+        case 1:
+            fn_8022FEB8(&near, field_0x4, mSerial, false, true);
+            if (fn_803865B8(field_0x234)) {
+                switch (field_0x90) {
+                case 0:
+                    if (fn_80388CAC(field_0x234, mSerial)) {
+                        fn_80236554(fn_8022F340(field_0x234), fn_80237810(fn_8022F340(field_0x234)), false);
+                        s32 layer = field_0x4;
+                        if (layer >= 8) {
+                            getActorManager_801F856C()->spawnActor_801F9484(
+                                'PEFF', layer, &mPos, (field_0x234 & 3) | 4, -1, -1);
+                        }
+                        startSound_801F0E34(0x40090, 0);
+                        mState = 3;
+                    }
+                    break;
+                case 1:
+                    fn_8038DE74();
+                    break;
+                case 2:
+                    // FIXME(shotgun): the 'BFRY' summon of case 2 (0x8038E7AC) is not written.
+                    break;
+                }
+            }
+            break;
+        }
+    }
+}
+
 // FIXME(shotgun): 92.20 %, missing/extra + reloc-name
 void GreatFairy_804AF338::draw() {
     if (field_0x248 != 1 && (field_0x240 & 2) && field_0x90 != 3) {
