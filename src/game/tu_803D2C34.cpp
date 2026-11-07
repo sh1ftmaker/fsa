@@ -268,6 +268,54 @@ void cls_804B0288::fn_803D4DB0() {
     field_0x10->setAlpha(0);
 }
 
+// The pane's box size (its global bounds), against the size the PaneCtrl stored when it was set.
+static inline f32 paneW(PaneCtrl_804AF86C* c) {
+    return c->mPane->getWidth();
+}
+static inline f32 paneH(PaneCtrl_804AF86C* c) {
+    return c->mPane->getHeight();
+}
+
+// FIXME(shotgun): 73.8 %, missing/extra
+void cls_804B0288::fn_803D49A4() {
+    PaneCtrl_804AF86C* tl = field_0x2c[0];
+    PaneCtrl_804AF86C* tr = field_0x2c[1];
+    PaneCtrl_804AF86C* bl = field_0x2c[2];
+    PaneCtrl_804AF86C* br = field_0x2c[3];
+    f32 w0 = tl->field_0x18;
+    f32 wide = paneW(tl);
+    tl->moveFromCentre_80402E08(-(0.5f * (wide - w0)), -(0.5f * (paneH(tl) - tl->field_0x1c)));
+    tr->moveFromCentre_80402E08(0.5f * (paneW(tr) - tr->field_0x18), -(0.5f * (paneH(tr) - tr->field_0x1c)));
+    bl->moveFromCentre_80402E08(-(0.5f * (paneW(bl) - bl->field_0x18)), 0.5f * (paneH(bl) - bl->field_0x1c));
+    br->moveFromCentre_80402E08(0.5f * (paneW(br) - br->field_0x18), 0.5f * (paneH(br) - br->field_0x1c));
+    if (wide / w0 < 1.0f) {
+        PaneCtrl_804AF86C* top = field_0x2c[4];
+        top->fn_80402CE0((2.0f * (tl->field_0x18 - paneW(tl)) + top->field_0x18) / top->field_0x18, top->field_0x1c);
+        top->moveFromCentre_80402E08(0.0f, 0.0f);
+        PaneCtrl_804AF86C* bottom = field_0x2c[5];
+        bottom->fn_80402CE0((2.0f * (tr->field_0x18 - paneW(tr)) + bottom->field_0x18) / bottom->field_0x18,
+                            bottom->field_0x1c);
+        bottom->moveFromCentre_80402E08(0.0f, 0.0f);
+        PaneCtrl_804AF86C* left = field_0x2c[6];
+        left->fn_80402CE0((paneW(tl) + paneW(tr)) / left->field_0x18,
+                          (2.0f * (bl->field_0x1c - paneH(bl)) + left->field_0x1c) / left->field_0x1c);
+        left->moveFromCentre_80402E08(0.0f, 0.0f);
+        PaneCtrl_804AF86C* right = field_0x2c[7];
+        right->fn_80402CE0((paneW(bl) + paneW(br)) / right->field_0x18,
+                           (2.0f * (br->field_0x1c - paneH(br)) + right->field_0x1c) / right->field_0x1c);
+        right->moveFromCentre_80402E08(0.0f, 0.0f);
+    } else {
+        PaneCtrl_804AF86C* top = field_0x2c[4];
+        top->moveFromCentre_80402E08(-(0.5f * (paneW(top) - top->field_0x18) + (paneW(tl) - tl->field_0x18)), 0.0f);
+        PaneCtrl_804AF86C* bottom = field_0x2c[5];
+        bottom->moveFromCentre_80402E08(0.5f * (paneW(bottom) - bottom->field_0x18) + (paneW(tr) - tr->field_0x18), 0.0f);
+        PaneCtrl_804AF86C* left = field_0x2c[6];
+        left->moveFromCentre_80402E08(0.0f, -(0.5f * (paneH(left) - left->field_0x1c) + (paneH(bl) - bl->field_0x1c)));
+        PaneCtrl_804AF86C* right = field_0x2c[7];
+        right->moveFromCentre_80402E08(0.0f, 0.5f * (paneH(right) - right->field_0x1c) + (paneH(br) - br->field_0x1c));
+    }
+}
+
 // FIXME(shotgun): 98.44 %, regalloc-only
 void cls_804B0288::fn_803D4770() {
     bool done1 = false;
@@ -807,6 +855,23 @@ void cls_804B0288::fn_803D3460() {
     }
 }
 
+// FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
+void cls_804B0288::fn_803D335C() {
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
+    fn_803BACF8(field_0x1c0, 0);
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 1);
+    fn_803BACF8(field_0x1c0, 1);
+    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 2);
+    fn_803BACF8(field_0x1c0, 2);
+    lbl_8051C1A0.fn_803B9D54(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
+    for (s32 i = 0; i < 3; i++) {
+        if (i != lbl_8050EC80.mCurrentFile) {
+            memcpy(&lbl_8050EC80.mFiles[i], &field_0x1c0[i], 0xC8);
+        }
+    }
+    field_0x216c = 0x10;
+}
+
 // FIXME(shotgun): 78.1 %, missing/extra
 void cls_804B0288::fn_803D3214() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
@@ -829,23 +894,6 @@ void cls_804B0288::fn_803D3214() {
         field_0x216e = 0;
         lbl_80529DEC.field_0x24c = 0;
     }
-}
-
-// FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
-void cls_804B0288::fn_803D335C() {
-    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
-    fn_803BACF8(field_0x1c0, 0);
-    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 1);
-    fn_803BACF8(field_0x1c0, 1);
-    lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 2);
-    fn_803BACF8(field_0x1c0, 2);
-    lbl_8051C1A0.fn_803B9D54(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
-    for (s32 i = 0; i < 3; i++) {
-        if (i != lbl_8050EC80.mCurrentFile) {
-            memcpy(&lbl_8050EC80.mFiles[i], &field_0x1c0[i], 0xC8);
-        }
-    }
-    field_0x216c = 0x10;
 }
 
 void cls_804B0288::fn_803D3180() {
