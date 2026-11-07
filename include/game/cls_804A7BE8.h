@@ -9,6 +9,7 @@
 // and 0x20. Slots 0x10, 0x18, 0x1C and 0x24-0x50 are the base's.
 
 #include "game/ActorBase.h"
+#include "game/act/tu_8036FB60.h"
 
 class UnknownFORM_804A7BE8 : public ActorBase_804A5770 {
 public:
@@ -22,6 +23,7 @@ public:
 
     // 0x8029C584 (game/tu_8029C584.cpp): vtable slot 0x20. Keeps the sprite position on screen
     // (clamped to the view box), then draws the sprite and the shadow.
+    /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
 
     /* 0x230 */ s32 field_0x230; // 0x3D/0x3F or 0x43/0x44 by viewLayerFlag(layer)
@@ -33,7 +35,7 @@ public:
     /* 0x248 */ s32 field_0x248; // field_0x90 & 3
     /* 0x24C */ bool field_0x24c; // 1 when fn_8022F514 is true for exactly three players
     /* 0x250 */ s32 field_0x250; // 0 after init
-    /* 0x254 */ ActorBase_804A5770* field_0x254; // the FGAL actor (alive) in the manager
+    /* 0x254 */ cls_804AE4B0* field_0x254; // the FGAL actor (alive) in the manager
 };
 
 #endif
