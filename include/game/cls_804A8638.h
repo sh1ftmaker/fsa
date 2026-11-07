@@ -22,10 +22,10 @@ public:
     // 0x802B39E8: clears field_0x290 and deletes mEmitter. act_blizzard_battle's
     // notifySwev calls it on the SWEV actor.
     void fn_802B39E8();
-    // 0x802B3A3C (not written yet): clears field_0x2b8. act_vaati_demo's
+    // 0x802B3A3C: clears field_0x2b8. act_vaati_demo's
     // fn_80115F9C calls it on the SWEV actor.
     void fn_802B3A3C();
-    // 0x802B3A48 (not written yet): clears byte 0x1EE of fn_8016A3AC()'s object,
+    // 0x802B3A48: clears byte 0x1EE of fn_8016A3AC()'s object,
     // releases the three emitters (0x234, 0x238, mEmitter) and clears byte
     // 0x11C. act_battle_royale_end_check (fn_803D6BDC) calls it on every SWEV actor.
     void fn_802B3A48();
