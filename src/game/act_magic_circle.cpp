@@ -27,6 +27,21 @@ static inline u32 getTargetY(u32 param) {
     return ((param >> 8) & 0x3F) * 8;
 }
 
+// Appends this circle to the shared list drawn by GameRootSub20 (one copy per branch of update).
+static inline void addCircle(MagicCircle_804A7960* self, s32 colorIdx) {
+    s32 frame = self->field_0x244;
+    GameRootSub20_801902C0* shared = fn_801902C0();
+    if (shared->field_0x5ec < 8) {
+        GameRootSub20_801902C0::MagicCircle& entry = shared->mMagicCircles[shared->field_0x5ec];
+        entry.mPos.x = self->mPos.x;
+        entry.mPos.y = self->mPos.y;
+        entry.mPos.z = self->mPos.z;
+        entry.field_0xc = colorIdx;
+        entry.field_0x10 = frame;
+        shared->field_0x5ec++;
+    }
+}
+
 MagicCircle_804A7960::~MagicCircle_804A7960() {
     releaseEmitter_801EE434(mEmitter274);
     releaseEmitter_801EE434(mEmitter278);
@@ -217,17 +232,7 @@ void MagicCircle_804A7960::update() {
             if (field_0x244 >= 0x6E) {
                 field_0x244 = 0x6E;
             }
-            s32 frame = field_0x244;
-            GameRootSub20_801902C0* shared = fn_801902C0();
-            if (shared->field_0x5ec < 8) {
-                GameRootSub20_801902C0::MagicCircle& entry = shared->mMagicCircles[shared->field_0x5ec];
-                entry.mPos.x = mPos.x;
-                entry.mPos.y = mPos.y;
-                entry.mPos.z = mPos.z;
-                entry.field_0xc = colorIdx;
-                entry.field_0x10 = frame;
-                shared->field_0x5ec++;
-            }
+            addCircle(this, colorIdx);
             startSound_801F0E34(0x3002D, 0);
             if (mEmitter274 == NULL) {
                 mEmitter274 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A6, 0, 0, NULL, NULL, true, 1.0f);
@@ -277,17 +282,7 @@ void MagicCircle_804A7960::update() {
     } else {
         if (field_0x244 > 0) {
             field_0x244--;
-            s32 frame = field_0x244;
-            GameRootSub20_801902C0* shared = fn_801902C0();
-            if (shared->field_0x5ec < 8) {
-                GameRootSub20_801902C0::MagicCircle& entry = shared->mMagicCircles[shared->field_0x5ec];
-                entry.mPos.x = mPos.x;
-                entry.mPos.y = mPos.y;
-                entry.mPos.z = mPos.z;
-                entry.field_0xc = colorIdx;
-                entry.field_0x10 = frame;
-                shared->field_0x5ec++;
-            }
+            addCircle(this, colorIdx);
         } else {
             if (field_0x264 == 1) {
                 fn_801F0D20(0x2F);
@@ -394,7 +389,8 @@ void MagicCircle_804A7960::update() {
     }
 }
 
-// FIXME: 93.63%, scheduling+regalloc (setRotScaleMtx inlining and SpriteParams copy)
+// FIXME: 93.63%, scheduling+regalloc. In the inlined setRotScaleMtx the float registers (f26-f31)
+// are allocated differently and the fmuls/fmsubs/fmadds are scheduled in another order (0x158-0x258).
 void MagicCircle_804A7960::draw() {
     if (field_0x240 <= 0.0f) {
         return;
