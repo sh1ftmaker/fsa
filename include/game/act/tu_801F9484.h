@@ -199,6 +199,9 @@ public:
     /* 0x24 */ virtual void vfunc_0x24();
     // 0x80161F98: switches to colour set `set` (fading over `frames`; keeps fading when called again).
     void fn_80161F98(s32 set, s32 frames);
+    // 0x801618D0: draws the ghost quad (obake_*.bti, four TEV stages) at pos; the colours
+    // come from field_0x2f4 and, if given, params' two colours.
+    void fn_801618D0(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params);
     /* 0x230 */ s32 field_0x230; // state
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;

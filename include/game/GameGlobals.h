@@ -715,6 +715,7 @@ public:
 // that ShadowCircle_804A0160::fn_80158F70 (game/tu_80158624.cpp) puts in TEV register 1
 // with its own alpha byte.
 extern JUtility::TColor lbl_80543F28;
+extern JUtility::TColor lbl_80543F30; // .sbss2; tu_801618D0's fn_801618D0 sets it as a TEV konst colour
 // 0x80543F20 (.sbss2, 8 bytes; no owner split yet). Its word is TEV register 1's
 // colour in GameRoot2_8049F108::fn_8013B1E8 (game/tu_8013AAD4.cpp).
 extern JUtility::TColor lbl_80543F20;

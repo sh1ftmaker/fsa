@@ -71,6 +71,39 @@ cls_804A7EB0::~cls_804A7EB0() {
     }
 }
 
+// 0x802A4780.
+// FIXME(shotgun): 83.12 %, different + reloc-name (gated: its 1.0f comes before update's literals, which aren't written, and drops init from 71.43 % to 71.39 %)
+#ifdef NONMATCHING
+void cls_804A7EB0::draw() {
+    if (field_0x230 >= 2 && field_0x230 < 9) {
+        SpriteParams_801F5AE0 params;
+        for (s32 i = 0; i < 4; i++) {
+            params.field_0x1d = -1;
+            s32 frame = field_0x250 + 0x10D;
+            JGeometry::TVec3f pos;
+            pos.x = mPos.x + (f32)lbl_8046C658[field_0x234 * 4 + i];
+            pos.y = mPos.y + (f32)lbl_8046C6C8[field_0x234 * 4 + i];
+            pos.z = mPos.z;
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+            }
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (field_0x254[i] >= 0) {
+                params.field_0x1d = -1;
+                s32 frame = field_0x250 + 0x10A;
+                JGeometry::TVec3f pos(field_0x264[i]);
+                if (field_0x4 < 8) {
+                    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+                    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
+                }
+            }
+        }
+    }
+}
+#endif
+
 // 0x802A4654.
 // FIXME(shotgun): 90.76 %, different
 void cls_804A7EB0::vfunc_0x54() {
