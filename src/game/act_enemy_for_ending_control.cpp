@@ -151,6 +151,37 @@ void EnemyForEndingControl_804AD48C::fn_8035BE00() {
     }
 }
 
+void EnemyForEndingControl_804AD48C::fn_8035BB20() {
+    if (field_0x254 < 110.0f) {
+        field_0x254 += 1.0f;
+        return;
+    }
+
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x405, 0, -1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x406, 0, -1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x407, 0, -1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x408, 0, -1, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x409, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x40a, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x40b, 0, 0, NULL, NULL, true, 1.0f);
+    spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x40c, 0, 0, NULL, NULL, true, 1.0f);
+
+    mEmitter298 = spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x4a2, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter29C = spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x4a3, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2A0 = spawnEmitter_8013CC50(field_0x4, &field_0x248, 0x46d, 0, 0, NULL, NULL, true, 1.0f);
+
+    field_0x270 = 0x258;
+    setActorFlag(0, 1);
+    for (s32 i = 1; i <= 6; i++) {
+        setActorFlag(i, 1);
+    }
+
+    field_0x260 = 0x348;
+    field_0x258 = (field_0x23c.y - 1730.0f) / 500.0f;
+    field_0x25c = (165.0f - field_0x254) / 500.0f;
+    field_0x230++;
+}
+
 inline void EnemyForEndingControl_804AD48C::setActorFlag(s32 index, s32 flag) {
     if (index == 0) {
         PrincessZeldaEnding_804AD6F0* zelda =
