@@ -17,6 +17,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x20 */ virtual void draw();
     void fn_801BACE8(s32 state);
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
     // Vtable slot 0xA0 (fn_801BA854, overriding EnemyBase's vfunc_0xA0):
     // once mState is set, the camera collects mPos (addFocusPoint_8030C210) so that it
     // stays in view.
