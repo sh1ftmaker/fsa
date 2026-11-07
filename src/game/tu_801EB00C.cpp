@@ -40,37 +40,6 @@ cls_801EB8CC::~cls_801EB8CC() {
     releaseEmitter_801EE434(field_0x50);
 }
 
-// fn_801EB648: the flag at field_0x54 (truncated to a byte) gates the scan of the
-// seven emitter pointers.
-bool cls_801EB8CC::fn_801EB648() const {
-    bool found = false;
-    if ((u8)field_0x54 != 0) {
-        for (s32 i = 0; i < 7; i++) {
-            if (field_0x34[i] != NULL) {
-                found = true;
-                break;
-            }
-        }
-    }
-    return found;
-}
-
-// One emitter of fn_801EB418's ring: moved to *pos with the given alpha, or
-// deleted once the ring has faded out (both of its uses inline it).
-static inline void updateEmitter(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos,
-                                 const cls_801EBA14& param, bool remove, u8 alpha) {
-    if (*emitter != NULL) {
-        if (remove) {
-            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
-            manager->forceDeleteEmitter(*emitter);
-            *emitter = NULL;
-        } else {
-            setEmitterPos_8013CB44(*emitter, pos, param.field_0x0, param.field_0x4, true);
-            (*emitter)->setGlobalAlpha(alpha);
-        }
-    }
-}
-
 // fn_801EB710: restarts the ring: stores *pos in field_0x0, clears field_0x5c and
 // spawns, on effect layer `layer`, the seven emitters (ids 0x233 + i, 14 away from
 // *pos, 0x1F70 apart) with field_0x54 as their alpha, plus id 0x23A once at the first.
@@ -101,6 +70,37 @@ void cls_801EB8CC::fn_801EB710(s32 layer, const JGeometry::TVec3f* pos) {
             }
         }
     }
+}
+
+// One emitter of fn_801EB418's ring: moved to *pos with the given alpha, or
+// deleted once the ring has faded out (both of its uses inline it).
+static inline void updateEmitter(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos,
+                                 const cls_801EBA14& param, bool remove, u8 alpha) {
+    if (*emitter != NULL) {
+        if (remove) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(*emitter);
+            *emitter = NULL;
+        } else {
+            setEmitterPos_8013CB44(*emitter, pos, param.field_0x0, param.field_0x4, true);
+            (*emitter)->setGlobalAlpha(alpha);
+        }
+    }
+}
+
+// fn_801EB648: the flag at field_0x54 (truncated to a byte) gates the scan of the
+// seven emitter pointers.
+bool cls_801EB8CC::fn_801EB648() const {
+    bool found = false;
+    if ((u8)field_0x54 != 0) {
+        for (s32 i = 0; i < 7; i++) {
+            if (field_0x34[i] != NULL) {
+                found = true;
+                break;
+            }
+        }
+    }
+    return found;
 }
 
 // fn_801EB418: follows *pos with the ring of seven emitters (radius 14, turning

@@ -1,6 +1,4 @@
 unit	family	function	class	vtable	src_before	hdr_before
-act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
-act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-

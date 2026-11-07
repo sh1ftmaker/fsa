@@ -8,7 +8,7 @@
 #include "game/act/act_rat.h"
 
 // The step of the walk cycle, per direction frame (x, y).
-static const f32 lbl_8049C3E0[4][2] = {{2.0f, 0.0f}, {-2.0f, 0.0f}, {0.0f, 2.0f}, {0.0f, -2.0f}};
+static f32 lbl_8049C3E0[4][2] = {{2.0f, 0.0f}, {-2.0f, 0.0f}, {0.0f, 2.0f}, {0.0f, -2.0f}};
 
 // Frame offsets per animation step.
 static u8 lbl_80539E68[] = {0, 3, 1, 2};
