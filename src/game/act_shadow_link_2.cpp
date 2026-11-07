@@ -1,17 +1,31 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameView.h"
+#include "game/ActorManager.h"
+#include "game/Player.h"
 #include "game/BgRewrite.h"
 #include "game/Camera.h"
 #include "game/Map.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_shadow_link_2.h"
 
+const u32 lbl_80469450[4] = {
+    0x000400BB,
+    0x000400BC,
+    0x000400BD,
+    0x000400BE,
+};
+
 // 0x801C5854: cls_804A46F4's destructor, emitted here.
 // FIXME(shotgun): not written; it is the implicit inline destructor of the base classes.
 
 // 0x801C573C.
-// FIXME(shotgun): not written; the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
+// FIXME(shotgun): 32.43 %, missing/extra + reloc-name; the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
 // (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors.
+ShadowLink2_804A43E8::ShadowLink2_804A43E8() {
+    field_0x358.fn_802142A8();
+    field_0x550.fn_80217484();
+}
 
 // 0x801C5680.
 // FIXME(shotgun): 100 %, matches
@@ -186,10 +200,852 @@ void ShadowLink2_804A43E8::fn_801C50A8(int state) {
 }
 
 // 0x801C3B7C.
-// FIXME(shotgun): not written yet
+// FIXME(shotgun): 67.55 %, missing/extra + reloc-name
+void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
+    fn_801C50A8(state);
+    switch (state) {
+    case 0:
+    case 1:
+        break;
+    case 2:
+        field_0x250 = 1;
+        if (!(mFlags & 0x2000) && (mFlags & 0x4000)) {
+            if (fn_801C0D70()->field_0x2 >= 2) {
+                field_0x250 += fn_801CD664(0x2D);
+            }
+        }
+        break;
+    case 3:
+        if (fn_801C0D70()->field_0x50 >= 0) {
+            field_0x250 = 0xA0;
+        } else {
+            field_0x250 = 0xEB;
+        }
+        field_0x4ec.fn_80214740(field_0x4, &mPos, false);
+        break;
+    case 4:
+        mDrawEnabled = true;
+        if (fn_801C0D70()->field_0x50 >= 0) {
+            mPos.y += 32.0f;
+        }
+        field_0x3c.z = 4.5f;
+        field_0x340.fn_800FEB78(4);
+        startSound_801F0E34(0x40035, 0);
+        if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
+            field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        }
+        break;
+    case 5:
+        if (fn_801C0D70()->fn_801C11F0() || (fn_801C0D70()->field_0x0 & 1)) {
+            field_0x250 = 0x3C;
+        } else {
+            field_0x250 = 0xF;
+        }
+        field_0x340.fn_800FEB78(0);
+        break;
+    case 6: {
+        if (fn_801C0D70()->field_0x0 & 2) {
+            if (mFlags & 0x2000) {
+                startSound_801F0E34(0x400D7, 0);
+            }
+            field_0x250 = 0x1E;
+        } else if (fn_801C0D70()->field_0x0 & 4) {
+            if (mFlags & 0x2000) {
+                startSound_801F0E34(0x4003A, 0);
+            }
+            field_0x250 = 0x3C;
+        }
+        if (!(mFlags & 0x4000)) {
+            if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
+                field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            }
+            mPos = fn_801C0D70()->field_0x54;
+            mPrevPos = fn_801C0D70()->field_0x54;
+            field_0x3c.x = (mSpawnPos.x - mPos.x) * (1.0f / (f32)field_0x250);
+            field_0x3c.y = (mSpawnPos.y - mPos.y) * (1.0f / (f32)field_0x250);
+            if (fn_801C0D70()->field_0x0 & 2) {
+                field_0x3c.z = 0.0f;
+                field_0x33c = 0;
+                field_0x340.fn_800FEB78(0);
+            } else if (fn_801C0D70()->field_0x0 & 4) {
+                field_0x3c.z = -lbl_8053EFB8 * (f32)field_0x250 * 0.5f;
+                field_0x33c = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) * 10430.378f;
+                field_0x340.fn_800FEB78(4);
+            }
+        }
+        break;
+    }
+    case 7:
+    case 8:
+    case 9:
+    case 0xB:
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        if (state != 0xB && !(fn_801C0D70()->field_0x50 < 0)) {
+            mPos.set(mSpawnPos.x, mSpawnPos.y, mSpawnPos.z);
+        }
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        break;
+    case 0xA:
+        mTargetSpeed = 0.0f;
+        mSpeed = 1.0f;
+        field_0x33c = 0;
+        if (field_0x340.mState != 1) {
+            field_0x340.fn_800FEB78(1);
+        }
+        break;
+    case 0xC:
+        if (mFlags & 0x2000) {
+            lbl_8053AED0->fn_8043D67C(0x19B, 0, 0);
+            gAudioMgr_8053AF80->fn_80458FF0(0x100000D, true, 0);
+            getGameView_802D6A9C()->fn_802D6BC8(1);
+        }
+        break;
+    case 0xD:
+        if (field_0x94 % 4 == 0) {
+            field_0x4ec.fn_80214740(field_0x4, &mPos, true);
+        }
+        break;
+    case 0xE:
+    case 0xF:
+    case 0x10:
+        if (state == 0xE) {
+            if (mFlags & 0x2000) {
+                if (fn_801C0D70()->field_0x50 >= 0) {
+                    fn_801C0D70()->field_0x0 |= 0x40;
+                }
+                getActorManager_801F856C()->fn_801F6884();
+                fn_8022ADE4();
+            }
+            mDrawEnabled = true;
+            if (!(field_0x524 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
+                mPos.set(mSpawnPos.x, mSpawnPos.y, mSpawnPos.z);
+            }
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.z = 0.0f;
+            mFlags &= ~0x100;
+            mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            mBox2 = mBox;
+            field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            field_0x358.fn_8021425C(0, (field_0x90 >> 8) & 0xF, mPos, field_0x4);
+            field_0x358.fn_80214254(0);
+            field_0x250 = fn_801CD664(0x1A) + 5;
+            field_0x550.fn_80217484();
+        } else if (state == 0x10) {
+            u16 minVal = lbl_8046A748[field_0x564][3];
+            u16 maxVal = lbl_8046A748[field_0x564][4];
+            field_0x250 = minVal + fn_801CD664(maxVal - minVal + 1);
+            mFlags &= ~0x00800000;
+        } else if (state == 0xF) {
+            field_0x250 = fn_801CD664(0x10) + 0xF;
+            field_0x550.fn_80217484();
+        }
+        mSpeed = 0.0f;
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        field_0x5a8 = 0.0f; // FIXME(shotgun): field_0x5a4 and u16s at 0x5a0/0x5a2 not typed in header
+        break;
+    case 0x11:
+        if (mState != 0x17 && mState != 0x18) {
+            mSpeed = 1.0f;
+            if (field_0x340.mState != 1) {
+                field_0x340.fn_800FEB78(1);
+            }
+            if (mState != 0x16) {
+                field_0x5a8 = (f32)(fn_801CD664(0x51) + 0x78);
+                mPathCount = 0;
+                fn_801C7F98();
+                fn_801C7EE4();
+            }
+        }
+        break;
+    case 0x12:
+        if (fn_801C5348(32.0f)) {
+            field_0x250 = 2;
+        } else {
+            field_0x250 = 0x5A;
+        }
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        field_0x33c = JMath::atanTable_.atan2_(field_0x32c.x - mPos.x, field_0x32c.y - mPos.y) * 10430.378f;
+        mFlags &= ~0x20000;
+        break;
+    case 0x13:
+        if (fn_801C5348(32.0f)) {
+            field_0x250 = 2;
+        } else {
+            field_0x250 = 0x1E;
+        }
+        mSpeed = 0.0f;
+        field_0x340.fn_800FEB78(4);
+        break;
+    case 0x14:
+        mSpeed = 0.0f;
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+        field_0x3c.x = (field_0x32c.x - mPos.x) * (1.0f / 60.0f);
+        field_0x3c.y = (field_0x32c.y - mPos.y) * (1.0f / 60.0f);
+        field_0x3c.z = 0.5f * (60.0f * -lbl_8053EFB8);
+        field_0x33c = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) * 10430.378f;
+        startSound_801F0E34(0x40036, 0);
+        break;
+    case 0x15:
+    case 0x1F:
+        if (state == 0x15) {
+            if (fn_801C5348(32.0f)) {
+                field_0x250 = 2;
+            } else {
+                field_0x250 = 0x1E;
+            }
+        } else {
+            u16 minVal = lbl_8046A748[field_0x564][1];
+            u16 maxVal = lbl_8046A748[field_0x564][2];
+            field_0x250 = minVal + fn_801CD664(maxVal - minVal + 1);
+        }
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x340.mIndex = 8;
+        mFlags &= ~0x100;
+        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        mBox2 = mBox;
+        field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        break;
+    case 0x16:
+        if (fn_801C5348(32.0f)) {
+            field_0x250 = 2;
+        } else {
+            field_0x250 = 0x5A;
+        }
+        mSpeed = 0.0f;
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        break;
+    case 0x17:
+    case 0x18:
+    case 0x19:
+    case 0x1A:
+        mSpeed = 1.0f;
+        mPathCount = 0;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        mFlags |= 0x1100;
+        mFlags &= ~0x20000;
+        if (state != 0x17) {
+            if (field_0x58c == 1) {
+                field_0x4ec.fn_80214740(field_0x57c, &field_0x580, true);
+            } else {
+                startSound_801F0E34(0x4004A, 0);
+            }
+        }
+        break;
+    case 0x1B:
+        if (mState == 0x11) {
+            field_0x599 = 0x1E;
+        }
+        mSpeed = 1.0f;
+        if (field_0x340.mState != 1) {
+            field_0x340.fn_800FEB78(1);
+        }
+        field_0x5ac = (f32)(fn_801CD664(0x10) + 0x41);
+        field_0x595 = 0;
+        field_0x596 = 1;
+        break;
+    case 0x1C:
+        mSpeed = 0.0f;
+        field_0x340.fn_800FEB78(4);
+        field_0x3c.z = 4.5f;
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        if (mState != 0x2A) {
+            startSound_801F0E34(0x40036, 0);
+        }
+        break;
+    case 0x1D:
+        mSpeed = 0.0f;
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        if (fn_801C0D70()->field_0x0 & 0x400) {
+            field_0x4ec.fn_80214E50();
+            field_0x59c = 0x3C;
+            if (field_0x340.mState != 0) {
+                field_0x340.fn_800FEB78(0);
+            }
+        }
+        break;
+    case 0x1E:
+        if (mState == 0xD) {
+            mDrawEnabled = true;
+            if (!(field_0x524 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
+                mPos.set(mSpawnPos.x, mSpawnPos.y, mSpawnPos.z);
+            }
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.z = 0.0f;
+            mFlags &= ~0x100;
+            mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            mBox2 = mBox;
+            field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
+            field_0x358.fn_8021425C(0, (field_0x90 >> 8) & 0xF, mPos, field_0x4);
+            field_0x358.fn_80214254(0);
+        }
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+        field_0x340.fn_800FEB78(4);
+        if (mState == 0xD) {
+            s16 angle = -((s16)field_0x94 / 4 + 0x2000);
+            f32 s = JMath::sincosTable_.sinShort(angle);
+            f32 c = JMath::sincosTable_.cosShort(angle);
+            field_0x32c = mSpawnPos;
+            field_0x32c.x += 90.0f * s - 0.0f * c;
+            field_0x32c.y += 90.0f * c + 0.0f * s;
+            startSound_801F0E34(0x40035, 0);
+        } else if (fn_801C0D70()->field_0x0 & 0x400) {
+            startSound_801F0E34(0x40036, 0);
+        } else {
+            fn_801D3320();
+            startSound_801F0E34(0x40036, 0);
+        }
+        field_0x3c.x = (field_0x32c.x - mPos.x) * (1.0f / 60.0f);
+        field_0x3c.y = (field_0x32c.y - mPos.y) * (1.0f / 60.0f);
+        field_0x3c.z = 0.5f * (60.0f * -lbl_8053EFB8);
+        field_0x33c = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) * 10430.378f;
+        break;
+    case 0x20:
+        field_0x250 = 10;
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        break;
+    case 0x21:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        if (mFlags & 0x04000000) {
+            if (field_0x340.mState != 0) {
+                field_0x340.fn_800FEB78(0);
+            }
+        } else {
+            s16 ang = JMath::atanTable_.atan2_(field_0x3c.x, field_0x3c.y) * 10430.378f;
+            field_0x33c = ang - 0x8000;
+            field_0x340.fn_800FEB78(5);
+        }
+        startSound_801F0E34(0x400C2, 0);
+        break;
+    case 0x22:
+        field_0x250 = fn_801CD664(0x10) + 5;
+        mSpeed = 1.0f;
+        if (field_0x340.mState != 1) {
+            field_0x340.fn_800FEB78(1);
+        }
+        mPathCount = 0;
+        mFlags |= 0x1000;
+        field_0x5b0 = (f32)(fn_801CD664(0x15) + 0x14);
+        break;
+    case 0x23:
+    case 0x24:
+    case 0x25:
+    case 0x26:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        if (state == 0x23) {
+            startSound_801F0E34(0x40000, 0);
+            startSound_801F0E34(0x400CC, 0);
+            field_0x340.fn_800FEB78(2);
+        } else {
+            field_0x340.fn_800FEB78(9);
+        }
+        field_0x594 = 0;
+        break;
+    case 0x27:
+    case 0x28:
+        if (state == 0x27) {
+            field_0x250 = fn_801CD664(1) + 0x5A;
+        } else {
+            field_0x250 = fn_801CD664(1) + 0x5A;
+        }
+        mSpeed = 0.0f;
+        if (field_0x340.mState != 3 && field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        break;
+    case 0x29:
+        mSpeed = 0.0f;
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        mLife = mLifeBackup;
+        mFlags |= 0x300;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        field_0xb0 = 0;
+        startSound_801F0E34(0x40037, 0);
+        fn_801C0D70()->field_0x6++;
+        if (fn_801C0D70()->fn_801C1314()) {
+            mFlags |= 0x08000000;
+            gGameRoot_8053AAF8->fn_80134DE4(0xA0, 0);
+        } else if (mFlags & 0x10000) {
+            gGameRoot_8053AAF8->fn_80134DE4(3, 0);
+        }
+        break;
+    case 0x2A:
+        mSpeed = 0.0f;
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        break;
+    case 0x2B:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x33c = 0;
+        if (field_0x340.mState != 7) {
+            field_0x340.fn_800FEB78(7);
+        }
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        break;
+    case 0x2C:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        if (mState == 0x2B || mState == 0x1E) {
+            if (field_0x340.mState != 0) {
+                field_0x340.fn_800FEB78(0);
+            }
+        }
+        if (field_0x560 == 4) {
+            field_0x560 = fn_801CD664(4);
+        }
+        // FIXME(shotgun): field_0x548 is cls_802153A8 (fn_80215558((u8)field_0x560)), not typed in header
+        if (field_0x560 >= 0 && field_0x560 <= 3) {
+            startSound_801F0E34(lbl_80469450[field_0x560], 0);
+        }
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        break;
+    case 0x2D:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x33c = 0;
+        field_0x340.fn_800FEB78(8);
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        startSound_801F0E34(0x40036, 0);
+        break;
+    case 0x2E:
+        mSpeed = 0.0f;
+        field_0x33c = 0;
+        if (field_0x340.mState != 7) {
+            field_0x340.fn_800FEB78(7);
+        }
+        break;
+    case 0x2F:
+        mTargetSpeed = 0.0f;
+        mSpeed = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
+        if (field_0x340.mState != 0) {
+            field_0x340.fn_800FEB78(0);
+        }
+        mFlags |= 0x100;
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        mPathCount = 0;
+        break;
+    }
+    mStateTimer = 0;
+    mState = state;
+    field_0x98 = fn_801F681C(field_0x33c);
+}
 
 // 0x801C2ED4.
-// FIXME(shotgun): not written yet
+// FIXME(shotgun): 81.62 %, missing/extra + reloc-name
+void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
+    if (mapHit) {
+        if (vfunc_0x4C(field_0x4, &mPos)) {
+            mPos.x = mPrevPos.x;
+            mPos.y = mPrevPos.y;
+            JGeometry::TVec2f nudge;
+            fn_801D01A0(&field_0x32c, &nudge, 8.0f);
+            mPos.x += nudge.x;
+            mPos.y += nudge.y;
+        }
+    }
+    if ((fn_801C0D70()->field_0x0 & 0x400) && fn_801D0DD4()) {
+        switch (mState) {
+        case 0xE:
+        case 0xF:
+        case 0x11:
+        case 0x1B:
+        case 0x22:
+        case 0x27: {
+            JGeometry::TVec2f out;
+            if (fn_801C0D70()->fn_801C0FEC(&mPos, &out)) {
+                if (fn_801C0D70()->field_0x0 & 0x800) {
+                    field_0x32c.set(out.x, out.y, 0.0f);
+                    fn_801C3B7C(0x1D);
+                }
+            } else {
+                fn_801C3B7C(0x2F);
+            }
+            break;
+        }
+        }
+    }
+    mHelper540.fn_802188B0();
+    if (mFlags & 0x40000) {
+        if (field_0x55c[0] != 0xFF) {
+            field_0x55c[0]++;
+        }
+    } else {
+        field_0x55c[0] = 0;
+    }
+    if (field_0x597 != 0) {
+        field_0x597--;
+    }
+    if (field_0x598 != 0) {
+        field_0x598--;
+    }
+    if (field_0x599 != 0) {
+        field_0x599--;
+    }
+    if (field_0x59a != 0) {
+        field_0x59a--;
+    }
+    if (field_0x59b != 0) {
+        field_0x59b--;
+    }
+    switch (mState) {
+    case 0:
+        if ((mFlags & 0x2000) && fn_801CD228(field_0x4)) {
+            if (fn_801D05F8(&mPos, 16.0f * (f32)field_0x55c[2]) >= 0) {
+                fn_801C3B7C(1);
+            }
+        }
+        break;
+    case 1:
+        if (getActorManager_801F856C()->fn_801F68E0() != 0) {
+            gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+            fn_801C0D70()->field_0x0 |= 8;
+        }
+        break;
+    case 2:
+        if (mStateTimer >= field_0x250) {
+            fn_801C3B7C(3);
+        }
+        break;
+    case 3:
+        if (mStateTimer >= field_0x250) {
+            fn_801C3B7C(4);
+        }
+        break;
+    case 4:
+        if (mStateTimer > 1 && fn_801D0DD4()) {
+            fn_801C3B7C(5);
+        }
+        break;
+    case 5:
+        if (mStateTimer >= field_0x250) {
+            mFlags |= 0x8000;
+            fn_801C0D70()->field_0x0 |= 0x10;
+        }
+        break;
+    case 6:
+        if (mStateTimer >= field_0x250) {
+            field_0x33c = 0;
+            if (!(fn_801C0D70()->field_0x0 & 1)) {
+                fn_801C3B7C(9);
+            } else {
+                fn_801C3B7C(7);
+            }
+        }
+        break;
+    case 7:
+        if (mStateTimer >= 0x1E) {
+            fn_801C3B7C(8);
+        }
+        break;
+    case 8:
+        if (mStateTimer >= 0x5A) {
+            fn_801C3B7C(9);
+        }
+        break;
+    case 9:
+        if (mStateTimer >= 0x3C) {
+            if (field_0x524 & 2) {
+                fn_801C3B7C(0xA);
+            } else {
+                fn_801C3B7C(0xC);
+            }
+        }
+        break;
+    case 0xA:
+        if (mStateTimer >= 0x73) {
+            fn_801C3B7C(0xB);
+        }
+        break;
+    case 0xB:
+        if (mStateTimer >= 0x3C) {
+            fn_801C3B7C(0xC);
+        }
+        break;
+    case 0xC:
+        if ((mFlags & 0x2000) && lbl_8053AED0->field_0x10a == 0) {
+            fn_801C0D70()->field_0x0 |= 0x20;
+        }
+        break;
+    case 0xD:
+        if (mStateTimer >= 0xA0) {
+            mPos.y += 32.0f;
+            fn_801C3B7C(0x1E);
+        }
+        break;
+    case 0xE:
+    case 0xF:
+        if (mStateTimer >= field_0x250) {
+            // FIXME(shotgun): field_0x5a4 not typed in header
+            if (field_0x59c == 0) {
+                field_0x4ec.fn_80214E50();
+                field_0x59c = 0x3C;
+            }
+            fn_801C3B7C(0x11);
+        } else {
+            field_0x33c = field_0x550.fn_80217374(field_0x33c);
+        }
+        break;
+    case 0x10:
+        if (mStateTimer >= field_0x250) {
+            if (field_0x564 == 3) {
+                fn_801C3B7C(0x2E);
+            } else {
+                fn_801C3B7C(0xF);
+            }
+        } else if (mStateTimer % 6 == 0) {
+            field_0x33c += 0x4000;
+        }
+        break;
+    case 0x11:
+        fn_801C7370(mapHit);
+        break;
+    case 0x12:
+        if (mStateTimer >= field_0x250 || mHelper540.fn_802189AC()) {
+            fn_801C3B7C(0x13);
+        }
+        break;
+    case 0x13:
+        if (fn_801D0DD4()) {
+            if (mStateTimer >= field_0x250 || (mStateTimer >= 2 && mHelper540.fn_802189AC())) {
+                fn_801C3B7C(0x14);
+            }
+        }
+        break;
+    case 0x14:
+        if (field_0x340.mIndex == 7) {
+            mFlags &= ~0x100;
+            if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
+                mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+                mBox2 = mBox;
+            }
+        }
+        if (mStateTimer > 1 && mPos.z <= 0.0f) {
+            field_0x4ec.fn_802144F0();
+            fn_801C3B7C(0x15);
+        }
+        break;
+    case 0x15:
+        if (mStateTimer >= field_0x250) {
+            fn_801C3B7C(0x16);
+        }
+        break;
+    case 0x16:
+        if (mStateTimer >= field_0x250) {
+            fn_801C3B7C(0x11);
+        }
+        break;
+    case 0x17:
+        if (mStateTimer >= 0x6E) {
+            fn_801C3B7C(0x11);
+        }
+        break;
+    case 0x18:
+    case 0x19:
+    case 0x1A:
+        if (mStateTimer >= 0x73) {
+            if (mState == 0x19 || mState == 0x1A) {
+                fn_801C3B7C(0xF);
+            } else {
+                JGeometry::TVec3f savedPos = mPos;
+                s32 savedLayer = field_0x4;
+                field_0x4 = field_0x57c;
+                mPos = field_0x580;
+                s32 p = fn_801D05F8(&mPos, 60.0f);
+                field_0x4 = savedLayer;
+                mPos = savedPos;
+                if (p >= 0) {
+                    fn_801C3B7C(0x1E);
+                } else {
+                    fn_801C3B7C(0x11);
+                }
+            }
+        } else {
+            if (mStateTimer == 0x46 && field_0x58c == 0) {
+                field_0x4ec.fn_802146A4();
+            }
+            if (mStateTimer % 4 == 0) {
+                field_0x33c += 0x4000;
+            }
+        }
+        break;
+    case 0x1B:
+        fn_801C5B08(mapHit);
+        break;
+    case 0x1C:
+        if (field_0x340.mIndex == 7) {
+            mFlags &= ~0x100;
+            if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
+                mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+                mBox2 = mBox;
+            }
+        }
+        if (mStateTimer > 1 && fn_801D0DD4()) {
+            fn_801C3B7C(0x1F);
+        }
+        break;
+    case 0x1D:
+        if (fn_801D0DD4()) {
+            if (fn_801C0D70()->field_0x0 & 0x400) {
+                if (mStateTimer > 0x1E) {
+                    fn_801C3B7C(0x1E);
+                }
+            } else {
+                if (mStateTimer > 1) {
+                    fn_801C3B7C(0x1E);
+                }
+            }
+        }
+        break;
+    case 0x1E:
+        if (mStateTimer > 1 && mPos.z <= 0.0f) {
+            field_0x4ec.fn_802144F0();
+            if (mFlags & 0x01000000) {
+                mFlags &= ~0x01000000;
+                fn_801C3B7C(0x2C);
+            } else if (mFlags & 0x02000000) {
+                fn_801C3B7C(0x11);
+            } else {
+                fn_801C3B7C(0x1F);
+            }
+        }
+        break;
+    case 0x1F:
+        if (mStateTimer >= field_0x250) {
+            fn_801C3B7C(0x1B);
+        }
+        break;
+    case 0x20:
+    case 0x27:
+    case 0x28:
+        if (mStateTimer >= field_0x250) {
+            if ((field_0x524 & 8) && field_0x597 == 0 && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f &&
+                fn_801D183C(64.0f)) {
+                fn_801C3B7C(0x22);
+            } else {
+                field_0x597 = 0x3C;
+                fn_801C3B7C(0x1B);
+            }
+        }
+        break;
+    case 0x21:
+        if ((mFlags & 0x04000000) && mStateTimer % 4 == 0) {
+            field_0x33c += 0x4000;
+        }
+        break;
+    case 0x22:
+        fn_801C6C7C();
+        break;
+    case 0x23:
+    case 0x24:
+        fn_801C6BA8();
+        break;
+    case 0x25:
+    case 0x26:
+        fn_801C6A4C();
+        break;
+    case 0x29:
+        if (mStateTimer >= 0xA0) {
+            if (mFlags & 0x10000) {
+                fn_801C0D70()->fn_801C1224(mSerial);
+            }
+            vfunc_0x24();
+        } else {
+            if (mFlags & 0x08010000) {
+                getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.5f, false);
+            }
+            if (mStateTimer % 8 == 0) {
+                field_0x33c += 0x4000;
+            }
+        }
+        break;
+    case 0x2A:
+        if (fn_801D0DD4()) {
+            fn_801C6784();
+            fn_801C3B7C(0x1C);
+        }
+        break;
+    case 0x2B:
+        if (mStateTimer >= 0x78) {
+            mFlags |= 0x01000000;
+            fn_801C3B7C(0x1D);
+        }
+        break;
+    case 0x2C: {
+        s32 prev = field_0x560;
+        // FIXME(shotgun): field_0x548 is cls_802153A8 (fn_802153A8() and cur at +1), not typed in header
+        if (mState == 0x2C && prev != field_0x560 && field_0x560 >= 0 && field_0x560 <= 3) {
+            startSound_801F0E34(lbl_80469450[field_0x560], 0);
+        }
+        break;
+    }
+    case 0x2D:
+        if (mStateTimer >= 0x4A) {
+            fn_801C3B7C(0x1B);
+        }
+        break;
+    case 0x2E:
+        if (fn_8021CFF8()) {
+            fn_8021CDE4(2);
+        }
+        break;
+    case 0x2F:
+        if (!(fn_801C0D70()->field_0x0 & 0x400)) {
+            fn_801C3B7C(0xF);
+        }
+        break;
+    }
+    if (mFlags & 0x100000) {
+        fn_801C71BC();
+    }
+    field_0x98 = fn_801F681C(field_0x33c);
+}
 
 // Member: copies field_0x98 into the sequencer's direction, advances the
 // sequencer unless it is in state 0x13 past its first tick or mFlags has bit
