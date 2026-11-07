@@ -23,8 +23,6 @@ act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
 act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
-act_stalfos	dtor	__dt__16Stalfos_804A0CD8Fv	Stalfos_804A0CD8	0x804A0CD8	new	new
-act_stalfos	sinit	__sinit_act_stalfos_cpp	-	-	new	new
 act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_thwomp_launch_npc	dtor	__dt__28NPCLaunchedByThwomp_804AC010Fv	NPCLaunchedByThwomp_804AC010	0x804AC010	new	new
