@@ -68,7 +68,7 @@ public:
     /* 0x2B4 */ s16 field_0x2b4;
     /* 0x2B6 */ s16 field_0x2b6;
     /* 0x2B8 */ JGeometry::TVec3f field_0x2b8;
-    /* 0x2C4 */ u8 field_0x2c4[0x2D0 - 0x2C4]; // not yet known
+    /* 0x2C4 */ JGeometry::TVec3f field_0x2c4;
     /* 0x2D0 */ JGeometry::TVec3f field_0x2d0;
     /* 0x2DC */ JGeometry::TVec3f field_0x2dc;
     /* 0x2E8 */ JGeometry::TVec3f field_0x2e8;
