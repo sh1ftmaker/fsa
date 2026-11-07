@@ -2,6 +2,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
+#include "game/GameGlobals.h"
 #include "game/GameMath.h"
 #include "game/Map.h"
 #include "game/Player.h"
@@ -36,6 +37,217 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
+// FIXME(shotgun): 89.0 %, missing/extra + reloc-name
+void OBJLift_804ACA00::init() {
+    field_0x258 = (field_0x90 & 0xF) + ((field_0x90 >> 12) & 0xF0);
+    field_0x260 = (field_0x90 >> 4) & 0xF;
+    field_0x264 = (field_0x90 >> 8) & 0xF;
+    field_0x25c = (field_0x90 >> 12) & 0xF;
+    field_0x268 = field_0x264;
+    field_0x26c = 0;
+    field_0x244 = 0;
+    field_0x248 = 10;
+    field_0x254 = 0;
+    field_0x240 = field_0x258;
+    field_0x287 = (field_0x90 >> 24) & 1;
+    field_0x230 = 0;
+    field_0x270 = 0;
+    field_0x280 = 0;
+    field_0x281 = 1;
+    field_0x274 = -1;
+    field_0x27c = 0;
+    field_0x250 = 0;
+    field_0x24c = 0;
+    field_0x282 = 0;
+    field_0x288 = 0;
+    field_0x290 = 0.0f;
+    field_0x29c = 0.0f;
+    field_0x298 = 0.0f;
+    field_0x294 = 0.0f;
+    field_0x283[0] = 0;
+    field_0x283[1] = 0;
+    field_0x283[2] = 0;
+    field_0x283[3] = 0;
+    field_0x234 = mPos.x;
+    field_0x238 = mPos.y;
+    field_0x23c = mPos.z;
+    switch (field_0x258) {
+    case 0:
+        field_0x80.i.x = -31.0f;
+        field_0x80.i.y = -31.0f;
+        field_0x80.f.x = 31.0f;
+        field_0x80.f.y = 31.0f;
+        break;
+    case 1:
+        field_0x80.i.x = -15.0f;
+        field_0x80.i.y = -15.0f;
+        field_0x80.f.x = 15.0f;
+        field_0x80.f.y = 15.0f;
+        break;
+    case 2:
+        field_0x80.i.x = -15.0f;
+        field_0x80.i.y = -31.0f;
+        field_0x80.f.x = 15.0f;
+        field_0x80.f.y = 31.0f;
+        break;
+    case 3:
+        field_0x80.i.x = -31.0f;
+        field_0x80.i.y = -15.0f;
+        field_0x80.f.x = 31.0f;
+        field_0x80.f.y = 15.0f;
+        break;
+    case 4:
+        field_0x80.i.x = -31.0f;
+        field_0x80.i.y = -31.0f;
+        field_0x80.f.x = 31.0f;
+        field_0x80.f.y = 31.0f;
+        break;
+    case 5:
+        field_0x80.i.x = -39.0f;
+        field_0x80.i.y = -39.0f;
+        field_0x80.f.x = 39.0f;
+        field_0x80.f.y = 39.0f;
+        break;
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+        field_0x80.i.x = -7.0f;
+        field_0x80.i.y = -7.0f;
+        field_0x80.f.x = 7.0f;
+        field_0x80.f.y = 7.0f;
+        break;
+    case 10: {
+        field_0x80.i.x = -7.0f;
+        field_0x80.i.y = -7.0f;
+        field_0x80.f.x = 7.0f;
+        field_0x80.f.y = 7.0f;
+        bool free[4];
+        free[0] = true;
+        free[1] = true;
+        free[2] = true;
+        free[3] = true;
+        s32 taken = 0;
+        s32 serial = -1;
+        while (taken < 4) {
+            serial = getActorManager_801F856C()->fn_801F78F4('OBLF', serial);
+            if (serial < 0) {
+                break;
+            }
+            if (serial == mSerial) {
+                continue;
+            }
+            OBJLift_804ACA00* other = static_cast<OBJLift_804ACA00*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+            if (other == NULL) {
+                continue;
+            }
+            if (field_0x4 != other->field_0x4) {
+                continue;
+            }
+            s32 state = other->field_0x258;
+            if (state < 6 || state > 9) {
+                continue;
+            }
+            if (free[state - 6] != true) {
+                continue;
+            }
+            taken++;
+            free[state - 6] = false;
+        }
+        if (taken >= 4 || taken == 0) {
+            field_0x258 = (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 6;
+        } else {
+            s32 list[4];
+            s32 n = 0;
+            if (free[0] == true) {
+                list[n] = 0;
+                n++;
+            }
+            if (free[1] == true) {
+                list[n] = 1;
+                n++;
+            }
+            if (free[2] == true) {
+                list[n] = 2;
+                n++;
+            }
+            if (free[3] == true) {
+                list[n] = 3;
+                n++;
+            }
+            field_0x258 = list[(s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1())] + 6;
+        }
+        field_0x240 = field_0x258;
+        break;
+    }
+    case 11:
+        field_0x80.i.x = -23.0f;
+        field_0x80.i.y = -23.0f;
+        field_0x80.f.x = 23.0f;
+        field_0x80.f.y = 23.0f;
+        mBox.i.x = -23.0f;
+        mBox.i.y = -23.0f;
+        mBox.f.x = 23.0f;
+        mBox.f.y = 23.0f;
+        field_0x230 = 7;
+        break;
+    case 12: {
+        field_0x80.i.x = -23.0f;
+        field_0x80.i.y = -23.0f;
+        field_0x80.f.x = 23.0f;
+        field_0x80.f.y = 23.0f;
+        mBox.i.x = -23.0f;
+        mBox.i.y = -23.0f;
+        mBox.f.x = 23.0f;
+        mBox.f.y = 23.0f;
+        field_0x240 = 10;
+        s32 layer = field_0x4;
+        if (layer >= 8) {
+            showBreakEffect(layer);
+            startSound_801F0E34(0x30003, 0);
+        } else {
+            spawnEmitter_8013CC50(layer, &mPos, 0x459, 0, -3, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45A, 0, -3, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x45B, 0, -3, NULL, NULL, true, 1.0f);
+        }
+        startSound_801F0E34(0x30065, 0);
+        field_0x254 = 30;
+        field_0x258 = 12;
+        field_0x230 = 0;
+        field_0x240 = 10;
+        break;
+    }
+    case 16:
+    case 17:
+        field_0x80.i.x = -15.0f;
+        field_0x80.i.y = -23.0f;
+        field_0x80.f.x = 15.0f;
+        field_0x80.f.y = 23.0f;
+        field_0x240 = field_0x258 - 3;
+        break;
+    case 18:
+    case 19:
+        field_0x80.i.x = -23.0f;
+        field_0x80.i.y = -15.0f;
+        field_0x80.f.x = 23.0f;
+        field_0x80.f.y = 15.0f;
+        field_0x240 = field_0x258 - 3;
+        break;
+    case 20:
+        field_0x80.i.x = -15.0f;
+        field_0x80.i.y = -23.0f;
+        field_0x80.f.x = 15.0f;
+        field_0x80.f.y = 23.0f;
+        field_0x240 = 14;
+        break;
+    }
+    field_0x28c = 1.0f;
+    if (field_0x25c == 2) {
+        field_0x230 = 4;
+        field_0x28c = 0.0f;
+    }
+}
+
 // FIXME(shotgun): 99.71 %, reloc-name
 void OBJLift_804ACA00::fn_803513C0() {
     s32 layer = field_0x4;

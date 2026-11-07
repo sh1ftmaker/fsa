@@ -33,7 +33,9 @@ public:
     // 0x803511F0: respawns the lift at its spawn position (with an effect when it was far away).
     void fn_803511F0();
     /* 0x230 */ s32 field_0x230; // act_small_key rides it while nonzero
-    /* 0x234 */ u8 field_0x234[0xC]; // not yet known
+    /* 0x234 */ f32 field_0x234; // the spawn position (init)
+    /* 0x238 */ f32 field_0x238;
+    /* 0x23C */ f32 field_0x23c;
     /* 0x240 */ s32 field_0x240;
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
@@ -41,11 +43,11 @@ public:
     /* 0x250 */ s32 field_0x250; // frames away from the spawn position (fn_80350974)
     /* 0x254 */ s32 field_0x254;
     /* 0x258 */ s32 field_0x258; // state
-    /* 0x25C */ u8 field_0x25c[4]; // not yet known
+    /* 0x25C */ s32 field_0x25c; // 2: starts in state 4 (init)
     /* 0x260 */ s32 field_0x260; // half the lift's size, in units
     /* 0x264 */ s32 field_0x264;
     /* 0x268 */ s32 field_0x268; // push direction (0-7), -1 for none
-    /* 0x26C */ u8 field_0x26c[4]; // not yet known
+    /* 0x26C */ s32 field_0x26c;
     /* 0x270 */ s32 field_0x270; // bit mask of the sides a player pushes
     /* 0x274 */ s32 field_0x274; // pushing player
     /* 0x278 */ u8 field_0x278[4]; // not yet known
@@ -60,7 +62,9 @@ public:
     /* 0x28A */ u8 field_0x28a[2]; // not yet known
     /* 0x28C */ f32 field_0x28c;
     /* 0x290 */ f32 field_0x290;
-    /* 0x294 */ u8 field_0x294[0xC]; // not yet known
+    /* 0x294 */ f32 field_0x294;
+    /* 0x298 */ f32 field_0x298;
+    /* 0x29C */ f32 field_0x29c;
 }; // Size: 0x2A0
 
 #endif
