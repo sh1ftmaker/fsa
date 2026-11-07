@@ -1565,6 +1565,10 @@ bool fn_8023E98C(s32 player); // -> fn_8025F418; else false
 void fn_8023EE28(s32 player); // -> fn_8025F5CC
 s32 fn_8023EEB4(s32 player); // -> fn_8025F648; else 0
 s32 fn_8023EF50(s32 player); // -> fn_8025F668; else 0
+// game/tu_8022AD64.cpp. fn_8022B160: whether the game keeps per-player counters (arrows shot, ...);
+// fn_8022F340: the player index (0-3) of `player` in the current game mode.
+bool fn_8022B160();
+s32 fn_8022F340(s32 player);
 bool fn_8023EFEC(s32 player); // -> fn_8025F684; else false
 
 // Per-player queries, by address (legend as above).
