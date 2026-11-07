@@ -7,6 +7,35 @@
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "std/math.h"
+#include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
+
+// FIXME(shotgun): draw's texture tables, inside the lbl_804A1440 block (.data 0x804A1460 on):
+// texture names and y offsets by frame, a set for the normal states and one for states 9
+// and 15. Extern-declared under their addresses; sizes from the gaps between them.
+extern const char* const lbl_804A1460[30];
+extern const f32 lbl_804A14D8[30];
+extern const char* const lbl_804A1550[28];
+extern const f32 lbl_804A15C0[28];
+
+// setRotScaleMtx with a scale per axis (draw mirrors the sprite with x = -1).
+static inline void setRotScaleMtx3(Mtx m, const JGeometry::TVec3f& rot, f32 sx, f32 sy, f32 sz) {
+    f32 sinx = sin(rot.x);
+    f32 siny = sin(rot.y);
+    f32 sinz = sin(rot.z);
+    f32 cosx = cos(rot.x);
+    f32 cosy = cos(rot.y);
+    f32 cosz = cos(rot.z);
+    m[0][0] = sx * (cosy * cosz);
+    m[1][0] = sx * (cosy * sinz);
+    m[2][0] = sx * -siny;
+    m[0][1] = sy * (sinx * siny * cosz - cosx * sinz);
+    m[1][1] = sy * (sinx * siny * sinz + cosx * cosz);
+    m[2][1] = sy * (sinx * cosy);
+    m[0][2] = sz * (cosx * cosz * siny + sinx * sinz);
+    m[1][2] = sz * (cosx * sinz * siny - sinx * cosz);
+    m[2][2] = sz * (cosx * cosy);
+}
 
 // The marker frames of the SHA actor (.data 0x804A1440, not written as source here), by row.
 extern const s32 lbl_804A1440[];
@@ -296,9 +325,166 @@ void cls_804A1630::fn_80181BC8(s32 row, s32 mode) {
     }
 }
 
+// FIXME(shotgun): update (fn_8017FB10, 0x20B8 bytes) is not written.
+
+// 0x8017EF98.
+// FIXME(shotgun): 91.71 %, missing/extra + reloc-name
+void cls_804A1630::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    JGeometry::TVec3f saved(mPos);
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (mState == 0 || mState == 1 || mState == 0x17) {
+        return;
+    }
+    if (field_0x90 == 1) {
+        return;
+    }
+    if (field_0x90 == 2 || field_0x90 == 3) {
+        if (field_0x94 == 0) {
+            return;
+        }
+        JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+        f32 x = -16.0f;
+        setRotScaleMtx(mtx, rot, 1.0f);
+        if (field_0x90 == 3) {
+            x = 16.0f;
+            setRotScaleMtx3(mtx, rot, -1.0f, 1.0f, 1.0f);
+        }
+        params.mMtx = mtx;
+        void* res = fn_804032E8('GROC', "geki_ana.bti");
+        params.field_0x1d = -2;
+        params.field_0x1c = 1;
+        fn_801EFD34(res, &params, -1, x, -6.0f, 0.0f);
+        return;
+    }
+    if (getGameView_802D6A9C()->field_0x131df[field_0x4]) {
+        u32 kind = field_0x90;
+        if (kind == 8) {
+            if (field_0x250 == 0 || !(field_0x24c & 2)) {
+                fn_803075AC(mSerial, field_0x4, &mPos, field_0x26c + 0x192, 0, 2, -1, true, 0, 0);
+            }
+            return;
+        }
+        if (kind == 4 || kind == 5) {
+            if (lbl_8053AB70 == kind) {
+                fn_80307AC8(mSerial, field_0x4, &mPos, field_0x26c + 0x29, 0, 0, -1);
+            }
+            return;
+        }
+        if (kind == 10) {
+            if (field_0x250 == 0 || !(field_0x24c & 2)) {
+                fn_803075AC(mSerial, field_0x4, &mPos, field_0x26c + 0x192, 0, 2, -1, true, 0, 0);
+            }
+            return;
+        }
+        if (kind == 9) {
+            if (field_0x250 == 0 || !(field_0x24c & 2)) {
+                fn_803075AC(mSerial, field_0x4, &mPos, field_0x26c + 0x192, 0, 2, -1, true, 0, 0);
+                mPos.x = saved.x;
+                mPos.y = saved.y;
+                mPos.z = saved.z;
+            }
+            return;
+        }
+    }
+    if (field_0x90 == 6) {
+        params.field_0x1c = 1;
+        params.field_0x1d = 2;
+        f32 scale = field_0x30c;
+        mtx[0][0] = scale;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = scale;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = scale;
+        params.mMtx = mtx;
+        params.field_0x10.a = field_0x310;
+        drawSprite_801F06F0("enemy_gc_sob.bin", 0xB1, &params, -1, 1.0f, 1.0f);
+        return;
+    }
+    JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+    s32 frame = field_0x26c;
+    if (lbl_80539F98 <= 0) {
+        frame = field_0x26c + 0xE;
+    }
+    void* res;
+    f32 offset;
+    if (mState != 9 && mState != 15) {
+        if (mState == 12) {
+            if (field_0x26c == 12) {
+                frame = 0x1C;
+            } else if (field_0x26c == 13) {
+                frame = 0x1D;
+            }
+        }
+        res = fn_804032E8('GROC', lbl_804A1460[frame]);
+        offset = lbl_804A14D8[frame];
+    } else {
+        res = fn_804032E8('GROC', lbl_804A1550[frame]);
+        offset = lbl_804A15C0[frame];
+    }
+    setRotScaleMtx(mtx, rot, 1.0f);
+    if (field_0x98 == 0) {
+        setRotScaleMtx3(mtx, rot, -1.0f, 1.0f, 1.0f);
+    }
+    params.mMtx = mtx;
+    params.field_0x10.r = 0;
+    params.field_0x10.g = 0;
+    params.field_0x10.b = 0;
+    params.field_0x10.a = 100;
+    mPos.z = 0.0f;
+    params.field_0x1d = -1;
+    params.field_0x1c = 1;
+    fn_801EFD34(res, &params, -1, 0.0f, -8.0f + offset, 0.0f);
+    mPos.x = saved.x;
+    mPos.y = saved.y;
+    mPos.z = saved.z;
+    params.field_0x10.r = 0xFF;
+    params.field_0x10.g = 0xFF;
+    params.field_0x10.b = 0xFF;
+    params.field_0x10.a = 0xFF;
+    setRotScaleMtx(mtx, rot, 1.0f);
+    frame = field_0x26c;
+    if (lbl_80539F98 <= 0) {
+        frame = field_0x26c + 0xE;
+    }
+    if (mState != 9 && mState != 15) {
+        if (mState == 12) {
+            if (field_0x26c == 12) {
+                frame = 0x1C;
+            } else if (field_0x26c == 13) {
+                frame = 0x1D;
+            }
+        }
+        res = fn_804032E8('GROC', lbl_804A1460[frame]);
+        offset = lbl_804A14D8[frame];
+    } else {
+        res = fn_804032E8('GROC', lbl_804A1550[frame]);
+        offset = lbl_804A15C0[frame];
+    }
+    params.field_0x1d = 1;
+    if (mState == 15) {
+        params.field_0x1d = 0;
+    } else {
+        params.field_0x1f = 0;
+    }
+    if (field_0x98 == 0) {
+        setRotScaleMtx3(mtx, rot, -1.0f, 1.0f, 1.0f);
+    }
+    params.mMtx = mtx;
+    if (lbl_80539F98 <= 0) {
+        params.field_0x30 = 0x11;
+    }
+    fn_801EFD34(res, &params, -1, 0.0f, -8.0f + offset, 0.0f);
+}
+
 void cls_804A1630::vfunc_0x24() {
     startSound_801F0E34(0x40038, 0);
     vfunc_0x28(2, 0.0f, -24.0f);
 }
-
-// FIXME(shotgun): draw (fn_8017EF98, 0xB78 bytes) and update (fn_8017FB10, 0x20B8 bytes) are not written.

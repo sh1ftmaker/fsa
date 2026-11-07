@@ -16,7 +16,7 @@ public:
 
     /* 0x0C */ virtual void init();   // fn_801820B4
     /* 0x14 */ virtual void update(); // fn_8017FB10, not written yet
-    /* 0x20 */ virtual void draw();   // fn_8017EF98, not written yet
+    /* 0x20 */ virtual void draw();   // 0x8017EF98
     // 0x80181BC8: per player on this layer, draws the marker (fn_80230498) at its stored
     // position; mode 0 stores the players' positions, mode 1 steps the animation.
     void fn_80181BC8(s32 row, s32 mode);
