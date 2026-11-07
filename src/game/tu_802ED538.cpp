@@ -62,9 +62,9 @@ void cls_804AA350::init() {
         mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4E, 0, 0, NULL, NULL, true, 1.0f);
     }
     for (s32 i = 0; i < 4; i++) {
-        field_0x27c[i].mX = 0.0f;
-        field_0x27c[i].mY = 0.0f;
-        field_0x27c[i].mZ = 0.0f;
+        field_0x27c[i].mPos.x = 0.0f;
+        field_0x27c[i].mPos.y = 0.0f;
+        field_0x27c[i].mPos.z = 0.0f;
         field_0x27c[i].mDist = 0.0f;
         field_0x27c[i].mAngle = 0;
         field_0x27c[i].mActive = 0;
@@ -398,7 +398,7 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
-// FIXME(shotgun): 42.9 %, missing/extra + reloc-name
+// FIXME(shotgun): 54.8 %, missing/extra + reloc-name (structure, branches and constants follow the asm; the original builds the distance/angle with inlined TVec2 temporaries)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
     for (s32 p = 0; p < 4; p++) {
@@ -410,9 +410,7 @@ bool cls_804AA350::fn_802ED538() {
                 if (pos->z == 0.0f) {
                     f32 dx = mPos.x - pos->x;
                     f32 dy = (32.0f + mPos.y) - pos->y;
-                    e.mX = getPlayerPos_8023E724(p)->x;
-                    e.mY = getPlayerPos_8023E724(p)->y;
-                    e.mZ = getPlayerPos_8023E724(p)->z;
+                    e.mPos.z = getPlayerPos_8023E724(p)->z;
                     f32 len = dx * dx + dy * dy;
                     if (len > 0.0f) {
                         len = len * (1.0f / std::sqrtf(len));
@@ -432,10 +430,9 @@ bool cls_804AA350::fn_802ED538() {
                 e.mDist = 0.0f;
             }
             const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-            e.mX = mPos.x + e.mDist * sincos.sinShort(e.mAngle);
-            e.mY = (32.0f + mPos.y) + e.mDist * sincos.cosShort(e.mAngle);
-            JGeometry::TVec3f tmp(e.mX, e.mY, e.mZ);
-            fn_802303FC(p, &tmp, true);
+            e.mPos.x = mPos.x + e.mDist * sincos.sinShort(e.mAngle);
+            e.mPos.y = (32.0f + mPos.y) + e.mDist * sincos.cosShort(e.mAngle);
+            fn_802303FC(p, &e.mPos, true);
             if (e.mDist < 1.0f) {
                 fn_80230224(p, 0);
             }

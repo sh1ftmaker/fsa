@@ -6,6 +6,7 @@
 // element. Named after that constructor's address; the contents are not known.
 
 #include "types.h"
+#include "JSystem/JGeometry.h"
 
 struct Elem_801FFCDC {
     Elem_801FFCDC() {}
@@ -15,9 +16,7 @@ struct Elem_801FFCDC {
 // One per player of cls_804AA350 (tu_802ED538).
 struct Elem_80200544 {
     Elem_80200544() {}
-    /* 0x00 */ f32 mX;
-    /* 0x04 */ f32 mY;
-    /* 0x08 */ f32 mZ;
+    /* 0x00 */ JGeometry::TVec3f mPos;
     /* 0x0C */ f32 mDist;
     /* 0x10 */ s16 mAngle;
     /* 0x12 */ u8 mActive;
