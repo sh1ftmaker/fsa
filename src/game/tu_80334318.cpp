@@ -3,6 +3,8 @@
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/act/tu_801F9484.h"
+#include "game/GameGlobals.h"
+#include "game/RotMatrix.h"
 
 // 0x8033571C.
 // FIXME(shotgun): 99.11 %, reloc-name
@@ -57,6 +59,53 @@ bool IronBallHoming_804AB9C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
         return false;
     }
     return true;
+}
+
+// 0x80334488.
+// FIXME(shotgun): 99.46 %, regalloc-only
+void IronBallHoming_804AB9C0::draw() {
+    if (field_0x230 == 5) {
+        return;
+    }
+    SpriteParams_801F5AE0 shadow;
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    PSMTXIdentity(mtx);
+    shadow.field_0x1d = -1;
+    if (field_0x230 == 7) {
+        JGeometry::TVec3f rot(0.0f, 0.0f, 0.0f);
+        setRotScaleMtx(mtx, rot, field_0x240);
+        params.mMtx = mtx;
+    }
+    if (field_0x250 == 0) {
+        if (field_0x230 != 7) {
+            JGeometry::TVec3f pos(mPos.x, 3.0f + mPos.y, 0.0f);
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "kage_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 0, &shadow, 1.0f, 1.0f);
+            }
+        }
+        s32 frame = field_0x24c + 0x25;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x24c + 0x25, 0, 0, -1);
+    } else {
+        if (field_0x230 != 7) {
+            JGeometry::TVec3f pos(mPos.x, 12.0f + mPos.y, 0.0f);
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "kage_sob.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, 3, &shadow, 2.0f, 1.0f);
+            }
+        }
+        s32 frame = field_0x24c + 0x27;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_80307AC8(mSerial, field_0x4, &mPos, field_0x24c + 0x27, 0, 0, -1);
+    }
 }
 
 // 0x80334378.
