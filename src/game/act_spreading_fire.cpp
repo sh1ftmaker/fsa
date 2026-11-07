@@ -130,6 +130,7 @@ void SpreadingFire_804A8A50::init() {
     }
 }
 
+// Destructor at 0x802BD1A8.
 SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
     if (mEmitters[0] != NULL) {
         releaseEmitter_801EE434(mEmitters[0]);
@@ -292,6 +293,7 @@ void SpreadingFire_804A8A50::update() {
     }
 }
 
+// 0x802BC930.
 void SpreadingFire_804A8A50::draw() {
     if (field_0x240 != 6) {
         s32 layer = field_0x4;
@@ -304,6 +306,27 @@ void SpreadingFire_804A8A50::draw() {
     }
 }
 
+// 0x802BC88C.
+void SpreadingFire_804A8A50::vfunc_0x54() {
+    if (mEmitters[0] != NULL) {
+        mEmitters[0]->becomeInvalidEmitter();
+        mEmitters[0] = NULL;
+    }
+    if (mEmitters[1] != NULL) {
+        mEmitters[1]->becomeInvalidEmitter();
+        mEmitters[1] = NULL;
+    }
+    if (mEmitters[2] != NULL) {
+        mEmitters[2]->becomeInvalidEmitter();
+        mEmitters[2] = NULL;
+    }
+    if (mEmitters[3] != NULL) {
+        mEmitters[3]->becomeInvalidEmitter();
+        mEmitters[3] = NULL;
+    }
+}
+
+// 0x802BC83C.
 void SpreadingFire_804A8A50::vfunc_0x24() {
     vfunc_0x54();
     mAlive = false;
