@@ -41,7 +41,8 @@ class cls_800FE3EC {
 public:
     // Mangled fn_800FE3EC__12cls_800FE3ECFUcQ29JGeometry8TVec3<f>i; the vector
     // is passed by value.
-    void fn_800FE3EC(u8, JGeometry::TVec3f, int);
+    // Returns false when the group's points are incomplete.
+    bool fn_800FE3EC(u8, JGeometry::TVec3f, int);
     u8 fn_800FD894(s32 layer, u8* out, s32 max);
     bool fn_800FD5E8(u8 index);
     // RailBase.cpp (0x800FE2E4, not written yet): the entry index of the
@@ -53,6 +54,10 @@ public:
     // act_princess_zelda.cpp passes the actor position, 1.0f, an out vector
     // (the step to add to the position), a layer, an out angle and 0x200.
     // Returns 3 when the walk is over.
+    // RailBase.cpp (0x800FE090): advances along the rail when pos is within 10 units of the current
+    // point and writes that point to *out; returns 0 (walking), 1 (at the first), 2 (reached),
+    // 3 (at the last).
+    s32 fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out);
     s32 fn_800FDEA0(JGeometry::TVec3f* pos, f32 speed, JGeometry::TVec3f* outStep, s32* layer, u16* outAngle, s32 arg);
     bool fn_800FD548(u8 index);
     bool fn_800FD594(u8 index);
