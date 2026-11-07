@@ -13,7 +13,7 @@ ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
     releaseEmitter_801EE434(mEmitter254);
 }
 
-// FIXME(shotgun): 91.5 %, scheduling + reloc-name
+// FIXME(shotgun): 91.6 %, scheduling + reloc-name
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
     mEmitter250 = NULL;

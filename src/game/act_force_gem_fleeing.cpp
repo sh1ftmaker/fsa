@@ -6,7 +6,7 @@
 // FIXME(shotgun): not written (size 0x1518): update (0x8031C598)
 // FIXME(shotgun): not written (size 0x4E8): draw (0x8031C0B0)
 
-// FIXME(shotgun): 99.2 %, different
+// FIXME(shotgun): 99.4 %, different
 void FleeingForceGem_804AB170::init() {
     field_0x268 = field_0x90 & 3;
     field_0x94 = (field_0x90 >> 16) & 0xFF;
