@@ -26,10 +26,9 @@ public:
     /* 0x248 */ s32 field_0x248; // -1 at init
     /* 0x24C */ s32 field_0x24c; // spawn parameter bit 18
     /* 0x250 */ s32 field_0x250;
-    /* 0x254 */ u8 field_0x254[4]; // not yet known
-    /* 0x258 */ f32 field_0x258; // spawn position
-    /* 0x25C */ f32 field_0x25c;
-    /* 0x260 */ f32 field_0x260;
+    /* 0x254 */ s32 field_0x254; // frame countdown of states 10-14 (update)
+    // SHARED-EDIT: was three f32s; update copies it as one TVec3f (psq) and passes its address.
+    /* 0x258 */ JGeometry::TVec3f field_0x258; // spawn position
     /* 0x264 */ JGeometry::TVec2f field_0x264;
     /* 0x26C */ JGeometry::TBox2f field_0x26c;
 }; // Size: 0x27C
