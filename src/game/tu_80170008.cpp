@@ -4,6 +4,8 @@
 #include "game/GameState.h"
 #include "game/GameView.h"
 #include "game/act/tu_801F9484.h"
+#include "game/SpriteParams.h"
+#include <math.h>
 
 // 0x80171AF8.
 // FIXME(shotgun): 90.12 %, missing/extra + reloc-name
@@ -132,6 +134,82 @@ void cls_804A0810::vfunc_0x44() {
                 actor->mAlive = false;
                 field_0x26c = 0;
             }
+        }
+    }
+}
+
+// Draws the body (frame 0x7F + field_0x258), the ten trail segments (frame 0x83, at the stored
+// positions) and, rotated by field_0x278 and scaled by field_0x27c, the shell (frame 0x82 or 0x11).
+// FIXME(shotgun): 92 %, missing/extra
+void cls_804A0810::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    f32 x = mPos.x;
+    f32 y = mPos.y;
+    f32 z = mPos.z;
+    if (field_0x94 != 5) {
+        if ((field_0x90 >> 27) == 0 || vfunc_0x34()) {
+            params.field_0x0[8] = field_0x274;
+            drawSprite_801F06F0("enemy_gc_sob.bin", field_0x258 + 0x7F, &params, 7, 1.0f, 1.0f);
+            if (field_0x244 == 0) {
+                params.field_0x1d = 1;
+            } else {
+                params.field_0x20 = 0;
+            }
+            params.field_0x0[6] = 6;
+            for (s32 i = 0; i < 10; i++) {
+                mtx[0][0] = 0.7f;
+                mtx[0][1] = 0.0f;
+                mtx[0][2] = 0.0f;
+                mtx[1][0] = 0.0f;
+                mtx[1][1] = 0.7f;
+                mtx[1][2] = 0.0f;
+                mtx[2][0] = 0.0f;
+                mtx[2][1] = 0.0f;
+                mtx[2][2] = 0.7f;
+                params.mMtx = mtx;
+                mPos = field_0x29c[i];
+                drawSprite_801F06F0("enemy_gc_sob.bin", 0x83, &params, 7, 1.0f, 1.0f);
+            }
+            mPos.x = x;
+            mPos.y = y;
+            mPos.z = z;
+            if (field_0x244 == 0) {
+                params.field_0x1d = 2;
+            } else {
+                params.field_0x20 = 0;
+            }
+            f32 angle = field_0x278;
+            f32 scale = field_0x27c;
+            f32 sa = sin(0.0f);
+            f32 sb = sin(angle);
+            f32 sc = sin(0.0f);
+            f32 ca = cos(0.0f);
+            f32 cb = cos(angle);
+            f32 cc = cos(0.0f);
+            params.field_0x30 = 0x11;
+            params.mMtx = mtx;
+            mtx[0][0] = scale * (cb * cc);
+            mtx[1][0] = scale * (cb * sc);
+            mtx[2][0] = scale * -sb;
+            mtx[0][1] = scale * ((sa * sb) * cc - ca * sc);
+            mtx[1][1] = scale * ((sa * sb) * sc + ca * cc);
+            mtx[2][1] = scale * (sa * cb);
+            mtx[0][2] = scale * ((ca * cc) * sb + sa * sc);
+            mtx[1][2] = scale * ((ca * sc) * sb - sa * cc);
+            mtx[2][2] = scale * (ca * cb);
+            if (field_0x94 == 4) {
+                params.field_0x0[6] = field_0x274;
+                params.field_0x1d = 0;
+            }
+            mPos = field_0x314;
+            drawSprite_801F06F0("enemy_gc_sob.bin", 0x82, &params, 7, 1.0f, 1.0f);
+            mPos.x = x;
+            mPos.y = y;
+            mPos.z = z;
         }
     }
 }

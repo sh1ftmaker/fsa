@@ -268,7 +268,8 @@ public:
     /* 0x28C */ JPABaseEmitter* field_0x28c;
     /* 0x290 */ f32 field_0x290[3];
     /* 0x29C */ JGeometry::TVec3f field_0x29c[10];
-    /* 0x314 */ u8 field_0x314[0x32C - 0x314]; // not yet known
+    /* 0x314 */ JGeometry::TVec3f field_0x314; // the shell's draw position
+    /* 0x320 */ u8 field_0x320[0x32C - 0x320]; // not yet known
     /* 0x32C */ f32 field_0x32c[3]; // copy of mPos made by init
 }; // Size: 0x338
 
