@@ -233,9 +233,10 @@ s32 ActorManager_804A5800::fn_801F82CC(ActorBase_804A5770* actor, u8 includeArij
     return found;
 }
 
-// FIXME(shotgun): 92.6 %, the id list literal is loaded from .sdata2 instead of built on the stack
 extern "C" s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz) {
-    u32 ids[2] = {id, ACTOR_NULL};
+    u32 ids[2];
+    ids[0] = id;
+    ids[1] = ACTOR_NULL;
     return getActorManager_801F856C()->fn_801F7F58(const_cast<ActorBase_804A5770*>(actor), ids,
                                                   excludeSerial, maxDz);
 }

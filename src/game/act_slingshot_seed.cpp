@@ -104,10 +104,11 @@ static inline bool seedBump(SlingshotSeed_804AB3A8* seed) {
     return false;
 }
 
-// FIXME(shotgun): 86 %, missing/extra + reloc-name; NONMATCHING because compiling it lowers init from 99.25 to 98.86 %
-#ifdef NONMATCHING
+// FIXME(shotgun): 84 %, missing/extra
 bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u32 ids[2] = {'TOMI', ACTOR_NULL};
+    u32 ids[2];
+    ids[0] = 'TOMI';
+    ids[1] = ACTOR_NULL;
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ids) == 1) {
@@ -201,8 +202,6 @@ bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos)
     }
     return false;
 }
-
-#endif
 
 // Destructor at 0x80324570.
 SlingshotSeed_804AB3A8::~SlingshotSeed_804AB3A8() {
