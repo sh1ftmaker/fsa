@@ -3,6 +3,8 @@
 #include "game/act/tu_8018EB94.h"
 #include "game/GameGlobals.h"
 #include "game/Effect.h"
+#include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
 #include "game/ActorManager.h"
 #include "JSystem/JMath/JMath.h"
 
@@ -82,6 +84,57 @@ void cls_804A1FA0::init() {
     angle = (s32)(4000.0f * (f32)((field_0x98 + 2) & 0xF));
     field_0x288[5].x += 6.0f * JMath::sincosTable_.sinShort(angle);
     field_0x288[5].y += 6.0f * JMath::sincosTable_.cosShort(angle);
+}
+
+// FIXME(shotgun): 89.85 %, missing/extra + reloc-name
+void cls_804A1FA0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    f32 z0 = mPos.z;
+    if (field_0x234[3] & 1) {
+        params.field_0x14.set(0x80, 0x80, 0x80, 0);
+    }
+    params.field_0x1d = 1;
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[2]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x29, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[1]);
+    mPos.z = z0;
+    params.field_0x1d = 2;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x27, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[0]);
+    mPos.z = z0;
+    params.field_0x1d = 3;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x26, &params, -1, 1.0f, 1.0f);
+
+    params.field_0x1d = 4;
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[4]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
+
+    PSMTXIdentity(mtx);
+    setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
+    params.mMtx = mtx;
+    mPos.set(field_0x288[5]);
+    mPos.z = z0;
+    drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
+
+    mPos.set(field_0x288[0]);
+    mPos.z = z0;
 }
 
 // FIXME(shotgun): 80.47 %, missing/extra + reloc-name
