@@ -61,7 +61,7 @@ public:
     // read).
     /* 0x9C */ virtual void vfunc_0x9C(s32 arg1, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6);
     /* 0xA0 */ virtual void vfunc_0xA0();
-    /* 0xA4 */ virtual void vfunc_0xA4();
+    /* 0xA4 */ virtual void vfunc_0xA4(f32* x, f32* y, s32* player);
     /* 0xA8 */ virtual void vfunc_0xA8(f32* x, f32* y, s32* player); // fn_80122E34
     /* 0xAC */ virtual void vfunc_0xAC(f32* x, f32* y, s32* player); // fn_80122D38
     /* 0xB0 */ virtual void vfunc_0xB0(f32* x, f32* y, s32* player); // fn_80122CAC
@@ -111,6 +111,8 @@ public:
     void fn_801220C4();
     // fn_80122F6C (tu_801213EC): the position offset of a life-meter slot for the player *player, as the vfunc_0xA8-0xB8 family.
     void fn_80122F6C(f32* x, f32* y, s32* player);
+    // fn_8012309C (tu_801213EC): the angle, direction, distance and player of the escort's pull target.
+    void fn_8012309C(u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
     void fn_80122148();
     void fn_80122548();
     // fn_80122898 (tu_801213EC): asks the player at the escort to talk (message msg); remembers

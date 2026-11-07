@@ -11,6 +11,7 @@
 #include "game/GameView.h"
 #include "game/tu_80131D98.h"
 #include <string.h>
+#include "std/math.h"
 #include "JSystem/JMath/JMath.h"
 #include "game/tu_801213EC.h"
 #include "game/act/act_life_meter.h"
@@ -295,6 +296,44 @@ s32 EscortBase_8049E0C8::vfunc_0x80() {
         vfunc_0x94();
     }
     return 1;
+}
+
+// FIXME(shotgun): 98.6 %, different + reloc-name
+void EscortBase_8049E0C8::fn_8012309C(u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player) {
+    if (field_0x334) {
+        fn_801EEC98(mSerial, outAngle, outDir, outDist, outPlayer, player, 2);
+        field_0x334 = 0;
+    } else {
+        f32 y = 0.0f;
+        f32 x = 0.0f;
+        s32 who = player;
+        switch (fn_8022CAF8(player)) {
+        case 0:
+            vfunc_0xA4(&x, &y, &who);
+            break;
+        case 1:
+            vfunc_0xA8(&x, &y, &who);
+            break;
+        case 2:
+            vfunc_0xAC(&x, &y, &who);
+            break;
+        case 3:
+            vfunc_0xB0(&x, &y, &who);
+            break;
+        case 5:
+            vfunc_0xB4(&x, &y, &who);
+            break;
+        default:
+            vfunc_0xB8(&x, &y, &who);
+            break;
+        }
+        f32 dx = mPos.x - (x + getPlayerPos_8023E724(who)->x);
+        f32 dy = mPos.y - (y + getPlayerPos_8023E724(who)->y);
+        *outDist = std::sqrtf(dx * dx + dy * dy);
+        *outAngle = (s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
+        *outDir = fn_801F681C(*outAngle);
+        *outPlayer = player;
+    }
 }
 
 // FIXME(shotgun): 99.9 %, stack layout (dist/who slots swapped)
