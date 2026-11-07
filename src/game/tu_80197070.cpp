@@ -95,7 +95,7 @@ void fn_8019CD9C(s32 v) {
     gGameRoot_8053AAF8->fn_8013670C(v);
 }
 
-// FIXME(shotgun): 95.57 %, missing/extra + reloc-name.
+// FIXME(shotgun): 96.15 %, missing/extra + reloc-name.
 void cls_804A2944::init() {
     lbl_8053ABA8 = 0;
     mBox.i.x = -8.0f;
@@ -129,9 +129,11 @@ void cls_804A2944::init() {
     field_0x26c = 0.0f;
     field_0x270 = 0.0f;
     field_0x268 = 0;
-    field_0x280[0].set(mPos);
-    field_0x280[1].set(mPos);
-    field_0x280[2].set(mPos);
+    for (int i = 0; i < 3; i++) {
+        field_0x280[i].x = mPos.x;
+        field_0x280[i].y = mPos.y;
+        field_0x280[i].z = mPos.z;
+    }
     for (int i = 0; i < 13; i++) {
         mEmitters[i] = NULL;
     }
@@ -156,11 +158,12 @@ void cls_804A2944::init() {
                 static_cast<LifeMeter_804B174C*>(limit)->fn_8019CEF8(mSerial, -28.0f, field_0x258);
             }
         }
+        JGeometry::TVec3f origin(field_0x280[0].x, field_0x280[0].y, field_0x280[0].z);
         if (mEmitters[0] == NULL) {
-            mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &field_0x280[0], 0x1CA, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &origin, 0x1CA, 0, 0, NULL, NULL, true, 1.0f);
         }
         if (mEmitters[1] == NULL) {
-            mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &field_0x280[0], 0x1CB, 0, 0, NULL, NULL, true, 1.0f);
+            mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &origin, 0x1CB, 0, 0, NULL, NULL, true, 1.0f);
         }
         mPos.y += 148.0f;
         mPos.x = field_0x280[0].x;
