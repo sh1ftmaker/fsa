@@ -45,6 +45,18 @@ struct ScreenRect_802FF3F0 {
     /* 0xC */ u32 y1;
 }; // Size: 0x10
 
+struct CameraEntry_804AA8E8 {
+    /* 0x00 */ f32 field_0x0;
+    /* 0x04 */ f32 field_0x4;
+    /* 0x08 */ f32 field_0x8;
+    /* 0x0C */ f32 field_0xc;
+    /* 0x10 */ f32 field_0x10;
+    /* 0x14 */ f32 field_0x14;
+    /* 0x18 */ s32 field_0x18;
+    /* 0x1C */ f32 field_0x1c;
+    /* 0x20 */ u8 field_0x20;
+}; // Size: 0x24
+
 class Camera_804AA9E4 {
 public:
     // fn_8030E718 (tu_8013AAD4 only): stores the vtable, sets field_0xe4 and
@@ -99,6 +111,8 @@ public:
     // change towards box: field_0x1e8 = 1, 0x1EC = 30, field_0x7f5 = 0
     // (0x8030CA14-0x8030CA2C).
     void fn_8030C9E4(const JGeometry::TBox2f* box);
+    void fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraEntry_804AA8E8* entry,
+                     JGeometry::TBox2f* prevBox, JGeometry::TBox2f* outBox, f32* outDepth);
     // Called once per frame from game/tu_8013AAD4.cpp only (no arguments
     // read; the caller ignores r3).
     void fn_8030DD68();
@@ -157,7 +171,7 @@ public:
     /* 0x17E */ u8 field_0x17e; // set by fn_8030C7C4
     /* 0x180 */ JGeometry::TBox2f field_0x180; // fn_8030C7C4
     /* 0x190 */ JGeometry::TBox2f field_0x190; // fn_8030C928; fn_8030C85C
-    /* 0x1A0 */ f32 field_0x1a0[4]; // the box the transition leaves (fn_8030E154 blends from it)
+    /* 0x1A0 */ JGeometry::TBox2f field_0x1a0; // the box the transition leaves (fn_8030E154 blends from it)
     /* 0x1B0 */ f32 field_0x1b0;     // and its depth
     // fn_8030C85C sets all four floats to one constant.
     /* 0x1B4 */ JGeometry::TBox2f field_0x1b4;
@@ -185,7 +199,8 @@ public:
     /* 0x7F8 */ s32 field_0x7f8;
     /* 0x7FC */ JGeometry::TVec3f field_0x7fc;
     /* 0x808 */ JGeometry::TBox2f field_0x808;
-    /* 0x818 */ u8 field_0x818[0x838 - 0x818];
+    /* 0x818 */ JGeometry::TBox2f field_0x818;
+    /* 0x828 */ JGeometry::TBox2f field_0x828;
     /* 0x838 */ s32 field_0x838; // -1 after fn_8030E5BC
     /* 0x83C */ s32 field_0x83c; // -1 after fn_8030E5BC
     // Set by 19 units when 0 (act_escort_woman 0x80125010-0x80125044),
