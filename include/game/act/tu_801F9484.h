@@ -7,6 +7,7 @@
 // unit's act header.
 
 #include "game/ActorBase.h"
+#include "game/RailBase.h"
 #include "game/act/act_all_enemies_defeated.h"
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
@@ -430,7 +431,33 @@ class cls_804A3698 : public ActorBase_804A5770 {
 public:
     cls_804A3698() {}
     /* 0x08 */ virtual ~cls_804A3698();
-    /* 0x230 */ u8 field_0x230[0x114];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    /* 0x230 */ cls_800FE3EC mRail; // update steps it (fn_800FDEA0) while field_0x2f8 != 0
+    /* 0x2F8 */ s32 field_0x2f8; // state
+    /* 0x2FC */ u8 field_0x2fc;
+    /* 0x2FD */ u8 field_0x2fd[3]; // not yet known
+    /* 0x300 */ s32 field_0x300;
+    /* 0x304 */ s32 field_0x304;
+    /* 0x308 */ s32 field_0x308; // draw skips the sprite while bit 1 is clear and it is non-zero
+    /* 0x30C */ s32 field_0x30c;
+    /* 0x310 */ s32 field_0x310;
+    /* 0x314 */ s32 field_0x314;
+    /* 0x318 */ s32 field_0x318;
+    /* 0x31C */ s32 field_0x31c;
+    /* 0x320 */ s32 field_0x320; // draw's frame - 0x9B
+    /* 0x324 */ s32 field_0x324; // serial of the 'LIMT' life meter init spawns
+    /* 0x328 */ s32 field_0x328; // init: 5; the life meter's heart index
+    /* 0x32C */ u8 field_0x32c;
+    /* 0x32D */ u8 field_0x32d;
+    /* 0x32E */ u8 field_0x32e[2]; // not yet known
+    /* 0x330 */ s32 field_0x330; // init: field_0x90 & 7
+    /* 0x334 */ f32 field_0x334; // update eases field_0x3c.x towards it
+    /* 0x338 */ f32 field_0x338; // update eases field_0x3c.y towards it
+    /* 0x33C */ f32 field_0x33c;
+    /* 0x340 */ f32 field_0x340; // init: mPos.z
 }; // Size: 0x344
 
 // Spawned for 'TLWP'.
@@ -438,9 +465,27 @@ class cls_804A38D4 : public ActorBase_804A5770 {
 public:
     cls_804A38D4() {}
     /* 0x08 */ virtual ~cls_804A38D4();
-    /* 0x230 */ u8 field_0x230[0x34];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    void fn_801B4EC8();
+    void fn_801B5228();
+    void fn_801B56A0();
+    /* 0x230 */ s32 field_0x230; // state; init: 0, or 8 when field_0x250 != 0
+    /* 0x234 */ s32 mTimers[3]; // update counts them down to 0
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250; // bits 4-7 of field_0x90: update runs fn_801B56A0 at 0, fn_801B5228 at 1-3
+    /* 0x254 */ s32 field_0x254; // bits 0-3 of field_0x90
+    /* 0x258 */ f32 field_0x258;
+    /* 0x25C */ f32 field_0x25c; // init: 1.0f
+    /* 0x260 */ u16 field_0x260;
+    /* 0x262 */ u8 field_0x262[2]; // not yet known
     /* 0x264 */ JGeometry::TVec3f field_0x264[4];
-    /* 0x294 */ u8 field_0x294[0x5C];
+    /* 0x294 */ JPABaseEmitter* mEmitters294[3];
+    /* 0x2A0 */ JPABaseEmitter* mEmitters2A0[20]; // init spawns one per lbl_804A37E0 id
 }; // Size: 0x2F0
 
 #include "game/act/act_bird_manager.h"
