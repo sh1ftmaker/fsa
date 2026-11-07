@@ -52,7 +52,9 @@ void RotatingSkull_804A8588::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 99.91 %, reloc-name (params is built and unused in the original)
+// FIXME(shotgun): 99.91 %, reloc-name (params is built and unused in the original); under NONMATCHING because compiling it
+// drops init() from 99.50 to 99.42 % (its sdata2 literals move)
+#ifdef NONMATCHING
 void RotatingSkull_804A8588::fn_802B2728() {
     if (field_0x25c != 0) {
         SpriteParams_801F5AE0 params;
@@ -62,6 +64,7 @@ void RotatingSkull_804A8588::fn_802B2728() {
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x258 + 0x78, 0, 2, -1, false, 0, 0);
     }
 }
+#endif
 
 // The sign of a bounce: -1 when the push (`along`) and the other velocity component point
 // the way the axis needs, else 1.
