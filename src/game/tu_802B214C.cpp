@@ -57,7 +57,7 @@ void RotatingSkull_804A8588::init() {
 }
 
 // 0x802B28E4.
-// FIXME(shotgun): 0 %, new
+// FIXME(shotgun): 99.14 %, scheduling+regalloc + reloc-name
 void RotatingSkull_804A8588::update() {
     field_0x250--;
     if (field_0x250 == 0) {

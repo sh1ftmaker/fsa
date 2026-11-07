@@ -256,7 +256,7 @@ extern const Tables_80466110 lbl_80466110;
 extern JGeometry::TVec2f lbl_804A0310[4]; // the emitter offset from mPos
 
 // 0x8015DF7C.
-// FIXME(shotgun): 0 %, new
+// FIXME(shotgun): 85.15 %, missing/extra
 void Flame_804A0330::fn_8015DF7C() {
     JGeometry::TBox2f box;
     box.set(mBox);

@@ -49,7 +49,7 @@ static inline void setKick(ActorBase_804A5770* actor, s32 dir) {
 }
 
 // 0x8032D6C0.
-// FIXME(shotgun): 0 %, new
+// FIXME(shotgun): 99.86 %, reloc-name
 void ForceGem_804AB6D8::init() {
     field_0x94 = (field_0x90 >> 16) & 0xFF;
     field_0x268 = field_0x90 & 0xFF;
@@ -321,7 +321,7 @@ inline void ForceGem_804AB6D8::tickTimer() {
 }
 
 // 0x8032C664.
-// FIXME(shotgun): 0 %, new
+// FIXME(shotgun): 93.96 %, missing/extra + reloc-name
 void ForceGem_804AB6D8::update() {
     field_0x29c = mPos;
     if (field_0x230 != 0x11 && field_0x230 != 0xF && field_0x230 != 0x10) {
@@ -594,7 +594,7 @@ void ForceGem_804AB6D8::update() {
 }
 
 // 0x8032BFB0.
-// FIXME(shotgun): 0 %, new
+// FIXME(shotgun): 93.62 %, missing/extra + reloc-name
 void ForceGem_804AB6D8::draw() {
     s32 state = field_0x230;
     if (state == 7 || state == 8 || state == 0xC || state == 0xE || state == 0x11) {
