@@ -15,6 +15,7 @@
 // the members act_npc_ride_switch reads are declared.
 class Log_804ACD70 : public ActorBase_804A5770 {
 public:
+    /* 0x08 */ virtual ~Log_804ACD70(); // fn_80356514
     bool isAtRest() const {
         if (field_0x230 == 0 && isMotionless() == true) {
             return true;
@@ -26,7 +27,7 @@ public:
     /* 0x230 */ s32 field_0x230; // 0 while the log is at rest (npc_ride_switch)
     /* 0x234 */ u8 field_0x234[0xA0]; // not yet known
     /* 0x2D4 */ JGeometry::TVec3f field_0x2d4; // velocity? (zero while at rest)
-    /* 0x2E0 */ u8 field_0x2e0[0x4]; // not yet known
+    /* 0x2E0 */ JPABaseEmitter* mEmitter2e0; // released by the destructor
 }; // Size: 0x2E4
 
 #endif
