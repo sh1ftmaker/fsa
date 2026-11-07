@@ -17,7 +17,7 @@
 </g>
 <text x="330" y="62" class="mono" font-size="11.5" fill="#6b7096">2,433,012 bytes left · game code 99.2 % of it</text>
 <text x="932" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#1b1f3a">45.23 %</text>
-<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 61.53 %</text>
+<text x="932" y="62" text-anchor="end" class="mono" font-size="11.5" fill="#a8761a">weighted 61.54 %</text>
 <line x1="20" x2="940" y1="84" y2="84" stroke="#dfe2ef"/>
 <g fill="#d29a2e"><path d="M34.5 107L41 120L28 120Z"/></g>
 <text x="50" y="119" font-size="16" font-weight="700" fill="#1b1f3a">Libraries</text>
@@ -51,9 +51,9 @@
 <text x="50" y="329" font-size="16" font-weight="700" fill="#1b1f3a">NPCs</text>
 <text x="50" y="349" font-size="12" fill="#6b7096">54 files · 285 KiB · 10 Matching · 17 unconfirmed</text>
 <rect x="330" y="316" width="440" height="14" rx="4" fill="#e6e8f3"/>
-<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="206.14" height="14" rx="4" fill="#a96087" fill-opacity="0.35"/>
+<rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="206.62" height="14" rx="4" fill="#a96087" fill-opacity="0.35"/>
 <rect class="grow" style="animation-delay:0.3s" x="330" y="316" width="126.80" height="14" rx="4" fill="#a96087"/>
-<text x="330" y="349" class="mono" font-size="11.5" fill="#6b7096">honest 28.8 % · weighted 46.8 %</text>
+<text x="330" y="349" class="mono" font-size="11.5" fill="#6b7096">honest 28.8 % · weighted 47.0 %</text>
 <text x="932" y="330" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="#a96087">28.8 %</text>
 <text x="932" y="350" text-anchor="end" class="mono" font-size="11.5" fill="#6b7096">364 / 594 fns</text>
 <g fill="#508ae1"><path d="M34.5 383L41 389.5L34.5 396L28 389.5Z"/></g>

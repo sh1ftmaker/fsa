@@ -48,8 +48,8 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 As of 2026-11-07:
 
 - **Honest: 45.23 %** of the code is byte-identical, **9,379 / 11,557** functions (2,009,020 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 61.53 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
-- **Structurally matched:** 10,068 / 11,557 functions (same instructions, register or order differences only), +262 close.
+- **Weighted: 61.54 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structurally matched:** 10,069 / 11,557 functions (same instructions, register or order differences only), +262 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -151,7 +151,7 @@ too.
 |---|--:|--:|--:|--:|--:|
 | [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 59.4 % of 407,528 bytes | 94.6 % | 934 / 1,054 | 0 / 10 | – |
 | [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 27.9 % of 679,252 bytes | 42.0 % | 843 / 1,339 | 29 / 139 | 54 |
-| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 28.8 % of 291,360 bytes | 46.8 % | 364 / 594 | 10 / 54 | 17 |
+| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 28.8 % of 291,360 bytes | 47.0 % | 364 / 594 | 10 / 54 | 17 |
 | [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 31.2 % of 900,452 bytes | 46.7 % | 977 / 1,518 | 68 / 229 | 56 |
 | [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 15.0 % of 182,272 bytes | 38.0 % | 159 / 311 | 0 / 10 | 2 |
 | [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 23.4 % of 801,744 bytes | 48.5 % | 485 / 872 | 8 / 47 | 11 |
