@@ -86,7 +86,7 @@ void ZoraEnemy_804A3D7C::fn_801BACE8(s32 state) {
             JGeometry::TVec3f probePos;
             JGeometry::TVec3f spawnPos = mSpawnPos;
             s32 range = field_0x90;
-            if ((u32)range != 0) {
+            if (field_0x90 != 0) {
                 s32 count = 0;
                 cls_801BB1A8 tiles[961];
                 for (s32 dx = -range; dx <= range; dx++) {
@@ -271,7 +271,9 @@ void ZoraEnemy_804A3D7C::vfunc_0xA0() {
     }
 }
 
-// FIXME: 97.30 %, missing/extra. isZero bool materialisation (mfcr/extrwi) and cel range branch scheduling differ (3 instructions).
+// FIXME: 93.96 %, missing/extra (3 instructions). The original materialises isZero() as a bool (mfcr; extrwi.; bne) and
+// loads field_0x54.z, .y, .x ahead of the matrix stores (ours loads each just before its store); the mCel range test
+// also branches differently (bge/b vs blt).
 void ZoraEnemy_804A3D7C::draw() {
     switch (mState) {
     case 0:
@@ -280,8 +282,7 @@ void ZoraEnemy_804A3D7C::draw() {
     default:
         break;
     }
-    bool zero = field_0x54.isZero();
-    if (zero) {
+    if (field_0x54.isZero()) {
         return;
     }
     SpriteParams_801F5AE0 params;
@@ -289,18 +290,15 @@ void ZoraEnemy_804A3D7C::draw() {
     mtx[0][3] = 0.0f;
     mtx[1][3] = 0.0f;
     mtx[2][3] = 0.0f;
-    f32 sy = field_0x54.y;
-    f32 sz = field_0x54.z;
-    f32 sx = field_0x54.x;
-    mtx[0][0] = sx;
+    mtx[0][0] = field_0x54.x;
     mtx[0][1] = 0.0f;
     mtx[0][2] = 0.0f;
     mtx[1][0] = 0.0f;
-    mtx[1][1] = sy;
+    mtx[1][1] = field_0x54.y;
     mtx[1][2] = 0.0f;
     mtx[2][0] = 0.0f;
     mtx[2][1] = 0.0f;
-    mtx[2][2] = sz;
+    mtx[2][2] = field_0x54.z;
     params.mMtx = mtx;
     if (mAnim.mCel < 16 && mAnim.mCel >= 9) {
         params.field_0x1c = -1;
