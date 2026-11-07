@@ -75,6 +75,9 @@ public:
     void fn_8041DD24();
     // 0x8041A868 (not written yet): called by fn_8041FC2C with 1.
     void fn_8041A868(bool arg);
+    // 0x8041D18C and 0x8041B69C (not written yet): called by fn_8041EDB0.
+    void fn_8041D18C(s32 player);
+    void fn_8041B69C();
 
     /* 0x00 */ // vtable
     /* 0x04 */ J2DScreen* field_0x4; // drawn by fn_8041F720
@@ -145,9 +148,10 @@ public:
     /* 0x28F */ u8 field_0x28f; // player bit masks fn_8041E3B4 maintains
     /* 0x290 */ u8 field_0x290;
     /* 0x291 */ u8 field_0x291; // fn_8041E8B4: refresh the hearts while the life counts
-    /* 0x292 */ u8 field_0x292;
+    /* 0x292 */ s8 field_0x292; // fn_8041EDB0: frames player 0 has had no life (lbz + extsb)
     /* 0x293 */ u8 field_0x293;
     /* 0x294 */ u8 field_0x294[4];  // level per player, set by fn_8041918C
-}; // Size: 0x298 or more (fn_8041E3B4 reads the byte at 0x28F)
+    /* 0x298 */ u8 field_0x298; // fn_8041EDB0: 1 while the screen mode is 11
+}; // Size: 0x29C or more (fn_8041EDB0 reads the byte at 0x298)
 
 #endif
