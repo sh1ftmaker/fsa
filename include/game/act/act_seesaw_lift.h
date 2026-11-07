@@ -34,14 +34,8 @@ public:
     /* 0x240 */ f32 field_0x240;
     /* 0x244 */ u8 field_0x244;
     /* 0x245 */ u8 field_0x245;
-    /* 0x246 */ s8 field_0x246;
-    /* 0x247 */ s8 field_0x247;
-    /* 0x248 */ s8 field_0x248;
-    /* 0x249 */ s8 field_0x249;
-    /* 0x24A */ u8 field_0x24a;
-    /* 0x24B */ u8 field_0x24b;
-    /* 0x24C */ u8 field_0x24c;
-    /* 0x24D */ u8 field_0x24d;
+    /* 0x246 */ s8 field_0x246[4]; // per player: side result of fn_8035AE9C
+    /* 0x24A */ s8 field_0x24a[4]; // per player: side of the contact box
     /* 0x24E */ u8 field_0x24e;
     /* 0x24F */ u8 field_0x24f;
     /* 0x250 */ s32 field_0x250;

@@ -4,6 +4,7 @@
 #include "game/Player.h"
 #include "game/BgRewrite.h"
 #include "game/Map.h"
+#include "JSystem/JMath/JMath.h"
 #include <math.h>
 
 // The state table in the unit's .data (0x804AD30C). It is zeros in the DOL and
@@ -32,14 +33,14 @@ void SeesawLift_804AD348::init() {
     field_0x244 = 0;
     field_0x245 = 0;
     field_0x24e = 0;
-    field_0x246 = 0;
-    field_0x24a = 0;
-    field_0x247 = 0;
-    field_0x24b = 0;
-    field_0x248 = 0;
-    field_0x24c = 0;
-    field_0x249 = 0;
-    field_0x24d = 0;
+    field_0x246[0] = 0;
+    field_0x24a[0] = 0;
+    field_0x246[1] = 0;
+    field_0x24a[1] = 0;
+    field_0x246[2] = 0;
+    field_0x24a[2] = 0;
+    field_0x246[3] = 0;
+    field_0x24a[3] = 0;
     field_0x250 = 0;
     field_0x25c = 0;
     field_0x260 = 0;
@@ -164,7 +165,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
     bool moved = false;
     bool all = false;
-    if (field_0x246 && field_0x247 && field_0x248 && field_0x249) {
+    if (field_0x246[0] && field_0x246[1] && field_0x246[2] && field_0x246[3]) {
         all = true;
     }
     if (all && __fabs(field_0x240) < 33.0f) {
@@ -314,6 +315,128 @@ void SeesawLift_804AD348::draw() {
         JGeometry::TVec3f pos(mPos.x, mPos.y, 0.0f);
         if (field_0x4 < 8) {
             gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &params);
+        }
+    }
+}
+
+// Writes tile `tile` over the lift's 6 x 6 tile area.
+static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
+    JGeometry::TVec3f p = lift->mPos;
+    p.x += lift->mBox.i.x;
+    p.y += lift->mBox.i.y;
+    f32 baseY = p.y;
+    lift->field_0x258 = 0;
+    for (s32 row = 0; row < 6; row++) {
+        for (s32 col = 0; col < 6; col++) {
+            gBgRewrite_8053AC98->fn_802A381C(&p, lift->field_0x4, tile);
+            p.y += 16.0f;
+        }
+        p.y = baseY;
+        p.x += 16.0f;
+    }
+}
+
+// FIXME(shotgun): 79.8 %, missing/extra + reloc-name
+void SeesawLift_804AD348::fn_803597EC() {
+    field_0x240 = 0.0f;
+    field_0x24e = 0;
+    if (field_0x254 != 0) {
+        field_0x254--;
+        if (field_0x254 == 0) {
+            fn_801F0D20(3);
+        }
+    }
+    s32 mask = 0;
+    for (s32 p = 0; p < 4; p++) {
+        field_0x246[p] = 0;
+        field_0x24a[p] = 0;
+        if (fn_8023F264(p)) {
+            field_0x246[p] = fn_8035AE9C(p);
+            if (fn_80235448(p) && field_0x246[p] != 0) {
+                field_0x24e |= 1 << p;
+                JGeometry::TBox2f box;
+                fn_801F317C(&box);
+                f32 centerY = mPos.y;
+                f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+                box.i.y = (box.i.y - centerY) * c + centerY;
+                box.f.y = (box.f.y - centerY) * c + centerY;
+                JGeometry::TVec2f out;
+                if (fn_8023AAF8(p, &box, field_0x4, &out)) {
+                    f32 d = centerY - out.y;
+                    if (field_0x24e && d == 0.0f) {
+                        d = 0.1f;
+                    }
+                    if (!field_0x24e && __fabs(d) <= 8.0f) {
+                        d = 0.0f;
+                    }
+                    field_0x240 += 20.0f * d;
+                    if (d >= 0.0f) {
+                        field_0x24a[p] = 1;
+                    } else {
+                        field_0x24a[p] = -1;
+                    }
+                } else {
+                    field_0x24a[p] = 0;
+                }
+            }
+        }
+        mask |= field_0x24e;
+        mask |= field_0x24a[p] << p;
+    }
+    if (mask != 0) {
+        if (field_0x238 == 0 && field_0x240 != 0.0f) {
+            field_0x254 = 30;
+            fillTiles(this, 12);
+            field_0x258 = 1;
+            if (field_0x240 > 0.0f) {
+                field_0x238 = 0x200;
+            } else if (field_0x240 < 0.0f) {
+                field_0x238 = -0x200;
+            }
+        }
+    }
+    for (s32 p = 0; p < 4; p++) {
+        if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
+            f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
+            f32 push = 1.8f * (sinVal * __fabs(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+                push *= 5.5f;
+            }
+            if (field_0x244 == 0) {
+                if (field_0x258 == 1) {
+                    JGeometry::TVec3f v(0.0f, -1.0f * push, 0.0f);
+                    fn_8023DF68(p, &v);
+                }
+            } else if (field_0x258 == 1) {
+                JGeometry::TVec3f v(0.0f, push, 0.0f);
+                fn_8023DF68(p, &v);
+            }
+        }
+    }
+    for (s32 p = 0; p < 4; p++) {
+        if (field_0x24a[p] != 0) {
+            for (s32 q = 0; q < 4; q++) {
+                if (!fn_8022F514(q) && field_0x24a[q] == 0 && field_0x246[q] != 0 && field_0x24a[p] * field_0x246[q] < 0) {
+                    fn_802314D8(q, JGeometry::TVec3f(0.0f, 0.0f, 10.0f));
+                }
+            }
+        }
+    }
+    s16 oldAngle = field_0x230;
+    field_0x230 += field_0x238;
+    if (field_0x238 < 0) {
+        if ((oldAngle > 0x4000 && field_0x230 <= 0x4000) || (oldAngle >= -0x4000 && field_0x230 < -0x4000)) {
+            field_0x244 ^= 1;
+        }
+    } else if (field_0x238 > 0) {
+        if ((oldAngle <= 0x4000 && field_0x230 > 0x4000) || (oldAngle < -0x4000 && field_0x230 >= -0x4000)) {
+            field_0x244 ^= 1;
+        }
+    }
+    if (field_0x230 == 0 || field_0x230 == -0x8000) {
+        if (field_0x238 != 0) {
+            fillTiles(this, 864);
+            field_0x238 = 0;
         }
     }
 }
