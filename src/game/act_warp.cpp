@@ -4,11 +4,45 @@
 #include "game/BgRewrite.h"
 #include "game/Effect.h"
 #include "game/Player.h"
+#include "game/GameGlobals.h"
+#include "game/Map.h"
 #include <float.h>
 
 Warp_804A6DC8::~Warp_804A6DC8() {
     releaseEmitter_801EE434(mEmitter24c);
     releaseEmitter_801EE434(mEmitter250);
+}
+
+extern const f32 lbl_8046AC58[24]; // x shifts of the sand while the warp shakes
+
+// 0x80227CE8.
+// FIXME(shotgun): 90.15 %, missing/extra + reloc-name
+void Warp_804A6DC8::draw() {
+    if ((field_0x90 & 0x7F) == 0x20 && field_0x255 == 0) {
+        SpriteParams_801F5AE0 params;
+        JGeometry::TVec3f saved = mPos;
+        mPos.x += -16.0f;
+        mPos.y += -16.0f;
+        if (field_0x256 == 1 && field_0x278 >= 0) {
+            mPos.x += lbl_8046AC58[field_0x278];
+            field_0x278++;
+            if (field_0x278 >= 0x18) {
+                field_0x278 = fn_801CD664(10) - 0x69;
+            }
+        }
+        params.field_0x10.a = 0xA0;
+        params.field_0x1d = -2;
+        params.field_0x20 = 1;
+        params.field_0x2c = 0;
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "sand2_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        mPos = saved;
+    } else {
+        mPos.y += 0.1f;
+        mPos.y -= 0.1f;
+    }
 }
 
 // 0x80226FC8. Per player: finds the 'YASI' actor the player carries and, once it is moving and
