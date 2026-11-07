@@ -1084,6 +1084,494 @@ void cls_804A7AE0::fn_802984B0() {
     }
 }
 
+// FIXME(shotgun): 70.93 %, missing/extra + reloc-name
+void cls_804A7AE0::update() {
+    mPos.set(field_0x238.x, field_0x238.y, field_0x238.z);
+    for (s32 i = 0; i < 4; i++) {
+        s32 v = (field_0x90 >> 7) & 0x1F;
+        s32 layer = v != 0 ? v + 7 : 0;
+        if (getPlayerLayer_8023DE58(i) == layer) {
+            JGeometry::TBox2f box;
+            box.i.x = mBox.i.x;
+            box.i.y = mBox.i.y;
+            box.f.x = mBox.f.x;
+            box.f.y = mBox.f.y;
+            box.i.x += mPos.x;
+            box.f.x += mPos.x;
+            box.i.y += mPos.y;
+            box.f.y += mPos.y;
+            gGameRoot2_8053AB10->field_0x24->fn_8030C058(&box);
+            break;
+        }
+    }
+    if (field_0x2bb == 1) {
+        bool done = true;
+        for (s32 i = 0; i < 4; i++) {
+            if (mPlayerFlags[i] == 1 && fn_8023F264(i) == 1 && !fn_8022F514(i)) {
+                if (!fn_8022D75C(i) &&
+                    fn_80238548(i, 1, (const JGeometry::TVec2f*)getPlayerPos_8023E724(i), 0) == 1) {
+                    mPlayerFlags[i] = 0;
+                } else {
+                    done = false;
+                }
+            }
+        }
+        if (done == 1) {
+            mAlive = false;
+        }
+        return;
+    }
+    switch (field_0x230) {
+    case 0: {
+        JGeometry::TBox2f box;
+        box.i.x = mBox.i.x;
+        box.i.y = mBox.i.y;
+        box.f.x = mBox.f.x;
+        box.f.y = mBox.f.y;
+        box.i.x += mPos.x;
+        box.f.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.y += mPos.y;
+        fn_802984B0();
+        if (field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023F264(i) == 1 && fn_80236E3C(i) == 1 && fn_80239C00(i, &box, field_0x4) &&
+                    fn_8022F9E4(i, mSerial, true, false)) {
+                    field_0x234 = 50;
+                    for (s32 j = 0; j < mSerialCountB; j++) {
+                        ActorBase_804A5770* actor =
+                            getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsB[j]);
+                        if (actor != NULL) {
+                            actor->mAlive = false;
+                        }
+                    }
+                    for (s32 j = 0; j < mSerialCountA; j++) {
+                        ActorBase_804A5770* actor =
+                            getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsA[j]);
+                        if (actor != NULL) {
+                            actor->mAlive = false;
+                        }
+                    }
+                    field_0x230 = 1;
+                    break;
+                }
+            }
+        }
+        if (field_0x230 == 0) {
+            if (field_0x234 == 0) {
+                u32 hitActorId = ACTOR_NULL;
+                s32 hitSerial = getActorManager_801F856C()->fn_801F82CC(this, 0, 32.0f);
+                if (hitSerial >= 0) {
+                    ActorBase_804A5770* hitActor =
+                        getActorManager_801F856C()->findActorBySerial_801F666C(hitSerial);
+                    if (hitActor != NULL) {
+                        hitActorId = hitActor->mActorId;
+                    }
+                }
+                if ((field_0x244 != 1 || (field_0x2b6 == 1 && field_0x2b7 == 1)) &&
+                    (fn_8023A30C() || hitActorId == 'BBMB') &&
+                    field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+                    field_0x234 = 50;
+                    bakeTiles();
+                    field_0x230 = 3;
+                    startSound_801F0E34(0x3000F, 0);
+                    field_0x3c.set(0.0f, 0.0f, 0.0f);
+                    field_0x3c.z = gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 4.0f;
+                    for (s32 i = 0; i < 4; i++) {
+                        s32 v = (field_0x90 >> 7) & 0x1F;
+                        s32 layer = v != 0 ? v + 7 : 0;
+                        if (getPlayerLayer_8023DE58(i) == layer) {
+                            fn_8023B484(i);
+                            getGameView_802D6A9C()->fn_802D79A4(i, field_0x3c.z, 0.3f, 0.5f);
+                        }
+                    }
+                    break;
+                }
+                if (field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon() && field_0x24c == 0 &&
+                    field_0x2ac == 0) {
+                    if (field_0x2b6 == 0) {
+                        JGeometry::TVec3f p1 = mPos;
+                        p1.x -= 8.0f;
+                        p1.y += 40.0f;
+                        JGeometry::TVec3f p2 = p1;
+                        p2.x += 16.0f;
+                        if (fn_80226850(&p1, 0) == 0x19E || fn_80226850(&p2, 0) == 0x19F ||
+                            fn_80226850(&p1, 0) == 0x338 || fn_80226850(&p2, 0) == 0x339) {
+                            JGeometry::TVec3f p = mPos;
+                            p.x += mBox.i.x;
+                            p.y += mBox.i.y;
+                            p.x += 8.0f;
+                            p.y += 8.0f;
+                            p.z = 0.0f;
+                            f32 baseY = p.y;
+                            for (s32 row = 0; row < 6; row++) {
+                                p.y = baseY;
+                                for (s32 col = 0; col < 6; col++) {
+                                    mTilesA[row][col] = fn_80226850(&p, 1);
+                                    mTilesB[row][col] = fn_80226850(&p, 0);
+                                    if (!field_0x2b5) {
+                                        if (field_0x244 == 0 || field_0x244 == 2) {
+                                            mTiles[row][col] = 0x78;
+                                        } else {
+                                            mTiles[row][col] = 0x360;
+                                        }
+                                    }
+                                    p.y += 16.0f;
+                                }
+                                p.x += 16.0f;
+                            }
+                            field_0x2b5 = 1;
+                            field_0x2b6 = 1;
+                        }
+                    }
+                    if (field_0x2b7 == 0) {
+                        JGeometry::TVec3f p1 = mPos;
+                        p1.x -= 8.0f;
+                        p1.y -= 40.0f;
+                        JGeometry::TVec3f p2 = p1;
+                        p2.x += 16.0f;
+                        if (fn_80226850(&p1, 0) == 0x32A || fn_80226850(&p2, 0) == 0x32B) {
+                            JGeometry::TVec3f p = mPos;
+                            p.x += mBox.i.x;
+                            p.y += mBox.i.y;
+                            p.x += 8.0f;
+                            p.y += 8.0f;
+                            p.z = 0.0f;
+                            f32 baseY = p.y;
+                            for (s32 row = 0; row < 6; row++) {
+                                p.y = baseY;
+                                for (s32 col = 0; col < 6; col++) {
+                                    mTilesA[row][col] = fn_80226850(&p, 1);
+                                    mTilesB[row][col] = fn_80226850(&p, 0);
+                                    if (!field_0x2b5) {
+                                        if (field_0x244 == 0 || field_0x244 == 2) {
+                                            mTiles[row][col] = 0x78;
+                                        } else {
+                                            mTiles[row][col] = 0x360;
+                                        }
+                                    }
+                                    p.y += 16.0f;
+                                }
+                                p.x += 16.0f;
+                            }
+                            field_0x2b5 = 1;
+                            field_0x2b7 = 1;
+                        }
+                    }
+                }
+                if (field_0x2ba == 0) {
+                    fn_802961AC();
+                }
+                if (field_0x2ba == 1) {
+                    fn_80295EE8();
+                }
+                if (field_0x2ba == 0) {
+                    fn_80298978();
+                    for (s32 i = 0; i < mSerialCountB; i++) {
+                        ActorBase_804A5770* actor =
+                            getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsB[i]);
+                        if (actor != NULL &&
+                            field_0x250.squared() > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+                            JGeometry::TBox2f b;
+                            b.i.x = -10.0f;
+                            b.i.y = -10.0f;
+                            b.f.x = 10.0f;
+                            b.f.y = 10.0f;
+                            b.i.x += actor->mPos.x;
+                            b.f.x += actor->mPos.x;
+                            b.i.y += actor->mPos.y;
+                            b.f.y += actor->mPos.y;
+                            fn_80239914(&b, 0, mSerial);
+                        }
+                    }
+                    f32 minX = mBox.i.x + mPos.x;
+                    f32 maxX = mBox.f.x + mPos.x;
+                    f32 minY = mBox.i.y + mPos.y;
+                    f32 maxY = mBox.f.y + mPos.y;
+                    u8 clear = 1;
+                    for (s32 i = 0; i < 4; i++) {
+                        if (fn_8022D75C(i) == 1) {
+                            if (field_0x4 == getPlayerLayer_8023DE58(i)) {
+                                const JGeometry::TVec3f* pPos = getPlayerPos_8023E724(i);
+                                bool inside = false;
+                                if (pPos->x >= minX && pPos->y >= minY && pPos->x < maxX && pPos->y < maxY) {
+                                    inside = true;
+                                }
+                                if (inside == 1) {
+                                    clear = 0;
+                                    break;
+                                }
+                            }
+                            s32 v = (field_0x90 >> 7) & 0x1F;
+                            s32 layer = v != 0 ? v + 7 : 0;
+                            if (getPlayerLayer_8023DE58(i) == layer) {
+                                clear = 0;
+                                break;
+                            }
+                        }
+                    }
+                    field_0x2b4 = clear;
+                    if (field_0x244 != 1 || (field_0x2b6 == 1 && field_0x2b7 == 1)) {
+                        fn_8029A974();
+                        fn_8029A494();
+                        fn_80299FB0();
+                        fn_80299AD0();
+                        fn_80299720();
+                        fn_80299374();
+                        fn_80298FC4();
+                        fn_80298C18();
+                    }
+                    if (field_0x250.squared() > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+                        if (field_0x244 == 1) {
+                            if (mEmitters2[0] == NULL) {
+                                u16 effId;
+                                if ((field_0x250.x > 0.0f && field_0x2cc == 1) ||
+                                    (field_0x250.x < 0.0f && field_0x2cc == -1)) {
+                                    effId = 0x316;
+                                } else if ((field_0x250.x > 0.0f && field_0x2cc == -1) ||
+                                           (field_0x250.x < 0.0f && field_0x2cc == 1)) {
+                                    effId = 0x317;
+                                } else if ((field_0x250.y > 0.0f && field_0x2cc == 1) ||
+                                           (field_0x250.y < 0.0f && field_0x2cc == -1)) {
+                                    effId = 0x318;
+                                } else if ((field_0x250.y > 0.0f && field_0x2cc == -1) ||
+                                           (field_0x250.y < 0.0f && field_0x2cc == 1)) {
+                                    effId = 0x315;
+                                }
+                                mEmitters2[0] = spawnEmitter_8013CC50(field_0x4, &mPos, effId, 0, 0, NULL, NULL, true, 1.0f);
+                            } else {
+                                setEmitterPos_8013CB44(mEmitters2[0], &mPos, 0, 0, true);
+                            }
+                        } else {
+                            u16 idsA[4] = {0x321, 0x322, 0x323, 0x324};
+                            u16 idsB[4] = {0x31D, 0x31E, 0x31F, 0x320};
+                            u8 flag = getGameView_802D6A9C()->field_0x131f2;
+                            for (s32 i = 0; i < 4; i++) {
+                                if (mEmitters2[i] == NULL) {
+                                    u16 effId = idsA[i];
+                                    if (flag == 1) {
+                                        effId = idsB[i];
+                                    }
+                                    mEmitters2[i] = spawnEmitter_8013CC50(field_0x4, &mPos, effId, 0, 0, NULL, NULL, true, 1.0f);
+                                } else {
+                                    setEmitterPos_8013CB44(mEmitters2[i], &mPos, 0, 0, true);
+                                }
+                            }
+                        }
+                    } else {
+                        for (s32 i = 0; i < 4; i++) {
+                            if (mEmitters2[i] != NULL) {
+                                mEmitters2[i]->becomeInvalidEmitter();
+                                mEmitters2[i] = NULL;
+                            }
+                        }
+                    }
+                    if (field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+                        if (field_0x2ac > 0) {
+                            field_0x2ac -= 4;
+                            if (field_0x2ac <= 0) {
+                                field_0x2ac = 0;
+                                if (field_0x24c != 0 && field_0x2ac <= 0) {
+                                    JGeometry::TVec3f p = mPos;
+                                    p.x += mBox.i.x;
+                                    p.y += mBox.i.y;
+                                    p.x += 8.0f;
+                                    p.y += 8.0f;
+                                    p.z = 0.0f;
+                                    f32 baseY = p.y;
+                                    for (s32 row = 0; row < 6; row++) {
+                                        p.y = baseY;
+                                        for (s32 col = 0; col < 6; col++) {
+                                            mTiles[row][col] = fn_80226850(&p, 0);
+                                            gBgRewrite_8053AC98->fn_802A381C(&p, 0, mTilesB[row][col]);
+                                            gBgRewrite_8053AC98->fn_802A381C(&p, 1, mTilesA[row][col]);
+                                            p.y += 16.0f;
+                                        }
+                                        p.x += 16.0f;
+                                    }
+                                    field_0x24c = 0;
+                                }
+                            }
+                        }
+                    } else if (field_0x2ac < 0x80) {
+                        field_0x2ac += 8;
+                        if (field_0x2ac >= 0x80) {
+                            field_0x2ac = 0x80;
+                        }
+                    }
+                    if (field_0x2ac > 0) {
+                        fn_801F2B20(6);
+                    }
+                }
+            } else {
+                if (field_0x2ba == 0) {
+                    fn_80298978();
+                    for (s32 i = 0; i < mSerialCountB; i++) {
+                        ActorBase_804A5770* actor =
+                            getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsB[i]);
+                        if (actor != NULL &&
+                            field_0x250.squared() > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+                            JGeometry::TBox2f b;
+                            b.i.x = -10.0f;
+                            b.i.y = -10.0f;
+                            b.f.x = 10.0f;
+                            b.f.y = 10.0f;
+                            b.i.x += actor->mPos.x;
+                            b.f.x += actor->mPos.x;
+                            b.i.y += actor->mPos.y;
+                            b.f.y += actor->mPos.y;
+                            fn_80239914(&b, 0, mSerial);
+                        }
+                    }
+                }
+                field_0x234--;
+            }
+        }
+        break;
+    }
+    case 1:
+        field_0x234--;
+        if (field_0x234 == 0) {
+            if (field_0x30c == NULL) {
+                JGeometry::TVec3f p = *fn_8023E7B0(field_0xc8);
+                field_0x30c = spawnEmitter_8013CC50(field_0x4, &p, 0x27E, 0, 0, NULL, NULL, true, 1.0f);
+            }
+            bakeTiles();
+            field_0x234 = 60;
+            field_0x230 = 2;
+        }
+        break;
+    case 2:
+        if (field_0xc4 != 0) {
+            for (s32 i = 0; i < mSerialCountA; i++) {
+                JGeometry::TBox2f b;
+                b.i.x = -4.0f;
+                b.i.y = -4.0f;
+                b.f.x = 4.0f;
+                b.f.y = 4.0f;
+                b.i.x += field_0x2dc[i].x;
+                b.f.x += field_0x2dc[i].x;
+                b.i.y += field_0x2dc[i].y;
+                b.f.y += field_0x2dc[i].y;
+                s32 v = (field_0x90 >> 7) & 0x1F;
+                fn_80239914(&b, v != 0 ? v + 7 : 0, mSerial);
+            }
+            const JGeometry::TVec3f* pPos = fn_8023E7B0(field_0xc8);
+            mPos.set(pPos->x, pPos->y, pPos->z);
+            if (!mPos.equals(field_0x238)) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (!fn_8022F514(i)) {
+                        s32 v = (field_0x90 >> 7) & 0x1F;
+                        s32 layer = v != 0 ? v + 7 : 0;
+                        if (getPlayerLayer_8023DE58(i) == layer) {
+                            getGameView_802D6A9C()->fn_802D79A4(i, 0.8f, 0.08f, 1.0f);
+                        }
+                    }
+                }
+            }
+            if (field_0x234 > 0) {
+                field_0x234--;
+                if (field_0x234 == 0) {
+                    if (field_0x30c != NULL) {
+                        field_0x30c->becomeInvalidEmitter();
+                    }
+                } else {
+                    field_0x30c->setGlobalTranslation(*fn_8023E7B0(field_0xc8));
+                }
+            }
+        } else {
+            if (field_0x30c != NULL) {
+                field_0x30c->becomeInvalidEmitter();
+            }
+            field_0x3c.z += -0.15f;
+            mPos.add(field_0x3c);
+            if (mPos.z < 0.0f) {
+                for (s32 i = 0; i < 4; i++) {
+                    s32 v = (field_0x90 >> 7) & 0x1F;
+                    s32 layer = v != 0 ? v + 7 : 0;
+                    if (getPlayerLayer_8023DE58(i) == layer && !fn_8022F514(i)) {
+                        fn_80238548(i, 1, (const JGeometry::TVec2f*)getPlayerPos_8023E724(i), 0);
+                    }
+                }
+                vfunc_0x24();
+            } else if (fn_801F2B7C(0, field_0xc8, 6) || fn_801F2B20(0)) {
+                for (s32 i = 0; i < 4; i++) {
+                    s32 v = (field_0x90 >> 7) & 0x1F;
+                    s32 layer = v != 0 ? v + 7 : 0;
+                    if (getPlayerLayer_8023DE58(i) == layer && !fn_8022F514(i)) {
+                        fn_80238548(i, 1, (const JGeometry::TVec2f*)getPlayerPos_8023E724(i), 0);
+                    }
+                }
+                vfunc_0x24();
+            }
+        }
+        break;
+    case 3:
+        fn_802984B0();
+        mPos.add(field_0x3c);
+        if (mPos.z > 0.0f) {
+            field_0x3c.z -= 0.3f;
+        } else if (mPos.z <= 0.0f) {
+            mPos.z = 0.0f;
+            if (field_0x24c != 0 && field_0x2ac <= 0) {
+                JGeometry::TVec3f p = mPos;
+                p.x += mBox.i.x;
+                p.y += mBox.i.y;
+                p.x += 8.0f;
+                p.y += 8.0f;
+                p.z = 0.0f;
+                f32 baseY = p.y;
+                for (s32 row = 0; row < 6; row++) {
+                    p.y = baseY;
+                    for (s32 col = 0; col < 6; col++) {
+                        mTiles[row][col] = fn_80226850(&p, 0);
+                        gBgRewrite_8053AC98->fn_802A381C(&p, 0, mTilesB[row][col]);
+                        gBgRewrite_8053AC98->fn_802A381C(&p, 1, mTilesA[row][col]);
+                        p.y += 16.0f;
+                    }
+                    p.x += 16.0f;
+                }
+                field_0x24c = 0;
+            }
+            s32 v = (field_0x90 >> 7) & 0x1F;
+            s32 layer = v != 0 ? v + 7 : 0;
+            getGameView_802D6A9C()->fn_802D79E8(layer, 8.0f, 0.0f, true);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x263, 0, 0, NULL, NULL, true, 1.0f);
+            field_0x230 = 0;
+            field_0x234 = 60;
+        }
+        break;
+    }
+    JGeometry::TVec3f delta = mPos;
+    delta.sub(mPrevPos);
+    if (delta.squared() > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+        for (s32 i = 0; i < mSerialCountA; i++) {
+            Warp_804A6DC8* warp =
+                (Warp_804A6DC8*)getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsA[i]);
+            if (warp != NULL) {
+                warp->field_0x238.add(delta);
+            }
+        }
+        for (s32 i = 0; i < mSerialCountB; i++) {
+            ActorBase_804A5770* actor =
+                getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsB[i]);
+            if (actor != NULL) {
+                actor->mPos.add(delta);
+            }
+        }
+        for (s32 i = 0; i < mSerialCountC; i++) {
+            ActorBase_804A5770* actor =
+                getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsC[i]);
+            if (actor != NULL) {
+                JGeometry::TVec3f q = actor->mPos;
+                q.add(delta);
+                actor->mPos = q;
+            }
+        }
+    }
+    field_0x238.set(mPos.x, mPos.y, mPos.z);
+}
+
 // FIXME(shotgun): 95.0 %, missing/extra: callee-saved register order in the prologue, 3 instructions
 inline void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, const char* name) {
     if (layer < 8) {

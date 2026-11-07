@@ -29,6 +29,7 @@ public:
     void bakeTiles();
     virtual void init(); // fn_8029B2EC
     virtual void vfunc_0x10(); // fn_8029AE58
+    virtual void update(); // fn_80296A84
     virtual void draw(); // fn_802965BC
 
     /* 0x230 */ s32 field_0x230;
@@ -66,7 +67,7 @@ public:
     /* 0x2D0 */ JGeometry::TVec3f field_0x2d0;
     /* 0x2DC */ JGeometry::TVec2f field_0x2dc[4];
     /* 0x2FC */ JPABaseEmitter* mEmitters[2][2]; // released by the destructor
-    /* 0x30C */ s32 field_0x30c; // not yet known
+    /* 0x30C */ JPABaseEmitter* field_0x30c;
     /* 0x310 */ JPABaseEmitter* mEmitters2[4]; // released by the destructor
     /* 0x320 */ u16 mTilesA[6][6];
     /* 0x368 */ u16 mTilesB[6][6];
