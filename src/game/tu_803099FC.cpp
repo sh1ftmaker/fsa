@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "std/math.h"
 
 static u8 lbl_8053AD38[8];
 
@@ -26,10 +27,8 @@ static inline void updateRepeat(const u32& held, const u32& pressed, u32& repeat
 // 0x10 lower in our .bss than in the original, whose first 0x10 bytes (0x805076E8) belong to a
 // static of the unwritten fn_8030A43C.
 //
-// Not written yet: fn_80309A9C / fn_80309B74 / fn_80309C4C (each inlines getPlayerInputSlot_8030AAF4 and a
-// later-defined accessor; as calls they come out at 44 %, they need -inline deferred),
-// fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll),
-// fn_80309D90 (inlines fn_80309F20 and fn_80309FCC, defined after it).
+// Not written yet: fn_8030A258 (reads lbl_804DB798 / lbl_8053ACE4 of other units), fn_8030A43C (0x6B8 pad poll; both need
+// GbaClient_803007D0, which is private to tu_803006E8.cpp).
 
 // 0x8030AC4C
 cls_804AA8C8::cls_804AA8C8() {
@@ -169,6 +168,14 @@ f32 cls_804AA8C8::fn_80309F20(s32 slot) {
     return x;
 }
 
+// FIXME(shotgun): 49.4 %, missing/extra (the original inlines fn_80309F20 / fn_80309FCC; ours calls them)
+// 0x80309D90
+f32 cls_804AA8C8::fn_80309D90(s32 slot) {
+    f32 x = fn_80309F20(slot);
+    f32 y = fn_80309FCC(slot);
+    return std::sqrtf(x * x + y * y);
+}
+
 // 0x80309D6C
 u32 cls_804AA8C8::fn_80309D6C(s32 slot, u32 mask) {
     if (slot == -0x3E7) {
@@ -191,6 +198,54 @@ u32 cls_804AA8C8::fn_80309D24(s32 slot, u32 mask) {
         return 0;
     }
     return field_0x4[slot] & mask;
+}
+
+// FIXME(shotgun): 97.8 %, missing/extra
+// 0x80309C4C
+u32 cls_804AA8C8::fn_80309C4C(u32 mask, s32 slot) {
+    s32 count = slot;
+    if (count == -1) {
+        count = gGameRoot_8053AAF8->fn_80138A30();
+    }
+    for (s32 i = 0; i < count; i++) {
+        u32 pressed = fn_80309D6C(getPlayerInputSlot_8030AAF4(i), mask);
+        if (pressed) {
+            return pressed;
+        }
+    }
+    return 0;
+}
+
+// FIXME(shotgun): 97.8 %, missing/extra
+// 0x80309B74
+u32 cls_804AA8C8::fn_80309B74(u32 mask, s32 slot) {
+    s32 count = slot;
+    if (count == -1) {
+        count = gGameRoot_8053AAF8->fn_80138A30();
+    }
+    for (s32 i = 0; i < count; i++) {
+        u32 pressed = fn_80309D24(getPlayerInputSlot_8030AAF4(i), mask);
+        if (pressed) {
+            return pressed;
+        }
+    }
+    return 0;
+}
+
+// FIXME(shotgun): 97.8 %, missing/extra
+// 0x80309A9C
+u32 cls_804AA8C8::fn_80309A9C(u32 mask, s32 slot) {
+    s32 count = slot;
+    if (count == -1) {
+        count = gGameRoot_8053AAF8->fn_80138A30();
+    }
+    for (s32 i = 0; i < count; i++) {
+        u32 pressed = fn_80309D48(getPlayerInputSlot_8030AAF4(i), mask);
+        if (pressed) {
+            return pressed;
+        }
+    }
+    return 0;
 }
 
 // 0x80309A78

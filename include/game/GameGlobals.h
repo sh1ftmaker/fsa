@@ -936,6 +936,8 @@ public:
     // (0x80309A9C, same unit). Called like fn_80309C4C (r4 a button mask 4 /
     // 8, r5 an input slot); the result is tested with cmplwi 0.
     u32 fn_80309A9C(u32 mask, s32 slot);
+    // 0x80309B74: the same "any player" test over field_0x4 (fn_80309D24).
+    u32 fn_80309B74(u32 mask, s32 slot);
 };
 extern cls_804AA8C8* lbl_8053AD30;
 // Owner: game/tu_80301CD0.cpp (its sbss, 0x8053AD34; dtk sized it 1 byte).
