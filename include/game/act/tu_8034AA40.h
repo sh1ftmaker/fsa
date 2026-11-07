@@ -14,9 +14,27 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x60];
+    /* 0x230 */ s32 field_0x230; // state
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c; // facing (0-3)
+    /* 0x240 */ u8 field_0x240[4]; // not yet known
+    /* 0x244 */ s32 field_0x244; // kind (low nibble of field_0x90)
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c; // bits 4-11 of field_0x90
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260[4];
+    /* 0x270 */ s32 field_0x270;
+    /* 0x274 */ s32 field_0x274[4];
+    /* 0x284 */ u8 field_0x284[4];
+    /* 0x288 */ u8 field_0x288[4];
+    /* 0x28C */ u8 field_0x28c[3];
+    /* 0x28F */ u8 field_0x28f;
     /* 0x290 */ JGeometry::TVec3f field_0x290[4];
-    /* 0x2C0 */ u8 field_0x2c0[0x4];
+    /* 0x2C0 */ s32 field_0x2c0;
 }; // Size: 0x2C4
 
 #endif
