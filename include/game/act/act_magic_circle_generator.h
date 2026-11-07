@@ -17,6 +17,8 @@ public:
     // on the ground (z == 0, state 6) whose box overlaps it; that key's
     // position gets the circle's effects. Returns false when none is found.
     bool fn_802E7DB8();
+    // 0x802E80A0 (called by update): tracks the nearest KEY0 in state 6 within 64 units with emitters 0x312-0x314.
+    void fn_802E80A0();
     /* 0x230 */ JPABaseEmitter* mEmitter230; // released by the destructor
     /* 0x234 */ JPABaseEmitter* mEmitter234; // released by the destructor
     /* 0x238 */ JPABaseEmitter* mEmitter238; // released by the destructor
