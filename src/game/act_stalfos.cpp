@@ -24,6 +24,8 @@ s32 lbl_804A0C88[16] = {
 };
 s32 lbl_804A0CC8[4] = {2, 10, 2, 10};
 
+// FIXME: 99.37%, missing/extra. The original has one more beq (0x224) in the
+// WIZR loop's null check on the actor; the natural single check compiles without it.
 void Stalfos_804A0CD8::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     mBox2.set(-4.0f, -4.0f, 4.0f, 4.0f);
@@ -76,7 +78,7 @@ void Stalfos_804A0CD8::init() {
         s32 count = getActorManager_801F856C()->fn_801F7818(ACTOR_WIZR, field_0x4, actors, -1);
         for (int i = 0; i < count; i++) {
             ActorBase_804A5770* actor = actors[i];
-            if (actor != NULL && actor != NULL && actor->field_0x90 == 1) {
+            if (actor != NULL && actor->field_0x90 == 1) {
                 field_0x230 = 0;
                 return;
             }
@@ -91,7 +93,9 @@ void Stalfos_804A0CD8::init() {
     field_0x230 = 0;
 }
 
-// FIXME: 99.70% scheduling+regalloc (try.py)
+// FIXME: 99.70%, scheduling+regalloc. The two mPos.z == 0.0f style float compares load
+// the 0.0f literal before/after the field (0x1A0, 0x4B0), one add has swapped operands
+// (0x8BC) and r28/r30 are swapped around the fn_801F681C call (0x970).
 void Stalfos_804A0CD8::update() {
     u16 angle;
     s32 dir;
@@ -136,6 +140,7 @@ void Stalfos_804A0CD8::update() {
     }
 
     if (mTimers[2] == 0 && field_0x230 != 6 && field_0x230 != 8) {
+        // Unsigned compare (cmplwi) in the original; field_0xb0 is s32 in ActorBase.
         if ((u32)field_0xb0 == 0) {
             field_0xb0 = 0x42205;
         }
