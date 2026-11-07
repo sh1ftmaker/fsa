@@ -2,9 +2,11 @@
 #include "game/Effect.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
+#include "game/GameView.h"
 #include "game/Map.h"
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
+#include "std/math.h"
 #include "game/act/act_beamos.h"
 
 Beamos_804A40E0::Beamos_804A40E0() {
@@ -75,7 +77,6 @@ void Beamos_804A40E0::fn_801BE86C() {
     dir.scale(10.5f);
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
 }
-#pragma auto_inline reset
 
 // FIXME: 99.76 %. Instructions identical; only the .sdata2 literal names differ
 // (the unit's literals are not split in the original order yet).
@@ -110,6 +111,70 @@ void Beamos_804A40E0::fn_801BE6C4(s32 state) {
         field_0xb0 = 0x40002;
     } else {
         field_0xb0 = 0x40004;
+    }
+}
+#pragma auto_inline reset
+
+// FIXME(shotgun): 95 %, missing/extra + reloc-name
+void Beamos_804A40E0::vfunc_0x90(u8 mapHit) {
+    if ((mFlags & 0x2000) && field_0x2b0 != 0) {
+        if (getGameView_802D6A9C()->fn_802D800C(field_0x2b0)) {
+            mFlags &= ~0x2000;
+            fn_801BE6C4(0);
+        }
+    }
+    if (!(mFlags & 0x2000) && field_0x2b4 != 0) {
+        if (getGameView_802D6A9C()->fn_802D800C(field_0x2b4)) {
+            mFlags |= 0x2000;
+        }
+    }
+    if (mFlags & 0x2000) {
+        fn_801BE6C4(1);
+    } else if (mLife > 0) {
+        switch (mState) {
+        case 0:
+            if (mStateTimer >= field_0x250) {
+                fn_801BE6C4(1);
+            }
+            break;
+        case 1:
+            if (mStateTimer == 0) {
+                startSound_801F0E34(0x400C1, 0);
+            }
+            field_0x2a8 += 0x100;
+            if (mStateTimer >= 30) {
+                const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
+                s16 heading = (s32)(JMath::atanTable_.atan2_(10.0f * sincos.sinShort(field_0x2a8),
+                                                              6.0f * sincos.cosShort(field_0x2a8)) *
+                                    10430.378f);
+                s32 target = -1;
+                for (s32 i = 0; i < 4; i++) {
+                    if (fn_801D08B4(i, &mPos, 16.0f * field_0x2ac)) {
+                        f32 dy = getPlayerPos_8023E724(i)->y - (-15.0f + mPos.y);
+                        f32 dx = getPlayerPos_8023E724(i)->x - mPos.x;
+                        s32 angle = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+                        if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.02f) {
+                            target = i;
+                            break;
+                        }
+                    }
+                }
+                if (target >= 0) {
+                    fn_801BE6C4(2);
+                }
+            }
+            break;
+        case 2:
+            if (mStateTimer >= 15) {
+                fn_801BE6C4(3);
+            }
+            break;
+        case 3:
+            if (mStateTimer >= field_0x250) {
+                fn_801BE6C4(1);
+            }
+            break;
+        }
     }
 }
 
