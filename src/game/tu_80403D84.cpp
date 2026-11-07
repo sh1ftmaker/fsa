@@ -214,6 +214,17 @@ static const s32 lbl_8048CC0C[4] = {
     60, 62, 61, 63,
 };
 
+inline bool MapScreen_804B1288::isCursorState() {
+    if (field_0x350 == 2 || field_0x350 == 3 || field_0x350 == 4 || field_0x350 == 6 ||
+        field_0x350 == 7 || field_0x350 == 8 || field_0x350 == 9 || field_0x350 == 15 ||
+        field_0x350 == 16 || field_0x350 == 17 || field_0x350 == 18 || field_0x350 == 20 ||
+        field_0x350 == 21 || field_0x350 == 22)
+    {
+        return true;
+    }
+    return false;
+}
+
 // Inlined where the stage name changes (fn_804096E8 twice, fn_8040C950, fn_8040CE90); its
 // debug-name literals sit in fn_804096E8's block of .sdata2, so it is an inline.
 inline void MapScreen_804B1288::setStageName() {
@@ -357,6 +368,185 @@ void MapScreen_804B1288::fn_804111C4() {
     field_0x18->setScissor(true);
     field_0x18->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     lbl_8053AED8->fn_80440EE8();
+}
+
+void MapScreen_804B1288::fn_804108B4() {
+    (lbl_8053ADF8->*lbl_804B10F8[field_0x350])();
+    (lbl_8053ADF8->*lbl_804B1230[field_0x659])();
+    fn_80408114();
+    if (isCursorState()) {
+        fn_8040732C();
+        if (field_0x65c == 0) {
+            field_0x3fc += 0.04f;
+            if (field_0x3fc >= 1.0f) {
+                field_0x3fc = 1.0f;
+                field_0x65c = 1;
+            }
+        } else if (field_0x65c == 1) {
+            field_0x3fc -= 0.0043137255f;
+            if (field_0x3fc <= 0.78431374f) {
+                field_0x3fc = 0.78431374f;
+                field_0x65c = 2;
+            }
+        } else {
+            field_0x3fc += 0.0043137255f;
+            if (field_0x3fc >= 1.0f) {
+                field_0x3fc = 1.0f;
+                field_0x65c = 1;
+            }
+        }
+        if (field_0x400 < 1.0f) {
+            field_0x400 += 0.04f;
+            if (field_0x400 > 1.0f) {
+                field_0x400 = 1.0f;
+            }
+        } else {
+            field_0x400 = 1.0f;
+        }
+    } else {
+        field_0x65c = 0;
+        if (field_0x3fc > 0.0f) {
+            field_0x3fc -= 1.0f / lbl_8050DB0C.field_0x4c[307];
+            if (field_0x3fc < 0.0f) {
+                field_0x3fc = 0.0f;
+            }
+        } else {
+            field_0x3fc = 0.0f;
+        }
+        if (field_0x400 > 0.0f) {
+            field_0x400 -= 1.0f / lbl_8050DB0C.field_0x4c[307];
+            if (field_0x400 < 0.0f) {
+                field_0x400 = 0.0f;
+            }
+        } else {
+            field_0x400 = 0.0f;
+        }
+    }
+    if (lbl_80529DEC.field_0x23e[1]) {
+        fn_80409014();
+    } else if (field_0x38c & 0x10) {
+        fn_80409014();
+    }
+    if (field_0x350 == 0x16) {
+        field_0x668 = 7;
+        lbl_80529DEC.field_0x242 = 0;
+        lbl_8053AD78->field_0xe9 = 0;
+        lbl_8053AD78->field_0x44 = 0;
+        lbl_80529DEC.field_0x242 = 0;
+    }
+    if (field_0x65d) {
+        for (int i = 0; i < 15; i++) {
+            field_0x278[i]->fn_80402628(20, 0, field_0x278[i]->field_0x28);
+        }
+    } else {
+        for (int i = 0; i < 15; i++) {
+            field_0x278[i]->fn_80402628(20, field_0x278[i]->field_0x28, 0);
+        }
+    }
+    if (field_0x65e) {
+        field_0x120[0]->fn_80402940(20, 0, -200.0f, 0.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0x120[i]->fn_80402628(20, 0, field_0x120[i]->field_0x28);
+        }
+    } else {
+        field_0x120[0]->fn_80402940(15, 0, 0.0f, -200.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0x120[i]->fn_80402628(15, field_0x120[i]->field_0x28, 0);
+        }
+    }
+    if (field_0x340 < 8) {
+        field_0x10->search('Plvcu')->move(field_0x404 + field_0x10->search(lbl_8048C658[field_0x340 * 3])->getBounds()->i.x,
+                                          field_0x408 + field_0x10->search(lbl_8048C658[field_0x340 * 3])->getBounds()->i.y);
+        if (!isCursorState() || field_0x42e != 0) {
+            field_0x42e++;
+            if (field_0x42e >= 60) {
+                field_0x42e = 0;
+            }
+        }
+        f32 t;
+        if (field_0x42e < 30) {
+            t = (field_0x42e * field_0x42e) / 900.0f;
+        } else {
+            t = 1.0f - (field_0x42e - 30.0f) * (field_0x42e - 30.0f) / 900.0f;
+        }
+        field_0x10->search('Plvcu')->setAlpha(156.0f * t);
+    } else {
+        field_0x10->search('Plvcu')->setAlpha(0);
+    }
+    if (field_0x350 != field_0x354) {
+        field_0x354 = field_0x350;
+        switch (field_0x350) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 7:
+        case 8:
+        case 9:
+        case 10:
+        case 14:
+        case 17:
+        case 18:
+        case 19:
+        case 20:
+        case 22:
+            field_0x65f = 4;
+            break;
+        case 11:
+        case 12:
+        case 13:
+        case 15:
+        case 16:
+            field_0x65f = 3;
+            break;
+        case 21:
+            field_0x65f = 4;
+            break;
+        }
+    }
+    switch (field_0x65f) {
+    case 1: {
+        s16 frames = lbl_8050DB0C.field_0x4c[138];
+        field_0x430++;
+        if (field_0x430 < frames) {
+            slidePane(field_0x430, frames);
+        } else {
+            field_0x430 = frames;
+            field_0x2b4->moveFromCentre_80402E08(0.0f, 0.0f);
+            field_0x2b4->mPane->setAlpha(field_0x2b4->field_0x28);
+            field_0x65f = 0;
+        }
+        break;
+    }
+    case 2:
+    case 3:
+    case 4: {
+        s16 frames = lbl_8050DB0C.field_0x4c[138];
+        field_0x430--;
+        if (field_0x430 > 0) {
+            slidePane(field_0x430, frames);
+        } else {
+            field_0x430 = 0;
+            field_0x2b4->moveFromCentre_80402E08(0.0f, -200.0f);
+            field_0x2b4->mPane->setAlpha(0);
+            field_0x660 = field_0x65f;
+            if (field_0x65f == 2) {
+                lbl_8053AED8->fn_80440BF4(false);
+            } else {
+                lbl_8053AED8->fn_80440BF4(true);
+            }
+            if (field_0x65f != 4) {
+                field_0x65f = 1;
+            }
+        }
+        break;
+    }
+    }
+    for (int i = 0; i < 4; i++) {
+        field_0x2b8[i]->fn_80456154();
+    }
 }
 
 s32 fn_8040F474() {

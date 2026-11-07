@@ -96,7 +96,15 @@ public:
     void fn_80411A94(f32 alpha);
     // 0x8040F480: stores 6 in field_0x668, then sets the object up.
     void fn_8040F480();
-    void fn_804108B4(); // 0x804108B4
+    // 0x804108B4: runs the state handlers (lbl_804B10F8[field_0x350] and
+    // lbl_804B1230[field_0x659] on lbl_8053ADF8), then fades the panes, slides
+    // field_0x2b4 (slidePane) and updates the sound objects.
+    void fn_804108B4();
+    // Inline (fn_804108B4 twice, fn_80411230 three times): the states 2-4, 6-9,
+    // 15-18 and 20-22, in which the stage cursor is shown.
+    bool isCursorState();
+    // 0x8040732C (called by fn_804108B4), not written yet.
+    void fn_8040732C();
     // 0x804111C4: draws the screen.
     void fn_804111C4();
     void fn_80411230(); // 0x80411230
@@ -214,7 +222,7 @@ public:
     /* 0x348 */ s32 field_0x348; // sub-stage of field_0x340 (0-3; fn_80409450)
     /* 0x34C */ s32 field_0x34c; // row of field_0x348 in lbl_8048C88C (fn_80405B10)
     /* 0x350 */ s32 field_0x350; // state
-    /* 0x354 */ u8 field_0x354[0x358 - 0x354];
+    /* 0x354 */ s32 field_0x354; // the state seen last by fn_804108B4
     /* 0x358 */ s32 field_0x358;
     /* 0x35C */ s32 field_0x35c; // frame counter of fn_8040E720
     /* 0x360 */ s32 field_0x360; // facing of the cursor (0, 8, 0x10, 0x18; fn_8040E3A0)
@@ -243,9 +251,11 @@ public:
     // plus lbl_8050DB0C's offsets): x of [dir][pane], then y.
     /* 0x3BC */ f32 field_0x3bc[4][2];
     /* 0x3DC */ f32 field_0x3dc[4][2];
-    /* 0x3FC */ u8 field_0x3fc[0x400 - 0x3FC];
+    /* 0x3FC */ f32 field_0x3fc; // pulsing alpha (0.78-1) of 'Phu01' (fn_804108B4, fn_80411230)
     /* 0x400 */ f32 field_0x400; // alpha (0-1) of the cursor sprite (fn_80406634)
-    /* 0x404 */ u8 field_0x404[0x40E - 0x404];
+    /* 0x404 */ f32 field_0x404; // offset of 'Plvcu' from the stage's level pane (fn_804108B4)
+    /* 0x408 */ f32 field_0x408;
+    /* 0x40C */ u8 field_0x40c[0x40E - 0x40C];
     /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ s16 field_0x420; // 0-179, the blend / turn cycle of field_0x23c (fn_80409014)
@@ -276,10 +286,13 @@ public:
     /* 0x658 */ u8 field_0x658;
     /* 0x659 */ u8 field_0x659;
     /* 0x65A */ u8 field_0x65a;
-    /* 0x65B */ u8 field_0x65b[0x65D - 0x65B];
+    /* 0x65B */ u8 field_0x65b; // alpha of 'Phu01' (fn_80411230)
+    /* 0x65C */ u8 field_0x65c; // step of field_0x3fc's pulse (fn_804108B4)
     /* 0x65D */ u8 field_0x65d;
     /* 0x65E */ u8 field_0x65e; // 1 while the field_0x120 panes are shown (hideSubStagePanes)
-    /* 0x65F */ u8 field_0x65f[0x662 - 0x65F];
+    /* 0x65F */ u8 field_0x65f; // slide of field_0x2b4: 1 in, 2-4 out (fn_804108B4)
+    /* 0x660 */ u8 field_0x660; // field_0x65f when the last slide out ended
+    /* 0x661 */ u8 field_0x661;
     /* 0x662 */ u8 field_0x662;
     /* 0x663 */ u8 field_0x663;
     /* 0x664 */ u8 field_0x664;
