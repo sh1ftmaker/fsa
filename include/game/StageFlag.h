@@ -20,4 +20,17 @@ inline BOOL isStageFlagSet(s32 stage, s32 sub) {
                                                                                                : FALSE;
 }
 
+// Sets bit (stage * 4 + sub) of the current save file's mFlags (stage 0-7,
+// sub 0-3, else nothing): the body of fn_8019CDE4 (tu_80197070), which
+// ResultScreen_804AF9A0::fn_803AB494 (tu_803A8DFC) inlines.
+inline void setStageFlag(s32 stage, s32 sub) {
+    if (stage < 0 || stage > 7) {
+        return;
+    }
+    if (sub < 0 || sub > 3) {
+        return;
+    }
+    lbl_8050EC80.getCurrentFile().mFlags |= 1 << (stage * 4 + sub);
+}
+
 #endif

@@ -128,8 +128,10 @@ GameState_804B0FE0::GameState_804B0FE0() {
         field_0x1b4[i] = 0;
         field_0x1f4[i] = 0;
     }
-    for (u32 i = 0; i < sizeof(field_0x1fc); i++) {
-        field_0x1fc[i] = 0xFF;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 3; j++) {
+            field_0x1fc[i][j] = 0xFF;
+        }
     }
     field_0x241[0] = 1;
     field_0x242 = 0;
@@ -207,8 +209,10 @@ void GameState_804B0FE0::fn_80403680() {
     field_0x253 = 0;
     field_0x254[0] = 0;
     field_0x237 = 0;
-    for (u32 i = 0; i < sizeof(field_0x1fc); i++) {
-        field_0x1fc[i] = 0xFF;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 3; j++) {
+            field_0x1fc[i][j] = 0xFF;
+        }
     }
     field_0x242 = 0;
     field_0x243[0] = 0;

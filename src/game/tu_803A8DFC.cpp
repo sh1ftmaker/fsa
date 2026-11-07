@@ -10,6 +10,7 @@
 #include "game/SpriteParams.h"
 #include "game/act/tu_803DA6B4.h"
 #include "game/tu_803B8C74.h"
+#include "game/StageFlag.h"
 #include "game/Message.h"
 #include "game/cls_804B20F8.h"
 #include "game/tu_80379F84.h"
@@ -45,6 +46,22 @@ static const u64 lbl_804762D0[4][2] = {
 static const u64 lbl_80476310[8] = {
     'Ndatar01', 'Ndatar21', 'Ndatar12', 'Ndatar22', 'Ndatar13', 'Ndatar23', 'Ndatar14', 'Ndatar24',
 };
+
+// .data: the winners' sprite animation (animateWinners): frame k shows sprite
+// frame 0xDB + lbl_804AF888[k] (-1: frame 62) until the step counter
+// field_0x4c6 reaches lbl_804AF8CC[k]; -1 ends the animation.
+static s32 lbl_804AF888[17] = {-1, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+static s32 lbl_804AF8CC[17] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 56, 58, -1};
+// The bonus-count animation (fn_803ADE9C, field_0x448 1): frame k shows
+// sprite frame 0xBD + lbl_804AF910[k] until field_0x4c5 reaches
+// lbl_804AF948[k]; -1 ends it.
+static s32 lbl_804AF910[14] = {0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 4, 6};
+static s32 lbl_804AF948[14] = {6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 76, -1};
+// .data: the winner's textures (player icon, rank) for fn_803ABCEC / fn_803AB494.
+// .data: the player icons (fn_803ABCEC) and the rank textures (fn_803AB494),
+// defined below fn_803AA8F8 (see there).
+extern const char* lbl_804AF980[4];
+extern const char* lbl_804AF990[4];
 
 // FIXME: 99.85. Operands + reloc-name only: .rodata string offsets (one addi) and .sdata2
 // names differ (the unit's other .rodata objects, function-local tables of unwritten
@@ -507,6 +524,129 @@ void ResultScreen_804AF9A0::fn_803B0158() {
     }
 }
 
+// FIXME: reloc-name only (instructions identical): its function-local point tables
+// are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
+// FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
+// in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
+// Bonus page step as fn_803AE810, by lbl_80529DEC.field_0x190, counting
+// field_0x340; then state 10.
+void ResultScreen_804AF9A0::fn_803AFCF0() {
+    static const s32 points4[4] = {300, 150, 50, 0};
+    static const s32 points3[3] = {300, 150, 0};
+    static const s32 points2[2] = {150, 0};
+    // Declared in this order (and values before ranked) as the original's registers and stack slots.
+    s32 done = 0;
+    s32 best = 0;
+    s32 rank = 0;
+    bool any = false;
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (lbl_80529DEC.field_0x190[i] != 0) {
+            any = true;
+            break;
+        }
+    }
+    if (any) {
+        s32 values[4];
+        s32 ranked[4];
+        s32 place = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            ranked[i] = 0;
+            values[i] = lbl_80529DEC.field_0x190[i];
+        }
+        while (true) {
+            s32 top = -1;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top < values[i]) {
+                    top = values[i];
+                }
+            }
+            s32 count = 0;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top == values[i]) {
+                    if (values[i] == 0) {
+                        field_0x330[i] = 0;
+                    } else {
+                        switch (field_0x450) {
+                        case 0:
+                            field_0x330[i] = points4[place];
+                            break;
+                        case 1:
+                            field_0x330[i] = points3[place];
+                            break;
+                        case 2:
+                            field_0x330[i] = points2[place];
+                            break;
+                        }
+                    }
+                    ranked[i] = 1;
+                    count++;
+                }
+            }
+            place += count;
+            if (place >= field_0x454) {
+                break;
+            }
+        }
+    } else {
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x330[i] = 0;
+        }
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x340[i] < field_0x330[i]) {
+            field_0x340[i] += 2;
+        }
+        if (field_0x340[i] >= field_0x330[i]) {
+            field_0x340[i] = field_0x330[i];
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < field_0x330[i]) {
+                best = field_0x330[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best > 0 && best == field_0x330[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+        field_0x438 = 0;
+        field_0x4c1 = 10;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
+    }
+}
+void ResultScreen_804AF9A0::fn_803AFA78() {
+    BOOL done = FALSE;
+    if (field_0x4c8 != 0xFF && animateWinners()) {
+        done = TRUE;
+    }
+    if (field_0x4c8 == 0xFF || done) {
+        field_0x4c8 = 0xFF;
+        field_0x4c1 = 15;
+    }
+}
+
 void ResultScreen_804AF9A0::fn_803AF604() {
     field_0x440--;
     if (field_0x440 > 10) {
@@ -539,6 +679,138 @@ void ResultScreen_804AF9A0::fn_803AF604() {
         fn_803B35F8(field_0x4c7);
         field_0x440 = 150;
         field_0x4c1 = 13;
+    }
+}
+
+// FIXME: reloc-name only (instructions identical): its function-local point tables
+// are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
+// FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
+// in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
+// Bonus page step as fn_803AE810, by field_0x390, counting field_0x350;
+// with no winner it waits 60 frames instead of sound 0x2D; then state 14.
+void ResultScreen_804AF9A0::fn_803AF1B0() {
+    static const s32 points4[4] = {300, 150, 50, 0};
+    static const s32 points3[3] = {300, 150, 0};
+    static const s32 points2[2] = {150, 0};
+    // Declared in this order (and values before ranked) as the original's registers and stack slots.
+    s32 done = 0;
+    s32 best = 0;
+    s32 rank = 0;
+    bool any = false;
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x390[i] != 0) {
+            any = true;
+            break;
+        }
+    }
+    if (any) {
+        s32 values[4];
+        s32 ranked[4];
+        s32 place = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            ranked[i] = 0;
+            values[i] = field_0x390[i];
+        }
+        while (true) {
+            s32 top = -1;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top < values[i]) {
+                    top = values[i];
+                }
+            }
+            s32 count = 0;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top == values[i]) {
+                    if (values[i] == 0) {
+                        field_0x330[i] = 0;
+                    } else {
+                        switch (field_0x450) {
+                        case 0:
+                            field_0x330[i] = points4[place];
+                            break;
+                        case 1:
+                            field_0x330[i] = points3[place];
+                            break;
+                        case 2:
+                            field_0x330[i] = points2[place];
+                            break;
+                        }
+                    }
+                    ranked[i] = 1;
+                    count++;
+                }
+            }
+            place += count;
+            if (place >= field_0x454) {
+                break;
+            }
+        }
+    } else {
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x330[i] = 0;
+        }
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x350[i] < field_0x330[i]) {
+            field_0x350[i] += 2;
+        }
+        if (field_0x350[i] >= field_0x330[i]) {
+            field_0x350[i] = field_0x330[i];
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < field_0x330[i]) {
+                best = field_0x330[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best > 0 && best == field_0x330[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            field_0x440 = 60;
+        }
+        field_0x438 = 0;
+        field_0x4c1 = 14;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
+    }
+}
+void ResultScreen_804AF9A0::fn_803AEF08() {
+    BOOL done = FALSE;
+    if (field_0x4c8 != 0xFF) {
+        if (animateWinners()) {
+            done = TRUE;
+        }
+        if (done) {
+            field_0x4c8 = 0xFF;
+            field_0x4c1 = 15;
+        }
+    } else {
+        field_0x440--;
+        if (field_0x440 == 0) {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+            field_0x440 = 150;
+            field_0x4c1 = 15;
+        }
     }
 }
 
@@ -589,6 +861,132 @@ void ResultScreen_804AF9A0::fn_803AEC78() {
     }
 }
 
+// FIXME: reloc-name only (instructions identical): its function-local point tables
+// are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
+// Bonus page step: field_0x330[i] gets the points for player i's place by
+// lbl_80529DEC.field_0x160 (ties share a place; 0 scores nothing; the point
+// table by layout); field_0x360 counts up to it by 2, then the winners
+// (largest field_0x330) are listed in field_0x4ac and the state goes to 17.
+void ResultScreen_804AF9A0::fn_803AE810() {
+    static const s32 points4[4] = {300, 150, 50, 0};
+    static const s32 points3[3] = {300, 150, 0};
+    static const s32 points2[2] = {150, 0};
+    // Declared in this order (and values before ranked) as the original's registers and stack slots.
+    s32 done = 0;
+    s32 best = 0;
+    s32 rank = 0;
+    bool any = false;
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (lbl_80529DEC.field_0x160[i] != 0) {
+            any = true;
+            break;
+        }
+    }
+    if (any) {
+        s32 values[4];
+        s32 ranked[4];
+        s32 place = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            ranked[i] = 0;
+            values[i] = lbl_80529DEC.field_0x160[i];
+        }
+        while (true) {
+            s32 top = -1;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top < values[i]) {
+                    top = values[i];
+                }
+            }
+            s32 count = 0;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranked[i] == 0 && top == values[i]) {
+                    if (values[i] == 0) {
+                        field_0x330[i] = 0;
+                    } else {
+                        switch (field_0x450) {
+                        case 0:
+                            field_0x330[i] = points4[place];
+                            break;
+                        case 1:
+                            field_0x330[i] = points3[place];
+                            break;
+                        case 2:
+                            field_0x330[i] = points2[place];
+                            break;
+                        }
+                    }
+                    ranked[i] = 1;
+                    count++;
+                }
+            }
+            place += count;
+            if (place >= field_0x454) {
+                break;
+            }
+        }
+    } else {
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x330[i] = 0;
+        }
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x360[i] < field_0x330[i]) {
+            field_0x360[i] += 2;
+        }
+        if (field_0x360[i] >= field_0x330[i]) {
+            field_0x360[i] = field_0x330[i];
+            done++;
+        }
+    }
+    if (done >= field_0x454) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < field_0x330[i]) {
+                best = field_0x330[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best > 0 && best == field_0x330[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF && i == field_0x4ac[rank]) {
+                field_0x3c0[i] = 62;
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            }
+        }
+        if (field_0x4c8 != 0xFF) {
+            gAudioMgr_8053AF80->fn_80458880(0xF, -1);
+            gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+        field_0x438 = 0;
+        field_0x4c1 = 17;
+    } else {
+        if (done != field_0x438) {
+            field_0x438 = done;
+            gAudioMgr_8053AF80->fn_80458880(0x10, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0xE, -1);
+    }
+}
+
+// FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
+// in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
+void ResultScreen_804AF9A0::fn_803AE598() {
+    BOOL done = FALSE;
+    if (field_0x4c8 != 0xFF && animateWinners()) {
+        done = TRUE;
+    }
+    if (field_0x4c8 == 0xFF || done) {
+        field_0x4c8 = 0xFF;
+        field_0x4c1 = 18;
+    }
+}
+
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803AE308() {
@@ -632,6 +1030,103 @@ void ResultScreen_804AF9A0::fn_803AE308() {
             x = field_0x90->getBounds()->i.x;
             field_0x90->move(x, field_0x3fc);
             gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+    }
+}
+
+void ResultScreen_804AF9A0::fn_803ADE9C() {
+    s32 done = 0;
+    field_0x440--;
+    if (field_0x440 == 120) {
+        field_0x4c8 = 0xFF;
+        field_0x448 = 0;
+        field_0x4c3 = 0;
+        field_0x4c5 = 0;
+        s32 targets[4];
+        for (s32 i = 0; i < field_0x454; i++) {
+            targets[i] = lbl_80529DEC.field_0x170[i] * 100;
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x380[i] < targets[i]) {
+                field_0x380[i] += 100;
+                if (field_0x4c8 == 0xFF) {
+                    field_0x4c8 = 0;
+                } else {
+                    field_0x4c8++;
+                }
+                field_0x4ac[field_0x4c8] = i;
+                field_0x174[i]->startSound(0x10004);
+            } else {
+                field_0x380[i] = targets[i];
+                done++;
+            }
+        }
+        if (done >= field_0x454) {
+            field_0x438++;
+            field_0x440 = 1;
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(0x22, -1);
+        }
+    } else if (field_0x440 == 0) {
+        for (s32 i = 0; i < field_0x454; i++) {
+            field_0x3c0[i] = 62;
+        }
+        if (field_0x438 != 0) {
+            field_0x4c8 = 0xFF;
+            field_0x438 = 0;
+            field_0x440 = 150;
+            bool any = false;
+            for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
+                if (fn_80403070(fn_80403414(i)) > 0) {
+                    any = true;
+                }
+            }
+            if (any) {
+                field_0x4c1 = 20;
+            } else if (field_0x450 < 2) {
+                field_0x4c1 = 22;
+            } else {
+                field_0x4c1 = 28;
+            }
+            bool none = true;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (field_0x380[i] != 0) {
+                    none = false;
+                    break;
+                }
+            }
+            if (none) {
+                gAudioMgr_8053AF80->fn_80458880(0x2A, -1);
+            }
+        } else {
+            field_0x440 = 150;
+            gAudioMgr_8053AF80->fn_80458880(0x2D, -1);
+        }
+    }
+    if (field_0x4c8 != 0xFF) {
+        if (field_0x448 == 0) {
+            field_0x4c5++;
+            if (field_0x4c5 <= 10) {
+                for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+                    field_0x3c0[field_0x4ac[i]] = 0xAF;
+                }
+            } else {
+                field_0x448 = 1;
+                field_0x4c5 = 0;
+            }
+        } else if (field_0x448 == 1) {
+            if (lbl_804AF948[field_0x4c3] != -1) {
+                if (field_0x4c5 >= lbl_804AF948[field_0x4c3]) {
+                    field_0x4c3++;
+                }
+                field_0x4c5++;
+            }
+            for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+                field_0x3c0[field_0x4ac[i]] = lbl_804AF910[field_0x4c3] + 0xBD;
+            }
+            if (lbl_804AF948[field_0x4c3] == -1) {
+                field_0x448 = 2;
+            }
         }
     }
 }
@@ -726,6 +1221,312 @@ void ResultScreen_804AF9A0::fn_803AD220() {
             x = field_0x9c->getBounds()->i.x;
             field_0x9c->move(x, field_0x404);
             gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        }
+    }
+}
+
+// Steps the winners' (field_0x4ac[0..field_0x4c8]) sprite animation one
+// frame through lbl_804AF888 / lbl_804AF8CC; on its last frame shows the rank
+// effects 0xCB / 0xCC at each winner and plays sound 0x2000E, and returns
+// TRUE. Dead-stripped: fn_803AC154, fn_803AE598, fn_803AEF08 and fn_803AFA78
+// inline it (identical copies). Declared inline: as a plain member it is past
+// auto-inlining's size limit and all four call it out of line (13-20 %).
+inline BOOL ResultScreen_804AF9A0::animateWinners() {
+    if (lbl_804AF8CC[field_0x4c4] != -1) {
+        if (field_0x4c6 >= lbl_804AF8CC[field_0x4c4]) {
+            field_0x4c4++;
+        }
+        field_0x4c6++;
+    }
+    for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+        if (lbl_804AF888[field_0x4c4] == -1) {
+            field_0x3c0[i] = 62;
+        } else {
+            field_0x3c0[field_0x4ac[i]] = lbl_804AF888[field_0x4c4] + 0xDB;
+        }
+    }
+    if (lbl_804AF8CC[field_0x4c4] == -1) {
+        for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+            JGeometry::TVec3f pos(field_0x2f0[field_0x4ac[i]].x + 7.0f, field_0x2f0[field_0x4ac[i]].y - 27.0f,
+                                  field_0x2f0[field_0x4ac[i]].z);
+            spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+            JGeometry::TVec3f pos2(field_0x2f0[field_0x4ac[i]].x + 7.0f, field_0x2f0[field_0x4ac[i]].y - 27.0f,
+                                   field_0x2f0[field_0x4ac[i]].z);
+            spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+            field_0x244.set(field_0x2f0[field_0x4ac[i]]);
+            field_0x174[field_0x4ac[i]]->startSound(0x2000E);
+        }
+        return true;
+    }
+    return false;
+}
+
+// FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
+// in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
+void ResultScreen_804AF9A0::fn_803AC154() {
+    BOOL done = FALSE;
+    if (field_0x4c8 != 0xFF && animateWinners()) {
+        done = TRUE;
+    }
+    if (field_0x4c8 == 0xFF || done) {
+        field_0x4c8 = 0xFF;
+        s32 best = 0;
+        s32 totals[4];
+        for (s32 i = 0; i < field_0x454; i++) {
+            totals[i] = field_0x320[i] + field_0x340[i] + field_0x350[i] + field_0x360[i] + field_0x370[i] -
+                        field_0x380[i] + field_0x3a0[i] + field_0x3b0[i];
+        }
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (best < totals[i]) {
+                best = totals[i];
+                field_0x4c8 = 0;
+                field_0x4ac[field_0x4c8] = i;
+            } else if (best > 0 && best == totals[i]) {
+                field_0x4c8++;
+                field_0x4ac[field_0x4c8] = i;
+            }
+        }
+        field_0x440 = 150;
+        field_0x4c1 = 31;
+    }
+}
+
+// FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
+// in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
+// State 32: slide the 'Pttlbk05' title pane out and the winner pane in
+// ('Pwinbk05' with the winner's icon in 'Pwnr01' / 'Pwnr02', or 'Pdrwbk05'
+// on a draw); at the end count the round's win in lbl_80529DEC (the winner's
+// field_0x130 and bit, and the per-stage record field_0x1fc), then state 33.
+void ResultScreen_804AF9A0::fn_803ABCEC() {
+    field_0x440--;
+    s32 timer = field_0x440;
+    if (timer == 0) {
+        field_0x440 = 150;
+        field_0x4c3 = 0;
+        field_0x4c4 = 0;
+        field_0x4c5 = 0;
+        field_0x4c6 = 0;
+        s32 rank = 0;
+        for (s32 i = 0; i < field_0x454; i++) {
+            if (field_0x4c8 != 0xFF) {
+                if (i == field_0x4ac[rank]) {
+                    field_0x3c0[i] = 62;
+                    if (field_0x4c8 > rank) {
+                        rank++;
+                    }
+                } else {
+                    field_0x3c0[i] = 0xBD;
+                }
+            } else {
+                field_0x3c0[i] = 0xBD;
+            }
+        }
+        s32 stage = lbl_80529DEC.field_0x118;
+        s32 sub = lbl_80529DEC.field_0x11c;
+        s32 level = sub;
+        switch (stage) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+            if (sub == 3) {
+                level = 2;
+            }
+            break;
+        case 7:
+            if (sub == 2) {
+                level = 1;
+            }
+            if (level == 3) {
+                level = 2;
+            }
+            break;
+        }
+        if (field_0x4c8 == 0) {
+            lbl_80529DEC.field_0x130[field_0x4ac[0]]++;
+            lbl_80529DEC.field_0x243[0] = 0;
+            lbl_80529DEC.field_0x243[0] = 1 << field_0x4ac[0];
+            if (lbl_80529DEC.field_0x118 >= 0 && lbl_80529DEC.field_0x118 < 8 && level >= 0 && level < 3) {
+                lbl_80529DEC.field_0x1fc[lbl_80529DEC.field_0x118][level] = field_0x4ac[0];
+            }
+            if (field_0x4c8 != 0xFF) {
+                gAudioMgr_8053AF80->fn_80458880(0x11, -1);
+            }
+        } else {
+            if (stage >= 0 && stage < 8 && sub >= 0 && sub < 3) {
+                lbl_80529DEC.field_0x1fc[stage][sub] = 0xFF;
+            }
+            gAudioMgr_8053AF80->fn_80458880(0x2B, -1);
+        }
+        gAudioMgr_8053AF80->fn_80458880(0x2C, -1);
+        field_0x4c1 = 33;
+    } else if (timer >= 138) {
+        f32 offset = -150.0f * ((f32)(12 - (timer - 138)) / 12.0f);
+        f32 x = field_0x70->getBounds()->i.x;
+        field_0x70->move(x, field_0x3f4 + offset);
+        if (field_0x440 == 138) {
+            field_0x70->hide();
+            if (field_0x4c8 == 0) {
+                const ResTIMG* tex = (const ResTIMG*)fn_80403104('TIMG', lbl_804AF980[field_0x4ac[0]]);
+                static_cast<J2DPicture*>(field_0x7c)->changeTexture(tex, 0);
+                static_cast<J2DPicture*>(field_0x80)->changeTexture(tex, 0);
+                field_0x78->show();
+                x = field_0x78->getBounds()->i.x;
+                field_0x78->move(x, field_0x414 + offset);
+                field_0x7c->show();
+                field_0x80->show();
+            } else {
+                field_0x74->show();
+                x = field_0x74->getBounds()->i.x;
+                field_0x74->move(x, field_0x418 + offset);
+            }
+        }
+    } else if (timer >= 128) {
+        f32 offset = -150.0f * ((f32)(timer - 128) / 12.0f);
+        if (field_0x4c8 == 0) {
+            f32 x = field_0x78->getBounds()->i.x;
+            field_0x78->move(x, field_0x414 + offset);
+        } else {
+            f32 x = field_0x74->getBounds()->i.x;
+            field_0x74->move(x, field_0x418 + offset);
+        }
+        if (field_0x440 == 128) {
+            f32 x = field_0x70->getBounds()->i.x;
+            field_0x70->move(x, field_0x3f4);
+        }
+    }
+}
+
+// FIXME: 99.52. Registers and stack slots only (the ranks / ranked / totals pointers,
+// f29-f31, the corner-colour copy at 0x40 vs 0x1C, the emitter positions) plus .sdata2
+// names.
+// State 33: the winners' and the others' sprite animations
+// (lbl_804AF888 / lbl_804AF910); when both end, rank the players by total
+// (ties share a rank) and show each player's rank texture and colours, the
+// winners' rank effects and confetti, mark the stage cleared in the save
+// file and go to mode 4.
+void ResultScreen_804AF9A0::fn_803AB494() {
+    s32 rank = 0;
+    if (lbl_804AF948[field_0x4c3] != -1) {
+        if (field_0x4c5 >= lbl_804AF948[field_0x4c3]) {
+            field_0x4c3++;
+        }
+        field_0x4c5++;
+    }
+    if (lbl_804AF8CC[field_0x4c4] != -1) {
+        if (field_0x4c6 >= lbl_804AF8CC[field_0x4c4]) {
+            field_0x4c4++;
+        }
+        field_0x4c6++;
+    }
+    for (s32 i = 0; i < field_0x454; i++) {
+        if (field_0x4c8 != 0xFF) {
+            if (i == field_0x4ac[rank]) {
+                if (lbl_804AF888[field_0x4c4] == -1) {
+                    field_0x3c0[i] = 62;
+                } else {
+                    field_0x3c0[i] = lbl_804AF888[field_0x4c4] + 0xDB;
+                }
+                if (field_0x4c8 > rank) {
+                    rank++;
+                }
+            } else {
+                field_0x3c0[i] = lbl_804AF910[field_0x4c3] + 0xBD;
+            }
+        } else {
+            field_0x3c0[i] = lbl_804AF910[field_0x4c3] + 0xBD;
+        }
+    }
+    if (lbl_804AF948[field_0x4c3] == -1 && lbl_804AF8CC[field_0x4c4] == -1) {
+        if (field_0x4c8 != 0xFF) {
+            s32 ranks[4];
+            s32 ranked[4];
+            s32 totals[4];
+            s32 place = 0;
+            for (s32 i = 0; i < field_0x454; i++) {
+                ranks[i] = 0;
+                totals[i] = field_0x320[i] + field_0x340[i] + field_0x350[i] + field_0x360[i] + field_0x370[i] -
+                            field_0x380[i] + field_0x3a0[i] + field_0x3b0[i];
+                ranked[i] = 0;
+                if (totals[i] < -5000) {
+                    totals[i] = -5000;
+                }
+            }
+            do {
+                s32 best = -5001;
+                for (s32 i = 0; i < field_0x454; i++) {
+                    if (ranked[i] == 0 && best < totals[i]) {
+                        best = totals[i];
+                    }
+                }
+                s32 count = 0;
+                for (s32 i = 0; i < field_0x454; i++) {
+                    if (ranked[i] == 0 && best == totals[i]) {
+                        ranks[i] = place;
+                        count++;
+                        ranked[i] = 1;
+                    }
+                }
+                place += count;
+            } while (place < field_0x454);
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (ranks[i] == 0) {
+                    field_0x50[i]->show();
+                } else {
+                    field_0x60[i]->show();
+                }
+                field_0x30[i]->show();
+                f32 y = lbl_8050DB0C.field_0x4c[(0x2AE - 0x4C) / 2] + (365.0f + field_0x158[i]->getBounds()->i.y);
+                if (ranks[i] != 0) {
+                    y += 15.0f;
+                }
+                f32 x = field_0x30[i]->getBounds()->i.x;
+                field_0x30[i]->move(x, y);
+                x = field_0x10[field_0x450]->search(lbl_80476310[i * 2])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_80476310[i * 2])->move(x, y + field_0x42c);
+                x = field_0x10[field_0x450]->search(lbl_80476310[i * 2 + 1])->getBounds()->i.x;
+                field_0x10[field_0x450]->search(lbl_80476310[i * 2 + 1])->move(x, y + field_0x430);
+                const ResTIMG* tex = (const ResTIMG*)fn_80403104('TIMG', lbl_804AF990[ranks[i]]);
+                field_0x30[i]->changeTexture(tex, 0);
+                field_0x40[i]->changeTexture(tex, 0);
+                field_0x40[i]->setCornerColor(field_0x46c[ranks[i]]);
+            }
+            s32 winner = 0;
+            for (s32 i = 0; i < field_0x454; i++) {
+                if (i == field_0x4ac[winner]) {
+                    JGeometry::TVec3f pos(field_0x2f0[i].x + 7.0f, field_0x2f0[i].y - 27.0f, field_0x2f0[i].z);
+                    spawnEmitter_8013CC50(0, &pos, 0xCB, 1, 0, NULL, NULL, true, 1.0f);
+                    JGeometry::TVec3f pos2(field_0x2f0[i].x + 7.0f, field_0x2f0[i].y - 27.0f, field_0x2f0[i].z);
+                    spawnEmitter_8013CC50(0, &pos2, 0xCC, 1, 0, NULL, NULL, true, 1.0f);
+                    if (field_0x1b8[i] == NULL) {
+                        JGeometry::TVec3f pos3;
+                        pos3.x = field_0x158[i]->getWidth() / 2 + field_0x158[i]->getGlobalBounds().i.x;
+                        pos3.y = 0.0f;
+                        pos3.z = 0.0f;
+                        field_0x1b8[i] = spawnEmitter_8013CC50(0, &pos3, 0x241, 0, 0, NULL, NULL, true, 1.0f);
+                    }
+                    if (field_0x4c8 > winner) {
+                        winner++;
+                    }
+                }
+            }
+            field_0x444 = 240;
+        }
+        s32 stage = lbl_80529DEC.field_0x118;
+        s32 sub = lbl_80529DEC.field_0x11c;
+        s32 flagStage = stage < 8 ? stage : 0;
+        s32 flagSub = sub < 4 ? sub : 0;
+        setStageFlag(flagStage, flagSub);
+        field_0x4c0 = 4;
+        field_0x4c1 = 34;
+        field_0x440 = 60;
+        if (field_0x4c8 != 0xFF) {
+            for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+                field_0x174[field_0x4ac[i]]->startSound(0x10008);
+            }
         }
     }
 }
@@ -1000,6 +1801,12 @@ void ResultScreen_804AF9A0::fn_803AA8F8() {
     fn_803B2FB0();
 }
 #endif
+
+// Defined here, below fn_803AA8F8: the original's .sdata2 / .rodata have the
+// P*.bti / kk_*.bti strings after the function-local tables of fn_803AFCF0,
+// fn_803AF1B0, fn_803AE810 and fn_803AA8F8.
+const char* lbl_804AF980[4] = {"P1.bti", "P2.bti", "P3.bti", "P4.bti"};
+const char* lbl_804AF990[4] = {"kk_1st_01.bti", "kk_2nd_01.bti", "kk_3rd_01.bti", "kk_4th_01.bti"};
 
 // FIXME: 98.67. Registers (the second player loop), and each of the two ifs of the
 // clamp of lbl_8050EC80.getCurrentFile().field_0x10 goes through an extra `addi 0x30`

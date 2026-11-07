@@ -3,32 +3,15 @@
 
 #include "types.h"
 #include "JSystem/JGeometry.h"
+#include "JSystem/J2D/J2DPicture.h"
 
 class J2DScreen;
 class J2DPane;
-class J2DPicture;
 class J2DTextBox;
 class J2DAnmTextureSRTKey;
 class JPABaseEmitter;
 class ActorSoundObj_804578F4;
 class cls_804B20F8;
-
-// A four-word entry of ResultScreen_804AF9A0::field_0x46c: every word starts
-// at -1 (constructor fn_803B7B90, the out-of-line copy __construct_array
-// calls). Named after that constructor; what the words hold is not known.
-struct cls_803B7B90 {
-    cls_803B7B90() {
-        field_0x0 = -1;
-        field_0x4 = -1;
-        field_0x8 = -1;
-        field_0xc = -1;
-    }
-
-    /* 0x0 */ s32 field_0x0;
-    /* 0x4 */ s32 field_0x4;
-    /* 0x8 */ s32 field_0x8;
-    /* 0xC */ s32 field_0xc;
-}; // Size: 0x10
 
 // The results screen (game/tu_803A8DFC.cpp): vtable 0x804AF9A0 (only the
 // destructor, fn_803B6D04), constructor fn_803B6FD8, 0x4E0 bytes
@@ -116,6 +99,8 @@ public:
     void fn_803B0FD4();
     void fn_803B14F8();
     void fn_803B1B60();
+    // Dead-stripped helper (see the .cpp): true when the winners' animation ends.
+    BOOL animateWinners();
 
     /* 0x000 */ // vtable
     /* 0x004 */ J2DScreen* field_0x4[3];  // "result_4P.blo", "result_3P.blo", "result_2P.blo"
@@ -123,7 +108,13 @@ public:
     /* 0x01C */ J2DScreen* field_0x1c;    // "result_back.blo"
     /* 0x020 */ J2DScreen* field_0x20;    // "result_title.blo"
     /* 0x024 */ J2DAnmTextureSRTKey* field_0x24[3]; // "result_{4,3,2}P.btk" on field_0x4[i]
-    /* 0x030 */ u8 field_0x30[0x70 - 0x30];
+    // Per-player rank panes (fn_803AB494): the rank texture pictures 0x30 /
+    // 0x40 (0x40 also takes the field_0x46c colours) and the panes shown for
+    // first place (0x50) or the other places (0x60).
+    /* 0x030 */ J2DPicture* field_0x30[4];
+    /* 0x040 */ J2DPicture* field_0x40[4];
+    /* 0x050 */ J2DPane* field_0x50[4];
+    /* 0x060 */ J2DPane* field_0x60[4];
     // field_0x20's panes (constructor).
     /* 0x070 */ J2DPane* field_0x70; // 'Pttlbk05'
     /* 0x074 */ J2DPane* field_0x74; // 'Pdrwbk05'
@@ -220,7 +211,10 @@ public:
     /* 0x45E */ s16 field_0x45e; // -1 at reset
     /* 0x460 */ s16 field_0x460[4];
     /* 0x468 */ u8 field_0x468[0x46C - 0x468];
-    /* 0x46C */ cls_803B7B90 field_0x46c[4];
+    // Corner colours of field_0x40's pictures per rank (fn_803AB494); white
+    // (TColor's default) unless set. __construct_array builds them with the
+    // out-of-line TCornerColor constructor (0x803B7B90).
+    /* 0x46C */ J2DPicture::TCornerColor field_0x46c[4];
     // Per-player bytes, reset by fn_803B6768 (0x4AC / 0x4B0 to 0, the rest to 0xFF).
     /* 0x4AC */ u8 field_0x4ac[4];
     /* 0x4B0 */ u8 field_0x4b0[4]; // bit 1: listed in field_0x4b4

@@ -167,7 +167,7 @@ public:
     // Per player (fn_80402FBC indexes it with fn_8022F340's player index).
     /* 0x1C4 */ JGeometry::TVec3f field_0x1c4[4];
     /* 0x1F4 */ s16 field_0x1f4[4]; // per player; fn_802702EC clears one
-    /* 0x1FC */ u8 field_0x1fc[0x214 - 0x1FC]; // 0xFF after the reset
+    /* 0x1FC */ u8 field_0x1fc[8][3]; // 0xFF after the reset
     /* 0x214 */ u8 field_0x214;
     /* 0x215 */ u8 field_0x215;
     // main (tu_801344C0, 0x801344F8-0x80134624) copies 0x20 bytes here from
