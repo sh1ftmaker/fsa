@@ -3,8 +3,6 @@ act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
 act_buzz_blob	dtor	__dt__17BuzzBlob_8049F444Fv	BuzzBlob_8049F444	0x8049F444	new	new
 act_buzz_blob	sinit	__sinit_act_buzz_blob_cpp	-	-	new	new
-act_door	dtor	__dt__13Door_804A8D88Fv	Door_804A8D88	0x804A8D88	new	new
-act_door	sinit	__sinit_act_door_cpp	-	-	new	new
 act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
 act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new

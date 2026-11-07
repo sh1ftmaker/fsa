@@ -1025,7 +1025,7 @@ void cls_804A7AE0::fn_80298978() {
 
 // FIXME(shotgun): 98.5 %, different: 3 opcodes (scheduling of the first box)
 // Registers a collision box (given relative to mPos) for this actor.
-static void registerBox_802984B0(cls_804A7AE0* actor, f32 x0, f32 y0, f32 x1, f32 y1) {
+inline void registerBox_802984B0(cls_804A7AE0* actor, f32 x0, f32 y0, f32 x1, f32 y1) {
     JGeometry::TBox2f box;
     box.i.x = x0;
     box.i.y = y0;
@@ -1085,7 +1085,7 @@ void cls_804A7AE0::fn_802984B0() {
 }
 
 // FIXME(shotgun): 95.0 %, missing/extra: callee-saved register order in the prologue, 3 instructions
-static void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, const char* name) {
+inline void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, const char* name) {
     if (layer < 8) {
         void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', name);
         gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(pos, res, params);
