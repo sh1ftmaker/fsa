@@ -5,6 +5,7 @@
 #include "game/tu_80379F84.h"
 #include "game/Message.h"
 #include <string.h>
+#include "dolphin/card.h"
 #include <dolphin/os.h>
 #include "game/GameState.h"
 #include "game/cls_804B1600.h"
@@ -16,6 +17,19 @@
 
 typedef void (cls_804B0288::*StateFunc_804B0288)();
 extern StateFunc_804B0288 lbl_804B0168[24];
+
+// The three load/save results all stamp the current save file the same way.
+static inline void touchCurrentFile() {
+    lbl_8050EC80.getCurrentFile().field_0x0 = OSGetTime();
+    SaveFile_803B950C& file = lbl_8050EC80.getCurrentFile();
+    if ((file.field_0x65 & 1) == 0) {
+        file.field_0x65 |= 1;
+    }
+    SaveFile_803B950C& file2 = lbl_8050EC80.getCurrentFile();
+    if (file2.mFlags & 1) {
+        file2.field_0x65 |= 2;
+    }
+}
 
 // FIXME(shotgun): 99.9 %, reloc-name (the vtable symbol)
 cls_804B0288::~cls_804B0288() {
@@ -725,6 +739,30 @@ void cls_804B0288::fn_803D3460() {
     }
 }
 
+// FIXME(shotgun): 78.1 %, missing/extra
+void cls_804B0288::fn_803D3214() {
+    s32 result = lbl_8051C1A0.fn_803B9BDC();
+    if (result == 1) {
+        field_0x54 = 0x7A;
+        field_0x2177 = 0;
+        gGameRoot_8053AAF8->field_0xff = 1;
+        touchCurrentFile();
+        u64 serial;
+        CARDGetSerialNo(lbl_8051C1A0.field_0x1ff4, &serial);
+        lbl_8050EC80.field_0x8 = serial;
+        field_0x216d = 0x11;
+        field_0x216e = 0;
+        lbl_80529DEC.field_0x24c = 0;
+        field_0x7c = 0x5A;
+    } else if (result == 2) {
+        field_0x54 = 0x79;
+        field_0x2177 = 0;
+        field_0x216d = 0x17;
+        field_0x216e = 0;
+        lbl_80529DEC.field_0x24c = 0;
+    }
+}
+
 // FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
 void cls_804B0288::fn_803D335C() {
     lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
@@ -797,6 +835,70 @@ void cls_804B0288::fn_803D2FFC() {
         field_0x54 = 0x82;
         field_0x2177 = 0;
         field_0x216d = 3;
+    }
+}
+
+// FIXME(shotgun): 90.2 %, missing/extra + reloc-name
+void cls_804B0288::fn_803D2E10() {
+    if (lbl_8053AD30->fn_80309C4C(1, -1)) {
+        if (field_0x2170 != 0) {
+            field_0x2170--;
+            field_0x2171 = field_0x2170;
+            field_0x82 = 1;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(2, -1)) {
+        if (field_0x2170 < 1) {
+            field_0x2170++;
+            field_0x2171 = field_0x2170;
+            field_0x82 = 1;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+        field_0x2171 = field_0x2170;
+        if (field_0x2170 == 0) {
+            memcpy(field_0x420, lbl_8050EC80.mBodies, 0x1D4C);
+            touchCurrentFile();
+            field_0x54 = 0x7E;
+            field_0x2177 = 0;
+            field_0x216d = 0x12;
+            field_0x216e = 1;
+            lbl_80529DEC.field_0x24c = 1;
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        } else {
+            field_0x2170 = 0;
+            field_0x54 = 0x7B;
+            field_0x2177 = 0;
+            field_0x216d = 2;
+            gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+        }
+        field_0x82 = 1;
+    }
+}
+
+// FIXME(shotgun): 89.2 %, missing/extra + reloc-name
+void cls_804B0288::fn_803D2C9C() {
+    s32 result = lbl_8051C1A0.fn_803B9A94(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
+    if (result == 0) {
+        return;
+    }
+    if (result == 1) {
+        if (lbl_8050EC80.field_0x8 == lbl_8051C1A0.field_0x1ff8) {
+            fn_803BADAC(&field_0x1c0[lbl_8050EC80.mCurrentFile]);
+            touchCurrentFile();
+            field_0x54 = 0x7E;
+            field_0x2177 = 0;
+            field_0x216d = 0x12;
+            field_0x216e = 1;
+            lbl_80529DEC.field_0x24c = 1;
+        } else {
+            field_0x54 = 0x7C;
+            field_0x2177 = 0;
+            field_0x216d = 6;
+        }
+    } else if (result == 2) {
+        field_0x216c = 5;
+        field_0x2175 = 1;
     }
 }
 

@@ -128,6 +128,9 @@ public:
     void fn_803D5554();
     // The state handlers of game/tu_803D2C34.cpp (no other arguments), indexed by field_0x216c / 0x216d.
     void fn_803D2C34();
+    void fn_803D2C9C();
+    void fn_803D2E10();
+    void fn_803D3214();
     void fn_803D2FFC();
     void fn_803D3060();
     void fn_803D3108();
