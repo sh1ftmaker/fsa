@@ -105,6 +105,8 @@ ActorManager_804A5800::~ActorManager_804A5800() {
     mHeap->destroy();
 }
 
+// FIXME(shotgun): fn_801F871C (0x730, the per-frame update pass) not written: reads a long
+// chain of GameView/GameRoot flags I did not decode in this pass.
 void ActorManager_804A5800::fn_801F8E4C() {
     fn_801F857C();
     field_0x200c->setField_0x31();
@@ -618,6 +620,8 @@ bool ActorManager_804A5800::fn_801F71E8(u32 group, ActorBase_804A5770** out, s32
     return true;
 }
 
+// FIXME(shotgun): fn_801F6A4C (0x700, a per-slot pairwise push/collision pass with 12 float
+// registers) not written in this pass.
 void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
     if (*value != target) {
         f32 delta = rate * (target - *value);
