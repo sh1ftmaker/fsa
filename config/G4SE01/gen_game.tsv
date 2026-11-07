@@ -36,8 +36,6 @@ act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x8
 act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_thwomp_launch_npc	dtor	__dt__28NPCLaunchedByThwomp_804AC010Fv	NPCLaunchedByThwomp_804AC010	0x804AC010	new	new
 act_thwomp_launch_npc	sinit	__sinit_act_thwomp_launch_npc_cpp	-	-	new	new
-act_thwomp_launch_npc_2	dtor	__dt__29NPCLaunchedByThwomp2_804AD1C8Fv	NPCLaunchedByThwomp2_804AD1C8	0x804AD1C8	new	new
-act_thwomp_launch_npc_2	sinit	__sinit_act_thwomp_launch_npc_2_cpp	-	-	new	new
 act_trick_floor	dtor	__dt__19TrickFloor_804A83A0Fv	TrickFloor_804A83A0	0x804A83A0	new	new
 act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
