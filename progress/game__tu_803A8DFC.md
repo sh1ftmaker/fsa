@@ -25,3 +25,40 @@ symbols.txt placeholder renames; names.tsv row; categories.tsv row.
 
 Next: fn_803B6768 (reset, 0x59C), fn_803A8F5C (draw, 0x844), the 2/3/4P result updates
 fn_803A9AB8 / fn_803AA1F8 / fn_803AA8F8; then the .data tables (array line needed).
+
+## Round 2 (Opus 5.5, 2026-11-06)
+
+Baseline (rebased on matching caea6e25): 9105 / 11557, structural 9679. After: 9105 / 11557
+(+0 honest), structural 9681 (+2 done); no drops by address against fsa-decomp's report.
+
+Written (structure first, at their descending-order places):
+- fn_803A8F5C (draw: score digits with minus sign, player sprites, fade) 99.66 regalloc-only.
+- fn_803B6768 (reset: layout from the player count, per-player state, music) 99.89 reloc-name.
+- fn_803A9AB8 / fn_803AA1F8 (score-bar pages, modes 4 / 3) 98.71 / 98.67: registers, plus one
+  `addi 0x30` per clamp of lbl_8050EC80.getCurrentFile().field_0x10 (the save-data row shape,
+  docs/CRACK_PASS.md "Save-data layout"; not applied here).
+- fn_803AA8F8 (mode 2: the 34-state machine) 98.43 "different" = registers + state 21's
+  `li; mr` zero copy only. Its alpha loops multiply by a run-time zero float (a literal 0.0f
+  folds away; written as a local `rate`). fn_803AF604 got an auto_inline off/reset region
+  (fn_803AA8F8 calls it out of line).
+- New fields: J2DTextBox* digit arrays 0xA8-0x138, panes 0x158[4] / 0x168, s32 arrays
+  0x320-0x3E0, floats 0x41C-0x430, 0x434-0x448, s16 0x458-0x466, u8 0x4C8, 0x4C9[13],
+  0x4D6[3], 0x4D9[2], 0x4DB-0x4DD. 25 placeholder functions renamed to ResultScreen members.
+
+Pool: our .sdata2 now equals the original from "%1d" (0x805433C0) to 12.0f, except the
+unsigned-conversion double 0x4330000000000000 (lbl_805433B8): the original has it before
+"%1d" (after the P1..P4.bti strings of lbl_804AF980), ours at the end. Still missing in
+front: the {150, 0} locals of fn_803AFCF0 / fn_803AF1B0 / fn_803AE810 and the P*.bti
+strings, so every function stays reloc-name until those are written.
+
+Next:
+- fn_803AE598 / fn_803AEF08 / fn_803AFA78 (and fn_803AC154) inline one bool helper (step
+  field_0x4c4 through lbl_804AF8CC, set frames from lbl_804AF888, rank effects 0xCB / 0xCC,
+  sound 0x2000E): write it once as a plain member with the inlined body, then the four
+  callers (states 17 / 14 / 10 / 30, next state 18 / 15 / 15). That writes lbl_804AF888[17]
+  / lbl_804AF8CC[17] (s32, .data, original sizes).
+- fn_803ADE9C (lbl_804AF910 / 948), fn_803ABCEC (lbl_804AF980, char*[8]), fn_803AB494.
+- Then the locals of fn_803B236C / fn_803AFCF0 / fn_803AF1B0 / fn_803AE810 to finish the pool.
+
+SHARED-EDITS: include/game/tu_803B8C74.h (SaveFile_803B950C 0x10: u8[4] -> s32 field_0x10);
+config/G4SE01/symbols.txt (25 placeholder member renames, unit-local).
