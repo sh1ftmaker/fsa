@@ -89,7 +89,7 @@ cls_804B146C::cls_804B146C()
     field_0x25e[1] = 0;
     field_0x25e[2] = 0;
     field_0x25e[3] = 0;
-    lbl_8053AED0->pad_0x10e[0] |= 1;
+    lbl_8053AED0->field_0x10e |= 1;
     field_0x4c = new J2DOrthoGraph(
         0.0f, 0.0f,
         (f32)JUTVideo::getManager()->getFbWidth(),

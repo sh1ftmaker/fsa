@@ -180,7 +180,7 @@ void Wizzrobe_804A0EDC::init() {
     }
 }
 
-// FIXME(shotgun): 86.31 %, Wizzrobe_804A0EDC
+// FIXME(shotgun): 86.5 %, missing/extra
 void Wizzrobe_804A0EDC::update() {
     s32 dir = 0;
     s32 player = 0;
