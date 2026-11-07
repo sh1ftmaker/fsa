@@ -7,6 +7,8 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/SpriteParams.h"
+#include "JSystem/JMath/JMath.h"
+#include "std/math.h"
 #include "game/act/act_cucco.h"
 
 Cucco_804AB8C0::~Cucco_804AB8C0() {
@@ -331,5 +333,70 @@ void Cucco_804AB8C0::draw() {
     } else {
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + 0x2AF, &params, flags, 1.0f, 1.0f);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x2AF, 0, 2, -1, held, 0, 0);
+    }
+}
+
+// A one-player version of ActorBase::fn_801EEC98: the angle, direction, distance and
+// player of actor `serial` seen from `player`.
+// FIXME(shotgun): 94.38 %, missing/extra + reloc-name
+void Cucco_804AB8C0::fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player) {
+    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+    f32 dist = -1.0f;
+    s32 angle = 0;
+    s32 found = -1;
+    if (actor == NULL) {
+        if (outDir != NULL) {
+            *outDir = -1;
+        }
+        if (outPlayer != NULL) {
+            *outPlayer = -1;
+        }
+        return;
+    }
+    s32 onLayer = 0;
+    if (getPlayerLayer_8023DE58(player) < 8 && actor->getField_0x4() == 8) {
+        onLayer = 2;
+    } else if (actor->getField_0x4() == getPlayerLayer_8023DE58(player)) {
+        onLayer = 1;
+    }
+    if (fn_8023F264(player) && !fn_8022DCD8(player) && onLayer != 0 && !fn_8022F478(player) &&
+        !fn_80236B50(player) && !fn_8022D534(player))
+    {
+        f32 dx;
+        f32 dy;
+        if (onLayer == 1) {
+            dx = actor->mPos.x - getPlayerPos_8023E724(player)->x;
+            dy = actor->mPos.y - getPlayerPos_8023E724(player)->y;
+        } else {
+            s32 layer = getPlayerLayer_8023DE58(player);
+            GameView_804A9950* view = getGameView_802D6A9C();
+            JGeometry::TBox2f box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
+            dx = actor->mPos.x - (getPlayerPos_8023E724(player)->x - box.i.x);
+            dy = actor->mPos.y - (getPlayerPos_8023E724(player)->y - box.i.y);
+        }
+        dist = std::sqrtf(dx * dx + dy * dy);
+        angle = (u16)(JMath::atanTable_.atan2_(-dx, -dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+        found = player;
+    }
+    if (found < 0) {
+        if (outDir != NULL) {
+            *outDir = -1;
+        }
+        if (outPlayer != NULL) {
+            *outPlayer = -1;
+        }
+        return;
+    }
+    if (outAngle != NULL) {
+        *outAngle = angle;
+    }
+    if (outDir != NULL) {
+        *outDir = fn_801F681C((u16)angle);
+    }
+    if (outDist != NULL) {
+        *outDist = dist;
+    }
+    if (outPlayer != NULL) {
+        *outPlayer = found;
     }
 }
