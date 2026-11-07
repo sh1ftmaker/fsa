@@ -18,6 +18,26 @@ public:
     // count in field_0x2c0 to the save row and clears mAlive of the actor
     // mTargetSerial names, then EnemyBase's destructor.
     /* 0x08 */ virtual ~cls_804A51E4();
+    // The overrides below come from the asm only (shotgun pass); the helper
+    // names are their addresses.
+    /* 0x0C */ virtual void init();
+    /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x8C */ virtual void vfunc_0x8C();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    /* 0x94 */ virtual void vfunc_0x94();
+    void fn_801E1E08();                         // back to the start (state 0)
+    bool fn_801E1DB4() const;                   // mAnim.mAnim in 0..2 or 0xD..0x10
+    bool fn_801E1CF8() const;
+    void fn_801E1AB4(bool arg);
+    void fn_801E1594(s32 newState);             // the state change
+    void fn_801E1300();
+    void fn_801E0CF4();
+    void fn_801E002C(ActorBase_804A5770* target);
+    void fn_801DF9D8(ActorBase_804A5770* target);
+    // game/tu_801E2D88 and neighbours (not written yet)
+    bool fn_801E2F40();
+    void fn_801E2EE4();
+    void fn_801E2D88();
 
     // tu_8020CCA8 (0x8020CCA8, vtable slot 0x20).
     void draw();
@@ -67,10 +87,6 @@ public:
     void fn_801E2EE4();
     // 0x801E2F40: whether the tile under mPos is 3, 13 or 14.
     bool fn_801E2F40();
-    // Not written yet (tu_801DE714.cpp).
-    bool fn_801E1CF8();
-    void fn_801E1594(s32 state);
-    bool fn_801E1DB4();
     // tu_8021FDB8 (0x8021FDB8): moves the actor found by mTargetSerial next
     // to this one, offset by mAnim.mCel (z) and the target's field_0x90 and
     // our direction field_0x98 (x).
