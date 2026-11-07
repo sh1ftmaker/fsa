@@ -382,6 +382,31 @@ bool fn_801CC8E4(ActorBase_804A5770* actor) {
     return result;
 }
 
+// Reflects the xy of *vel off *normal's xy (z is kept), at the original speed; straight back when
+// either is zero or the reflection is (nearly) zero.
+void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel) {
+    f32 z = vel->z;
+    JGeometry::TVec3f v(vel->x, vel->y, 0.0f);
+    if (v.isZero()) {
+        vel->set(-v.x, -v.y, z);
+        return;
+    }
+    JGeometry::TVec3f n(normal->x, normal->y, 0.0f);
+    if (n.isZero()) {
+        vel->set(-v.x, -v.y, z);
+        return;
+    }
+    n.normalize();
+    JGeometry::TVec3f r;
+    C_VECReflect(&v, &n, &r);
+    if (__fabsf(r.x) < 0.05f && __fabsf(r.y) < 0.05f) {
+        vel->set(-v.x, -v.y, z);
+        return;
+    }
+    r.scale(PSVECMag(&v));
+    vel->set(r.x, r.y, z);
+}
+
 // The distance between two angles as a fraction of a half turn (0-1).
 static inline f32 angleDistance(s16 a, s16 b) {
     return (1.0f / 32768.0f) * __fabsf((s16)(a - b));

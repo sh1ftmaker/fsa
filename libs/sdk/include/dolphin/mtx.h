@@ -70,6 +70,7 @@ extern "C"
     void PSVECCrossProduct(const Vec *a, const Vec *b, Vec *ab);
     f32 PSVECSquareDistance(const Vec *a, const Vec *b);
     f32 PSVECDistance(const Vec *a, const Vec *b);
+    void C_VECReflect(const Vec *src, const Vec *normal, Vec *dst);
 
     void PSQUATMultiply(const Quaternion*, const Quaternion*, Quaternion*);
     void PSQUATScale(const Quaternion*, Quaternion*, f32);

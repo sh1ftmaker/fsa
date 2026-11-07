@@ -397,6 +397,10 @@ extern "C" void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3
 // while fn_8022F514 says it has one).
 s32 fn_801CCF34(s32 player);
 
+// game/tu_801CB270.cpp (0x801CC350; 1 caller unit, act_terrorpin vfunc_0x90). Reflects the 2D
+// velocity *vel off *normal (C_VECReflect, PSVECMag; z is preserved).
+void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel);
+
 extern "C" {
 
 // game/tu_801CB270.cpp (not written yet; 0x801CCFE4, 0xEC bytes). Whether
@@ -428,11 +432,6 @@ bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel);
 // bytes; 1 caller unit, tu_801C5B08 fn_801C6784). Called with the position
 // of an actor and its layer (mPos, field_0x4); returns whether it holds.
 bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer);
-// game/tu_801CB270.cpp (owner unit, not written yet; 0x801CC350, 0x1E8 bytes;
-// 1 caller unit, act_terrorpin vfunc_0x90). Reflects the 2D velocity *vel off
-// *normal (C_VECReflect, PSVECMag; z is preserved).
-void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel);
-
 }
 
 #endif
