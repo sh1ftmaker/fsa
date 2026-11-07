@@ -5,7 +5,12 @@
 #include "game/Map.h"
 #include "game/ActorManager.h"
 #include "game/ActorId.h"
+#include "game/RotMatrix.h"
+#include "game/SpriteParams.h"
 #include "game/act/tu_800F46C0.h"
+
+// Sprite names of the shard textures (.data 0x8049C458, not written as source here), indexed by field_0x240.
+extern const char* const lbl_8049C458[];
 
 Boulder_8049C4C0::~Boulder_8049C4C0() {}
 
@@ -145,6 +150,123 @@ bool Boulder_8049C4C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return false;
     }
     return fn_802265DC(pos, layer, false);
+}
+
+// FIXME(shotgun): 94.68 %, different + reloc-name
+void Boulder_8049C4C0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    s32 flags;
+    params.field_0x1c = 1;
+    params.field_0x1f = 0;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    switch (field_0x230) {
+    case 0:
+        mtx[0][0] = 1.0f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 1.0f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 1.0f;
+        flags = 3;
+        if (field_0x240 == 1) {
+            params.field_0x1c = 0;
+            params.field_0x1d = -1;
+            params.field_0x10.r = 200;
+            params.field_0x10.g = 200;
+            params.field_0x10.b = 200;
+            flags = -1;
+        } else if (field_0x240 == 2) {
+            params.field_0x1c = 0;
+            params.field_0x1d = -1;
+            flags = -1;
+            f32 scale = (f32)(0x3C - field_0x248) / 60.0f;
+            mtx[0][0] = scale;
+            mtx[0][1] = 0.0f;
+            mtx[0][2] = 0.0f;
+            mtx[1][0] = 0.0f;
+            mtx[1][1] = scale;
+            mtx[1][2] = 0.0f;
+            mtx[2][0] = 0.0f;
+            mtx[2][1] = 0.0f;
+            mtx[2][2] = scale;
+            params.field_0x10.r = 200 - field_0x248 * 2;
+            params.field_0x10.g = 200 - field_0x248 * 2;
+            params.field_0x10.b = 200 - field_0x248 * 2;
+        }
+        break;
+    case 1:
+        mtx[0][0] = 0.8f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 0.8f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 0.8f;
+        if (field_0x3c.x != 0.0f || field_0x3c.y != 0.0f || field_0x3c.z != 0.0f) {
+            flags = 3;
+        } else {
+            flags = -1;
+        }
+        break;
+    case 2:
+        mtx[0][0] = 0.2f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 0.2f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 0.2f;
+        flags = 7;
+        params.field_0x30 = 0x11;
+        break;
+    case 3:
+        mtx[0][0] = 1.0f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 1.0f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 1.0f;
+        flags = 3;
+        if (field_0x240 == 2) {
+            params.field_0x1d = -1;
+            params.field_0x1c = -1;
+        }
+        break;
+    case 5: {
+        mtx[0][3] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][3] = 0.0f;
+        setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, (f32)field_0x244 / -10430.228f, 0.0f), 1.0f);
+        params.mMtx = mtx;
+        void* res = fn_804032E8('TIMG', lbl_8049C458[field_0x240]);
+        fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
+        return;
+    }
+    }
+    params.mMtx = mtx;
+    JGeometry::TVec3f savedPos = mPos;
+    mPos.x += field_0x254.x;
+    mPos.y += field_0x254.y;
+    mPos.z += field_0x254.z;
+    if (field_0x4 <= 8) {
+        drawSprite_801F06F0("enemy_gc_sob.bin", field_0x23c + 0xB1, &params, flags, 1.0f, 1.0f);
+    } else {
+        fn_801F02BC("enemy_both_sob.bin", field_0x23c, &params, flags, 0, false, 1.0f, 1.0f);
+    }
+    mPos.set(savedPos);
 }
 
 // FIXME(shotgun): 99 %, reloc-name
