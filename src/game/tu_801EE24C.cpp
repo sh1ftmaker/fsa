@@ -1755,7 +1755,7 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
 // FIXME(shotgun): drawSprite_801F06F0 (0x630: hit-flash colour blend on the params copy, then
 // fn_801EF830) and fn_801EFD34 (0x588, the same with a loaded resource) not written in this pass.
 
-// FIXME(shotgun): 67.5 %, missing/extra + reloc-name (params copied differently, scale literals)
+// FIXME(shotgun): 69 %, missing/extra + reloc-name (params copied differently, scale literals)
 void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params,
                                      s32 flags, s32 mode, bool arg, f32 scaleX, f32 scaleY) {
     if (params != NULL && params->field_0x10.a == 0) {
@@ -1790,7 +1790,7 @@ void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_8
         bool visible = true;
         bool dying = false;
         if (field_0xd8 > 0) {
-            if (field_0xd8 <= field_0xdc - 0x19 || field_0xdc < 0x19) {
+            if (field_0xd8 > field_0xdc - 0x19 || field_0xdc < 0x19) {
                 if (field_0xd8 & 2) {
                     visible = false;
                 } else if (field_0xd8 & 4) {
@@ -1804,7 +1804,7 @@ void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_8
         }
         if (visible) {
             if (name[10] == '2') {
-                fn_803075AC(mSerial, field_0x4, &pos, frame, mode, 2, -1, arg, dying, 0);
+                fn_803075AC(mSerial, field_0x4, &pos, frame, mode != 0, 2, -1, arg, dying, 0);
             } else {
                 fn_80307AC8(mSerial, field_0x4, &pos, frame, mode, dying, -1);
             }
@@ -1913,7 +1913,7 @@ void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0*
     }
 }
 
-// FIXME(shotgun): 60 %, missing/extra (the original copies the params field by field through registers)
+// FIXME(shotgun): 60.2 %, missing/extra (the original copies the params field by field through registers)
 extern "C" void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                             SpriteParams_801F5AE0* params) {
     SpriteParams_801F5AE0 sp;
@@ -1926,9 +1926,9 @@ extern "C" void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec
     sp.field_0x10.a = sp.field_0x10.a >> 1;
     sp.field_0x28 = 1;
     sp.field_0x2e = 0x3F;
-    sp.field_0x2c = 0;
-    sp.field_0x2d = -2;
-    sp.field_0x30 = 0;
+    sp.field_0x1c = 0;
+    sp.field_0x1d = -2;
+    sp.field_0x20 = 0;
     void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', sobName);
     gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, arg1, &sp, 1.0f, 1.0f);
 }

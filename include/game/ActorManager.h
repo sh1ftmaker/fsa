@@ -367,8 +367,8 @@ void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep);
 // *value), clamped to +-maxStep, to *value.
 void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep);
 
-// Not written yet in game/tu_801F6058.cpp: extern "C" keeps its dtk
-// placeholder name as the link name until that unit defines it.
+// Defined in game/tu_801F6058.cpp: extern "C" keeps its dtk placeholder name
+// as the link name until its real name is known.
 extern "C" {
 
 // 6 units / 12 calls. Gets the manager itself (gGameRoot_8053AAF8->0x4->0x8)
@@ -378,8 +378,7 @@ extern "C" {
 // (ActorBase_804A5770::fn_801F2718 passes this, its mSerial and
 // lbl_8053F748; others pass -1 for excludeSerial).
 s32 fn_801F8108(const ActorBase_804A5770* actor, u32 id, s32 excludeSerial, f32 maxDz);
-// It inlines fn_801F7F58's whole search and getActorManager_801F856C (defined after it),
-// so it stays unwritten until fn_801F7F58's own structure explains that.
+// It inlines fn_801F7F58's whole search and getActorManager_801F856C (defined after it).
 
 } // extern "C"
 

@@ -18,15 +18,15 @@ void TrickFloor2_804AA628::init() {
     field_0x248 = 0.0f;
     switch (mType) {
     case 3:
-        mBox.set(-16.0f, -50.0f, 24.0f, 50.0f);
-        field_0x248 = -0.06f;
+        mBox.set(-24.0f, -32.0f, 24.0f, 32.0f);
         break;
     case 2:
         mBox.set(-40.0f, -32.0f, 40.0f, 32.0f);
         break;
     case 4:
     case 5:
-        mBox.set(-24.0f, -32.0f, 24.0f, 32.0f);
+        mBox.set(-16.0f, -50.0f, 24.0f, 50.0f);
+        field_0x248 = -0.06f;
         break;
     default:
         mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);

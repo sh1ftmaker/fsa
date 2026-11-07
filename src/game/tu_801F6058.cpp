@@ -15,6 +15,7 @@
 #include "game/cls_804AE9B0.h"
 #include "game/tu_801E9AFC.h"
 #include "game/act/tu_8028DD78.h"
+#include "game/PlayerBit.h"
 
 // The position every per-slot sound object starts at (the constructor zeroes it).
 static JGeometry::TVec3f lbl_804CABD8;
@@ -867,11 +868,11 @@ void ActorManager_804A5800::fn_801F6204(u8 value) {
     field_0x305c = value;
 }
 
-// FIXME(shotgun): 87 %, missing/extra (the original masks the bit test to a byte)
+// FIXME(shotgun): 99.2 %, regalloc-only
 void ActorManager_804A5800::fn_801F6068() {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->mPlayerMask & (1 << i)) {
+        if (isPlayerBitSet(gGameRoot_8053AAF8, i)) {
             field_0x3020[i] = fn_80236228(i);
             field_0x3030[i] = i;
             count++;
@@ -883,14 +884,15 @@ void ActorManager_804A5800::fn_801F6068() {
     // Selection sort, highest value first.
     for (s32 i = 0; i < count - 1; i++) {
         s32 best = i;
+        s32 v = field_0x3020[i];
         for (s32 j = i + 1; j < count; j++) {
-            if (field_0x3020[best] < field_0x3020[j]) {
-                s32 v = field_0x3020[best];
+            if (v < field_0x3020[j]) {
                 field_0x3020[best] = field_0x3020[j];
                 field_0x3020[j] = v;
-                s32 p = field_0x3030[best];
-                field_0x3030[best] = field_0x3030[j];
-                field_0x3030[j] = p;
+                v = field_0x3020[best];
+                s32 p = field_0x3030[j];
+                field_0x3030[j] = field_0x3030[best];
+                field_0x3030[best] = p;
                 best = j;
             }
         }

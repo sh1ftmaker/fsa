@@ -240,7 +240,9 @@ void cls_80119E5C::fn_80119468(s32 g, s32 mode) {
 // reserve), the vector internals fn_801188B8 / fn_801188E0 / fn_80118938 / fn_801189B0
 // (JGadget TVector insert machinery at this+0xC, needs a typed vector member), fn_8011888C
 // (calls them), fn_8011921C (the static getter) and the destructor fn_801192AC.
-// FIXME(shotgun): 79 %, missing/extra (erase is a plain copy loop; the original is a vector erase)
+// FIXME(shotgun): 79 %, missing/extra (stand-in: the original is std::find_if with a by-value
+// predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
+// loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     ActorBase_804A5770** it = mBegin;
     ActorBase_804A5770** end = mEnd;
@@ -256,7 +258,8 @@ void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME(shotgun): 37 %, missing/extra
+// FIXME(shotgun): 37 %, missing/extra (the original is TVector size() == 0, then std::find_if with
+// a by-value predicate; same stand-in note as fn_80118798)
 ActorBase_804A5770** cls_801192AC::fn_8011871C(ActorBase_804A5770** from, u32 actorId) {
     if (mBegin == NULL || mEnd == mBegin) {
         return mEnd;
@@ -282,19 +285,20 @@ bool cls_801192AC::fn_801186B0(u32 value) {
     return false;
 }
 
-// FIXME(shotgun): 57 %, missing/extra (the vector clear is a plain assignment)
+// FIXME(shotgun): 60.7 %, missing/extra + reloc-name (the vector clear is a plain assignment; the
+// original is the TVector erase(begin(), end()) inline)
 bool cls_801192AC::fn_801184F0(bool flag) {
     getActorManager_801F856C()->fn_801F6884();
     field_0x0 = 0;
     if (flag) {
         fadeObject()->fn_80119958();
-        mEnd = mBegin;
-        field_0x0 = 0;
-        field_0x1 = 0;
-        field_0x2 = 0;
-        field_0x4 = 0x13;
-        field_0x8 = 0;
     }
+    mEnd = mBegin;
+    field_0x0 = 0;
+    field_0x1 = 0;
+    field_0x2 = 0;
+    field_0x4 = 0x13;
+    field_0x8 = 0;
     return true;
 }
 
