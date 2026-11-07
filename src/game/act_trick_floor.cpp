@@ -10,6 +10,10 @@
 // Tile rows / columns the kind lays down at init (rodata, in this unit).
 extern const s32 lbl_8046C8B0[7];
 extern const s32 lbl_8046C8CC[7];
+extern const f32 lbl_8046C908[7];
+extern const f32 lbl_8046C924[7];
+extern const f32 lbl_8046C940[7];
+extern const f32 lbl_8046C95C[7];
 
 // FIXME(shotgun): 77.37 %, missing/extra + reloc-name
 void TrickFloor_804A83A0::init() {
@@ -197,6 +201,205 @@ void TrickFloor_804A83A0::update() {
     }
 }
 
-// FIXME(shotgun): not written (size 0xD14): draw (0x802ACF3C); a first attempt did not follow the asm per kind and was removed
+static inline void setRotMtx(Mtx mtx, f32 rx, f32 ry, f32 rz) {
+    f32 cz = cos(rz);
+    f32 cy = cos(ry);
+    f32 cx = cos(rx);
+    f32 sz = sin(rz);
+    f32 sy = sin(ry);
+    f32 sx = sin(rx);
+    mtx[0][0] = cy * cz;
+    mtx[1][0] = cy * sz;
+    f32 cxcz = cx * cz;
+    f32 sx_sy = sx * sy;
+    f32 cxsz = cx * sz;
+    f32 sxsz = sx * sz;
+    f32 sxcz = sx * cz;
+    mtx[2][0] = -sy;
+    mtx[0][1] = sx_sy * cz - cxsz;
+    mtx[1][1] = sx_sy * sz + cxcz;
+    mtx[2][1] = sx * cy;
+    mtx[0][2] = cxcz * sy + sxsz;
+    mtx[1][2] = cxsz * sy - sxcz;
+    mtx[2][2] = cx * cy;
+}
+
+// FIXME(shotgun): 78.29 %, missing/extra + reloc-name
+void TrickFloor_804A83A0::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+
+    params.field_0x1c = -1;
+    params.field_0x1d = -2;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    mtx[0][1] = 0.0f;
+    mtx[0][2] = 0.0f;
+    mtx[0][0] = lbl_8046C940[field_0x234];
+    mtx[1][0] = 0.0f;
+    mtx[1][1] = 1.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[2][1] = 0.0f;
+    mtx[2][2] = lbl_8046C95C[field_0x234];
+    params.mMtx = mtx;
+
+    void* bti = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "otosiana_bg_s.bti");
+    JGeometry::TVec3f bgPos(mPos.x + lbl_8046C908[field_0x234], mPos.y + lbl_8046C924[field_0x234], mPos.z);
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&bgPos, bti, &params);
+    }
+
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    setRotMtx(mtx, 0.0f, field_0x248, 0.0f);
+    params.field_0x1c = -1;
+    params.field_0x1d = -1;
+    params.field_0x21 = 1;
+    params.mMtx = mtx;
+
+    switch (field_0x234) {
+    case 1:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_left_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
+    case 2:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "house_left_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
+    case 3:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "tree0_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "tree1_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
+    case 4:
+    case 5:
+        break;
+    case 6:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "field_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
+    default:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
+    }
+
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
+    if (field_0x234 == 3 || field_0x234 == 4 || field_0x234 == 5) {
+        setRotMtx(mtx, 0.0f, 3.1415927f - field_0x248, 0.0f);
+    } else {
+        setRotMtx(mtx, 0.0f, -field_0x248, 0.0f);
+    }
+    params.mMtx = mtx;
+
+    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
+    switch (field_0x234) {
+    case 1: {
+        f32 s = sincos.sinRadian(field_0x248);
+        f32 a = -field_0x248;
+        if (a < 0.0f) {
+            a = -a;
+        }
+        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_right_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+        }
+        break;
+    }
+    case 2: {
+        f32 s = sincos.sinRadian(field_0x248);
+        f32 a = -field_0x248;
+        if (a < 0.0f) {
+            a = -a;
+        }
+        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        JGeometry::TVec3f pos((mPos.x + 96.0f) - 48.0f * c, 48.0f * s + mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "house_right_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+        }
+        break;
+    }
+    case 3: {
+        JGeometry::TVec3f pos0(mPos.x + 64.0f, mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "tree0_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos0, res, &params);
+        }
+        JGeometry::TVec3f pos1(mPos.x + 64.0f, mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "tree1_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos1, res, &params);
+        }
+        break;
+    }
+    case 4:
+    case 5:
+        params.field_0x1c = 1;
+        params.field_0x1d = -1;
+        if (field_0x230 == 7) {
+            JGeometry::TVec3f pos(mPos.x + 96.0f, mPos.y, mPos.z);
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "jimen_smp.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+            }
+        } else if (field_0x230 != 8) {
+            JGeometry::TVec3f pos(mPos.x + 96.0f, mPos.y, mPos.z);
+            if (field_0x4 < 8) {
+                void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "house_smp.bin");
+                gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+            }
+        }
+        break;
+    case 6: {
+        f32 s = sincos.sinRadian(field_0x248);
+        f32 a = -field_0x248;
+        if (a < 0.0f) {
+            a = -a;
+        }
+        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "field_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+        }
+        break;
+    }
+    default: {
+        f32 s = sincos.sinRadian(field_0x248);
+        f32 a = -field_0x248;
+        if (a < 0.0f) {
+            a = -a;
+        }
+        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
+        }
+        break;
+    }
+    }
+}
 
 TrickFloor_804A83A0::~TrickFloor_804A83A0() {}
