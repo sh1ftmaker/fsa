@@ -356,14 +356,37 @@ public:
 // Spawned for 'ZSLD': cls_804A6D00, game/act/tu_802233A4.h.
 #include "game/act/tu_802233A4.h"
 
-// Spawned for 'GOAL'.
+// Spawned for 'GOAL'. Code: game/tu_802A4654.cpp.
 class cls_804A7EB0 : public ActorBase_804A5770 {
 public:
     cls_804A7EB0() {}
     /* 0x08 */ virtual ~cls_804A7EB0();
-    /* 0x230 */ u8 field_0x230[0x34];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    // Slot 0x54: shakes the actor over four steps (a camera focus point each) and restores mPos.
+    /* 0x54 */ virtual void vfunc_0x54();
+    /* 0x230 */ s32 field_0x230; // state
+    /* 0x234 */ s32 field_0x234; // bits 12-16 of field_0x90: index into the shake tables
+    /* 0x238 */ s32 field_0x238; // bits 0-4
+    /* 0x23C */ s32 field_0x23c; // bits 17-21
+    /* 0x240 */ s32 field_0x240; // bits 22-26
+    /* 0x244 */ u8 field_0x244[0x24C - 0x244]; // not yet known
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254[4];
     /* 0x264 */ JGeometry::TVec3f field_0x264[4];
-    /* 0x294 */ u8 field_0x294[0x8C];
+    /* 0x294 */ u8 field_0x294[0x2A4 - 0x294]; // not yet known
+    /* 0x2A4 */ s32 field_0x2a4[4];
+    /* 0x2B4 */ JPABaseEmitter* mEmitters[5][4];
+    /* 0x304 */ s32 field_0x304;
+    /* 0x308 */ u8 field_0x308[4]; // not yet known
+    /* 0x30C */ s32 field_0x30c;
+    /* 0x310 */ u8 field_0x310;
+    /* 0x311 */ u8 field_0x311[3]; // not yet known
+    /* 0x314 */ s32 field_0x314;
+    /* 0x318 */ s32 field_0x318;
+    /* 0x31C */ s32 field_0x31c;
 }; // Size: 0x320
 
 // Spawned for 'SWTH'.

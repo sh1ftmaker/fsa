@@ -8,16 +8,9 @@
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 #include <math.h>
+#include "game/EmitterDeleteKeep.h"
 #include "game/act/act_fairy.h"
 #include "game/tu_803B8C74.h"
-
-// Deletes the emitter at once but leaves the member as it is (update() runs this when the
-// fairy is about to go away).
-static inline void deleteEmitterKeep(JPABaseEmitter* emitter) {
-    if (emitter != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(emitter);
-    }
-}
 
 // 0x80161638.
 Fairy_804A03B8::~Fairy_804A03B8() {
