@@ -17,11 +17,7 @@ public:
     /* 0x44 */ virtual void vfunc_0x44();
     // SHARED-EDIT: carved from u8 field_0x230[0x58] (game/tu_8018EB94.cpp init).
     /* 0x230 */ s32 field_0x230;
-    /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ s32 field_0x23c;
-    /* 0x240 */ s32 field_0x240;
-    /* 0x244 */ s32 field_0x244;
+    /* 0x234 */ s32 field_0x234[5]; // countdowns; [0] a frame ticker, [1] and [2] reload to 8 on a bounce
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 field_0x250;
