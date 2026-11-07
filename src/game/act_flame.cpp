@@ -5,12 +5,130 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "game/act/act_flame.h"
 
-// FIXME(shotgun): not written (effort): init (0x8015EDF4, size 0x3A8)
 // FIXME(shotgun): not written (size 0xAB0): fn_8015DF7C
 
 Flame_804A0330::~Flame_804A0330() {
     for (int i = 0; i < 4; i++) {
         releaseEmitter_801EE434(mEmitters[i]);
+    }
+}
+
+// FIXME(shotgun): 83.7 %, missing/extra + reloc-name
+void Flame_804A0330::init() {
+    field_0x240 = 0;
+    field_0x244 = 0;
+    field_0x248 = 0;
+    field_0x24c = 0;
+    field_0x234 = 0;
+    field_0x238 = 0;
+    field_0x23c = 0;
+    mEmitters[0] = NULL;
+    mEmitters[1] = NULL;
+    mEmitters[2] = NULL;
+    mEmitters[3] = NULL;
+    field_0x254 = 0;
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x118 = 4;
+    field_0x258 = (field_0x90 >> 18) & 3;
+    field_0x25c = (field_0x90 >> 20) & 1;
+    if ((field_0x90 & 0xFF00) == 0) {
+        field_0x94 = field_0x90 & 0xFF;
+        field_0x98 = (field_0x90 >> 16) & 3;
+        if (field_0x94 == 4 || field_0x94 == 5) {
+            field_0x98 = 3;
+        } else {
+            field_0x114 = 4;
+        }
+        field_0x260 = 0.0f;
+        if (field_0x94 >= 9) {
+            field_0x94 = 0;
+        }
+        switch (field_0x94) {
+        case 3:
+            mState = 3;
+            break;
+        case 1:
+            mState = 1;
+            break;
+        case 2:
+            mState = 2;
+            break;
+        case 0:
+        case 6:
+            field_0x260 = 1.0f;
+            field_0x240 = 1;
+            field_0x234 = 8;
+            mState = 0;
+            break;
+        case 4:
+        case 5:
+            if (field_0x94 == 5) {
+                field_0x260 = 1.0f;
+            } else {
+                field_0x260 = 0.33f;
+            }
+            mEmitters[3] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E, 0, -1, NULL, NULL, true, field_0x260);
+            mEmitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3B, 0, -1, NULL, NULL, true, field_0x260);
+            mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3C, 1, 1, NULL, NULL, true, field_0x260);
+            mEmitters[2] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D, 1, 1, NULL, NULL, true, field_0x260);
+            field_0x240 = 1;
+            field_0x234 = 8;
+            mState = 0;
+            break;
+        }
+        switch (field_0x98) {
+        case 0:
+            field_0x3c.x = 3.0f;
+            field_0x3c.y = 0.5f;
+            field_0x3c.z = 0.0f;
+            break;
+        case 1:
+            field_0x3c.x = -3.0f;
+            field_0x3c.y = 0.5f;
+            field_0x3c.z = 0.0f;
+            break;
+        case 2:
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 3.0f;
+            field_0x3c.z = 0.0f;
+            break;
+        case 3:
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = -3.0f;
+            field_0x3c.z = 0.0f;
+            break;
+        }
+    } else {
+        mBox.i.x = -8.0f;
+        mBox.i.y = -8.0f;
+        mBox.f.x = 8.0f;
+        mBox.f.y = 8.0f;
+        field_0x94 = (field_0x90 >> 8) & 0xFF;
+        if (field_0x94 >= 9) {
+            field_0x94 = 1;
+        }
+        field_0x254 = 1;
+        switch (field_0x94) {
+        case 1:
+            mState = 6;
+            break;
+        case 2:
+            mState = 7;
+            break;
+        case 3:
+            mState = 8;
+            break;
+        }
+    }
+    field_0x250 = 0;
+    fn_8015EA2C();
+    if (field_0x240 == 0) {
+        field_0x260 = 0.0f;
+    }
+    if (mState != 5 && mState != 4) {
+        fn_8015DF7C();
     }
 }
 
