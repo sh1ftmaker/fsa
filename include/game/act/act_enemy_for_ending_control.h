@@ -22,26 +22,26 @@ public:
     /* 0x234 */ s32 field_0x234;
     // draw() shows the sprite only while this is nonzero.
     /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ u8 field_0x23C[0x4]; // not yet known
-    // Moved toward lbl_805428D8 by fn_8035B81C, by the step in 0x258.
-    /* 0x240 */ f32 field_0x240;
-    /* 0x244 */ u8 field_0x244[0x254 - 0x244]; // not yet known
+    /* 0x23C */ JGeometry::TVec3f field_0x23c;
+    /* 0x248 */ JGeometry::TVec3f field_0x248;
     // Counted down by fn_8035BE00 while above lbl_805428E8, by lbl_805428EC
     // each call.
     /* 0x254 */ f32 field_0x254;
-    // Per-call steps: field_0x240 and field_0x254 move by these (fn_8035B81C).
+    // Per-call steps: field_0x23c.y and field_0x254 move by these (fn_8035B81C).
     /* 0x258 */ f32 field_0x258;
     /* 0x25C */ f32 field_0x25c;
     // Phase set to 0x11C by the first pass: 0 ends the effect (fn_8035B650
     // clears the emitters and mAlive), 1 spawns the ENDM actor and runs the
     // four player pillars (fn_80230498).
     /* 0x260 */ s32 field_0x260;
-    /* 0x264 */ u8 field_0x264[0x14]; // not yet known
+    /* 0x264 */ s32 field_0x264;
+    /* 0x268 */ s32 field_0x268;
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ s32 field_0x270;
+    /* 0x274 */ s32 field_0x274;
     // Serials of the actors fn_8035BE24 spawns: Princess Zelda (EZLD), six
     // maidens (EMIK) and Link (ELNK, ending). fn_8035B7A8 flags EZLD and ELNK.
-    /* 0x278 */ s32 field_0x278;
-    /* 0x27C */ s32 field_0x27c[6];
-    /* 0x294 */ s32 field_0x294;
+    /* 0x278 */ s32 mActors[8];
     // Emitters fn_8035B650 flags JPAEMIT_ForceDelete when the phase is 0,
     // then clears.
     /* 0x298 */ JPABaseEmitter* mEmitter298;
@@ -50,10 +50,13 @@ public:
     void fn_8035B650();
     void fn_8035B7A8();
     void fn_8035B81C();
+    void fn_8035B8C8();
+    void fn_8035BB20();
     void fn_8035BE00();
-    // Phase handlers of the member-pointer table lbl_804AD3A0 (with the
-    // unwritten fn_8035BE24, fn_8035BB20 and fn_8035B8C8).
     void fn_8035BE20();
+    void fn_8035BE24();
+
+    void setActorFlag(s32 index, s32 flag);
 }; // Size: 0x2A4
 
 #endif
