@@ -8,7 +8,6 @@ act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
 act_trick_floor_2	sinit	__sinit_act_trick_floor_2_cpp	-	-	new	new
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
-tu_8015F454	sinit	__sinit_tu_8015F454_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801B27DC	sinit	__sinit_tu_801B27DC_cpp	-	-	new	-
 tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
@@ -19,4 +18,3 @@ tu_8022AD64	loop	fn_8023A6CC__FPCQ29JGeometry8TBox2<f>l	fn_80256C74__15Player_80
 tu_8022AD64	loop	fn_8023B004__FPCQ29JGeometry8TBox2<f>l	fn_802732C4__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
 tu_802E2990	sinit	__sinit_tu_802E2990_cpp	-	-	new	-
 tu_803FF2C4	sinit	__sinit_tu_803FF2C4_cpp	-	-	new	-
-tu_80438C68	sinit	__sinit_tu_80438C68_cpp	-	-	new	-
