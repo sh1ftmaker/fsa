@@ -7,26 +7,8 @@
 #include "game/cls_804B1600.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DPane.h"
+#include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/J2D/J2DGrafContext.h"
-
-// The panes 'Pwb01'-'Pwb05' / 'Pwbb01'-'Pwbb05' of warning_window.blo carry four s16 pairs at 0x112
-// (read by the constructor below). Their exact J2DPane subclass is not identified (our J2DPicture
-// has colours there), so the pairs are a member of this stand-in subclass; the panes are never
-// constructed as it.
-class WarningPane : public J2DPane {
-public:
-    /* 0x0CC */ u8 field_0xcc[0x112 - 0xCC];
-    /* 0x112 */ JGeometry::TVec2<s16> mCoords[4];
-};
-
-// The text box 'Twt01' of warning_window.blo: fn_8042EF9C reads a float at 0x11C, past our
-// J2DTextBox (0x100 bytes); its exact class is not identified, so the field is a member of this
-// stand-in subclass (the pane is never constructed as it).
-class WarningTextBox : public J2DTextBox {
-public:
-    /* 0x100 */ u8 field_0x100[0x11C - 0x100];
-    /* 0x11C */ f32 field_0x11c;
-};
 
 // The width of character c in the message font (an int: the asm converts it signed).
 static inline int charWidth(int c) {
@@ -94,15 +76,15 @@ cls_804B1634::cls_804B1634() {
     for (s32 i = 0; i < 4; i++) {
         u8 k = 0;
         for (s32 j = 0; j < 2; j++) {
-            const WarningPane* a = static_cast<const WarningPane*>(field_0x10[i]->mPane);
-            const WarningPane* b = static_cast<const WarningPane*>(field_0x24[i]->mPane);
-            field_0x38[i * 4 + j * 2] = a->mCoords[k];
-            field_0x78[i * 4 + j * 2] = b->mCoords[k];
+            const J2DPicture* a = static_cast<const J2DPicture*>(field_0x10[i]->mPane);
+            const J2DPicture* b = static_cast<const J2DPicture*>(field_0x24[i]->mPane);
+            field_0x38[i * 4 + j * 2] = a->mTexCoords[k];
+            field_0x78[i * 4 + j * 2] = b->mTexCoords[k];
             k++;
-            a = static_cast<const WarningPane*>(field_0x10[i]->mPane);
-            b = static_cast<const WarningPane*>(field_0x24[i]->mPane);
-            field_0x38[i * 4 + j * 2 + 1] = a->mCoords[k];
-            field_0x78[i * 4 + j * 2 + 1] = b->mCoords[k];
+            a = static_cast<const J2DPicture*>(field_0x10[i]->mPane);
+            b = static_cast<const J2DPicture*>(field_0x24[i]->mPane);
+            field_0x38[i * 4 + j * 2 + 1] = a->mTexCoords[k];
+            field_0x78[i * 4 + j * 2 + 1] = b->mTexCoords[k];
             k++;
         }
     }
@@ -424,7 +406,8 @@ void cls_804B1634::fn_8042EF9C(char* str, s32 id, u8 value) {
     MessageInf1_804AF070* inf1 =
         &static_cast<MessageFile_804AF070*>(gGameRoot_8053AAF8->field_0xa8->getResource('????', "gc_four_swords_text_e.bmg"))->inf1;
     const char* text = (const char*)inf1 + (inf1->size + inf1->entries[id].textOffset + 8);
-    f32 fontSize = static_cast<WarningTextBox*>(field_0x8->search('Twt01'))->field_0x11c;
+    // The font width of the text box 'Twt01' (J2DTextBox::mFontSize at 0x11C).
+    f32 fontSize = static_cast<J2DTextBox*>(field_0x8->search('Twt01'))->mFontSize.x;
     f32 scale = fontSize / (f32)lbl_8053AD78->mFont->getCellWidth();
     lbl_8053AD78->mFont->getCellHeight();
     field_0xea = 0xFF;
