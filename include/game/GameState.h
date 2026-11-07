@@ -195,7 +195,8 @@ public:
     /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor
     /* 0x246 */ u8 field_0x246[0x248 - 0x246];
     /* 0x248 */ u8 field_0x248; // tu_8039003C's and tu_803A85E4's constructors set it to 1 after fn_80458408
-    /* 0x249 */ u8 field_0x249[0x24B - 0x249];
+    /* 0x249 */ u8 field_0x249[1];
+    /* 0x24A */ u8 field_0x24a; // player bits: counter falling (cls_804B146C::fn_804253E0)
     // Cleared by GameRootSub04_801F856C's destructor (fn_8013A27C, game/tu_80139BE8.cpp) when set.
     /* 0x24B */ u8 field_0x24b;
     /* 0x24C */ u8 field_0x24c;
