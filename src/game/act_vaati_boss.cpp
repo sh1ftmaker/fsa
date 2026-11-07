@@ -383,7 +383,7 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     fn_801E4A18(&field_0x52c.field_0x28);
 }
 
-// FIXME(shotgun): 83.41 %, missing/extra + reloc-name (the follow flag and target selection are shaped differently)
+// FIXME(shotgun): 74.69 %, missing/extra + reloc-name (the follow flag and target selection are shaped differently; the 0x5EC/0x5F4 pairs are copied into a TVec3f temp because the original passes the field address itself)
 void VaatiBoss_804A4958::fn_801D4C70() {
     switch (mState) {
     case 1:
@@ -396,14 +396,16 @@ void VaatiBoss_804A4958::fn_801D4C70() {
         return;
     case 0x15: {
         JGeometry::TVec2f out;
-        fn_801D01A0(reinterpret_cast<const JGeometry::TVec3f*>(&field_0x5ec), &out, 1.5f);
+        JGeometry::TVec3f target(field_0x5ec, field_0x5f0, 0.0f);
+        fn_801D01A0(&target, &out, 1.5f);
         field_0x3c.x = out.x;
         field_0x3c.y = out.y;
         return;
     }
     case 0x16: {
         JGeometry::TVec2f out;
-        fn_801D01A0(reinterpret_cast<const JGeometry::TVec3f*>(&field_0x5f4), &out, 0.5f);
+        JGeometry::TVec3f target(field_0x5f4, field_0x5f8, 0.0f);
+        fn_801D01A0(&target, &out, 0.5f);
         field_0x3c.x = out.x;
         field_0x3c.y = out.y;
         return;
