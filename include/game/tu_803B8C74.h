@@ -29,7 +29,9 @@ struct SaveFile_803B950C {
     // Added to by tu_801DE714 (__dt__12cls_804A51E4Fv, the TINK actor's
     // destructor) and clamped at 0 from below.
     /* 0x0C */ s32 field_0xc;
-    /* 0x10 */ u8 field_0x10[0x14 - 0x10];
+    // The results screen (tu_803A8DFC fn_803A9AB8 and its 3P / 4P
+    // counterparts) adds the round's field_0x320 totals, clamped to +-99999.
+    /* 0x10 */ s32 field_0x10;
     /* 0x14 */ u16 field_0x14; // fn_803A3034 (game/tu_803944C8.cpp) returns it
     /* 0x16 */ u16 field_0x16; // fn_803A3018 returns it
     /* 0x18 */ u8 field_0x18[0x58 - 0x18];
