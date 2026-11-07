@@ -32,6 +32,162 @@ static inline void toScreenBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& 
     out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z);
 }
 
+// The spawn parameter of the WARP that init() creates for the paired kinds 0x19-0x1C: this warp's
+// tile position (in 8-unit cells, from the layer box origin) and layer in the bits the pair reads
+// back, the kind in the low bits.
+static inline u32 pairParam(u32 param, s32 layer, f32 dx, f32 dy, u32 kind) {
+    u32 v = param & 0xF8000000;
+    s32 enc = layer < 8 ? 0 : layer - 7;
+    v = (v & ~0x07000000) | ((enc << 24) & 0x07000000);
+    v = (v & ~0x00FF0000) | ((((s32)dx / 8) << 16) & 0x00FF0000);
+    v = (v & ~0x0000FF00) | ((((s32)dy / 8) << 8) & 0x0000FF00);
+    v = (v & ~0x80) | (param & 0x80);
+    return v | kind;
+}
+
+// 0x80228B60. Decodes the spawn parameter (field_0x90: kind in the low 7 bits, layer, a 6-bit cell
+// offset to the destination), sets the destination (field_0x238) and the trigger box, and for the
+// paired kinds 0x19-0x1C spawns the other warp and turns this one into the matching kind.
+// FIXME(shotgun): 66.41 %, missing/extra + reloc-name
+void Warp_804A6DC8::init() {
+    field_0x256 = 0;
+    field_0x278 = 0;
+    field_0x255 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x27c[i] = NULL;
+    }
+    if ((field_0x90 & 0x7F) == 0x20) {
+        field_0x254 = 1;
+    } else {
+        field_0x254 = 0;
+    }
+    s32 destLayer = (field_0x90 >> 24) & 7;
+    destLayer += 7;
+    if (((field_0x90 >> 24) & 7) == 0) {
+        destLayer = 0;
+    }
+    JGeometry::TBox2f* destBox = layerBox(destLayer);
+    f32 destX = destBox->i.x;
+    f32 destY = destBox->i.y;
+    s32 myLayer = field_0x4;
+    JGeometry::TBox2f* myBox = layerBox(myLayer);
+    u32 kind0 = field_0x90 & 0x7F;
+    if ((kind0 == 6 || kind0 == 4 || kind0 == 0x20 || kind0 == 0x24) && ((field_0x90 >> 13) & 0x1F8) == 0 &&
+        ((field_0x90 >> 5) & 0x1F8) == 0)
+    {
+        field_0x238.x = destX + (mPos.x - myBox->i.x);
+        field_0x238.y = destY + (mPos.y - myBox->i.y);
+        field_0x238.z = 0.0f;
+    } else {
+        field_0x238.x = (f32)((field_0x90 >> 13) & 0x1F8) + destX;
+        field_0x238.y = (f32)((field_0x90 >> 5) & 0x1F8) + destY;
+        field_0x238.z = 0.0f;
+    }
+    u32 kind = field_0x90 & 0x7F;
+    if (kind == 0x19) {
+        s32 spawnLayer = warpLayer(field_0x90);
+        u32 param = pairParam(field_0x90, field_0x4, (s32)(mPos.x - myBox->i.x), (s32)(mPos.y - myBox->i.y), 1);
+        getActorManager_801F856C()->spawnActor_801F9484('WARP', spawnLayer, &field_0x238, param, -1, -1);
+        field_0x90 = field_0x90 & ~0xFF;
+    } else if (kind == 0x1A) {
+        s32 spawnLayer = warpLayer(field_0x90);
+        u32 param = pairParam(field_0x90, field_0x4, (s32)(mPos.x - myBox->i.x), (s32)(mPos.y - myBox->i.y), 3);
+        getActorManager_801F856C()->spawnActor_801F9484('WARP', spawnLayer, &field_0x238, param, -1, -1);
+        field_0x90 = (field_0x90 & ~0xFF) | 2;
+    } else if (kind == 0x1B) {
+        s32 spawnLayer = warpLayer(field_0x90);
+        u32 param = pairParam(field_0x90, field_0x4, (s32)(mPos.x - myBox->i.x), (s32)(mPos.y - myBox->i.y), 0x18);
+        getActorManager_801F856C()->spawnActor_801F9484('WARP', spawnLayer, &field_0x238, param, -1, -1);
+        field_0x90 = (field_0x90 & ~0xFF) | 0x17;
+    } else if (kind == 0x1C) {
+        s32 spawnLayer = warpLayer(field_0x90);
+        u32 param = pairParam(field_0x90, field_0x4, (s32)(mPos.x - myBox->i.x), (s32)(mPos.y - myBox->i.y), 0x17);
+        getActorManager_801F856C()->spawnActor_801F9484('WARP', spawnLayer, &field_0x238, param, -1, -1);
+        field_0x90 = (field_0x90 & ~0xFF) | 0x18;
+    }
+    if (((field_0x90 >> 7) & 1) == 0 && (field_0x90 & 0x7F) != 0x20) {
+        field_0x238.x += 8.0f;
+        field_0x238.y += 8.0f;
+    }
+    kind = field_0x90 & 0x7F;
+    if (((field_0x90 >> 7) & 1) == 0 && kind != 0xB && kind != 0x1E && kind != 0x1F && kind != 0x20) {
+        mPos.x = mPos.x + (f32)(s32)(8.0f - (f32)((s32)mPos.x % 8));
+        mPos.y = mPos.y + (f32)(s32)(8.0f - (f32)((s32)mPos.y % 8));
+    }
+    kind = field_0x90 & 0x7F;
+    if (kind == 6) {
+        mBox.set(-0.01f, -0.01f, 0.01f, 0.01f);
+    } else if (kind == 0xB) {
+        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+    } else if (kind == 0x20) {
+        mBox.set(-10.0f, -10.0f, 10.0f, 10.0f);
+    } else if (kind == 0) {
+        mBox.set(-4.0f, -20.0f, 4.0f, 4.0f);
+    } else if (kind == 1) {
+        mBox.set(-4.0f, -4.0f, 4.0f, 20.0f);
+    } else if (kind == 2) {
+        mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    } else if (kind == 3) {
+        mBox.set(-4.0f, -20.0f, 4.0f, 4.0f);
+    } else if (kind == 0xF) {
+        mBox.set(-24.0f, -8.0f, 24.0f, 8.0f);
+    } else if (kind == 0x13) {
+        mBox.set(-256.0f, -8.0f, 256.0f, 8.0f);
+    } else if (kind == 0x16) {
+        mBox.set(-24.0f, -8.0f, 24.0f, 8.0f);
+    } else if (kind == 0x15) {
+        if (viewLayerFlag(field_0x4)) {
+            mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+        } else if (field_0x4 >= 8) {
+            mBox.set(-4.0f, -4.0f, 4.0f, 20.0f);
+        } else {
+            mBox.set(-4.0f, -20.0f, 4.0f, 4.0f);
+        }
+    } else if (kind == 0x23) {
+        if (viewLayerFlag(field_0x4)) {
+            mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+        } else if (field_0x4 >= 8) {
+            mBox.set(-4.0f, -20.0f, 4.0f, 4.0f);
+        } else {
+            mBox.set(-4.0f, -4.0f, 4.0f, 20.0f);
+        }
+    } else if (kind == 0x17) {
+        mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    } else if (kind == 0x18) {
+        mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    } else if (kind == 4) {
+        mBox.set(-1.0f, -1.0f, 1.0f, 1.0f);
+    } else if (kind == 0x28) {
+        mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
+    } else {
+        mBox.set(-4.0f, -4.0f, 4.0f, 4.0f);
+    }
+    if ((field_0x90 & 0x7F) == 0x28) {
+        field_0x90 = (field_0x90 & ~0x7F) | 4;
+    }
+    mLife = 0;
+    field_0xb0 = 3;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x234[i] = 0;
+    }
+    mEmitter24c = NULL;
+    mEmitter250 = NULL;
+    if ((field_0x90 & 0x7F) == 0xE) {
+        mEmitter24c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x553, 0, -1, NULL, NULL, true, 1.0f);
+        mEmitter250 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4EE, 0, 0, NULL, NULL, true, 1.0f);
+    }
+    if ((field_0x90 & 0x7F) == 0x25) {
+        mEmitter24c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x553, -1, -1, NULL, NULL, true, 1.0f);
+        mEmitter250 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x4EE, 0, 0, NULL, NULL, true, 1.0f);
+    }
+    field_0x244 = getGameView_802D6A9C()->field_0x14;
+    field_0x248 = getGameView_802D6A9C()->field_0x18;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x258[i] = 0.0f;
+        field_0x268[i] = 0.0f;
+    }
+}
+
 Warp_804A6DC8::~Warp_804A6DC8() {
     releaseEmitter_801EE434(mEmitter24c);
     releaseEmitter_801EE434(mEmitter250);
