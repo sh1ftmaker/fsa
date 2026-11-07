@@ -10,7 +10,7 @@ u8 fn_801B7550(void) {
 }
 
 // 0x801B73B8.
-// FIXME(shotgun): 70.31 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.79 %, missing/extra + reloc-name
 void cls_804A39DC::init() {
     mBox.set(-128.0f, -128.0f, 128.0f, 128.0f);
     field_0x25c = fn_801B7550();
@@ -24,7 +24,10 @@ void cls_804A39DC::init() {
     field_0x238 = 0;
     field_0x23c = 0;
     for (s32 i = 0; i < 4; i++) {
-        field_0x264[i] = *getPlayerPos_8023E724(i);
+        const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
+        field_0x264[i].x = p->x;
+        field_0x264[i].y = p->y;
+        field_0x264[i].z = p->z;
     }
     field_0x250 = field_0x90 & 0xF;
     field_0x254 = (field_0x90 >> 4) & 0xF;
