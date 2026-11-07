@@ -53,24 +53,12 @@ static inline const char* messageText(u32 msg) {
     return &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
 }
 
-// Whether a window of a player that takes part is in state class 1 (fn_80390818).
-static inline bool anyWindowOpening() {
-    for (s32 i = 0; i < 4; i++) {
-        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
-            if (lbl_8053AD78->mWindows[i]->fn_80390818() == 1) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 // Whether the window may open at once: fn_80303750 holds and no window is opening.
 static inline bool canOpen(s32 window) {
     if (!fn_80303750(windowIndex(window))) {
         return false;
     }
-    if (anyWindowOpening()) {
+    if (fn_8037E4BC()) {
         return false;
     }
     return true;
@@ -231,29 +219,12 @@ void fn_8038D454() {
     }
 }
 
-// The INF1 index of message id `msg` (fn_803846BC's loop), 0x12B when there is none.
-static inline u32 indexOf(u32 msg) {
-    u32 i = 0;
-    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
-    u32 count = inf1->count;
-    for (; i < count; i++) {
-        if (inf1->entries[i].id == msg) {
-            msg = i;
-            break;
-        }
-    }
-    if (i >= count) {
-        msg = 0x12B;
-    }
-    return msg;
-}
-
 // fn_8038A42C for message id `msg`.
 static inline bool openById(s32 window, s32 player, u32 msg, s32 serial, JGeometry::TVec3f pos, u32 flags) {
-    return lbl_8053AD78->fn_8038A42C(window, player, indexOf(msg), serial, pos, flags);
+    return lbl_8053AD78->fn_8038A42C(window, player, fn_803846BC(msg), serial, pos, flags);
 }
 
-// FIXME(shotgun): 95.81 %, missing/extra (scheduling of the id lookups)
+// FIXME(shotgun): 96.02 %, missing/extra (scheduling of the id lookups)
 // fn_8038AD24 for a message id: msg is looked up in the INF1 entries, mapped, and turned back
 // into its id; the no-position fallback is fn_8038C60C.
 bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f pos, u32 flags) {
@@ -261,7 +232,7 @@ bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f p
     if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
         return false;
     }
-    u32 index = fn_80383EB0(window, indexOf(msg));
+    u32 index = fn_80383EB0(window, fn_803846BC(msg));
     msg = lbl_8053AD78->mBmg->inf1.entries[index].id;
     if (getGameView_802D6A9C()->fn_802D46D8(window, index, false) == 1) {
         s32 w = windowIndex(window);
@@ -290,7 +261,7 @@ bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f p
         }
         return lbl_8053AD78->fn_8038C60C(window, player, msg, serial, flags);
     }
-    u32 found = indexOf(msg);
+    u32 found = fn_803846BC(msg);
     s32 w = windowIndex(window);
     const char* text = messageText(found);
     bool sync;
@@ -306,7 +277,7 @@ bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f p
         sync = false;
     }
     if (sync) {
-        if (!lbl_8053AD78->fn_80389964(window, indexOf(msg), flags) ||
+        if (!lbl_8053AD78->fn_80389964(window, fn_803846BC(msg), flags) ||
             !openById(window, player, msg, serial, pos, flags)) {
             return false;
         }
@@ -1033,14 +1004,14 @@ bool fn_80385960(s32 player) {
             } else {
                 // The same close without the release.
                 getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
-            if (mappedWindow(window)->field_0x24 == 8) {
-                removeFromOrder(windowIndex(window));
-                if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
-                    gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                if (mappedWindow(window)->field_0x24 == 8) {
+                    removeFromOrder(windowIndex(window));
+                    if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                        gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                    }
                 }
-            }
-            lbl_8053AD78->mWindows[window]->fn_80391678();
-            return true;
+                lbl_8053AD78->mWindows[window]->fn_80391678();
+                return true;
             }
         }
     }
