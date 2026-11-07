@@ -35,7 +35,7 @@ cls_80453830::cls_80453830() {
     field_0xc = -1;
 }
 
-// FIXME(shotgun): 99.75 %, reloc-name
+// FIXME(shotgun): 88.89 %, missing/extra + reloc-name (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
 void cls_804B1D58::fn_80452350() {
     lbl_8053AEC0->fn_804310CC();
     s32 i = 0;
@@ -86,6 +86,7 @@ void cls_804B1D58::fn_80452350() {
     field_0x184 = 9;
 }
 
+// FIXME(shotgun): 99.72 %, reloc-name
 void cls_804B1D58::fn_80452308() {
     gGameRoot2_8053AB10->fn_8013B490();
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
@@ -104,7 +105,15 @@ s32 fn_8044F664() {
     return 9;
 }
 
-// FIXME(shotgun): 88.89 %, missing/extra (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
+u8 cls_804B1D58::fn_8044D290() {
+    return field_0x140;
+}
+
+u8 cls_804B1D58::fn_8044CB00() {
+    return field_0x140;
+}
+
+// FIXME(shotgun): 99.75 %, reloc-name
 void cls_804B1D58::fn_8044C968() {
     for (s32 i = 0; i < 3; i++) {
         field_0x48[i]->moveFromCentre_80402E08(300.0f, 0.0f);
@@ -123,12 +132,4 @@ void cls_804B1D58::fn_8044C968() {
     field_0x132 = 0;
     field_0xfe = 0;
     field_0xfa = 2;
-}
-
-u8 cls_804B1D58::fn_8044D290() {
-    return field_0x140;
-}
-
-u8 cls_804B1D58::fn_8044CB00() {
-    return field_0x140;
 }
