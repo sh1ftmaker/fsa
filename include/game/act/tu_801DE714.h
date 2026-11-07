@@ -57,6 +57,20 @@ public:
     void fn_8021835C();
     // tu_8021827C (0x80218538): whether the actor's box is in view.
     bool fn_80218538() const;
+    // tu_801E2540 (this unit's vtable slots 0x5C / 0x60 / 0x64 and helpers, 0x801E2540-0x801E2F40).
+    /* 0x5C */ virtual u8 vfunc_0x5C();
+    /* 0x60 */ virtual u8 vfunc_0x60();
+    /* 0x64 */ virtual u8 vfunc_0x64();
+    // 0x801E2D88: sets the boxes for the current state.
+    void fn_801E2D88();
+    // 0x801E2EE4: registers the actor's box (8 around mPos) with the tile map.
+    void fn_801E2EE4();
+    // 0x801E2F40: whether the tile under mPos is 3, 13 or 14.
+    bool fn_801E2F40();
+    // Not written yet (tu_801DE714.cpp).
+    bool fn_801E1CF8();
+    void fn_801E1594(s32 state);
+    bool fn_801E1DB4();
     // tu_8021FDB8 (0x8021FDB8): moves the actor found by mTargetSerial next
     // to this one, offset by mAnim.mCel (z) and the target's field_0x90 and
     // our direction field_0x98 (x).
