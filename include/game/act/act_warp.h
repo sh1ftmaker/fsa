@@ -15,7 +15,8 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x8]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x4]; // not yet known
+    /* 0x234 */ u8 field_0x234[4]; // per player: 1 while the player stands on the warp
     /* 0x238 */ JGeometry::TVec3f field_0x238; // Bomb's fn_8014D868 spawns a bomb here (0x8014D9C4)
     /* 0x244 */ s32 field_0x244; // compared with GameView field_0x14 by cls_804A7AE0::vfunc_0x10
     /* 0x248 */ s32 field_0x248; // compared with GameView field_0x18
@@ -23,6 +24,9 @@ public:
     /* 0x250 */ JPABaseEmitter* mEmitter250; // released by the destructor
     // Code: game/act_warp.cpp.
     void fn_80226FC8(s32 player);
+    s32 fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial);
+    void fn_80227530(JGeometry::TBox2f* box);
+    void fn_802278A8(JGeometry::TBox2f* box);
     /* 0x254 */ u8 field_0x254;
     /* 0x255 */ u8 field_0x255; // the warp effect has been spawned
     /* 0x256 */ u8 field_0x256; // draw: the sand shifts while it is 1
