@@ -12,9 +12,16 @@ struct Elem_801FFCDC {
     u8 data[0x14];
 };
 
+// One per player of cls_804AA350 (tu_802ED538).
 struct Elem_80200544 {
     Elem_80200544() {}
-    u8 data[0x14];
+    /* 0x00 */ f32 mX;
+    /* 0x04 */ f32 mY;
+    /* 0x08 */ f32 mZ;
+    /* 0x0C */ f32 mDist;
+    /* 0x10 */ s16 mAngle;
+    /* 0x12 */ u8 mActive;
+    /* 0x13 */ u8 pad_0x13;
 };
 
 struct Elem_80200A80 {
