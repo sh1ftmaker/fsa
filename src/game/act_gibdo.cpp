@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/act/act_gibdo.h"
 #include "game/ActorManager.h"
+#include "game/Effect.h"
 #include "game/GameGlobals.h"
 
 // Not written yet: vfunc_0x24 (0x801B99C0; its copy of a colour to the
@@ -53,6 +54,119 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D2608(lbl_804A3BB8, 0x10);
     mAnim.startAnim_801D22DC(field_0x98, 2, false);
     mAnim.fn_801D1D60();
+}
+
+// FIXME(shotgun): case 3 also copies the fade colour to the three emitters (0x32A, 0x41B,
+// 0x41C) it keeps the handles of; those copies are left out (see the note at the top).
+// FIXME(shotgun): 79.02 %, missing/extra
+void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
+    mFlags &= ~0x8000;
+    switch (mode) {
+    case 0:
+        if (mState != 0) {
+            mFlags |= 0x8000;
+            mTargetSpeed = 0.0f;
+        }
+        field_0x250 = fn_801CD664(0x3D) + 0x3C;
+        mAnim.fn_801D22A0(field_0x98, 2);
+        break;
+    case 1:
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        mAnim.startAnim_801D22DC(field_0x98 + 4, 0, false);
+        break;
+    case 2: {
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        s32 kind;
+        switch (mAnim.mAnim) {
+        case 0:
+        case 4:
+        case 12:
+        case 14:
+            kind = 0;
+            break;
+        case 1:
+        case 5:
+        case 13:
+        case 15:
+            kind = 1;
+            break;
+        case 2:
+        case 6:
+        case 8:
+        case 10:
+            kind = 2;
+            break;
+        default:
+            kind = 3;
+            break;
+        }
+        s32 dir = field_0x98;
+        s32 anim = 8;
+        switch (kind) {
+        case 0:
+            if (dir == 3) {
+                anim = 9;
+            } else if (dir >= 2) {
+                anim = 8;
+            } else {
+                anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 8 : 9;
+            }
+            break;
+        case 1:
+            if (dir == 3) {
+                anim = 11;
+            } else if (dir >= 2) {
+                anim = 10;
+            } else {
+                anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 10 : 11;
+            }
+            break;
+        case 2:
+            if (dir == 1) {
+                anim = 13;
+            } else if (dir == 0) {
+                anim = 12;
+            } else {
+                anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 12 : 13;
+            }
+            break;
+        case 3:
+            if (dir == 1) {
+                anim = 15;
+            } else if (dir == 0) {
+                anim = 14;
+            } else {
+                anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 14 : 15;
+            }
+            break;
+        }
+        mAnim.startAnim_801D22DC(anim, 0, false);
+        break;
+    }
+    case 3:
+        mSpeed = 0.0f;
+        mTargetSpeed = 0.0f;
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
+        mBox2 = mBox;
+        field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
+        field_0xb0 = 0;
+        mFlags |= 0x300;
+        mLife = 1;
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x329, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x54F, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x5007E, 0);
+        startSound_801F0E34(0x40003, 0);
+        mDrawEnabled = false;
+        break;
+    }
+    mStateTimer = 0;
+    mState = mode;
 }
 
 // FIXME: 96.73 %. The original reloads mFlags before clearing 0x8000 (lwz after
@@ -187,6 +301,22 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
         }
     }
 }
+
+// FIXME(shotgun): the colour copy to the emitter (bytes 0xB8-0xBA from the fade
+// object's +4) is missing; the function body is NONMATCHING-gated until a field exists.
+#ifdef NONMATCHING
+void Gibdo_804A3BF8::vfunc_0x24() {
+    if (mFlags & 0x4000) {
+        EnemyBase_804A4808::vfunc_0x24();
+        JPABaseEmitter* emitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32B, 1, 1, NULL, NULL, true, 1.0f);
+        if (emitter != NULL) {
+            // emitter->setColorRGB(fade.r, fade.g, fade.b);
+        }
+    } else {
+        fn_801B9DD4(3);
+    }
+}
+#endif
 
 void Gibdo_804A3BF8::vfunc_0x98() {
     bool step = false;
