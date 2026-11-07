@@ -38,6 +38,9 @@
 
 class JKRHeap;
 class JUTTexture;
+class J2DScreen;
+class J2DAnmTextureSRTKey;
+class PaneCtrl_804AF86C;
 namespace JUtility {
 struct TColor;
 }
@@ -55,8 +58,34 @@ public:
     void fn_80432750(bool all, f32 x, f32 y, f32 w, f32 h);
     // 0x80432638: called by fn_802FF0EC after the panels when fn_80432750 ran.
     void fn_80432638();
+    // 0x80433718: follows GameView's field_0x131dc (bit 0x8000 = 'raised').
+    void fn_80433718();
 
-    /* 0x04 */ u8 field_0x4[0xB0 - 0x4];
+    /* 0x04 */ J2DScreen* field_0x4[2];
+    /* 0x0C */ J2DScreen* field_0xc;
+    /* 0x10 */ J2DAnmTextureSRTKey* field_0x10[2]; // the screens' animations
+    /* 0x18 */ PaneCtrl_804AF86C* field_0x18[4];
+    /* 0x28 */ PaneCtrl_804AF86C* field_0x28[3];
+    /* 0x34 */ PaneCtrl_804AF86C* field_0x34;
+    /* 0x38 */ u8 field_0x38[0x3C - 0x38];
+    /* 0x3C */ PaneCtrl_804AF86C* field_0x3c;
+    /* 0x40 */ JGeometry::TVec3f field_0x40[2];
+    /* 0x58 */ JGeometry::TVec3f field_0x58[2];
+    /* 0x70 */ f32 field_0x70[4];
+    /* 0x80 */ f32 field_0x80[4];
+    /* 0x90 */ s32 field_0x90;
+    /* 0x94 */ s32 field_0x94;
+    /* 0x98 */ s32 field_0x98;
+    /* 0x9C */ u16 field_0x9c;
+    /* 0x9E */ u16 field_0x9e;
+    /* 0xA0 */ u16 field_0xa0;
+    /* 0xA2 */ u8 field_0xa2;
+    /* 0xA3 */ u8 field_0xa3;
+    /* 0xA4 */ u8 field_0xa4;
+    /* 0xA5 */ u8 field_0xa5;
+    /* 0xA6 */ u8 field_0xa6[6];
+    /* 0xAC */ u8 field_0xac;
+    /* 0xAD */ u8 field_0xad[0xB0 - 0xAD];
 }; // Size: 0xB0
 
 // One 4-byte entry of cls_804AA858Sub11C (GBA OAM-like: y, 9-bit x).
