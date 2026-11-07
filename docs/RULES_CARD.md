@@ -208,6 +208,18 @@ donor symbol, SDK header, string, `docs/names/actors.tsv`, EnemyParam.csv.
   callers creates the pool's first literals even though the linker dead-stripped its out-of-line copy: reconstruct it as a
   plain function with exactly the body the callers inline, with a comment saying so (tu_8016A2B4 getMapTexView: +16 near-misses
   flipped). Never invent a helper only to emit constants: its body must be proven by the inlining callers.
+  (3) Pool order = codegen order = emission order (lowest address first), each function's literals in source order;
+  an `inline` helper creates nothing of its own (its literals land in each caller's block), a plain one creates them at
+  its own place in the file. So when a run of the pool belongs to an `inline` helper but sits ahead of (or between) the
+  blocks of functions below its callers, drop `inline` and define it as a plain function where the pool puts it (the
+  bottom of the file for the leading run, else between the two functions whose blocks surround its run); the callers
+  still inline it. Check with try.py that every caller still inlines it (an `ours only` copy with no new `bl`) and that no
+  caller drops: a big helper that auto-inlining refuses as a plain function (act_shovel_old_timer findDigSpot: update
+  98.6 -> 61.7) stays `inline`. act_rainbow_bridge isPlayerOn + checkActivate, act_room_transfer_lift isInside (bottom),
+  act_four_person_pull_switch checkAllPulled (between fn_8036CBBC and draw): +3 at 100 %.
+  (4) File-scope sequence tables a unit's `.data` pointer tables index (`{cel, frames, ..., -1, -1}` s16 runs in
+  `.rodata` / `.sdata2`) lead `.sdata2` before every literal: one missing or wrong table shifts the whole pool
+  (act_princess_zelda had the first pointer table's entries in both).
 - Pane-tag tables: J2D pane tags are u64 ASCII names; write them as multi-char constants (`'Pabb10'`), never hex. A real indexed table
   of them that trips gate.py's check_byte_arrays gets an `array` line in config/G4SE01/blobs.txt once a reviewer confirms it
   (real data the code indexes, original symbol sizes, address order) and writes fsa-wt/_reviews/<unit>.review.md; the owner
