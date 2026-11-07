@@ -1906,6 +1906,9 @@ extern u8 lbl_8053ACD8[4];
 // there). Cleared by tu_801213EC fn_80121ABC, read with lbz (!= 0) by act_escort_woman,
 // set to 1 by tu_801B6C50 and tu_803D9944.
 extern u8 lbl_8053AAA0;
+// .sbss bytes at 0x8053AB98 and 0x8053ABE8 (owner game/tu_80197070.cpp), set to 1 by tu_803D9944.
+extern u8 lbl_8053AB98;
+extern u8 lbl_8053ABE8;
 // .sbss byte at 0x8053AB60 (8 bytes). Read with lbz by game/act_chief_soldier.cpp
 // (draw), which skips the draw when it is 1; no writer found yet.
 extern u8 lbl_8053AB60;

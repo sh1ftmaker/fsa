@@ -11,6 +11,7 @@ public:
     cls_804B0478() {}
     /* 0x08 */ virtual ~cls_804B0478();
     /* 0x0C */ virtual void init();
+    // 0x803D9AA4 (symbol was fn_803D9AA4): the state machine, states 0 to 10.
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x230 */ s32 mState;
