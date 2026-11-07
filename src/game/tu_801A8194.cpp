@@ -9,7 +9,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 75.3 %, missing/extra: the trail loop and the scale/alpha updates are scheduled differently
+// FIXME(shotgun): 46.8 %, missing/extra: the original copies mPos into the 40-entry trail with a loop unrolled eight times (five groups of eight entries); ours is rolled
 void cls_804A2EC0::init() {
     mBox.i.x = -10.0f;
     mBox.i.y = -10.0f;
@@ -184,7 +184,7 @@ void cls_804A2EC0::update() {
     }
 }
 
-// FIXME(shotgun): 46.8 %, missing/extra: the original copies mPos into the 40-entry trail with a loop unrolled eight times (five groups of eight entries); ours is rolled
+// FIXME(shotgun): 75.3 %, missing/extra: the trail loop and the scale/alpha updates are scheduled differently
 void cls_804A2EC0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
