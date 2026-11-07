@@ -16,7 +16,11 @@ public:
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x44]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x1C]; // not yet known
+    /* 0x24C */ s32 field_0x24c; // sprite frame offset
+    /* 0x250 */ u8 field_0x250[2]; // not yet known
+    /* 0x252 */ u16 field_0x252; // heading angle (draw)
+    /* 0x254 */ u8 field_0x254[0x20]; // not yet known
 }; // Size: 0x274
 
 #endif
