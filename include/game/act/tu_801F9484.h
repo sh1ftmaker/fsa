@@ -319,13 +319,8 @@ public:
 #include "game/act/act_bird_manager.h"
 
 
-// Spawned for 'ZSLD'.
-class cls_804A6D00 : public ActorBase_804A5770 {
-public:
-    cls_804A6D00();
-    /* 0x08 */ virtual ~cls_804A6D00();
-    /* 0x230 */ u8 field_0x230[0x94];
-}; // Size: 0x2C4
+// Spawned for 'ZSLD': cls_804A6D00, game/act/tu_802233A4.h.
+#include "game/act/tu_802233A4.h"
 
 // Spawned for 'GOAL'.
 class cls_804A7EB0 : public ActorBase_804A5770 {
