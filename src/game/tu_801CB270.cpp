@@ -722,6 +722,104 @@ bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeomet
     return outside;
 }
 
+// tan / cot of a reduced angle for sliding along a box edge (0 when the cosine is ~0).
+static inline f32 edgeSlope(s16 a) {
+    f32 c = JMASCos(a);
+    f32 t = 0.0f;
+    if (__fabsf(c) > JGeometry::TUtilf::epsilon()) {
+        t = (1.0f / c) * JMASSin(a);
+    }
+    return __fabsf(t);
+}
+
+static inline u16 cornerAngle(f32 dx, f32 dy) {
+    return (s32)(JMath::atanTable_.atan2_(dx, dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+}
+
+// Pushes a point inside box along `angle` out through the box edge the ray leaves by, then
+// `speed` further along that direction. Writes the result to out; leaves the point alone (out
+// = point) when it is outside the box.
+// FIXME(shotgun): 64.79 %, missing/extra + reloc-name
+void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 angleArg, f32 speed, JGeometry::TVec2f* out) {
+    s16 angle = angleArg;
+    out->x = p->x;
+    out->y = p->y;
+    bool inside = false;
+    if (p->x >= box->i.x && p->y >= box->i.y && p->x < box->f.x && p->y < box->f.y) {
+        inside = true;
+    }
+    if (!inside) {
+        return;
+    }
+    u16 ua = angle;
+    f32 sn = JMASSin(angle);
+    f32 cs = JMASCos(angle);
+    if (__fabsf(sn) <= JGeometry::TUtilf::epsilon()) {
+        if (cs > 0.0f) {
+            out->y = box->f.y + speed;
+        } else {
+            out->y = box->i.y - speed;
+        }
+        return;
+    }
+    if (__fabsf(cs) <= JGeometry::TUtilf::epsilon()) {
+        if (sn > 0.0f) {
+            out->x = box->f.x + speed;
+        } else {
+            out->x = box->i.x - speed;
+        }
+        return;
+    }
+    if (ua <= 0x4000) {
+        u16 ca = cornerAngle(box->f.x - p->x, box->f.y - p->y);
+        if (ua < ca) {
+            out->x = p->x + __fabsf(box->f.y - p->y) * edgeSlope(angle);
+            out->y = box->f.y;
+        } else {
+            out->x = box->f.x;
+            out->y = p->y + __fabsf(box->f.x - p->x) * edgeSlope((s16)(0x4000 - angle));
+        }
+        out->x += speed * JMASSin(angle);
+        out->y += speed * JMASCos(angle);
+    } else if (ua >= 0x4000 && ua <= 0x8000) {
+        s16 a2 = 0x8000 - ua;
+        u16 ca = cornerAngle(box->f.x - p->x, box->i.y - p->y);
+        if ((s32)(ca - ua) < 0) {
+            out->x = p->x + __fabsf(p->y - box->i.y) * edgeSlope(a2);
+            out->y = box->i.y;
+        } else {
+            out->x = box->f.x;
+            out->y = p->y - __fabsf(box->f.x - p->x) * edgeSlope((s16)(0x4000 - a2));
+        }
+        out->x += speed * JMASSin(a2);
+        out->y -= speed * JMASCos(a2);
+    } else if (ua >= 0x8000 && ua <= 0xC000) {
+        s16 a3 = ua - 0x8000;
+        u16 ca = cornerAngle(box->i.x - p->x, box->i.y - p->y);
+        if ((s32)(ua - ca) < 0) {
+            out->x = p->x - __fabsf(p->y - box->i.y) * edgeSlope(a3);
+            out->y = box->i.y;
+        } else {
+            out->x = box->i.x;
+            out->y = p->y - __fabsf(p->x - box->i.x) * edgeSlope((s16)(0x4000 - a3));
+        }
+        out->x -= speed * JMASSin(a3);
+        out->y -= speed * JMASCos(a3);
+    } else {
+        s16 a4 = 0x10000 - ua;
+        u16 ca = cornerAngle(box->i.x - p->x, box->f.y - p->y);
+        if ((s32)(ca - ua) < 0) {
+            out->x = p->x - __fabsf(box->f.y - p->y) * edgeSlope(a4);
+            out->y = box->f.y;
+        } else {
+            out->x = box->i.x;
+            out->y = p->y + __fabsf(p->x - box->i.x) * edgeSlope((s16)(0x4000 - a4));
+        }
+        out->x -= speed * JMASSin(a4);
+        out->y += speed * JMASCos(a4);
+    }
+}
+
 // FIXME: 96.55. Scheduling + regalloc: in both 45-degree turns the original computes the new y
 // (fmadds) before the new x (fmsubs); ours the other way round, so the float registers differ.
 // Steps pos (xy) away from center by speed when it is within radius: straight out, but turned to
