@@ -242,19 +242,19 @@ void AudioMgr_8045A080::fn_80459274() {
     field_0x34->getCategory(1)->pause(false);
     field_0x34->getCategory(2)->pause(false);
     if (field_0x8a == 1) {
-    field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
     } else {
-    field_0x34->getCategory(3)->pause(false);
-    field_0x34->getCategory(4)->pause(false);
-    field_0x34->getCategory(5)->pause(false);
-    field_0x34->getCategory(6)->pause(false);
-    field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(3)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(4)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(5)->getParams()->moveVolume(1.0f, 3);
-    field_0x34->getCategory(6)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(3)->pause(false);
+        field_0x34->getCategory(4)->pause(false);
+        field_0x34->getCategory(5)->pause(false);
+        field_0x34->getCategory(6)->pause(false);
+        field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(3)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(4)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(5)->getParams()->moveVolume(1.0f, 3);
+        field_0x34->getCategory(6)->getParams()->moveVolume(1.0f, 3);
     }
 }
 
