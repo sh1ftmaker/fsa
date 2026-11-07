@@ -22,7 +22,7 @@ struct Sequencer_801DAA24 {
     s32 fn_801DA96C();
     void fn_801DA9E8(s32 a, s32 b);
     // 0x801DA994 (tu_801DA7C0.cpp, not written yet): like fn_801DA9E8 with a second mode.
-    void fn_801DA994(s32 a, s32 b);
+    bool fn_801DA994(s32 a, s32 b);
 
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ s32 field_0x4; // current value, 0-47
