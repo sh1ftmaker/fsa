@@ -302,6 +302,8 @@ void Camera_804AA9E4::fn_8030C7C4(const JGeometry::TVec2f* center, f32 size) {
     cam->field_0x17e = 1;
 }
 
+// Not inlined into its caller fn_8030C2A8 in the original (bl fn_8030C5F0).
+#pragma auto_inline off
 // A world position's screen position: normalised (0..1) when normalised is set, else in the
 // screen rect (inRect) or the whole screen. z is cleared.
 // FIXME(shotgun): 75 %, missing/extra (constant 1.0 folding)
@@ -322,6 +324,7 @@ void Camera_804AA9E4::fn_8030C5F0(const Vec* pos, bool inRect, bool normalised, 
     }
     out->z = 0.0f;
 }
+#pragma auto_inline reset
 
 // FIXME(shotgun): 32 %, missing/extra (instruction order of the conversions)
 void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeometry::TVec3f* out) {
