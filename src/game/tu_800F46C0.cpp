@@ -6,11 +6,17 @@
 #include "game/ActorManager.h"
 #include "game/ActorId.h"
 #include "game/RotMatrix.h"
+#include "game/ActorId.h"
+#include "game/Player.h"
+#include "JSystem/JMath/JMath.h"
+#include "JSystem/JParticle/JPAEmitter.h"
 #include "game/SpriteParams.h"
 #include "game/act/tu_800F46C0.h"
 
 // Sprite names of the shard textures (.data 0x8049C458, not written as source here), indexed by field_0x240.
 extern const char* const lbl_8049C458[];
+// Offsets (x, y) of the four tiles checked around a landing boulder (.rodata 0x80463678).
+extern const f32 lbl_80463678[];
 
 Boulder_8049C4C0::~Boulder_8049C4C0() {}
 
@@ -87,6 +93,108 @@ void Boulder_8049C4C0::init() {
         field_0x248 = 0x300 - (s32)(1536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         field_0x3c.set(0.0f, 0.0f, 0.0f);
         break;
+    }
+}
+
+// FIXME(shotgun): 93.17 %, missing/extra + reloc-name
+void Boulder_8049C4C0::fn_800F5E08() {
+    if (field_0x240 != 0) {
+        field_0x244++;
+        if (field_0x240 != 2 && field_0x244 >= 0x78) {
+            mPos.x += 0.8f * JMath::sincosTable_.sinShort((field_0x244 & 3) << 14);
+        }
+        if (field_0x244 >= 0xB4) {
+            vfunc_0x30(0xFF, false);
+            field_0x240 = 2;
+            field_0x248++;
+            if (field_0x248 == 0x3C) {
+                mAlive = false;
+            }
+            return;
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (getPlayerLayer_8023DE58(i) == field_0x4) {
+                f32 x0 = mBox.i.x + mPos.x;
+                f32 y0 = mBox.i.y + mPos.y;
+                f32 x1 = mBox.f.x + mPos.x;
+                f32 y1 = mBox.f.y + mPos.y;
+                for (s32 j = 0; j < 8; j++) {
+                    JGeometry::TVec3f p;
+                    fn_8022E088(i, j, &p);
+                    bool inside = false;
+                    if (p.x >= x0 && p.y >= y0 && p.x < x1 && p.y < y1) {
+                        inside = true;
+                    }
+                    if (inside) {
+                        fn_8022DF48(i);
+                        break;
+                    }
+                }
+            }
+        }
+        return;
+    }
+    field_0x231++;
+    if (field_0x231 == 10) {
+        field_0x23c++;
+        field_0x231 = 0;
+    }
+    field_0x23c = field_0x23c & 3;
+    fn_801F2B7C(2, -1, 6);
+    s32 serial = fn_801F2718(ACTOR_OIWA);
+    if (serial != -1) {
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        JGeometry::TVec3f d(mPos.x - other->mPos.x, mPos.y - other->mPos.y, mPos.z - other->mPos.z);
+        if (d.x > 0.0f) {
+            field_0x3c.x = 0.5f;
+        } else {
+            field_0x3c.x = -0.5f;
+        }
+    }
+    field_0x3c.z -= 0.04f;
+    mPos += field_0x3c;
+    if (mPos.z <= 0.0f) {
+        if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5) {
+            field_0x3c.x = 0.5f;
+        } else {
+            field_0x3c.x = -0.5f;
+        }
+        mPos.z = 0.0f;
+        field_0x3c.z = 1.0f;
+        startSound_801F0E34(0x30028, 0);
+        JPABaseEmitter* emitter = spawnEmitter_8013CC50(field_0x4, &mPos, 0x3CF, 1, 0, NULL, NULL, true, 1.2f);
+        if (emitter != NULL) {
+            emitter->mDirSpeed = 0.0f;
+        }
+        if (field_0x230 == 4) {
+            const f32* offset = lbl_80463678;
+            for (s32 k = 0; k < 4; k++, offset += 2) {
+                JGeometry::TVec3f p = mPos;
+                p.x += offset[0];
+                p.y += offset[1];
+                u16 code = fn_8022461C(&p, field_0x4);
+                if ((code == 3 || code == 0xE || code == 2) && !vfunc_0x34()) {
+                    getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x76, 0, 0, NULL, NULL, true, 0.8f);
+                    field_0x240 = 1;
+                    vfunc_0x30(0xFF, true);
+                    startSound_801F0E34(0x4002C, 0);
+                    s32 btin = getActorManager_801F856C()->fn_801F778C(ACTOR_BTIN, &mPos, NULL);
+                    ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(btin);
+                    mPos.x = actor->mPos.x;
+                    mPos.y = actor->mPos.y;
+                    mPos.z = actor->mPos.z;
+                    mPos.z = 0.0f;
+                    mPos.y += 8.0f;
+                }
+            }
+        }
+    }
+    s32 layer = field_0x4;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    if (50.0f + box->f.y < mPos.y) {
+        mAlive = false;
     }
 }
 
