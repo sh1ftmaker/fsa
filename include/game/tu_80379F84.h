@@ -124,10 +124,41 @@ public:
     void fn_803D5090();
     void fn_803D521C();
     void fn_803D5554();
+    // The state handlers of game/tu_803D2C34.cpp (no other arguments), indexed by field_0x216c / 0x216d.
+    void fn_803D2C34();
+    void fn_803D2FFC();
+    void fn_803D3060();
+    void fn_803D3108();
+    void fn_803D3180();
+    void fn_803D335C();
+    void fn_803D3460();
+    void fn_803D35C4();
+    void fn_803D3898();
+    void fn_803D3928();
 
-    /* 0x0004 */ u8 field_0x4[0x216C - 0x4];
-    /* 0x216C */ u8 field_0x216c; // read by fn_8037AA28
-}; // Size: at least 0x216D
+    /* 0x0004 */ u8 field_0x4[0x54 - 0x4];
+    /* 0x0054 */ s32 field_0x54; // the message the screen shows
+    /* 0x0058 */ u8 field_0x58[0x7C - 0x58];
+    /* 0x007C */ s32 field_0x7c; // countdown
+    /* 0x0080 */ u8 field_0x80[0x82 - 0x80];
+    /* 0x0082 */ s16 field_0x82;
+    /* 0x0084 */ u8 field_0x84[0x1B4 - 0x84];
+    /* 0x01B4 */ u8 field_0x1b4;
+    /* 0x01B5 */ u8 field_0x1b5[0x1C0 - 0x1B5];
+    /* 0x01C0 */ u8 field_0x1c0[0x258]; // the three save files read from / written to the card
+    /* 0x0418 */ u8 field_0x418[0x420 - 0x418];
+    /* 0x0420 */ u8 field_0x420[0x1D4C]; // their bodies
+    /* 0x216C */ u8 field_0x216c; // state, read by fn_8037AA28
+    /* 0x216D */ u8 field_0x216d; // step within the state
+    /* 0x216E */ u8 field_0x216e;
+    /* 0x216F */ u8 field_0x216f;
+    /* 0x2170 */ u8 field_0x2170; // the selected answer
+    /* 0x2171 */ u8 field_0x2171;
+    /* 0x2172 */ u8 field_0x2172[0x2175 - 0x2172];
+    /* 0x2175 */ u8 field_0x2175;
+    /* 0x2176 */ u8 field_0x2176;
+    /* 0x2177 */ u8 field_0x2177;
+}; // Size: at least 0x2178
 
 // The object lbl_8053AD68 holds (declared in GameGlobals.h, which forward
 // declares it). Named after its vtable 0x804AE9A0 (.data, this unit):
