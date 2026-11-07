@@ -22,10 +22,7 @@ public:
     /* 0x248 */ s32 field_0x248; // (field_0x90 >> 8) & 0xF; actors with the same value form a group
     /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 field_0x250;
-    /* 0x254 */ u8 field_0x254;
-    /* 0x255 */ u8 field_0x255;
-    /* 0x256 */ u8 field_0x256;
-    /* 0x257 */ u8 field_0x257;
+    /* 0x254 */ u8 field_0x254[4]; // per-player flags (indexed by player in update)
     /* 0x258 */ u8 field_0x258;
     /* 0x259 */ u8 field_0x259;
     /* 0x25A */ u8 field_0x25a; // (field_0x90 >> 12) & 1
