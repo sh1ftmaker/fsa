@@ -103,7 +103,8 @@ public:
     // Inline (fn_804108B4 twice, fn_80411230 three times): the states 2-4, 6-9,
     // 15-18 and 20-22, in which the stage cursor is shown.
     bool isCursorState();
-    // 0x8040732C (called by fn_804108B4), not written yet.
+    // 0x8040732C (called by fn_804108B4): fades the Ppoint panes of stage field_0x340 and,
+    // in GameRoot 0x7E mode, colours its three rank panes by lbl_80529DEC.field_0x1fc.
     void fn_8040732C();
     // 0x8040873C: puts the screen in its start position for the selected stage (zoomed
     // to it for stages 0-6, the Penback fade for stage 7), loads the stage picture
@@ -261,7 +262,8 @@ public:
     /* 0x400 */ f32 field_0x400; // alpha (0-1) of the cursor sprite (fn_80406634)
     /* 0x404 */ f32 field_0x404; // offset of 'Plvcu' from the stage's level pane (fn_804108B4)
     /* 0x408 */ f32 field_0x408;
-    /* 0x40C */ u8 field_0x40c[0x40E - 0x40C];
+    /* 0x40C */ u8 field_0x40c; // nonzero: fn_80409FDC moves the sub-stage cursor (field_0x348)
+    /* 0x40D */ u8 field_0x40d;
     /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ s16 field_0x420; // 0-179, the blend / turn cycle of field_0x23c (fn_80409014)

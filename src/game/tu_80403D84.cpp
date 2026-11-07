@@ -640,6 +640,229 @@ void MapScreen_804B1288::fn_804108B4() {
     }
 }
 
+// FIXME(shotgun): 93.56 %, missing/extra (field_0x348 reloads) + pool literals
+void MapScreen_804B1288::fn_8040F480() {
+    u8 mode = 0;
+    field_0x668 = 6;
+    lbl_8053AEC4->fn_8042EB24();
+    fn_8037AA58();
+    switch (lbl_80529DEC.field_0x237) {
+    case 5:
+    case 9:
+        field_0x348 = lbl_80529DEC.field_0x11c;
+        field_0x340 = lbl_80529DEC.field_0x118;
+        if (!(lbl_8050EC80.getCurrentFile().field_0x65 & 2)) {
+            mode = 2;
+        } else {
+            mode = 0;
+        }
+        break;
+    case 6:
+        mode = 2;
+        field_0x348 = lbl_80529DEC.field_0x11c;
+        field_0x340 = lbl_80529DEC.field_0x118;
+        break;
+    case 7:
+        mode = 1;
+        field_0x348 = lbl_80529DEC.field_0x11c;
+        field_0x340 = lbl_80529DEC.field_0x118;
+        break;
+    }
+    if (!lbl_80529DEC.field_0x23e[1]) {
+        fn_80404D70();
+        if (lbl_80529DEC.field_0x237 == 5 && !mode) {
+            if (fn_803B8EBC(7)) {
+                field_0x340 = 0;
+            } else {
+                field_0x340 = field_0x370;
+                // As in the original: the test can never be true.
+                if (field_0x340 < 0 && field_0x340 >= 8) {
+                    field_0x340 = 0;
+                }
+            }
+            field_0x348 = 0;
+        }
+    } else {
+        field_0x370 = 12;
+        for (int stage = 1; stage < 7; stage++) {
+            hideStagePanes(stage);
+        }
+        field_0xcc->mPane->show();
+        if (mode == 2) {
+            mode = 1;
+        }
+    }
+    setStageName();
+    strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
+    strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
+    setStageName();
+    strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+    strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+    if (!fn_804045F8(field_0x340)) {
+        field_0x34c = field_0x348;
+        if (field_0x348 == 3) {
+            field_0x34c = 2;
+        }
+        if (field_0x340 == 7 && (field_0x348 == 2 || field_0x348 == 3)) {
+            field_0x34c = field_0x348 - 1;
+        }
+    } else {
+        field_0x34c = field_0x348;
+    }
+    if (field_0x340 != 8 && field_0x340 != 9 && field_0x340 != 10 && field_0x340 != 11 && field_0x340 != 12) {
+        getMessageText_803832BC(field_0x564[0], lbl_8048C238[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[1], lbl_8048C258[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[2], lbl_8048C278[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[3], lbl_8048C298[field_0x340], 0, NULL, NULL);
+    }
+    field_0x344 = field_0x340;
+    fn_804083D8();
+    for (int i = 0; i < 8; i++) {
+        if (i > field_0x370) {
+            field_0x28[i][0]->mPane->hide();
+            field_0x208[i]->mPane->hide();
+        } else if (!fn_804045F8(i)) {
+            field_0x208[i]->mPane->hide();
+        }
+    }
+    if (field_0x340 < 8) {
+        field_0x394 = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+        field_0x398 = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+    }
+    field_0x1c->setFrame(field_0x378);
+    field_0xc->search('Ndata08')->animationTransform();
+    field_0x20->setFrame(field_0x37c);
+    field_0xc->animation();
+    if (mode != 2 || field_0x364 == 0) {
+        for (int i = 0; i < 18; i++) {
+            field_0xd4[i]->fn_80402E70();
+        }
+        field_0xc->search('Ndata08')->setAnimation((J2DAnmTransform*)NULL);
+    }
+    switch (mode) {
+    case 0:
+        if (field_0x38c & 0x10) {
+            if (field_0x65d == 0) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 1;
+                }
+            }
+            field_0x350 = 0;
+            break;
+        }
+        fn_8040873C();
+        if (fn_80404270(field_0x340)) {
+            field_0x350 = 0x10;
+            if (field_0x65d == 1) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 0;
+                }
+            }
+            field_0x4->fn_804446F0(0);
+            gAudioMgr_8053AF80->fn_80458880(0x56, -1);
+        } else {
+            if (field_0x65d == 0) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 1;
+                }
+            }
+            field_0x350 = 0xF;
+        }
+        break;
+    case 1:
+        fn_8040873C();
+        if (fn_80404270(field_0x340)) {
+            field_0x350 = 0x10;
+            if (field_0x65d == 1) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 0;
+                }
+            }
+            field_0x4->fn_804446F0(0);
+            gAudioMgr_8053AF80->fn_80458880(0x56, -1);
+        } else {
+            if (field_0x65d == 0) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 1;
+                }
+            }
+            field_0x350 = 0xF;
+        }
+        break;
+    case 2:
+        if (field_0x364 != 0 && field_0x364 < 7) {
+            field_0x340 = field_0x364 - 1;
+            field_0x348 = 3;
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+            fn_8040873C();
+            field_0x39c = 0.0f;
+            field_0x3a0 = 0.0f;
+            field_0x3a4 = 0.0f;
+            field_0x358 = 0;
+            field_0x350 = 4;
+        } else if (!(lbl_8050EC80.getCurrentFile().field_0x65 & 2) && !(lbl_8050EC80.getCurrentFile().mFlags & 1)) {
+            field_0x39c = -250.0f;
+            lbl_8050EC80.getCurrentFile().field_0x65 |= 2;
+            fn_8040873C();
+            field_0x350 = 2;
+        } else if (field_0x348 == 0) {
+            if (field_0x65d == 0) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 1;
+                }
+            }
+            field_0x657 = 1;
+            field_0x350 = 1;
+        } else {
+            fn_8040873C();
+            if (field_0x340 == 7) {
+                if (field_0x348 == 2) {
+                    field_0x394 = lbl_8048C95C[field_0x340 * 4][0];
+                    field_0x398 = lbl_8048C95C[field_0x340 * 4][1];
+                    if (!isStageFlagSet(field_0x340, field_0x348) && !lbl_80529DEC.field_0x254[0]) {
+                        field_0x388 = 0;
+                    }
+                } else {
+                    field_0x394 = lbl_8048C95C[field_0x340 * 4 + 2][0];
+                    field_0x398 = lbl_8048C95C[field_0x340 * 4 + 2][1];
+                    if (!isStageFlagSet(field_0x340, field_0x348) && !lbl_80529DEC.field_0x254[0]) {
+                        field_0x388 = 1;
+                    }
+                }
+            } else if (field_0x348 == 1) {
+                field_0x394 = lbl_8048C95C[field_0x340 * 4][0];
+                field_0x398 = lbl_8048C95C[field_0x340 * 4][1];
+                if (!isStageFlagSet(field_0x340, field_0x348) && !lbl_80529DEC.field_0x254[0]) {
+                    field_0x388 = 0;
+                }
+            } else {
+                field_0x394 = lbl_8048C95C[field_0x340 * 4 + 1][0];
+                field_0x398 = lbl_8048C95C[field_0x340 * 4 + 1][1];
+                if (!isStageFlagSet(field_0x340, field_0x348) && !lbl_80529DEC.field_0x254[0]) {
+                    field_0x388 = 1;
+                }
+            }
+            field_0x350 = 8;
+            if (field_0x388 != -1) {
+                field_0x664 = 1;
+            }
+        }
+        break;
+    }
+    lbl_80529DEC.field_0x237 = 0;
+}
+
 s32 fn_8040F474() {
     return lbl_8053ADF8->field_0x668;
 }
@@ -909,6 +1132,107 @@ void MapScreen_804B1288::fn_8040E298() {
 void MapScreen_804B1288::fn_8040E278() {
     if (++field_0x384 > 100) {
         field_0x350 = 0x15;
+    }
+}
+
+// FIXME(shotgun): 98.96 %, regalloc
+void MapScreen_804B1288::fn_8040D3D0() {
+    if (lbl_8053AD30->fn_80309C4C(0x100, -1) || field_0x657) {
+        field_0x348 = 0;
+        field_0x34c = 0;
+        field_0xc8->field_0x20 = 0;
+        field_0xc8->field_0x22 = 0;
+        field_0xc8->field_0x24 = 0;
+        field_0xc8->field_0x26 = 0;
+        field_0xcc->field_0x20 = 0;
+        field_0xcc->field_0x22 = 0;
+        field_0xcc->field_0x24 = 0;
+        field_0xcc->field_0x26 = 0;
+        field_0xd0->field_0x20 = 0;
+        field_0xd0->field_0x22 = 0;
+        field_0xd0->field_0x24 = 0;
+        field_0xd0->field_0x26 = 0;
+        for (int i = 0; i < 18; i++) {
+            field_0xd4[i]->field_0x20 = 0;
+            field_0xd4[i]->field_0x22 = 0;
+            field_0xd4[i]->field_0x24 = 0;
+            field_0xd4[i]->field_0x26 = 0;
+        }
+        field_0x228[0][0]->field_0x22 = 0;
+        field_0x228[0][1]->field_0x22 = 0;
+        field_0x228[1][0]->field_0x22 = 0;
+        field_0x228[1][1]->field_0x22 = 0;
+        field_0x238->field_0x22 = 0;
+        field_0x23c->field_0x22 = 0;
+        field_0x41e = 0;
+        loadStageInfo();
+        if (!field_0x657) {
+            gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+        } else {
+            fn_804083D8();
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+            fn_80411A94(1.0f);
+        }
+        if (field_0x65d == 0 && field_0x657 == 0) {
+            for (int i = 0; i < 15; i++) {
+                field_0x278[i]->field_0x26 = 0;
+                field_0x65d = 1;
+            }
+        }
+        for (int i = 0; i < 8; i++) {
+            field_0x28[i][0]->moveFromCentre_80402E08(0.0f, 0.0f);
+            field_0x28[i][0]->field_0x20 = 0;
+            for (int j = 0; j < 3; j++) {
+                field_0x28[i][j]->mPane->setAlpha(field_0x28[i][j]->field_0x28);
+                field_0x28[i][j]->field_0x26 = 0;
+            }
+        }
+        field_0x350 = 0xE;
+    } else if (lbl_8053AD30->fn_80309C4C(0x1000, -1)) {
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
+            lbl_80529DEC.field_0x237 = 3;
+            field_0x668 = 4;
+            lbl_80529DEC.field_0x118 = field_0x340;
+            lbl_80529DEC.field_0x11c = field_0x348;
+            gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, -1)) {
+        field_0x668 = 4;
+        gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+    } else if (lbl_8053AD30->fn_80309B74(4, -1) || lbl_8053AD30->fn_80309B74(1, -1)) {
+        field_0x344 = field_0x340;
+        field_0x340--;
+        if (field_0x340 < 0) {
+            field_0x340 = field_0x370;
+        }
+        fn_804083D8();
+        if (field_0x370 > 0) {
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+            fn_80411A94(1.0f);
+            field_0x426 = 0;
+            field_0x350 = 0xC;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309B74(8, -1) || lbl_8053AD30->fn_80309B74(2, -1)) {
+        field_0x344 = field_0x340;
+        field_0x340++;
+        if (field_0x340 >= field_0x370 + 1) {
+            field_0x340 = 0;
+        }
+        fn_804083D8();
+        if (field_0x370 > 0) {
+            setStageName();
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv13'))->getStringPtr(), field_0x438);
+            strcpy(((J2DTextBox*)field_0x10->search('Ttlv14'))->getStringPtr(), field_0x438);
+            fn_80411A94(1.0f);
+            field_0x426 = 0;
+            field_0x350 = 0xD;
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        }
     }
 }
 
@@ -1248,6 +1572,202 @@ void MapScreen_804B1288::fn_8040B388() {
     }
 }
 
+
+// FIXME(shotgun): 99.65 %, pool literals + regalloc
+void MapScreen_804B1288::fn_80409FDC() {
+    f32 x = 0.0f;
+    f32 y = 0.0f;
+    if (field_0x340 <= 7) {
+        f32 speed = 3.4f + lbl_8050DB0C.field_0x4c[311] / 100.0f;
+        x = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+        y = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+        f32 dx = x - field_0x394;
+        f32 dy = y - field_0x398;
+        f32 dist = std::sqrtf(dx * dx + dy * dy);
+        if (dist < speed) {
+            field_0x394 = x;
+            field_0x398 = y;
+            if (!field_0x65e) {
+                field_0x120[0]->field_0x22 = 0;
+                field_0x120[0]->field_0x26 = 0;
+                field_0x120[1]->field_0x26 = 0;
+                loadStageInfo();
+                field_0x65e = 1;
+            }
+        } else {
+            field_0x394 += speed * dx / dist;
+            field_0x398 += speed * dy / dist;
+            field_0x2b8[0]->startSound(JAISoundID(0x20064));
+        }
+        field_0x10->search('Ndata10')->move(field_0x394, field_0x398);
+        if (field_0x394 == x) {
+            field_0x360 = 0x10;
+        } else {
+            u16 angle = JMath::atanTable_.atan2_(-dx, -dy) *
+                        (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+            if (angle < 0x2000 || angle >= 0xE000) {
+                field_0x360 = 0x18;
+            } else if (angle >= 0x2000 && angle < 0x6000) {
+                field_0x360 = 8;
+            } else if (angle >= 0x6000 && angle <= 0xA000) {
+                field_0x360 = 0x10;
+            } else {
+                field_0x360 = 0;
+            }
+        }
+    }
+    if (field_0x340 <= 7 && field_0x394 == x) {
+        fn_804054B8();
+    } else if (field_0x10->search('Ndata10')->mIsVisible) {
+        field_0x10->search('Ndata10')->hide();
+    }
+    if (field_0x40c) {
+        if (lbl_8053AD30->fn_80309A9C(8, -1)) {
+            field_0x348--;
+            if (field_0x348 < 0) {
+                field_0x348 = 3;
+            }
+            field_0x34c = field_0x348;
+            hideSubStagePanes();
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        } else if (lbl_8053AD30->fn_80309A9C(4, -1)) {
+            field_0x348++;
+            if (field_0x348 >= 4) {
+                field_0x348 = 0;
+            }
+            field_0x34c = field_0x348;
+            hideSubStagePanes();
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x1000, -1)) {
+            if (gGameRoot_8053AAF8->field_0x7e == 1) {
+                lbl_80529DEC.field_0x237 = 4;
+                field_0x668 = 4;
+                lbl_80529DEC.field_0x118 = field_0x340;
+                lbl_80529DEC.field_0x11c = field_0x348;
+                gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+            field_0x394 = x;
+            field_0x398 = y;
+            field_0x120[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+            for (int i = 0; i < 2; i++) {
+                field_0x120[i]->mPane->setAlpha(field_0x120[i]->field_0x28);
+            }
+            loadStageInfo();
+            field_0x65e = 1;
+            gAudioMgr_8053AF80->fn_80458F9C(10);
+            field_0x41e = 0;
+            field_0x10->search('Ndata10')->hide();
+            field_0x350 = 0x14;
+            gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x200, -1)) {
+            if (field_0x663) {
+                for (int i = 0; i < 2; i++) {
+                    if (field_0x308[i] != NULL) {
+                        field_0x308[i]->becomeInvalidEmitter();
+                        field_0x308[i] = NULL;
+                    }
+                }
+                field_0x663 = 0;
+                field_0x39c = 0.0f;
+            }
+            fn_804049DC();
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(8, -1)) {
+        if (field_0x340 <= 7) {
+            if (fn_804045F8(field_0x340)) {
+                fn_80405D00(0);
+            } else {
+                fn_80405B10(0);
+            }
+        } else {
+            field_0x348--;
+            field_0x34c = field_0x348;
+            if (field_0x348 < 0) {
+                field_0x348 = 0;
+                field_0x34c = field_0x348;
+            } else {
+                hideSubStagePanes();
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            }
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(4, -1)) {
+        if (field_0x340 <= 7) {
+            if (fn_804045F8(field_0x340)) {
+                fn_80405D00(2);
+            } else {
+                fn_80405B10(2);
+            }
+        } else {
+            field_0x348++;
+            field_0x34c = field_0x348;
+            if (field_0x348 >= 4) {
+                field_0x348 = 3;
+                field_0x34c = field_0x348;
+            } else {
+                hideSubStagePanes();
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            }
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(1, -1)) {
+        if (field_0x340 <= 7) {
+            if (fn_804045F8(field_0x340)) {
+                fn_80405D00(3);
+            } else {
+                fn_80405B10(3);
+            }
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(2, -1)) {
+        if (field_0x340 <= 7) {
+            if (fn_804045F8(field_0x340)) {
+                fn_80405D00(1);
+            } else {
+                fn_80405B10(1);
+            }
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x1000, -1)) {
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
+            lbl_80529DEC.field_0x237 = 4;
+            field_0x668 = 4;
+            lbl_80529DEC.field_0x118 = field_0x340;
+            lbl_80529DEC.field_0x11c = field_0x348;
+            gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+        }
+    } else if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+        field_0x394 = x;
+        field_0x398 = y;
+        field_0x120[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0x120[i]->mPane->setAlpha(field_0x120[i]->field_0x28);
+        }
+        loadStageInfo();
+        field_0x65e = 1;
+        gAudioMgr_8053AF80->fn_80458F9C(10);
+        field_0x41e = 0;
+        field_0x10->search('Ndata10')->hide();
+        field_0x350 = 0x14;
+        gAudioMgr_8053AF80->fn_80458880(0xb, -1);
+    } else if (lbl_8053AD30->fn_80309C4C(0x200, -1)) {
+        if (field_0x663) {
+            for (int i = 0; i < 2; i++) {
+                if (field_0x308[i] != NULL) {
+                    field_0x308[i]->becomeInvalidEmitter();
+                    field_0x308[i] = NULL;
+                }
+            }
+            field_0x663 = 0;
+            field_0x39c = 0.0f;
+        }
+        fn_80404648();
+    }
+    if (field_0x663 != 0) {
+        field_0x434 += 0x200;
+        field_0x436 += 0x400;
+        field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
+        field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
+        field_0x2c8->startSound(JAISoundID(0x400E3));
+    }
+}
 
 // FIXME: 96.44. Missing/extra (one instruction): in the field_0xd4 loop the original
 // multiplies scale * field_0x10 after fn_8040271C (keeping field_0x10 in f30), ours before
@@ -1643,6 +2163,110 @@ void MapScreen_804B1288::fn_80408114() {
     }
 }
 
+// FIXME(shotgun): 99.35 %, regalloc
+void MapScreen_804B1288::fn_8040732C() {
+    s32 picked = -1;
+    if (field_0x340 > 7) {
+        return;
+    }
+    if (!gGameRoot_8053AAF8->field_0x7e) {
+        for (int i = field_0x340 * 4; i < field_0x340 * 4 + 4; i++) {
+            if (field_0x38c & (1 << i)) {
+                if (fn_804045F8(field_0x340)) {
+                    field_0x128[i]->fn_8040245C(100, 0, field_0x128[i]->field_0x28, 0);
+                    field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+                } else if (i != lbl_8048C8EC[field_0x340] && !fn_80404074(i / 4, i % 4, &picked)) {
+                    field_0x128[i]->fn_8040245C(100, 0, field_0x128[i]->field_0x28, 0);
+                    field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+                }
+            }
+        }
+        return;
+    }
+    for (int i = field_0x340 * 3; i < field_0x340 * 3 + 3; i++) {
+        s32 stage = i / 3;
+        u8 rank;
+        if (stage < 0 || stage >= 8) {
+            rank = 0xFF;
+        } else {
+            s32 sub = i % 3;
+            if (sub < 0 || sub >= 3) {
+                rank = 0xFF;
+            } else {
+                rank = lbl_80529DEC.field_0x1fc[stage][sub];
+            }
+        }
+        s32 sub = i % 3;
+        if (stage == 7) {
+            if (sub > 0) {
+                sub++;
+            }
+        } else if (sub > 1) {
+            sub++;
+        }
+        s32 point = stage * 4 + sub;
+        switch (rank) {
+        case 0:
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setBlackWhite(JUtility::TColor(0, 50, 0, 0), JUtility::TColor(255, 255, 255, 255));
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setCornerColor(JUtility::TColor(127, 248, 37, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][0]))
+                ->setBlackWhite(JUtility::TColor(100, 255, 50, 0), JUtility::TColor(100, 255, 50, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][1]))
+                ->setBlackWhite(JUtility::TColor(100, 255, 50, 0), JUtility::TColor(100, 255, 50, 255));
+            break;
+        case 1:
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setBlackWhite(JUtility::TColor(50, 0, 0, 0), JUtility::TColor(255, 255, 255, 255));
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setCornerColor(JUtility::TColor(255, 150, 120, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][0]))
+                ->setBlackWhite(JUtility::TColor(255, 100, 50, 0), JUtility::TColor(255, 100, 50, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][1]))
+                ->setBlackWhite(JUtility::TColor(255, 100, 50, 0), JUtility::TColor(255, 100, 50, 255));
+            break;
+        case 2:
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setBlackWhite(JUtility::TColor(0, 10, 40, 0), JUtility::TColor(255, 255, 255, 255));
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setCornerColor(JUtility::TColor(120, 240, 255, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][0]))
+                ->setBlackWhite(JUtility::TColor(50, 220, 240, 0), JUtility::TColor(50, 220, 240, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][1]))
+                ->setBlackWhite(JUtility::TColor(50, 220, 240, 0), JUtility::TColor(50, 220, 240, 255));
+            break;
+        case 3:
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setBlackWhite(JUtility::TColor(20, 0, 20, 0), JUtility::TColor(255, 255, 255, 255));
+            ((J2DPicture*)field_0x1a8[i]->mPane)->setCornerColor(JUtility::TColor(220, 150, 255, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][0]))
+                ->setBlackWhite(JUtility::TColor(200, 100, 240, 0), JUtility::TColor(200, 100, 240, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][1]))
+                ->setBlackWhite(JUtility::TColor(200, 100, 240, 0), JUtility::TColor(200, 100, 240, 255));
+            break;
+        default:
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][0]))
+                ->setBlackWhite(JUtility::TColor(255, 255, 120, 0), JUtility::TColor(255, 255, 120, 255));
+            ((J2DPicture*)field_0x10->search(lbl_8048C2F8[point][1]))
+                ->setBlackWhite(JUtility::TColor(255, 255, 120, 0), JUtility::TColor(255, 255, 120, 255));
+            break;
+        }
+        if (rank < 4) {
+            // The original passes field_0x128[i]'s byte 0x28 (same index as field_0x1a8).
+            field_0x1a8[i]->fn_80402628(100, 0, field_0x128[i]->field_0x28);
+        }
+    }
+    for (int i = field_0x340 * 4; i < field_0x340 * 4 + 4; i++) {
+        if (field_0x38c & (1 << i)) {
+            if (fn_804045F8(field_0x340)) {
+                field_0x128[i]->fn_8040245C(100, 0, field_0x128[i]->field_0x28, 0);
+                field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+            } else if (i != lbl_8048C8EC[field_0x340] && !fn_80404074(i / 4, i % 4, &picked)) {
+                field_0x128[i]->fn_8040245C(100, 0, field_0x128[i]->field_0x28, 0);
+                field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+            }
+        }
+    }
+    PaneCtrl_804AF86C* ctrl = field_0x208[field_0x340];
+    if (ctrl->mPane->getAlpha() != ctrl->field_0x28) {
+        ctrl->fn_80402628(50, 0, ctrl->field_0x28);
+    }
+}
+
 // FIXME: 75.38, missing/extra (NONMATCHING). Every call, field and constant is right; two
 // things differ: the original computes `frame` before fn_8013B414 (ours computes it at its
 // first use, after the first draw, which shifts the schedule), and it indexes the sine table
@@ -1910,6 +2534,9 @@ void MapScreen_804B1288::fn_80405D00(s32 dir) {
     }
 }
 
+// Not auto-inlined: fn_80409FDC calls fn_80405B10 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void MapScreen_804B1288::fn_80405B10(s32 dir) {
     s32 count = 0;
     for (int i = 0; i < 4; i++) {
@@ -1933,6 +2560,7 @@ void MapScreen_804B1288::fn_80405B10(s32 dir) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
     }
 }
+#pragma auto_inline reset
 
 // Dead-stripped: fn_80405D00, fn_80405B10 (each followed by sound 0x26) and fn_8040B388
 // inline it after every change of the sub-stage (seven identical copies).
