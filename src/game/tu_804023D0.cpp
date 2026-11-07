@@ -140,10 +140,10 @@ GameState_804B0FE0::GameState_804B0FE0() {
     field_0x23e[0] = 0;
     field_0x23e[1] = 0;
     field_0x240 = 0;
-    field_0x243[1] = 0;
+    field_0x244 = 0;
     field_0x245 = 0;
-    field_0x246[0] = 1;
-    field_0x246[1] = 0;
+    field_0x246 = 1;
+    field_0x247 = 0;
     field_0x249[0] = 0;
     field_0x248 = 0xFF;
     field_0x249[1] = 0;

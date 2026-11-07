@@ -24,7 +24,6 @@ SaveFileBody_803B950C lbl_80526020[3] ATTRIBUTE_ALIGN(32);
 
 // Reads the save image at card offset 0x2000, or at 0x4000 when that fails, into
 // lbl_8051E2C0; on success keeps its bytes 3 and 4 in the game state. Returns the card result.
-// FIXME(shotgun): see report
 s32 fn_803BAE68(CARDFileInfo* file) {
     u8* image = lbl_8051E2C0;
     if (CARDRead(file, image, 0x2000, 0x2000) != 0) {
@@ -34,7 +33,7 @@ s32 fn_803BAE68(CARDFileInfo* file) {
         }
     }
     lbl_80529DEC.field_0x244 = image[3];
-    lbl_80529DEC.field_0x246[0] = image[4];
+    lbl_80529DEC.field_0x246 = image[4];
     return 0;
 }
 

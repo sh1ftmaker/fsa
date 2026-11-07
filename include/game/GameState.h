@@ -194,7 +194,8 @@ public:
     /* 0x243 */ u8 field_0x243[1];
     /* 0x244 */ u8 field_0x244; // fn_803BAE68: byte 3 of the save image just read
     /* 0x245 */ u8 field_0x245; // 0 if OSGetSoundMode() is 0 else 1; tu_80442810's constructor
-    /* 0x246 */ u8 field_0x246[0x248 - 0x246];
+    /* 0x246 */ u8 field_0x246; // fn_803BAE68: byte 4 of the save image just read; 1 in the constructor
+    /* 0x247 */ u8 field_0x247;
     /* 0x248 */ u8 field_0x248; // tu_8039003C's and tu_803A85E4's constructors set it to 1 after fn_80458408
     /* 0x249 */ u8 field_0x249[1];
     /* 0x24A */ u8 field_0x24a; // player bits: counter falling (cls_804B146C::fn_804253E0)
