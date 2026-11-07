@@ -1381,7 +1381,8 @@ public:
     /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
     /* 0x04 */ u8 field_0x4[0x78 - 0x4];
     /* 0x78 */ u8 mState;
-    /* 0x79 */ u8 field_0x79[0x7C - 0x79];
+    /* 0x79 */ u8 field_0x79; // fn_802B1610 tests it
+    /* 0x7A */ u8 field_0x7a[0x7C - 0x7A];
 }; // Size: 0x7C
 extern cls_804B0F50* lbl_8053AAF0;
 

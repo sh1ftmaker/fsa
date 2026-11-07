@@ -29,6 +29,8 @@ void GXInitFifoLimits(GXFifoObj* fifo, u32 hiWaterMark, u32 loWaterMark);
 GXBreakPtCallback GXSetBreakPtCallback(GXBreakPtCallback cb);
 void GXEnableBreakPt(void* breakPt);
 void GXDisableBreakPt(void);
+struct OSThread* GXSetCurrentGXThread(void);
+struct OSThread* GXGetCurrentGXThread(void);
 
 #ifdef __cplusplus
 }
