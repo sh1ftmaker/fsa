@@ -25,6 +25,7 @@
 #include "JSystem/JKernel/JKRArchive.h"
 #include "JSystem/JMath/JMath.h"
 #include "JSystem/JUtility/TColor.h"
+#include "JSystem/JGadget/allocator.h"
 #include "game/Player.h"
 #include "game/cls_8016ED88.h"
 // The view (getGameView_802D6A9C) and the effect system (getEffectSystem_8013C824) moved to
@@ -1266,7 +1267,11 @@ struct cls_801192AC {
     /* 0x02 */ u8 field_0x2;
     /* 0x04 */ s32 field_0x4; // compared as signed in tu_801286C0's vfunc_0x54
     /* 0x08 */ s32 field_0x8;
-    /* 0x0C */ u8 field_0xc[0x4]; // not yet known
+    // 0x0C..0x20 is a JGadget TVector of the actors (allocator byte, begin, end, capacity,
+    // extend function): fn_8011921C stores extend_default at 0x1C, fn_801190E4 reserves 20.
+    // Spelled out as plain fields while other units read mBegin / mEnd directly.
+    /* 0x0C */ JGadget::TAllocator<ActorBase_804A5770*> mAllocator;
+    /* 0x0D */ u8 field_0xd[0x10 - 0xD];
     // 0x801190E4 (game/tu_80118384.cpp, not written yet): makes room for 20
     // entries (new 0x50) in [mBegin, mEnd) when field_0x18 is below 20.
     // GameRoot's fn_80138C9C calls it on fn_8011921C().
@@ -1275,7 +1280,12 @@ struct cls_801192AC {
     // fn_8011871C searches [mBegin, mEnd) for an actor by mActorId.
     /* 0x10 */ ActorBase_804A5770** mBegin;
     /* 0x14 */ ActorBase_804A5770** mEnd;
-    /* 0x18 */ u8 field_0x18[0x8]; // not yet known
+    /* 0x18 */ u32 mCapacity;
+    /* 0x1C */ u32 (*mExtend)(u32, u32, u32); // JGadget::vector::ExtendFunc
+
+    cls_801192AC();
+    // 0x801192AC (game/tu_80118384.cpp): empties the list, then frees it.
+    ~cls_801192AC();
 
     // 0x80118384 (game/tu_80118384.cpp): getActorManager_801F856C()->fn_801F6884(); field_0x0 = 0.
     void fn_80118384();

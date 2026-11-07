@@ -5,6 +5,17 @@
 #include "game/GameGlobals.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include "JSystem/JUtility/JUTVideo.h"
+#include "game/act/tu_8010DF44.h"
+
+namespace JGadget {
+namespace vector {
+// JSystem/JGadget/std-vector.cpp (vector.h needs the MSL C++ headers game code lacks).
+u32 extend_default(u32, u32, u32);
+} // namespace vector
+} // namespace JGadget
+
+// The 1-byte .sbss object at 0x8053AA90 fn_8011921C copies into the list's allocator.
+static JGadget::TAllocator<ActorBase_804A5770*> lbl_8053AA90;
 
 // The texture name fn_80119D48 loads (.sdata 0x80539F10).
 const char* lbl_80539F10 = "kk_black.bti";
@@ -235,11 +246,93 @@ void cls_80119E5C::fn_80119468(s32 g, s32 mode) {
     fn_80119998(fadeFrames(mode), 0, mode, 0, 2, 0, g);
 }
 
-// FIXME(shotgun): not written: fn_80118E20 (0x2C4: the per-frame pass over the actor list
-// with the lbl_8053AED0 flag bits and the inlined fn_801184F0 reset), fn_801190E4 (the vector
-// reserve), the vector internals fn_801188B8 / fn_801188E0 / fn_80118938 / fn_801189B0
-// (JGadget TVector insert machinery at this+0xC, needs a typed vector member), fn_8011888C
-// (calls them), fn_8011921C (the static getter) and the destructor fn_801192AC.
+// FIXME(shotgun): not written: the JGadget TVector insert machinery fn_801188B8 (push_back) /
+// fn_801188E0 / fn_80118938 / fn_801189B0 (Insert_raw) and fn_8011888C (calls them). They need a
+// typed TVector member at 0xC, and act_princess_zelda_demo / tu_8011CEC8 read mBegin / mEnd.
+inline cls_801192AC::cls_801192AC() {
+    field_0x0 = 0;
+    field_0x1 = 0;
+    field_0x2 = 0;
+    field_0x4 = 0x13;
+    field_0x8 = 0;
+    mAllocator = lbl_8053AA90;
+    mBegin = NULL;
+    mEnd = NULL;
+    mCapacity = 0;
+    mExtend = JGadget::vector::extend_default;
+}
+
+// FIXME(shotgun): 20.6 %, stand-in (the original is the TVector member: erase(begin(), end()),
+// then the member dtor's null check, erase again and the delete)
+cls_801192AC::~cls_801192AC() {
+    mEnd = mBegin;
+    delete mBegin;
+}
+
+// FIXME(shotgun): 82.2 %
+extern "C" cls_801192AC* fn_8011921C() {
+    static cls_801192AC instance;
+    return &instance;
+}
+
+// FIXME(shotgun): 48.2 %, stand-in (the original is the TVector reserve(20) inline)
+void cls_801192AC::fn_801190E4() {
+    if (mCapacity >= 20) {
+        return;
+    }
+    ActorBase_804A5770** p = (ActorBase_804A5770**)operator new(20 * sizeof(ActorBase_804A5770*));
+    if (p == NULL) {
+        return;
+    }
+    ActorBase_804A5770** old = mBegin;
+    for (ActorBase_804A5770** src = mBegin, **dst = p; src < mEnd; src++, dst++) {
+        *dst = *src;
+    }
+    mEnd = p + (mEnd - mBegin);
+    mBegin = p;
+    mCapacity = 20;
+    operator delete(old);
+}
+
+// FIXME(shotgun): 73.7 %
+// The per-frame pass: clears the four player bits of lbl_8053AED0's 0xDD; with field_0x2
+// raises the flag at field_0x30's 0x284 (0.05f at 0x28C); unless paused (field_0x1) runs each
+// listed actor's vfunc_0x54 and, when all their vfunc_0x5C say done and field_0x4 < 0xE,
+// resets (fn_801184F0 with the fade); counts field_0x8 up.
+void cls_801192AC::fn_80118E20() {
+    if (field_0x0 == 0) {
+        return;
+    }
+    lbl_8053AED0->field_0xdd &= ~1;
+    lbl_8053AED0->field_0xdd &= ~2;
+    lbl_8053AED0->field_0xdd &= ~4;
+    lbl_8053AED0->field_0xdd &= ~8;
+    if (field_0x2 != 0) {
+        cls_804A03A8* p = gGameRoot2_8053AB10->field_0x30;
+        if (p->field_0x284 == 0) {
+            p->field_0x284 = 1;
+            p->field_0x28c = 0.05f;
+        }
+    }
+    if (field_0x1 != 0) {
+        return;
+    }
+    bool done = true;
+    for (ActorBase_804A5770** it = mBegin; it != mEnd; it++) {
+        cls_8049D140* actor = static_cast<cls_8049D140*>(*it);
+        if (actor != NULL) {
+            actor->vfunc_0x54();
+            if (!actor->vfunc_0x5C()) {
+                done = false;
+            }
+        }
+    }
+    if (done && field_0x4 < 0xE) {
+        fn_801184F0(true);
+    }
+    field_0x8++;
+}
+
 // FIXME(shotgun): 79 %, missing/extra (stand-in: the original is std::find_if with a by-value
 // predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
