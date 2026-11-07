@@ -29,18 +29,27 @@ public:
     // 0x8032BB90: a player slashing it (Camera test on screen) turns it into a flying gem.
     void fn_8032BB90();
     /* 0x230 */ s32 field_0x230;
-    /* 0x234 */ u8 field_0x234[4];
+    /* 0x234 */ s32 field_0x234; // the state to return to (init: 0x12)
     /* 0x238 */ f32 field_0x238;
-    /* 0x23C */ u8 field_0x23c[0x248 - 0x23C];
+    /* 0x23C */ f32 field_0x23c;
+    /* 0x240 */ u16 field_0x240;
+    /* 0x242 */ u16 field_0x242; // an angle (init, kind 0x1B)
+    /* 0x244 */ u16 field_0x244;
+    /* 0x246 */ u8 field_0x246[2]; // not yet known
     /* 0x248 */ s32 field_0x248; // nonzero: a fleeing gem (ESRY)
     /* 0x24C */ s32 field_0x24c;
-    /* 0x250 */ u8 field_0x250[0x10];
+    /* 0x250 */ s32 field_0x250; // init: 60 + a random 0-59
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
     /* 0x260 */ s32 field_0x260; // set once it has bounced
     /* 0x264 */ s32 field_0x264; // the player that picked it up
     /* 0x268 */ s32 field_0x268; // kind: indexes the value table
-    /* 0x26C */ u8 field_0x26c[8];
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ s32 field_0x270;
     /* 0x274 */ s32 field_0x274;
-    /* 0x278 */ u8 field_0x278[5];
+    /* 0x278 */ s32 field_0x278; // bits 8-15 of field_0x90
+    /* 0x27C */ u8 field_0x27c;
     /* 0x27D */ u8 field_0x27d;
     /* 0x27E */ u8 field_0x27e;
     /* 0x27F */ u8 field_0x27f;
@@ -49,7 +58,7 @@ public:
     /* 0x282 */ u8 field_0x282;
     /* 0x283 */ u8 field_0x283;
     /* 0x284 */ JGeometry::TVec3f field_0x284; // out-vector of fn_801F2618
-    /* 0x290 */ u8 field_0x290[0x29C - 0x290];
+    /* 0x290 */ JGeometry::TVec3f field_0x290;
     /* 0x29C */ JGeometry::TVec3f field_0x29c;
 }; // Size: 0x2A8
 
