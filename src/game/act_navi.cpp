@@ -8,6 +8,7 @@
 #include "game/GameView.h"
 #include "game/Message.h"
 #include "game/Player.h"
+#include "game/SpriteParams.h"
 #include "game/StageFlag.h"
 #include "game/tu_8021F064.h"
 #include "JSystem/JMath/JMath.h"
@@ -23,6 +24,13 @@ static const s16 lbl_8046A770[] = {
     -1, -1,
 };
 
+static const u16 lbl_8046A78C[16] = {
+    0x0513, 0x0514, 0x0515, 0x0516,
+    0x051B, 0x051C, 0x051D, 0x051E,
+    0x050F, 0x0510, 0x0511, 0x0512,
+    0x0517, 0x0518, 0x0519, 0x051A,
+};
+
 struct ColorRGB {
     u8 r, g, b;
 };
@@ -36,7 +44,14 @@ static const ColorRGB lbl_8046A7AC[6] = {
     {0x1E, 0xA0, 0xBE},
 };
 
+static const s32 lbl_8046A7C0[6] = {
+    0x1D0, 0x1D6, 0x1DC, 0x1E2, 0x1E8, 0x1EE,
+};
+
 static const s16* lbl_8053A188[] = {lbl_8046A770, NULL};
+s32 lbl_8053A190 = -1;
+
+static const char lbl_8053FD50[] = "xi<P_s";
 
 cls_804A6708::cls_804A6708() {
     field_0x2a8 = 0;
@@ -200,6 +215,42 @@ void cls_804A6708::vfunc_0x9C(u8 mapHit) {
     }
 }
 
+void cls_804A6708::vfunc_0x88() {
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+
+    switch (mState) {
+    case 4:
+        field_0x3c.z = 0.15f;
+        break;
+    case 7:
+        field_0x3c.z = -0.15f;
+        break;
+    case 9:
+        field_0x3c.z = 0.75f;
+        break;
+    }
+
+    switch (mState) {
+    case 4:
+    case 7: {
+        JGeometry::TVec2f vec;
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x2c0, &vec, FLT_MAX);
+        field_0x3c.x = vec.x;
+        field_0x3c.y = vec.y;
+        break;
+    }
+    case 10:
+        field_0x3c.x = 0.116666675f;
+        field_0x3c.y = -0.40000004f;
+        break;
+    case 9:
+        field_0x3c.y = -0.75f;
+        break;
+    }
+}
+
 void cls_804A6708::vfunc_0x98() {
     EnemyBase_804A4808::vfunc_0x98();
     if (mState == 9 && mPos.z > 350.0f) {
@@ -222,6 +273,24 @@ void cls_804A6708::vfunc_0xA0() {
         JGeometry::TVec3f focus(field_0x2c8, field_0x2cc - mPos.z, 0.0f);
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
     }
+}
+
+// FIXME: 91.05% (different: same length, 19 opcodes differ in SpriteParams_801F5AE0 register allocation).
+void cls_804A6708::draw() {
+    if (mState == 3) {
+        return;
+    }
+    if (!(field_0x2b8 > 0.0f)) {
+        return;
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = (u8)field_0x2b8;
+    bool flag = false;
+    if (mState == 9) {
+        flag = true;
+    }
+    params.field_0x20 = flag;
+    fn_801F02BC("enemy_both2_sob.bin", mAnim.mCel + lbl_8046A7C0[field_0x2ac], &params, 0x407, 0, false, 1.0f, 1.0f);
 }
 
 bool cls_804A6708::fn_8021D794() {
