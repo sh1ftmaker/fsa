@@ -19,6 +19,8 @@ public:
     // 0x80212170 (vtable slot 0x54, over EnemyBase's empty vfunc_0x54): if
     // mFlags has bit 0x8000 and field_0x2bc is set, the rail at field_0x2c0
     // is called with field_0x2bc, mPos and field_0x4.
+    // 0x80212288 (slot 0x0C, a plain `fn_80212288` symbol): decodes the spawn parameter field_0x90.
+    /* 0x0C */ virtual void init();
     /* 0x54 */ virtual void vfunc_0x54();
     // 0x80211078: zeroes field_0x3c, then calls fn_802110A8. Its only caller
     // is the vtable (slot 0x88, over EnemyBase's vfunc_0x88).

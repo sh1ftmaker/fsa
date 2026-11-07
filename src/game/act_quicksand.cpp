@@ -70,6 +70,167 @@ cls_804A6270::~cls_804A6270() {
     fn_80212AC0()->fn_80212BA0(mSerial);
 }
 
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_80212288); its literals fixed .sdata2 to 94.74 %
+void cls_804A6270::init() {
+    EnemyBase_804A4808::init();
+    s32 kind = field_0x90 & 7;
+    if (kind > 2) {
+        kind = 2;
+    } else if (kind < 0) {
+        kind = 0;
+    }
+    field_0x2a8 = kind;
+    switch (field_0x2a8) {
+    case 0:
+        field_0x390 = 1.0f;
+        field_0x394 = 2.0f;
+        break;
+    case 1:
+        field_0x390 = 3.0f;
+        field_0x394 = 5.0f;
+        break;
+    case 2:
+        field_0x390 = 6.0f;
+        field_0x394 = 8.0f;
+        break;
+    }
+    if ((field_0x90 >> 3) & 1) {
+        mFlags |= 0x4000;
+    }
+    if ((field_0x90 >> 4) & 1) {
+        mFlags |= 0x2000;
+    }
+    field_0x2bc = (field_0x90 >> 5) & 7;
+    s32 mode = (field_0x90 >> 8) & 0xF;
+    if (mode > 4) {
+        mode = 4;
+    } else if (mode < 0) {
+        mode = 0;
+    }
+    field_0x2ac = mode;
+    switch ((field_0x90 >> 12) & 3) {
+    case 0:
+        field_0x3a4 = 0.75f;
+        field_0x3a8 = 0.4f;
+        break;
+    case 1:
+        field_0x3a4 = 2.2f;
+        field_0x3a8 = 0.7f;
+        break;
+    default:
+        field_0x3a4 = 3.0f;
+        field_0x3a8 = 1.0f;
+        break;
+    }
+    if ((field_0x90 >> 25) & 1) {
+        mFlags |= 0x10000;
+    }
+    if ((field_0x90 >> 26) & 1) {
+        mFlags |= 0x8000;
+    }
+    field_0x2b8 = (field_0x90 >> 15) & 0x1F;
+    field_0x2b4 = (field_0x90 >> 20) & 0x1F;
+    field_0x2b0 = field_0x90 >> 27;
+    mBox.i.set(1.0f, 1.0f);
+    mBox.f.set(-1.0f, -1.0f);
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
+    field_0x80.i.set(1.0f, 1.0f);
+    field_0x80.f.set(-1.0f, -1.0f);
+    field_0xb0 = 0;
+    field_0x98 = 2;
+    mFlags |= 0x380;
+    mLife = 1000;
+    mLifeBackup = mLife;
+    field_0x194 = 1;
+    if (field_0x2ac == 0) {
+        if (mFlags & 0x4000) {
+            mState = 5;
+            field_0x54.x = field_0x394;
+            field_0x54.y = field_0x394;
+            field_0x54.z = field_0x394;
+        } else {
+            mState = 3;
+            field_0x54.x = field_0x390;
+            field_0x54.y = field_0x390;
+            field_0x54.z = field_0x390;
+        }
+        s32 viewSerial = field_0x2b8;
+        if (viewSerial != 0) {
+            getGameView_802D6A9C()->fn_802D8050(viewSerial, true, 0xff);
+        }
+        field_0x398 = 1.0f;
+    } else {
+        mState = 0;
+        field_0x54.x = 0.0f;
+        field_0x54.y = 0.0f;
+        field_0x54.z = 0.0f;
+    }
+    mStateTimer = 0;
+    field_0x250 = -1;
+    mSpeed = 0.0f;
+    mTargetSpeed = 0.0f;
+    if (mFlags & 0x2000) {
+        field_0x388 = getActorManager_801F856C()->spawnActor_801F9484('ARIJ', field_0x4, &mPos, mSerial, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x388);
+        if (actor != NULL) {
+            switch (field_0x2ac) {
+            case 0: {
+                s32 serial = field_0x388;
+                if (serial >= 0) {
+                    ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (a != NULL) {
+                        static_cast<cls_804A6340*>(a)->fn_80212ECC();
+                    }
+                }
+                break;
+            }
+            case 3:
+                static_cast<cls_804A6340*>(actor)->fn_80212F5C();
+                break;
+            }
+        }
+    }
+    if (field_0x2ac == 4) {
+        if (mFlags & 0x4000) {
+            field_0x39c = 16.0f * field_0x394;
+        } else {
+            field_0x39c = 16.0f * field_0x390;
+        }
+        field_0x39c -= 16.0f;
+        if (field_0x39c < 0.1f) {
+            field_0x39c = 0.1f;
+        }
+        field_0x3a0 = 16.0f * field_0x394 + 16.0f;
+    } else {
+        field_0x39c = 16.0f * field_0x394;
+        field_0x3a0 = 0.0f;
+    }
+    fn_80212AC0()->fn_80212BFC(mSerial);
+    bool active = false;
+    if (mState != 0 && field_0x54.x != 0.0f && field_0x398 != 0.0f) {
+        active = true;
+    }
+    if (active) {
+        f32 scaleX = field_0x54.x;
+        f32 field398 = field_0x398;
+        f32 field3a8 = field_0x3a8;
+        GameRootSub20_801902C0* shared = fn_801902C0();
+        if (shared->mQuicksandCount < 10) {
+            GameRootSub20_801902C0::QuicksandEntry& entry = shared->mQuicksandEntries[shared->mQuicksandCount];
+            entry.mPos.x = mPos.x;
+            entry.mPos.y = mPos.y;
+            entry.mPos.z = mPos.z;
+            entry.field_0xc = scaleX;
+            entry.field_0x10 = field398;
+            entry.field_0x14 = field3a8;
+            shared->mQuicksandCount++;
+        }
+    }
+}
+
 // FIXME(shotgun): not measurable (the original symbol is the plain fn_802121C8)
 void cls_804A6270::fn_802121C8() {
     if (!(mFlags & 0x2000)) {
@@ -276,3 +437,5 @@ void cls_804A6270::fn_80210D90() {
     fn_801F3604();
     leaveSand(this);
 }
+
+// fn_8021148C (0x808 bytes, the state machine update): not written (size).
