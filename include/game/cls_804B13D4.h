@@ -20,6 +20,7 @@ class cls_804B19E0;
 
 class cls_804B13D4 {
 public:
+    cls_804B13D4();
     /* 0x08 */ virtual ~cls_804B13D4();
 
     // tu_80418B64 (0x8041918C). Takes the player index; sets the byte at
@@ -133,9 +134,22 @@ public:
     // fn_8041CC04: the black / white of the Force Gem digits while the count is not negative.
     /* 0x244 */ JUtility::TColor field_0x244;
     /* 0x248 */ JUtility::TColor field_0x248;
-    /* 0x24C */ u8 field_0x24c[0x250 - 0x24C];
+    /* 0x24C */ u8 field_0x24c[4];
     /* 0x250 */ u8 field_0x250[4]; // fn_80418D08: base alphas of the four pane groups of field_0x8
-    /* 0x254 */ u8 field_0x254[0x27B - 0x254];
+    /* 0x254 */ u8 field_0x254[4];
+    /* 0x258 */ u8 field_0x258[3];
+    /* 0x25B */ u8 field_0x25b[3];
+    /* 0x25E */ u8 field_0x25e;
+    /* 0x25F */ u8 field_0x25f;
+    /* 0x260 */ u8 field_0x260[6];
+    /* 0x266 */ u8 field_0x266;
+    /* 0x267 */ u8 field_0x267;
+    /* 0x268 */ u8 field_0x268;
+    /* 0x269 */ u8 field_0x269;
+    /* 0x26A */ u8 field_0x26a;
+    /* 0x26B */ u8 field_0x26b;
+    /* 0x26C */ u8 field_0x26c[4];
+    /* 0x270 */ u8 field_0x270[0x27B - 0x270];
     /* 0x27B */ u8 field_0x27b[6]; // fn_80418D08: base alphas of field_0x2c's panes lbl_8048DDD0
     /* 0x281 */ u8 field_0x281[4]; // fn_8041FC2C sets 0xFF
     /* 0x285 */ u8 field_0x285[4]; // fn_8041FC2C sets the player index

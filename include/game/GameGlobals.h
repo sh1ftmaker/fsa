@@ -1015,7 +1015,8 @@ public:
     /* 0x10B */ u8 field_0x10b; // selects the pane tested by fn_8043D514 / fn_8043D57C
     /* 0x10C */ u8 field_0x10c;
     /* 0x10D */ u8 field_0x10d;
-    /* 0x10E */ u8 pad_0x10e[0x110 - 0x10E];
+    /* 0x10E */ u8 field_0x10e;
+    /* 0x10F */ u8 pad_0x10f;
     /* 0x110 */ f32 field_0x110; // where fn_8043DC98 moves 'Ndata05' of field_0xc
     /* 0x114 */ f32 field_0x114;
     // The number queue of fn_8043CB24, one entry per slot (field_0x252 counts them).
