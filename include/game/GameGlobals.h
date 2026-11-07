@@ -1447,6 +1447,10 @@ bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4);
 class JKRArchive;
 class cls_804A8578;
 class cls_804B1A38;
+class cls_804B0FB0;
+class cls_804B0FC0;
+struct J2DScreen;
+struct J2DPicture;
 class cls_804B0F50 {
 public:
     // 0x804009CC: sets lbl_8053AAF0, takes the boot flags from the save
@@ -1455,33 +1459,40 @@ public:
     cls_804B0F50();
     // 0x804007C4 (vtable 0x804B0F50, its only slot): unmounts
     // lbl_80529DEC.field_0x18, deletes field_0xc, field_0x14 and the seven
-    // archives (fn_803FF2C4, inlined) and clears save-region byte 0xF.
+    // 2D objects (fn_803FF2C4, inlined) and clears save-region byte 0xF.
     virtual ~cls_804B0F50();
     void fn_803FF2C4();
     void fn_803FF420();
     void fn_803FFAA8();
 
-    /* 0x04 */ u32 field_0x4;
-    /* 0x08 */ u32 field_0x8;
+    /* 0x04 */ cls_804AA8C8* field_0x4;
+    /* 0x08 */ cls_804AA8B8* field_0x8;
     /* 0x0C */ cls_804A8578* field_0xc;
     /* 0x10 */ u32 field_0x10;
     /* 0x14 */ cls_804B1A38* field_0x14;
-    // The loader's seven archives; fn_803FF2C4 (and the destructor) delete them.
-    /* 0x18 */ JKRArchive* field_0x18;
-    /* 0x1C */ JKRArchive* field_0x1c;
-    /* 0x20 */ JKRArchive* field_0x20;
-    /* 0x24 */ JKRArchive* field_0x24;
-    /* 0x28 */ JKRArchive* field_0x28;
-    /* 0x2C */ JKRArchive* field_0x2c;
-    /* 0x30 */ JKRArchive* field_0x30;
-    /* 0x34 */ u8 field_0x34[0x44 - 0x34];
+    // The loader's screen and six pictures; fn_803FF2C4 (and the destructor) delete them.
+    /* 0x18 */ J2DScreen* field_0x18;
+    /* 0x1C */ J2DPicture* field_0x1c;
+    /* 0x20 */ J2DPicture* field_0x20;
+    /* 0x24 */ J2DPicture* field_0x24;
+    /* 0x28 */ J2DPicture* field_0x28;
+    /* 0x2C */ J2DPicture* field_0x2c;
+    /* 0x30 */ J2DPicture* field_0x30;
+    /* 0x34 */ cls_804B0FC0* field_0x34;
+    /* 0x38 */ cls_804B0FC0* field_0x38;
+    /* 0x3C */ cls_804B0FC0* field_0x3c;
+    /* 0x40 */ cls_804B0FC0* field_0x40;
     /* 0x44 */ cls_804B0FC0* field_0x44; // fn_80401E10("/GC4Sword_usa/agb/client_thread.arc")
-    /* 0x48 */ u8 field_0x48[0x60 - 0x48];
+    /* 0x48 */ cls_804B0FB0* field_0x48;
+    /* 0x4C */ u8 field_0x4c[0x54 - 0x4C];
+    /* 0x54 */ cls_804B0FB0* field_0x54;
+    /* 0x58 */ cls_804B0FB0* field_0x58;
+    /* 0x5C */ cls_804B0FB0* field_0x5c;
     /* 0x60 */ u8 field_0x60; // tested by cls_804AA8C8::fn_8030A43C
     /* 0x61 */ u8 field_0x61[0x64 - 0x61];
     /* 0x64 */ f32 field_0x64;
     /* 0x68 */ f32 field_0x68;
-    /* 0x6C */ u8 field_0x6c[0x6E - 0x6C];
+    /* 0x6C */ s16 field_0x6c;
     /* 0x6E */ s16 field_0x6e;
     /* 0x70 */ s16 field_0x70;
     /* 0x72 */ s16 field_0x72;
