@@ -6,6 +6,95 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_flying_tile.h"
 
+// FIXME(shotgun): 99 %, scheduling + reloc-name
+void FlyingTile_804AC100::init() {
+    field_0x244 = field_0x90 & 0x7FF;
+    field_0x250 = (field_0x90 >> 11) & 0x1F;
+    field_0x24c = (field_0x90 >> 16) & 0xF;
+    field_0x254 = (field_0x90 >> 20) & 0xF;
+    field_0x264 = ((field_0x90 >> 24) & 7) * 5 + 15;
+    mLife = 0;
+    field_0x27c = 0.0f;
+    field_0x280 = 0.0f;
+    field_0x284 = 0.0f;
+    field_0x3c.x = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.z = 0.0f;
+    field_0x234 = 0;
+    field_0x260 = 0;
+    field_0x288 = NULL;
+    field_0x238 = 0;
+    field_0x23c = 5;
+    field_0x25a = 0;
+    field_0x240 = 0x8000;
+    field_0x258 = 0;
+    field_0x114 = 1;
+    field_0x268 = 1;
+    field_0x270 = field_0x244 * 60 + 60;
+    field_0x248 = field_0x244;
+    field_0x278 = 0;
+    field_0x26c = 0xFFF;
+    field_0x274 = 0;
+    if (field_0x250 == 0) {
+        field_0x230 = 0;
+    } else {
+        field_0x230 = 4;
+    }
+    switch (field_0x24c) {
+    case 0:
+    case 5:
+    case 8:
+        mPos += JGeometry::TVec3f(8.0f, 8.0f, 0.0f);
+        field_0x80.set(-3.5f, -3.5f, 3.5f, 3.5f);
+        mBox.set(-3.5f, -3.5f, 3.5f, 3.5f);
+        field_0x25c = 0x1000;
+        field_0x114 = 2;
+        break;
+    case 1:
+        field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        field_0x25c = 0x1000;
+        field_0x114 = 2;
+        break;
+    case 2:
+        mPos += JGeometry::TVec3f(0.0f, 16.0f, 0.0f);
+        field_0x80.set(-30.0f, -30.0f, 30.0f, 30.0f);
+        mBox.set(-30.0f, -30.0f, 30.0f, 30.0f);
+        field_0x25c = 0x800;
+        field_0x288 = getGameView_802D6A9C()->fn_802D9C4C();
+        field_0x114 = 2;
+        break;
+    case 3:
+        field_0x80.set(-40.0f, -40.0f, 40.0f, 40.0f);
+        mBox.set(-40.0f, -40.0f, 40.0f, 40.0f);
+        field_0x25c = 0x400;
+        field_0x288 = getGameView_802D6A9C()->fn_802D9C4C();
+        field_0x114 = 4;
+        field_0x268 = 2;
+        break;
+    case 4:
+        field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        field_0x25c = 0x800;
+        field_0x114 = 4;
+        break;
+    case 6:
+    case 9:
+        field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        mBox.set(-14.0f, -14.0f, 14.0f, 14.0f);
+        field_0x25c = 0x800;
+        field_0x114 = 4;
+        break;
+    case 7:
+        mPos += JGeometry::TVec3f(8.0f, 8.0f, 0.0f);
+        field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
+        field_0x25c = 0x800;
+        field_0x114 = 2;
+        break;
+    }
+}
+
 // FIXME(shotgun): 100 %, matches
 void FlyingTile_804AC100::vfunc_0x10() {
     s32 serial = -1;
