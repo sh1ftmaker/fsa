@@ -1,7 +1,6 @@
 unit	family	function	class	vtable	src_before	hdr_before
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
-act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
@@ -12,12 +11,10 @@ act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804
 act_trick_floor_2	sinit	__sinit_act_trick_floor_2_cpp	-	-	new	new
 act_zora_fish_herder	sinit	__sinit_act_zora_fish_herder_cpp	-	-	new	-
 tu_8011CEC8	sinit	__sinit_tu_8011CEC8_cpp	-	-	new	-
-tu_801555D8	sinit	__sinit_tu_801555D8_cpp	-	-	new	-
 tu_8015F454	sinit	__sinit_tu_8015F454_cpp	-	-	new	-
 tu_801A0710	sinit	__sinit_tu_801A0710_cpp	-	-	new	-
 tu_801B27DC	sinit	__sinit_tu_801B27DC_cpp	-	-	new	-
 tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
-tu_801C9AF8	sinit	__sinit_tu_801C9AF8_cpp	-	-	new	-
 tu_801DD1AC	sinit	__sinit_tu_801DD1AC_cpp	-	-	new	-
 tu_8022AD64	fwd	fn_80239B64__FlPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
 tu_8022AD64	loop	fn_8022E2D8__Fl	fn_80240840__15Player_804A6F38Fl	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
