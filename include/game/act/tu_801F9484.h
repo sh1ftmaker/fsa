@@ -681,11 +681,42 @@ public:
 }; // Size: 0x274
 
 // Spawned for 'TWTG'.
+class cls_8031709C;
+
 class cls_804AAD60 : public ActorBase_804A5770 {
 public:
     cls_804AAD60();
     /* 0x08 */ virtual ~cls_804AAD60();
-    /* 0x230 */ u8 field_0x230[0x4C];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+
+    void fn_80313C20();
+    void fn_80313D7C();
+    void fn_803142E4();
+    void fn_803146DC();
+    void fn_80314B1C();
+    void fn_80315080();
+    void fn_80315460();
+    void fn_80315864();
+    void fn_80315C80();
+    void fn_80315C84();
+    void fn_80315EE8();
+    void updateFacing();
+
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244[4];
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ JGeometry::TBox2f field_0x258;
+    /* 0x268 */ u32 field_0x268;
+    /* 0x26C */ u8 field_0x26c;
+    /* 0x270 */ s32 field_0x270;
+    /* 0x274 */ s32 field_0x274;
+    /* 0x278 */ cls_8031709C* field_0x278;
 }; // Size: 0x27C
 
 // Spawned for 'SBAL'. Code: game/tu_80334318.cpp.
