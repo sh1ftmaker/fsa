@@ -139,18 +139,58 @@ public:
 
 #include "game/act/act_hinox.h"
 
-// Spawned for 'SLR2'.
+// Spawned for 'SLR2'. Code: game/tu_801555D8.cpp.
 class cls_804A00C8 : public ActorBase_804A5770 {
 public:
     cls_804A00C8() {}
     /* 0x08 */ virtual ~cls_804A00C8();
-    /* 0x230 */ u8 field_0x230[8];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    // 0x80157E20: clears the partner's (field_0x284) knock-back velocity, takes one off the count of
+    // the actor field_0x280 names when this one's life is spent.
+    /* 0x44 */ virtual void vfunc_0x44();
+    // 0x80157C68: after a landing on a tile of kind 2, 3 or 0xE puts it in state 0xC; true when it did.
+    /* 0x54 */ virtual bool vfunc_0x54();
+    /* 0x230 */ s32 mState;
+    /* 0x234 */ s16 field_0x234;
+    /* 0x236 */ u8 field_0x236[2];
     // SHARED-EDIT: written by the 'SLR4' actor (game/act_chief_soldier.cpp).
     /* 0x238 */ s32 field_0x238;
     /* 0x23C */ s32 field_0x23c;
-    /* 0x240 */ u8 field_0x240[0x40];
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ s32 field_0x264;
+    /* 0x268 */ s32 field_0x268;
+    /* 0x26C */ s32 field_0x26c;
+    /* 0x270 */ s32 field_0x270;
+    /* 0x274 */ s32 field_0x274;
+    /* 0x278 */ s32 field_0x278;
+    /* 0x27C */ s32 field_0x27c;
     /* 0x280 */ s32 field_0x280;
-    /* 0x284 */ u8 field_0x284[0x40];
+    /* 0x284 */ s32 field_0x284;
+    /* 0x288 */ s32 field_0x288;
+    /* 0x28C */ s32 field_0x28c;
+    /* 0x290 */ s32 field_0x290;
+    /* 0x294 */ f32 field_0x294;
+    /* 0x298 */ f32 field_0x298;
+    /* 0x29C */ f32 field_0x29c;
+    /* 0x2A0 */ f32 field_0x2a0;
+    /* 0x2A4 */ f32 field_0x2a4;
+    /* 0x2A8 */ u8 field_0x2a8;
+    /* 0x2A9 */ u8 field_0x2a9;
+    /* 0x2AA */ s16 field_0x2aa;
+    /* 0x2AC */ f32 field_0x2ac;
+    /* 0x2B0 */ f32 field_0x2b0;
+    /* 0x2B4 */ f32 field_0x2b4;
+    /* 0x2B8 */ JGeometry::TVec3f field_0x2b8;
 }; // Size: 0x2C4
 
 // Spawned for 'BPOH'. Code: game/tu_801618D0.cpp.
