@@ -34,6 +34,8 @@ struct cls_801D6A58 {
     cls_801D6A58();
     // 0x801D7874: sets field_0x0 to -1, the two bytes and the three floats to 0.
     void fn_801D7874();
+    // 0x801D7830: damps the two floats (0.97) and lets field_0x10 fall by 0.2 per call, to -4.
+    void fn_801D7830();
 
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ u8 field_0x4;
@@ -57,6 +59,9 @@ struct cls_801D6CEC {
     }
     // Writes (x value, y value, 0.0f) to *out.
     void fn_801D6CEC(JGeometry::TVec3f* out);
+    // 0x801D6D08: starts the z sine. 0x801D6D38: starts the x and y sines along dir (length 20).
+    void fn_801D6D08();
+    void fn_801D6D38(const JGeometry::TVec2f* dir);
     /* 0x00 */ DampedSine_801E4A18 field_0x0;
     /* 0x14 */ DampedSine_801E4A18 field_0x14;
     /* 0x28 */ DampedSine_801E4A18 field_0x28;
@@ -143,6 +148,12 @@ public:
     ~cls_801D7730();
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
+    // Shotgun pass: the ring's per-frame steps (names by address).
+    void fn_801D77B4();                                          // reset
+    void fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer);   // restart and spawn
+    void fn_801D6E20(const JGeometry::TVec3f* pos);              // follow
+    void fn_801D70BC(const JGeometry::TVec3f* pos, s32 player);  // fling one
+    void fn_801D72C0(const JGeometry::TVec3f* pos);              // fling all
     /* 0x00 */ s32 field_0x0[0x10];
     /* 0x40 */ s32 field_0x40; // cleared by the constructor
     /* 0x44 */ s32 field_0x44; // cleared by the constructor
