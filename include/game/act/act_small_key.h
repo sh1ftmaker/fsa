@@ -22,6 +22,7 @@ public:
     // 0x802C3AE4: the key lying on the floor (pick-up, pushes, pits; registers its place with
     // the view through fn_802D6D70).
     void fn_802C3AE4();
+    void fn_802C2C30();
     // 0x802C1674 / 0x802C1778 (act_small_key's range, not written yet): no
     // arguments besides the key; Player_804A6F38::fn_80242560 calls them on
     // every 'KEY0' actor (fn_802C1778 also on the key a player holds).
@@ -76,7 +77,8 @@ public:
     /* 0x238 */ s32 field_0x238; // layer
     /* 0x23C */ u32 field_0x23c; // GameView_804A9950::fn_802D8328 stores the key value's top 2 bits (stw)
     /* 0x240 */ s32 field_0x240; // state; 4 is tested by act_invisible_npc_wall_tomi
-    /* 0x244 */ u8 field_0x244[0x254 - 0x244]; // not yet known
+    /* 0x244 */ ActorBase_804A5770* field_0x244;
+    /* 0x248 */ JGeometry::TVec3f field_0x248;
     /* 0x254 */ JGeometry::TVec3f field_0x254; // position of the actor carrying the key
     /* 0x260 */ JGeometry::TVec3f field_0x260; // position, set by fn_802C1D30
     /* 0x26C */ s32 field_0x26c; // layer, set by fn_802C1D30
