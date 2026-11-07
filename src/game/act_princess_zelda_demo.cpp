@@ -4,6 +4,9 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/cls_8049D740.h"
+#include "game/GameRootSub20.h"
+#include "game/SpriteParams.h"
+#include "JSystem/JMath/JMath.h"
 
 // FIXME(shotgun): 63.6 %, missing/extra
 PrincessZeldaDemo_8049D208::PrincessZeldaDemo_8049D208() {
@@ -166,6 +169,104 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
     }
     field_0x238 = 0x31;
 }
+
+// Not auto-inlined: draw calls fn_8010F7EC, update calls fn_8010F4DC out of line in the original
+// (docs/INLINING.md, pragma rule 1); fn_8010F4DC calls fn_8010F668 out of line twice.
+#pragma auto_inline off
+// Draws the maiden's sprite (frame `arg` of the current animation): bobbing in z while state 0x2F.
+// FIXME(shotgun): 71 %, missing/extra + reloc-name
+void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    params.field_0x1d = field_0x24c;
+    if (field_0x238 == 0x2F) {
+        field_0x260[1] += 0x258;
+        if (field_0x260[1] >= 0x10000) {
+            field_0x260[1] -= 0x10000;
+        }
+        PSMTXIdentity(mtx);
+        mtx[2][3] = 4.0f * JMath::sincosTable_.sinShort(field_0x260[1]);
+        params.mMtx = mtx;
+    }
+    if (arg == 0x21B) {
+        fn_801F02BC("enemy_gc_sob.bin", arg + mAnim0.mCel, &params, 0x407, 0, false, 1.0f, 1.0f);
+    } else {
+        fn_801F02BC("enemy_both2_sob.bin", arg + mAnim0.mCel, &params, 0x407, 0, false, 1.0f, 1.0f);
+    }
+}
+
+// The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
+// FIXME(shotgun): 61 %, missing/extra + reloc-name
+void fn_8010F668(Mtx m, const Vec* axis, f32 rad) {
+    f32 sq = axis->x * axis->x + axis->y * axis->y + axis->z * axis->z;
+    f32 x;
+    f32 y;
+    f32 z;
+    if (sq <= 32.0f * FLT_EPSILON) {
+        x = 0.0f;
+        y = 0.0f;
+        z = 0.0f;
+    } else {
+        f32 inv = sq;
+        if (!(sq <= 0.0f)) {
+            inv = JGeometry::TUtil<f32>::inv_sqrt(sq);
+        }
+        x = axis->x * inv;
+        y = axis->y * inv;
+        z = axis->z * inv;
+    }
+    f32 s = sin(rad);
+    f32 c = cos(rad);
+    f32 t = 1.0f - c;
+    m[0][0] = t * (x * x) + c;
+    m[0][1] = y * (t * x) - s * z;
+    m[0][2] = z * (t * x) + s * y;
+    m[1][0] = y * (t * x) + s * z;
+    m[1][1] = t * (y * y) + c;
+    m[1][2] = z * (t * y) - s * x;
+    m[2][0] = z * (t * x) - s * y;
+    m[2][1] = z * (t * y) + s * x;
+    m[2][2] = t * (z * z) + c;
+}
+
+// Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
+// FIXME(shotgun): 69 %, different + reloc-name
+void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
+    field_0x268[0] += 0.01f;
+    Mtx mtx;
+    PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
+    Vec axisX = {1.0f, 0.0f, 0.0f};
+    fn_8010F668(mtx, &axisX, 0.08726646f);
+    Mtx rot;
+    for (s32 i = 0; i < 3; i++) {
+        for (s32 j = 0; j < 4; j++) {
+            rot[i][j] = 0.0f;
+        }
+    }
+    Vec axisZ = {0.0f, 0.0f, 1.0f};
+    fn_8010F668(rot, &axisZ, field_0x268[0]);
+    PSMTXConcat(mtx, rot, mtx);
+    field_0x240++;
+    if (field_0x240 >= 200) {
+        field_0x240 = 0;
+    }
+    s32 frame = field_0x240;
+    f32 scale = field_0x270;
+    GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[6];
+    if (crystal.mModel != NULL && crystal.mActive == 0) {
+        crystal.mActive = 1;
+        crystal.mPos.x = scale;
+        crystal.mPos.y = scale;
+        crystal.mPos.z = scale;
+        PSMTXCopy(mtx, crystal.mMtx);
+        crystal.field_0x48 = -1.0f;
+        crystal.field_0x4c = frame;
+        crystal.field_0x54 = 0;
+        crystal.field_0x58 = 1;
+    }
+}
+
+#pragma auto_inline reset
 
 // FIXME(shotgun): 94.4 %, missing/extra
 void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
