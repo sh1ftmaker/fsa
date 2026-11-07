@@ -1,12 +1,8 @@
 unit	family	function	class	vtable	src_before	hdr_before
 act_armos	dtor	__dt__14Armos_8049F260Fv	Armos_8049F260	0x8049F260	new	new
 act_armos	sinit	__sinit_act_armos_cpp	-	-	new	new
-act_fish	dtor	__dt__13Fish_804AC658Fv	Fish_804AC658	0x804AC658	new	new
-act_fish	sinit	__sinit_act_fish_cpp	-	-	new	new
 act_flying_tile	dtor	__dt__19FlyingTile_804AC100Fv	FlyingTile_804AC100	0x804AC100	new	new
 act_flying_tile	sinit	__sinit_act_flying_tile_cpp	-	-	new	new
-act_force_gem_spawner	dtor_emit	__dt__24ForceGemSpawner_804AB660Fv	ForceGemSpawner_804AB660	0x804AB660	new	new
-act_force_gem_spawner	sinit	__sinit_act_force_gem_spawner_cpp	-	-	new	-
 act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
@@ -14,8 +10,6 @@ act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
 act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
 act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
-act_score	dtor	__dt__14Score_804AF4C0Fv	Score_804AF4C0	0x804AF4C0	new	new
-act_score	sinit	__sinit_act_score_cpp	-	-	new	new
 act_searchlight	dtor	__dt__20Searchlight_804A0FF8Fv	Searchlight_804A0FF8	0x804A0FF8	new	new
 act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
 act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
@@ -48,8 +42,6 @@ tu_8022AD64	loop	fn_8023A6CC__FPCQ29JGeometry8TBox2<f>l	fn_80256C74__15Player_80
 tu_8022AD64	loop	fn_8023B004__FPCQ29JGeometry8TBox2<f>l	fn_802732C4__15Player_804A6F38FPCQ29JGeometry8TBox2<f>l	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
 tu_802A4654	sinit	__sinit_tu_802A4654_cpp	-	-	new	-
 tu_802E2990	sinit	__sinit_tu_802E2990_cpp	-	-	new	-
-tu_802E9428	dtor	__dt__12cls_804AA0FCFv	cls_804AA0FC	0x804AA0FC	new	new
 tu_80334318	sinit	__sinit_tu_80334318_cpp	-	-	new	-
-tu_80354D64	sinit	__sinit_tu_80354D64_cpp	-	-	new	-
 tu_803FF2C4	sinit	__sinit_tu_803FF2C4_cpp	-	-	new	-
 tu_80438C68	sinit	__sinit_tu_80438C68_cpp	-	-	new	-
