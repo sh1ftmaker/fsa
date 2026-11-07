@@ -688,6 +688,287 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
 }
 
 // Destructor at 0x8034EDDC.
+// FIXME(shotgun): 58.4 %, missing/extra + reloc-name
+void OBJLift_804ACA00::update() {
+    bool present = false;
+    if (field_0x230 == 4) {
+        if (vfunc_0x34() == 1) {
+            showBreakEffect(field_0x4);
+            startSound_801F0E34(0x30003, 0);
+            fn_801F0D20(0x42);
+            field_0x25c = 0;
+            if (field_0x258 == 0xB) {
+                field_0x230 = 7;
+            } else {
+                field_0x230 = 0;
+            }
+        }
+        return;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x4 == getPlayerLayer_8023DE58(i) && !fn_8022F478(i)) {
+            present = true;
+            break;
+        }
+    }
+    if (field_0x254 > 0) {
+        field_0x254--;
+        return;
+    }
+    if (field_0x282 == 1) {
+        if (field_0x24c % 40 == 0x13) {
+            startSound_801F0E34(0x30068, 0);
+        }
+        field_0x24c--;
+        if (field_0x24c <= 0) {
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x97, 0, -3, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, 0x98, 0, -3, NULL, NULL, true, 1.0f);
+            field_0x258 = 11;
+            field_0x282 = 0;
+            field_0x24c = 0;
+            field_0x230 = 7;
+            field_0x240 = 11;
+            field_0x248 = 10;
+            field_0x274 = -1;
+            field_0x268 = field_0x264;
+            f32 dx = mPos.x - mSpawnPos.x;
+            f32 dy = mPos.y - mSpawnPos.y;
+            if (JGeometry::TVec2<f32>(dx, dy).length() > 48.0f) {
+                mPos.x = mSpawnPos.x;
+                mPos.y = mSpawnPos.y;
+                mPos.z = mSpawnPos.z;
+                showBreakEffect(field_0x4);
+                startSound_801F0E34(0x30003, 0);
+            } else {
+                mPos.x = mSpawnPos.x;
+                mPos.y = mSpawnPos.y;
+                mPos.z = mSpawnPos.z;
+            }
+            if (field_0x4 < 8) {
+                field_0x28c = 0.0f;
+            }
+            return;
+        }
+    }
+    if (field_0x28c < 1.0f) {
+        field_0x28c += 0.035f;
+        if (field_0x28c >= 1.0f) {
+            field_0x28c = 1.0f;
+        }
+        return;
+    }
+    field_0x234 = mPos.x;
+    field_0x238 = mPos.y;
+    field_0x23c = mPos.z;
+    field_0x26c = 0;
+    field_0x26c = fn_80350974();
+    if (field_0x288 == 0 &&
+        (field_0x230 == 1 || field_0x230 == 3 ||
+         ((field_0x258 == 5 || field_0x258 == 0xC) && PSVECMag(&field_0x3c) > 0.0f))) {
+        mPos += field_0x3c;
+    }
+
+    switch (field_0x230) {
+    case 0: {
+        s32 dir;
+        if (field_0x260 == 0) {
+            dir = -1;
+        } else if (field_0x258 == 5) {
+            dir = fn_803506E0();
+        } else if (field_0x258 == 12) {
+            dir = fn_80350530();
+        } else if (field_0x258 <= 4 || (field_0x258 >= 16 && field_0x258 <= 20)) {
+            if (field_0x281 == 1 && field_0x26c >= 4) {
+                if (field_0x25c == 1 && !vfunc_0x34()) {
+                    vfunc_0x30(0xFF, true);
+                }
+                startSound_801F0E34(0x30009, 0);
+                field_0x244 = 30;
+                field_0x289 = 1;
+                field_0x230 = 5;
+                dir = field_0x268;
+            } else {
+                dir = -1;
+            }
+        } else if (field_0x258 >= 6 && field_0x258 <= 9) {
+            if (field_0x281 == 1 && field_0x280 == 1) {
+                if (field_0x25c == 1 && !vfunc_0x34()) {
+                    vfunc_0x30(0xFF, true);
+                }
+                startSound_801F0E34(0x30009, 0);
+                field_0x230 = 1;
+                dir = field_0x268;
+            } else {
+                dir = -1;
+            }
+        } else {
+            dir = -1;
+        }
+        fn_8035001C(dir);
+        if (field_0x268 != -1) {
+            JGeometry::TVec3f saved = mPos;
+            mPos += field_0x3c;
+            if (fn_803502CC() == 1) {
+                field_0x3c.x = 0.0f;
+                field_0x3c.y = 0.0f;
+                field_0x3c.z = 0.0f;
+                field_0x230 = 0;
+                if (field_0x258 == 0xC) {
+                    field_0x244 = 0x78;
+                    field_0x268 ^= 1;
+                } else {
+                    field_0x244 = 0;
+                }
+            }
+            mPos = saved;
+        } else if (field_0x258 >= 6 && field_0x258 <= 9) {
+            if (field_0x280 == 0) {
+                field_0x281 = 1;
+                field_0x244 = 0;
+            }
+        } else if (field_0x26c <= 0) {
+            field_0x281 = 1;
+            field_0x244 = 0;
+        }
+        break;
+    }
+    case 1:
+    case 3:
+        if (fn_803502CC() == 1) {
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.z = 0.0f;
+            mPos.x = field_0x234;
+            mPos.y = field_0x238;
+            mPos.z = field_0x23c;
+            if (field_0x258 <= 4 || (field_0x258 >= 0x10 && field_0x258 <= 0x14)) {
+                field_0x230 = 6;
+                field_0x281 = 0;
+                field_0x244 = 30;
+            } else if (field_0x258 == 5) {
+                field_0x230 = 0;
+                field_0x244 = 0;
+                if (present == true && field_0x288 == 0) {
+                    startSound_801F0E34(0x30067, 0);
+                }
+            } else {
+                field_0x268 ^= 1;
+                field_0x244 = 0x78;
+                field_0x281 = 0;
+                if (field_0x230 == 1) {
+                    field_0x230 = 2;
+                } else if (field_0x287 == 1) {
+                    field_0x230 = 0;
+                } else {
+                    field_0x230 = 2;
+                }
+                if (present == true && field_0x288 == 0) {
+                    startSound_801F0E34(0x30067, 0);
+                }
+            }
+        }
+        if (present == true && field_0x288 == 0) {
+            startSound_801F0E34(0x30066, 0);
+        }
+        break;
+    case 2:
+        if (field_0x281 == 1 && field_0x244 == 0) {
+            fn_8035001C(field_0x268);
+            if (present == true && field_0x288 == 0) {
+                startSound_801F0E34(0x30009, 0);
+            }
+            if (field_0x258 <= 4 || (field_0x258 >= 0x10 && field_0x258 <= 0x14)) {
+                field_0x244 = 30;
+                field_0x230 = 5;
+            } else {
+                field_0x230 = 3;
+            }
+        } else if (field_0x258 >= 6 && field_0x258 <= 9) {
+            if (field_0x280 == 0) {
+                field_0x281 = 1;
+            }
+            if (field_0x281 == 1 && field_0x280 == 1) {
+                field_0x244 = 0;
+            }
+        } else {
+            if (field_0x26c <= 0) {
+                field_0x281 = 1;
+            }
+            if (field_0x281 == 1 && field_0x26c >= 4) {
+                field_0x244 = 0;
+            }
+        }
+        break;
+    case 5:
+        if (present == true && field_0x288 == 0) {
+            startSound_801F0E34(0x30066, 0);
+        }
+        mPos.y += 0.1f;
+        field_0x290 -= 0.1f;
+        if (field_0x244 <= 0) {
+            if (field_0x268 == field_0x264) {
+                field_0x230 = 1;
+            } else {
+                field_0x230 = 3;
+            }
+            field_0x244 = 10;
+        }
+        break;
+    case 6:
+        mPos.y -= 0.1f;
+        field_0x290 += 0.1f;
+        if (field_0x244 <= 0) {
+            if (field_0x268 == field_0x264) {
+                field_0x230 = 2;
+            } else if (field_0x287 == 1) {
+                field_0x230 = 0;
+            } else {
+                field_0x230 = 2;
+            }
+            field_0x244 = 0x78;
+            field_0x268 ^= 1;
+            if (present == true && field_0x288 == 0) {
+                startSound_801F0E34(0x30067, 0);
+            }
+        }
+        if (field_0x26c <= 0) {
+            field_0x281 = 1;
+        }
+        if (field_0x230 == 6 && present == true && field_0x288 == 0) {
+            startSound_801F0E34(0x30066, 0);
+        }
+        break;
+    case 7:
+        field_0x248--;
+        if (field_0x248 <= 0) {
+            field_0x248 = 10;
+            field_0x240++;
+            if (field_0x240 > 12) {
+                field_0x240 = 11;
+            }
+        }
+        break;
+    }
+
+    if (field_0x244 > 0) {
+        field_0x244--;
+        if (field_0x244 <= 0 && (field_0x230 == 0 || field_0x230 == 2)) {
+            field_0x281 = 1;
+        }
+    }
+    if (present == true && field_0x288 == 0 && (field_0x258 == 5 || field_0x258 == 0xC)) {
+        f32 limit = 32.0f * FLT_EPSILON;
+        if (field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z > limit) {
+            startSound_801F0E34(0x30066, 0);
+        } else if (field_0x294 * field_0x294 + field_0x298 * field_0x298 + field_0x29c * field_0x29c > limit) {
+            startSound_801F0E34(0x30067, 0);
+        }
+    }
+    field_0x294 = field_0x3c.x;
+    field_0x298 = field_0x3c.y;
+    field_0x29c = field_0x3c.z;
+}
+
 // FIXME(shotgun): 84.1 %, missing/extra + reloc-name (state 0x13 rotation is a stand-in)
 void OBJLift_804ACA00::draw() {
     s32 alpha = 0xFF;
