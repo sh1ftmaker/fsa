@@ -28,6 +28,7 @@ public:
     void fn_8032B7C0();
     // 0x8032BB90: a player slashing it (Camera test on screen) turns it into a flying gem.
     void fn_8032BB90();
+    inline void tickTimer();
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234; // the state to return to (init: 0x12)
     /* 0x238 */ f32 field_0x238;
