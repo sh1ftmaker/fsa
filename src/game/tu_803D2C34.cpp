@@ -234,8 +234,6 @@ void cls_804B0288::fn_803D521C() {
     }
 }
 
-extern "C" void fn_80382B48(char* dst, u32 id, s32 flag, const char* yes, const char* no);
-
 // FIXME(shotgun): 99.95 %, scheduling
 void cls_804B0288::fn_803D5090() {
     if (field_0x2174 == 1) {
