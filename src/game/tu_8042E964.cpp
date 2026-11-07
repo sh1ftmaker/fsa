@@ -257,7 +257,6 @@ void cls_804B1634::fn_804310BC() {
     field_0xec = 0;
 }
 
-// FIXME(shotgun): 100 %, matches
 // The width of the noun fn_80430368 appends (only nouns 1-5; the space is the font's 0xA0).
 f32 cls_804B1634::fn_80430518(u8 noun, s32 count, f32 scale) {
     f32 total = 0.0f;
