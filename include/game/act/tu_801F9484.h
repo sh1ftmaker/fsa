@@ -182,14 +182,44 @@ public:
     /* 0x2F4 */ JUtility::TColor field_0x2f4[3];
 }; // Size: 0x300
 
-// Spawned for 'SLR3'.
+// Spawned for 'SLR3'. Code: game/tu_80170008.cpp.
 class cls_804A0810 : public ActorBase_804A5770 {
 public:
     cls_804A0810() {}
     /* 0x08 */ virtual ~cls_804A0810();
-    /* 0x230 */ u8 field_0x230[0x6C];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    /* 0x44 */ virtual void vfunc_0x44();
+    /* 0x230 */ s32 field_0x230; // state (0-3)
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ s32 field_0x248;
+    /* 0x24C */ s32 field_0x24c;
+    /* 0x250 */ s32 field_0x250;
+    /* 0x254 */ s32 field_0x254;
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ s32 field_0x260;
+    /* 0x264 */ s32 field_0x264;
+    /* 0x268 */ s32 field_0x268; // the life at init
+    /* 0x26C */ s32 field_0x26c; // serial of the 'SLR3' helper actor, 0 for none
+    /* 0x270 */ s32 field_0x270; // bit 8 of field_0x90
+    /* 0x274 */ u8 field_0x274;
+    /* 0x275 */ u8 field_0x275[3]; // not yet known
+    /* 0x278 */ f32 field_0x278;
+    /* 0x27C */ f32 field_0x27c;
+    /* 0x280 */ f32 field_0x280;
+    /* 0x284 */ f32 field_0x284;
+    /* 0x288 */ f32 field_0x288;
+    /* 0x28C */ JPABaseEmitter* field_0x28c;
+    /* 0x290 */ f32 field_0x290[3];
     /* 0x29C */ JGeometry::TVec3f field_0x29c[10];
-    /* 0x314 */ u8 field_0x314[0x24];
+    /* 0x314 */ u8 field_0x314[0x32C - 0x314]; // not yet known
+    /* 0x32C */ f32 field_0x32c[3]; // copy of mPos made by init
 }; // Size: 0x338
 
 
