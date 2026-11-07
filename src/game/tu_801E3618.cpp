@@ -7,7 +7,6 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 
-extern "C" bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out);
 
 // FIXME(shotgun): 80.00 %, different + reloc-name
 void VaatiBoss_804A4958::fn_801E4790(bool big) {

@@ -406,6 +406,13 @@ void fn_801CC350(const JGeometry::TVec3f* normal, JGeometry::TVec3f* vel);
 // around it all have tile code 0 on `layer` (with the view's layer flag).
 bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer);
 
+// game/tu_801CB270.cpp (shotgun pass; C++ linkage). How far box `a` sticks out of box `b`, as
+// the move that puts it back (*out); true if it does.
+bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out);
+// game/tu_801CB270.cpp: moves *cur toward *target by `factor` of the way, the step clamped between
+// minStep and maxStep; true once the point is on the target.
+bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep);
+
 extern "C" {
 
 // game/tu_801CB270.cpp (not written yet; 0x801CCFE4, 0xEC bytes). Whether

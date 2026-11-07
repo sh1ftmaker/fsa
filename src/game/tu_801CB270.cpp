@@ -23,9 +23,6 @@
 // Forward declaration (defined at its place below fn_801CC9F8).
 f32 tileCenter(f32 v);
 
-// Shotgun pass: not declared in a header yet (C names in the original).
-extern "C" bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out);
-extern "C" bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep);
 
 
 
