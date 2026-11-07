@@ -42,7 +42,6 @@ public:
     /* 0x250 */ u8 field_0x250[0x260 - 0x250]; // not yet known
     /* 0x260 */ JGeometry::TBox2f field_0x260;
     /* 0x270 */ u8 field_0x270;
-    // Size: unknown; the fields used so far end at 0x271.
-};
+}; // Size: 0x274
 
 #endif

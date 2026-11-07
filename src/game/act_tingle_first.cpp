@@ -69,16 +69,15 @@ void cls_804AADD8::init() {
     field_0x270 = 0;
 }
 
-// FIXME: 96.46%. missing/extra: the original uses a paired-single squared
+// FIXME: 98.00%. missing/extra: the original uses a paired-single squared
 // distance (psq_l/ps_sub/ps_mul/ps_madd/ps_sum0, 9 instrs vs 12 scalar) in
-// selectNearestPlayer's loop, schedules the box corner stores in update() and
-// cases 10/13 after loading mPos.y, and swaps the stack slots of the case 5/7
+// selectNearestPlayer's loop, and swaps the stack slots of the case 5/7
 // TVec3f temporaries.
 void cls_804AADD8::update() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
-    box.f.x += mPos.x;
     box.i.y += mPos.y;
+    box.f.x += mPos.x;
     box.f.y += mPos.y;
 
     if (field_0x230 < 9) {
@@ -125,11 +124,14 @@ void cls_804AADD8::update() {
         fn_8022FE80(field_0x234, field_0x4, mSerial, false, false);
         {
             s32 player = fn_8022FD8C(mSerial);
-            if (player >= 0 && talk(player, 0x50D, mSerial, field_0x4, mPos, 0x102)) {
-                field_0x230 = 6;
-                s32 layer = field_0x4;
-                JGeometry::TVec3f effectPos(mPos);
-                field_0x24c->fn_80316E50(layer, effectPos);
+            if (player >= 0) {
+                s32 serial = mSerial;
+                if (talk(player, 0x50D, serial, field_0x4, mPos, 0x102)) {
+                    field_0x230 = 6;
+                    s32 layer = field_0x4;
+                    JGeometry::TVec3f effectPos(mPos);
+                    field_0x24c->fn_80316E50(layer, effectPos);
+                }
             }
         }
         break;
@@ -177,8 +179,8 @@ void cls_804AADD8::update() {
         mPos += field_0x3c;
         box.set(field_0x260);
         box.i.x += mPos.x;
-        box.f.x += mPos.x;
         box.i.y += mPos.y;
+        box.f.x += mPos.x;
         box.f.y += mPos.y;
         if (!fn_8022B978(field_0x4, &box, true)) {
             field_0x238 = 60;
@@ -214,8 +216,8 @@ void cls_804AADD8::update() {
         mPos += field_0x3c;
         box.set(field_0x260);
         box.i.x += mPos.x;
-        box.f.x += mPos.x;
         box.i.y += mPos.y;
+        box.f.x += mPos.x;
         box.f.y += mPos.y;
         if (!fn_8022B978(field_0x4, &box, true)) {
             fn_801F35AC();
