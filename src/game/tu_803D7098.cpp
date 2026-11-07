@@ -32,6 +32,7 @@ void cls_804B03D8::fn_803D8718() {
     }
 }
 
+// FIXME(shotgun): 99.40 %, reloc-name
 void cls_804B03D8::fn_803D8670() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
@@ -93,6 +94,7 @@ void cls_804B03D8::fn_803D8364() {
     }
 }
 
+// FIXME(shotgun): 99.50 %, reloc-name
 void cls_804B03D8::fn_803D82EC() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x1c->setAlpha(field_0x77);

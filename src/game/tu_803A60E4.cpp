@@ -27,6 +27,7 @@ cls_804AF860::~cls_804AF860() {
     lbl_8053AD90 = NULL;
 }
 
+// FIXME(shotgun): 99.86 %, reloc-name
 void cls_804AF860::fn_803A71F0() {
     JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
     gGameRoot2_8053AB10->fn_8013B490();
