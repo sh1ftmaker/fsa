@@ -17,10 +17,21 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x24 */ virtual void vfunc_0x24();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
-    /* 0x230 */ u8 field_0x230[0x30];
+    /* 0x230 */ s32 field_0x230;
+    /* 0x234 */ s32 field_0x234[4]; // -1 after init
+    /* 0x244 */ s32 field_0x244[4];
+    /* 0x254 */ s32 field_0x254[2]; // -1 after init
+    /* 0x25C */ u8 field_0x25c[4];
     /* 0x260 */ Elem_80200A84 field_0x260[8];
     /* 0x320 */ Elem_80200A80 field_0x320[4];
-    /* 0x370 */ u8 field_0x370[0x1C];
+    /* 0x370 */ u8 field_0x370;
+    /* 0x371 */ u8 field_0x371[3];
+    /* 0x374 */ s32 field_0x374;
+    /* 0x378 */ s32 field_0x378; // timer for vfunc_0x4C (fn_801F132C)
+    /* 0x37C */ s32 field_0x37c;
+    /* 0x380 */ u8 field_0x380[6];
+    /* 0x386 */ u8 field_0x386[2];
+    /* 0x388 */ s32 field_0x388; // -1 after init
 }; // Size: 0x38C
 
 #endif
