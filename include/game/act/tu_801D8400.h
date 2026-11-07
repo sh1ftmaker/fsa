@@ -86,6 +86,12 @@ public:
     void fn_801D9960();
     // 0x801DE12C (game/tu_801DD1AC.cpp, not written yet).
     void fn_801DE12C();
+    // 0x801DE018 (game/tu_801DD1AC.cpp): in states 4-7, if a player is inside the box around mPos
+    // (-40..40, -16..50), switches to state 5; true when it did.
+    bool fn_801DE018();
+    // 0x801DD1AC (game/tu_801DD1AC.cpp): keeps mPos inside the arena (field_0x2d4 columns, field_0x2d0
+    // ceiling) and sets mMapHitDir; true when it clamped.
+    bool fn_801DD1AC();
     // 0x801E61C4 (tu_801D8400's code calls it): moves the pair at 0x2C8 to
     // 40 units below mPos (in y).
     void fn_801E61C4();
