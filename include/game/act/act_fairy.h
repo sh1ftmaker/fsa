@@ -17,10 +17,10 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x44 */ virtual void vfunc_0x44();
     /* 0x230 */ s32 field_0x230; // state of the spawn-in sequence (0, 4, 5)
-    /* 0x234 */ s32 field_0x234; // 10000 after init; draw returns early below 0x100 with bit 2 set
-    /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ s32 field_0x23c; // 10 after init, 30 in state 3
-    /* 0x240 */ s32 field_0x240; // 30 + a random 0..29 after init
+    // Frame counters, each counted down by update(). [0] is the life left (10000 after init,
+    // 500 once picked up; draw() returns early below 0x100 with bit 2 set); [1] is the delay
+    // before the next sprite frame; [2]: 10 after init, 30 in state 3; [3]: 30 + a random 0..29 after init.
+    /* 0x234 */ s32 mCounters[4];
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248; // selects the second sprite frame set (0x7D) when nonzero
     /* 0x24C */ s32 field_0x24c;
@@ -34,7 +34,8 @@ public:
     /* 0x269 */ u8 field_0x269[0x3]; // not yet known
     /* 0x26C */ f32 field_0x26c;
     /* 0x270 */ f32 field_0x270; // 255.0f after init; converted to a byte for the sprite in state 3
-    /* 0x274 */ u8 field_0x274[0x4]; // not yet known
+    /* 0x274 */ u16 field_0x274; // angle toward the target
+    /* 0x276 */ u8 field_0x276[2]; // not yet known
     /* 0x278 */ f32 field_0x278;
     /* 0x27C */ f32 field_0x27c;
     /* 0x280 */ f32 field_0x280; // 10.0f after init, 100.0f in state 3
