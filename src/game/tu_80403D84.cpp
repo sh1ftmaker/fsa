@@ -399,6 +399,26 @@ void MapScreen_804B1288::fn_8040F288() {
     }
 }
 
+// FIXME: 98.59. regalloc-only (+ pool literals). The product is its own local, as in
+// fn_8040F288 (the original leaves it unfused).
+void MapScreen_804B1288::fn_8040F16C() {
+    field_0x434 += 0x200;
+    field_0x436 += 0x400;
+    field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
+    field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
+    if (field_0x358 < 90) {
+        f32 t = (f32)field_0x358 / 90.0f;
+        f32 rise = 250.0f * t * t;
+        field_0x3a4 += -250.0f + rise;
+    } else {
+        field_0x2c8->startSound(JAISoundID(0x400E3));
+        if (field_0x358 >= lbl_8050DB0C.field_0x4c[319] + 90) {
+            field_0x358 = 0;
+            field_0x350 = 0x15;
+        }
+    }
+}
+
 // FIXME: 99.58. regalloc-only (+ pool literals of unwritten functions). `drop` and `tt`
 // are locals because the original leaves those products unfused (fmuls / fadds, fsubs),
 // which MWCC does only across statements (as fn_8040F288 / fn_8040F16C).
@@ -460,26 +480,6 @@ void MapScreen_804B1288::fn_8040ED20() {
                 field_0x208[field_0x340]->mPane->setAlpha(0);
                 field_0x350 = 0x13;
             }
-        }
-    }
-}
-
-// FIXME: 98.59. regalloc-only (+ pool literals). The product is its own local, as in
-// fn_8040F288 (the original leaves it unfused).
-void MapScreen_804B1288::fn_8040F16C() {
-    field_0x434 += 0x200;
-    field_0x436 += 0x400;
-    field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434);
-    field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
-    if (field_0x358 < 90) {
-        f32 t = (f32)field_0x358 / 90.0f;
-        f32 rise = 250.0f * t * t;
-        field_0x3a4 += -250.0f + rise;
-    } else {
-        field_0x2c8->startSound(JAISoundID(0x400E3));
-        if (field_0x358 >= lbl_8050DB0C.field_0x4c[319] + 90) {
-            field_0x358 = 0;
-            field_0x350 = 0x15;
         }
     }
 }
