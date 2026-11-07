@@ -4,6 +4,8 @@
 #include "game/Player.h"
 #include "game/BgRewrite.h"
 #include "game/Map.h"
+#include "game/Effect.h"
+#include "game/GameRootSub20.h"
 #include "JSystem/JMath/JMath.h"
 #include <math.h>
 
@@ -529,6 +531,136 @@ void SeesawLift_804AD348::fn_803597EC() {
             fillTiles(this, 864);
             field_0x238 = 0;
         }
+    }
+}
+
+// FIXME(shotgun): 82.5 %, missing/extra + reloc-name
+void SeesawLift_804AD348::fn_80358F98() {
+    if (field_0x245) {
+        GameRootSub20_801902C0* sub = fn_801902C0();
+        if (sub->field_0x79c < 16) {
+            GameRootSub20_801902C0::SandFall& fall = sub->mSandFalls[sub->field_0x79c];
+            fall.mPos.x = mPos.x;
+            fall.mPos.y = mPos.y;
+            fall.mPos.z = mPos.z;
+            sub->mSandFalls[sub->field_0x79c].field_0xc[0] = 0;
+            sub->field_0x79c++;
+        }
+    }
+    field_0x240 = 0.0f;
+    for (s32 p = 0; p < 4; p++) {
+        field_0x246[p] = 0;
+        field_0x24a[p] = 0;
+        if (fn_8023F264(p)) {
+            field_0x246[p] = fn_8035AE9C(p);
+            JGeometry::TBox2f box;
+            fn_801F317C(&box);
+            f32 centerY = mPos.y;
+            f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+            box.i.y = (box.i.y - centerY) * c + centerY;
+            box.f.y = (box.f.y - centerY) * c + centerY;
+            JGeometry::TVec2f out;
+            if (fn_8023AAF8(p, &box, field_0x4, &out)) {
+                f32 d = centerY - out.y;
+                if (field_0x24e && d == 0.0f) {
+                    d = 0.1f;
+                }
+                if (!field_0x24e && __fabs(d) <= 8.0f) {
+                    d = 0.0f;
+                }
+                field_0x240 += 20.0f * d;
+                if (d >= 0.0f) {
+                    field_0x24a[p] = 1;
+                } else {
+                    field_0x24a[p] = -1;
+                }
+            } else {
+                field_0x24a[p] = 0;
+            }
+        }
+    }
+    if ((field_0x24a[0] | field_0x24a[1] | field_0x24a[2] | field_0x24a[3]) != 0 && field_0x240 != 0.0f) {
+        fn_801F0D20(3);
+    }
+    for (s32 p = 0; p < 4; p++) {
+        if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
+            f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
+            f32 push = 1.8f * (sinVal * __fabs(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+                push *= 5.5f;
+            }
+            if (field_0x244 == 0) {
+                if (field_0x258 == 1) {
+                    JGeometry::TVec3f v(0.0f, -1.0f * push, 0.0f);
+                    fn_8023DF68(p, &v);
+                }
+            } else if (field_0x258 == 1) {
+                JGeometry::TVec3f v(0.0f, push, 0.0f);
+                fn_8023DF68(p, &v);
+            }
+        }
+    }
+    for (s32 p = 0; p < 4; p++) {
+        if (field_0x24a[p] != 0) {
+            for (s32 q = 0; q < 4; q++) {
+                if (!fn_8022F514(q) && field_0x24a[q] == 0 && field_0x246[q] != 0 && field_0x24a[p] * field_0x246[q] < 0) {
+                    fn_802314D8(q, JGeometry::TVec3f(0.0f, 0.0f, 10.0f));
+                }
+            }
+        }
+    }
+    if (field_0x240 != 0.0f) {
+        if (gGameRoot_8053AAF8->field_0x7e == 0) {
+            if (field_0x240 > 0.0f) {
+                field_0x240 = 1500.0f;
+            } else {
+                field_0x240 = -1500.0f;
+            }
+        } else if (field_0x240 > 0.0f) {
+            field_0x240 = 10.0f;
+        } else {
+            field_0x240 = -10.0f;
+        }
+        field_0x23a = (s16)field_0x240;
+    } else {
+        field_0x23a = (s16)((-(0.1f * (f32)field_0x238) - 0.01f * (f32)field_0x230) / 15.0f);
+    }
+    field_0x238 += field_0x23a;
+    s16 oldAngle = field_0x230;
+    field_0x230 += field_0x238;
+    if (((field_0x90 >> 12) & 0x1F) == 2) {
+        if (field_0x230 <= -0x3E00) {
+            field_0x230 = -0x3E00;
+            field_0x238 = 0;
+            field_0x23a = 0;
+        } else if (field_0x230 >= 0) {
+            field_0x230 = 0;
+            field_0x238 = 0;
+            field_0x23a = 0;
+            field_0x245 = 0;
+            fillTiles(this, 864);
+        }
+    } else {
+        if (field_0x230 >= 0x3E00) {
+            field_0x230 = 0x3E00;
+            field_0x238 = 0;
+            field_0x23a = 0;
+        } else if (field_0x230 <= 0) {
+            field_0x230 = 0;
+            field_0x238 = 0;
+            field_0x23a = 0;
+            field_0x245 = 0;
+            fillTiles(this, 864);
+        }
+    }
+    if (oldAngle == 0 && field_0x230 != 0) {
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3DE, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3DF, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E0, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E1, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x245 = 1;
+        fillTiles(this, 12);
+        field_0x258 = 1;
     }
 }
 
