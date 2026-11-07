@@ -125,6 +125,8 @@ struct GameRootSub20_801902C0 {
     // 0x80190DC8: steps every loaded texture / register animation to its frame for this tick
     // (field_0x4), each entry only while it is active / present. Called by GameRootSub04's fn_80139D9C.
     void fn_80190DC8();
+    // 0x801902D0: draws all active effect models.
+    void fn_801902D0();
 
     /* 0x000 */ JKRSolidHeap* mHeap;
     /* 0x004 */ s32 field_0x4; // counted up by fn_801914C4
