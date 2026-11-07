@@ -1955,6 +1955,8 @@ public:
     void fn_803A60E4();
     // 0x803A7280: puts the arrow and text panes back in place.
     void fn_803A7280();
+    // 0x803A6608: the options screen (per-frame).
+    void fn_803A6608();
     // 0x803A7708 is the destructor.
 
     /* 0x00 */ // vtable
