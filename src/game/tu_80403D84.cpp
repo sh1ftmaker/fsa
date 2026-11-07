@@ -25,6 +25,11 @@
 #include "game/Effect.h"
 #include "dolphin/gx.h"
 #include "game/RotMatrix.h"
+#include "JSystem/J2D/J2DAnmLoader.h"
+#include "JSystem/JKernel/JKRFileLoader.h"
+#include "JSystem/JKernel/JKRHeap.h"
+#include "dolphin/os.h"
+#include "game/ActorManager.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -268,12 +273,440 @@ inline void MapScreen_804B1288::setStageName() {
     }
 }
 
+// Not auto-inlined: the constructor calls fn_804149C0 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 bool fn_804149C0() {
     return lbl_8050EC80.getCurrentFile().field_0x67 & 1;
 }
+#pragma auto_inline reset
 
 void fn_8041499C(JUtility::TColor* dst, const JUtility::TColor* src) {
     *dst = *src;
+}
+
+// FIXME(shotgun): 94.36 %, missing/extra + reloc-name
+MapScreen_804B1288::MapScreen_804B1288() {
+    lbl_8053ADF8 = this;
+    lbl_80529DEC.field_0x23e[1] = 0;
+    field_0x40c = 0;
+    JKRExpHeap* heap = lbl_80529DEC.mHeap;
+    OSReport("***** heap check\x81\x40\x98\x41\x91\xb1\x8b\xf3\x82\xab\x97\x65\x97\xca\x81\x40%fK "
+             "\x8e\x63\x82\xe8\x8b\xf3\x82\xab\x97\x65\x97\xca\x81\x40%fK *****\n",
+             heap->getFreeSize() * (1.0f / 1024.0f), heap->getTotalFreeSize() * (1.0f / 1024.0f));
+    field_0x4 = new cls_804B1B60;
+    field_0x8 = new cls_804B0288(lbl_80529DEC.field_0x34, false);
+    field_0xc = new J2DScreen;
+    field_0xc->setPriority("map.blo", 0x1100000, lbl_80529DEC.field_0x34);
+    OSInitFastCast();
+    field_0x1c = static_cast<J2DAnmTransform*>(
+        J2DAnmLoaderDataBase::load(JKRFileLoader::getGlbResource("map.bck", lbl_80529DEC.field_0x34)));
+    field_0xc->search('Ndata08')->setAnimation(field_0x1c);
+    field_0x20 = static_cast<J2DAnmColor*>(
+        J2DAnmLoaderDataBase::load(JKRFileLoader::getGlbResource("map.bpk", lbl_80529DEC.field_0x34)));
+    field_0xc->setAnimation(field_0x20);
+    field_0x10 = new J2DScreen;
+    field_0x10->setPriority("map_area.blo", 0x1100000, lbl_80529DEC.field_0x34);
+    field_0x14 = new J2DScreen;
+    field_0x14->setPriority("map_ten.blo", 0x1100000, lbl_80529DEC.field_0x34);
+    field_0x18 = new J2DScreen;
+    field_0x18->setPriority("main_message_window.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x10->search('Ndata10')->hide();
+    field_0x10->search('Pli01')->hide();
+    field_0x10->search('Pli02')->hide();
+    field_0x10->search('Pli03')->hide();
+    field_0x10->search('Pli04')->hide();
+    field_0x10->search('Pms02')->hide();
+    field_0x10->search('Pms03')->hide();
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+        field_0x10->search('Ndata08')->show();
+    } else {
+        field_0x10->search('Ndata08')->hide();
+    }
+    if (fn_804149C0()) {
+        field_0x10->search('Ndata03')->show();
+        s32 tens = fn_803B8C90() / 10;
+        s32 ones = fn_803B8C90() % 10;
+        const ResTIMG* digit = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1260[tens]));
+        static_cast<J2DPicture*>(field_0x10->search('Pfsk01'))->changeTexture(digit, 0);
+        static_cast<J2DPicture*>(field_0x10->search('Pfs01'))->changeTexture(digit, 0);
+        digit = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1260[ones]));
+        static_cast<J2DPicture*>(field_0x10->search('Pfsk02'))->changeTexture(digit, 0);
+        static_cast<J2DPicture*>(field_0x10->search('Pfs02'))->changeTexture(digit, 0);
+    } else {
+        field_0x10->search('Ndata03')->hide();
+    }
+    field_0x10->search('Pphu01')->hide();
+    field_0x10->search('Pp01')->hide();
+    field_0x10->search('Pp02')->hide();
+    field_0x10->search('Pp03')->hide();
+    field_0x10->search('Pp04')->hide();
+    static_cast<J2DTextBox*>(field_0x10->search('Ttlv11'))->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(field_0x10->search('Ttlv12'))->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(field_0x10->search('Ttlv13'))->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(field_0x10->search('Ttlv14'))->setFont(lbl_8053AD78->mFont);
+    for (s32 i = 0; i < 8; i++) {
+        static_cast<J2DTextBox*>(field_0x10->search(lbl_8048C658[i * 3 + 2]))->setFont(lbl_8053AD78->mFont);
+        getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10->search(lbl_8048C658[i * 3 + 2]))->getStringPtr(),
+                                lbl_8048C218[i], 0, NULL, NULL);
+    }
+    for (s32 i = 0; i < 8; i++) {
+        getMessageText_803832BC(field_0x474[i], lbl_8048C1F8[i], 0, NULL, NULL);
+    }
+    static_cast<J2DTextBox*>(field_0x18->search('Tmt02'))->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(field_0x18->search('Tmt01'))->setFont(lbl_8053AD78->mFont);
+    field_0x404 = field_0x10->search('Plvcu')->getBounds()->i.x - field_0x10->search(lbl_8048C658[3])->getBounds()->i.x;
+    field_0x408 = field_0x10->search('Plvcu')->getBounds()->i.y - field_0x10->search(lbl_8048C658[3])->getBounds()->i.y;
+    field_0x10->search('Plvcu')->setAlpha(0);
+    f32 y = 0.5f * (field_0x10->search(lbl_8048C658[0])->getBounds()->i.y + field_0x10->search(lbl_8048C658[6])->getBounds()->i.y);
+    field_0x10->search(lbl_8048C658[3])->move(field_0x10->search(lbl_8048C658[0])->getBounds()->i.x, y);
+    field_0x10->search(lbl_8048C658[4])->move(field_0x10->search(lbl_8048C658[1])->getBounds()->i.x,
+                                              field_0x10->search(lbl_8048C658[1])->getBounds()->i.y);
+    field_0x10->search(lbl_8048C658[5])->move(field_0x10->search(lbl_8048C658[2])->getBounds()->i.x,
+                                              field_0x10->search(lbl_8048C658[2])->getBounds()->i.y);
+    for (s32 i = 0; i < 3; i++) {
+        field_0x10->search(lbl_8048C658[i + 3])->resize(field_0x10->search(lbl_8048C658[i])->getWidth(),
+                                                        field_0x10->search(lbl_8048C658[i])->getHeight());
+    }
+    for (s32 i = 0; i < 8; i++) {
+        for (s32 j = 0; j < 3; j++) {
+            field_0x28[i][j] = new PaneCtrl_804AF86C;
+            field_0x28[i][j]->setPane_80402F04(field_0x10->search(lbl_8048C658[i * 3 + j]));
+        }
+    }
+    for (s32 i = 0; i < 15; i++) {
+        field_0x278[i] = new PaneCtrl_804AF86C;
+        field_0x278[i]->setPane_80402F04(field_0x10->search(lbl_8048C658[24 + i]));
+        for (s32 j = 0; j < 20; j++) {
+            field_0x278[i]->fn_80402628(20, field_0x278[i]->field_0x28, 0);
+        }
+    }
+    field_0xc8 = new PaneCtrl_804AF86C;
+    field_0xc8->setPane_80402F04(field_0xc->search('Ptestmap'));
+    field_0xcc = new PaneCtrl_804AF86C;
+    field_0xcc->setPane_80402F04(field_0xc->search('Ptower'));
+    field_0xcc->mPane->hide();
+    field_0xd0 = new PaneCtrl_804AF86C;
+    field_0xd0->setPane_80402F04(field_0xc->search('Ndata08'));
+    for (s32 i = 0; i < 18; i++) {
+        field_0xd4[i] = new PaneCtrl_804AF86C;
+        field_0xd4[i]->setPane_80402F04(field_0xc->search(lbl_8048CAC8[i]));
+    }
+    field_0x11c = new PaneCtrl_804AF86C;
+    field_0x11c->setPane_80402F04(field_0x10->search('Ndata07'));
+    field_0x120[0] = new PaneCtrl_804AF86C;
+    field_0x120[0]->setPane_80402F04(field_0x10->search('Pplan02'));
+    field_0x120[1] = new PaneCtrl_804AF86C;
+    field_0x120[1]->setPane_80402F04(field_0x10->search('Pplan01'));
+    for (s32 i = 0; i < 32; i++) {
+        field_0x128[i] = new PaneCtrl_804AF86C;
+        field_0x128[i]->setPane_80402F04(field_0x10->search(lbl_8048C2F8[i][0]));
+        if (i != 2 && i != 6 && i != 10 && i != 14 && i != 18 && i != 22 && i != 26 && i != 29) {
+            static_cast<J2DPicture*>(field_0x10->search(lbl_8048C2F8[i][0]))
+                ->setBlackWhite(JUtility::TColor(255, 255, 120, 0), JUtility::TColor(255, 255, 120, 255));
+            static_cast<J2DPicture*>(field_0x10->search(lbl_8048C2F8[i][1]))
+                ->setBlackWhite(JUtility::TColor(255, 255, 120, 0), JUtility::TColor(255, 255, 120, 255));
+        }
+    }
+    for (s32 i = 0; i < 24; i++) {
+        field_0x1a8[i] = new PaneCtrl_804AF86C;
+        field_0x1a8[i]->setPane_80402F04(field_0x10->search(lbl_8048C658[39 + (i / 3) * 3 + i % 3]));
+    }
+    for (s32 i = 0; i < 8; i++) {
+        field_0x208[i] = new PaneCtrl_804AF86C;
+        field_0x208[i]->setPane_80402F04(field_0x10->search(lbl_8048C4F8[8 + i]));
+    }
+    field_0x228[0][0] = new PaneCtrl_804AF86C;
+    field_0x228[0][0]->setPane_80402F04(field_0x10->search('Plvcu01'));
+    field_0x228[0][1] = new PaneCtrl_804AF86C;
+    field_0x228[0][1]->setPane_80402F04(field_0x10->search('Plvcu02'));
+    field_0x228[1][0] = new PaneCtrl_804AF86C;
+    field_0x228[1][0]->setPane_80402F04(field_0x10->search('Plvcu03'));
+    field_0x228[1][1] = new PaneCtrl_804AF86C;
+    field_0x228[1][1]->setPane_80402F04(field_0x10->search('Plvcu04'));
+    field_0x238 = new PaneCtrl_804AF86C;
+    field_0x238->setPane_80402F04(field_0x10->search('Plvse'));
+    field_0x23c = new PaneCtrl_804AF86C;
+    field_0x23c->setPane_80402F04(field_0x10->search('Pms01'));
+    for (s32 i = 0; i < 12; i++) {
+        field_0x240[i] = new PaneCtrl_804AF86C;
+    }
+    field_0x240[0]->setPane_80402F04(field_0x18->search('Pmmwk02'));
+    field_0x240[1]->setPane_80402F04(field_0x18->search('Pmmwk01'));
+    field_0x240[2]->setPane_80402F04(field_0x18->search('Pmmw09'));
+    field_0x240[3]->setPane_80402F04(field_0x18->search('Pmmw08'));
+    field_0x240[4]->setPane_80402F04(field_0x18->search('Pmmw07'));
+    field_0x240[5]->setPane_80402F04(field_0x18->search('Pmmw06'));
+    field_0x240[6]->setPane_80402F04(field_0x18->search('Pmmw05'));
+    field_0x240[7]->setPane_80402F04(field_0x18->search('Pmmw04'));
+    field_0x240[8]->setPane_80402F04(field_0x18->search('Pmmw03'));
+    field_0x240[9]->setPane_80402F04(field_0x18->search('Pmmw02'));
+    field_0x240[10]->setPane_80402F04(field_0x18->search('Pmmw01'));
+    field_0x240[11]->setPane_80402F04(field_0x18->search('Pmmtp'));
+    static_cast<J2DPicture*>(field_0x240[11]->mPane)->setBlackWhite(JUtility::TColor(0), JUtility::TColor(0));
+    field_0x270[0] = new PaneCtrl_804AF86C;
+    field_0x270[0]->setPane_80402F04(field_0x18->search('Tmt01'));
+    field_0x270[1] = new PaneCtrl_804AF86C;
+    field_0x270[1]->setPane_80402F04(field_0x18->search('Tmt02'));
+    field_0x42a = 0;
+    field_0x42c = 0;
+    field_0x659 = 0;
+    field_0x65a = 0;
+    field_0x5dc[0] = 0;
+    field_0x390 = 0;
+    for (s32 i = 0; i < 12; i++) {
+        field_0x240[i]->moveFromCentre_80402E08(0.0f, 100.0f);
+    }
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2b8[i] = new cls_804B20F8(i, NULL, NULL, 8);
+    }
+    field_0x2c8 = new ActorSoundObj_804578F4(NULL, NULL, 8);
+    const ResTIMG* plan = static_cast<const ResTIMG*>(fn_80403184('TIMG', "w01_01.bti"));
+    static_cast<J2DPicture*>(field_0x10->search('Pplan01'))->append(plan, 1.0f);
+    plan = static_cast<const ResTIMG*>(fn_80403184('TIMG', "w01_01.bti"));
+    static_cast<J2DPicture*>(field_0x10->search('Pplan02'))->append(plan, 1.0f);
+    static_cast<J2DPicture*>(field_0x23c->mPane)->append(static_cast<const ResTIMG*>(fn_80403184('TIMG', "kk_mStick_02.bti")), 1.0f);
+    static_cast<J2DPicture*>(field_0x23c->mPane)->setBlendRatio(1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+    field_0x2b4 = lbl_8053AED8->field_0x8;
+    lbl_8053AED8->fn_80440D78(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_kettei_01.bti")));
+    lbl_8053AED8->fn_80440CE4(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_modoru_01.bti")));
+    for (s32 i = 0; i < 2; i++) {
+        for (s32 j = 0; j < 2; j++) {
+            JUtility::TColor white = static_cast<J2DPicture*>(field_0x28[i][j]->mPane)->getWhite();
+            fn_8041499C(&field_0x310[i * 3 + j], &white);
+            JUtility::TColor black = static_cast<J2DPicture*>(field_0x28[i][j]->mPane)->getBlack();
+            fn_8041499C(&field_0x328[i * 3 + j], &black);
+            field_0x328[i * 3 + j].a = 0xFF;
+        }
+    }
+    for (s32 i = 0; i < 2; i++) {
+        JUtility::TColor white = static_cast<J2DTextBox*>(field_0x28[i][2]->mPane)->getWhite();
+        fn_8041499C(&field_0x310[i * 3 + 2], &white);
+        JUtility::TColor black = static_cast<J2DTextBox*>(field_0x28[i][2]->mPane)->getBlack();
+        fn_8041499C(&field_0x328[i * 3 + 2], &black);
+    }
+    field_0x641 = field_0x10->search('Ppoint02')->getAlpha();
+    for (s32 i = 0; i < 4; i++) {
+        for (s32 j = 0; j < 2; j++) {
+            field_0x3bc[i][j] = field_0x10->search(lbl_8048C618[i][j])->getBounds()->i.x;
+            field_0x3dc[i][j] = field_0x10->search(lbl_8048C618[i][j])->getBounds()->i.y;
+        }
+    }
+    for (s32 i = 0; i < 11; i++) {
+        field_0x64b[i] = field_0x10->search(lbl_8048C4F8[16 + i])->getAlpha();
+    }
+    for (s32 i = 0; i < 9; i++) {
+        field_0x642[i] = field_0x14->search(lbl_8048C5D0[i])->getAlpha();
+    }
+    field_0x65b = 0xFF;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x2cc[i] = NULL;
+        field_0x2dc[i] = NULL;
+        field_0x2f8[i] = NULL;
+    }
+    for (s32 i = 0; i < 3; i++) {
+        field_0x2ec[i] = NULL;
+    }
+    for (s32 i = 0; i < 2; i++) {
+        field_0x308[i] = NULL;
+    }
+    field_0x348 = lbl_80529DEC.field_0x11c;
+    field_0x340 = lbl_80529DEC.field_0x118;
+    field_0x438[0] = 0;
+    field_0x456[0] = 0;
+    field_0x3a8 = 1.0f;
+    field_0x3b0 = 0.0f;
+    field_0x3ac = 0.0f;
+    field_0x3b8 = 0.0f;
+    field_0x3b4 = 0.0f;
+    field_0x400 = 0.0f;
+    field_0x3fc = 0.0f;
+    field_0x65c = 0;
+    field_0x420 = 0;
+    field_0x422 = 0;
+    field_0x424 = 0;
+    field_0x426 = 0;
+    field_0x428 = 0;
+    field_0x378 = 0;
+    field_0x37c = 0;
+    field_0x364 = 0;
+    field_0x368 = -1;
+    field_0x36c = -1;
+    field_0x370 = 0;
+    field_0x374 = 0;
+    field_0x3a8 = 1.0f;
+    field_0x640 = 0;
+    field_0x41e = 0;
+    field_0x358 = 0;
+    field_0x35c = 0;
+    field_0x380 = 0;
+    field_0x38c = 0;
+    field_0x384 = 0;
+    field_0x388 = -1;
+    field_0x41e = 0;
+    field_0x360 = 0x10;
+    field_0x42e = 0;
+    field_0x394 = 0.0f;
+    field_0x398 = 0.0f;
+    field_0x39c = 0.0f;
+    field_0x3a0 = 0.0f;
+    field_0x3a4 = 0.0f;
+    field_0x350 = 0;
+    field_0x354 = field_0x350;
+    for (s32 i = 0; i < 8; i++) {
+        field_0x40e[i] = 0;
+    }
+    field_0x640 = 0;
+    field_0x661 = 0;
+    field_0x65f = 0;
+    field_0x660 = 0;
+    field_0x430 = 0;
+    field_0x662 = 0;
+    field_0x663 = 0;
+    field_0x664 = 0;
+    field_0x432 = 0;
+    field_0x436 = 0;
+    field_0x434 = 0;
+    field_0x665 = 0;
+    field_0x65d = 0;
+    field_0x65e = 0;
+    if (gGameRoot_8053AAF8->field_0x7e) {
+        field_0x656 = 0;
+    } else {
+        field_0x656 = 1;
+    }
+    field_0x657 = 0;
+    field_0x658 = 0;
+    if (!lbl_80529DEC.field_0x23e[1]) {
+        bool opened = false;
+        for (s32 stage = 0; stage < 8; stage++) {
+            for (s32 sub = 0; sub < 4; sub++) {
+                s32 bit = stage * 4 + sub;
+                if ((stage == 0 && sub == 2) || (stage == 1 && sub == 2) || (stage == 2 && sub == 2) ||
+                    (stage == 3 && sub == 2) || (stage == 4 && sub == 2) || (stage == 5 && sub == 2) ||
+                    (stage == 6 && sub == 2) || (stage == 7 && sub == 1)) {
+                    if (fn_804045F8(stage)) {
+                        field_0x38c |= 1 << bit;
+                    }
+                } else if (fn_8019CE40(stage, sub)) {
+                    field_0x38c |= 1 << bit;
+                } else if (!opened) {
+                    field_0x38c |= 1 << bit;
+                    opened = true;
+                }
+            }
+        }
+    } else {
+        field_0x38c = -1;
+    }
+    field_0xc8->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0xc8->fn_80402CE0(1.0f, 1.0f);
+    field_0xc8->mPane->setAlpha(field_0xc8->field_0x28);
+    field_0xc8->field_0x20 = 0;
+    field_0xc8->field_0x22 = 0;
+    field_0xc8->field_0x24 = 0;
+    field_0xc8->field_0x26 = 0;
+    field_0xcc->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0xcc->fn_80402CE0(1.0f, 1.0f);
+    field_0xcc->mPane->setAlpha(field_0xcc->field_0x28);
+    field_0xcc->field_0x20 = 0;
+    field_0xcc->field_0x22 = 0;
+    field_0xcc->field_0x24 = 0;
+    field_0xcc->field_0x26 = 0;
+    field_0xd0->moveFromCentre_80402E08(0.0f, 0.0f);
+    field_0xd0->fn_80402CE0(1.0f, 1.0f);
+    field_0xd0->mPane->setAlpha(field_0xd0->field_0x28);
+    field_0xd0->field_0x20 = 0;
+    field_0xd0->field_0x22 = 0;
+    field_0xd0->field_0x24 = 0;
+    field_0xd0->field_0x26 = 0;
+    for (s32 i = 0; i < 18; i++) {
+        field_0xd4[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0xd4[i]->fn_80402CE0(1.0f, 1.0f);
+        field_0xd4[i]->mPane->setAlpha(field_0xd4[i]->field_0x28);
+        field_0xd4[i]->field_0x20 = 0;
+        field_0xd4[i]->field_0x22 = 0;
+        field_0xd4[i]->field_0x24 = 0;
+        field_0xd4[i]->field_0x26 = 0;
+    }
+    field_0x11c->moveFromCentre_80402E08(0.0f, 200.0f);
+    field_0x11c->field_0x22 = 0;
+    fn_80411A94(1.0f);
+    if (!lbl_80529DEC.field_0x23e[1] && !(field_0x38c & 0x10)) {
+        for (s32 i = 0; i < 2; i++) {
+            field_0x228[i][0]->mPane->hide();
+            field_0x228[i][1]->mPane->hide();
+            for (s32 j = 0; j < 2; j++) {
+                field_0x228[i][j]->field_0x22 = 0;
+                field_0x228[i][j]->moveFromCentre_80402E08(0.0f, -150.0f);
+            }
+        }
+        field_0x238->mPane->hide();
+        field_0x23c->mPane->hide();
+    } else {
+        for (s32 i = 0; i < 2; i++) {
+            field_0x228[i][0]->mPane->show();
+            field_0x228[i][1]->mPane->hide();
+            for (s32 j = 0; j < 2; j++) {
+                field_0x228[i][j]->field_0x22 = 0;
+                field_0x228[i][j]->moveFromCentre_80402E08(0.0f, -150.0f);
+            }
+        }
+        field_0x238->mPane->show();
+        field_0x23c->mPane->show();
+    }
+    field_0x238->field_0x22 = 0;
+    field_0x238->moveFromCentre_80402E08(0.0f, -150.0f);
+    field_0x23c->field_0x22 = 0;
+    field_0x23c->moveFromCentre_80402E08(0.0f, -150.0f);
+    u8 done;
+    do {
+        done = field_0x120[0]->fn_80402940(15, 0, 0.0f, -200.0f);
+        for (s32 i = 0; i < 2; i++) {
+            field_0x120[i]->fn_80402628(15, field_0x120[i]->field_0x28, 0);
+        }
+    } while (!done);
+    for (s32 i = 0; i < 8; i++) {
+        field_0xc->search(lbl_8048C2B8[i])->setAlpha(0);
+    }
+    field_0x2b4->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x2b4->field_0x22 = 0;
+    for (s32 i = 0; i < 32; i++) {
+        field_0x128[i]->field_0x26 = 0;
+        field_0x128[i]->mPane->setAlpha(0);
+        field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+    }
+    for (s32 i = 0; i < 24; i++) {
+        field_0x1a8[i]->field_0x26 = 0;
+        field_0x1a8[i]->mPane->setAlpha(0);
+    }
+    for (s32 i = 0; i < 8; i++) {
+        field_0x208[i]->field_0x26 = 0;
+        field_0x208[i]->mPane->setAlpha(0);
+    }
+    if (!fn_803B8EBC(7)) {
+        static_cast<J2DPicture*>(field_0x14->search('Psky'))
+            ->setBlackWhite(JUtility::TColor(20, 50, 100, 255), JUtility::TColor(20, 50, 100, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pclo01'))
+            ->setBlackWhite(JUtility::TColor(0, 30, 90, 0), JUtility::TColor(0, 30, 90, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pclo02'))
+            ->setBlackWhite(JUtility::TColor(40, 90, 170, 0), JUtility::TColor(40, 90, 170, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pclo03'))
+            ->setBlackWhite(JUtility::TColor(40, 100, 190, 0), JUtility::TColor(40, 100, 190, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pclo04'))
+            ->setBlackWhite(JUtility::TColor(40, 96, 200, 0), JUtility::TColor(40, 96, 200, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pmaptou'))
+            ->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(30, 72, 139, 255));
+        static_cast<J2DPicture*>(field_0x14->search('Pmapca'))
+            ->setBlackWhite(JUtility::TColor(0, 0, 30, 0), JUtility::TColor(100, 200, 255, 255));
+    }
+    fn_80408F38(0.0f);
+    // field_0x1b4[3] (0x1C0): the free heap size the map screen saw last.
+    if (lbl_80529DEC.field_0x1b4[3] != 0 && lbl_80529DEC.field_0x1b4[3] != lbl_80529DEC.mHeap->getTotalFreeSize()) {
+        OSReport("\x1b[31m\x83\x81\x83\x82\x83\x8a\x82\xaa\x89\xf0\x95\xfa\x82\xb3\x82\xea\x82\xc4\x82\xa2\x82\xdc\x82\xb9\x82\xf1"
+                 "(GAME) %8d \x1b[m\n",
+                 lbl_80529DEC.field_0x1b4[3] - lbl_80529DEC.mHeap->getTotalFreeSize());
+    }
+    lbl_80529DEC.field_0x1b4[3] = lbl_80529DEC.mHeap->getTotalFreeSize();
 }
 
 MapScreen_804B1288::~MapScreen_804B1288() {
@@ -377,10 +810,10 @@ MapScreen_804B1288::~MapScreen_804B1288() {
 }
 
 void MapScreen_804B1288::fn_80411A94(f32 alpha) {
-    field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b * alpha);
-    field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64c * alpha);
-    field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b * (1.0f - alpha));
-    field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64c * (1.0f - alpha));
+    field_0x10->search(0x54746C763131ull /* "Ttlv11" */)->setAlpha(field_0x64b[0] * alpha);
+    field_0x10->search(0x54746C763132ull /* "Ttlv12" */)->setAlpha(field_0x64b[1] * alpha);
+    field_0x10->search(0x54746C763133ull /* "Ttlv13" */)->setAlpha(field_0x64b[0] * (1.0f - alpha));
+    field_0x10->search(0x54746C763134ull /* "Ttlv14" */)->setAlpha(field_0x64b[1] * (1.0f - alpha));
 }
 
 // FIXME: 95.84. Missing/extra (two instructions, one saved register): in the stage 10 /

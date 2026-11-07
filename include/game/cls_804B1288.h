@@ -234,9 +234,10 @@ public:
     /* 0x35C */ s32 field_0x35c; // frame counter of fn_8040E720
     /* 0x360 */ s32 field_0x360; // facing of the cursor (0, 8, 0x10, 0x18; fn_8040E3A0)
     /* 0x364 */ s32 field_0x364; // first stage whose bit fn_80404D70 finds clear
-    /* 0x368 */ u8 field_0x368[0x370 - 0x368];
+    /* 0x368 */ s32 field_0x368; // -1 at construction
+    /* 0x36C */ s32 field_0x36c; // -1 at construction
     /* 0x370 */ s32 field_0x370; // stages fn_80404D70 counts as open
-    /* 0x374 */ u8 field_0x374[0x378 - 0x374];
+    /* 0x374 */ s32 field_0x374;
     /* 0x378 */ s32 field_0x378;
     /* 0x37C */ s32 field_0x37c;
     /* 0x380 */ s32 field_0x380; // frame counter of fn_8040B5A0
@@ -249,10 +250,10 @@ public:
     /* 0x39C */ f32 field_0x39c;
     /* 0x3A0 */ f32 field_0x3a0;
     /* 0x3A4 */ f32 field_0x3a4;
-    /* 0x3A8 */ u8 field_0x3a8[0x3AC - 0x3A8];
+    /* 0x3A8 */ f32 field_0x3a8; // 1.0f at construction
     /* 0x3AC */ f32 field_0x3ac; // x of the stage-name pane's centre (fn_8040B5A0)
     /* 0x3B0 */ f32 field_0x3b0; // y of it
-    /* 0x3B4 */ u8 field_0x3b4[0x3B8 - 0x3B4];
+    /* 0x3B4 */ f32 field_0x3b4;
     /* 0x3B8 */ f32 field_0x3b8; // y of field_0x208[field_0x340] (fn_8040B5A0)
     // Home positions of the four Plicu arrow pairs (fn_804054B8 moves the panes there,
     // plus lbl_8050DB0C's offsets): x of [dir][pane], then y.
@@ -280,7 +281,11 @@ public:
     /* 0x436 */ s16 field_0x436;
     // The stage name (getMessageText_803832BC or a debug name) fn_8040C950 copies into
     // Ttlv11 / Ttlv12; its length is not proven (it runs to field_0x564 at most).
-    /* 0x438 */ char field_0x438[0x564 - 0x438];
+    // SHARED-EDIT (constructor): carved into the two 0x1E-byte buffers it clears and the eight
+    // stage-name buffers it fills (getMessageText_803832BC into 0x474 + i * 0x1E).
+    /* 0x438 */ char field_0x438[0x1E];
+    /* 0x456 */ char field_0x456[0x1E];
+    /* 0x474 */ char field_0x474[8][0x1E];
     // The texts of messages lbl_8048C1F8[2..5][stage] (fn_8040873C).
     /* 0x564 */ char field_0x564[4][0x1E];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
@@ -288,9 +293,8 @@ public:
     /* 0x640 */ u8 field_0x640; // set by fn_804096E8 (stage 7)
     /* 0x641 */ u8 field_0x641; // alpha of the Ppoint panes (fn_80404648)
     /* 0x642 */ u8 field_0x642[9]; // alpha of each pane of lbl_8048C5D0
-    /* 0x64B */ u8 field_0x64b;
-    /* 0x64C */ u8 field_0x64c;
-    /* 0x64D */ u8 field_0x64d[0x656 - 0x64D];
+    // SHARED-EDIT (constructor): the alpha of each pane of lbl_8048C4F8[16..26] (was two u8 + pad).
+    /* 0x64B */ u8 field_0x64b[11];
     /* 0x656 */ u8 field_0x656;
     /* 0x657 */ u8 field_0x657;
     /* 0x658 */ u8 field_0x658;

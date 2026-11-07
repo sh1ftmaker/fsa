@@ -9,6 +9,7 @@
 // __nw__(0x50) and keeps it in field_0x4.
 class cls_804B1B60 {
 public:
+    cls_804B1B60(); // fn_80444B68
     /* 0x08 */ virtual ~cls_804B1B60();
 
     // 0x804446F0: stores r4 (a word) at 0x44 and sets up the text of the
