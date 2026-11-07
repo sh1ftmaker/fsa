@@ -67,6 +67,9 @@ public:
     bool fn_800FD4C0(u8 a, u8 b);
     s32 fn_800FE25C(u8 index);
     u8 fn_800FE21C(u8 index);
+    // RailBase.cpp (0x800FD998, not written yet): interpolates between two rail points with the
+    // sincos table; act_searchlight passes (position, step, step count, entry index (0xFF: current)).
+    JGeometry::TVec3f fn_800FD998(JGeometry::TVec3f pos, s32 step, s32 steps, u8 index);
 
     void clear() {
         field_0x2 = 0;

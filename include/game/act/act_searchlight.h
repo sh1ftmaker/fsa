@@ -4,6 +4,7 @@
 // Code: game/act_searchlight.cpp.
 
 #include "game/ActorBase.h"
+#include "game/RailBase.h"
 
 // The SHLT actor ("Searchlight", docs/names/actors.tsv, med confidence): the
 // spawner constructs it with fn_802028A4, which stores this vtable
@@ -15,7 +16,7 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x2F8 - 0x230]; // not yet known
+    /* 0x230 */ cls_800FE3EC field_0x230; // the rail the light walks along
     /* 0x2F8 */ s32 field_0x2f8;
     /* 0x2FC */ s32 field_0x2fc;
     /* 0x300 */ s32 field_0x300;
