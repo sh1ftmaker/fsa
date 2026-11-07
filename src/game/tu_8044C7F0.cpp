@@ -2,6 +2,8 @@
 #include "game/cls_804B1D58.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
+#include "game/EmitterDelete.h"
+#include "game/Unk_8045A080.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
@@ -21,7 +23,7 @@ void fn_80453874(JGeometry::TVec3f* vec, f32 x, f32 y, f32 z) {
 bool cls_804B1D58::fn_80453848() {
     bool result = false;
     if (field_0xf4 & 8) {
-        if (field_0xd0 + field_0xdc == 0) {
+        if (field_0xd0 + (s32)field_0xd8[1] == 0) {
             result = true;
         }
     }
@@ -33,6 +35,61 @@ cls_80453830::cls_80453830() {
     field_0x4 = -1;
     field_0x8 = -1;
     field_0xc = -1;
+}
+
+// FIXME(shotgun): 92 %, missing/extra + reloc-name
+cls_804B1D58::~cls_804B1D58() {
+    gAudioMgr_8053AF80->fn_80459274();
+    for (s32 i = 0; i < 7; i++) {
+        if (field_0x6c[i] != NULL) {
+            field_0x6c[i]->field_0xf4 |= 1;
+            field_0x6c[i]->field_0x24 = 1;
+            field_0x6c[i] = NULL;
+        }
+        if (field_0x88[i] != NULL) {
+            field_0x88[i]->field_0xf4 |= 1;
+            field_0x88[i]->field_0x24 = 1;
+            field_0x88[i] = NULL;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0xb0[i] != NULL) {
+            field_0xb0[i]->field_0xf4 |= 1;
+            field_0xb0[i]->field_0x24 = 1;
+            field_0xb0[i] = NULL;
+        }
+    }
+    for (s32 i = 0; i < 3; i++) {
+        deleteEmitter(&field_0xa4[i]);
+        deleteEmitter(&field_0xc0[i]);
+    }
+    delete mScreen;
+    mScreen = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        delete field_0xd8[i];
+        field_0xd8[i] = NULL;
+    }
+    delete field_0xec;
+    field_0xec = NULL;
+    delete mPane_0xf4;
+    mPane_0xf4 = NULL;
+    delete mPane_0xd0;
+    mPane_0xd0 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    for (s32 i = 0; i < 15; i++) {
+        delete field_0xc[i];
+        field_0xc[i] = NULL;
+    }
+    for (s32 i = 0; i < 3; i++) {
+        delete field_0x48[i];
+        field_0x48[i] = NULL;
+        delete field_0x54[i];
+        field_0x54[i] = NULL;
+        delete field_0x60[i];
+        field_0x60[i] = NULL;
+    }
+    lbl_8053AF40 = NULL;
 }
 
 // FIXME(shotgun): 88.89 %, missing/extra + reloc-name (the zero shared with the loop counter, lbl_80529DEC reloaded per test)

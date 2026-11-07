@@ -5,6 +5,7 @@
 
 class J2DScreen;
 class PaneCtrl_804AF86C;
+class JPABaseEmitter;
 
 // 0x10-byte element of field_0x164, named after its constructor
 // __ct__12cls_80453830Fv (fn_80453830, game/tu_8044C7F0.cpp), which
@@ -17,6 +18,15 @@ struct cls_80453830 {
     /* 0x8 */ s32 field_0x8;
     /* 0xC */ s32 field_0xc;
 }; // Size: 0x10
+
+// An element of the arrays at 0x6C / 0x88 / 0xB0 of cls_804B1D58, seen only through its destructor
+// (fn_8045270C): it sets bit 0 of the word at 0xF4, writes 1 to 0x24 and drops the pointer.
+struct cls_804B1D58_Item {
+    /* 0x00 */ u8 field_0x0[0x24];
+    /* 0x24 */ s32 field_0x24;
+    /* 0x28 */ u8 field_0x28[0xF4 - 0x28];
+    /* 0xF4 */ u32 field_0xf4;
+};
 
 // Vtable 0x804B1D58 (one slot, the destructor), 0x188 bytes, defined in
 // game/tu_8044C7F0.cpp (not written yet). The constructor fn_80452A80 stores
@@ -48,12 +58,27 @@ public:
     /* 0x048 */ PaneCtrl_804AF86C* field_0x48[3];
     /* 0x054 */ PaneCtrl_804AF86C* field_0x54[3];
     /* 0x060 */ PaneCtrl_804AF86C* field_0x60[3];
-    /* 0x06C */ u8 field_0x6c[0xD0 - 0x6C];
-    /* 0x0D0 */ s32 field_0xd0; // fn_80453848
-    /* 0x0D4 */ u8 field_0xd4[0xDC - 0xD4];
-    /* 0x0DC */ s32 field_0xdc;
-    /* 0x0E0 */ u8 field_0xe0[0xF4 - 0xE0];
-    /* 0x0F4 */ u32 field_0xf4; // flags; bit 8 is tested by fn_80453848
+    /* 0x06C */ cls_804B1D58_Item* field_0x6c[7];
+    /* 0x088 */ cls_804B1D58_Item* field_0x88[7];
+    /* 0x0A4 */ JPABaseEmitter* field_0xa4[3];
+    /* 0x0B0 */ cls_804B1D58_Item* field_0xb0[4];
+    /* 0x0C0 */ JPABaseEmitter* field_0xc0[3];
+    /* 0x0CC */ u8 field_0xcc[4];
+    // 0xD0, 0xF4: fn_80453848 reads them as counts / flags (bit 8 of 0xF4), the destructor deletes
+    // them as objects (virtual destructor) and zeroes them.
+    union {
+        /* 0x0D0 */ s32 field_0xd0; // fn_80453848
+        /* 0x0D0 */ PaneCtrl_804AF86C* mPane_0xd0;
+    };
+    /* 0x0D4 */ u8 field_0xd4[0xD8 - 0xD4];
+    /* 0x0D8 */ PaneCtrl_804AF86C* field_0xd8[4];
+    /* 0x0E8 */ u8 field_0xe8[0xEC - 0xE8];
+    /* 0x0EC */ PaneCtrl_804AF86C* field_0xec;
+    /* 0x0F0 */ u8 field_0xf0[4];
+    union {
+        /* 0x0F4 */ u32 field_0xf4; // flags; bit 8 is tested by fn_80453848
+        /* 0x0F4 */ PaneCtrl_804AF86C* mPane_0xf4;
+    };
     /* 0x0F8 */ s16 field_0xf8;
     // fn_804522C8 tests it against 7, 8 and 9 (lha).
     /* 0x0FA */ s16 field_0xfa;
