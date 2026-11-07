@@ -167,7 +167,14 @@ public:
     /* 0x004C */ PaneCtrl_804AF86C* field_0x4c;
     /* 0x0050 */ u32 field_0x50;
     /* 0x0054 */ s32 field_0x54; // the message the screen shows
-    /* 0x0058 */ u8 field_0x58[0x78 - 0x58];
+    /* 0x0058 */ f32 field_0x58; // the two message boxes' x / y positions and widths (ctor)
+    /* 0x005C */ f32 field_0x5c;
+    /* 0x0060 */ f32 field_0x60;
+    /* 0x0064 */ f32 field_0x64;
+    /* 0x0068 */ f32 field_0x68;
+    /* 0x006C */ f32 field_0x6c;
+    /* 0x0070 */ f32 field_0x70;
+    /* 0x0074 */ f32 field_0x74;
     /* 0x0078 */ s32 field_0x78;
     /* 0x007C */ s32 field_0x7c; // countdown
     /* 0x0080 */ s16 field_0x80;

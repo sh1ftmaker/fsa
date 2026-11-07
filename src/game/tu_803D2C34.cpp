@@ -31,6 +31,83 @@ static inline void touchCurrentFile() {
     }
 }
 
+// The tags of the eight border panes.
+static const u64 lbl_80476F20[8] = {'Psl01', 'Psl02', 'Psl03', 'Psl04', 'Psl05', 'Psl06', 'Psl07', 'Psl08'};
+
+// FIXME(shotgun): 97.1 %, missing/extra + reloc-name
+cls_804B0288::cls_804B0288(JKRArchive* archive, bool flag) {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    lbl_8053ADB8 = this;
+    field_0x2176 = flag;
+    field_0x54 = 0;
+    field_0x50 = 0;
+    field_0x216e = 0;
+    field_0x78 = 0;
+    field_0x216d = 2;
+    field_0x216c = 2;
+    field_0x88[0] = 0;
+    field_0x2170 = 0;
+    field_0x2171 = 0;
+    memset(field_0x1c0, 0, 0x258);
+    memset(field_0x420, 0, 0x1D4C);
+    field_0x7c = -1;
+    field_0x84 = 0;
+    field_0x216f = 0;
+    field_0x2174 = 0;
+    field_0x2173 = 0;
+    field_0x2177 = 0;
+    field_0x2175 = 0;
+    field_0x1b4 = 0;
+    mScreen = new J2DScreen();
+    mScreen->setPriority("save.blo", 0x1100000, archive);
+    mScreen->search('Paccur02')->setAlpha(0x9C);
+    ResTIMG* black = (ResTIMG*)fn_804030C4('TIMG', "kk_black.bti");
+    field_0x8 = new J2DPicture(black);
+    field_0x8->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+    field_0xc = static_cast<J2DTextBox*>(mScreen->search('Tsave01'));
+    field_0x10 = static_cast<J2DTextBox*>(mScreen->search('Tsave02'));
+    field_0x58 = field_0xc->getBounds()->i.x;
+    field_0x5c = field_0x10->getBounds()->i.x;
+    field_0x60 = field_0xc->getBounds()->i.y;
+    field_0x64 = field_0x10->getBounds()->i.y;
+    field_0x68 = field_0xc->getWidth();
+    field_0x6c = field_0x10->getWidth();
+    field_0x74 = 0.0f;
+    field_0x70 = 0.0f;
+    field_0xc->setFont(lbl_8053AD78->mFont);
+    field_0x10->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(mScreen->search('Tno01'))->setFont(lbl_8053AD78->mFont);
+    static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->setFont(lbl_8053AD78->mFont);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->getStringPtr(), 0x11E, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tno01'))->getStringPtr(), 0x11F, 0, NULL, NULL);
+    field_0x14 = new PaneCtrl_804AF86C();
+    field_0x14->setPane_80402F04(mScreen->search('Psaback'));
+    field_0x18 = new PaneCtrl_804AF86C();
+    field_0x18->setPane_80402F04(mScreen->search('Psabbk03'));
+    field_0x1c[0] = new PaneCtrl_804AF86C();
+    field_0x1c[0]->setPane_80402F04(mScreen->search('Pyesb04'));
+    field_0x1c[1] = new PaneCtrl_804AF86C();
+    field_0x1c[1]->setPane_80402F04(mScreen->search('Pnob04'));
+    field_0x24 = new PaneCtrl_804AF86C();
+    field_0x24->setPane_80402F04(mScreen->search('Ptopbb07'));
+    field_0x28 = new PaneCtrl_804AF86C();
+    field_0x28->setPane_80402F04(mScreen->search('Paccur02'));
+    for (s32 i = 0; i < 8; i++) {
+        field_0x2c[i] = new PaneCtrl_804AF86C();
+        field_0x2c[i]->setPane_80402F04(mScreen->search(lbl_80476F20[i]));
+    }
+    field_0x4c = lbl_8053AED8->field_0x8;
+    if (field_0x2176 != 0) {
+        lbl_8053AED8->fn_80440C6C(false);
+        lbl_8053AED8->fn_80440BF4(false);
+        field_0x4c->moveFromCentre_80402E08(0.0f, -200.0f);
+        field_0x4c->field_0x22 = 0;
+    }
+    field_0x80 = 0;
+    field_0x82 = 0;
+    field_0x86 = 0;
+}
+
 // FIXME(shotgun): 99.9 %, reloc-name (the vtable symbol)
 cls_804B0288::~cls_804B0288() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
