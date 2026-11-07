@@ -10,6 +10,7 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DAnmLoader.h"
 
+extern const u64 lbl_80476F80[];
 extern const u64 lbl_80477180[];
 
 // FIXME(shotgun): 95 %, missing/extra + reloc-name
@@ -123,6 +124,75 @@ cls_804B03D8::~cls_804B03D8() {
     delete field_0x18;
     field_0x18 = NULL;
     lbl_8053ADC0 = NULL;
+}
+
+// Resets the screen for a new round: shows the rows of the players that take part and slides the
+// remaining panes out of view.
+// FIXME(shotgun): 73 %, missing/extra + reloc-name
+void cls_804B03D8::fn_803D87C0() {
+    lbl_8053AEC0->fn_804310CC();
+    for (s32 i = 0; i < 3; i++) {
+        if (i >= gGameRoot_8053AAF8->fn_80138A30() - 1) {
+            field_0x4->search(lbl_80477180[68 + i])->mIsVisible = true;
+            field_0x4->search(lbl_80477180[71 + i])->mIsVisible = false;
+            field_0x4->search(lbl_80477180[74 + i])->mIsVisible = false;
+        } else {
+            field_0x4->search(lbl_80477180[68 + i])->mIsVisible = false;
+            field_0x4->search(lbl_80477180[71 + i])->mIsVisible = true;
+            field_0x4->search(lbl_80477180[74 + i])->mIsVisible = true;
+        }
+    }
+    for (s32 k = 0; k < 4; k++) {
+        u8 mask = 1 << k;
+        s32 count = lbl_80529DEC.field_0x140[k];
+        if ((lbl_80529DEC.field_0x243[0] & mask) != 0) {
+            field_0x68 = k;
+            field_0x4->search(lbl_80477180[77 + k])->mIsVisible = true;
+            field_0x4->search(lbl_80477180[64 + k])->mIsVisible = true;
+        } else {
+            field_0x4->search(lbl_80477180[77 + k])->mIsVisible = false;
+            field_0x4->search(lbl_80477180[64 + k])->mIsVisible = false;
+        }
+        for (s32 j = 0; j < 16; j++) {
+            if (j < count && (gGameRoot_8053AAF8->mPlayerMask & mask) != 0) {
+                if ((lbl_80529DEC.field_0x243[0] & mask) != 0 && j == count - 1) {
+                    field_0x6a = j;
+                    field_0x4->search(lbl_80476F80[k * 16 + j])->mIsVisible = false;
+                    field_0x4->search(lbl_80477180[k * 16 + j])->mIsVisible = false;
+                } else {
+                    field_0x4->search(lbl_80476F80[k * 16 + j])->mIsVisible = true;
+                    field_0x4->search(lbl_80477180[k * 16 + j])->mIsVisible = true;
+                    field_0x4->search(lbl_80477180[k * 16 + j])->setAlpha(0);
+                }
+            } else {
+                field_0x4->search(lbl_80476F80[k * 16 + j])->mIsVisible = false;
+                field_0x4->search(lbl_80477180[k * 16 + j])->mIsVisible = false;
+            }
+        }
+    }
+    field_0x8->search('P0kak00')->setAlpha(0);
+    field_0x8->search('P0ka00')->setAlpha(0);
+    field_0x8->search('Pstarli')->setAlpha(0);
+    field_0x30->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x30->field_0x22 = 0;
+    field_0x48->moveFromCentre_80402E08(0.0f, -200.0f);
+    field_0x48->field_0x22 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0x34[i]->moveFromCentre_80402E08(0.0f, 500.0f);
+        field_0x34[i]->field_0x22 = 0;
+    }
+    lbl_8053AED8->fn_80440D78((const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti"));
+    fn_804030C4('TIMG', "kk_modoru_01.bti");
+    lbl_8053AED8->fn_80440BF4(false);
+    field_0x2c->mPane->mIsVisible = false;
+    field_0x2c->mPane->setAlpha(0);
+    field_0x4->search('Paccur01')->setAlpha(0);
+    for (s32 i = 0; i < 2; i++) {
+        field_0x24[i]->moveFromCentre_80402E08(0.0f, 200.0f);
+        field_0x24[i]->field_0x22 = 0;
+    }
+    lbl_80529DEC.field_0x243[0] = 0;
+    gAudioMgr_8053AF80->fn_80458FF0(0x1000005, true, 0);
 }
 
 void cls_804B03D8::fn_803D8718() {
