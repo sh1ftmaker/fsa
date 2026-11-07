@@ -98,47 +98,6 @@ void cls_804B13D4::fn_8041F5FC() {
 }
 
 // FIXME(shotgun): 99.58 %, regalloc-only
-void cls_804B13D4::fn_8041E3B4(s32 player) {
-    s32 mask = 1 << player;
-    u8 bit = mask;
-    bool takesPart = gGameRoot_8053AAF8->mPlayerMask & bit;
-    if (takesPart == false) {
-        field_0x28f &= ~bit;
-        return;
-    }
-    bool flagged = lbl_8053AED0->field_0xdd & bit;
-    if (flagged == true && !(field_0x290 & bit)) {
-        field_0x290 |= bit;
-        field_0x28f |= bit;
-        return;
-    }
-    if (lbl_8053AED0->field_0xdc & 0x10) {
-        field_0x28f &= ~bit;
-        return;
-    }
-    if (getGameView_802D6A9C()->field_0x131ef != 0 || fn_8022AF5C() || fn_8022B1AC() || fn_8022B160()) {
-        field_0x28f &= ~bit;
-        field_0x293 |= (u8)mask;
-        return;
-    }
-    if (lbl_8053AEC8->field_0x5e == 1) {
-        for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
-            field_0x28f |= (u8)(1 << i);
-        }
-        lbl_8053AEC8->field_0x5e = 0;
-        return;
-    }
-    if (gGameRoot_8053AAF8->field_0x4c == 11) {
-        field_0x28f &= ~bit;
-        return;
-    }
-    if (!fn_8022B1AC() && !fn_8022B160() && (field_0x293 & bit)) {
-        field_0x28f |= (u8)mask;
-        field_0x293 &= ~bit;
-    }
-}
-
-// FIXME(shotgun): 94.11 %, missing/extra (bool tests of the masks are two instructions shorter)
 void cls_804B13D4::fn_8041E708(s32 id, s32 arg1, u32 arg2) {
     s32 target;
     if (fn_8022F514(id)) {
@@ -206,6 +165,47 @@ void cls_804B13D4::fn_8041E58C() {
             field_0x289 |= (u8)(1 << i);
             field_0x1b8[i] = 0;
         }
+    }
+}
+
+// FIXME(shotgun): 94.11 %, missing/extra (bool tests of the masks are two instructions shorter)
+void cls_804B13D4::fn_8041E3B4(s32 player) {
+    s32 mask = 1 << player;
+    u8 bit = mask;
+    bool takesPart = gGameRoot_8053AAF8->mPlayerMask & bit;
+    if (takesPart == false) {
+        field_0x28f &= ~bit;
+        return;
+    }
+    bool flagged = lbl_8053AED0->field_0xdd & bit;
+    if (flagged == true && !(field_0x290 & bit)) {
+        field_0x290 |= bit;
+        field_0x28f |= bit;
+        return;
+    }
+    if (lbl_8053AED0->field_0xdc & 0x10) {
+        field_0x28f &= ~bit;
+        return;
+    }
+    if (getGameView_802D6A9C()->field_0x131ef != 0 || fn_8022AF5C() || fn_8022B1AC() || fn_8022B160()) {
+        field_0x28f &= ~bit;
+        field_0x293 |= (u8)mask;
+        return;
+    }
+    if (lbl_8053AEC8->field_0x5e == 1) {
+        for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
+            field_0x28f |= (u8)(1 << i);
+        }
+        lbl_8053AEC8->field_0x5e = 0;
+        return;
+    }
+    if (gGameRoot_8053AAF8->field_0x4c == 11) {
+        field_0x28f &= ~bit;
+        return;
+    }
+    if (!fn_8022B1AC() && !fn_8022B160() && (field_0x293 & bit)) {
+        field_0x28f |= (u8)mask;
+        field_0x293 &= ~bit;
     }
 }
 
