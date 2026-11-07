@@ -139,6 +139,11 @@ public:
     // around the cursor field_0x394 / field_0x398, the frame picked by the state, and
     // starts the emitters 0xCB / 0xCC of field_0x2cc / field_0x2dc at frame 26 of state 0x14.
     void fn_80405FC0();
+    // 0x80406634 (called by fn_80411230 with field_0x340 - 1 / true, and field_0x340 /
+    // false in state 4): draws the cursor sprite (enemy_both2_sob.bin, frames
+    // lbl_8048CB68[stage] + 0-5) at the selected sub-stage's point of lbl_8048C95C
+    // (50 higher unless `raised`) and keeps the emitters 0x32C / 0x184 of field_0x308 on it.
+    void fn_80406634(s32 stage, bool raised);
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -207,7 +212,9 @@ public:
     /* 0x3B0 */ f32 field_0x3b0; // y of it
     /* 0x3B4 */ u8 field_0x3b4[0x3B8 - 0x3B4];
     /* 0x3B8 */ f32 field_0x3b8; // y of field_0x208[field_0x340] (fn_8040B5A0)
-    /* 0x3BC */ u8 field_0x3bc[0x40E - 0x3BC];
+    /* 0x3BC */ u8 field_0x3bc[0x400 - 0x3BC];
+    /* 0x400 */ f32 field_0x400; // alpha (0-1) of the cursor sprite (fn_80406634)
+    /* 0x404 */ u8 field_0x404[0x40E - 0x404];
     /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ u8 field_0x420[0x428 - 0x420];
@@ -216,7 +223,7 @@ public:
     /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
     /* 0x42E */ u8 field_0x42e[0x430 - 0x42E];
     /* 0x430 */ s16 field_0x430; // frame of field_0x2b4's slide
-    /* 0x432 */ u8 field_0x432[0x434 - 0x432];
+    /* 0x432 */ s16 field_0x432; // frame counter of the cursor sprite (0-5999, fn_80406634)
     /* 0x434 */ s16 field_0x434;
     /* 0x436 */ s16 field_0x436;
     /* 0x438 */ u8 field_0x438[0x5DC - 0x438];

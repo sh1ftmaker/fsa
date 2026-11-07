@@ -22,6 +22,7 @@
 #include "game/Map.h"
 #include "game/SpriteParams.h"
 #include "game/Effect.h"
+#include "dolphin/gx.h"
 
 // Read by fn_804054B8 and fn_80405D00 (lbzx), and fn_8040B5A0 (lhax).
 static const u8 lbl_80543880[8] = {3, 1, 1, 0, 1, 1, 0, 1};
@@ -750,6 +751,46 @@ void MapScreen_804B1288::fn_80408114() {
             field_0xc->search(lbl_8048C2B8[i])->setAlpha(0);
         }
     }
+}
+
+void MapScreen_804B1288::fn_80406634(s32 stage, bool raised) {
+    SpriteParams_801F5AE0 params;
+    field_0x432++;
+    if (field_0x432 >= 6000) {
+        field_0x432 = 0;
+    }
+    f32 x = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+    f32 y = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+    if (!raised) {
+        y -= 50.0f;
+    }
+    JGeometry::TVec3f pos;
+    pos.x = x * (384.0f / (s32)JUTVideo::getManager()->getFbWidth()) + field_0x3a0;
+    pos.y = y * (288.0f / (s32)JUTVideo::getManager()->getEfbHeight()) + field_0x3a4;
+    pos.z = 0.0f;
+    GXSetTevDirect(GX_TEVSTAGE0);
+    GXSetTevDirect(GX_TEVSTAGE1);
+    GXSetTevDirect(GX_TEVSTAGE2);
+    GXSetTevDirect(GX_TEVSTAGE3);
+    params.field_0x26 = 0;
+    params.field_0x1d = 1;
+    params.field_0x1c = 1;
+    params.field_0x10.a = 255.0f * field_0x400;
+    if (field_0x308[0] == NULL) {
+        field_0x308[0] = spawnEmitter_8013CC50(0, &pos, 0x32C, 1, 0, NULL, NULL, true, 1.0f);
+        field_0x308[0]->setGlobalEnvColor(lbl_8048CB80[field_0x340][0], lbl_8048CB80[field_0x340][1],
+                                          lbl_8048CB80[field_0x340][2]);
+    } else {
+        setEmitterPos_8013CB44(field_0x308[0], &pos, 1, 0, true);
+    }
+    if (field_0x308[1] == NULL) {
+        field_0x308[1] = spawnEmitter_8013CC50(0, &pos, 0x184, 1, 0, NULL, NULL, true, 1.0f);
+    } else {
+        setEmitterPos_8013CB44(field_0x308[1], &pos, 1, 0, true);
+    }
+    s32 frame = field_0x432 % 6 + lbl_8048CB68[stage];
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, frame, &params, 1.0f, 1.0f);
 }
 
 // FIXME: 99.98. regalloc-only: the original keeps the render mode's fbWidth (read before
