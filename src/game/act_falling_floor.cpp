@@ -8,6 +8,28 @@
 #include "game/Player.h"
 #include "std/math.h"
 
+void FallingFloor_804A9078::init() {
+    mBox.i.x = -5.0f;
+    mBox.i.y = -5.0f;
+    mBox.f.x = 5.0f;
+    mBox.f.y = 5.0f;
+    field_0x23c = 0;
+    field_0x238 = field_0x90 & 0x3F;
+    if (field_0x238 != 2) {
+        mPos.x += 8.0f;
+        mPos.y += 8.0f;
+    } else {
+        mPos.x += 8.0f;
+    }
+    if (field_0x238 == 0 || field_0x238 == 3) {
+        field_0x230 = 0;
+    } else if (field_0x238 == 1) {
+        field_0x230 = 5;
+    } else {
+        field_0x230 = 8;
+    }
+}
+
 // 0x802CCF14. FLYK: a floor tile that crumbles once a player stands on it (state 0 / 5), then
 // falls away and is replaced by the pit tile; state 8 only restores the tile under a player.
 // FIXME(shotgun): 88.61 %, missing/extra + reloc-name
@@ -181,28 +203,6 @@ void FallingFloor_804A9078::update() {
             }
         }
         break;
-    }
-}
-
-void FallingFloor_804A9078::init() {
-    mBox.i.x = -5.0f;
-    mBox.i.y = -5.0f;
-    mBox.f.x = 5.0f;
-    mBox.f.y = 5.0f;
-    field_0x23c = 0;
-    field_0x238 = field_0x90 & 0x3F;
-    if (field_0x238 != 2) {
-        mPos.x += 8.0f;
-        mPos.y += 8.0f;
-    } else {
-        mPos.x += 8.0f;
-    }
-    if (field_0x238 == 0 || field_0x238 == 3) {
-        field_0x230 = 0;
-    } else if (field_0x238 == 1) {
-        field_0x230 = 5;
-    } else {
-        field_0x230 = 8;
     }
 }
 

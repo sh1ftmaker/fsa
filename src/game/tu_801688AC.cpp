@@ -407,6 +407,9 @@ void cls_804A0738::fn_8016890C(const JGeometry::TVec3f* pos, s32 layer, JGeometr
     out->i.y = p.y;
 }
 
+// The original calls both of these with bl (update -> fn_80168C38, init/update -> fn_8016890C);
+// our deferred build would inline them.
+#pragma auto_inline off
 // 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
 // player is then pushed along.
 // FIXME(shotgun): 70.14 %, missing/extra + reloc-name
@@ -461,5 +464,7 @@ void cls_804A0738::draw() {
     }
     fn_803075AC(mSerial, field_0x4, &mPos, frame, 0, 2, -1, false, 0, 0);
 }
+
+#pragma auto_inline reset
 
 cls_804A0738::~cls_804A0738() {}
