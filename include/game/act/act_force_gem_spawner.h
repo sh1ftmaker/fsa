@@ -15,7 +15,13 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x1C]; // not yet known
+    /* 0x230 */ s32 field_0x230; // state
+    /* 0x234 */ s32 field_0x234;
+    /* 0x238 */ s32 field_0x238;
+    /* 0x23C */ s32 field_0x23c;
+    /* 0x240 */ s32 field_0x240;
+    /* 0x244 */ f32 field_0x244;
+    /* 0x248 */ f32 field_0x248; // draw scale
     /* 0x24C */ JPABaseEmitter* mEmitter24c; // released by the destructor
     /* 0x250 */ JPABaseEmitter* mEmitter250; // released by the destructor
     /* 0x254 */ JPABaseEmitter* mEmitter254; // released by the destructor
