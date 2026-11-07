@@ -33,6 +33,7 @@ public:
     // fn_80120F38: sets field_0x3c4 to 1 when field_0x90 bit 0 is set; field_0x35c and field_0x3d0
     // get bits 8-15 and 16-23 of field_0x90.
     /* 0x64 */ virtual void vfunc_0x64();
+    /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
     // fn_80120118: the key tables of mAnim (14 of them, lbl_8049DF40), animation 7 in mode 2,
     // frame 0 (like the escort woman's).
     /* 0x70 */ virtual void vfunc_0x70();

@@ -1,5 +1,12 @@
 #include "game/GameAudio.h"
+#include "game/ActorId.h"
+#include "game/ActorManager.h"
+#include "game/GameMath.h"
+#include "game/GameView.h"
+#include "game/Player.h"
+#include "game/ViewLayer.h"
 #include "game/act/act_zora_escort.h"
+#include "game/tu_80127E20.h"
 #include "game/tu_80131D98.h"
 
 // The escort's animation keys: (cel, frames) s16 pairs, ended by a cel of -1.
@@ -91,6 +98,109 @@ void ZoraEscort_8049DF78::vfunc_0x64() {
     }
     field_0x35c = (field_0x90 >> 8) & 0xFF;
     field_0x3d0 = (field_0x90 >> 16) & 0xFF;
+}
+
+s32 ZoraEscort_8049DF78::vfunc_0x6C(s32 state) {
+    field_0x330 = 0;
+    switch (state) {
+    case 0:
+        field_0x330 = 1;
+        mAnim.startAnim_801D22DC(7, 2, false);
+        break;
+    case 2:
+        field_0x3c8 = 0;
+        field_0x330 = 1;
+        fn_801220C4();
+        break;
+    case 3:
+        field_0x330 = 1;
+        break;
+    case 4:
+        field_0x331 = 0;
+        break;
+    case 5:
+        field_0x330 = 1;
+        if (viewLayerFlag(field_0x4)) {
+            mAnim.startAnim_801D22DC(6, 2, false);
+        } else {
+            mAnim.startAnim_801D22DC(7, 2, false);
+        }
+        break;
+    case 7:
+        field_0x11e = 1;
+        break;
+    case 8: {
+        fn_801F3668();
+        u32 arg = field_0x90;
+        arg |= 4;
+        arg |= fn_8012285C() << 3;
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_FAZR, field_0x4, &mPos, arg, -1, -1);
+        break;
+    }
+    case 9:
+        fn_8012202C();
+        break;
+    case 10:
+        fn_80121FA8();
+        mAnim.startAnim_801D22DC(2, 2, false);
+        break;
+    case 11:
+        mAnim.startAnim_801D22DC(fn_80230CFC(fn_8012285C()), 2, false);
+        break;
+    case 12:
+        mAnim.startAnim_801D22DC(fn_80230CFC(fn_8012285C()), 2, false);
+        break;
+    case 13: {
+        JGeometry::TVec3f pos2;
+        JGeometry::TVec3f pos1(mPos);
+        pos2 = mPos;
+        for (s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_RAIL); serial != -1;
+             serial = getActorManager_801F856C()->fn_801F78F4(ACTOR_RAIL, serial)) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (!actor) {
+                break;
+            }
+            s32 railId = (actor->field_0x90 >> 8) & 0xFF;
+            if (railId == field_0x35c) {
+                pos1 = actor->mPos;
+            } else if (railId == field_0x3d0) {
+                pos2 = actor->mPos;
+            }
+        }
+        f32 dist1 = JGeometry::TUtilf::sqrt(square(mPos.x - pos1.x) + square(mPos.y - pos1.y));
+        f32 dist2 = JGeometry::TUtilf::sqrt(square(mPos.x - pos2.x) + square(mPos.y - pos2.y));
+        if (dist1 > dist2) {
+            if (field_0x3c4) {
+                fn_801283E8()->fn_80127ED8(&pos2);
+            } else {
+                fn_801283E8()->fn_80127E20(&pos2);
+            }
+            field_0x35c = field_0x3d0;
+        } else {
+            if (field_0x3c4) {
+                fn_801283E8()->fn_80127ED8(&pos1);
+            } else {
+                fn_801283E8()->fn_80127E20(&pos1);
+            }
+        }
+        fn_80121D68();
+        fn_801220C4();
+        break;
+    }
+    case 14:
+        field_0x3c8 = 0;
+        break;
+    case 15:
+        getGameView_802D6A9C()->fn_802D8050(vfunc_0x3C(), true, 0xFF);
+        field_0x11e = 0;
+        mDrawEnabled = false;
+        mAlive = false;
+        lbl_80539F30 = -1;
+        fn_80131F0C()->fn_80131EE4();
+        break;
+    }
+    mAnim.fn_801D1F14(0.0f);
+    return EscortBase_8049E0C8::vfunc_0x6C(state);
 }
 
 void ZoraEscort_8049DF78::vfunc_0x70() {
