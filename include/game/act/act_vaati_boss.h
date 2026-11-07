@@ -146,6 +146,8 @@ public:
     // 0x801D76B4: sets the 16 serials to -1 and the rest to 0 (0.0f for the floats).
     cls_801D7730();
     ~cls_801D7730();
+    // 0x801D6E20: keeps the actors named by field_0x0 at *pos (not written).
+    void fn_801D6E20(const JGeometry::TVec3f* pos);
     // 0x801D7638: clears mAlive of the actors the serials name.
     void fn_801D7638();
     // Shotgun pass: the ring's per-frame steps (names by address).
@@ -193,6 +195,8 @@ public:
     /* 0xA0 */ virtual void vfunc_0xA0();
 
     void fn_801D63D0();
+    // 0x801E4D88 (game/tu_801E4D54.cpp, a plain symbol there, not written): per-frame brain.
+    void fn_801E4D88();
     void fn_801D4C70();
     void fn_801E4790(bool arg);
     void fn_801E4758();

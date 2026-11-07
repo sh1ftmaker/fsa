@@ -1,6 +1,7 @@
 #include "game/ActorManager.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/Camera.h"
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/act/act_vaati_boss.h"
@@ -207,6 +208,147 @@ void VaatiBoss_804A4958::vfunc_0x94() {
     }
 }
 
+// The step of the vtable slot 0x9C (0x801D5180, a plain `fn_801D5180` symbol in the original).
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_801D5180)
+void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
+    if (!(mFlags & 0x2000)) {
+        if (mState >= 1 && mState < 4) {
+            startSound_801F0E34(0x4005E, 0);
+        }
+        if (field_0x5ce != 0) {
+            field_0x5ce--;
+            if (field_0x5ce == 0) {
+                mFlags |= 0x4000;
+            }
+        }
+        JGeometry::TVec3f center(mPos.x, mPos.y, 90.0f);
+        field_0x464.fn_801EB418(&center);
+        if (field_0x464.fn_801EB648()) {
+            startSound_801F0E34(0x40051, 0);
+        }
+        fn_801E5754();
+        fn_801E4D88();
+    } else {
+        field_0x4c4.fn_801D6E20(&mPos);
+        if (mLife > 0 && !(mFlags & 7) && mState != 0xB && mState != 0x17) {
+            startSound_801F0E34(0x4005E, 0);
+            if (mState >= 0xC && mState < 0xE) {
+                startSound_801F0E34(0x4005F, 0);
+            }
+        }
+    }
+    bool step = false;
+    if (mState >= 8) {
+        if (!(mFlags & 7)) {
+            step = true;
+        }
+    } else if (mState >= 6) {
+        step = true;
+    }
+    if (step) {
+        fn_801CE2BC(mapHit);
+    }
+    field_0x448.fn_8021798C();
+}
+
+// FIXME(shotgun): 83.41 %, missing/extra + reloc-name (the follow flag and target selection are shaped differently)
+void VaatiBoss_804A4958::fn_801D4C70() {
+    switch (mState) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 0x11:
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        return;
+    case 0x15: {
+        JGeometry::TVec2f out;
+        fn_801D01A0(reinterpret_cast<const JGeometry::TVec3f*>(&field_0x5ec), &out, 1.5f);
+        field_0x3c.x = out.x;
+        field_0x3c.y = out.y;
+        return;
+    }
+    case 0x16: {
+        JGeometry::TVec2f out;
+        fn_801D01A0(reinterpret_cast<const JGeometry::TVec3f*>(&field_0x5f4), &out, 0.5f);
+        field_0x3c.x = out.x;
+        field_0x3c.y = out.y;
+        return;
+    }
+    }
+    if (field_0x5d1 != 0) {
+        field_0x3c.x = 4.0f * JMASSin(field_0x5d2);
+        field_0x3c.y = 4.0f * JMASCos(field_0x5d2);
+        return;
+    }
+    f32 dx = 0.0f;
+    f32 dy = 0.0f;
+    bool follow = true;
+    f32 tx;
+    f32 ty;
+    bool toPlayer = true;
+    if (mState >= 10) {
+        if (mState < 0x15 && mState >= 0x12) {
+            toPlayer = false;
+        }
+    } else if (mState != 5 && mState >= 4) {
+        follow = false;
+        toPlayer = false;
+    }
+    if (toPlayer) {
+        if (field_0x5b0 >= 0) {
+            const JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x5b0);
+            tx = p->x;
+            ty = p->y;
+        } else {
+            tx = field_0x5bc;
+            ty = field_0x5c0;
+        }
+    } else if (follow) {
+        tx = field_0x5c4;
+        ty = field_0x5c8;
+    }
+    if (follow) {
+        JGeometry::TVec2f d(tx - mPos.x, ty - mPos.y);
+        d.normalize();
+        dx = d.x;
+        dy = d.y;
+        if (mState == 0x12) {
+            dx *= -2.0f;
+            dy *= -2.0f;
+        } else {
+            dx *= mSpeed;
+            dy *= mSpeed;
+        }
+    }
+    addCalc2_801F71A4(&field_0x3c.x, dx, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, dy, 0.3f, 1.0f);
+}
+
+// FIXME(shotgun): 99.39 %, reloc-name
+void VaatiBoss_804A4958::vfunc_0x88() {
+    fn_801D4C70();
+    switch (mState) {
+    case 1:
+        field_0x3c.z = -2.0f;
+        break;
+    case 6:
+        field_0x3c.z = 4.0f;
+        break;
+    case 8:
+        field_0x3c.z += -0.1f;
+        break;
+    default:
+        field_0x3c.z = 0.0f;
+        break;
+    }
+    if (mState == 5) {
+        field_0x5d4 += 0x300;
+        mPos.z = 90.0f + 5.0f * JMASSin(field_0x5d4);
+    }
+}
+
 // FIXME: 98.45%. missing/extra. The original reloads mFlags (0x230) before clearing 0x8000; ours reuses the loaded value.
 void VaatiBoss_804A4958::vfunc_0x74() {
     if (mState == 5) {
@@ -239,6 +381,82 @@ void VaatiBoss_804A4958::vfunc_0x74() {
         }
     } else if (mLife > 0 && mState != 23) {
         field_0x448.fn_80217CD8();
+    }
+}
+
+// The camera step of the vtable slot 0xA0 (0x801D47DC, a plain `fn_801D47DC` symbol in the original):
+// follows Vaati (its ground position) with the camera, by state.
+// FIXME(shotgun): not measurable (symbol name), class from try.py in the commit log
+void VaatiBoss_804A4958::vfunc_0xA0() {
+    GameView_804A9950* view = getGameView_802D6A9C();
+    const JGeometry::TBox2f* box = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    f32 groundY = mPos.y - mPos.z;
+    JGeometry::TVec3f focus(mPos.x, groundY, 0.0f);
+    focus.y = __fsel((0.001f + box->i.y) - groundY, 0.001f + box->i.y, groundY);
+    switch (mState) {
+    case 0:
+    case 0x17:
+        break;
+    case 1: {
+        JGeometry::TVec3f p(32.0f + box->i.x, 32.0f + box->i.y, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&p);
+        JGeometry::TVec3f q(box->f.x - 32.0f, 32.0f + box->i.y, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&q);
+        JGeometry::TVec3f r(32.0f + box->i.x, box->f.y - 32.0f, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&r);
+        JGeometry::TVec3f t(box->f.x - 32.0f, box->f.y - 32.0f, 0.0f);
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&t);
+        break;
+    }
+    case 2:
+    case 3: {
+        cls_804A03A8* shadow = gGameRoot2_8053AB10->field_0x30;
+        if (shadow->field_0x284 == 0) {
+            shadow->field_0x284 = 1;
+            shadow->field_0x28c = 0.05f;
+        }
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x7f5 == 0) {
+            cam->field_0x7f4 = 1;
+            cam->field_0x7f8 = 4;
+            cam->field_0x7fc = focus;
+            cam->field_0x7f6 = 0;
+        }
+        break;
+    }
+    case 0x19: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x840 == 0) {
+            cam->field_0x840 = 1;
+            cam->field_0x854 = 1.0f;
+            cam->field_0x844.f.x = focus.x;
+            cam->field_0x844.i.x = focus.x;
+            cam->field_0x844.f.y = focus.y;
+            cam->field_0x844.i.y = focus.y;
+            cam->field_0x1d4 = -1.0f;
+            cam->field_0x1d8 = -1.0f;
+        }
+        gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+        break;
+    }
+    case 0x1A: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x7f5 == 0) {
+            cam->field_0x7f4 = 1;
+            cam->field_0x7f8 = -1;
+            cam->field_0x7f6 = 0;
+        }
+        gGameRoot2_8053AB10->field_0x20->field_0x216 = 1;
+        break;
+    }
+    default: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        cam->addFocusPoint_8030C210(&focus);
+        if (cam->field_0x179 == 0) {
+            cam->field_0x178 = 1;
+        }
+        break;
+    }
     }
 }
 
