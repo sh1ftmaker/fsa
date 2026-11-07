@@ -1922,6 +1922,86 @@ void TileMap_804AA858::fn_802F6BBC(s32 src, s32 dst) {
     }
 }
 
+// FIXME(shotgun): 49.6 %, TileMap_804AA858
+#ifdef NONMATCHING
+u8 TileMap_804AA858::fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
+                                 void* res3, SpriteParams_801F5AE0* params) {
+    static const GXColor sColorMul[18] = {
+        {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF},
+        {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF},
+        {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF},
+        {0xFF, 0xFF, 0xFF, 0xFF}, {0xFF, 0xFF, 0xFF, 0x78}, {0xFF, 0xFF, 0xFF, 0x7F},
+        {0xFF, 0xFF, 0xFF, 0xBF}, {0xFF, 0xFF, 0xFF, 0xBF}, {0x00, 0x00, 0x00, 0xBF},
+        {0x96, 0x96, 0x96, 0xFF}, {0xFF, 0x7F, 0x00, 0xFF}, {0xFF, 0xFF, 0xFF, 0xBF},
+    };
+    static const GXColor sColorAdd[18] = {
+        {0x3F, 0x9F, 0x3F, 0x00}, {0x9F, 0x3F, 0x3F, 0x00}, {0x3F, 0x3F, 0x9F, 0x00},
+        {0x8F, 0x2F, 0x8F, 0x00}, {0x3F, 0x9F, 0x3F, 0x00}, {0x9F, 0x3F, 0x3F, 0x00},
+        {0x3F, 0x3F, 0x9F, 0x00}, {0x8F, 0x2F, 0x8F, 0x00}, {0x9F, 0x7F, 0x7F, 0x00},
+        {0x00, 0x7F, 0xFF, 0x00}, {0x32, 0x32, 0x32, 0x00}, {0x7F, 0x7F, 0x7F, 0x00},
+        {0x7F, 0x7F, 0x7F, 0x00}, {0x00, 0x00, 0x00, 0x00}, {0x00, 0x00, 0x00, 0x00},
+        {0x64, 0x64, 0x46, 0x00}, {0xFF, 0x27, 0x00, 0x00}, {0x7F, 0x7F, 0x7F, 0x00},
+    };
+    static const s32 sDuration[18] = {
+        20, 20, 20, 20, 45, 45, 45, 45, 20, 30, 20, 20, 35, 45, 20, 10, 30, 20,
+    };
+    static const f32 sScale[18] = {
+        1.0f, 1.0f, 1.0f, 1.0f, 2.2f, 2.2f, 2.2f, 2.2f, 1.0f,
+        0.7f, 1.0f, 1.0f, 0.1f, 2.5f, 1.0f, 1.0f, 1.3f, 1.0f,
+    };
+    static const s32 sPeriod[18] = {
+        4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 1, 4, 4,
+    };
+
+    bool result = false;
+    s32 period = sPeriod[params->field_0x30];
+    if (field_0xbf98 && ((u32)res + (u32)image + (u32)res3) % (u32)period == (u32)(gGameRoot_8053AAF8->field_0x5c % period)) {
+        for (int i = 0; i < 0x100; i++) {
+            cls_803003AC* effect = &field_0x2398[i];
+            if (effect->mTimer == 0) {
+                s32 kind = params->field_0x30;
+                effect->mTimer = sDuration[kind];
+                effect->mScale = sScale[params->field_0x30];
+                effect->mDuration = effect->mTimer;
+                effect->mPos.set(*pos);
+                effect->mRes = res;
+                effect->mFrame = frame;
+                effect->mImage = image;
+                effect->field_0x24 = res3;
+                const GXColor* c = &sColorMul[kind];
+                effect->mColor.r = (params->field_0x10.r * c->r) / 255;
+                effect->mColor.g = (params->field_0x10.g * c->g) / 255;
+                effect->mColor.b = (params->field_0x10.b * c->b) / 255;
+                effect->mColor.a = (params->field_0x10.a * c->a) / 255;
+                const GXColor* add = &sColorAdd[kind];
+                effect->mAddColor.a = params->field_0x14.a + add->a < 0xFF ? params->field_0x14.a + add->a : 0xFF;
+                effect->mAddColor.b = params->field_0x14.b + add->b < 0xFF ? params->field_0x14.b + add->b : 0xFF;
+                effect->mAddColor.g = params->field_0x14.g + add->g < 0xFF ? params->field_0x14.g + add->g : 0xFF;
+                effect->mAddColor.r = params->field_0x14.r + add->r < 0xFF ? params->field_0x14.r + add->r : 0xFF;
+                effect->mParams = *params;
+                effect->mParams.field_0x2c = 0;
+                effect->mParams.field_0x2d = 1;
+                effect->mParams.field_0x2e = 0;
+                effect->mParams.field_0x30 = -1;
+                effect->mParams.field_0x38 = 0;
+                effect->mParams.field_0x1c = params->field_0x1c;
+                effect->mParams.field_0x1d = params->field_0x1d - 1;
+                if (params->mMtx != NULL) {
+                    JMath::gekko_ps_copy12(effect->mMtx, params->mMtx);
+                    effect->mParams.mMtx = effect->mMtx;
+                } else if (1.0f != effect->mScale) {
+                    PSMTXIdentity(effect->mMtx);
+                    effect->mParams.mMtx = effect->mMtx;
+                }
+                result = true;
+                break;
+            }
+        }
+    }
+    return result;
+}
+#endif
+
 // The same for field_0xc220 (drawn by fn_802FF3F0), clearing byte 0x21.
 // The u8 return with a bool local gives the original's final clrlwi (both bool and both u8 measured as different).
 u8 TileMap_804AA858::fn_802F654C(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
