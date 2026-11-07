@@ -693,14 +693,6 @@ public:
     /* 0x234 */ u8 field_0x234[0x1E0];
 }; // Size: 0x414
 
-// Spawned for 'ELK2'.
-class Link2Ending_804AE338 : public ActorBase_804A5770 {
-public:
-    Link2Ending_804AE338() {}
-    /* 0x08 */ virtual ~Link2Ending_804AE338();
-    /* 0x230 */ u8 field_0x230[0x88];
-}; // Size: 0x2B8
-
 class cls_8031709C;
 
 // Spawned for 'JIJI'.

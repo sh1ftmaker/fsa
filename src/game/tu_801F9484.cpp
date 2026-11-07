@@ -108,6 +108,7 @@
 #include "game/act/act_item_pedestal.h"
 #include "game/act/act_kaepora_gaebora.h"
 #include "game/act/act_kaepora_gaebora_ending.h"
+#include "game/act/act_link_ending_2.h"
 #include "game/act/act_keese.h"
 #include "game/act/act_knight_of_hyrule.h"
 #include "game/act/act_leaf_effect_npc.h"
