@@ -2,6 +2,7 @@
 #define GAME_CLS_804B1D58_H
 
 #include "types.h"
+#include "JSystem/JUtility/TColor.h"
 
 class J2DScreen;
 class PaneCtrl_804AF86C;
@@ -13,10 +14,11 @@ class JPABaseEmitter;
 struct cls_80453830 {
     cls_80453830(); // out-of-line (game/tu_8044C7F0.cpp): every word -1
 
-    /* 0x0 */ s32 field_0x0;
-    /* 0x4 */ s32 field_0x4;
-    /* 0x8 */ s32 field_0x8;
-    /* 0xC */ s32 field_0xc;
+    // Four window corner colours (default TColor is 0xFFFFFFFF).
+    /* 0x0 */ JUtility::TColor field_0x0;
+    /* 0x4 */ JUtility::TColor field_0x4;
+    /* 0x8 */ JUtility::TColor field_0x8;
+    /* 0xC */ JUtility::TColor field_0xc;
 }; // Size: 0x10
 
 // Vtable 0x804B1D58 (one slot, the destructor), 0x188 bytes, defined in
@@ -84,10 +86,19 @@ public:
     /* 0x118 */ f32 field_0x118;
     /* 0x11C */ u8 field_0x11c[0x132 - 0x11C];
     /* 0x132 */ s16 field_0x132;
-    /* 0x134 */ u8 field_0x134[0x13F - 0x134];
+    /* 0x134 */ s16 field_0x134;
+    /* 0x136 */ u8 field_0x136;
+    /* 0x137 */ u8 field_0x137; // state (2 after fn_8044CB08)
+    /* 0x138 */ u8 field_0x138; // the selected row (0-6) fn_8044CB08 was given
+    /* 0x139 */ u8 field_0x139[0x13F - 0x139];
     /* 0x13F */ u8 field_0x13f; // fn_8037ADD8 / fn_8037AE00 / fn_8037AE30
     /* 0x140 */ u8 field_0x140; // fn_8044CB00 returns it
-    /* 0x141 */ u8 field_0x141[0x164 - 0x141];
+    /* 0x141 */ u8 field_0x141[0x144 - 0x141];
+    // Pane colours (the constructor __construct_array's four pairs of TColor).
+    /* 0x144 */ JUtility::TColor field_0x144[2];
+    /* 0x14C */ JUtility::TColor field_0x14c[2];
+    /* 0x154 */ JUtility::TColor field_0x154[2];
+    /* 0x15C */ JUtility::TColor field_0x15c[2];
     /* 0x164 */ cls_80453830 field_0x164[2]; // constructed by __construct_array (0x10 x 2)
     /* 0x184 */ s32 field_0x184; // fn_8044F664 returns it
 }; // Size: 0x188
