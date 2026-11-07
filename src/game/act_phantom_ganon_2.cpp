@@ -138,7 +138,7 @@ u16 ActorBase_804A5770::fn_8018A590() const {
     return field_0x94;
 }
 
-// FIXME(shotgun): 56.67 %, missing/extra + reloc-name. Constants and the stmw prologue are scheduled differently; the tables are extern.
+// FIXME(shotgun): 56.79 %, missing/extra + reloc-name. Constants and the stmw prologue are scheduled differently; the tables are extern.
 void PhantomGanon2_804A1A98::init() {
     field_0x94 = (field_0x90 >> 4) & 0xF;
     field_0x90 &= 0xF;
