@@ -29,7 +29,7 @@ public:
     /* 0x274 */ s32 field_0x274; // kind (1, 2 pick what vfunc_0x24 drops)
     /* 0x278 */ f32 field_0x278[7];
     /* 0x294 */ u16 field_0x294;
-    /* 0x296 */ u8 field_0x296[0xC]; // not yet known
+    /* 0x296 */ u16 field_0x296[6]; // angles of the six trailing pieces (update)
     /* 0x2A2 */ s16 field_0x2a2;
     /* 0x2A4 */ JGeometry::TVec3f field_0x2a4[7];
     /* 0x2F8 */ JGeometry::TVec3f field_0x2f8[7];
