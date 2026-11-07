@@ -5,6 +5,8 @@
 
 #include "game/ActorBase.h"
 
+class JPABaseEmitter;
+
 // The STBL actor ("Strange block", docs/names/actors.tsv, med confidence): the
 // spawner constructs it with fn_80201C68, which stores this vtable
 // (config/G4SE01/game_units.tsv). Named after its vtable, 0x804AC2D8.
@@ -17,7 +19,9 @@ public:
     /* 0x20 */ virtual void draw();
     // 0x8033D264: pushes the block one step in direction `dir` (0-3); returns whether it can move.
     bool fn_8033D264(u8 dir);
-    /* 0x230 */ s32 field_0x230;
+    // Code: game/act_strange_block.cpp.
+    void fn_8033D4CC();
+    /* 0x230 */ JPABaseEmitter* field_0x230; // 0 from init; the emitter of a kind-4 push (fn_8033D4CC)
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ f32 field_0x238[3]; // copy of mPos made by init
     /* 0x244 */ s32 field_0x244;
