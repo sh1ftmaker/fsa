@@ -122,6 +122,10 @@ struct GameRootSub04_801F856C {
     // and clears field_0x34 and lbl_80529DEC's 0x240 and 0x1F4 words.
     void fn_8013A1A4();
 
+    // 0x80139D9C (game/tu_80139BE8.cpp): the per-frame update; runs the player manager, the
+    // map, the background rewriter and the actors in the modes that step the game.
+    void fn_80139D9C();
+
     // 0x80139BE8 (game/tu_80139BE8.cpp, not written yet). Calls fn_801F857C on
     // mActorManager, clears lbl_8053ACD0 and the four bytes at 0x235C of
     // gGameRoot2_8053AB10->0x20, and runs fn_801184F0 on fn_8011921C()'s object.
@@ -419,6 +423,8 @@ struct GameRoot_8049EF20 {
     // is 1 and none of field_0x94, field_0x96 or (with field_0x7e clear)
     // fn_8037F1E4(0) holds the game.
     void fn_80136500();
+    // 0x80136364 (game/tu_80134C04.cpp): called by GameRootSub04's fn_80139D9C.
+    void fn_80136364();
     // Owner: game/tu_80134C04.cpp (0x8013665C; act_tingle_tower, tu_8044C7F0).
     // fn_801365E8(a, b, 0), then stage (10, 2) also sets lbl_80529DEC's 0x24B
     // (2 in mode 9, else 1) and 0x237.
@@ -945,6 +951,7 @@ s32 getPlayerInputSlot_8030AAF4(s32 player);
 // stores 2 at 0x1F0 + player); its size and the rest are unknown.
 class cls_804B1920 {
 public:
+    cls_804B1920(); // fn_8043F504 (game/tu_8043A0E8.cpp, not written yet)
     // Virtual destructor first: the vtable pointer goes where it is declared.
     virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
     // 0x8043D39C / 0x8043DB58 (tu_8043A0E8.cpp, not written yet): GameRoot's
@@ -1122,6 +1129,7 @@ extern cls_804B1920* lbl_8053AED0;
 // the destructor.
 class cls_804B17A0 {
 public:
+    cls_804B17A0(); // fn_80439C78 (game/tu_80438C68.cpp)
     /* 0x000 */ // vtable, whose one slot is the destructor below
     virtual ~cls_804B17A0(); // owner game/tu_80438C68.cpp (not written yet)
     // 0x804399A0 (not written yet): sets the ortho context (fn_8013B490) and
@@ -1537,6 +1545,7 @@ extern const GXRenderModeObj lbl_8048C17C;
 // after that getter). Owner: game/tu_8016A2B4.cpp (not written yet). Only
 // the bytes act_environment_control_2 writes are declared.
 struct GameRootSub24_8016A3AC {
+    GameRootSub24_8016A3AC(JKRHeap* heap); // fn_8016F0BC (not written yet)
     // Unknown pointers: 0x0, 0x30, 0x38, 0x54, 0x68.
     /* 0x000 */ void* field_0x0;
     // The J3DModels below (0x4 ... 0xEC) are passed to fn_8016A7DC.
@@ -1677,6 +1686,8 @@ struct GameRootSub24_8016A3AC {
     // 0x8016DCEC: in the isGameModeSet() modes (not mode 0xB), while
     // field_0x1cf is set, runs fn_8016D398 with the camera matrix.
     void fn_8016DCEC();
+    // 0x8016DE30 (game/tu_8016A2B4.cpp, not written yet): called by GameRootSub04's fn_80139D9C.
+    void fn_8016DE30();
 
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
     // only argument; called by fn_80139CC4 (game/tu_80139BE8.cpp).
@@ -1726,6 +1737,15 @@ void fn_8023F6C4();
 // called by GameRootSub04's fn_80139D9C).
 void fn_8023F2BC();
 void fn_8023F390();
+// Owner: game/tu_8022AD64.cpp (not written yet). The four per-player lookups GameRootSub04's
+// fn_80139D9C stores into lbl_80529DEC's 0x150..0x190 tables.
+s32 fn_80236100(s32 player);
+s32 fn_80237774(s32 player);
+s32 fn_80235A30(s32 player);
+s32 fn_8023587C(s32 player);
+s32 fn_80235ACC(s32 player);
+// game/tu_80118384.cpp (0x80118E20).
+void fn_80118E20();
 struct cls_8016ED88; // game/cls_8016ED88.h
 extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016D398, not written yet). Steps the four

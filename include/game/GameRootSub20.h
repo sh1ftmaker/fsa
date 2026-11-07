@@ -122,6 +122,8 @@ struct GameRootSub20_801902C0 {
     void fn_8019169C();
     // 0x801914C4: the per-frame reset, then counts field_0x4.
     void fn_801914C4();
+    // 0x80190DC8 (not written yet): called by GameRootSub04's fn_80139D9C.
+    void fn_80190DC8();
 
     /* 0x000 */ JKRSolidHeap* mHeap;
     /* 0x004 */ s32 field_0x4; // counted up by fn_801914C4
