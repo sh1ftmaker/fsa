@@ -21,9 +21,9 @@ static inline void setScaleMtx(Mtx mtx, f32 x, f32 yz) {
     mtx[2][2] = yz;
 }
 
-// Timer table of state 4 (indexed by field_0x238) and the sprite offsets of state 4.
-static const u8 lbl_804AC4B8[12] = {3, 6, 6, 3, 3, 3, 6, 0x50, 3, 0, 0, 0};
-static const u8 lbl_804AC4C4[12] = {0, 1, 2, 3, 4, 5, 6, 1, 0, 0, 0, 0};
+// Timer table of state 4 (indexed by field_0x238) and the sprite offsets of state 4 (original .data, not const).
+static u8 lbl_804AC4B8[12] = {3, 6, 6, 3, 3, 3, 6, 0x50, 3, 0, 0, 0};
+static u8 lbl_804AC4C4[12] = {0, 1, 2, 3, 4, 5, 6, 1, 0, 0, 0, 0};
 
 ShadowLinkGiantBomb_804AC4D0::~ShadowLinkGiantBomb_804AC4D0() {
     if (gGameRoot_8053AAF8->field_0x7f == 1) {
@@ -74,7 +74,7 @@ void ShadowLinkGiantBomb_804AC4D0::init() {
     }
 }
 
-// FIXME(shotgun): 98.27 %, scheduling+regalloc + reloc-name
+// FIXME(shotgun): 98.8 %, scheduling+regalloc
 void ShadowLinkGiantBomb_804AC4D0::update() {
     mPos += field_0x3c;
     if (field_0x255 == 1 && mState > 1) {
