@@ -73,6 +73,11 @@ public:
     virtual void do_character(int);
     virtual bool do_tag(u32, const void*, u32);
 
+    // 0x80398700: adds the width of the counted noun after a number (the
+    // same nouns as cls_804AF774::fn_803A2CB0; singular when count is 1) to
+    // the current line, like do_character. Called by the do_tag (0x803997B8).
+    void fn_80398700(u8 noun, s32 count);
+
     // Inlined by cls_804AF72C::do_begin (its body is under NONMATCHING; the four window getters are read
     // first, last argument first, then the four stores); no out-of-line copy.
     void setFields0x1e0(s16 a, s16 b, s32 c, s32 d) {

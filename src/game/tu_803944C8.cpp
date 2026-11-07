@@ -615,6 +615,88 @@ void cls_804AF6E4::do_character(int c) {
     }
 }
 
+// FIXME: 98.15. Scheduling only: the original increments and compares the
+// loop index right after getWidthEntry, ours at the end of the body.
+void cls_804AF6E4::fn_80398700(u8 noun, s32 count) {
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    char text[15];
+    for (int i = 0; i < 15; i++) {
+        text[i] = 0;
+    }
+    switch (noun) {
+    case 1:
+        if (count == 1) {
+            strcat(text, " Force Gem");
+        } else {
+            strcat(text, " Force Gems");
+        }
+        break;
+    case 2:
+        if (count == 1) {
+            strcat(text, " cocco");
+        } else {
+            strcat(text, " coccos");
+        }
+        break;
+    case 3:
+        if (count == 1) {
+            strcat(text, " baddy");
+        } else {
+            strcat(text, " baddies");
+        }
+        break;
+    case 4:
+        if (count == 1) {
+            strcat(text, " time");
+        } else {
+            strcat(text, " times");
+        }
+        break;
+    case 5:
+        if (count == 1) {
+            strcat(text, " system");
+        } else {
+            strcat(text, " systems");
+        }
+        break;
+    case 6:
+        if (count == 1) {
+            strcat(text, " thief");
+        } else {
+            strcat(text, " thieves");
+        }
+        break;
+    case 7:
+        if (count == 1) {
+            strcat(text, " mole");
+        } else {
+            strcat(text, " moles");
+        }
+        break;
+    case 8:
+        if (count == 1) {
+            strcat(text, " return");
+        } else {
+            strcat(text, " returns");
+        }
+        break;
+    case 9:
+        if (count == 1) {
+            strcat(text, " Force Fairy");
+        } else {
+            strcat(text, " Force Fairies");
+        }
+        break;
+    }
+    for (int i = 0; i < 15 && text[i] != 0; i++) {
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(text[i], &width);
+        field_0x4c[field_0x201] += ratio * (field_0x44 * (s32)width.w1);
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+    }
+}
+
 cls_804AF6E4::~cls_804AF6E4() {}
 
 // FIXME: 99.79. Regalloc + stack slots + reloc-name: the message font goes
