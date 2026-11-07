@@ -32,4 +32,8 @@ public:
     /* 0x24F */ u8 field_0x24f;
 }; // Size: 0x250
 
+// Defined in game/act_block.cpp (.data 0x804A79E0, global): the per-direction
+// push offsets (12 units); act_colour_block reads it too.
+extern f32 lbl_804A79E0[4][3];
+
 #endif

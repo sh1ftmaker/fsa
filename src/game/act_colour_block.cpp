@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/act/act_block.h"
 #include "game/act/act_colour_block.h"
 #include "game/GameGlobals.h"
 #include "game/ActorManager.h"
@@ -6,8 +7,6 @@
 #include "game/Player.h"
 #include "game/Map.h"
 #include "game/GameView.h"
-
-extern const Vec lbl_804A79E0[4];
 
 static const Vec lbl_804750C0[4] = {
     {0.5f, 0.0f, 0.0f},
@@ -41,7 +40,7 @@ void ColourBlock1Player_804AE620::init() {
             if (!other) {
                 continue;
             }
-            ColourBlock1Player_804AE620* block = (ColourBlock1Player_804AE620*)other;
+            ColourBlock1Player_804AE620* block = static_cast<ColourBlock1Player_804AE620*>(other);
             if (block->field_0x240 == 0) {
                 continue;
             }
@@ -180,7 +179,7 @@ void ColourBlock1Player_804AE620::update() {
         if (PSVECDistance(&mPos, &mSpawnPos) < 15.9f) {
             s32 dir = fn_80238BC4(mSerial);
             savedPos = mPos;
-            JGeometry::TVec3f offset(lbl_804A79E0[dir].x, lbl_804A79E0[dir].y, lbl_804A79E0[dir].z);
+            JGeometry::TVec3f offset(lbl_804A79E0[dir][0], lbl_804A79E0[dir][1], lbl_804A79E0[dir][2]);
             if (field_0x240 == 0 || fn_80239558(&box, field_0x4, mSerial) == field_0x240 - 1) {
                 if (dir == (s32)(field_0x90 & 3)) {
                     if (fn_80374964(dir)) {
