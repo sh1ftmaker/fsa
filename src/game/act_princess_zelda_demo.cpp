@@ -6,6 +6,7 @@
 #include "game/cls_8049D740.h"
 #include "game/Camera.h"
 #include "game/EnemyBase.h"
+#include "game/Message.h"
 #include "game/Player.h"
 #include "game/GameRootSub20.h"
 #include "game/SpriteParams.h"
@@ -157,6 +158,129 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
         cam->field_0x808.f.x = x;
         cam->field_0x808.f.y = y1;
         cam->field_0x7f6 = 0;
+    }
+}
+
+// The idle states of the demo: keeps the maiden's box registered, steers the camera
+// (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
+// FIXME(shotgun): 75 %, missing/extra + reloc-name
+void PrincessZeldaDemo_8049D208::fn_8011093C() {
+    JGeometry::TBox2f box;
+    box.i.x = mBox.i.x + mPos.x;
+    box.i.y = mBox.i.y + mPos.y;
+    box.f.x = mBox.f.x + mPos.x;
+    box.f.y = mBox.f.y + mPos.y;
+    if (field_0x231 != 0) {
+        fn_80239914(&box, field_0x4, mSerial);
+    }
+    fn_80110210();
+    switch (field_0x238) {
+    case 2:
+        fn_8022FF8C(field_0x23c, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(field_0x23c, mSerial)) {
+            field_0x23c = -1;
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(0x3D);
+                break;
+            case 2:
+                fn_8010E2D4(0x3D);
+                break;
+            }
+            field_0x238 = 0x3D;
+        }
+        break;
+    case 0x2A:
+    case 0x2E:
+    case 0x32:
+    case 0x36:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 0x2C:
+        fn_801CD950(&mPos.z, 24.0f, 0.15f);
+        fn_801CD950(&field_0x274, 162.0f, 0.2f);
+        if (mAnim0.fn_801D208C()) {
+            mAnim0.startAnim_801D22DC(0x13, 2, false);
+            mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 0x35:
+        if (fn_801CD950(&mPos.z, mSpawnPos.z, 0.3f) == 0 && mAnim0.mAnim == 0x13) {
+            mAnim0.startAnim_801D22DC(0x17, 0, false);
+            mAnim0.fn_801D1F14(0.0f);
+        }
+        if (mAnim0.fn_801D208C() && mAnim0.mAnim == 0x17) {
+            mAnim0.startAnim_801D22DC(0x19, 0, false);
+            mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 0x37:
+        fn_801CD950(&field_0x278, -80.0f, -3.0f);
+        fn_801CD950(&field_0x274, 130.0f, 2.0f);
+        break;
+    case 0x3B:
+        fn_801CD950(&mPos.x, 64.0f + mSpawnPos.x, 0.5f);
+        break;
+    case 0x3D: {
+        u16 angle;
+        s32 dir;
+        f32 dist;
+        s32 other;
+        fn_801EEC98(mSerial, &angle, &dir, &dist, &other, 0, 2);
+        if (dir >= 0 && dist <= 80.0f && dir >= 0) {
+            field_0x98 = dir;
+            if (dir + 6 != mAnim0.mAnim) {
+                mAnim0.startAnim_801D22DC(dir + 6, 2, false);
+                mAnim0.fn_801D1F14(0.0f);
+            }
+        }
+        JGeometry::TBox2f box2;
+        box2.i.x = mBox.i.x + mPos.x;
+        box2.i.y = mBox.i.y + mPos.y;
+        box2.f.x = mBox.f.x + mPos.x;
+        box2.f.y = mBox.f.y + mPos.y;
+        fn_8022FEB8(&box2, field_0x4, mSerial, true, false);
+        s32 player = fn_8022FD8C(mSerial);
+        if (player >= 0) {
+            if (player >= 4) {
+                player = -1;
+            } else if (!fn_802300EC(player)) {
+                player = -1;
+            } else if (!fn_8023F264(player)) {
+                player = -1;
+            } else {
+                JGeometry::TVec3f at(mPos.x, mPos.y + -10.0f, mPos.z);
+                if (!fn_8038AD24(player, 0x2D2, mSerial, field_0x4, at, 0x20)) {
+                    player = -1;
+                } else {
+                    field_0x23c = player;
+                    mAnim0.startAnim_801D22DC(fn_801CD354(fn_80230CFC(field_0x23c)) + 6, 2, false);
+                    mAnim0.fn_801D1F14(0.0f);
+                    for (s32 i = 0; i < 4; i++) {
+                        fn_80230C6C(i);
+                    }
+                }
+            }
+        }
+        if (player >= 0) {
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(2);
+                break;
+            case 2:
+                fn_8010E2D4(2);
+                break;
+            }
+            field_0x238 = 2;
+        }
+        break;
+    }
     }
 }
 
