@@ -12,11 +12,11 @@
 // The effect shown where the lift breaks or respawns: an emitter on the main layers, a KMRI
 // actor from layer 8 up (fn_803513C0 inlines it behind its own layer test).
 inline void OBJLift_804ACA00::showBreakEffect(s32 layer) {
-    if (layer < 8) {
-        spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-    } else {
+    if (layer >= 8) {
         getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
         field_0x28c = 1.0f;
+    } else {
+        spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
     }
 }
 
@@ -36,7 +36,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
-// FIXME(shotgun): 74.37 %, different + reloc-name
+// FIXME(shotgun): 99.71 %, reloc-name
 void OBJLift_804ACA00::fn_803513C0() {
     s32 layer = field_0x4;
     if (layer >= 8) {
@@ -55,7 +55,7 @@ void OBJLift_804ACA00::fn_803513C0() {
 }
 
 // 0x803511F0.
-// FIXME(shotgun): 53.54 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.09 %, regalloc-only + reloc-name
 void OBJLift_804ACA00::fn_803511F0() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x97, 0, -3, NULL, NULL, true, 1.0f);
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x98, 0, -3, NULL, NULL, true, 1.0f);
@@ -67,7 +67,7 @@ void OBJLift_804ACA00::fn_803511F0() {
     field_0x248 = 10;
     field_0x274 = -1;
     field_0x268 = field_0x264;
-    f32 dist = std::sqrtf(square(mPos.x - mSpawnPos.x) + square(mPos.y - mSpawnPos.y));
+    f32 dist = JGeometry::TUtil<f32>::sqrt(square(mPos.x - mSpawnPos.x) + square(mPos.y - mSpawnPos.y));
     if (dist > 48.0f) {
         mPos = mSpawnPos;
         s32 layer = field_0x4;
@@ -87,7 +87,7 @@ void OBJLift_804ACA00::fn_803511F0() {
 }
 
 // 0x80351020.
-// FIXME(shotgun): 41.23 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.88 %, missing/extra + reloc-name
 bool OBJLift_804ACA00::fn_80351020(s32 player) {
     s32 layer = field_0x4;
     if (getPlayerLayer_8023DE58(player) != layer) {
@@ -98,7 +98,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
         fn_8022E088(player, i, &v);
         v -= mPos;
         s32 angle = (s32)(JMath::atanTable_.atan2_(v.y, v.x) * 10430.378f);
-        f32 dist = std::sqrtf(v.x * v.x + v.y * v.y);
+        f32 dist = JGeometry::TUtil<f32>::sqrt(v.x * v.x + v.y * v.y);
         v.z = 0.0f;
         v.x = dist * JMath::sincosTable_.cosShort(angle);
         v.y = dist * JMath::sincosTable_.sinShort(angle);
