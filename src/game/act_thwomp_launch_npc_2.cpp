@@ -10,21 +10,21 @@
 extern s32 lbl_804ABB40[];
 extern s32 lbl_804ABB50[];
 
-s32 lbl_804ACDC8[16] = {
-    0, 1, 0, 0,
-    2, 3, 0, 0,
-    4, 5, 0, 0,
-    6, 7
+s32 lbl_804ACDC8[4][4] = {
+    { 0, 1 },
+    { 2, 3 },
+    { 4, 5 },
+    { 6, 7 }
 };
 
-s32 lbl_804ACE08[16] = {
-    8, 9, 0, 0,
-    10, 11
+s32 lbl_804ACE08[4][4] = {
+    { 8, 9 },
+    { 10, 11 }
 };
 
-s32 lbl_804ACE48[16] = {
-    8, 9, 8, 10,
-    11, 12, 11, 13
+s32 lbl_804ACE48[4][4] = {
+    { 8, 9, 8, 10 },
+    { 11, 12, 11, 13 }
 };
 
 s32 lbl_804ACE88[4] = { 24, 24 };
@@ -34,44 +34,44 @@ s32 lbl_804ACEB8[4] = { 24, 24 };
 s32 lbl_804ACEC8[4] = { 16, 16 };
 s32 lbl_804ACED8[4] = { 12, 12, 12, 12 };
 
-s32 lbl_804ACEE8[16] = {
-    3, 10, 0, 0,
-    2, 11, 0, 0,
-    0, 1, 0, 0,
-    4, 5
+s32 lbl_804ACEE8[4][4] = {
+    { 3, 10 },
+    { 2, 11 },
+    { 0, 1 },
+    { 4, 5 }
 };
 
-s32 lbl_804ACF28[16] = {
-    0, 6, 0, 7,
-    4, 8, 4, 9
+s32 lbl_804ACF28[4][4] = {
+    { 0, 6, 0, 7 },
+    { 4, 8, 4, 9 }
 };
 
 s32 lbl_804ACF68[4] = { 20, 20 };
 s32 lbl_804ACF78[4] = { 20, 20, 20, 20 };
 
-s32 lbl_804ACF88[16] = { 0, 1 };
-s32 lbl_804ACFC8[16] = { 0, 2, 0, 3 };
+s32 lbl_804ACF88[4][4] = { { 0, 1 } };
+s32 lbl_804ACFC8[4][4] = { { 0, 2, 0, 3 } };
 
 s32 lbl_804AD008[4] = { 16, 16 };
 s32 lbl_804AD018[4] = { 24, 16, 16, 16 };
 
-s32 lbl_804AD028[16] = { 0, 4 };
-s32 lbl_804AD068[16] = { 0, 1, 2, 3 };
+s32 lbl_804AD028[4][4] = { { 0, 4 } };
+s32 lbl_804AD068[4][4] = { { 0, 1, 2, 3 } };
 
 s32 lbl_804AD0A8[4] = { 10, 10 };
 s32 lbl_804AD0B8[4] = { 10, 10, 10, 10 };
 
-s32 lbl_804AD0C8[16] = { 2, 5 };
-s32 lbl_804AD108[16] = { 2, 3, 2, 4 };
+s32 lbl_804AD0C8[4][4] = { { 2, 5 } };
+s32 lbl_804AD108[4][4] = { { 2, 3, 2, 4 } };
 
-s32 lbl_804AD148[16] = { 0, 1 };
-s32 lbl_804AD188[16] = { 0, 6 };
+s32 lbl_804AD148[4][4] = { { 0, 1 } };
+s32 lbl_804AD188[4][4] = { { 0, 6 } };
 
 struct NPCLaunchAnimInfo {
     const s32* animDelays0;
     const s32* animDelays1;
-    const s32* spriteFrames0;
-    const s32* spriteFrames1;
+    const s32 (*spriteFrames0)[4];
+    const s32 (*spriteFrames1)[4];
 };
 
 struct NPCLaunchSpriteInfo {
@@ -117,6 +117,7 @@ static const NPCLaunchTable lbl_80472390 = {
     "enemy_gc_sob.bin"
 };
 
+// FIXME: 94.43% scheduling+regalloc + reloc-name. Multiplier 0x19660d hoisted into r4 vs r6, and literal relocations.
 void NPCLaunchedByThwomp2_804AD1C8::init() {
     field_0x230 = 0;
     field_0xb0 = 0;
@@ -173,6 +174,7 @@ void NPCLaunchedByThwomp2_804AD1C8::init() {
     field_0x194 = 1;
 }
 
+// FIXME: 91.07% missing/extra. Stack frame size (0x80 vs 0x70) and float temporary layout in inlined launch(), plus switch dispatch ordering in updateAnim().
 void NPCLaunchedByThwomp2_804AD1C8::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x -= 2.0f;
@@ -200,8 +202,7 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
         if (field_0x24c >= 0) {
             if (getPlayerPos_8023E724(field_0x24c)->z == 0.0f) {
                 if (fn_802300EC(field_0x24c)) {
-                    JGeometry::TVec3f pos = mPos;
-                    if (fn_8038C678(field_0x24c, field_0x264, mSerial, field_0x4, pos, 0)) {
+                    if (fn_8038C678(field_0x24c, field_0x264, mSerial, field_0x4, mPos, 0)) {
                         field_0x230 = 4;
                     }
                 }
@@ -213,14 +214,15 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
         fn_8022FEB8(&box, field_0x4, mSerial, 1, 0);
         field_0x24c = fn_8022FD8C(mSerial);
         if (field_0x24c >= 0) {
-            if (getPlayerPos_8023E724(field_0x24c)->z == 0.0f) {
-                if (fn_802300EC(field_0x24c)) {
-                    JGeometry::TVec3f pos = mPos;
-                    if (fn_8038C678(field_0x24c, field_0x264, mSerial, field_0x4, pos, 0)) {
-                        field_0x230 = 4;
-                        break;
-                    }
-                }
+            if (getPlayerPos_8023E724(field_0x24c)->z != 0.0f) {
+                break;
+            }
+            if (!fn_802300EC(field_0x24c)) {
+                break;
+            }
+            if (fn_8038C678(field_0x24c, field_0x264, mSerial, field_0x4, mPos, 0)) {
+                field_0x230 = 4;
+                break;
             }
         }
         // Fallthrough to case 2
@@ -230,9 +232,11 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
             field_0x254 = 1;
             field_0x23c = ((field_0x90 >> 16) & 3) * 70 + 30;
             mPos = field_0x278;
-            field_0x3c.x = (mSpawnPos.x - mPos.x) / (f32)field_0x23c;
-            field_0x3c.y = (mSpawnPos.y - mPos.y) / (f32)field_0x23c;
-            field_0x3c.z = 0.0f;
+            field_0x3c = JGeometry::TVec3f(
+                (mSpawnPos.x - mPos.x) / (f32)field_0x23c,
+                (mSpawnPos.y - mPos.y) / (f32)field_0x23c,
+                0.0f
+            );
             field_0x240 = field_0x23c;
             field_0x230 = 5;
             field_0x238 = 0;
@@ -247,24 +251,15 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
             mPos.z = 0.0f;
             field_0x23c = ((field_0x90 >> 16) & 3) * 70 + 30;
             mPos = field_0x278;
-            field_0x3c.x = (mSpawnPos.x - mPos.x) / (f32)field_0x23c;
-            field_0x3c.y = (mSpawnPos.y - mPos.y) / (f32)field_0x23c;
-            field_0x3c.z = 0.0f;
+            field_0x3c = JGeometry::TVec3f(
+                (mSpawnPos.x - mPos.x) / (f32)field_0x23c,
+                (mSpawnPos.y - mPos.y) / (f32)field_0x23c,
+                0.0f
+            );
             field_0x240 = field_0x23c;
             field_0x230 = 5;
             field_0x238 = 0;
             field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays1[0];
-        }
-        break;
-
-    case 4:
-        fn_8022FEB8(&box, field_0x4, mSerial, 1, 0);
-        if (fn_80388CAC(field_0x24c, mSerial)) {
-            if (field_0x254 == 1) {
-                field_0x230 = 0;
-            } else {
-                field_0x230 = 1;
-            }
         }
         break;
 
@@ -280,6 +275,17 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
             field_0x230 = 0;
             field_0x238 = 0;
             field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays0[0];
+        }
+        break;
+
+    case 4:
+        fn_8022FEB8(&box, field_0x4, mSerial, 1, 0);
+        if (fn_80388CAC(field_0x24c, mSerial)) {
+            if (field_0x254 == 1) {
+                field_0x230 = 0;
+            } else {
+                field_0x230 = 1;
+            }
         }
         break;
     }
@@ -306,6 +312,8 @@ void NPCLaunchedByThwomp2_804AD1C8::launch() {
     field_0x230 = 3;
 }
 
+// FIXME: 79.24% missing/extra. Target computes &table->spriteInfo and &table->animInfo
+// inside each branch instead of hoisting spr, differing by 2 instructions and register numbers.
 void NPCLaunchedByThwomp2_804AD1C8::draw() {
     const NPCLaunchTable* table = &lbl_80472390;
     if (field_0x230 == 2) {
@@ -321,10 +329,10 @@ void NPCLaunchedByThwomp2_804AD1C8::draw() {
     s32 spriteId;
     if (field_0x230 == 0 || (u32)(field_0x230 - 3) <= 1 || field_0x230 == 1) {
         spriteId = spr.baseSpriteId
-            + table->animInfo[field_0x250].spriteFrames0[(field_0x248 << 2) + field_0x238];
+            + table->animInfo[field_0x250].spriteFrames0[field_0x248][field_0x238];
     } else {
         spriteId = spr.baseSpriteId
-            + table->animInfo[field_0x250].spriteFrames1[(field_0x248 << 2) + field_0x238];
+            + table->animInfo[field_0x250].spriteFrames1[field_0x248][field_0x238];
     }
 
     drawSprite_801F06F0(sob, spriteId, NULL, 0, 1.0f, 1.0f);
