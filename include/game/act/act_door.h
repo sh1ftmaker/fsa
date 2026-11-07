@@ -15,9 +15,12 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    // 1 caller (tu_802957CC): called on a door the block moved. Body not yet written.
-    void fn_802C59B0();
-    /* 0x230 */ u8 field_0x230[0x4C]; // not yet known
+    // 1 caller (tu_802957CC): called on a door the block moved; adds the push vector's x, y.
+    void fn_802C59B0(const JGeometry::TVec3f* delta);
+    /* 0x230 */ u8 field_0x230[0x28]; // not yet known
+    /* 0x258 */ f32 field_0x258;
+    /* 0x25C */ f32 field_0x25c;
+    /* 0x260 */ u8 field_0x260[0x1C]; // not yet known
 }; // Size: 0x27C
 
 #endif

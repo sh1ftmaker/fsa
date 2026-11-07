@@ -702,7 +702,7 @@ void cls_804A7AE0::fn_80299720() {
                     JGeometry::TVec3f q = door->mPos;
                     q.add(push);
                     door->mPos = q;
-                    door->fn_802C59B0();
+                    door->fn_802C59B0(&push);
                 }
             }
             field_0x248 = 0;
@@ -779,7 +779,7 @@ void cls_804A7AE0::fn_80299374() {
                     JGeometry::TVec3f q = door->mPos;
                     q.add(push);
                     door->mPos = q;
-                    door->fn_802C59B0();
+                    door->fn_802C59B0(&push);
                 }
             }
             field_0x248 = 0;
@@ -856,7 +856,7 @@ void cls_804A7AE0::fn_80298FC4() {
                     JGeometry::TVec3f q = door->mPos;
                     q.add(push);
                     door->mPos = q;
-                    door->fn_802C59B0();
+                    door->fn_802C59B0(&push);
                 }
             }
             field_0x248 = 0;
@@ -933,7 +933,7 @@ void cls_804A7AE0::fn_80298C18() {
                     JGeometry::TVec3f q = door->mPos;
                     q.add(push);
                     door->mPos = q;
-                    door->fn_802C59B0();
+                    door->fn_802C59B0(&push);
                 }
             }
             field_0x248 = 0;
