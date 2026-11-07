@@ -82,16 +82,17 @@ void cls_804A03A8::fn_8016005C() {
     }
 }
 
-// FIXME(shotgun): 81.4 %, missing/extra
 // 0x8015F8FC
-bool cls_804A03A8::fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode) {
-    bool placed = false;
+u8 cls_804A03A8::fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode) {
+    s32 placed = 0;
     if (layer < 8) {
         for (s32 i = 0; i < 0x20; i++) {
             if (field_0x204[i] == 0) {
                 field_0x4[i] = mode;
-                field_0x84[i] = *pos;
-                placed = true;
+                field_0x84[i].x = pos->x;
+                field_0x84[i].y = pos->y;
+                field_0x84[i].z = pos->z;
+                placed = 1;
                 switch (mode) {
                 case 0:
                     field_0x204[i] = 0x1E;

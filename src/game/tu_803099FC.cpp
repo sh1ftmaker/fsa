@@ -1,6 +1,5 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
-#include "std/math.h"
 
 static u8 lbl_8053AD38[8];
 

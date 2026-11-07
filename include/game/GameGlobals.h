@@ -742,7 +742,7 @@ public:
     void fn_8015F9C0();
     // 0x8015F8FC (not written yet): (layer, position, 1) from the player's
     // update fn_80253E6C; layers 8 and up are ignored.
-    bool fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode);
+    u8 fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode);
     void fn_8016005C();
     void fn_801601E0();
     // Spot slots: the mode given to fn_8015F8FC, the position and the frames left.
