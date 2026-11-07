@@ -149,6 +149,8 @@ void TennisShop_804A2BF4::update() {
     }
 }
 
+// FIXME(shotgun): not written (size 0x17D8): fn_801A17B8 (mode 0 update, 14 states; asm read to 0x801A29xx, see report)
+
 // FIXME(shotgun): 37.7 %, missing/extra + reloc-name (skeleton: the state machine, the ball-hit search (fn_801F2740, fn_801F285C,
 // fn_801F2B7C), the bounce and the hit counters are written; the pane-colour part of the selection screen
 // and the pause-menu branch of states 0xE / 0xF are approximated)
