@@ -280,8 +280,9 @@ void cls_804A5568::fn_801E8C74(s32 arg) {
 
 // Draws one strip of the chain (two vertices) at `center`, from angle `ang` to `ang + span`, `a` and
 // `b` scaling the texture coordinate.
-// FIXME(shotgun): 69 %, missing/extra + reloc-name (wrapped: compiled, it moves the literal pool and drops __ct__ and vfunc_0x60 by 0.1 %)
-#ifdef NONMATCHING
+// Not auto-inlined: fn_801E8080 calls fn_801E8B1C out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+// FIXME(shotgun): 69.58 %, missing/extra + reloc-name
 void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 span) {
     static f32 sZ = -256.0f;
     f32 h = 0.5f * (f32)(s32)(ang + span);
@@ -301,7 +302,132 @@ void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 spa
     GXPosition3f32(center->x + -dx, sZ + (center->y + -dy), sZ);
     GXTexCoord2f32(0.0f, v);
 }
-#endif
+#pragma auto_inline reset
+
+// FIXME(shotgun): 75.52 %, cls_804A5568
+void cls_804A5568::fn_801E8080() {
+    f32 len = 0.0f;
+    u8 split = 0;
+    s32 totalVerts = ((mCount - 1) << 5) + 2;
+    f32 b0 = fn_801E9AFC()->field_0x178[0];
+    f32 b1 = fn_801E9AFC()->field_0x178[1];
+    f32 b = b0;
+    if (field_0x3b0 == 0 && field_0x3b4 == 0.0f) {
+        fn_801E9AFC()->fn_801EA344();
+    } else {
+        fn_801E9AFC()->fn_801EA304();
+        b = b1;
+        if (!(mFlags & 0x4000)) {
+            split = 1;
+        }
+    }
+    f32 dx, dy;
+    if (split != 0) {
+        u8 segCur = (s32)(1.0f + field_0x3b4);
+        s32 verts1 = (field_0x3b0 << 5) + (segCur << 1) + 2;
+        GXBegin(GX_TRIANGLESTRIP, GX_VTXFMT0, (u16)verts1);
+        JGeometry::TVec2f prev;
+        prev.x = field_0x2b0[0].x;
+        prev.y = field_0x2b0[0].y;
+        s32 drawn = 0;
+        for (u8 i = 0; i <= field_0x3b0; i++) {
+            for (u8 s = 1; s <= 16; s++) {
+                f32 cx, cy;
+                curvePoint(this, i, s, &cx, &cy);
+                f32 sx = cx - prev.x;
+                f32 sy = cy - prev.y;
+                if (i == 0 && s == 1) {
+                    dx = sx;
+                    dy = sy;
+                }
+                u16 ang1 = (s32)(JMath::atanTable_.atan2_(sx, sy) * 10430.378f);
+                u16 ang0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+                fn_801E8B1C(len, b1, &prev, ang0, ang1);
+                prev.x = cx;
+                prev.y = cy;
+                dx = sx;
+                dy = sy;
+                f32 sq = sx * sx + sy * sy;
+                f32 d = (sq <= 0.0f) ? sq : sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
+                drawn += 2;
+                len += d;
+                if (drawn >= verts1 - 2) {
+                    break;
+                }
+            }
+            if (drawn >= verts1 - 2) {
+                break;
+            }
+        }
+        f32 sq = dx * dx + dy * dy;
+        f32 d = (sq <= 0.0f) ? sq : sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
+        u8 segFloor = (s32)field_0x3b4;
+        f32 midLen = (len - d) + d * (field_0x3b4 - (f32)segFloor);
+        u16 angEnd1 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angEnd0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        fn_801E8B1C(midLen, b1, (const JGeometry::TVec2f*)&mPos, angEnd0, angEnd1);
+        fn_801E9AFC()->fn_801EA344();
+        GXBegin(GX_TRIANGLESTRIP, GX_VTXFMT0, (u16)(totalVerts - verts1 + 4));
+        u16 angStart1 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angStart0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        fn_801E8B1C(midLen, b0, (const JGeometry::TVec2f*)&mPos, angStart0, angStart1);
+        s32 minSeg = segCur + 1;
+        u8 minIdx = field_0x3b0;
+        for (u8 i = minIdx; i < mCount - 1; i++) {
+            for (u8 s = 1; s <= 16; s++) {
+                if (i > minIdx || s >= minSeg) {
+                    f32 cx, cy;
+                    curvePoint(this, i, s, &cx, &cy);
+                    f32 sx = cx - prev.x;
+                    f32 sy = cy - prev.y;
+                    u16 ang1 = (s32)(JMath::atanTable_.atan2_(sx, sy) * 10430.378f);
+                    u16 ang0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+                    fn_801E8B1C(len, b0, &prev, ang0, ang1);
+                    prev.x = cx;
+                    prev.y = cy;
+                    dx = sx;
+                    dy = sy;
+                    f32 sq2 = sx * sx + sy * sy;
+                    f32 d2 = (sq2 <= 0.0f) ? sq2 : sq2 * JGeometry::TUtil<f32>::inv_sqrt(sq2);
+                    len += d2;
+                }
+            }
+        }
+        u16 angLast1 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angLast0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        fn_801E8B1C(len, b0, &prev, angLast0, angLast1);
+    } else {
+        GXBegin(GX_TRIANGLESTRIP, GX_VTXFMT0, (u16)totalVerts);
+        JGeometry::TVec2f prev;
+        prev.x = field_0x2b0[0].x;
+        prev.y = field_0x2b0[0].y;
+        for (u8 i = 0; i < mCount - 1; i++) {
+            for (u8 s = 1; s <= 16; s++) {
+                f32 cx, cy;
+                curvePoint(this, i, s, &cx, &cy);
+                f32 sx = cx - prev.x;
+                f32 sy = cy - prev.y;
+                if (i == 0 && s == 1) {
+                    dx = sx;
+                    dy = sy;
+                }
+                u16 ang1 = (s32)(JMath::atanTable_.atan2_(sx, sy) * 10430.378f);
+                u16 ang0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+                fn_801E8B1C(len, b, &prev, ang0, ang1);
+                prev.x = cx;
+                prev.y = cy;
+                dx = sx;
+                dy = sy;
+                f32 sq = sx * sx + sy * sy;
+                f32 d = (sq <= 0.0f) ? sq : sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
+                len += d;
+            }
+        }
+        u16 angLast1 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angLast0 = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        fn_801E8B1C(len, b, &prev, angLast0, angLast1);
+    }
+}
 
 // FIXME(shotgun): 99.20 %, reloc-name
 void cls_804A5568::fn_801E801C() {
