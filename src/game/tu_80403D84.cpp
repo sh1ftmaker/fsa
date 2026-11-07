@@ -359,11 +359,13 @@ void MapScreen_804B1288::fn_8040F35C() {
     }
 }
 
-// FIXME: 91.7. The original keeps -250 + 250 * t * t unfused (fmuls, fmuls,
-// fadds); ours fuses it into an fmadds.
+// FIXME: 94.91. scheduling+regalloc (+ pool literals of unwritten functions). The product
+// is a local of its own: the original leaves -250 + 250 * t * t unfused (fmuls, fmuls,
+// fadds), which MWCC does only across statements (also fn_8040F16C, fn_8040ED20).
 void MapScreen_804B1288::fn_8040F288() {
     f32 t = (f32)field_0x358 / 90.0f;
-    field_0x39c = -250.0f + 250.0f * t * t;
+    f32 rise = 250.0f * t * t;
+    field_0x39c = -250.0f + rise;
     if (field_0x39c >= 0.0f) {
         field_0x39c = 0.0f;
         field_0x358 = 0;
@@ -377,9 +379,73 @@ void MapScreen_804B1288::fn_8040F288() {
     }
 }
 
-// FIXME: 96.27. As fn_8040F288: the original keeps -250 + 250 * t * t unfused (fmuls,
-// fmuls, fadds); ours fuses it into an fmadds. (Through an inline returning 250 * t * t it
-// is regalloc-only, 98.5 %; no such helper is proven, so it is not used.)
+// FIXME: 99.58. regalloc-only (+ pool literals of unwritten functions). `drop` and `tt`
+// are locals because the original leaves those products unfused (fmuls / fadds, fsubs),
+// which MWCC does only across statements (as fn_8040F288 / fn_8040F16C).
+void MapScreen_804B1288::fn_8040ED20() {
+    field_0x434 += 0x200;
+    field_0x436 += 0x400;
+    field_0x3a0 = 15.0f * JMath::sincosTable_.sinShort(field_0x434) + lbl_8050DB0C.field_0x4c[313];
+    field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436) + lbl_8050DB0C.field_0x4c[314];
+    field_0x665 = 255;
+    if (lbl_8050DB0C.field_0x4c[312] == 1 && field_0x432 >= 6) {
+        field_0x432 -= 6;
+    }
+    if (field_0x432 > lbl_8050DB0C.field_0x4c[315]) {
+        if (field_0x432 == lbl_8050DB0C.field_0x4c[315] + 1) {
+            field_0x2c8->startSound(JAISoundID(0x400E2));
+        }
+        f32 t = (f32)(field_0x432 - lbl_8050DB0C.field_0x4c[315]) / lbl_8050DB0C.field_0x4c[316];
+        f32 drop = -250.0f * t * t;
+        field_0x3a4 += drop;
+        if (field_0x3a4 <= -250.0f) {
+            field_0x3a4 += -250.0f;
+        }
+    } else {
+        field_0x2c8->startSound(JAISoundID(0x400E3));
+    }
+    if (field_0x432 > lbl_8050DB0C.field_0x4c[321]) {
+        s32 frame = field_0x432 - lbl_8050DB0C.field_0x4c[321];
+        if (frame < lbl_8050DB0C.field_0x4c[322]) {
+            f32 t = (f32)frame / lbl_8050DB0C.field_0x4c[322];
+            f32 tt = t * t;
+            field_0x665 = 255.0f * (1.0f - tt);
+        } else {
+            field_0x665 = 0;
+        }
+    }
+    if (field_0x432 > lbl_8050DB0C.field_0x4c[317]) {
+        f32 t = (f32)(field_0x432 - lbl_8050DB0C.field_0x4c[317]) / lbl_8050DB0C.field_0x4c[318];
+        field_0x39c = -250.0f * t * t;
+        if (field_0x39c <= -250.0f) {
+            if (lbl_8050DB0C.field_0x4c[320] == 1) {
+                field_0x39c = 0.0f;
+                field_0x3a0 = 0.0f;
+                field_0x3a4 = 0.0f;
+                field_0x358 = 0;
+                field_0x432 = 0;
+            } else {
+                field_0x39c = -250.0f;
+                field_0x657 = 1;
+                for (int i = field_0x340 * 4; i < field_0x340 * 4 + 4; i++) {
+                    field_0x128[i]->field_0x26 = 0;
+                    field_0x128[i]->mPane->setAlpha(0);
+                    field_0x128[i]->setAlpha_804023D0(field_0x10->search(lbl_8048C2F8[i][1]), field_0x641);
+                }
+                for (int i = field_0x340 * 3; i < field_0x340 * 3 + 3; i++) {
+                    field_0x1a8[i]->field_0x26 = 0;
+                    field_0x1a8[i]->mPane->setAlpha(0);
+                }
+                field_0x208[field_0x340]->field_0x26 = 0;
+                field_0x208[field_0x340]->mPane->setAlpha(0);
+                field_0x350 = 0x13;
+            }
+        }
+    }
+}
+
+// FIXME: 98.59. regalloc-only (+ pool literals). The product is its own local, as in
+// fn_8040F288 (the original leaves it unfused).
 void MapScreen_804B1288::fn_8040F16C() {
     field_0x434 += 0x200;
     field_0x436 += 0x400;
@@ -387,7 +453,8 @@ void MapScreen_804B1288::fn_8040F16C() {
     field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
     if (field_0x358 < 90) {
         f32 t = (f32)field_0x358 / 90.0f;
-        field_0x3a4 += -250.0f + 250.0f * t * t;
+        f32 rise = 250.0f * t * t;
+        field_0x3a4 += -250.0f + rise;
     } else {
         field_0x2c8->startSound(JAISoundID(0x400E3));
         if (field_0x358 >= lbl_8050DB0C.field_0x4c[319] + 90) {
