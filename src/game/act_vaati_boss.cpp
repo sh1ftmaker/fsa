@@ -192,7 +192,7 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
-// FIXME(shotgun): 97.35 %, different + reloc-name
+// FIXME(shotgun): 95.22 %, missing/extra + reloc-name
 void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     switch (state) {
     case 1:
