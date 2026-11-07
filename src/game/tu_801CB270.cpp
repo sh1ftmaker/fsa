@@ -15,6 +15,7 @@
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
+#include "JSystem/JMath/JMath.h"
 
 // Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
 // original inlines no same-unit plain function. Checked: built with inlining off,
@@ -379,6 +380,59 @@ bool fn_801CC8E4(ActorBase_804A5770* actor) {
         }
     }
     return result;
+}
+
+// The distance between two angles as a fraction of a half turn (0-1).
+static inline f32 angleDistance(s16 a, s16 b) {
+    return (1.0f / 32768.0f) * __fabsf((s16)(a - b));
+}
+
+// FIXME: 96.55. Scheduling + regalloc: in both 45-degree turns the original computes the new y
+// (fmadds) before the new x (fmsubs); ours the other way round, so the float registers differ.
+// Steps pos (xy) away from center by speed when it is within radius: straight out, but turned to
+// the nearer side of dir (a quarter turn off it) when that direction is more than a quarter turn
+// from dir; on center itself, along dir (or (0, 1)) turned 45 degrees either way at random.
+// False (pos unchanged) outside radius. Callers pass TVec3f positions (only x and y are read).
+bool fn_801CB85C(const JGeometry::TVec2f* center, const JGeometry::TVec2f* dir, JGeometry::TVec2f* pos, f32 radius,
+                 f32 speed) {
+    bool moved = false;
+    JGeometry::TVec2f d(pos->x - center->x, pos->y - center->y);
+    f32 sq = d.squared();
+    if (sq <= JGeometry::TUtilf::epsilon()) {
+        moved = true;
+        JGeometry::TVec2f v(dir->x, dir->y);
+        if (v.squared() <= JGeometry::TUtilf::epsilon()) {
+            v.set(0.0f, 1.0f);
+        }
+        if ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) == 0) {
+            f32 s = JMASSin(-0x2000);
+            f32 c = JMASCos(-0x2000);
+            d.set(v.x * c - v.y * s, v.x * s + v.y * c);
+        } else {
+            f32 s = JMASSin(0x2000);
+            f32 c = JMASCos(0x2000);
+            d.set(v.x * c - v.y * s, v.x * s + v.y * c);
+        }
+    } else if (sq <= radius * radius) {
+        moved = true;
+        s16 dirAngle = JMath::atanTable_.atan2_(dir->x, dir->y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        s16 angle = JMath::atanTable_.atan2_(d.x, d.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
+        if (angleDistance(dirAngle, angle) > 0.5f) {
+            s16 left = dirAngle + 0x4000;
+            s16 right = dirAngle - 0x4000;
+            if (angleDistance(angle, left) < angleDistance(angle, right)) {
+                d.set(JMASSin(left), JMASCos(left));
+            } else {
+                d.set(JMASSin(right), JMASCos(right));
+            }
+        }
+    }
+    if (moved) {
+        d.normalize();
+        d.scale(speed);
+        pos->add(d);
+    }
+    return moved;
 }
 
 // Maps a 16-bit angle to the one mirrored about the 0x4000 axes (0x8000 - a
