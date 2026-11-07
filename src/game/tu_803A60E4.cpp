@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
+void* fn_804030C4(u32 type, const char* name);
 #include "game/Message.h"
 #include "game/act/tu_80440BF4.h"
 #include "JSystem/J2D/J2DScreen.h"
@@ -13,6 +14,84 @@ static inline void rotateArrow(J2DScreen* screen, u64 tag, f32 angle) {
     J2DPane* pane = screen->search(tag);
     f32 w = pane->getWidth();
     screen->search(tag)->rotate(0.5f * w, 0.5f * h, J2DROTATE_Z, angle);
+}
+
+// Fonts, texts and the arrows' base angles of the options screen: the constructor of the
+// object at 0x804AF860 (0x84 bytes).
+// FIXME(shotgun): 86.46 %, missing/extra + reloc-name
+cls_804AF860::cls_804AF860() {
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    field_0x4 = new J2DScreen;
+    field_0x4->setPriority("option.blo", 0x1100000, lbl_80529DEC.field_0x2c);
+    field_0x8 = new PaneCtrl_804AF86C;
+    field_0x8->setPane_80402F04(field_0x4->search('Popbbk03'));
+    field_0xc[0] = new PaneCtrl_804AF86C;
+    field_0xc[0]->setPane_80402F04(field_0x4->search('Pocur01'));
+    field_0xc[1] = new PaneCtrl_804AF86C;
+    field_0xc[1]->setPane_80402F04(field_0x4->search('Pocur02'));
+    field_0xc[2] = new PaneCtrl_804AF86C;
+    field_0xc[2]->setPane_80402F04(field_0x4->search('Pocur03'));
+    field_0xc[3] = new PaneCtrl_804AF86C;
+    field_0xc[3]->setPane_80402F04(field_0x4->search('Pocur04'));
+    field_0xc[4] = new PaneCtrl_804AF86C;
+    field_0xc[4]->setPane_80402F04(field_0x4->search('Pocur05'));
+    field_0xc[5] = new PaneCtrl_804AF86C;
+    field_0xc[5]->setPane_80402F04(field_0x4->search('Pocur06'));
+    field_0x24 = new PaneCtrl_804AF86C;
+    field_0x24->setPane_80402F04(field_0x4->search('Par01'));
+    field_0x28 = new PaneCtrl_804AF86C;
+    field_0x28->setPane_80402F04(field_0x4->search('Par02'));
+    field_0x2c = new PaneCtrl_804AF86C;
+    field_0x2c->setPane_80402F04(field_0x4->search('Ndata03'));
+    field_0x30 = new PaneCtrl_804AF86C;
+    field_0x30->setPane_80402F04(field_0x4->search('Ptopbb07'));
+    field_0x34 = lbl_8053AED8->field_0x8;
+    lbl_8053AED8->fn_80440D78((const ResTIMG*)fn_804030C4('TIMG', "kk_kettei_01.bti"));
+    lbl_8053AED8->fn_80440CE4((const ResTIMG*)fn_804030C4('TIMG', "kk_modoru_01.bti"));
+    ((J2DTextBox*)field_0x4->search('Tsi01'))->setFont(lbl_8053AD78->mFont);
+    ((J2DTextBox*)field_0x4->search('Tsi02'))->setFont(lbl_8053AD78->mFont);
+    ((J2DTextBox*)field_0x4->search('Tso01'))->setFont(lbl_8053AD78->mFont);
+    ((J2DTextBox*)field_0x4->search('Tso02'))->setFont(lbl_8053AD78->mFont);
+    getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso01'))->getStringPtr(), 0x97, 0, NULL, NULL);
+    getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi01'))->getStringPtr(), 0x37, 0, NULL, NULL);
+    field_0x4->search('Pocur01')->show();
+    field_0x4->search('Pocur02')->show();
+    field_0x4->search('Pocur03')->hide();
+    field_0x4->search('Pocur04')->hide();
+    field_0x4->search('Pocur05')->hide();
+    field_0x4->search('Pocur06')->hide();
+    field_0x70 = (s32)field_0x4->search('Par01')->getRotate();
+    field_0x72 = (s32)field_0x4->search('Par02')->getRotate();
+    f32 y0 = field_0x4->search('Tso01')->getBounds()->i.y;
+    f32 y1 = field_0x4->search('Tsi01')->getBounds()->i.y;
+    field_0x60 = y1 - y0;
+    field_0x64 = 0;
+    field_0x68 = 0;
+    field_0x74 = -6;
+    field_0x77 = lbl_80529DEC.field_0x245;
+    field_0x78 = lbl_80529DEC.field_0x246[0];
+    if (field_0x77 == 1) {
+        getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x98, 0, NULL, NULL);
+    } else {
+        getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x99, 0, NULL, NULL);
+    }
+    if (field_0x78 == 1) {
+        getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x38, 0, NULL, NULL);
+    } else {
+        getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x39, 0, NULL, NULL);
+    }
+    rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
+    rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+    field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+    field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+    field_0x6e = 0;
+    field_0x76 = 0;
+    field_0x79 = 0;
+    field_0x7a = 10;
+    field_0x7b = 0xFF;
+    field_0x7c = 0xC0;
+    field_0x80 = 5;
+    lbl_8053AD90 = this;
 }
 
 cls_804AF860::~cls_804AF860() {
