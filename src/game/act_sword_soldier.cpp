@@ -2,6 +2,7 @@
 // constructor 0x80203CA4 in the spawner). Only the small helpers (and the
 // actor-manager wrappers) are written so far.
 
+#include "game/GameAudio.h" // its JAudio pools give the unit its __sinit (0x8015478C)
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
