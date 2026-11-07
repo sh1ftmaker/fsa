@@ -195,8 +195,8 @@ public:
     }
     // Inlined: appends a short text to both line buffers.
     void appendText(const char* text, int length = 1) {
-        strcat((char*)field_0x2c0, text);
-        strcat((char*)field_0x2c4, text);
+        strcat(field_0x2c0, text);
+        strcat(field_0x2c4, text);
         field_0x2d0 += length;
     }
 
@@ -205,8 +205,8 @@ public:
     // The font of the window's 'Tm01' text box (the constructor), handed to
     // field_0x38 by do_begin.
     /* 0x2BC */ JUTFont* field_0x2bc;
-    /* 0x2C0 */ s8* field_0x2c0;
-    /* 0x2C4 */ s8* field_0x2c4;
+    /* 0x2C0 */ char* field_0x2c0;
+    /* 0x2C4 */ char* field_0x2c4;
     /* 0x2C8 */ f32 field_0x2c8; // the text scale (fn_803944EC)
     /* 0x2CC */ s32 field_0x2cc;
     /* 0x2D0 */ s32 field_0x2d0;

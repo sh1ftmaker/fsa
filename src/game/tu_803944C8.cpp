@@ -585,8 +585,8 @@ void cls_804AF72C::fn_8039F540(int c) {
             if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
                 field_0x2d6 = 1;
                 newline[0] = c;
-                strcat((char*)field_0x2c0, newline);
-                strcat((char*)field_0x2c4, newline);
+                strcat(field_0x2c0, newline);
+                strcat(field_0x2c4, newline);
                 field_0x2d0++;
             }
         }
@@ -607,8 +607,8 @@ void cls_804AF72C::fn_8039F540(int c) {
                     s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
                     if (offset > 0) {
                         snprintf(lbl_8050E518, 15, "\033CR[%d]", offset);
-                        strcat((char*)field_0x2c0, lbl_8050E518);
-                        strcat((char*)field_0x2c4, lbl_8050E518);
+                        strcat(field_0x2c0, lbl_8050E518);
+                        strcat(field_0x2c4, lbl_8050E518);
                         field_0x2d0 += strlen(lbl_8050E518);
                     }
                 }
@@ -631,8 +631,8 @@ void cls_804AF72C::fn_8039F540(int c) {
             if (shown != field_0x2d8->field_0x170) {
                 field_0x2d8->field_0x170 = shown;
             }
-            strcat((char*)field_0x2c0, text);
-            strcat((char*)field_0x2c4, text);
+            strcat(field_0x2c0, text);
+            strcat(field_0x2c4, text);
         }
     } else if (c == '\n') {
         field_0x2cc++;
@@ -745,8 +745,8 @@ void cls_804AF72C::fn_8039D0DC(u8 value) {
 // FIXME(shotgun): 98.29 %, scheduling+regalloc
 void cls_804AF72C::fn_8039CDF8(u8 value) {
     if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
-        strcat((char*)field_0x2c0, "  ");
-        strcat((char*)field_0x2c4, "  ");
+        strcat(field_0x2c0, "  ");
+        strcat(field_0x2c4, "  ");
         field_0x2d0 += 4;
     } else {
         field_0x2d5++;
@@ -805,8 +805,8 @@ void cls_804AF72C::fn_8039C9A0(s32 number) {
                 s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
                 if (offset > 0) {
                     snprintf(lbl_8050E528, 15, "\033CR[%d]", offset);
-                    strcat((char*)field_0x2c0, lbl_8050E528);
-                    strcat((char*)field_0x2c4, lbl_8050E528);
+                    strcat(field_0x2c0, lbl_8050E528);
+                    strcat(field_0x2c4, lbl_8050E528);
                     field_0x2d0 += strlen(lbl_8050E528);
                 }
             }
@@ -1549,8 +1549,8 @@ void cls_804AF5A0::fn_80394690() {
     if (field_0x1aa == 0) {
         char line1[0x100];
         char line2[0x100];
-        strcpy(line1, (const char*)field_0x1ab);
-        strcpy(line2, (const char*)field_0x2ab);
+        strcpy(line1, field_0x1ab);
+        strcpy(line2, field_0x2ab);
         if (strlen(field_0x3ab) != 0) {
             s32 frame = field_0x10->field_0x4c;
             s16 frames = lbl_8050DB0C.field_0x4c[0];

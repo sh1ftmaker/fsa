@@ -194,8 +194,8 @@ public:
     /* 0x1AA */ u8 field_0x1aa;
     // Two 0x100-byte buffers; the constructor points cls_804AF72C's 0x2C0 /
     // 0x2C4 at them.
-    /* 0x1AB */ s8 field_0x1ab[0x100];
-    /* 0x2AB */ s8 field_0x2ab[0x100];
+    /* 0x1AB */ char field_0x1ab[0x100];
+    /* 0x2AB */ char field_0x2ab[0x100];
     // A short text fn_80394690 appends to both lines (strlen / strcat); the
     // constructor and cls_804AF72C::do_begin clear it.
     /* 0x3AB */ char field_0x3ab[3];
