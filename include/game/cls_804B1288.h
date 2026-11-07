@@ -144,7 +144,7 @@ public:
     // lbl_8048C88C) one step when dir is the table's direction.
     void fn_80405D00(s32 dir);
     // 0x804054B8 (called by fn_80409FDC): shows the cursor pane 'Ndata10' at field_0x394 /
-    // field_0x398 and the Plicu arrows (lbl_8048C5D0[9..16], pairs per direction) in
+    // field_0x398 and the Plicu arrows (lbl_8048C618[dir][2], pairs per direction) in
     // the directions fn_80405D00 / fn_80405B10 accept; blinks each pair every 15 frames.
     void fn_804054B8();
     void fn_80405B10(s32 dir);

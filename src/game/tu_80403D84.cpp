@@ -34,7 +34,8 @@ static const s16 lbl_80543890[4] = {0, 1, 2, 1};
 // .rodata 0x8048C1F8-0x8048CC1C in address order: map.blo pane-tag tables (u64 J2D tags),
 // the screen's s32 / s16 / u8 index tables and the rupee-digit texture names (lbl_804B1260, .data).
 // Message ids per stage: the stage names (setStageName), 0x244.. (580..), and the four texts
-// fn_8040873C reads (each its own array: fn_8040873C addresses them off the section base).
+// fn_8040873C reads. Six separate arrays: written as one s32[6][8] the code changes
+// (fn_8040873C 96.0 -> 94.7 %, fn_8040BC1C 97.7 -> 95.9 %).
 static const s32 lbl_8048C1F8[8] = {288, 289, 290, 291, 292, 293, 294, 295};
 static const s32 lbl_8048C218[8] = {580, 581, 582, 583, 584, 585, 586, 587};
 static const s32 lbl_8048C238[8] = {0, 4, 8, 12, 16, 20, 24, 28};
@@ -667,6 +668,7 @@ void MapScreen_804B1288::fn_8040F35C() {
 // fadds), which MWCC does only across statements (also fn_8040F16C, fn_8040ED20).
 void MapScreen_804B1288::fn_8040F288() {
     f32 t = (f32)field_0x358 / 90.0f;
+    // Kept as its own local to match: the original leaves the product unfused (fmuls, fmuls, fadds).
     f32 rise = 250.0f * t * t;
     field_0x39c = -250.0f + rise;
     if (field_0x39c >= 0.0f) {
@@ -691,6 +693,7 @@ void MapScreen_804B1288::fn_8040F16C() {
     field_0x3a4 = 5.0f * JMath::sincosTable_.sinShort(field_0x436);
     if (field_0x358 < 90) {
         f32 t = (f32)field_0x358 / 90.0f;
+        // Kept as its own local to match: the original leaves the product unfused.
         f32 rise = 250.0f * t * t;
         field_0x3a4 += -250.0f + rise;
     } else {
@@ -719,6 +722,7 @@ void MapScreen_804B1288::fn_8040ED20() {
             field_0x2c8->startSound(JAISoundID(0x400E2));
         }
         f32 t = (f32)(field_0x432 - lbl_8050DB0C.field_0x4c[315]) / lbl_8050DB0C.field_0x4c[316];
+        // Kept as its own local to match: the original leaves the product unfused.
         f32 drop = -250.0f * t * t;
         field_0x3a4 += drop;
         if (field_0x3a4 <= -250.0f) {
@@ -731,6 +735,7 @@ void MapScreen_804B1288::fn_8040ED20() {
         s32 frame = field_0x432 - lbl_8050DB0C.field_0x4c[321];
         if (frame < lbl_8050DB0C.field_0x4c[322]) {
             f32 t = (f32)frame / lbl_8050DB0C.field_0x4c[322];
+            // Kept as its own local to match: the original leaves the product unfused.
             f32 tt = t * t;
             field_0x665 = 255.0f * (1.0f - tt);
         } else {
