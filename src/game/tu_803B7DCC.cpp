@@ -13,20 +13,6 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/JUtility/JUTVideo.h"
 
-cls_804AFAB0::~cls_804AFAB0() {
-    for (s32 i = 0; i < 50; i++) {
-        deleteEmitter(&field_0x24[i]);
-    }
-    lbl_80529DEC.mHeap->getTotalFreeSize();
-    delete field_0x4;
-    field_0x4 = NULL;
-    delete field_0x1c;
-    field_0x1c = NULL;
-    delete field_0x20;
-    field_0x20 = NULL;
-    lbl_8053ADA8 = NULL;
-}
-
 // FIXME(shotgun): 95.51 %, missing/extra (the unrolled field_0x24 clear starts with a loop-entry test)
 cls_804AFAB0::cls_804AFAB0() {
     field_0x28c = -1;
@@ -55,6 +41,20 @@ cls_804AFAB0::cls_804AFAB0() {
         lbl_80529DEC.field_0x118 = 7;
         lbl_80529DEC.field_0x11c = 3;
     }
+}
+
+cls_804AFAB0::~cls_804AFAB0() {
+    for (s32 i = 0; i < 50; i++) {
+        deleteEmitter(&field_0x24[i]);
+    }
+    lbl_80529DEC.mHeap->getTotalFreeSize();
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x1c;
+    field_0x1c = NULL;
+    delete field_0x20;
+    field_0x20 = NULL;
+    lbl_8053ADA8 = NULL;
 }
 
 void cls_804AFAB0::fn_803B8188() {
