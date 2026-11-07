@@ -3,6 +3,7 @@
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 // The texture name fn_80119D48 loads (.sdata 0x80539F10).
 const char* lbl_80539F10 = "kk_black.bti";
@@ -132,6 +133,101 @@ void cls_80119E5C::fn_80119958() {
     field_0x24 = 0;
     field_0x28 = 0;
     field_0x10 = 0;
+}
+
+// FIXME: 99.88. reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
+// unwritten) and has 1.0f after the double; the original has a 1.0f made before
+// fn_801194C4's double (no function here explains it).
+// The fade step: field_0x4 counts the frames up to field_0x8 while field_0x14 moves
+// by field_0x18 (down for mode 0, up for 1, up then down for 2) within 0..255; at
+// the end the fade holds while field_0x10 counts down (when field_0x2 is set), then
+// resets. Not during game modes 9 and 0x16.
+void cls_80119E5C::fn_80119628() {
+    switch (gGameRoot_8053AAF8->field_0x4c) {
+    case 9:
+    case 0x16:
+        return;
+    }
+    if (field_0x0 == 0) {
+        return;
+    }
+    if (field_0x1 != 0) {
+        if (field_0x2 != 0) {
+            field_0x10--;
+            if (field_0x10 <= 0) {
+                field_0x1 = 0;
+            }
+        }
+        return;
+    }
+    field_0x4++;
+    switch (field_0x1c) {
+    case 0:
+        if (field_0x2 != 0 && field_0x10 > 0) {
+            field_0x1 = 1;
+        }
+        field_0x14 -= field_0x18;
+        break;
+    case 1:
+        field_0x14 += field_0x18;
+        break;
+    case 2:
+        if (field_0x24 == 2 && field_0x4 == field_0x8 / 2) {
+            JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EC, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3ED, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EE, 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, &pos, 0x3EF, 0, 0, NULL, NULL, true, 1.0f);
+        }
+        if (field_0x4 >= field_0x8 / 2 + 1) {
+            if (field_0x2 != 0 && field_0x10 > 0) {
+                field_0x1 = 1;
+            } else {
+                field_0x14 -= field_0x18;
+            }
+        } else {
+            field_0x14 += field_0x18;
+        }
+        break;
+    }
+    if (field_0x14 >= 255.0f) {
+        field_0x14 = 255.0f;
+    } else if (field_0x14 <= 0.0f) {
+        field_0x14 = 0.0f;
+    }
+    if (field_0x4 > field_0x8) {
+        if (field_0x2 != 0) {
+            if (field_0x10 <= 0) {
+                fn_80119958();
+            } else {
+                field_0x1 = 1;
+            }
+        } else {
+            fn_80119958();
+        }
+    }
+}
+
+// FIXME: 99.94. reloc-name only (the double of the u16 to float conversions; see
+// fn_80119628).
+// Draws the fade picture over the screen with alpha field_0x14: black, or white
+// for field_0x24 == 1 (not for field_0x24 == 2).
+void cls_80119E5C::fn_801194C4() {
+    if (field_0x0 != 0 && field_0x24 != 2 && field_0x14 != 0.0f) {
+        gGameRoot2_8053AB10->fn_8013B490();
+        switch (field_0x24) {
+        case 1:
+            field_0x2c->setBlackWhite(JUtility::TColor(0xFFFFFFFF), JUtility::TColor(0));
+            break;
+        case 0: // the original's switch also has case 0 (bge / b both to the black one)
+        default:
+            field_0x2c->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
+            break;
+        }
+        field_0x2c->setAlpha(field_0x14);
+        field_0x2c->draw(0.0f, 0.0f, (s32)JUTVideo::sManager->getFbWidth(),
+                         (s32)JUTVideo::sManager->getEfbHeight(), false, false, false);
+    }
 }
 
 void cls_80119E5C::fn_80119468(s32 g, s32 mode) {

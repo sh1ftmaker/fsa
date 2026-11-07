@@ -476,10 +476,9 @@ public:
     void fn_80119958();
     // 0x80119D48: makes the picture from "kk_black.bti" when there is none.
     void fn_80119D48();
-    // 0x80119628 / 0x801194C4 (not written yet). The first tests
-    // gGameRoot_8053AAF8->field_0x4c against 0x16 and 9; the second does
-    // nothing unless field_0x0 is set. GameRoot's fn_80136828 calls both, in
-    // this order, on fn_80119DD0().
+    // 0x80119628 / 0x801194C4 (game/tu_80118384.cpp): the fade's frame step (not in
+    // game modes 9 and 0x16) and its draw (the picture over the screen, alpha
+    // field_0x14). GameRoot's fn_80136828 calls both, in this order, on fn_80119DD0().
     void fn_80119628();
     void fn_801194C4();
 }; // Size: 0x30
