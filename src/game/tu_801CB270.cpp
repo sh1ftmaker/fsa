@@ -12,16 +12,16 @@
 #include "game/GameGlobals.h"
 #include "game/Player.h"
 #include "game/act/act_bombchu.h"
+#include "game/Map.h"
+#include "game/ViewLayer.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/ResTIMG.h"
 #include "dolphin/gx.h"
 #include "JSystem/JMath/JMath.h"
 
-// Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
-// original inlines no same-unit plain function. Checked: built with inlining off,
-// every written function's calls to this unit's functions equal the original's
-// `bl`s. The callers that need it: fn_801CD930 calls fn_801CD970 and fn_801CD950 calls fn_801CD9F0 out of line.
-#pragma auto_inline off
+// Forward declaration (defined at its place below fn_801CC9F8).
+f32 tileCenter(f32 v);
+
 
 
 // The kind of a Force Gem ('RUPY', act_force_gem): the low byte of its
@@ -36,6 +36,9 @@ static inline s32 forceGemKind(ActorBase_804A5770* actor) {
     return kind;
 }
 
+// Not auto-inlined: fn_801CD950 calls fn_801CD9F0 and fn_801CD930 calls fn_801CD970 out of line
+// in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // Moves *value towards target by at most step; nonzero while it has not
 // reached the target.
 s32 fn_801CD9F0(f32* value, f32 target, f32 step) {
@@ -98,6 +101,7 @@ bool fn_801CD970(s16* angle, s32 target, s32 step) {
     }
     return result;
 }
+#pragma auto_inline reset
 
 // Moves *value toward target by `step`; nonzero while it has not reached the
 // target (see EnemyBase.h).
@@ -304,15 +308,15 @@ s32 fn_801CCDA4() {
 
 // Like fn_801CCCC4 but the snapped (x, y) of `in` goes to `out`.
 void fn_801CCD34(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
-    out->x = 8.0f + (u32)((s32)in->x & ~0xF);
-    out->y = 8.0f + (u32)((s32)in->y & ~0xF);
+    out->x = tileCenter(in->x);
+    out->y = tileCenter(in->y);
 }
 
 // Snaps pos (x, y) down to a multiple of 16 and adds 8 (the centre of a 16x16
 // tile).
 void fn_801CCCC4(JGeometry::TVec3f* pos) {
-    pos->x = 8.0f + (u32)((s32)pos->x & ~0xF);
-    pos->y = 8.0f + (u32)((s32)pos->y & ~0xF);
+    pos->x = tileCenter(pos->x);
+    pos->y = tileCenter(pos->y);
 }
 
 // Whether the tile at pos is one of the codes 0x40-0x49.
@@ -331,6 +335,43 @@ bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer) {
     case 0x49:
         result = true;
         break;
+    }
+    return result;
+}
+
+// Whether the tile (fn_802265FC) at pos (x, y - z) and the one 16 units further down are both
+// code 2, on a layer with the view's flag. fn_802265FC reads only x and y: the probes are TVec2f
+// on the stack (act_bomb passes its centre the same way).
+bool fn_801CCB1C(const JGeometry::TVec3f* pos, s32 layer) {
+    bool result = false;
+    JGeometry::TVec2f p(pos->x, pos->y - pos->z);
+    if (viewLayerFlag(layer) && fn_802265FC((const JGeometry::TVec3f*)&p, layer) == 2) {
+        JGeometry::TVec2f below(p.x, 16.0f + p.y);
+        if (fn_802265FC((const JGeometry::TVec3f*)&below, layer) == 2) {
+            result = true;
+        }
+    }
+    return result;
+}
+
+// Whether pos and the four points 7 units left, right, up and down of it all have tile code 0
+// (fn_802265FC), on a layer with the view's flag. The probes are TVec2f, as in fn_801CCB1C.
+bool fn_801CC9F8(const JGeometry::TVec3f* pos, s32 layer) {
+    bool result = false;
+    if (viewLayerFlag(layer) && fn_802265FC(pos, layer) == 0) {
+        JGeometry::TVec2f right(7.0f + pos->x, pos->y);
+        if (fn_802265FC((const JGeometry::TVec3f*)&right, layer) == 0) {
+            JGeometry::TVec2f left(pos->x - 7.0f, pos->y);
+            if (fn_802265FC((const JGeometry::TVec3f*)&left, layer) == 0) {
+                JGeometry::TVec2f down(pos->x, 7.0f + pos->y);
+                if (fn_802265FC((const JGeometry::TVec3f*)&down, layer) == 0) {
+                    JGeometry::TVec2f up(pos->x, pos->y - 7.0f);
+                    if (fn_802265FC((const JGeometry::TVec3f*)&up, layer) == 0) {
+                        result = true;
+                    }
+                }
+            }
+        }
     }
     return result;
 }
@@ -380,6 +421,14 @@ bool fn_801CC8E4(ActorBase_804A5770* actor) {
         }
     }
     return result;
+}
+
+// The centre of the 16-unit tile holding v. A plain function the linker dead-stripped: its four
+// copies are inlined in fn_801CCD34 and fn_801CCCC4, and its 8.0f sits in .sdata2 between
+// fn_801CC350's literals and fn_801CC9F8's, where its own copy was emitted (RULES_CARD,
+// "Literals before their first visible use" 2-3).
+f32 tileCenter(f32 v) {
+    return 8.0f + (u32)((s32)v & ~0xF);
 }
 
 // Reflects the xy of *vel off *normal's xy (z is kept), at the original speed; straight back when

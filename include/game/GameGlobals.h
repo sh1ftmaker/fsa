@@ -566,11 +566,12 @@ cls_804B0FC0* fn_80401E10(const char* path, u8 direction, JKRHeap* heap);
 extern "C" {
 // JSystem/JMath/JMath.cpp: fast vector magnitude
 f32 fn_80093280(const JGeometry::TVec3f* v);
-// game/tu_801CB270.cpp (not written yet; both clrlwi.): map tests of a
-// point on `layer`.
+// game/tu_801CB270.cpp (not written yet; clrlwi.): a map test of a point on `layer`.
 bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer);
-bool fn_801CCB1C(const JGeometry::TVec3f* pos, s32 layer);
 }
+// game/tu_801CB270.cpp (0x801CCB1C; callers test it with clrlwi.): whether the tiles at a point
+// (x, y - z) and 16 below it are both code 2 on `layer`.
+bool fn_801CCB1C(const JGeometry::TVec3f* pos, s32 layer);
 
 // Random helpers on gGameRoot_8053AAF8->mRandom, defined in game units.
 f32 fn_80154744();          // [0, 1); game/act_sword_soldier.cpp
