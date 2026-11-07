@@ -86,14 +86,15 @@ u8 cls_800FE3EC::fn_800FE21C(u8 index) {
     return field_0x4[index]->field_0x90 >> 24;
 }
 
-// FIXME(shotgun): 34.7 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.9 %, missing/extra + reloc-name (the original has one shared tail for the *out copy)
 // 0x800FE090
+// auto_inline off: the original's fn_800FDEA0 (bl at 0x800FDEFC) calls it out of line.
 #pragma auto_inline off
 s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     s32 result = 0;
     f32 dx = field_0x4[field_0x3]->mPos.x - pos->x;
     f32 dy = field_0x4[field_0x3]->mPos.y - pos->y;
-    if (std::sqrtf(dx * dx + dy * dy) < 10.0f) {
+    if (JGeometry::TUtil<f32>::sqrt(dx * dx + dy * dy) < 10.0f) {
         u8 cur = field_0x3;
         u32 mode = field_0x4[cur]->field_0x90 & 3;
         result = 2;
