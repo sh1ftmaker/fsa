@@ -6,7 +6,12 @@
 #include "game/SpriteParams.h"
 #include "game/Unk_8045A080.h"
 #include "game/cls_804B1D00.h"
+#include "game/ActorManager.h"
+#include "game/Camera.h"
+#include "game/Player.h"
 #include "game/act/tu_801A0710.h"
+#include "JSystem/JMath/JMath.h"
+#include "std/math.h"
 
 void fn_8022AF2C();
 
@@ -140,6 +145,62 @@ void TennisShop_804A2BF4::update() {
         break;
     case 2:
         fn_801A0BE4();
+        break;
+    }
+}
+
+// FIXME(shotgun): 85.9 %, missing/extra
+void TennisShop_804A2BF4::fn_801A0BE4() {
+    mPos.x += field_0x3c.x;
+    mPos.y += field_0x3c.y;
+    mPos.z += field_0x3c.z;
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    switch (field_0x230) {
+    case 0x12: {
+        s32 serial = field_0x320;
+        if (serial < 0 || getActorManager_801F856C()->findActorBySerial_801F666C(serial) == NULL) {
+            field_0x238[1] = 50;
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 5.0f;
+            field_0x3c.z = 3.0f;
+            startSound_801F0E34(0x3004D, 0);
+            field_0x230 = 0x13;
+            break;
+        }
+        for (s32 i = 0; i < 4; i++) {
+            if (field_0x27c[i] >= 0) {
+                f32 dx = mPos.x - getPlayerPos_8023E724(i)->x;
+                f32 dy = mPos.y - getPlayerPos_8023E724(i)->y;
+                f32 dist = std::sqrtf(dx * dx + dy * dy);
+                if (dist > 16.0f) {
+                    s32 angle = (s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
+                    field_0x3c.x = 10.0f * JMath::sincosTable_.sinShort(angle);
+                    field_0x3c.y = 10.0f * JMath::sincosTable_.cosShort(angle);
+                } else {
+                    field_0x2ac[i] = 1;
+                    field_0x238[1] = 50;
+                    field_0x3c.x *= -0.5f;
+                    field_0x3c.y *= -0.5f;
+                    field_0x3c.z = 3.0f;
+                    startSound_801F0E34(0x3004D, 0);
+                    field_0x230 = 0x13;
+                }
+            }
+        }
+        break;
+    }
+    case 0x13:
+        addCalc2_801F71A4(&field_0x340, 0.0f, 0.5f, 5.0f);
+        if (mPos.z <= 0.0f) {
+            startSound_801F0E34(0x3004C, 0);
+            mPos.z = 0.0f;
+            field_0x3c.z = 3.0f;
+        } else {
+            field_0x3c.z -= 0.5f;
+        }
+        if (field_0x238[1] != 0 && field_0x340 < 1.0f) {
+            mAlive = false;
+        }
         break;
     }
 }
