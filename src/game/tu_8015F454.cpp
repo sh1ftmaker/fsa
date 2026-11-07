@@ -18,12 +18,41 @@ cls_804A03A8::~cls_804A03A8() {
     delete field_0x290;
 }
 
-// FIXME(shotgun): 0.0 %, missing/extra (the original stores the 32 zeros straight-line; ours loops)
+// FIXME(shotgun): 99.9 %, reloc-name (the 32 zeros are stored straight-line, as in the original)
 // 0x801601E0
 void cls_804A03A8::fn_801601E0() {
-    for (s32 i = 0; i < 0x20; i++) {
-        field_0x204[i] = 0;
-    }
+    field_0x204[0] = 0;
+    field_0x204[1] = 0;
+    field_0x204[2] = 0;
+    field_0x204[3] = 0;
+    field_0x204[4] = 0;
+    field_0x204[5] = 0;
+    field_0x204[6] = 0;
+    field_0x204[7] = 0;
+    field_0x204[8] = 0;
+    field_0x204[9] = 0;
+    field_0x204[10] = 0;
+    field_0x204[11] = 0;
+    field_0x204[12] = 0;
+    field_0x204[13] = 0;
+    field_0x204[14] = 0;
+    field_0x204[15] = 0;
+    field_0x204[16] = 0;
+    field_0x204[17] = 0;
+    field_0x204[18] = 0;
+    field_0x204[19] = 0;
+    field_0x204[20] = 0;
+    field_0x204[21] = 0;
+    field_0x204[22] = 0;
+    field_0x204[23] = 0;
+    field_0x204[24] = 0;
+    field_0x204[25] = 0;
+    field_0x204[26] = 0;
+    field_0x204[27] = 0;
+    field_0x204[28] = 0;
+    field_0x204[29] = 0;
+    field_0x204[30] = 0;
+    field_0x204[31] = 0;
     field_0x284 = 0;
     field_0x288 = 0.0f;
     field_0x28c = 0.0f;
