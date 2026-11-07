@@ -5,13 +5,7 @@ act_force_like	sinit	__sinit_act_force_like_cpp	-	-	new	-
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_player_effect	dtor	__dt__21PlayerEffect_804A6E20Fv	PlayerEffect_804A6E20	0x804A6E20	new	new
-act_player_effect	sinit	__sinit_act_player_effect_cpp	-	-	new	new
 act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
-act_slingshot_seed	dtor_emit	__dt__22SlingshotSeed_804AB3A8Fv	SlingshotSeed_804AB3A8	0x804AB3A8	new	new
-act_slingshot_seed	sinit	__sinit_act_slingshot_seed_cpp	-	-	new	-
-act_strange_block	dtor	__dt__21StrangeBlock_804AC2D8Fv	StrangeBlock_804AC2D8	0x804AC2D8	new	new
-act_strange_block	sinit	__sinit_act_strange_block_cpp	-	-	new	new
 act_trick_floor	dtor	__dt__19TrickFloor_804A83A0Fv	TrickFloor_804A83A0	0x804A83A0	new	new
 act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
