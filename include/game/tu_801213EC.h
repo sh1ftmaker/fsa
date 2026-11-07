@@ -21,6 +21,8 @@ public:
     /* 0x14 */ virtual void update(); // fn_80124278; the vtable's update slot
     // Slots 0x54-0x5C: the callers test 0x54's byte result (escort woman's 0x6C-state code);
     // 0x58 is a flag, 0x5C returns a state number (3 here).
+    // 0x80123E9C: false on the eight tile ids of lbl_80464D84 (0x2C-0x2F, 0x28-0x2B), else the base's.
+    /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     /* 0x54 */ virtual bool vfunc_0x54();
     /* 0x58 */ virtual bool vfunc_0x58();
     /* 0x5C */ virtual s32 vfunc_0x5C();
@@ -72,6 +74,9 @@ public:
     /* 0xC8 */ virtual bool vfunc_0xC8(const JGeometry::TVec3f& vec, f32 arg); // fn_80121BB8
     // fn_80121DB0 (tu_801213EC): clears three bytes at 0x269-0x26B, returns 1.
     // The zora's fn_801200F8 and the escort woman's vfunc 0x74 call it.
+    // 0x80122730 (a plain function of this unit): picks sprite animation `anim` (+5 with `shifted`);
+    // with `throttled` it only acts every tenth call (field_0x364[4] counts).
+    void fn_80122730(s32 anim, bool shifted, bool throttled);
     s32 fn_80121DB0();
     // fn_801216D0 (tu_801213EC): the index of the player (0-3) whose fn_8023ECF0 is `player`, else -1.
     s32 fn_801216D0(s32 player);

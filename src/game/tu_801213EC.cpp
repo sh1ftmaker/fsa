@@ -15,6 +15,18 @@ static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeome
     return fn_8038AD24(player, msg, serial, layer, pos, flags);
 }
 
+static const u16 lbl_80464D84[8] = {0x2C, 0x2D, 0x2E, 0x2F, 0x28, 0x29, 0x2A, 0x2B};
+
+bool EscortBase_8049E0C8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    u16 tile = fn_8022461C(pos, layer);
+    for (s32 i = 0; i < 8; i++) {
+        if (tile == lbl_80464D84[i]) {
+            return false;
+        }
+    }
+    return ActorBase_804A5770::vfunc_0x4C(layer, pos);
+}
+
 s32 EscortBase_8049E0C8::vfunc_0x5C() {
     return 3;
 }
@@ -47,6 +59,29 @@ void EscortBase_8049E0C8::vfunc_0x7C() {
         field_0x360 = 4;
     }
     mLife = field_0x360 * 4;
+}
+
+// FIXME(shotgun): 92.2 %, missing/extra
+void EscortBase_8049E0C8::vfunc_0x98(s32 a, s32 b, f32 limit) {
+    u16 angle;
+    s32 dir;
+    f32 dist;
+    s32 who;
+    fn_801EEC98(mSerial, &angle, &dir, &dist, &who, a, b);
+    if (dir >= 0 && !(dist > limit) && dir >= 0) {
+        field_0x364[4]++;
+        if (field_0x364[4] >= 10) {
+            field_0x364[4] = 10;
+        }
+        if (field_0x364[4] >= 10) {
+            field_0x364[4] = 0;
+            field_0x98 = dir;
+            if (dir + 5 != mAnim.mAnim) {
+                mAnim.startAnim_801D22DC(dir + 5, 2, false);
+                mAnim.fn_801D1F14(0.0f);
+            }
+        }
+    }
 }
 
 void EscortBase_8049E0C8::vfunc_0xA8(f32* x, f32* y, s32* player) {
@@ -243,6 +278,29 @@ bool EscortBase_8049E0C8::fn_801227D4() {
         return true;
     }
     return false;
+}
+
+void EscortBase_8049E0C8::fn_80122730(s32 anim, bool shifted, bool throttled) {
+    if (anim >= 0) {
+        if (throttled) {
+            field_0x364[4]++;
+            if (field_0x364[4] >= 10) {
+                field_0x364[4] = 10;
+            }
+            if (field_0x364[4] < 10) {
+                return;
+            }
+            field_0x364[4] = 0;
+        }
+        field_0x98 = anim;
+        if (shifted) {
+            anim += 5;
+        }
+        if (anim != mAnim.mAnim) {
+            mAnim.startAnim_801D22DC(anim, 2, false);
+            mAnim.fn_801D1F14(0.0f);
+        }
+    }
 }
 
 void EscortBase_8049E0C8::fn_801220C4() {
