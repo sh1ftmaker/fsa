@@ -121,4 +121,7 @@ public:
     /* 0x2B6 */ u8 field_0x2b6[2];
 }; // Size: 0x2B8
 
+// game/tu_800F7FCC.cpp (0x800F82CC): moves `cur` toward `target` by `step`; true when it arrived.
+bool fn_800F82CC(JGeometry::TVec3f* cur, const JGeometry::TVec3f* target, f32 step);
+
 #endif

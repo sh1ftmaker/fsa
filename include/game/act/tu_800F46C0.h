@@ -33,8 +33,9 @@ public:
     // SHARED-EDIT: carved from field_0x231[3], field_0x234[8], field_0x24c[0x14] (game/tu_800F46C0.cpp init).
     /* 0x231 */ u8 field_0x231;
     /* 0x232 */ s8 field_0x232;
-    /* 0x233 */ u8 field_0x233;
-    /* 0x234 */ u8 field_0x234[4]; // not yet known
+    /* 0x233 */ s8 field_0x233;
+    /* 0x234 */ u8 field_0x234;
+    /* 0x235 */ u8 field_0x235[3]; // not yet known
     /* 0x238 */ s32 field_0x238;
     /* 0x23C */ s32 field_0x23c;
     /* 0x240 */ s32 field_0x240;
