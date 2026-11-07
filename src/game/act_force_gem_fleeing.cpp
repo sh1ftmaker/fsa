@@ -1,10 +1,14 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
+#include "game/Player.h"
+#include "game/RotMatrix.h"
 #include "game/act/act_force_gem_fleeing.h"
 
 // FIXME(shotgun): not written (size 0x1518): update (0x8031C598)
-// FIXME(shotgun): not written (size 0x4E8): draw (0x8031C0B0)
+
+// Sprite ids per kind (field_0x268), four per state group.
+static const s32 lbl_804AB130[] = {0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D, 0x11, 0x15, 0x19, 0x1D};
 
 // FIXME(shotgun): 99.4 %, different
 void FleeingForceGem_804AB170::init() {
@@ -125,6 +129,52 @@ bool FleeingForceGem_804AB170::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* po
         return false;
     }
     return true;
+}
+
+// 0x8031C0B0.
+// FIXME(shotgun): 96.0 %, missing/extra
+void FleeingForceGem_804AB170::draw() {
+    SpriteParams_801F5AE0 params;
+    if (field_0x230 == 8 || field_0x230 == 9) {
+        return;
+    }
+    if (field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
+        Mtx mtx;
+        PSMTXIdentity(mtx);
+        JGeometry::TVec3f rot(0.0f, field_0x23c, 0.0f);
+        setRotScaleMtx(mtx, rot, field_0x238);
+        params.mMtx = mtx;
+        s32 frame = field_0x254 + lbl_804AB130[field_0x268];
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        return;
+    }
+    if (field_0x230 != 2) {
+        params.field_0x1d = 0;
+        params.field_0x30 = 0x11;
+        if (mPos.z > 0.0f) {
+            params.field_0x1c = 1;
+        }
+        JGeometry::TVec3f savedPos = mPos;
+        mPos += field_0x294;
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x254 + lbl_804AB130[field_0x268], &params, 7, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + lbl_804AB130[field_0x268], 0, 2, -1, 0, 0, 0);
+        mPos = savedPos;
+    } else {
+        if (field_0x264 >= 0 && field_0x264 <= 3) {
+            params.field_0x1d = fn_8023CB24(field_0x264) + 1;
+            params.field_0x1c = fn_8023CA88(field_0x264);
+        }
+        params.field_0x2d = 1;
+        s32 frame = field_0x254 + lbl_804AB130[field_0x268];
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x254 + lbl_804AB130[field_0x268], 0, 2, -1, 0, 0, 0);
+    }
 }
 
 FleeingForceGem_804AB170::~FleeingForceGem_804AB170() {}
