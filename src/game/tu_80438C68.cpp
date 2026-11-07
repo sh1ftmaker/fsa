@@ -16,7 +16,7 @@
 
 void fn_802B7CD8(ActorBase_804A5770* actor);
 
-// FIXME(shotgun): 60.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.9 %, operands (string literal pooling)
 // 0x80439C78
 cls_804B17A0::cls_804B17A0() {
     lbl_8053AEC8 = this;
@@ -26,11 +26,19 @@ cls_804B17A0::cls_804B17A0() {
     field_0x8 = J2DAnmLoaderDataBase::load(fn_80403084('SCRN', "gameover.bck"));
     field_0x4->search('Ndata01')->setAnimation(static_cast<J2DAnmTransform*>(field_0x8));
     field_0x3c = 0;
-    for (s32 i = 0; i < 10; i++) {
-        field_0xc[i] = NULL;
-    }
-    field_0x34 = new J2DPicture(static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_black.bti")));
-    field_0x34->setCornerColor(JUtility::TColor(0, 0, 0, 0xFF));
+    field_0xc[0] = NULL;
+    field_0xc[1] = NULL;
+    field_0xc[2] = NULL;
+    field_0xc[3] = NULL;
+    field_0xc[4] = NULL;
+    field_0xc[5] = NULL;
+    field_0xc[6] = NULL;
+    field_0xc[7] = NULL;
+    field_0xc[8] = NULL;
+    field_0xc[9] = NULL;
+    const ResTIMG* black = static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_black.bti"));
+    field_0x34 = new J2DPicture(black);
+    field_0x34->setBlackWhite(JUtility::TColor(0xFF), JUtility::TColor(0));
     field_0x4c = 255.0f;
     field_0x50 = 0.0f;
     field_0x54 = 0;
