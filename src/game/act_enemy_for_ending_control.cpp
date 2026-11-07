@@ -50,9 +50,31 @@ const EndingStep_804AD460* lbl_804AD460[11] = {
     lbl_80472600, lbl_80472648, lbl_80472680, lbl_804726B8, lbl_804726C8,
 };
 
-// init (0x8035C4BC) is left unwritten: it stores -1 into 20 words from 0x278 (to 0x2C8)
-// although the object is 0x2A4 bytes (tu_801F9484 allocates 0x2A4), so the original
-// overruns its own object; no source without undefined behaviour produces those stores.
+// FIXME(shotgun): 88.07 %, missing/extra
+void EnemyForEndingControl_804AD48C::init() {
+    mPos.x = 1280.0f;
+    mPos.y = 1781.0f;
+    field_0x23c = mPos + JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
+    field_0x254 = 110.0f;
+    field_0x248 = mPos + JGeometry::TVec3f(0.0f, -51.0f, 0.0f);
+    field_0x230 = 0;
+    field_0x234 = 0;
+    field_0x260 = 0;
+    field_0x264 = 0;
+    field_0x268 = 0;
+    field_0x26c = 0;
+    field_0x238 = 0;
+    for (s32 i = 0; i < 8; i++) {
+        mActors[i] = -1;
+    }
+    // FIXME(shotgun): the original loop runs to i < 20 (overrunning the 0x2A4 object to 0x2C8), omitted to avoid UB
+    mEmitter298 = NULL;
+    mEmitter29C = NULL;
+    mEmitter2A0 = NULL;
+    fn_80119DD0()->fn_80119998(0x96, 0, 0, 0, 0, 0x14, 0);
+    field_0x270 = -1;
+    field_0x274 = 0;
+}
 
 void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
 
