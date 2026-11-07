@@ -23,6 +23,14 @@ public:
     /* 0x94 */ virtual void vfunc_0x94();
     /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
 
+    // Shotgun pass: the constructor and overrides below are written from the asm only.
+    cls_804A4EE8();
+    /* 0x0C */ virtual void init();
+    /* 0x20 */ virtual void draw();
+    /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    void fn_801DB6C8();
+
     // 0x801DB950: the state setter. State 1 starts a search: the frame rate
     // is set, field_0x2ac cleared, fn_801DB9CC runs, then mTargetPlayer =
     // fn_801D05F8(&mSearchPos, mSearchRange). Every state resets mStateTimer.
@@ -33,9 +41,17 @@ public:
     /* 0x2A8 */ s32 mTargetPlayer;  // fn_801D05F8's result (-1: none)
     /* 0x2AC */ s32 field_0x2ac;    // cleared when state 1 starts
     /* 0x2B0 */ f32 mSearchRange;   // the range of fn_801D05F8
-    /* 0x2B4 */ u8 field_0x2b4[0x8]; // not yet known
+    /* 0x2B4 */ f32 field_0x2b4; // the drift velocity (damped)
+    /* 0x2B8 */ f32 field_0x2b8;
     /* 0x2BC */ JGeometry::TVec3f mSearchPos; // the origin of fn_801D05F8
-    /* 0x2C8 */ u8 field_0x2c8[0x1C]; // not yet known
+    /* 0x2C8 */ f32 field_0x2c8;
+    /* 0x2CC */ f32 field_0x2cc;
+    /* 0x2D0 */ f32 field_0x2d0;
+    /* 0x2D4 */ f32 mRadius;       // of the circle it flies around mSearchPos
+    /* 0x2D8 */ f32 mTargetRadius;
+    /* 0x2DC */ s16 mAngle;
+    /* 0x2DE */ s16 mAngleSpeed;
+    /* 0x2E0 */ f32 field_0x2e0;
     /* 0x2E4 */ JPABaseEmitter* field_0x2e4; // emitter moved with mPos
 }; // Size: at least 0x2E8
 
