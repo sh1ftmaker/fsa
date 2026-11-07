@@ -1,6 +1,4 @@
 unit	family	function	class	vtable	src_before	hdr_before
-tu_801B27DC	sinit	__sinit_tu_801B27DC_cpp	-	-	new	-
-tu_801B4D0C	sinit	__sinit_tu_801B4D0C_cpp	-	-	new	-
 tu_8022AD64	fwd	fn_80239B64__FlPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
 tu_8022AD64	loop	fn_8022E2D8__Fl	fn_80240840__15Player_804A6F38Fl	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
 tu_8022AD64	loop	fn_80239A74__FPCQ29JGeometry8TBox2<f>llbb	fn_80272224__15Player_804A6F38FPCQ29JGeometry8TBox2<f>llbb	-	8faaef417114ae9d393cc7eae40708eec8da2ed9	-
