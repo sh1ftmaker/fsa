@@ -22,6 +22,8 @@ public:
     /* 0x234 */ s32 field_0x234;
     // draw() shows the sprite only while this is nonzero.
     /* 0x238 */ s32 field_0x238;
+    // The camera focus centre; its y is moved toward 1765 by fn_8035B81C (step in 0x258) and
+    // toward 1730 by fn_8035B8C8.
     /* 0x23C */ JGeometry::TVec3f field_0x23c;
     /* 0x248 */ JGeometry::TVec3f field_0x248;
     // Counted down by fn_8035BE00 while above lbl_805428E8, by lbl_805428EC
@@ -56,6 +58,7 @@ public:
     void fn_8035BE20();
     void fn_8035BE24();
 
+    // Sets field_0x238 of the actor with serial mActors[index] (0 is EZLD, 1-6 the maidens).
     void setActorFlag(s32 index, s32 flag);
 }; // Size: 0x2A4
 

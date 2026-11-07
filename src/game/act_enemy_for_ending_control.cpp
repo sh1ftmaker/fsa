@@ -50,35 +50,15 @@ const EndingStep_804AD460* lbl_804AD460[11] = {
     lbl_80472600, lbl_80472648, lbl_80472680, lbl_804726B8, lbl_804726C8,
 };
 
-void EnemyForEndingControl_804AD48C::init() {
-    mPos.x = 1280.0f;
-    mPos.y = 1781.0f;
-    field_0x23c = mPos + JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
-    field_0x254 = 110.0f;
-    field_0x248 = mPos + JGeometry::TVec3f(0.0f, -51.0f, 0.0f);
-    field_0x230 = 0;
-    field_0x234 = 0;
-    field_0x260 = 0;
-    field_0x264 = 0;
-    field_0x268 = 0;
-    field_0x26c = 0;
-    field_0x238 = 0;
-    s32* serials = mActors;
-    for (int i = 0; i < 20; i++) {
-        serials[i] = -1;
-    }
-    mEmitter298 = NULL;
-    mEmitter29C = NULL;
-    mEmitter2A0 = NULL;
-    fn_80119DD0()->fn_80119998(0x96, 0, 0, 0, 0, 0x14, 0);
-    field_0x270 = -1;
-    field_0x274 = 0;
-}
+// init (0x8035C4BC) is left unwritten: it stores -1 into 20 words from 0x278 (to 0x2C8)
+// although the object is 0x2A4 bytes (tu_801F9484 allocates 0x2A4), so the original
+// overruns its own object; no source without undefined behaviour produces those stores.
 
 void EnemyForEndingControl_804AD48C::vfunc_0x10() {}
 
 // FIXME: 99.19%. regalloc-only: f2/f0, f0/f1, f3/f2, f1/f3
 void EnemyForEndingControl_804AD48C::update() {
+    // Locals in the order the original loads them (ahead of the camera loads).
     f32 y = field_0x23c.y;
     f32 h = field_0x254;
     f32 x = field_0x23c.x;
@@ -147,6 +127,7 @@ bool cls_804A5958::fn_8035C15C(s32 seq) {
 void EnemyForEndingControl_804AD48C::fn_8035BE24() {
     gGameRoot_8053AAF8->fn_801365C8(0);
     gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+    // Locals in the order the original loads them.
     f32 y = field_0x23c.y;
     Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
     f32 h = field_0x254;
