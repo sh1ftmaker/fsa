@@ -554,7 +554,7 @@ static inline s32 operand(const char* p, s32 offset) {
     return *(const s32*)(p + offset);
 }
 
-// FIXME(shotgun): 80.97 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.85 %, missing/extra + reloc-name
 // Follows the conditional-message commands (0x1A size 2, the twelve commands fn_80383E2C finds)
 // from message msg for the player window `window`: each command picks one of its operands as the
 // next message id (by a key or other holdable the player carries, a random draw, the player
@@ -691,9 +691,6 @@ u32 fn_80383EB0(s32 window, u32 msg) {
             case 15:
                 if (!fn_8023EFEC(player)) {
                     next = target;
-                    if (consume) {
-                        fn_8023EE28(player);
-                    }
                 }
                 break;
             }
