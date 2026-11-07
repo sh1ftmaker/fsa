@@ -33,6 +33,7 @@ public:
     // fn_80120F38: sets field_0x3c4 to 1 when field_0x90 bit 0 is set; field_0x35c and field_0x3d0
     // get bits 8-15 and 16-23 of field_0x90.
     /* 0x64 */ virtual void vfunc_0x64();
+    /* 0x68 */ virtual void vfunc_0x68();
     /* 0x6C */ virtual s32 vfunc_0x6C(s32 state);
     // fn_80120118: the key tables of mAnim (14 of them, lbl_8049DF40), animation 7 in mode 2,
     // frame 0 (like the escort woman's).
@@ -56,6 +57,11 @@ public:
     // fn_8011FFD0: false with fewer than two escorts registered (fn_80131F0C); otherwise whether
     // this actor's mSerial is the one of the escort at index 1.
     /* 0xC4 */ virtual bool vfunc_0xC4();
+
+    // Dead-stripped helpers inlined into vfunc_0x68 (their source order explains .sdata2 pool order).
+    s32 findNearbyPlayer();
+    bool hasNearbyBari();
+    bool stepToPlayer();
 
     /* 0x3C4 */ u8 field_0x3c4; // set by vfunc_0x64 from field_0x90 bit 0
     /* 0x3C8 */ s32 field_0x3c8; // 0
