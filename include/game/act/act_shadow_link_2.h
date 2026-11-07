@@ -7,6 +7,7 @@
 #include "game/cls_800FE8C0.h"
 #include "game/cls_804A46F4.h"
 #include "game/cls_80214244.h"
+#include "game/cls_802150B8.h"
 #include "game/cls_80217128.h"
 #include "game/cls_80217374.h"
 #include "game/cls_80218A8C.h"
@@ -16,7 +17,18 @@
 // constructor and stores this vtable (0x804A43E8). Named after its vtable.
 class ShadowLink2_804A43E8 : public cls_804A46F4 {
 public:
-    ShadowLink2_804A43E8() {}
+    // 0x801C573C (game/act_shadow_link_2.cpp); the spawner calls it out of line.
+    ShadowLink2_804A43E8();
+    /* 0x08 */ virtual ~ShadowLink2_804A43E8();
+    /* 0x0C */ virtual void init();
+    /* 0x74 */ virtual void vfunc_0x74();
+    /* 0x88 */ virtual void vfunc_0x88();
+    /* 0x90 */ virtual void vfunc_0x90(u8 mapHit);
+    /* 0x98 */ virtual void vfunc_0x98();
+    /* 0x9C */ virtual void vfunc_0x9C(u8 mapHit);
+    /* 0xA0 */ virtual void vfunc_0xA0();
+    // 0x801C50A8: fn_801C3B7C calls it.
+    void fn_801C50A8(int state);
     // game/tu_801C0D70.cpp. Whether a player is near mPos (fn_801D05F8 with
     // 1.0f, then fn_801D0D50 with `range`); 0 or 1.
     bool fn_801C5348(f32 range);
@@ -127,7 +139,7 @@ public:
 
     /* 0x340 */ cls_800FE8C0 field_0x340; // animation sequencer (mIndex at 0x34D, mFlags at 0x354)
     /* 0x358 */ cls_80214244 field_0x358;
-    /* 0x4EC */ u8 field_0x4ec[0x524 - 0x4EC];
+    /* 0x4EC */ cls_802150B8 field_0x4ec; // the destructor destroys it
     /* 0x524 */ u32 field_0x524; // bits 0x8, 0x10, 0x20 pick the attack
     /* 0x528 */ cls_80217128 mHitBox; // mOwner is this actor
     /* 0x540 */ cls_80218A8C mHelper540;       // fn_801C573C calls its constructor
@@ -150,7 +162,9 @@ public:
     /* 0x598 */ u8 field_0x598; // a timer (fn_801C5B08 sets 0x78)
     /* 0x599 */ u8 field_0x599;
     /* 0x59A */ u8 field_0x59a; // fn_801C5B08 stores 0xB4 here
-    /* 0x59B */ u8 field_0x59b[0x59E - 0x59B];
+    /* 0x59B */ u8 field_0x59b;
+    /* 0x59C */ u8 field_0x59c; // vfunc_0x9C counts it down to 0
+    /* 0x59D */ u8 field_0x59d;
     /* 0x59E */ u16 field_0x59e;
     /* 0x5A0 */ u8 field_0x5a0[0x5AC - 0x5A0];
     /* 0x5AC */ f32 field_0x5ac; // the range fn_801C5B08 gives fn_801D05F8
