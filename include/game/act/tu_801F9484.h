@@ -121,13 +121,7 @@ public:
 
 #include "game/act/tu_80147B50.h"
 
-// Spawned for 'HINO'.
-class Hinox_8049F9B4 : public ActorBase_804A5770 {
-public:
-    Hinox_8049F9B4() {}
-    /* 0x08 */ virtual ~Hinox_8049F9B4();
-    /* 0x230 */ u8 field_0x230[0x58];
-}; // Size: 0x288
+#include "game/act/act_hinox.h"
 
 // Spawned for 'SLR2'.
 class cls_804A00C8 : public ActorBase_804A5770 {
