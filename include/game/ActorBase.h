@@ -331,8 +331,9 @@ public:
     // fields from 0x120 on are touched). Result unused.
     void fn_801A3CFC();
     // game/tu_801A3C50.cpp. The actor was hit by `player`: mLife = 0, field_0x10c /
-    // field_0xa0 = player, field_0x48 = (1.4, 0.4, 0.4), field_0xa8 = 30 (layer 8 and up)
-    // or 35, lbl_8053A100 = player, then vfunc_0x44. tu_802242F4 calls it; fn_801A4D74
+    // field_0xa0 = player, field_0x48 = (1.4, 0.4, 0.4), field_0xd8 / 0xdc / 0xa4 = 0,
+    // fn_801F4694, field_0xa8 = 30 (layer 8 and up) or 35, lbl_8053A100 = player, then
+    // vfunc_0x44. tu_802242F4 calls it; fn_801A4D74
     // inlines it.
     void fn_801A3C50(s32 player);
     // game/tu_801A3C50.cpp: the per-frame damage checks fn_801A6160 runs on the actor's

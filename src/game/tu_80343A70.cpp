@@ -71,7 +71,7 @@ static inline void steerPieces(cls_804AC600* self) {
 }
 
 // 0x80343D90.
-// FIXME(shotgun): 92.6 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.7 %, missing/extra + reloc-name
 void cls_804AC600::update() {
     JGeometry::TVec3f diff;
     diff.x = diff.y = diff.z = 0.0f;

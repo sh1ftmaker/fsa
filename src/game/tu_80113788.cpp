@@ -101,7 +101,10 @@ extern const char* lbl_80539F00;
 extern const s32 lbl_8046486C[18];
 // FIXME(shotgun): vfunc_0x60's effect id tables (u16, read with lhz). They sit inside the
 // 0x74-byte lbl_804648F4 of symbols.txt (after its five words), which this file does not carve
-// yet; declared by address until it does.
+// yet; declared by address until it does. The original reaches them as offsets 0x140-0x190 from
+// the unit's .rodata base lbl_804647C8 (like lbl_80464830 and lbl_804648B4), so they are file
+// statics: the fix is to carve lbl_804648F4 (0x14) plus six 0x10-byte u16 tables in symbols.txt
+// and define them here, not to index lbl_804648F4 (that would read u16s through an s32 table).
 extern const u16 lbl_80464908[7];
 extern const u16 lbl_80464918[];
 extern const u16 lbl_80464928[];
@@ -359,7 +362,7 @@ void cls_8049D83C::vfunc_0x54() {
 }
 
 // 0x80113EC4.
-// FIXME(shotgun): 84.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.0 %, missing/extra + reloc-name
 void cls_8049D83C::vfunc_0x60(s32 arg) {
     switch (arg) {
     case 2:
