@@ -189,6 +189,60 @@ void GiantBomb_804AC588::draw() {
     }
 }
 
+// FIXME(shotgun): 48.0 %, missing/extra (the SpriteParams copy is field-wise in the original, one block per branch)
+void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 offsetX, f32 offsetY,
+                                    f32 offsetZ) {
+    if (field_0x4 != 0) {
+        return;
+    }
+    if (mSpriteParams.mMtx == NULL) {
+        fn_801EF830(field_0x4, &mPos, params, flags, NULL, 0, res);
+    }
+    SpriteParams_801F5AE0 sp;
+    if (field_0xd8 > 0) {
+        if (params != NULL) {
+            sp = *params;
+        }
+        s32 total = field_0xdc;
+        if (field_0xd8 > total - 25 || total < 25) {
+            if (total < 25) {
+                sp.field_0x14.r += field_0xd8 * 150 / total;
+            } else {
+                sp.field_0x14.r += (field_0xd8 - (total - 25)) * 150 / 25;
+            }
+        }
+        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
+        if (speed2 > 1.0f) {
+            sp.field_0x30 = 8;
+        }
+    } else if (field_0x238 > 0) {
+        if (params != NULL) {
+            sp = *params;
+        }
+        sp.field_0x14.r += field_0x238 * 150 / 15;
+        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
+        if (speed2 > 1.0f) {
+            sp.field_0x30 = 8;
+        }
+    } else {
+        if (params != NULL) {
+            sp = *params;
+        } else {
+            sp.field_0x30 = mSpriteParams.field_0x30;
+        }
+        if (mSpriteParams.mMtx != NULL) {
+            sp.mMtx = mSpriteParams.mMtx;
+        }
+    }
+    JGeometry::TVec3f pos = mPos;
+    pos.x += offsetX;
+    pos.y += offsetY;
+    pos.z = mPos.z + offsetZ;
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, res, &sp);
+    }
+}
+
 void fn_80341CB0(s32 layer, const JGeometry::TVec3f* pos) {
     getActorManager_801F856C()->spawnActor_801F9484('BBMB', layer, pos, 0x30000, -1, -1);
 }
