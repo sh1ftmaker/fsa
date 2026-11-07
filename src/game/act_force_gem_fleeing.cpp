@@ -296,7 +296,8 @@ void FleeingForceGem_804AB170::update() {
             if (fn_8023F264(field_0x264)) {
                 mPos.x = getPlayerPos_8023E724(field_0x264)->x;
                 mPos.y = getPlayerPos_8023E724(field_0x264)->y - 24.0f;
-            } else if (field_0x240[1] == 0) {
+            }
+            if (field_0x240[1] == 0) {
                 vfunc_0x30(0xFF, true);
                 fn_801F3668();
             }
@@ -305,7 +306,7 @@ void FleeingForceGem_804AB170::update() {
         }
     }
     if (field_0x3c.squared() > 0.1f) {
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x345, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x345, 0, 0, NULL, NULL, true, 0.15f);
     }
     if (field_0x230 != 8 && field_0x230 != 9 && field_0x4 < 8) {
         JGeometry::TVec3f focus(mPos.x, mPos.y - mPos.z, 0.0f);
