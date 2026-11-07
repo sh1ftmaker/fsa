@@ -1669,11 +1669,10 @@ void MapScreen_804B1288::fn_8040D3D0() {
     }
 }
 
-// FIXME: 92.50, different (NONMATCHING). Only the fade argument differs: the original
+// FIXME(shotgun): 92.60 %, different. Only the fade argument differs: the original
 // computes 1 - field_0x426 * 0.125 unfused (fmuls, fsubs) and after the first
 // search('Ttlv11') of the inlined fn_80411A94; ours evaluates the argument first, fused
 // (fnmsubs). The rest, including the 1.0f fade and the stage-name copy, is the same.
-#ifdef NONMATCHING
 void MapScreen_804B1288::fn_8040CE90() {
     field_0x426++;
     if (field_0x426 >= 8) {
@@ -1696,13 +1695,11 @@ void MapScreen_804B1288::fn_8040CE90() {
         fn_80411A94(1.0f - field_0x426 * 0.125f);
     }
 }
-#endif
 
-// FIXME: 92.47, different (NONMATCHING). Only the fade argument differs: the original
+// FIXME(shotgun): 92.60 %, different. Only the fade argument differs: the original
 // computes 1 - field_0x426 * 0.125 unfused (fmuls, fsubs) and after the first
 // search('Ttlv11') of the inlined fn_80411A94; ours evaluates the argument first, fused
 // (fnmsubs). The rest, including the 1.0f fade and the stage-name copy, is the same.
-#ifdef NONMATCHING
 void MapScreen_804B1288::fn_8040C950() {
     field_0x426++;
     if (field_0x426 >= 8) {
@@ -1725,7 +1722,6 @@ void MapScreen_804B1288::fn_8040C950() {
         fn_80411A94(1.0f - field_0x426 * 0.125f);
     }
 }
-#endif
 
 // FIXME: 97.68. scheduling+regalloc (+ pool literals of unwritten functions); the
 // "cleared" test after the stage branch is in both branches, as in fn_804096E8.
@@ -2700,12 +2696,11 @@ void MapScreen_804B1288::fn_8040732C() {
     }
 }
 
-// FIXME: 75.38, missing/extra (NONMATCHING). Every call, field and constant is right; two
+// FIXME(shotgun): 75.38 %, missing/extra. Every call, field and constant is right; two
 // things differ: the original computes `frame` before fn_8013B414 (ours computes it at its
 // first use, after the first draw, which shifts the schedule), and it indexes the sine table
 // straight from (counter % 128) (clrlslwi r0, r0, 27, 9) where sinShort's s16 argument gives
 // ours slwi / extsh / rlwinm. A const method (no `counter` local) gives 59.9 %.
-#ifdef NONMATCHING
 void MapScreen_804B1288::fn_80406F68(f32 x, f32 y) {
     SpriteParams_801F5AE0 params;
     JGeometry::TVec3f pos;
@@ -2737,14 +2732,12 @@ void MapScreen_804B1288::fn_80406F68(f32 x, f32 y) {
     res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
     gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, cel, &params, 1.0f, 1.0f);
 }
-#endif
 
-// FIXME: 96.30, different (NONMATCHING): setRotScaleMtx's six sin / cos results land in
+// FIXME(shotgun): 96.30 %, different: setRotScaleMtx's six sin / cos results land in
 // other saved FPRs (target sx f28, sy f27, sz f26, cx f31, cy f30, scale f29) and its
 // products are scheduled differently (unproven inline, see game/RotMatrix.h); and the
 // else branch of the stage choice reloads field_0x340 where the original copies the
 // compared register (mr r30, r3).
-#ifdef NONMATCHING
 void MapScreen_804B1288::fn_804069E8() {
     SpriteParams_801F5AE0 params;
     s32 picked = -1;
@@ -2805,7 +2798,6 @@ void MapScreen_804B1288::fn_804069E8() {
         }
     }
 }
-#endif
 
 void MapScreen_804B1288::fn_80406634(s32 stage, bool raised) {
     SpriteParams_801F5AE0 params;
