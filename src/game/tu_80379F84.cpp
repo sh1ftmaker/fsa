@@ -84,6 +84,68 @@ cls_804AE9A0::~cls_804AE9A0() {
     lbl_8053AD68 = NULL;
 }
 
+void cls_804AE9A0::fn_8037A708() {
+    if (field_0x4 != NULL) {
+        field_0x4->fn_803B6768();
+    }
+    if (field_0x8 != NULL) {
+        field_0x8->fn_803B8188();
+    }
+    if (field_0xc != NULL) {
+        field_0xc->fn_803D87C0();
+    }
+    field_0x1c = 0;
+}
+
+// FIXME: 95.12 %. Same as fn_80379F84 and fn_8037A580: the original truncates
+// the mode byte again (clrlwi r0, r0, 24) after its first compare with 5, in
+// both blocks. Tried: nested ifs and a function-scope mode (same code); a u32
+// mode (same code); a negated || chain (MWCC turns it into a range check, 84.59 %).
+void cls_804AE9A0::fn_8037A664() {
+    if (field_0x4 != NULL) {
+        u8 mode = lbl_8053ADA0->field_0x4c0;
+        if (mode != 5 && mode != 8 && mode != 7) {
+            lbl_8053ADA0->fn_803A97A0();
+        }
+    }
+    if (field_0x8 != NULL) {
+        u8 mode = lbl_8053ADA8->field_0x294;
+        if (mode != 5 && mode != 8 && mode != 7) {
+            lbl_8053ADA8->fn_803B7E64();
+        }
+    }
+    if (field_0xc != NULL) {
+        lbl_8053ADC0->fn_803D8670();
+    }
+}
+
+// FIXME: 94.74 %. Same mode-byte clrlwi as fn_80379F84 and fn_8037A664.
+void cls_804AE9A0::fn_8037A580() {
+    if (field_0x4 != NULL) {
+        u8 mode = lbl_8053ADA0->field_0x4c0;
+        if (mode != 5 && mode != 8 && mode != 7) {
+            lbl_8053ADA0->fn_803A8F5C();
+        } else {
+            fn_8037AA7C();
+            lbl_8053ADA0->fn_803B31AC();
+        }
+    }
+    if (field_0x8 != NULL) {
+        u8 mode = lbl_8053ADA8->field_0x294;
+        if (mode == 5 || mode == 8 || mode == 7) {
+            fn_8037AA7C();
+            lbl_8053ADA8->fn_803B7DCC();
+        }
+    }
+    if (field_0xc != NULL) {
+        u8 mode = lbl_8053ADC0->field_0x76;
+        if (mode == 2 || mode == 8 || mode == 7) {
+            lbl_8053ADC0->fn_803D8364();
+            lbl_8053ADC0->fn_803D82EC();
+        }
+    }
+}
+
 // FIXME(shotgun): 98.84 %, missing/extra (the clrlwi after the first mode compare)
 void cls_804AE9A0::fn_8037A174() {
     if (field_0x4 != NULL) {
@@ -154,68 +216,6 @@ void cls_804AE9A0::fn_8037A174() {
     }
 }
 
-void cls_804AE9A0::fn_8037A708() {
-    if (field_0x4 != NULL) {
-        field_0x4->fn_803B6768();
-    }
-    if (field_0x8 != NULL) {
-        field_0x8->fn_803B8188();
-    }
-    if (field_0xc != NULL) {
-        field_0xc->fn_803D87C0();
-    }
-    field_0x1c = 0;
-}
-
-// FIXME: 95.12 %. Same as fn_80379F84 and fn_8037A580: the original truncates
-// the mode byte again (clrlwi r0, r0, 24) after its first compare with 5, in
-// both blocks. Tried: nested ifs and a function-scope mode (same code); a u32
-// mode (same code); a negated || chain (MWCC turns it into a range check, 84.59 %).
-void cls_804AE9A0::fn_8037A664() {
-    if (field_0x4 != NULL) {
-        u8 mode = lbl_8053ADA0->field_0x4c0;
-        if (mode != 5 && mode != 8 && mode != 7) {
-            lbl_8053ADA0->fn_803A97A0();
-        }
-    }
-    if (field_0x8 != NULL) {
-        u8 mode = lbl_8053ADA8->field_0x294;
-        if (mode != 5 && mode != 8 && mode != 7) {
-            lbl_8053ADA8->fn_803B7E64();
-        }
-    }
-    if (field_0xc != NULL) {
-        lbl_8053ADC0->fn_803D8670();
-    }
-}
-
-// FIXME: 94.74 %. Same mode-byte clrlwi as fn_80379F84 and fn_8037A664.
-void cls_804AE9A0::fn_8037A580() {
-    if (field_0x4 != NULL) {
-        u8 mode = lbl_8053ADA0->field_0x4c0;
-        if (mode != 5 && mode != 8 && mode != 7) {
-            lbl_8053ADA0->fn_803A8F5C();
-        } else {
-            fn_8037AA7C();
-            lbl_8053ADA0->fn_803B31AC();
-        }
-    }
-    if (field_0x8 != NULL) {
-        u8 mode = lbl_8053ADA8->field_0x294;
-        if (mode == 5 || mode == 8 || mode == 7) {
-            fn_8037AA7C();
-            lbl_8053ADA8->fn_803B7DCC();
-        }
-    }
-    if (field_0xc != NULL) {
-        u8 mode = lbl_8053ADC0->field_0x76;
-        if (mode == 2 || mode == 8 || mode == 7) {
-            lbl_8053ADC0->fn_803D8364();
-            lbl_8053ADC0->fn_803D82EC();
-        }
-    }
-}
-
 u8 fn_8037A120(void) {
     if (lbl_8053AD68->field_0x4 != NULL) {
         return lbl_8053ADA0->field_0x4c0;
@@ -256,9 +256,6 @@ void fn_80379FF4(void) {
     }
     lbl_80529DEC.field_0x11c = next;
 }
-
-// Defined in address order, as in the original: MWCC inlines a call to a
-// function it has already seen, which the original does not.
 
 // FIXME: 96.43 %. The original truncates the mode byte again (clrlwi r0, r0, 24)
 // after its first compare with 5; ours has no such instruction. Tried: an s32
