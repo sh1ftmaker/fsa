@@ -290,6 +290,197 @@ void cls_804B03D8::fn_803D82EC() {
     field_0x1c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
 }
 
+// FIXME(shotgun): 93.36 %
+void cls_804B03D8::fn_803D75B0() {
+    if (field_0x80 == 1) {
+        lbl_8053AEC0->fn_80431174(field_0x78);
+    }
+    switch (field_0x7f) {
+    case 0:
+        fn_803D7098();
+        break;
+    case 1:
+        if (lbl_8053AD30->fn_80309C4C(1, -1)) {
+            if (field_0x78 != 0) {
+                field_0x78--;
+                field_0x79 = field_0x78;
+                field_0x6e = 1;
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(2, -1)) {
+            if (field_0x78 < 1) {
+                field_0x78++;
+                field_0x79 = field_0x78;
+                field_0x6e = 1;
+                gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(0x100, -1)) {
+            field_0x72 = 0;
+            field_0x7a = 2;
+            field_0x79 = field_0x78;
+            if (field_0x78 == 0) {
+                field_0x76 = 8;
+                gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+            } else {
+                lbl_8053AEC0->fn_80431A9C(0x10B, 0, &field_0x78);
+                field_0x7f = 2;
+                gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+            }
+            field_0x6e = 1;
+        }
+        break;
+    case 2:
+        if (field_0x81 > 0x48) {
+            field_0x81 = 0x50;
+        } else {
+            field_0x81 += 8;
+        }
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x81 = 0x50;
+            field_0x7f = 3;
+        }
+        break;
+    case 3:
+        lbl_8053AEC0->fn_80431174(field_0x78);
+        if (lbl_8053AD30->fn_80309A9C(2, -1)) {
+            if (field_0x78 == 0) {
+                field_0x78 = 1;
+                gAudioMgr_8053AF80->fn_80458880(0, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309A9C(1, -1)) {
+            if (field_0x78 == 1) {
+                field_0x78 = 0;
+                gAudioMgr_8053AF80->fn_80458880(0, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(0x1100, -1)) {
+            field_0x7f = 4;
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        }
+        break;
+    case 4:
+        if (field_0x81 < 8) {
+            field_0x81 = 0;
+        } else {
+            field_0x81 -= 8;
+        }
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x81 = 0;
+            if (field_0x78 == 0) {
+                lbl_8053AEC0->fn_804310BC();
+                field_0x76 = 7;
+            } else {
+                field_0x7f = 1;
+            }
+        }
+        break;
+    }
+    if (field_0x70 != 0) {
+        field_0x64++;
+        if (field_0x64 >= 0x8C) {
+            field_0x64 = 0x14;
+        }
+        if (field_0x7e == 0) {
+            if (field_0x64 <= 0x14) {
+                if (field_0x6a >= 0) {
+                    f32 t = (f32)field_0x64 / 20.0f;
+                    field_0x8->search('P0ka00')->setAlpha((s32)((f32)field_0x7b * t));
+                    static_cast<J2DPicture*>(field_0x8->search('P0ka00'))->setBlackWhite(
+                        static_cast<J2DPicture*>(field_0x4->search(lbl_80476F80[field_0x68 * 16 + field_0x6a]))->getBlack(),
+                        static_cast<J2DPicture*>(field_0x4->search(lbl_80476F80[field_0x68 * 16 + field_0x6a]))->getWhite());
+                    J2DPicture::TCornerColor cornerColor;
+                    static_cast<J2DPicture*>(field_0x4->search(lbl_80476F80[field_0x68 * 16 + field_0x6a]))->getCornerColor(cornerColor);
+                    static_cast<J2DPicture*>(field_0x8->search('P0ka00'))->setCornerColor(cornerColor);
+                    field_0x8->search('Pstarli')->setAlpha((s32)((f32)field_0x7d * t));
+                }
+            } else if (field_0x64 <= 0x28) {
+                f32 t = (f32)(field_0x64 - 0x14) / 20.0f;
+                for (s32 i = 0; i < 4; i++) {
+                    for (s32 j = 0; j < 16; j++) {
+                        if (field_0x4->search(lbl_80477180[i * 16 + j])->mIsVisible) {
+                            field_0x4->search(lbl_80477180[i * 16 + j])->setAlpha((s32)((f32)field_0x7c * t));
+                        }
+                    }
+                }
+                if (field_0x6a >= 0) {
+                    field_0x8->search('P0kak00')->setAlpha((s32)((f32)field_0x7c * t));
+                }
+            } else {
+                field_0x7e = 1;
+            }
+        }
+        if (field_0x6a >= 0) {
+            f32 x = (field_0x58 + field_0x8->search('P0kak00')->getBounds()->i.x +
+                     field_0x8->search('P0ka00')->getBounds()->i.x) +
+                    field_0x8->search('P0ka00')->getWidth() * 0.5f;
+            f32 y = (field_0x5c + field_0x8->search('P0kak00')->getBounds()->i.y +
+                     field_0x8->search('P0ka00')->getBounds()->i.y) +
+                    field_0x8->search('P0ka00')->getHeight() * 0.5f;
+            if (field_0x64 == 0x50 && field_0x4c[2] == NULL) {
+                JGeometry::TVec3f pos(x, y, 0.0f);
+                field_0x4c[2] = spawnEmitter_8013CC50(0, &pos, 0x4D0, 0, 0, NULL, NULL, true, 1.0f);
+                field_0x4c[2]->setStatus(0x40);
+            }
+            field_0x10->setFrame(field_0x64);
+            field_0x8->search('P0kak00')->animationTransform();
+            if (field_0x64 > 1 && field_0x64 < 0x14) {
+                if (field_0x4c[0] == NULL) {
+                    JGeometry::TVec3f pos(x, y, 0.0f);
+                    field_0x4c[0] = spawnEmitter_8013CC50(0, &pos, 0x4CF, 0, 0, NULL, NULL, true, 1.0f);
+                }
+                field_0x4c[0]->setGlobalTranslation(x, y, 0.0f);
+                if (field_0x64 == 0x13 && field_0x4c[1] == NULL) {
+                    JGeometry::TVec3f pos(x, y, 0.0f);
+                    field_0x4c[1] = spawnEmitter_8013CC50(0, &pos, 0x4D1, 0, 0, NULL, NULL, true, 1.0f);
+                    field_0x4c[1]->setStatus(0x40);
+                }
+            } else if (field_0x4c[0] != NULL) {
+                field_0x4c[0]->becomeInvalidEmitter();
+                field_0x4c[0] = NULL;
+            }
+            if (field_0x64 >= 0x14) {
+                field_0x18->setFrame(field_0x64);
+                field_0x8->animation();
+            }
+        }
+    }
+    if (field_0x68 >= 0 && field_0x68 < 4) {
+        field_0x74++;
+        if (field_0x74 >= 0x78) {
+            field_0x74 = 0;
+        }
+        s32 step = field_0x74 < 0x3C ? field_0x74 : 0x78 - field_0x74;
+        field_0x4->search(lbl_80477180[64 + field_0x68])->setAlpha((s32)(80.0f * ((f32)step / 60.0f)));
+    }
+    if (field_0x80 == 2) {
+        if (field_0x81 > 0x48) {
+            field_0x81 = 0x50;
+        } else {
+            field_0x81 += 8;
+        }
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0x81 = 0x50;
+            field_0x80 = 1;
+        }
+    } else if (field_0x80 == 3) {
+        if (field_0x81 < 8) {
+            field_0x81 = 0;
+        } else {
+            field_0x81 -= 8;
+        }
+        if (lbl_8053AEC0->fn_80431740()) {
+            field_0x81 = 0;
+            field_0x80 = 0;
+        }
+    }
+    for (s32 i = 1; i < 3; i++) {
+        if (field_0x4c[i] != NULL && field_0x4c[i]->isEnableDeleteEmitter()) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0x4c[i]);
+            field_0x4c[i] = NULL;
+        }
+    }
+}
+
 // Slides the panes in (the first frames of the screen); once all four have arrived, places the
 // cursor (field_0x44) over the pane of the selected row.
 // FIXME(shotgun): 88 %, missing/extra + reloc-name
