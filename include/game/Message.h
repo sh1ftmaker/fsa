@@ -474,7 +474,7 @@ public:
     /* 0x0ED */ u8 field_0xed;
     /* 0x0EE */ u8 field_0xee;
     /* 0x0EF */ u8 field_0xef;
-    /* 0x0F0 */ u16 field_0xf0[4]; // fn_8038D870 clears them
+    /* 0x0F0 */ s16 field_0xf0[4]; // fn_8038D870 clears them; fn_803865B8 counts them down (lha)
     /* 0x0F8 */ s32 field_0xf8;
     /* 0x0FC */ s32 field_0xfc[4]; // fn_8038D870 sets them to -1
     /* 0x10C */ s32 field_0x10c; // act_bandit_herding_npc reads it
@@ -616,10 +616,12 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 height);
 bool fn_80384C58(s32 player, s32 serial);
 // 31 units. Returns 0 or 1; fn_80388EEC calls it.
 bool fn_803865B8(s32 player);
-// 0x80387494 (0x1818 bytes, not written yet); act_maiden_demo calls it with player 0 and ignores the result.
-bool fn_80387494(s32 player);
-// Returns 0 or 1 (fn_80388EEC returns it; this unit, not written yet).
+// Returns 0 or 1 (fn_80388EEC returns it).
 bool fn_80385960(s32 player);
+// 0x80387494; act_maiden_demo calls it with player 0 and ignores the result. Ends the
+// player's message at once: true when the window is idle or closes now, else it is sent to
+// its last page (state 5 / 8) and false.
+bool fn_80387494(s32 player);
 
 // 36 units. Opens message msg (mapped by fn_80383EB0(window, msg)) for the
 // player, from the actor `serial` on `layer` at pos, through the manager's

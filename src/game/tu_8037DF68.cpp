@@ -43,6 +43,39 @@ f32 fn_8037F580(u8 command, s32 value, char* out, s32* len, f32 scale);
 u8 fn_8037F1E4(s32 player);
 bool fn_8037EC98(s32 player, u16 flags);
 
+static inline s32 operand(const char* p, s32 offset) {
+    return *(const s32*)(p + offset);
+}
+
+// The text of INF1 entry `msg`: the DAT1 block starts after the INF1 block and its 8-byte header.
+static inline const char* messageText(u32 msg) {
+    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
+    return &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
+}
+
+// Whether a window of a player that takes part is in state class 1 (fn_80390818).
+static inline bool anyWindowOpening() {
+    for (s32 i = 0; i < 4; i++) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
+            if (lbl_8053AD78->mWindows[i]->fn_80390818() == 1) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+// Whether the window may open at once: fn_80303750 holds and no window is opening.
+static inline bool canOpen(s32 window) {
+    if (!fn_80303750(windowIndex(window))) {
+        return false;
+    }
+    if (anyWindowOpening()) {
+        return false;
+    }
+    return true;
+}
+
 cls_804AF32C::~cls_804AF32C() {}
 
 // FIXME: 98.8. One instruction more: the font resource goes through r0 into a saved
@@ -198,6 +231,108 @@ void fn_8038D454() {
     }
 }
 
+// The INF1 index of message id `msg` (fn_803846BC's loop), 0x12B when there is none.
+static inline u32 indexOf(u32 msg) {
+    u32 i = 0;
+    MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
+    u32 count = inf1->count;
+    for (; i < count; i++) {
+        if (inf1->entries[i].id == msg) {
+            msg = i;
+            break;
+        }
+    }
+    if (i >= count) {
+        msg = 0x12B;
+    }
+    return msg;
+}
+
+// fn_8038A42C for message id `msg`.
+static inline bool openById(s32 window, s32 player, u32 msg, s32 serial, JGeometry::TVec3f pos, u32 flags) {
+    return lbl_8053AD78->fn_8038A42C(window, player, indexOf(msg), serial, pos, flags);
+}
+
+// FIXME(shotgun): 95.81 %, missing/extra (scheduling of the id lookups)
+// fn_8038AD24 for a message id: msg is looked up in the INF1 entries, mapped, and turned back
+// into its id; the no-position fallback is fn_8038C60C.
+bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f pos, u32 flags) {
+    s32 window = windowIndex(player);
+    if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
+        return false;
+    }
+    u32 index = fn_80383EB0(window, indexOf(msg));
+    msg = lbl_8053AD78->mBmg->inf1.entries[index].id;
+    if (getGameView_802D6A9C()->fn_802D46D8(window, index, false) == 1) {
+        s32 w = windowIndex(window);
+        const char* text = messageText(index);
+        u32 next = index;
+        if (text[0] == 0x1A && text[2] == 2 && text[4] == 5) {
+            next = operand(text, 5);
+        }
+        msg = lbl_8053AD78->mBmg->inf1.entries[fn_80383EB0(w, next)].id;
+    }
+    u16 bits = flags;
+    if (gGameRoot_8053AAF8->field_0x7e == 0 || (flags & 0x40)) {
+        if (layer < 8) {
+            return openById(window, player, msg, serial, pos, flags);
+        }
+        if (!fn_8022C8EC(0)) {
+            JGeometry::TVec2f screen;
+            screen.x = 320.0f;
+            screen.y = 240.0f;
+            JGeometry::TVec3f world;
+            gGameRoot2_8053AB10->field_0x24->fn_8030C4A0(&screen, true, &world);
+            return openById(window, player, msg, serial, world, flags);
+        }
+        if (canOpen(window)) {
+            return openById(window, player, msg, serial, pos, flags);
+        }
+        return lbl_8053AD78->fn_8038C60C(window, player, msg, serial, flags);
+    }
+    u32 found = indexOf(msg);
+    s32 w = windowIndex(window);
+    const char* text = messageText(found);
+    bool sync;
+    if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x1F) {
+        sync = true;
+    } else if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x2F && lbl_8053AD78->field_0xed == 0 &&
+               gGameRoot_8053AAF8->fn_80138A30() >= 2 && getPlayerLayer_8023DE58(fn_8022EA0C(w)) >= 8) {
+        lbl_8053AD78->field_0xed = 1;
+        lbl_8053AD78->field_0x110 = w;
+        lbl_8053AD78->field_0xee = text[5];
+        sync = true;
+    } else {
+        sync = false;
+    }
+    if (sync) {
+        if (!lbl_8053AD78->fn_80389964(window, indexOf(msg), flags) ||
+            !openById(window, player, msg, serial, pos, flags)) {
+            return false;
+        }
+        // Every other player that takes part is put into state 9 for the same serial.
+        s32 self = windowIndex(player);
+        for (s32 i = 0; i < 4; i++) {
+            if (i != self && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i))) {
+                if (fn_8022CAF8(i) == 4) {
+                    fn_8022FBB8(fn_8022EA0C(i), serial);
+                } else {
+                    fn_8022FBB8(i, serial);
+                }
+                lbl_8053AD78->mWindows[windowIndex(i)]->field_0x24 = 9;
+                if (!(bits & 4) && !(bits & 2)) {
+                    fn_802308E0(i);
+                }
+            }
+        }
+        return true;
+    }
+    if (canOpen(window)) {
+        return openById(window, player, msg, serial, pos, flags);
+    }
+    return lbl_8053AD78->fn_8038C60C(window, player, msg, serial, flags);
+}
+
 bool MessageManager_804AF070::fn_8038C60C(s32 player, s32 actor, u32 msg, s32 serial, u32 flags) {
     u32 i = 0;
     MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
@@ -212,6 +347,70 @@ bool MessageManager_804AF070::fn_8038C60C(s32 player, s32 actor, u32 msg, s32 se
         msg = 0x12B;
     }
     return fn_8038A984(player, actor, msg, serial, flags);
+}
+
+// FIXME(shotgun): 98.92 %, regalloc (the 0x2F branch)
+bool fn_8038BD08(s32 player, u32 msg, s32 layer, JGeometry::TVec3f pos, u32 flags) {
+    s32 window = windowIndex(player);
+    if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
+        return false;
+    }
+    msg = fn_80383EB0(window, msg);
+    u16 bits = flags;
+    if (!(flags & 0x20)) {
+        if (getGameView_802D6A9C()->fn_802D46D8(window, msg, false) == 1) {
+            return false;
+        }
+    } else if (getGameView_802D6A9C()->fn_802D46D8(window, msg, false) == 1) {
+        s32 index = windowIndex(window);
+        const char* text = messageText(msg);
+        u32 next = msg;
+        if (text[0] == 0x1A && text[2] == 2 && text[4] == 5) {
+            next = operand(text, 5);
+        }
+        msg = fn_80383EB0(index, next);
+    }
+    if (gGameRoot_8053AAF8->field_0x7e == 0 || (bits & 0x40)) {
+        if (layer < 8) {
+            return lbl_8053AD78->fn_80389F78(window, player, msg, pos, flags);
+        }
+        if (!fn_8022C8EC(0)) {
+            JGeometry::TVec2f screen;
+            screen.x = 320.0f;
+            screen.y = 240.0f;
+            JGeometry::TVec3f world;
+            gGameRoot2_8053AB10->field_0x24->fn_8030C4A0(&screen, true, &world);
+            return lbl_8053AD78->fn_80389F78(window, player, msg, world, flags);
+        }
+        if (canOpen(window)) {
+            return lbl_8053AD78->fn_80389F78(window, player, msg, pos, flags);
+        }
+        return lbl_8053AD78->fn_8038B8A8(window, player, msg, flags);
+    }
+    s32 index = windowIndex(window);
+    const char* text = messageText(msg);
+    bool sync;
+    if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x1F) {
+        sync = true;
+    } else if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x2F && lbl_8053AD78->field_0xed == 0 &&
+               gGameRoot_8053AAF8->fn_80138A30() >= 2 && getPlayerLayer_8023DE58(fn_8022EA0C(index)) >= 8) {
+        lbl_8053AD78->field_0xed = 1;
+        lbl_8053AD78->field_0x110 = index;
+        lbl_8053AD78->field_0xee = text[5];
+        sync = true;
+    } else {
+        sync = false;
+    }
+    if (sync) {
+        if (lbl_8053AD78->fn_80389964(window, msg, flags) && lbl_8053AD78->fn_80389F78(window, player, msg, pos, flags)) {
+            return true;
+        }
+        return false;
+    }
+        if (canOpen(window)) {
+            return lbl_8053AD78->fn_80389F78(window, player, msg, pos, flags);
+        }
+        return lbl_8053AD78->fn_8038B8A8(window, player, msg, flags);
 }
 
 // FIXME: 99.98. Regalloc only: the second fn_8037EC98 call passes the flags register
@@ -244,6 +443,86 @@ bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 
         }
     }
     return false;
+}
+
+// FIXME(shotgun): 98.64 %, regalloc + scheduling (the halfword flags copy)
+bool fn_8038AD24(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f pos, u32 flags) {
+    s32 window = windowIndex(player);
+    if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
+        return false;
+    }
+    msg = fn_80383EB0(window, msg);
+    if (msg == 0xEA || msg == 0xEB) {
+        if (getGameView_802D6A9C()->fn_802D46D8(window, msg, false) == 1) {
+            return false;
+        }
+    } else if (getGameView_802D6A9C()->fn_802D46D8(window, msg, false) == 1) {
+        s32 index = windowIndex(window);
+        const char* text = messageText(msg);
+        u32 next = msg;
+        if (text[0] == 0x1A && text[2] == 2 && text[4] == 5) {
+            next = operand(text, 5);
+        }
+        msg = fn_80383EB0(index, next);
+    }
+    u16 bits = flags;
+    if (gGameRoot_8053AAF8->field_0x7e == 0 || (flags & 0x40)) {
+        if (layer < 8) {
+            return lbl_8053AD78->fn_8038A42C(window, player, msg, serial, pos, flags);
+        }
+        if (!fn_8022C8EC(0)) {
+            JGeometry::TVec2f screen;
+            screen.x = 320.0f;
+            screen.y = 240.0f;
+            JGeometry::TVec3f world;
+            gGameRoot2_8053AB10->field_0x24->fn_8030C4A0(&screen, true, &world);
+            return lbl_8053AD78->fn_8038A42C(window, player, msg, serial, world, flags);
+        }
+        if (canOpen(window)) {
+            return lbl_8053AD78->fn_8038A42C(window, player, msg, serial, pos, flags);
+        }
+        return lbl_8053AD78->fn_8038A984(window, player, msg, serial, flags);
+    }
+    s32 index = windowIndex(window);
+    const char* text = messageText(msg);
+    bool sync;
+    if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x1F) {
+        sync = true;
+    } else if (text[0] == 0x1A && text[2] == 2 && text[4] == 0x2F && lbl_8053AD78->field_0xed == 0 &&
+               gGameRoot_8053AAF8->fn_80138A30() >= 2 && getPlayerLayer_8023DE58(fn_8022EA0C(index)) >= 8) {
+        lbl_8053AD78->field_0xed = 1;
+        lbl_8053AD78->field_0x110 = index;
+        lbl_8053AD78->field_0xee = text[5];
+        sync = true;
+    } else {
+        sync = false;
+    }
+    if (sync) {
+        if (!lbl_8053AD78->fn_80389964(window, msg, flags) ||
+            !lbl_8053AD78->fn_8038A42C(window, player, msg, serial, pos, flags)) {
+            return false;
+        }
+        // Every other player that takes part is put into state 9 for the same serial.
+        s32 self = windowIndex(player);
+        for (s32 i = 0; i < 4; i++) {
+            if (i != self && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i))) {
+                if (fn_8022CAF8(i) == 4) {
+                    fn_8022FBB8(fn_8022EA0C(i), serial);
+                } else {
+                    fn_8022FBB8(i, serial);
+                }
+                lbl_8053AD78->mWindows[windowIndex(i)]->field_0x24 = 9;
+                if (!(bits & 4) && !(bits & 2)) {
+                    fn_802308E0(i);
+                }
+            }
+        }
+        return true;
+    }
+    if (canOpen(window)) {
+        return lbl_8053AD78->fn_8038A42C(window, player, msg, serial, pos, flags);
+    }
+    return lbl_8053AD78->fn_8038A984(window, player, msg, serial, flags);
 }
 
 // FIXME: 99.7. Regalloc only: the flags parameter is r30 and the option bits r31 in the
@@ -513,6 +792,329 @@ bool fn_80388CAC(s32 player, s32 serial) {
     return false;
 }
 
+// The window of window index `index` (field_0x114, mapped once more by windowIndex).
+static inline MessageWindow_804AF490* mappedWindow(s32 index) {
+    return lbl_8053AD78->mWindows[windowIndex(index)];
+}
+
+// Takes window index `index` out of the open order field_0xfc (the later entries move up).
+static inline void removeFromOrder(s32 index) {
+    s32 copy[4];
+    s32 at;
+    for (s32 i = 0; i < lbl_8053AD78->field_0xf8; i++) {
+        copy[i] = lbl_8053AD78->field_0xfc[i];
+        if (lbl_8053AD78->field_0xfc[i] == index) {
+            lbl_8053AD78->field_0xfc[i] = -1;
+            at = i;
+        }
+    }
+    lbl_8053AD78->field_0xf8--;
+    for (; at < lbl_8053AD78->field_0xf8; at++) {
+        lbl_8053AD78->field_0xfc[at] = copy[at + 1];
+    }
+    lbl_8053AD78->field_0xfc[lbl_8053AD78->field_0xf8] = -1;
+}
+
+// Lets the players go once the window closes: at once with option 8 or 0x80; with field_0x7e
+// == 1 through fn_8023061C, else fn_80230224 for every player fn_8023F264 holds for.
+static inline bool releasePlayers(s32 player) {
+    s32 index = windowIndex(player);
+    u16 opt = lbl_8053AD78->mWindows[index]->field_0x28;
+    if ((opt >> 3 & 1) || (opt & 0x80)) {
+        return true;
+    }
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+        return fn_8023061C(index, false);
+    }
+    s32 list[4];
+    for (s32 i = 0; i < 4; i++) {
+        list[i] = -1;
+        if (fn_8023F264(i) == 1) {
+            list[i] = i;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (list[i] >= 0) {
+            fn_80230224(list[i], 0);
+        }
+    }
+    return true;
+}
+
+// FIXME(shotgun): 99.39 %, missing/extra (a bit test as rlwinm. not extrwi.)
+// Ends the player's message at once, whatever state the window is in: true when it is idle
+// or closed now (options 8 / 0x80), else the box is sent to its last page (state 5 / 8, with
+// field_0x42 set) and false.
+bool fn_80387494(s32 player) {
+    s32 window = windowIndex(player);
+    if (mappedWindow(window)->field_0x24 == 0) {
+        return true;
+    }
+    if (mappedWindow(window)->field_0x24 == 5 || mappedWindow(window)->field_0x24 == 8 ||
+        mappedWindow(window)->field_0x24 == 1 || mappedWindow(window)->field_0x24 == 6 ||
+        mappedWindow(window)->field_0x24 == 3 || mappedWindow(window)->field_0x24 == 7 ||
+        mappedWindow(window)->field_0x24 == 4) {
+        MessageWindow_804AF490* w = lbl_8053AD78->mWindows[window];
+        u16 opt = w->field_0x28;
+        if (!(opt & 1)) {
+            if (!releasePlayers(player)) {
+                return false;
+            }
+            getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
+            w = lbl_8053AD78->mWindows[window];
+            opt = w->field_0x28;
+            if ((opt >> 3 & 1) || (opt & 0x80)) {
+                if (mappedWindow(window)->field_0x24 == 8) {
+                    removeFromOrder(windowIndex(window));
+                    if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                        gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                    }
+                }
+                lbl_8053AD78->mWindows[window]->fn_80391678();
+                return true;
+            }
+            w->field_0x42 = 1;
+            if (mappedWindow(window)->field_0x24 == 6 || mappedWindow(window)->field_0x24 == 7) {
+                mappedWindow(window)->field_0x24 = 8;
+            } else {
+                mappedWindow(window)->field_0x24 = 5;
+            }
+            return false;
+        }
+        if ((opt & 8) || (opt & 0x80)) {
+            if (mappedWindow(window)->field_0x24 == 8) {
+                removeFromOrder(windowIndex(window));
+                if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                    gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                }
+            }
+            lbl_8053AD78->mWindows[window]->fn_80391678();
+            return true;
+        }
+        w->field_0x42 = 1;
+        if (mappedWindow(window)->field_0x24 == 6 || mappedWindow(window)->field_0x24 == 7) {
+            mappedWindow(window)->field_0x24 = 8;
+        } else {
+            mappedWindow(window)->field_0x24 = 5;
+        }
+        return false;
+    }
+    return false;
+}
+
+// Whether a player that takes part, with its window idle (state 0) or waiting (9), presses
+// 0x100 while option 0x100 of `window` is set.
+static inline bool othersPressed(s32 window) {
+    bool any = false;
+    for (s32 i = 0; i < 4; i++) {
+        if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) {
+            u8 state = lbl_8053AD78->mWindows[i]->field_0x24;
+            if (state == 0 || state == 9) {
+                if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(i), 0x100) != 0) {
+                    any = true;
+                }
+            }
+        }
+    }
+    if (any && (lbl_8053AD78->mWindows[window]->field_0x28 & 0x100)) {
+        return true;
+    }
+    return false;
+}
+
+// The page sound of the window's processor (fn_80390894 of the mapped window's field_0x2c).
+static inline void pageSound(s32 window) {
+    switch (lbl_8053AD78->mWindows[window]->fn_80390894(mappedWindow(window)->field_0x2c)) {
+    case 1:
+        gAudioMgr_8053AF80->fn_80458880(0x59, -1);
+        break;
+    case 2:
+        gAudioMgr_8053AF80->fn_80458880(0x5A, -1);
+        break;
+    }
+}
+
+// FIXME(shotgun): 99.51 %, missing/extra (the field_0xe7 bit test is materialised as a bool in the original)
+// Steps the player's window while it shows a page (state 5 / 8): returns true once the
+// window is done (bit of field_0xe7, after the countdown field_0xf0 of two frames). On the
+// last page a press (or option 0x20 / the processor's countdown) finishes it; otherwise a
+// press turns the page (state 2 / 7).
+bool fn_803865B8(s32 player) {
+    s32 window = windowIndex(player);
+    if (lbl_8053AD78->field_0xe7 & (u8)(1 << windowIndex(window))) {
+        return true;
+    }
+    if (lbl_8053AD78->field_0xf0[window] > 0) {
+        lbl_8053AD78->field_0xf0[window]--;
+        if (lbl_8053AD78->field_0xf0[window] == 0) {
+            lbl_8053AD78->field_0xe7 |= (u8)(1 << windowIndex(window));
+            return true;
+        }
+        return false;
+    }
+    if (mappedWindow(window)->field_0x24 == 5 || mappedWindow(window)->field_0x24 == 8) {
+        bool first = false;
+        bool done = false;
+        if (!lbl_8053AD78->mWindows[window]->fn_803908D0()) {
+            return false;
+        }
+        if (lbl_8053AD78->mWindows[window]->fn_80390BA8() != 0xFF) {
+            if (lbl_8053AD78->mWindows[window]->fn_80390BA8() == 0) {
+                first = true;
+            }
+            if (lbl_8053AD78->mWindows[window]->fn_80390BDC() == 0) {
+                done = true;
+            }
+        }
+        if (mappedWindow(window)->field_0x40 == 0) {
+            if (((lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(window), 0x100) != 0 || othersPressed(window)) && !first) ||
+                ((lbl_8053AD78->mWindows[window]->field_0x28 >> 5 & 1) && !(lbl_8053AD78->mWindows[window]->field_0x28 & 0x1000)) ||
+                done == 1) {
+                if (((lbl_8053AD78->mWindows[window]->field_0x28 >> 12) & 1) == 1) {
+                    return true;
+                }
+                pageSound(window);
+                MessageWindow_804AF490* w = lbl_8053AD78->mWindows[window];
+                if (!(w->field_0x28 >> 12 & 1)) {
+                    getGameView_802D6A9C()->fn_802D46D8(window, w->field_0x20, true);
+                }
+                if (lbl_8053AD78->mWindows[window]->fn_80390C38() != -1) {
+                    fn_8038470C(window, lbl_8053AD78->mWindows[window]->fn_80390C38());
+                    return false;
+                }
+                lbl_8053AD78->field_0xf0[window] = 2;
+                return false;
+            }
+        } else if (((lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(window), 0x100) != 0 || othersPressed(window)) && !first) ||
+                   done == 1) {
+            OSReport("====>%d, %d\n", window, lbl_8053AD78->mWindows[window]->field_0x28 >> 8 & 1);
+            lbl_8053AD78->mWindows[window]->fn_80390B64();
+            pageSound(window);
+            if (mappedWindow(window)->field_0x24 == 5) {
+                mappedWindow(window)->field_0x24 = 2;
+            } else {
+                mappedWindow(window)->field_0x24 = 7;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+// FIXME(shotgun): 98.79 %, missing/extra (one bit test as rlwinm. not extrwi.)
+// Whether the player's window is done: idle, or in state 5 / 8 with nothing left to show
+// (field_0x40 clear); it is then closed (option 0x1000 resets it at once).
+bool fn_80385960(s32 player) {
+    s32 window = windowIndex(player);
+    if (mappedWindow(window)->field_0x24 == 0) {
+        return true;
+    }
+    if (mappedWindow(window)->field_0x24 == 5 || mappedWindow(window)->field_0x24 == 8) {
+        if (mappedWindow(window)->field_0x40 == 0) {
+            MessageWindow_804AF490* w = lbl_8053AD78->mWindows[window];
+            u16 opt = w->field_0x28;
+            if (((opt >> 12) & 1) == 1) {
+                w->fn_80391678();
+                return true;
+            }
+            if (!(opt & 1)) {
+                if (!releasePlayers(player)) {
+                    return false;
+                }
+                getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
+                if (mappedWindow(window)->field_0x24 == 8) {
+                    removeFromOrder(windowIndex(window));
+                    if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                        gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                    }
+                }
+                lbl_8053AD78->mWindows[window]->fn_80391678();
+                return true;
+            } else {
+                // The same close without the release.
+                getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
+            if (mappedWindow(window)->field_0x24 == 8) {
+                removeFromOrder(windowIndex(window));
+                if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                    gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                }
+            }
+            lbl_8053AD78->mWindows[window]->fn_80391678();
+            return true;
+            }
+        }
+    }
+    return false;
+}
+
+// The actor `serial` lets the player go (fn_8022FB1C), at once with option 0x800.
+static inline bool releaseSerial(u16 opt, s32 player, s32 serial) {
+    if (opt & 0x800) {
+        return true;
+    }
+    return fn_8022FB1C(player, serial);
+}
+
+// FIXME(shotgun): 97.43 %, missing/extra (releaseSerial branch shape)
+// fn_80385960 for a window an actor `serial` speaks in: once the actor (and, without option 4,
+// the players) let go, the window closes and fn_803895EC releases the waiting windows.
+bool fn_80384C58(s32 player, s32 serial) {
+    s32 window = windowIndex(player);
+    if (mappedWindow(window)->field_0x24 == 0) {
+        return true;
+    }
+    if (mappedWindow(window)->field_0x24 == 5 || mappedWindow(window)->field_0x24 == 8) {
+        if (mappedWindow(window)->field_0x40 == 0) {
+            u16 opt = lbl_8053AD78->mWindows[window]->field_0x28;
+            if (!(opt >> 2 & 1)) {
+                if (!releaseSerial(opt, player, serial)) {
+                    return false;
+                }
+                if (!releasePlayers(player)) {
+                    return false;
+                }
+                getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
+                if (mappedWindow(window)->field_0x24 == 8) {
+                    removeFromOrder(windowIndex(window));
+                    if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                        gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                    }
+                }
+                bool a = true;
+                bool b = false;
+                u16 opt2 = lbl_8053AD78->mWindows[window]->field_0x28;
+                if ((opt2 & 8) || (opt2 & 0x80)) {
+                    a = false;
+                }
+                if (!(opt2 & 0x800)) {
+                    b = true;
+                }
+                lbl_8053AD78->mWindows[window]->fn_80391678();
+                lbl_8053AD78->fn_803895EC(player, serial, a, b);
+                return true;
+            }
+            if (!releaseSerial(opt, player, serial)) {
+                return false;
+            }
+            getGameView_802D6A9C()->fn_802D46D8(window, lbl_8053AD78->mWindows[window]->field_0x20, true);
+            if (mappedWindow(window)->field_0x24 == 8) {
+                removeFromOrder(windowIndex(window));
+                if (!(lbl_8053AD78->mWindows[window]->field_0x28 & 0x40)) {
+                    gAudioMgr_8053AF80->fn_80458880(0x29, -1);
+                }
+            }
+            bool b = false;
+            if (!(lbl_8053AD78->mWindows[window]->field_0x28 >> 11 & 1)) {
+                b = true;
+            }
+            lbl_8053AD78->mWindows[window]->fn_80391678();
+            lbl_8053AD78->fn_803895EC(player, serial, false, b);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool fn_8038470C(s32 player, u32 msg) {
     s32 index = windowIndex(player);
     lbl_8053AD78->mWindows[index]->fn_803913E0();
@@ -550,10 +1152,6 @@ u16 fn_803846A4(s32 index) {
 }
 
 // The condition commands of a message are byte streams: their operands are unaligned words.
-static inline s32 operand(const char* p, s32 offset) {
-    return *(const s32*)(p + offset);
-}
-
 // FIXME(shotgun): 81.85 %, missing/extra + reloc-name
 // Follows the conditional-message commands (0x1A size 2, the twelve commands fn_80383E2C finds)
 // from message msg for the player window `window`: each command picks one of its operands as the
@@ -1242,6 +1840,425 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
     end[1] = 0;
     appendPart(out, out2, out3, part, end);
     return widest;
+}
+
+// FIXME(shotgun): 99.99 %, reloc-name (the jump table is not split into this unit)
+// The width (in mFont units times scale) of the counter noun fn_8037F580 writes for command
+// 1-9 after a number: " Force Gem(s)", " Cucco(s)", " baddy / baddies", " time(s)",
+// " system(s)", " thief / thieves", " mole(s)", " return(s)", " Force Fairy / Fairies"
+// (0xA0 is the font's space); the plural ending unless value is 1.
+f32 fn_80381560(u8 command, s32 value, f32 scale) {
+    f32 width = 0.0f;
+    switch (command) {
+    case 0:
+        break;
+    case 1:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('F');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('o');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('r');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('c');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('G');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('m');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 2:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('C');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('u');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('c');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('c');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('o');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 3:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('b');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('a');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('d');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('d');
+        if (value == 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('y');
+        } else {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('i');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 4:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('t');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('i');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('m');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 5:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('y');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('t');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('m');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 6:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('t');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('h');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('i');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        if (value == 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('f');
+        } else {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('v');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 7:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('m');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('o');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('l');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 8:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('r');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('t');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('u');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('r');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('n');
+        if (value != 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    case 9:
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('F');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('o');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('r');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('c');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(0xA0);
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('F');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('a');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('i');
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('r');
+        if (value == 1) {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('y');
+        } else {
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('i');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('e');
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth('s');
+        }
+        break;
+    }
+    return width;
+}
+
+// Writes the counter noun of command 1-9 (see fn_80381560) at out[*len], advancing *len, and
+// returns its width.
+f32 fn_8037F580(u8 command, s32 value, char* out, s32* len, f32 scale) {
+    f32 width = 0.0f;
+    switch (command) {
+    case 0:
+        break;
+    case 1:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'F';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'o';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'r';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'c';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'G';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'm';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 2:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'C';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'u';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'c';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'c';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'o';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 3:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'b';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'a';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'd';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'd';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value == 1) {
+            out[*len] = 'y';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        } else {
+            out[*len] = 'i';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 'e';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 4:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 't';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'i';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'm';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 5:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 's';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'y';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 's';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 't';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'm';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 6:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 't';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'h';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'i';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value == 1) {
+            out[*len] = 'f';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        } else {
+            out[*len] = 'v';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 'e';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 7:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'm';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'o';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'l';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 8:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'r';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 't';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'u';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'r';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'n';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value != 1) {
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    case 9:
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'F';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'o';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'r';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'c';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'e';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 0xA0;
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'F';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'a';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'i';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        out[*len] = 'r';
+        width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+        (*len)++;
+        if (value == 1) {
+            out[*len] = 'y';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        } else {
+            out[*len] = 'i';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 'e';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+            out[*len] = 's';
+            width += scale * lbl_8053AD78->mFont->JUTFont::getWidth(out[*len]);
+            (*len)++;
+        }
+        break;
+    }
+    return width;
 }
 
 // Shows message msg in the manager's text box at (x, y) with a font of
