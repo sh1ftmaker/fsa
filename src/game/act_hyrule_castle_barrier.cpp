@@ -283,17 +283,17 @@ void HyruleCastleBarrier_8049DEE8::fn_8011EEEC() {
 // fn_8011EEEC's own 1.0f and pi / 2 (docs/RULES_CARD.md, "Literals before their
 // first visible use" (3)).
 const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getMidPos(s32 i) const {
-    return &JGeometry::TVec3f(mPos.x, mPos.y + 16.0f * (i - 1), 0.0f);
+    return &JGeometry::TVec3f(mPos.x, mPos.y + 16.0f * (i - 1), 0.0f); // FAKEMATCH(crack-pass): address of a temporary returned (dangling); see docs/CRACK_PASS.md
 }
 
 const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getEndPos2() const {
     const JGeometry::TVec3f* p;
     switch (field_0x234) {
     case 1:
-        p = &JGeometry::TVec3f(mPos.x, mPos.y - 32.0f, mPos.z);
+        p = &JGeometry::TVec3f(mPos.x, mPos.y - 32.0f, mPos.z); // FAKEMATCH(crack-pass): address of a temporary returned (dangling); see docs/CRACK_PASS.md
         break;
     default:
-        p = &JGeometry::TVec3f(mPos.x + 32.0f, mPos.y, mPos.z);
+        p = &JGeometry::TVec3f(mPos.x + 32.0f, mPos.y, mPos.z); // FAKEMATCH(crack-pass): address of a temporary returned (dangling); see docs/CRACK_PASS.md
         break;
     }
     return p;
@@ -303,10 +303,10 @@ const JGeometry::TVec3f* HyruleCastleBarrier_8049DEE8::getEndPos1() const {
     const JGeometry::TVec3f* p;
     switch (field_0x234) {
     case 1:
-        p = &JGeometry::TVec3f(mPos.x, mPos.y + 32.0f, mPos.z);
+        p = &JGeometry::TVec3f(mPos.x, mPos.y + 32.0f, mPos.z); // FAKEMATCH(crack-pass): address of a temporary returned (dangling); see docs/CRACK_PASS.md
         break;
     default:
-        p = &JGeometry::TVec3f(mPos.x - 32.0f, mPos.y, mPos.z);
+        p = &JGeometry::TVec3f(mPos.x - 32.0f, mPos.y, mPos.z); // FAKEMATCH(crack-pass): address of a temporary returned (dangling); see docs/CRACK_PASS.md
         break;
     }
     return p;

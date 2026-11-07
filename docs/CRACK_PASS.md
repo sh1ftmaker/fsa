@@ -120,3 +120,23 @@ surrounding code exists, since finishing the rest of a unit may show the cause.
   deferred switch, act_vaati_demo fixed by it): reordering changed inlining or the
   .sdata2 pool in each under `-inline auto`; revisit each with deferred inlining
   and the auto_inline rule (docs/INLINING.md).
+
+## game/act_hyrule_castle_barrier.cpp: getMidPos / getEndPos1 / getEndPos2
+
+- **Trick:** the three position helpers return the address of a `JGeometry::TVec3f`
+  temporary (`return &TVec3f(...)` / `p = &TVec3f(...)`), a dangling pointer in C++.
+  Every such line carries `FAKEMATCH(crack-pass)`. The helpers are plain functions at the
+  bottom of the file (their out-of-line copies are dead-stripped) and fn_8011EEEC inlines
+  them, so MWCC places each temporary in a slot of fn_8011EEEC's own frame and the pointer
+  passed to spawnEmitter_8013CC50 is valid at the call.
+- **Why:** the original fn_8011EEEC (frame 0xF0) builds a separate stack TVec3f per switch
+  arm (0x74, 0x80, 0x8C, 0x98, ...) and passes its address. Returning by value with a
+  caller local gave 43.8 %; void helpers with an out-parameter gave 89.8 % (frame 0xB0,
+  shared slots). With this form init, fn_8011EEEC and fn_8011F314 are 100 %.
+- **Honest fix would need:** a source form that gives one caller-frame temporary per call
+  site without a dangling return, e.g. the call sites constructing `TVec3f` arguments
+  inline in a shape MWCC lays out identically (not found yet), or evidence of the original
+  helper signature (a reference-returning inline that MWCC treats the same way).
+- **Verification:** unit NonMatching; full link SHA-1 OK; reviewed 2026-11-07
+  (pool-owners round 2). The pattern came in with the Argon act_hyrule_castle_barrier
+  merge (e8647783) and was tagged when it was moved to the bottom of the file.
