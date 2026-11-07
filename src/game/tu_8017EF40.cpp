@@ -86,7 +86,7 @@ void fn_80182640(JGeometry::TVec3f* v, f32 x, f32 y, f32 z) {
     v->set(x, y, z);
 }
 
-// FIXME(shotgun): 98.77 %, missing/extra + reloc-name.
+// FIXME(shotgun): 98.9 %, missing/extra + reloc-name.
 void cls_804A1630::init() {
     field_0x90 &= 0xF;
     field_0x94 = 0;
@@ -328,7 +328,7 @@ void cls_804A1630::fn_80181BC8(s32 row, s32 mode) {
 // FIXME(shotgun): update (fn_8017FB10, 0x20B8 bytes) is not written.
 
 // 0x8017EF98.
-// FIXME(shotgun): 91.71 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.32 %, missing/extra + reloc-name
 void cls_804A1630::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;

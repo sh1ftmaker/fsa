@@ -90,7 +90,7 @@ void PlayerEffect_804A6E20::init() {
 }
 
 // 0x80229F1C.
-// FIXME(shotgun): 97.27 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.53 %, missing/extra + reloc-name
 void PlayerEffect_804A6E20::update() {
     field_0x230++;
     switch ((field_0x90 >> 2) & 0x3F) {

@@ -28,7 +28,7 @@ cls_804A0440::~cls_804A0440() {
 }
 
 // 0x80163E80.
-// FIXME(shotgun): 72.84 %, missing/extra + reloc-name
+// FIXME(shotgun): 74.67 %, missing/extra + reloc-name
 void cls_804A0440::init() {
     field_0x94 = 0;
     mBox.set(-60.0f, -60.0f, 60.0f, 60.0f);
@@ -163,7 +163,7 @@ void cls_804A0440::draw() {
 }
 
 // 0x80161F98.
-// FIXME(shotgun): 62.92 %, missing/extra
+// FIXME(shotgun): 67.72 %, missing/extra
 void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
     if (field_0x2ec != set) {
         if (field_0x2ec < 0) {
@@ -203,7 +203,7 @@ void cls_804A0440::vfunc_0x24() {
 }
 
 // 0x801618D0.
-// FIXME(shotgun): 99.96 %, operands (the texture names sit after the extern colour table: +0x20 here, +0x60 in the original)
+// FIXME(shotgun): 99.99 %, operands (the texture names sit after the extern colour table: +0x20 here, +0x60 in the original)
 void cls_804A0440::fn_801618D0(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params) {
     JUTTexture tex0(static_cast<const ResTIMG*>(fn_804032E8('BPOH', "obake_sirokuro.bti")), 0);
     JUTTexture tex1(static_cast<const ResTIMG*>(fn_804032E8('BPOH', "obake_ci.bti")), 0);

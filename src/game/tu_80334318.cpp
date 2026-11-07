@@ -12,8 +12,10 @@
 #include <float.h>
 
 // Breaks the 'SBAL' tiles `radius` ahead of the ball along `angle`.
-// FIXME(shotgun): the original adds a whole TVec3f whose z is never set (ps_add of an
-// unset stack word); only x and y are added here.
+// FIXME(shotgun): the original adds a whole TVec3f offset whose z is never set: pos.z gets
+// the stack word at sp+0x18 added (psq_l / ps_add / psq_st, 4 instructions per call), and
+// nothing in update ever writes that word. Reading it would be undefined behaviour, so only
+// x and y are added here; that is the one intended deviation from the asm.
 static inline void breakTiles(IronBallHoming_804AB9C0* self, u16 angle, f32 radius) {
     JGeometry::TVec3f pos(self->mPos);
     pos.x += radius * JMath::sincosTable_.sinShort(angle);
@@ -93,7 +95,7 @@ bool IronBallHoming_804AB9C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
 }
 
 // 0x80334A04.
-// FIXME(shotgun): 82.68 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.95 %, missing/extra + reloc-name
 void IronBallHoming_804AB9C0::update() {
     u16 angle = 0;
     s32 player;

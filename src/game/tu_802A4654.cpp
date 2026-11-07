@@ -97,7 +97,7 @@ cls_804A7EB0::~cls_804A7EB0() {
 }
 
 // 0x802A4A4C.
-// FIXME(shotgun): 19.97 % (states 0-2 only), missing/extra + reloc-name
+// FIXME(shotgun): 20.14 % (states 0-2 only), missing/extra + reloc-name
 void cls_804A7EB0::update() {
     switch (field_0x230) {
     case 0:
@@ -160,10 +160,13 @@ void cls_804A7EB0::update() {
     // FIXME(shotgun): states 3-10 not written (0x802A504C-0x802A61B4: the player-slot
     // assignment of state 3 and the states after it).
     }
+    // FIXME(shotgun): the code after the switch is not written (0x802A61B4 on: from state 2,
+    // the 'FARY' spawns counted by field_0x314 / field_0x31c, the field_0x24c / field_0x250
+    // frame step, and from state 4 the part that reads the table at lbl_8046C658 + 0xE0).
 }
 
 // 0x802A4780.
-// FIXME(shotgun): 83.12 %, different + reloc-name
+// FIXME(shotgun): 84.02 %, different + reloc-name
 void cls_804A7EB0::draw() {
     if (field_0x230 >= 2 && field_0x230 < 9) {
         SpriteParams_801F5AE0 params;
@@ -194,7 +197,7 @@ void cls_804A7EB0::draw() {
 }
 
 // 0x802A4654.
-// FIXME(shotgun): 90.76 %, different
+// FIXME(shotgun): 92.09 %, different
 void cls_804A7EB0::vfunc_0x54() {
     f32 x = mPos.x;
     f32 y = mPos.y;
