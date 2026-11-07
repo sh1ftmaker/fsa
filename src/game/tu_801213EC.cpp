@@ -8,7 +8,7 @@
 #include "game/Message.h"
 #include "game/Player.h"
 #include "game/tu_801213EC.h"
-
+#include "game/act/act_life_meter.h"
 
 // Passes the position on by value (the original loads the other arguments before its copy).
 static inline bool talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
@@ -348,6 +348,98 @@ void EscortBase_8049E0C8::fn_80121ABC() {
     }
 }
 
+// The heart index (0-4) a life meter shows for `life` (clamped).
+static inline s32 heartIndex(s32 life) {
+    if (life < 0) {
+        life = 0;
+    }
+    if (life >= 4) {
+        life = 4;
+    }
+    return life;
+}
+
+// LifeMeter_804B174C::fn_8019CEF8's body, which the original inlines into fn_801217EC: it was a
+// header inline (its out-of-line copy sits with tu_80197070's other inline copies at that unit's
+// end). It stays a plain function in tu_80197070 until its out-of-line caller there (fn_80198828)
+// is written; then this copy goes and both call the header inline.
+static inline void followActor(LifeMeter_804B174C* meter, s32 serial, f32 yOffset, s32 index) {
+    meter->field_0x250 = serial;
+    meter->field_0x254 = yOffset;
+    meter->field_0x24c = index;
+}
+
+// update's life-meter refresh: respawns the missing meters, then shows each meter (or hides it)
+// and points it at the escort with its heart index. `dead` is update's mLife == 0.
+// FIXME: 99.69. Regalloc only (+ reloc-name: the pool's first literal, 8.0f, belongs to a function
+// not in the binary): in the respawn loop the original keeps the array pointer in r30 and the
+// spawned serial in r31; here they are swapped.
+void EscortBase_8049E0C8::fn_801217EC(bool dead) {
+    if (!field_0x332) {
+        return;
+    }
+    respawnLifeMeters();
+    for (s32 i = 0; i < field_0x360; i++) {
+        LifeMeter_804B174C* meter =
+            (LifeMeter_804B174C*)getActorManager_801F856C()->findActorBySerial_801F666C(field_0x364[i]);
+        if (!meter) {
+            field_0x364[i] = -1;
+            continue;
+        }
+        if (field_0x333 || dead || field_0x335) {
+            meter->mDrawEnabled = true;
+        } else {
+            meter->mDrawEnabled = false;
+        }
+        if (dead) {
+            if (mAnim.mKey < 8) {
+                followActor(meter, mSerial, -28.0f, heartIndex(mLife + 2 - i * 4));
+            } else if (mAnim.mKey < 12) {
+                followActor(meter, mSerial, -28.0f, mLife);
+            } else {
+                meter->mDrawEnabled = false;
+            }
+        } else if (field_0x335) {
+            followActor(meter, mSerial, -28.0f, heartIndex(mLife - i * 4));
+        } else if (field_0x333) {
+            if (field_0x354 < 45) {
+                followActor(meter, mSerial, -28.0f, heartIndex(mLife + 2 - i * 4));
+            } else {
+                followActor(meter, mSerial, -28.0f, heartIndex(mLife - i * 4));
+            }
+        }
+    }
+}
+
+// Inlined into fn_801217EC only (its out-of-line copy was dead-stripped): spawns the life
+// meters whose serials are gone.
+void EscortBase_8049E0C8::respawnLifeMeters() {
+    if (field_0x332) {
+        for (s32 i = 0; i < field_0x360; i++) {
+            if (field_0x364[i] < 0) {
+                spawnLifeMeter(i);
+            }
+        }
+    }
+}
+
+// Inlined into respawnLifeMeters only (dead-stripped): spawns meter `index`, hidden, 8 units
+// apart to the left of the escort.
+void EscortBase_8049E0C8::spawnLifeMeter(s32 index) {
+    if (field_0x332 && index < field_0x360 && index >= 0) {
+        JGeometry::TVec3f pos(mPos);
+        pos.x -= 8.0f * index + 16.0f;
+        field_0x364[index] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LIMT, field_0x4, &pos, 0, -1, -1);
+        s32 serial = field_0x364[index];
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor) {
+                actor->mDrawEnabled = false;
+            }
+        }
+    }
+}
+
 void EscortBase_8049E0C8::fn_80121764() {
     if (field_0x332) {
         for (s32 i = 0; i < field_0x360; i++) {
@@ -374,6 +466,45 @@ s32 EscortBase_8049E0C8::fn_801216D0(s32 player) {
         }
     }
     return -1;
+}
+
+// FIXME: 99.76. Reloc-name only: the unit's first .sdata2 literal (8.0f, lbl_8053C9B0) comes from
+// a dead-stripped function emitted before this one, so every pool entry up to 0x1C is one slot off.
+// When a live magic circle ('CIRC') on the escort's layer overlaps the escort's box grown by 16,
+// dir is the xy direction from the circle to the escort, length 1.6; else dir stays zero.
+bool EscortBase_8049E0C8::fn_80121438(JGeometry::TVec3f* dir) {
+    dir->zero();
+    s32 serial = getActorManager_801F856C()->fn_801F7A08(ACTOR_CIRC);
+    if (serial < 0) {
+        return false;
+    }
+    ActorBase_804A5770* circle = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+    if (!circle) {
+        return false;
+    }
+    if (!circle->mAlive) {
+        return false;
+    }
+    if (field_0x4 != circle->field_0x4) {
+        return false;
+    }
+    JGeometry::TBox2f box;
+    JGeometry::TBox2f circleBox;
+    fn_801F31C4(&box);
+    circle->fn_801F31C4(&circleBox);
+    circleBox.i.x += -16.0f;
+    circleBox.i.y += -16.0f;
+    circleBox.f.x += 16.0f;
+    circleBox.f.y += 16.0f;
+    JGeometry::TBox2f overlap(box);
+    if (overlap.intersect(circleBox)) {
+        JGeometry::TVec3f circlePos(circle->mPos);
+        dir->set(mPos.x - circlePos.x, mPos.y - circlePos.y, 0.0f);
+        dir->normalize();
+        dir->scale(1.6f);
+        return true;
+    }
+    return false;
 }
 
 bool EscortBase_8049E0C8::vfunc_0xC4() {

@@ -75,12 +75,20 @@ public:
     s32 fn_80121DB0();
     // fn_801216D0 (tu_801213EC): the index of the player (0-3) whose fn_8023ECF0 is `player`, else -1.
     s32 fn_801216D0(s32 player);
+    // fn_80121438 (tu_801213EC): update's push away from a magic circle ('CIRC') the escort
+    // overlaps; true with dir set (xy, length 1.6), else false and dir zero.
+    bool fn_80121438(JGeometry::TVec3f* dir);
     // fn_80121764 (tu_801213EC): when field_0x332 is set, kills the life-meter actors whose serials
     // are in field_0x364 and clears the entries.
     void fn_80121764();
     // fn_80121ABC (tu_801213EC): spawns field_0x360 life-meter actors ('LIMT') in a row at the
     // escort, hidden, and stores their serials in field_0x364.
     void fn_80121ABC();
+    // fn_801217EC (tu_801213EC): update's life-meter refresh (dead: mLife == 0).
+    void fn_801217EC(bool dead);
+    // Dead-stripped helpers inlined into fn_801217EC (its redundant field_0x332 and index tests).
+    void respawnLifeMeters();
+    void spawnLifeMeter(s32 index);
     // fn_80121D68 (tu_801213EC): fills mRail from the escort's position; returns 1.
     s32 fn_80121D68();
     // fn_80121DC8 (tu_801213EC): the xy distance from the player's position to the escort's.
