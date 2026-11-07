@@ -21,9 +21,6 @@ static void* fn_803BAA64(void*) {
     return NULL;
 }
 
-// 0x803B9F40 (cls_803B9940::fn_803B9F40, the thread's request loop, 0xA40 bytes) is not
-// written yet: it maps every CARD result through one 7-case state switch, inlined at each site.
-
 // 0x803BAA1C
 cls_803B9940::~cls_803B9940() {}
 
@@ -39,6 +36,180 @@ void cls_803B9940::fn_803BA980() {
     OSCreateThread(&lbl_80511E60, fn_803BAA64, NULL, lbl_80510E60 + sizeof(lbl_80510E60),
                    sizeof(lbl_80510E60), OSGetThreadPriority(OSGetCurrentThread()) + 1, 1);
     OSResumeThread(&lbl_80511E60);
+}
+
+extern "C" {
+s32 fn_803BAEF4(CARDFileInfo* file, void* dst1, void* dst2, s32 size1, s32 size2);
+s32 fn_803BBF08(CARDFileInfo* file, void* src1, void* src2, s32 size1, s32 size2);
+}
+s32 fn_803BAE68(CARDFileInfo* file);
+
+static inline bool mapCardResult(cls_803B9940* self, s32 result) {
+    bool ok = false;
+    switch (result) {
+    case -5:
+    case -128:
+        self->mState = 0xC;
+        break;
+    case -3:
+        self->mState = 0;
+        break;
+    case 0:
+    case -6:
+        if (CARDCheck(self->field_0x1ff4) == 0) {
+            ok = true;
+        } else {
+            self->mState = 7;
+        }
+        break;
+    case -13:
+        self->mState = 6;
+        break;
+    case -4:
+        self->mState = 2;
+        break;
+    }
+    return ok;
+}
+
+// 0x803B9F40
+// FIXME(shotgun): written from asm
+void cls_803B9940::fn_803B9F40() {
+    while (true) {
+        OSLockMutex(&mMutex);
+        while (field_0x1fcc == 0) {
+            OSWaitCond(&mCond, &mMutex);
+        }
+        switch (field_0x1fcc) {
+        case 1: {
+            CARDFileInfo file;
+            s32 res = CARDOpen(field_0x1ff4, "gc4sword", &file);
+            if (res == 0) {
+                if (fn_803BAEF4(&file, mHeader, mSave, 0x258, 0x1D4C) == 0) {
+                    mState = 3;
+                } else {
+                    mapCardResult(this, res);
+                }
+                CARDClose(&file);
+            } else {
+                mapCardResult(this, res);
+            }
+            break;
+        }
+        case 2:
+            if (mState == 1) {
+                CARDFileInfo file;
+                s32 res = CARDOpen(field_0x1ff4, "gc4sword", &file);
+                if (res == 0) {
+                    if (fn_803BAE68(&file) == 0) {
+                        mState = 3;
+                    } else {
+                        mapCardResult(this, res);
+                    }
+                    CARDClose(&file);
+                } else {
+                    mapCardResult(this, res);
+                }
+            }
+            break;
+        case 3: {
+            CARDFileInfo file;
+            s32 res;
+            if (mState == 2) {
+                res = CARDCreate(field_0x1ff4, "gc4sword", 0x6000, &file);
+                if (res == 0) {
+                    mState = 1;
+                } else if (res == -7) {
+                    mState = 1;
+                } else {
+                    mapCardResult(this, res);
+                }
+            }
+            if (mState == 1) {
+                res = CARDOpen(field_0x1ff4, "gc4sword", &file);
+                if (res == 0) {
+                    res = fn_803BBF08(&file, mHeader, mSave, 0x258, 0x1D4C);
+                    if (res != 0) {
+                        mapCardResult(this, res);
+                    } else {
+                        mState = 4;
+                    }
+                    CARDClose(&file);
+                } else {
+                    mapCardResult(this, res);
+                }
+            } else {
+                mapCardResult(this, res);
+            }
+            break;
+        }
+        case 4: {
+            s32 res = CARDFormat(field_0x1ff4);
+            if (res == 0) {
+                mState = 5;
+            } else {
+                mapCardResult(this, res);
+            }
+            break;
+        }
+        case 5: {
+            s32 memSize;
+            s32 sectorSize;
+            if (CARDProbeEx(field_0x1ff4, &memSize, &sectorSize) == -2) {
+                mState = 0xA;
+            } else if (sectorSize != 0x2000) {
+                mState = 0xB;
+            } else if (mapCardResult(this, CARDMount(field_0x1ff4, lbl_80512180, NULL))) {
+                CARDFileInfo file;
+                bool exists;
+                s32 res = CARDOpen(field_0x1ff4, "gc4sword", &file);
+                if (res == 0) {
+                    CARDClose(&file);
+                    exists = true;
+                } else {
+                    mapCardResult(this, res);
+                    exists = false;
+                }
+                if (exists) {
+                    mState = 1;
+                } else {
+                    s32 byteNotUsed;
+                    s32 filesNotUsed;
+                    s32 freeStatus;
+                    res = CARDFreeBlocks(field_0x1ff4, &byteNotUsed, &filesNotUsed);
+                    if (res != 0) {
+                        mapCardResult(this, res);
+                        freeStatus = 3;
+                    } else if (byteNotUsed < 0x6000) {
+                        freeStatus = 1;
+                    } else if (filesNotUsed < 1) {
+                        freeStatus = 2;
+                    } else {
+                        freeStatus = 0;
+                    }
+                    switch (freeStatus) {
+                    case 0:
+                        mState = 2;
+                        break;
+                    case 1:
+                        mState = 8;
+                        break;
+                    case 2:
+                        mState = 9;
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+        case 6:
+            CARDUnmount(field_0x1ff4);
+            mState = 0;
+            break;
+        }
+        field_0x1fcc = 0;
+        OSUnlockMutex(&mMutex);
+    }
 }
 
 // 0x803B9E2C
