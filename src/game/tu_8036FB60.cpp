@@ -14,6 +14,9 @@
 extern const char lbl_80474F6C[];
 extern const char lbl_80474F80[];
 extern s32 lbl_80474ED0[];
+extern s32 lbl_80474EE0[];
+extern s32 lbl_80474EF0[];
+extern s32 lbl_80474F00[];
 extern s32 lbl_80474F10[];
 extern s32 lbl_80474F20[];
 extern s32 lbl_80474F30[];
@@ -22,9 +25,8 @@ extern s32 lbl_80474F4C[];
 extern s32 lbl_80474F5C[];
 
 
-// FIXME(shotgun): not written: fn_80371D50 (0x80371D50), fn_80371A2C (0x80371A2C),
-// fn_803717CC (0x803717CC), fn_80371284 (0x80371284) and the table copy at
-// 0x80372B00 (they are declared in the header, so the state table below compiles).
+// FIXME(shotgun): not written: the table copy at 0x80372B00 (a compiler-generated static-init
+// function: lbl_804AE420 below is initialised statically instead).
 cls_804AE4B0::~cls_804AE4B0() {}
 
 // FIXME(shotgun): 99.98 %, scheduling
@@ -217,6 +219,266 @@ void cls_804AE4B0::fn_803721F4() {
     }
 }
 #pragma auto_inline reset
+
+// Starts the next lane pattern `arg` (0-3): the four sprites slide in from their start offsets.
+// FIXME(shotgun): 77 %, missing/extra + reloc-name
+void cls_804AE4B0::fn_80371D50(s32 arg) {
+    mTimer = 0x80;
+    field_0x398 = 0;
+    switch (arg) {
+    case 0: {
+        static JGeometry::TVec3f offsets[4] = {
+            JGeometry::TVec3f(0.0f, 0.0f, 0.0f),
+            JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
+            JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
+            JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+        };
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + offsets[i];
+            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x391;
+            field_0x340[i] = 3;
+        }
+        break;
+    }
+    case 1:
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
+            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x388;
+            field_0x340[i] = 0;
+        }
+        break;
+    case 2:
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + JGeometry::TVec3f(0.0f, 16.0f * (f32)i, 0.0f);
+            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x38E;
+            field_0x340[i] = 2;
+        }
+        break;
+    case 3: {
+        static JGeometry::TVec3f offsets[4] = {
+            JGeometry::TVec3f(0.0f, 0.0f, 0.0f),
+            JGeometry::TVec3f(-16.0f, 16.0f, 0.0f),
+            JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+            JGeometry::TVec3f(0.0f, 32.0f, 0.0f),
+        };
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + offsets[i];
+            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = lbl_80474EE0[i];
+            field_0x340[i] = lbl_80474EF0[i];
+        }
+        break;
+    }
+    }
+}
+
+// Turns the sprites towards the nearest player, and lets the player pick one up.
+// FIXME(shotgun): 73 %, missing/extra + reloc-name
+void cls_804AE4B0::fn_80371A2C() {
+    f32 nearest[4] = {49.0f, 49.0f, 49.0f, 49.0f};
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x330[i] == 0) {
+            for (s32 j = 0; j < 4; j++) {
+                f32 dist = PSVECDistance(&field_0x264[j], &field_0x294[i]);
+                if (dist < nearest[i]) {
+                    nearest[i] = dist;
+                    u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x264[j].y - field_0x294[i].y,
+                                                              field_0x264[j].x - field_0x294[i].x) *
+                                      10430.378f);
+                    s32 sprite;
+                    s32 dir;
+                    if (angle >= 0x2000 && angle < 0x6000) {
+                        sprite = 0x38E;
+                        dir = 2;
+                    } else if (angle >= 0x6000 && angle < 0xA000) {
+                        sprite = 0x38B;
+                        dir = 1;
+                    } else if (angle >= 0xA000 && angle < 0xE000) {
+                        sprite = 0x391;
+                        dir = 3;
+                    } else {
+                        sprite = 0x388;
+                        dir = 0;
+                    }
+                    if (sprite != field_0x350[i]) {
+                        field_0x330[i] = 0x1E;
+                        field_0x350[i] = sprite;
+                        field_0x340[i] = dir;
+                    }
+                }
+            }
+        }
+    }
+    if (field_0x3a8 == 0) {
+        if (field_0x3ac == 0) {
+            s32 idx = fn_80370200();
+            if (idx != -1) {
+                JGeometry::TBox2f box;
+                box.i.x = mBox.i.x + field_0x294[idx].x;
+                box.i.y = mBox.i.y + field_0x294[idx].y;
+                box.f.x = mBox.f.x + field_0x294[idx].x;
+                box.f.y = mBox.f.y + field_0x294[idx].y;
+                fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+                s32 player = fn_8022FD8C(mSerial);
+                if (player >= 0) {
+                    if (fn_802300EC(player)) {
+                        if (fn_8038BD08(player, lbl_80474F00[idx], field_0x4, field_0x294[idx], 0x22)) {
+                            field_0x3a4 = player;
+                            field_0x3a8 = 1;
+                            field_0x3a0 = idx;
+                            fn_8023077C();
+                        }
+                    }
+                }
+            }
+        }
+    } else if (field_0x3a0 != 4) {
+        if (field_0x3a0 >= 0) {
+            JGeometry::TBox2f box;
+            box.i.x = mBox.i.x + field_0x294[field_0x3a0].x;
+            box.i.y = mBox.i.y + field_0x294[field_0x3a0].y;
+            box.f.x = mBox.f.x + field_0x294[field_0x3a0].x;
+            box.f.y = mBox.f.y + field_0x294[field_0x3a0].y;
+            fn_8022FF8C(field_0x3a4, &box, field_0x4, mSerial, true, false);
+            if (fn_80388CAC(field_0x3a4, mSerial)) {
+                field_0x3a4 = -1;
+                field_0x3a8 = 0;
+                fn_80230534(false);
+                field_0x3ac = 3;
+                field_0x3a0 = -1;
+            }
+        }
+    }
+}
+
+// The first state: the lanes finish sliding in; the player standing on the start tile starts it.
+// FIXME(shotgun): 70 %, missing/extra + reloc-name
+void cls_804AE4B0::fn_803717CC() {
+    fn_803721F4();
+    JGeometry::TBox2f region;
+    region.set(2288.0f, 1712.0f, 2320.0f, 1728.0f);
+    bool inside = false;
+    JGeometry::TVec3f* p = &field_0x264[field_0x39c];
+    if (p->x >= region.i.x && p->y >= region.i.y && p->x < region.f.x && p->y < region.f.y) {
+        inside = true;
+    }
+    if (inside) {
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023ED8C(i)) {
+                fn_80230C6C(i);
+            }
+        }
+        fn_8022CA6C(field_0x39c, 5, false);
+        for (s32 i = 0; i < 4; i++) {
+            if (!fn_80230188(i) && fn_802300EC(i)) {
+                fn_80230AD4(i);
+            }
+        }
+        field_0x324.x = 2304.0f;
+        field_0x324.y = 1760.0f;
+        field_0x324.z = 0.0f;
+        field_0x399 = 1;
+        mState = 1;
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        field_0x244 = -cam->field_0x4[0][3];
+        field_0x248 = -cam->field_0x4[1][3];
+        field_0x24c = 0.0f;
+        field_0x250 = (2304.0f - field_0x244) / 60.0f;
+        field_0x254 = (1696.0f - field_0x248) / 60.0f;
+        JGeometry::TBox2f view = gGameRoot2_8053AB10->field_0x24->field_0x164;
+        field_0x25c = (view.f.y - view.i.y) * 0.5f;
+        field_0x260 = 144.0f - field_0x25c;
+        cam = gGameRoot2_8053AB10->field_0x24;
+        cam->field_0x179 = 1;
+        cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x840 == 0) {
+            cam->field_0x840 = 1;
+            cam->field_0x844.i.x = field_0x244;
+            cam->field_0x844.i.y = field_0x248 - field_0x25c;
+            cam->field_0x844.f.x = field_0x244;
+            cam->field_0x844.f.y = field_0x248 + field_0x25c;
+            cam->field_0x854 = 1.0f;
+            cam->field_0x1d4 = -1.0f;
+            cam->field_0x1d8 = -1.0f;
+        }
+    }
+}
+
+// Per player: counts the sprite animation down and draws the player's marker above the start
+// tile (the inline both loops of fn_80371284 share).
+static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
+    if (self->field_0x374[i] != 0) {
+        self->field_0x374[i]--;
+    }
+    if (self->field_0x374[i] == 0) {
+        self->field_0x374[i] = 6;
+        self->field_0x384[i]++;
+        if (fn_8023EFEC(i)) {
+            if (self->field_0x384[i] >= 7) {
+                self->field_0x384[i] = 0;
+            }
+        } else if (fn_8023EA28(i)) {
+            if (self->field_0x384[i] >= 4) {
+                self->field_0x384[i] = 0;
+            }
+        } else if (self->field_0x384[i] >= 8) {
+            self->field_0x384[i] = 0;
+        }
+    }
+    if (!fn_80230188(i) && self->mState == 1) {
+        if (fn_8023EFEC(i)) {
+            JGeometry::TVec3f pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
+            fn_80230498(i, &pos, 0x2CF + self->field_0x384[i], 0xFF, -0x80, -0x80, true);
+        } else {
+            JGeometry::TVec3f pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
+            fn_80230498(i, &pos, 0x18 + self->field_0x384[i], 0xFF, -0x80, -0x80, true);
+        }
+    }
+}
+
+// The second state: the camera pans to the lane tile; when it has arrived the message is shown.
+// FIXME(shotgun): 88 %, missing/extra + reloc-name
+void cls_804AE4B0::fn_80371284() {
+    for (s32 i = 0; i < 4; i++) {
+        if (!fn_80230188(i) && fn_802300EC(i)) {
+            fn_80230AD4(i);
+        }
+    }
+    fn_803703C8();
+    if (field_0x324.y > 1720.0f) {
+        field_0x324.y -= 0.5f;
+        for (s32 i = 0; i < 4; i++) {
+            tickPlayer_80371284(this, i);
+        }
+    }
+    if (field_0x324.y <= 1720.0f) {
+        field_0x324.y = 1720.0f;
+        field_0x384[0] = 0;
+        field_0x384[1] = 0;
+        field_0x384[2] = 0;
+        field_0x384[3] = 0;
+        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_8038BD08(0, 0x50F, field_0x4, pos, 0x22)) {
+            mState = 2;
+            for (s32 i = 0; i < 4; i++) {
+                tickPlayer_80371284(this, i);
+            }
+            field_0x3a4 = 0;
+            field_0x3a8 = 1;
+            field_0x3a0 = 4;
+            field_0x368 = 0x108;
+        }
+    }
+}
 
 void cls_804AE4B0::fn_803711F0() {
     fn_803703C8();
