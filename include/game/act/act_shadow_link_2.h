@@ -106,9 +106,15 @@ public:
     // game/tu_801C71BC.cpp (0x801C8B50): resets the path and the rail, then turns
     // toward field_0x32c.
     void fn_801C8B50();
-    // game/tu_801C71BC.cpp (not written yet): called with (0, 1) and (0, 0),
-    // the arguments are literals; s32 is a guess until its body is read.
+    void fn_801C9420(JGeometry::TVec2f* dir);
+    void fn_801C9234(JGeometry::TVec2f* out);
+    // game/tu_801C71BC.cpp: updates field_0x32c and path waypoints.
     void fn_801C8C84(s32, s32);
+    void fn_801C887C();
+    void fn_801C844C();
+    void fn_801C7F98();
+    u8 fn_801C7BD0();
+    void fn_801C7370(u8 flag);
     // game/tu_801C9AF8.cpp (not written yet): 0 if field_0x560 is 4 or
     // `player`, else 1.
     bool fn_801CAED4(int player);
@@ -166,7 +172,8 @@ public:
     /* 0x59C */ u8 field_0x59c; // vfunc_0x9C counts it down to 0
     /* 0x59D */ u8 field_0x59d;
     /* 0x59E */ u16 field_0x59e;
-    /* 0x5A0 */ u8 field_0x5a0[0x5AC - 0x5A0];
+    /* 0x5A0 */ u8 field_0x5a0[0x5A8 - 0x5A0];
+    /* 0x5A8 */ f32 field_0x5a8;
     /* 0x5AC */ f32 field_0x5ac; // the range fn_801C5B08 gives fn_801D05F8
     /* 0x5B0 */ f32 field_0x5b0; // squared against the distance to the player
 }; // Size: at least 0x5B4
