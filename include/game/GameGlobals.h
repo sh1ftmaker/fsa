@@ -1125,7 +1125,9 @@ public:
     /* 0x5C */ u8 field_0x5c;
     // SHARED-EDIT: tested by fn_801914C4 (game/tu_801902C0.cpp) through lbl_8053AEC8.
     /* 0x5D */ u8 field_0x5d;
-    /* 0x5E */ u8 field_0x5e[0x60 - 0x5E];
+    // fn_8041E3B4 (game/tu_80418B64.cpp) tests it for 1 and clears it.
+    /* 0x5E */ u8 field_0x5e;
+    /* 0x5F */ u8 field_0x5f;
 };
 // .sbss pointer set by cls_804B17A0's constructor fn_80439C78 (0x80439CAC).
 extern cls_804B17A0* lbl_8053AEC8;
