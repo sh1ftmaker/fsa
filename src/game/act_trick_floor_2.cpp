@@ -5,6 +5,9 @@
 #include "game/Camera.h"
 #include "game/Effect.h"
 #include "game/Player.h"
+#include "game/SpriteParams.h"
+#include "JSystem/JMath/JMath.h"
+#include <math.h>
 #include "game/act/act_trick_floor_2.h"
 
 // FIXME(shotgun): the 7-entry tables of .rodata at 0x8046F788 (outer count) and 0x8046F7A4
@@ -14,6 +17,42 @@ extern const s32 lbl_8046F7A4[];
 // FIXME(shotgun): the 4x4 u16 tiles at 0x8046F7C0 (inside dtk's lbl_8046F7A4) state 5 restores
 // for type 1.
 extern const u16 lbl_8046F7C0[4][4];
+
+// FIXME(shotgun): draw's per-type tables inside dtk's lbl_8046F7A4: the sprite offsets x / y
+// (0x8046F7E0 / 0x8046F7FC) and the hole picture's x / z scales (0x8046F818 / 0x8046F834).
+extern const f32 lbl_8046F7E0[7];
+extern const f32 lbl_8046F7FC[7];
+extern const f32 lbl_8046F818[7];
+extern const f32 lbl_8046F834[7];
+
+// The rotation part of m from Euler angles (R = Rz Ry Rx), as setRotScaleMtx (game/RotMatrix.h)
+// without the scale and with the cosines first (z, y, x, then the sines).
+static inline void setRotMtx(Mtx m, const JGeometry::TVec3f& rot) {
+    f32 cz = cos(rot.z);
+    f32 cy = cos(rot.y);
+    f32 cx = cos(rot.x);
+    f32 sz = sin(rot.z);
+    f32 sy = sin(rot.y);
+    f32 sx = sin(rot.x);
+    m[0][0] = cy * cz;
+    m[1][0] = cy * sz;
+    m[2][0] = -sy;
+    m[0][1] = sx * sy * cz - cx * sz;
+    m[1][1] = sx * sy * sz + cx * cz;
+    m[2][1] = sx * cy;
+    m[0][2] = cx * cz * sy + sx * sz;
+    m[1][2] = cx * sz * sy - sx * cz;
+    m[2][2] = cx * cy;
+}
+
+// Draws the 'SMP ' sprite `name` at pos with the floor's params, below layer 8.
+static inline void drawSmp(TrickFloor2_804AA628* self, const JGeometry::TVec3f* pos, const char* name,
+                           SpriteParams_801F5AE0* params) {
+    if (self->field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', name);
+        gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(pos, res, params);
+    }
+}
 
 // The tile index of a view-relative position (as init computes it).
 static inline s32 tileIndex(s32 tx, s32 ty) {
@@ -314,6 +353,122 @@ void TrickFloor2_804AA628::update() {
         if (camera->field_0x7f4 == 0) {
             camera->field_0x7f5 = 1;
         }
+        break;
+    }
+    }
+}
+
+// FIXME(shotgun): 78.0 %, missing/extra + reloc-name
+// The hole picture "otosiana_bg_s.bti" under the floor (scaled per type), then the floor's two
+// halves tilted by field_0x248 (the left one about its edge, the right one mirrored); types 4 / 5
+// draw the ground or the house instead while falling.
+void TrickFloor2_804AA628::draw() {
+    SpriteParams_801F5AE0 sp;
+    sp.field_0x1c = -1;
+    sp.field_0x1d = -2;
+    Mtx m;
+    m[0][3] = 0.0f;
+    m[1][3] = 0.0f;
+    m[2][3] = 0.0f;
+    m[0][1] = 0.0f;
+    m[0][0] = lbl_8046F818[mType];
+    m[0][2] = 0.0f;
+    m[1][0] = 0.0f;
+    m[1][1] = 1.0f;
+    m[1][2] = 0.0f;
+    m[2][0] = 0.0f;
+    m[2][1] = 0.0f;
+    m[2][2] = lbl_8046F834[mType];
+    sp.mMtx = m;
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "otosiana_bg_s.bti");
+    JGeometry::TVec3f hole(mPos.x + lbl_8046F7E0[mType], mPos.y + lbl_8046F7FC[mType], mPos.z);
+    if (field_0x4 < 8) {
+        gGameRoot2_8053AB10->field_0x20->fn_802F745C(&hole, res, &sp);
+    }
+
+    m[0][3] = 0.0f;
+    m[1][3] = 0.0f;
+    m[2][3] = 0.0f;
+    f32 angle = field_0x248;
+    setRotMtx(m, JGeometry::TVec3f(0.0f, angle, 0.0f));
+    sp.field_0x1c = -1;
+    sp.field_0x1d = -1;
+    sp.field_0x21 = 1;
+    sp.mMtx = m;
+    switch (mType) {
+    case 1:
+        drawSmp(this, &mPos, "mastersword_left_smp.bin", &sp);
+        break;
+    case 2:
+        drawSmp(this, &mPos, "house_left_smp.bin", &sp);
+        break;
+    case 3:
+        drawSmp(this, &mPos, "tree0_smp.bin", &sp);
+        drawSmp(this, &mPos, "tree1_smp.bin", &sp);
+        break;
+    case 4:
+    case 5:
+        break;
+    case 6:
+        drawSmp(this, &mPos, "field_smp.bin", &sp);
+        break;
+    default:
+        drawSmp(this, &mPos, "floor_smp.bin", &sp);
+        break;
+    }
+
+    m[0][3] = 0.0f;
+    m[1][3] = 0.0f;
+    m[2][3] = 0.0f;
+    if (mType == 3 || mType == 4 || mType == 5) {
+        angle = 3.1415927f - field_0x248;
+    } else {
+        angle = -field_0x248;
+    }
+    setRotMtx(m, JGeometry::TVec3f(0.0f, angle, 0.0f));
+    sp.mMtx = m;
+    switch (mType) {
+    case 1: {
+        JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
+                              32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
+        drawSmp(this, &pos, "mastersword_right_smp.bin", &sp);
+        break;
+    }
+    case 2: {
+        JGeometry::TVec3f pos(96.0f + mPos.x - 48.0f * JMath::sincosTable_.cosRadian(-field_0x248),
+                              48.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
+        drawSmp(this, &pos, "house_right_smp.bin", &sp);
+        break;
+    }
+    case 3: {
+        JGeometry::TVec3f pos0(64.0f + mPos.x, mPos.y, mPos.z);
+        drawSmp(this, &pos0, "tree0_smp.bin", &sp);
+        JGeometry::TVec3f pos1(64.0f + mPos.x, mPos.y, mPos.z);
+        drawSmp(this, &pos1, "tree1_smp.bin", &sp);
+        break;
+    }
+    case 4:
+    case 5:
+        sp.field_0x1c = 1;
+        sp.field_0x1d = -1;
+        if (field_0x230 == 7) {
+            JGeometry::TVec3f pos(96.0f + mPos.x, mPos.y, mPos.z);
+            drawSmp(this, &pos, "jimen_smp.bin", &sp);
+        } else if (field_0x230 != 8) {
+            JGeometry::TVec3f pos(96.0f + mPos.x, mPos.y, mPos.z);
+            drawSmp(this, &pos, "house_smp.bin", &sp);
+        }
+        break;
+    case 6: {
+        JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
+                              32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
+        drawSmp(this, &pos, "field_smp.bin", &sp);
+        break;
+    }
+    default: {
+        JGeometry::TVec3f pos(64.0f + mPos.x - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248),
+                              32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
+        drawSmp(this, &pos, "floor_smp.bin", &sp);
         break;
     }
     }
