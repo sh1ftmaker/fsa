@@ -115,7 +115,6 @@ public:
     void fn_8012309C(u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
     void fn_80122148();
     void fn_80122548();
-    void fn_80122730(s32 dir, bool a, bool b);
     // fn_80122898 (tu_801213EC): asks the player at the escort to talk (message msg); remembers
     // the player in field_0x34c (-1 when none); returns it.
     s32 fn_80122898(u16 msg);
