@@ -19,6 +19,7 @@ public:
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     // 0x8032F148: a one-player version of ActorBase::fn_801EEC98 (angle, direction, distance of an actor seen from `player`).
     void fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player);
+    void fn_80331E6C();
     u8 fn_80332378();
     void fn_80331D38();
     void fn_80331C24();
@@ -41,7 +42,8 @@ public:
     /* 0x274 */ s32 field_0x274;
     /* 0x278 */ s32 field_0x278;
     // SHARED-EDIT: carved from field_0x27c[0x14] (game/act_cucco.cpp draw).
-    /* 0x27C */ u8 field_0x27c[0xC]; // not yet known
+    /* 0x27C */ u8 field_0x27c[8]; // not yet known
+    /* 0x284 */ s32 field_0x284; // a countdown
     /* 0x288 */ u8 field_0x288; // opacity
     /* 0x289 */ u8 field_0x289[7]; // not yet known
     /* 0x290 */ s32 field_0x290;
@@ -50,14 +52,14 @@ public:
     /* 0x2A1 */ u8 field_0x2a1;
     /* 0x2A2 */ u8 field_0x2a2; // not yet known
     /* 0x2A3 */ u8 field_0x2a3;
-    /* 0x2A4 */ u8 field_0x2a4[3]; // not yet known
+    /* 0x2A4 */ u8 field_0x2a4[3]; // [0] and [1] are flags set by fn_80331E6C
     /* 0x2A7 */ u8 field_0x2a7;
     /* 0x2A8 */ u8 field_0x2a8;
     /* 0x2A9 */ u8 field_0x2a9;
     /* 0x2AA */ u8 field_0x2aa[10]; // not yet known
     /* 0x2B4 */ f32 field_0x2b4;
     /* 0x2B8 */ f32 field_0x2b8[3];
-    /* 0x2C4 */ u8 field_0x2c4[0x30]; // not yet known
+    /* 0x2C4 */ JGeometry::TVec3f field_0x2c4[4];
     /* 0x2F4 */ JPABaseEmitter* mEmitter2f4; // released by the destructor
     /* 0x2F8 */ JPABaseEmitter* mEmitter2f8; // released by the destructor
     /* 0x2FC */ JPABaseEmitter* mEmitter2fc; // released by the destructor

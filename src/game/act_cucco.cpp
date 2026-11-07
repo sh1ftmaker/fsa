@@ -10,6 +10,8 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 #include "game/act/act_cucco.h"
+#include "game/act/act_magic_circle.h"
+#include "game/act/act_warp.h"
 
 Cucco_804AB8C0::~Cucco_804AB8C0() {
     releaseEmitter_801EE434(mEmitter2f4);
@@ -81,6 +83,148 @@ u8 Cucco_804AB8C0::fn_80332378() {
         }
     }
     return r;
+}
+
+// FIXME(shotgun): 63.06 %, missing/extra + reloc-name
+void Cucco_804AB8C0::fn_80331E6C() {
+    if (field_0x2a4[0] != 1) {
+        field_0x284--;
+        if (field_0x284 <= 0) {
+            f32 dx = field_0x2c4[3].x - mPos.x;
+            f32 dy = field_0x2c4[3].y - mPos.y;
+            if (JGeometry::TVec2f(dx, dy).length() > 12.0f) {
+                field_0x2a4[0] = 1;
+            }
+        }
+        return;
+    }
+    s32 warpSerial = -1;
+    s32 circleSerial = -1;
+    if (field_0x230 == 3) {
+        return;
+    }
+    s32 count = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < count; i++) {
+        ActorBase_804A5770* other = getActorManager_801F856C()->mActors[i];
+        if (other != NULL && (other->mActorId == ACTOR_WARP || other->mActorId == ACTOR_CIRC) &&
+            field_0x4 == other->field_0x4)
+        {
+            f32 dx = other->mPos.x - mPos.x;
+            f32 dy = other->mPos.y - mPos.y;
+            if (JGeometry::TVec2f(dx, dy).length() < 12.0f) {
+                if (other->mActorId == ACTOR_WARP) {
+                    if (other->vfunc_0x3C() == 0 || other->vfunc_0x34() == true) {
+                        warpSerial = other->mSerial;
+                        break;
+                    }
+                } else if (static_cast<MagicCircle_804A7960*>(other)->field_0x262 == 1) {
+                    circleSerial = other->mSerial;
+                    break;
+                }
+            }
+        }
+    }
+    if (warpSerial < 0 && circleSerial < 0) {
+        return;
+    }
+    JGeometry::TVec3f target(0.0f, 0.0f, 0.0f);
+    s32 code = 0;
+    s32 newLayer = 0;
+    if (warpSerial >= 0) {
+        Warp_804A6DC8* warp = static_cast<Warp_804A6DC8*>(getActorManager_801F856C()->findActorBySerial_801F666C(warpSerial));
+        if (warp == NULL) {
+            return;
+        }
+        target.set(warp->field_0x238);
+        if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
+            target.z = mPos.z;
+        }
+        u32 arg = warp->field_0x90;
+        s32 hi = (arg >> 24) & 7;
+        newLayer = hi != 0 ? hi + 7 : hi;
+        code = arg & 0x7F;
+    } else if (circleSerial > 0) {
+        MagicCircle_804A7960* circle = static_cast<MagicCircle_804A7960*>(getActorManager_801F856C()->findActorBySerial_801F666C(circleSerial));
+        if (circle == NULL) {
+            return;
+        }
+        target.set(circle->field_0x268);
+        if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
+            target.z = mPos.z;
+        }
+        s32 hi = (circle->field_0x90 >> 24) & 7;
+        newLayer = hi != 0 ? hi + 7 : hi;
+        code = 6;
+    }
+    if (code == 6 || code == 0x14 || code == 4 || code == 0x20 || code == 0x24) {
+        if (mPos.z >= 8.0f) {
+            return;
+        }
+    } else if (code == 0 || code == 3 || code == 0x15 || code == 0x23) {
+        if (field_0x3c.y >= 0.0f) {
+            return;
+        }
+    }
+    if (code == 1 || code == 2) {
+        if (field_0x3c.y <= 0.0f) {
+            return;
+        }
+    }
+    if (code == 0x17) {
+        if (field_0x3c.x <= 0.0f) {
+            return;
+        }
+    }
+    if (code == 0x18) {
+        if (field_0x3c.x >= 0.0f) {
+            return;
+        }
+    }
+    mPos.set(target);
+    field_0x4 = newLayer;
+    field_0x284 = 0x14;
+    field_0x2c4[3].set(target);
+    field_0x2c4[1].set(target);
+    field_0x2a4[0] = 0;
+    field_0x2a4[1] = 0;
+    f32 mag = PSVECMag((Vec*)&field_0x2b8);
+    if (mag < 1.0f) {
+        mag = 1.0f;
+    } else if (mag > 3.0f) {
+        mag = 3.0f;
+    }
+    f32 half = mag * 0.5f;
+    if (code != 6 && code != 0x14) {
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
+        field_0x2b8[0] = 0.0f;
+        field_0x2b8[1] = 0.0f;
+        field_0x2b8[2] = 0.0f;
+        field_0x238 = 0x14;
+        field_0x258 = 0;
+    }
+    switch (code) {
+    case 0:
+    case 3:
+        field_0x3c.y = -half;
+        field_0x2b8[1] = -mag;
+        break;
+    case 1:
+    case 2:
+        field_0x3c.y = half;
+        field_0x2b8[1] = mag;
+        break;
+    case 0x17:
+        field_0x3c.x = half;
+        field_0x2b8[0] = mag;
+        break;
+    case 0x18:
+        field_0x3c.x = -half;
+        field_0x2b8[0] = -mag;
+        break;
+    }
+    if (field_0x23c > 0) {
+        field_0x23c = 0x14;
+    }
 }
 
 // FIXME(shotgun): 96.7 %, scheduling+regalloc
