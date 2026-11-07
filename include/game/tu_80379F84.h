@@ -8,6 +8,7 @@
 class JKRArchive;
 class J2DScreen;
 class J2DPicture;
+class J2DTextBox;
 class cls_804B20F8;
 class ActorSoundObj_804578F4;
 class JPABaseEmitter;
@@ -143,13 +144,16 @@ public:
     void fn_803D3D50();
     void fn_803D3EC8();
     void fn_803D4068();
+    void fn_803D4484();
+    void fn_803D4770();
     void fn_803D4298();
     void fn_803D49A4();
     void fn_803D4DB0();
 
     /* 0x0004 */ J2DScreen* mScreen;
     /* 0x0008 */ J2DPicture* field_0x8; // the dark overlay (alpha 0x2173)
-    /* 0x000C */ u8 field_0xc[0x14 - 0xC];
+    /* 0x000C */ J2DTextBox* field_0xc; // the message text box
+    /* 0x0010 */ J2DTextBox* field_0x10; // fades in over it
     /* 0x0014 */ PaneCtrl_804AF86C* field_0x14;
     /* 0x0018 */ PaneCtrl_804AF86C* field_0x18;
     /* 0x001C */ PaneCtrl_804AF86C* field_0x1c[2];
@@ -166,8 +170,7 @@ public:
     /* 0x0082 */ s16 field_0x82;
     /* 0x0084 */ s16 field_0x84;
     /* 0x0086 */ s16 field_0x86;
-    /* 0x0088 */ u8 field_0x88;
-    /* 0x0089 */ u8 field_0x89[0x1B4 - 0x89];
+    /* 0x0088 */ char field_0x88[0x1B4 - 0x88]; // the next message's text
     /* 0x01B4 */ u8 field_0x1b4;
     /* 0x01B5 */ u8 field_0x1b5[0x1C0 - 0x1B5];
     /* 0x01C0 */ u8 field_0x1c0[0x258]; // the three save files read from / written to the card

@@ -50,7 +50,7 @@ void cls_804B0288::fn_803D5554() {
     field_0x50 = 0;
     field_0x216e = 0;
     field_0x78 = 0;
-    field_0x88 = 0;
+    field_0x88[0] = 0;
     field_0x2170 = 0;
     field_0x2171 = 0;
     field_0x7c = -1;
@@ -183,6 +183,121 @@ void cls_804B0288::fn_803D5090() {
             field_0x2173 = 0;
             field_0x2174 = 0;
         }
+    }
+}
+
+// FIXME(shotgun): 98.44 %, regalloc-only
+void cls_804B0288::fn_803D4770() {
+    bool done1 = false;
+    u8 done2 = 0;
+    u8 done3 = 0;
+    u8 done4 = 0;
+    u8 done5 = 0;
+    s16 t0 = lbl_8050DB0C.field_0x4c[(0xC8 - 0x4C) / 2];
+    s16 t1 = lbl_8050DB0C.field_0x4c[(0xCA - 0x4C) / 2];
+    s16 t2 = lbl_8050DB0C.field_0x4c[(0xCC - 0x4C) / 2];
+    s16 t3 = lbl_8050DB0C.field_0x4c[(0xCE - 0x4C) / 2];
+    s16 t4 = lbl_8050DB0C.field_0x4c[(0xD0 - 0x4C) / 2];
+    s16 t5 = lbl_8050DB0C.field_0x4c[(0xD2 - 0x4C) / 2];
+    s16 t6 = lbl_8050DB0C.field_0x4c[(0xE2 - 0x4C) / 2];
+    s16 t7 = lbl_8050DB0C.field_0x4c[(0xD4 - 0x4C) / 2];
+    s16 t8 = lbl_8050DB0C.field_0x4c[(0xD6 - 0x4C) / 2];
+    s16 t9 = lbl_8050DB0C.field_0x4c[(0xD8 - 0x4C) / 2];
+    s16 t10 = lbl_8050DB0C.field_0x4c[(0xDE - 0x4C) / 2];
+    s16 t11 = lbl_8050DB0C.field_0x4c[(0xE0 - 0x4C) / 2];
+    field_0x84++;
+    if (field_0x84 > t0) {
+        done1 = field_0x14->fn_80402628(t1, 0, field_0x14->field_0x28);
+    }
+    if (field_0x84 > t2) {
+        done2 = field_0x24->fn_80402940(t3, 0, -250.0f, 0.0f);
+        if (field_0x2176 != 0) {
+            field_0x4c->fn_80402940(t3, 0, -200.0f, 0.0f);
+        }
+    }
+    if (field_0x84 > t4 + t5) {
+        done3 = field_0x18->fn_80402940(t6, 0, 26.0f, 0.0f);
+    } else if (field_0x84 > t4) {
+        field_0x18->fn_80402940(t5, 0, -480.0f, 26.0f);
+    }
+    for (s32 i = 0; i < 2; i++) {
+        if (field_0x84 > t7 + t9 * i) {
+            done4 = field_0x1c[i]->fn_80402940(t8, 0, 200.0f, 0.0f);
+        }
+    }
+    if (field_0x84 > t10) {
+        for (s32 i = 0; i < 8; i++) {
+            done5 = field_0x2c[i]->fn_8040271C(t11, 2.0f, 1.0f);
+            field_0x2c[i]->fn_80402628(t11, field_0x2c[i]->field_0x28, 0);
+        }
+        fn_803D49A4();
+    }
+    if (done1 && done2 && done3 && done4 && done5) {
+        field_0x216f = 3;
+        field_0x80 = 30;
+        field_0x28->mPane->show();
+        field_0x216c = field_0x216d;
+    }
+}
+
+// FIXME(shotgun): 91.71 %, missing/extra (register allocation of the loop counters)
+void cls_804B0288::fn_803D4484() {
+    s16 fadeStart = lbl_8050DB0C.field_0x4c[(0xE4 - 0x4C) / 2];
+    s16 fadeLength = lbl_8050DB0C.field_0x4c[(0xE6 - 0x4C) / 2];
+    s16 start = lbl_8050DB0C.field_0x4c[(0xE8 - 0x4C) / 2];
+    s16 length = lbl_8050DB0C.field_0x4c[(0xEA - 0x4C) / 2];
+    s16 stagger = lbl_8050DB0C.field_0x4c[(0xEC - 0x4C) / 2];
+    u8 flags[3];
+    flags[2] = 0;
+    flags[1] = 0;
+    flags[0] = 0;
+    s32 offset = 0;
+    field_0x86++;
+    if (field_0x216f == 1) {
+        for (s32 i = 0; i < 2; i++) {
+            if (field_0x86 > start + offset) {
+                flags[i] = field_0x1c[i]->fn_80402940(length, 0, 200.0f, 0.0f);
+            }
+            offset += stagger;
+        }
+        if (flags[0] && flags[1]) {
+            field_0x216f = 3;
+            field_0x80 = 30;
+            field_0x28->mPane->show();
+        }
+    } else if (field_0x216f == 2) {
+        for (s32 i = 0; i < 2; i++) {
+            if (field_0x86 > start + offset) {
+                flags[i] = field_0x1c[i]->fn_80402940(length, 0, 0.0f, 200.0f);
+            }
+            offset += stagger;
+        }
+        if (field_0x86 > start + 1) {
+            field_0x28->mPane->hide();
+            if (flags[0] && flags[1]) {
+                field_0x216f = 0;
+            }
+        }
+    } else {
+        flags[1] = 1;
+        flags[0] = 1;
+    }
+    if (field_0x86 > fadeStart) {
+        f32 ratio = (f32)(field_0x86 - fadeStart) / (f32)fadeLength;
+        field_0xc->setAlpha((s32)(255.0f * (1.0f - ratio)));
+        field_0x10->setAlpha((s32)(255.0f * ratio));
+        if (field_0x86 >= fadeLength + fadeStart) {
+            flags[2] = 1;
+        }
+    }
+    if (flags[0] && flags[1] && flags[2]) {
+        if (field_0x54 == 0x80) {
+            gAudioMgr_8053AF80->fn_80458880(0x5B, -1);
+        }
+        strcpy(field_0xc->getStringPtr(), field_0x88);
+        field_0xc->setAlpha(0xFF);
+        field_0x10->setAlpha(0);
+        field_0x216c = field_0x216d;
     }
 }
 
