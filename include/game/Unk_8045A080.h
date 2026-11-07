@@ -45,7 +45,7 @@ struct AudioMgr_8045A080 {
     /* 0x08 */ JGeometry::TVec3f field_0x8;
     /* 0x14 */ JAUSoundObject* field_0x14;    // system sounds (fn_80458880 with player < 0)
     /* 0x18 */ JAUSoundObject* field_0x18[4]; // per-player system sounds
-    /* 0x28 */ u8 field_0x28[0x2C - 0x28];
+    /* 0x28 */ JAUSoundObject* field_0x28;
     /* 0x2C */ JASAudioReseter* field_0x2c; // fn_80459AE4 news it
     /* 0x30 */ JAUSoundMgr* field_0x30; // fn_80459AE4 news it; starts the sequences (JAISoundStarter)
     /* 0x34 */ JAISeMgr* field_0x34; // its categories 0-6 are paused / faded here

@@ -1,10 +1,15 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/ActorManager.h"
+#include "Inagaki/GameSoundTable.h"
 #include "JSystem/JAudio/JAUAudioMgr.h"
+#include "JSystem/JAudio/JAUAudioArchive.h"
+#include "JSystem/JAudio/JAUInitializer.h"
 #include "JSystem/JAudio/JAUSectionHeap.h"
 #include "JSystem/JAudio/System/JASAudioReseter.h"
 #include "JSystem/JAudio/System/JASWaveArcLoader.h"
 #include "JSystem/JAudio/System/JASDriver.h"
+#include "JSystem/JAudio/System/JASDsp.h"
 #include "JSystem/JAudio/System/JASCriticalSection.h"
 #include "JSystem/JAudio/System/JASTrack.h"
 #include "JSystem/JAudio/Interface/JAISeq.h"
@@ -136,6 +141,91 @@ inline void AudioMgr_8045A080::startSecondSeq_80458F04(u32 id) {
     }
 }
 
+// 0x8045A338 / 0x8045A3D8
+// FIXME(shotgun): 99.16 %, missing/extra + reloc-name (mixChannelOut; ~cls_804B2074 is 100 %)
+class cls_804B2074 : public JAUDopplerAudience<4> {
+public:
+    cls_804B2074() {}
+    virtual ~cls_804B2074() {}
+    virtual void mixChannelOut(const JASSoundParams& params, JAIAudible* pAudible, int index) {
+        JAUDopplerAudible<4>* audible = (JAUDopplerAudible<4>*)pAudible;
+        JAUAudibleChannel* channel = audible->getChannel(index);
+        if (!channel) {
+            return;
+        }
+
+        JASSoundParams newParams;
+        if (audible->getAudibleParam()._00.bytes.b0_5) {
+            newParams.mVolume = calcVolume_(channel->dist_);
+        } else {
+            newParams.mVolume = 1.0f;
+        }
+
+        if (audible->getAudibleParam()._00.bytes.b1_1) {
+            f32 dolby;
+            if (channel->relPos_.z > this->setting_._14) {
+                dolby = this->setting_._18;
+            } else if (channel->relPos_.z < this->setting_._10) {
+                dolby = this->setting_._20;
+            } else if (channel->relPos_.z < 0.0f) {
+                dolby = this->_3c * channel->relPos_.z + this->setting_._1c;
+            } else {
+                dolby = this->_40 * channel->relPos_.z + this->setting_._1c;
+            }
+            newParams.mDolby = dolby;
+        } else {
+            newParams.mDolby = this->setting_._1c;
+        }
+
+        if (audible->getAudibleParam()._00.bytes.b1_0) {
+            if (!(audible->getAudibleParam()._00.bytes.b1_2_7 & 1) || (audible->getAudibleParam()._00.bytes.b1_2_7 & 2)) {
+                if (numPlayers_ > 2) {
+                    newParams.mPan = (index & 1) ? 1.0f : 0.0f;
+                } else {
+                    f32 pan = channel->dist_ <= JGeometry::TUtilf::epsilon() ? 0.0f : channel->relPos_.x / channel->dist_;
+                    newParams.mPan = pan * this->setting_._2c + 0.5f;
+                }
+                audible->getAudibleParam()._00.bytes.b1_2_7 |= 2;
+            } else {
+                newParams.mPan = 0.5f;
+            }
+        }
+
+        newParams.mPitch = 1.0f;
+
+        f32 fxMix;
+        if (audible->getAudibleParam()._00.bytes.b0_6) {
+            if (channel->dist_ > this->setting_._04) {
+                fxMix = this->setting_._28;
+            } else if (channel->dist_ < this->setting_._08) {
+                fxMix = this->setting_._24;
+            } else {
+                fxMix = this->_4c * (channel->dist_ - this->setting_._08) + this->setting_._24;
+            }
+        } else {
+            fxMix = 0.0f;
+        }
+        newParams.mFxMix = fxMix;
+
+        audible->getOuterParams(index)->combine(params, newParams);
+    }
+};
+
+extern f32 lbl_8053AF78;
+
+static const JASDsp::FxlineConfig_ lbl_80491600[4] = {
+    {1, 0x6000, 1, 0, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+    {1, 0, 1, 0x6000, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+    {1, 0x6000, 1, 0, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+    {1, 0, 1, 0x6000, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+};
+
+// 0x8045A0E4
+// FIXME(shotgun): 100 %
+void fn_8045A0E4(int count) {
+    JASPoolAllocObject<JAUDopplerAudible<4> >::newMemPool(count);
+}
+
 // 0x8045A0D8
 u8 fn_8045A0D8() {
     return gGameRoot_8053AAF8->field_0x96;
@@ -157,6 +247,226 @@ AudioMgr_8045A080::AudioMgr_8045A080() {
     field_0x5 = 1;
     field_0x6 = 0;
     field_0x8.set(0.0f, 0.0f, 0.0f);
+}
+
+// 0x80459AE4
+// FIXME(shotgun): 80.02 %, missing/extra + reloc-name
+void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* initData, void* seqData) {
+    JAU_JASInitializer jasInit;
+    jasInit.mChannelPoolCount = lbl_8053A228;
+    jasInit.mAudioMemSize = audioMemSize;
+    jasInit.mDSPLevel = lbl_8053A240;
+    jasInit.initJASystem(heap);
+
+    JAU_JAIInitializer jaiInit;
+    jaiInit.mSeCount = lbl_8053A220;
+    jaiInit.mSeqCount = lbl_8053A224;
+    jaiInit.initJAInterface();
+
+    field_0x2c = new (heap, 0) JASAudioReseter();
+    field_0x30 = new (heap, 0) JAUSoundMgr();
+    field_0x34 = &field_0x30->getSeMgr();
+    // FIXME(shotgun): field_0x38 = &field_0x30->mSeqMgr not written (mSeqMgr is private in libs/sdk/include/JSystem/JAudio/JAUSoundMgr.h)
+    field_0x3c = new (heap, 0) cls_804B2074();
+    field_0x3c->setting_._04 = lbl_8053A22C;
+    field_0x3c->setting_._08 = lbl_8053A230;
+    field_0x3c->setting_.minVolume = lbl_8053AF78;
+    field_0x3c->setting_._10 = lbl_8053A238;
+    field_0x3c->setting_._14 = lbl_8053A23C;
+    field_0x3c->setting_._1c = lbl_8053A234;
+    fn_8045A0E4(jaiInit.mSeCount);
+    field_0x3c->updateSetting();
+    field_0x34->setAudience(field_0x3c);
+
+    JAISeCategoryArrangement catArrangement;
+    catArrangement.mItems[0].mMaxActiveSe = 4;
+    catArrangement.mItems[0].mMaxInactiveSe = 4;
+    catArrangement.mItems[1].mMaxActiveSe = 4;
+    catArrangement.mItems[1].mMaxInactiveSe = 4;
+    catArrangement.mItems[2].mMaxActiveSe = 12;
+    catArrangement.mItems[2].mMaxInactiveSe = 12;
+    catArrangement.mItems[3].mMaxActiveSe = 12;
+    catArrangement.mItems[3].mMaxInactiveSe = 12;
+    catArrangement.mItems[4].mMaxActiveSe = 12;
+    catArrangement.mItems[4].mMaxInactiveSe = 12;
+    catArrangement.mItems[5].mMaxActiveSe = 8;
+    catArrangement.mItems[5].mMaxInactiveSe = 8;
+    catArrangement.mItems[6].mMaxActiveSe = 8;
+    catArrangement.mItems[6].mMaxInactiveSe = 8;
+    field_0x34->setCategoryArrangement(catArrangement);
+    field_0x34->getCategory(0)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(1)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(2)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(3)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(4)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(5)->getParams()->moveVolume(1.0f, 0);
+    field_0x34->getCategory(6)->getParams()->moveVolume(1.0f, 0);
+
+    JASDsp::FxlineConfig_ fxConfig[4] = {
+        {1, 0x6000, 1, 0, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+        {1, 0, 1, 0x6000, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+        {1, 0x6000, 1, 0, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+        {1, 0, 1, 0x6000, 0, 0x40, {0, 0, 0, 0, 0, 0, 0x3FFF, 0}},
+    };
+    for (u8 i = 0; i < 4; i++) {
+        s16* buf = new (heap, 0x20) s16[fxConfig[i].mBufCount * 0x50];
+        JASDsp::setFXLine(i, buf, &fxConfig[i]);
+    }
+
+    field_0x14 = new ActorSoundObj_804578F4(NULL, heap, 4);
+    for (int i = 0; i < 4; i++) {
+        field_0x18[i] = new ActorSoundObj_804578F4(NULL, heap, 4);
+    }
+    field_0x28 = new ActorSoundObj_804578F4(NULL, heap, 1);
+
+    // FIXME(shotgun): field_0x40 = new (heap, 0) GameAudio::CustomSoundTable() not written (ctor / mSoundTable private in libs/sdk/include/Inagaki/GameSoundTable.h)
+    JKRArchive* seqArc = (JKRArchive*)seqData;
+    if (seqArc == NULL) {
+        seqArc = JKRArchive::mount(lbl_8053A24C, JKRArchive::MOUNT_ARAM, heap, JKRArchive::MOUNT_DIRECTION_HEAD);
+    }
+    JASWaveArcLoader::setCurrentDir(lbl_8053A248);
+    field_0x44 = JAUNewSectionHeap(true);
+    field_0x44->setSeqDataArchive(seqArc);
+    field_0x44->newDynamicSeqBlock(0x16000);
+    field_0x44->newDynamicSeqBlock(0x16000);
+    field_0x44->newDynamicSeqBlock(0xB000);
+
+    JAUAudioArcLoader loader(field_0x44);
+    if (initData != NULL) {
+        loader.load(initData);
+    } else {
+        loader.load(lbl_8053A244);
+    }
+    field_0x34->setSeqDataMgr(field_0x44->sectionHeapData_.seSeqDataMgr_);
+    // FIXME(shotgun): field_0x38->setSeqDataMgr(field_0x44) not written (JAISeqDataMgr is a private base of JAUSectionHeap in libs/sdk/include/JSystem/JAudio/JAUSectionHeap.h)
+    // FIXME(shotgun): field_0x40->mSoundTable = &field_0x44->getSoundTable() not written (mSoundTable is private in GameSoundTable.h)
+    field_0x4c = 1.0f;
+    field_0x50 = 1.0f;
+    field_0x54 = 1.0f;
+    field_0x58 = 0;
+    field_0x5c = 0;
+    field_0x60 = 0;
+    field_0x64 = -1;
+    field_0x68 = 0;
+    field_0x89 = 0;
+    field_0x69 = 0;
+    field_0x7c = 0;
+    field_0x6a = 0;
+    field_0x88 = 0;
+    field_0x8a = 0;
+    field_0x8b = 0;
+    field_0x8c = 0;
+    field_0x8d = 0;
+    field_0x8e = 0;
+    field_0x75 = 0;
+    field_0x78 = 0;
+    fn_80458744(0);
+}
+
+// 0x80459674
+// FIXME(shotgun): 98.19 %, missing/extra + reloc-name
+void AudioMgr_8045A080::fn_80459674() {
+    if (field_0x6b != 0) {
+        field_0x6b--;
+    }
+    if (field_0x7c != 0) {
+        if (field_0x7c != 0 && field_0x2c->checkDone() != 0) {
+            field_0x30->stop();
+        }
+    }
+    if (field_0x84) {
+        field_0x54 = 0.0f;
+        if (field_0x80) {
+            field_0x80->getAuxiliary().moveVolume(field_0x4c * field_0x54, lbl_8053A250);
+        }
+    } else {
+        if (field_0x69 == 1) {
+            field_0x54 = 0.0f;
+        } else if (field_0x8b == 1) {
+            JAISoundID id = 0xFFFFFFFF;
+            if (field_0x80) {
+                id = field_0x80->getID();
+            }
+            switch (id) {
+            case 0x1000001:
+            case 0x1000002:
+            case 0x1000004:
+            case 0x100000D:
+            case 0x1000023:
+            case 0x100002D:
+                field_0x54 = 1.0f;
+                break;
+            default:
+                field_0x54 = 0.7f;
+                break;
+            }
+        } else {
+            field_0x54 = 1.0f;
+        }
+        if (field_0x80) {
+            field_0x80->getAuxiliary().moveVolume(field_0x4c * field_0x54, lbl_8053A254);
+        }
+    }
+    if (field_0x68 != 0 && field_0x64 >= 0) {
+        if ((u32)field_0x64 >= lbl_8053A25C) {
+            if (field_0x4 == 0) {
+                field_0x30->startSound(field_0x5c, &field_0x80, NULL);
+                fn_8045815C(field_0x8b);
+                switch (field_0x5c) {
+                case 0x100001A:
+                    fn_80458408(field_0x5c, false);
+                    break;
+                case 0x100000D:
+                case 0x100001C:
+                case 0x1000021:
+                case 0x1000024:
+                    field_0x4c = 1.0f;
+                    break;
+                }
+                if (field_0x80) {
+                    field_0x80->getAuxiliary().moveVolume(field_0x4c * field_0x54, 0);
+                    if (field_0x8d != 0) {
+                        field_0x80->getTrack()->writePort(0, 1);
+                    }
+                }
+            }
+            field_0x58 = field_0x5c;
+            field_0x5c = 0;
+            field_0x64 = -1;
+        } else {
+            field_0x64++;
+        }
+    }
+    field_0x30->calc();
+    field_0x30->mixOut();
+    field_0x0++;
+    if (field_0x6c != 0) {
+        field_0x6c--;
+    }
+    if (field_0x6a != 0) {
+        fn_80458880(0x48, -1);
+        field_0x6a = 0;
+    }
+    if (field_0x6d != 0 && field_0x8e == 0 && !fn_8045A0D8()) {
+        field_0x6d--;
+    }
+    if (field_0x89 != 0 && !field_0x80) {
+        field_0x89 = 0;
+    }
+    if (!field_0x80) {
+        field_0x58 = 0;
+        field_0x5c = 0;
+        field_0x60 = 0;
+    }
+    if (field_0x75 != 0) {
+        field_0x78++;
+        if (field_0x78 > 0x2D) {
+            field_0x28->startLevelSound(0x30089);
+        }
+    } else {
+        field_0x78 = 0;
+    }
+    field_0x75 = 0;
 }
 
 // 0x80459624
