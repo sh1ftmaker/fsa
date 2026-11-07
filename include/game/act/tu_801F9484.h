@@ -11,6 +11,7 @@
 #include "game/act/act_arrow.h"
 #include "game/act/act_flame.h"
 #include "game/act/act_gohma.h"
+#include "game/act/act_great_fairy_bfry.h"
 #include "game/act/act_wallmaster.h"
 #include "game/act/act_wizzrobe.h"
 #include "game/act/act_zora_fish_herder.h"
@@ -742,14 +743,6 @@ public:
     /* 0x274 */ cls_8031709C* field_0x274;
     /* 0x278 */ JPABaseEmitter* field_0x278;
 }; // Size: 0x27C
-
-// Spawned for 'BFRY'.
-class GreatFairy_804AF338 : public ActorBase_804A5770 {
-public:
-    GreatFairy_804AF338() {}
-    /* 0x08 */ virtual ~GreatFairy_804AF338();
-    /* 0x230 */ u8 field_0x230[0x78];
-}; // Size: 0x2A8
 
 // ZOSH and ARSH ("ZOSH"/"ARSH", unwritten units): sub-classes of cls_804A48B0 that only add a
 // destructor (the base destructors are inlined into it, as in cls_804A5418). Named after their
