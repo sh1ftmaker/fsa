@@ -736,6 +736,51 @@ void MapScreen_804B1288::fn_80409330() {
     }
 }
 
+// FIXME: 99.06. scheduling+regalloc: for each rotate call the original loads field_0x1c
+// before field_0x18 and multiplies the height first; ours does the width first.
+void MapScreen_804B1288::fn_80409014() {
+    field_0x422++;
+    if (field_0x422 >= 15) {
+        field_0x422 = 0;
+        if (field_0x228[0][0]->mPane->mIsVisible) {
+            field_0x228[0][0]->mPane->hide();
+            field_0x228[0][1]->mPane->show();
+            field_0x228[1][0]->mPane->hide();
+            field_0x228[1][1]->mPane->show();
+        } else {
+            field_0x228[0][0]->mPane->show();
+            field_0x228[0][1]->mPane->hide();
+            field_0x228[1][0]->mPane->show();
+            field_0x228[1][1]->mPane->hide();
+        }
+    }
+    J2DPicture* picture = (J2DPicture*)field_0x23c->mPane;
+    field_0x420++;
+    if (field_0x420 >= 180) {
+        field_0x420 = 0;
+    }
+    if (field_0x420 < 45) {
+        f32 t = (field_0x420 * field_0x420) / 2025.0f;
+        picture->setBlendRatio(1.0f - t, t, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        picture->rotate(field_0x23c->field_0x18 * 0.5f, field_0x23c->field_0x1c * 0.5f, J2DROTATE_Z, 90.0f);
+    } else if (field_0x420 < 90) {
+        s32 n = field_0x420 - 45;
+        f32 t = (n * n) / 2025.0f;
+        picture->setBlendRatio(t, 1.0f - t, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        picture->rotate(field_0x23c->field_0x18 * 0.5f, field_0x23c->field_0x1c * 0.5f, J2DROTATE_Z, 90.0f);
+    } else if (field_0x420 < 135) {
+        s32 n = field_0x420 - 90;
+        f32 t = (n * n) / 2025.0f;
+        picture->setBlendRatio(1.0f - t, t, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        picture->rotate(field_0x23c->field_0x18 * 0.5f, field_0x23c->field_0x1c * 0.5f, J2DROTATE_Z, 270.0f);
+    } else {
+        s32 n = field_0x420 - 135;
+        f32 t = (n * n) / 2025.0f;
+        picture->setBlendRatio(t, 1.0f - t, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        picture->rotate(field_0x23c->field_0x18 * 0.5f, field_0x23c->field_0x1c * 0.5f, J2DROTATE_Z, 270.0f);
+    }
+}
+
 void MapScreen_804B1288::fn_80408F38(f32 alpha) {
     for (int i = 0; i < 9; i++) {
         field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);

@@ -159,6 +159,10 @@ public:
     // colours field_0x328[3-5] / field_0x310[3-5]); the other rows get their own size,
     // place and colours [0-2]; then hangs the rows under 'Ndata01', the selected one last.
     void fn_804083D8();
+    // 0x80409014: every 15 frames swaps which pane of each field_0x228 pair is shown;
+    // cross-fades field_0x23c's picture (setBlendRatio) over a 180-frame cycle and turns
+    // it 90 / 270 degrees about its centre.
+    void fn_80409014();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -232,7 +236,9 @@ public:
     /* 0x404 */ u8 field_0x404[0x40E - 0x404];
     /* 0x40E */ s16 field_0x40e[8]; // per-stage blink counters of the Pwarea panes (fn_80408114)
     /* 0x41E */ s16 field_0x41e;
-    /* 0x420 */ u8 field_0x420[0x428 - 0x420];
+    /* 0x420 */ s16 field_0x420; // 0-179, the blend / turn cycle of field_0x23c (fn_80409014)
+    /* 0x422 */ s16 field_0x422; // blink counter of field_0x228 (fn_80409014)
+    /* 0x424 */ u8 field_0x424[0x428 - 0x424];
     /* 0x428 */ s16 field_0x428; // step of fn_8040B5A0 (0: drop in, 1: rise out)
     /* 0x42A */ s16 field_0x42a;
     /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
