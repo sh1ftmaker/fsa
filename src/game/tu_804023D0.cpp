@@ -2,6 +2,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameState.h"
 #include "game/tu_80379F84.h"
+#include "game/StageFlag.h"
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/JKernel/JKRArchive.h"
 
@@ -158,11 +159,6 @@ GameState_804B0FE0::GameState_804B0FE0() {
 
 GameState_804B0FE0::~GameState_804B0FE0() {}
 
-// GameState_804B0FE0::fn_80403514 (the stage picker over lbl_8050EC80) is not written: best attempt 66 %.
-// Two nested loops over isStageFlagSet (game/StageFlag.h) reach only 55 %: ours hoists the save row's
-// address out of the loops (the original reloads it each pass, keeping only the row index) and tests the
-// result as a bool (clrlwi.) where the original tests an int (cmpwi, as in tu_8023FBF0 fn_80254744).
-
 void GameState_804B0FE0::fn_80403680() {
     for (s32 i = 0; i < 4; i++) {
         field_0x68[i] = 0;
@@ -224,6 +220,27 @@ void GameState_804B0FE0::fn_80403680() {
     field_0x24f = 0;
     field_0x24d = 0;
     field_0x252 = 0;
+}
+
+// FIXME(shotgun): 55 %, missing/extra
+void GameState_804B0FE0::fn_80403514() {
+    field_0x118 = 0;
+    field_0x11c = 0;
+    for (s32 stage = 0; stage < 8; stage++) {
+        for (s32 sub = 0; sub < 4; sub++) {
+            if (isStageFlagSet(stage, sub) == FALSE) {
+                field_0x118 = stage;
+                field_0x11c = sub;
+                if ((field_0x118 == 0 && field_0x11c == 2) || (field_0x118 == 1 && field_0x11c == 2) ||
+                    (field_0x118 == 2 && field_0x11c == 2) || (field_0x118 == 3 && field_0x11c == 2) ||
+                    (field_0x118 == 4 && field_0x11c == 2) || (field_0x118 == 5 && field_0x11c == 2) ||
+                    (field_0x118 == 6 && field_0x11c == 2) || (field_0x118 == 7 && field_0x11c == 1)) {
+                    field_0x11c++;
+                }
+                return;
+            }
+        }
+    }
 }
 
 void fn_804034D4(s32 player, s32 value) {
@@ -322,12 +339,15 @@ s32 fn_80403070(s32 index) {
     return lbl_8048C160[index];
 }
 
-// fn_80402FBC (the player's window position store) is not written: best attempt 84 %
-// (s32 i = fn_8022F340(player); TVec3f p(pos); field_0x1c4[i].set(p.x, p.y, p.z)). The original
-// also stores a second, unread stack copy of pos and rounds z with frsp before storing it.
-
 s32 fn_8040305C(s32 index) {
     return lbl_8048C170[index];
+}
+
+// FIXME(shotgun): 74 %, missing/extra (the original also keeps a second unread stack copy of pos and rounds z with frsp)
+void fn_80402FBC(s32 player, JGeometry::TVec3f pos) {
+    s32 i = fn_8022F340(player);
+    lbl_80529DEC.field_0x1c4[i].set(pos.x, pos.y, pos.z);
+    lbl_80529DEC.field_0x236 |= 1 << fn_8022F340(player);
 }
 
 void PaneCtrl_804AF86C::setPane_80402F04(J2DPane* pane) {
