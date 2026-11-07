@@ -19,4 +19,14 @@ inline void deleteEmitter(JPABaseEmitter** emitter) {
     }
 }
 
+// The same without clearing the member: the destructors that delete the emitters of a whole
+// array (act GOAL's fn_802A64E8) and update() functions about to free the actor (lwz; bl
+// getEffectSystem; lwz 0xc; lwz; bl forceDeleteEmitter, no store of 0).
+inline void deleteEmitterKeep(JPABaseEmitter* const* emitter) {
+    if (*emitter != NULL) {
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(*emitter);
+    }
+}
+
 #endif

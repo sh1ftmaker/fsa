@@ -1,5 +1,5 @@
 #include "game/GameAudio.h"
-#include "game/EmitterDeleteKeep.h"
+#include "game/EmitterDelete.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
@@ -12,6 +12,8 @@ extern const s32 lbl_8046C658[28];
 extern const s32 lbl_8046C6C8[88];
 
 // 0x802A6600.
+// FIXME(shotgun): 71.43 %, missing/extra + reloc-name; the player-mask test needs a bool form and the
+// 1000-subtraction loop is unrolled here but not in the original
 void cls_804A7EB0::init() {
     mBox.set(-3.0f, -3.0f, 3.0f, 3.0f);
     field_0x230 = 0;
@@ -61,11 +63,11 @@ void cls_804A7EB0::init() {
 // 0x802A64E8.
 cls_804A7EB0::~cls_804A7EB0() {
     for (s32 i = 0; i < 4; i++) {
-        deleteEmitterKeep(mEmitters[0][i]);
-        deleteEmitterKeep(mEmitters[1][i]);
-        deleteEmitterKeep(mEmitters[2][i]);
-        deleteEmitterKeep(mEmitters[3][i]);
-        deleteEmitterKeep(mEmitters[4][i]);
+        deleteEmitterKeep(&mEmitters[0][i]);
+        deleteEmitterKeep(&mEmitters[1][i]);
+        deleteEmitterKeep(&mEmitters[2][i]);
+        deleteEmitterKeep(&mEmitters[3][i]);
+        deleteEmitterKeep(&mEmitters[4][i]);
     }
 }
 

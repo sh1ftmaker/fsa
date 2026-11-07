@@ -8,7 +8,7 @@
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
 #include <math.h>
-#include "game/EmitterDeleteKeep.h"
+#include "game/EmitterDelete.h"
 #include "game/act/act_fairy.h"
 #include "game/tu_803B8C74.h"
 
@@ -270,8 +270,8 @@ void Fairy_804A03B8::update() {
         field_0x278 = field_0x26c * JMath::sincosTable_.sinShort(field_0x274);
         field_0x27c = field_0x26c * JMath::sincosTable_.cosShort(field_0x274);
         if (field_0x248 > 100 || getGameView_802D6A9C()->fn_802DCD0C()) {
-            deleteEmitterKeep(mEmitter290);
-            deleteEmitterKeep(mEmitter294);
+            deleteEmitterKeep(&mEmitter290);
+            deleteEmitterKeep(&mEmitter294);
             if (gGameRoot_8053AAF8->field_0x7f == 1) {
                 lbl_8053AED0->fn_8043D67C(0x33A, 0, lbl_80529DEC.field_0x24f);
             }
@@ -327,8 +327,8 @@ void Fairy_804A03B8::update() {
         if (field_0x230 != 4) {
             if (field_0x258 == 0) {
                 if (mCounters[0] <= 0) {
-                    deleteEmitterKeep(mEmitter290);
-                    deleteEmitterKeep(mEmitter294);
+                    deleteEmitterKeep(&mEmitter290);
+                    deleteEmitterKeep(&mEmitter294);
                     mAlive = false;
                 }
             } else {
