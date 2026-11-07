@@ -135,8 +135,14 @@ public:
     void fn_803D35C4();
     void fn_803D3898();
     void fn_803D3928();
+    void fn_803D35F0();
+    void fn_803D373C();
+    void fn_803D39C8();
+    void fn_803D3B38();
+    void fn_803D3C90();
 
-    /* 0x0004 */ u8 field_0x4[0x54 - 0x4];
+    /* 0x0004 */ u8 field_0x4[0x50 - 0x4];
+    /* 0x0050 */ u32 field_0x50;
     /* 0x0054 */ s32 field_0x54; // the message the screen shows
     /* 0x0058 */ u8 field_0x58[0x7C - 0x58];
     /* 0x007C */ s32 field_0x7c; // countdown
