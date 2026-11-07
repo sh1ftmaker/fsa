@@ -6,6 +6,11 @@
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
+#include "JSystem/JMath/JMath.h"
+
+extern const s32 lbl_8053F0C0; // 12 (game/act_vaati_boss.cpp)
+extern const u8 lbl_8053F0C4;  // 0x1E
+
 
 
 // FIXME(shotgun): 80.00 %, different + reloc-name
@@ -196,6 +201,134 @@ u8 VaatiBoss_804A4958::fn_801E4094() {
     return result;
 }
 
+// vtable slot 0x5C. The bomb/player hit test: a player on the boss's layer that is inside its
+// area (and below its head) turns it towards that player; otherwise each player that hit it
+// this frame is run through fn_801F37AC.
+// FIXME(shotgun): 91.86 %, missing/extra
+u8 VaatiBoss_804A4958::fn_801E3B2C() {
+    u8 result = 0;
+    bool stateOk = true;
+    switch (mState) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+    case 0x15:
+    case 0x16:
+    case 0x17:
+    case 0x18:
+    case 0x19:
+    case 0x1A:
+        stateOk = false;
+        break;
+    }
+    if (stateOk && mState != 0x13 && (mFlags & 0x2000) && mBox.f.x - mBox.i.x > 0.0f &&
+        mBox.f.y - mBox.i.y > 0.0f) {
+        if (gGameRoot_8053AAF8->field_0x7e && !fn_801CD2F8(field_0x4) && mState != 0xB && !field_0x5d1) {
+            JGeometry::TBox2f box;
+            fn_801F31C4(&box);
+            box.i.x -= 8.0f;
+            box.i.y -= 8.0f;
+            box.f.x += 8.0f;
+            box.f.y += 8.0f;
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023F264(i) && !fn_80236B50(i) && !fn_80230188(i) && !fn_8022D75C(i) &&
+                    getPlayerLayer_8023DE58(i) == field_0x4 && fn_80235448(i) &&
+                    getPlayerPos_8023E724(i)->z <= 40.0f) {
+                    f32 limit = fn_8023E578(i)->z;
+                    if (getPlayerPos_8023E724(i)->z < limit) {
+                        const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
+                        bool inside = p->x >= box.i.x && p->y >= box.i.y && p->x < box.f.x &&
+                                      p->y < box.f.y;
+                        if (inside) {
+                            p = getPlayerPos_8023E724(i);
+                            field_0x5d1 = lbl_8053F0C4;
+                            field_0x5d2 = (s16)(JMath::atanTable_.atan2_(mPos.x - p->x, mPos.y - p->y) *
+                                                (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+                            field_0x448.fn_80217A74();
+                            startSound_801F0E34(0x40062, 0);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (fn_801CD2F8(field_0x4)) {
+            for (s32 i = 0; i < 4; i++) {
+                s32 type;
+                if (i == fn_801F285C(NULL, &type, true, i)) {
+                    const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
+                    if (fn_801F37AC(fn_8023B6CC(i), p, 2, type, i)) {
+                        result = 1;
+                        if (fn_80235448(i)) {
+                            mFlags |= 0x10000;
+                            fn_801D63D0();
+                        }
+                    }
+                }
+            }
+            if (result) {
+                field_0xf8 = 0;
+                startSound_801F0E34(0x40005, 0);
+                if (field_0x4c4.field_0x44 != 4) {
+                    field_0x4c4.fn_801D7638();
+                    new (&field_0x4c4) cls_801D7730();
+                }
+                if (mLife <= lbl_8053F0C0) {
+                    mFlags |= 0x8000;
+                    mLife = 10;
+                }
+            }
+        } else {
+            if (gGameRoot_8053AAF8->field_0x7e && mState != 0xB) {
+                return 0;
+            }
+            if (mState != 9) {
+                for (s32 i = 0; i < 4; i++) {
+                    s32 type;
+                    if (i == fn_801F285C(NULL, &type, true, i) && fn_80235448(i) &&
+                        fn_801F37AC(fn_8023B6CC(i), getPlayerPos_8023E724(i), 2, type, i)) {
+                        mFlags |= 0x10000;
+                        field_0xf8 = 0;
+                        field_0x3c.set(0.0f, 0.0f, 0.0f);
+                        mSpeed = 0.0f;
+                        field_0x52c.fn_801D6D08();
+                        field_0x448.fn_80217A74();
+                        startSound_801F0E34(0x40005, 0);
+                        if (mLife <= 0) {
+                            field_0xd8 = 16;
+                            field_0xdc = 16;
+                            fn_801D5D84(0x18);
+                            field_0x4c4.fn_801D7638();
+                            new (&field_0x4c4) cls_801D7730();
+                        } else {
+                            field_0xd8 = 0xB4;
+                            field_0xdc = 0xB4;
+                            fn_801D63D0();
+                            if (field_0x4c4.field_0x44 != 4) {
+                                field_0x4c4.fn_801D7638();
+                                new (&field_0x4c4) cls_801D7730();
+                            }
+                            if (mLife <= lbl_8053F0C0) {
+                                fn_801D5D84(10);
+                            } else {
+                                mFlags |= 0x8000;
+                            }
+                        }
+                        result = 1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
+
 u8 VaatiBoss_804A4958::fn_801E3A4C() {
     u8 result = 0;
     bool stateOk = true;
@@ -220,6 +353,52 @@ u8 VaatiBoss_804A4958::fn_801E3A4C() {
     if (stateOk && (mFlags & 0x2000) && fn_801CD2F8(field_0x4) && mBox.f.x - mBox.i.x > 0.0f &&
         mBox.f.y - mBox.i.y > 0.0f) {
         result = fn_801F2B7C(field_0x114, -1, 1);
+    }
+    return result;
+}
+
+// vtable slot 0x64. Pushes Vaati out of the map-free area when a player-sized box is inside.
+// FIXME(shotgun): 72.41 %, missing/extra + reloc-name
+u8 VaatiBoss_804A4958::fn_801E376C() {
+    u8 result = 0;
+    bool stateOk = true;
+    switch (mState) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 6:
+    case 7:
+    case 8:
+    case 0x15:
+    case 0x16:
+    case 0x17:
+    case 0x18:
+    case 0x19:
+    case 0x1A:
+        stateOk = false;
+        break;
+    }
+    if (stateOk && !(mFlags & 0x1000) && !(mFlags & 0x2000) && field_0x80.f.x - field_0x80.i.x > 0.0f &&
+        field_0x80.f.y - field_0x80.i.y > 0.0f) {
+        JGeometry::TBox2f area;
+        fn_801E4618(&area, fn_801CD2F8(field_0x4));
+        JGeometry::TBox2f box = field_0x80;
+        box.i.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.x += mPos.x;
+        box.f.y += mPos.y;
+        JGeometry::TVec2f push;
+        result = fn_801CC29C(&area, &box, &push);
+        mPos.x += push.x;
+        mPos.y += push.y;
+        if (&mMapHitDir != NULL) {
+            push.normalize();
+            mMapHitDir.x = push.x;
+            mMapHitDir.y = push.y;
+            mMapHitDir.z = 0.0f;
+        }
     }
     return result;
 }
