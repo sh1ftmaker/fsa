@@ -70,7 +70,139 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x17e = 0;
 }
 
+// The per-frame update: picks the table entry for the pending request (flags 0x178-0x17B), lets
+// fn_8030CD18 work out the target box and depth, blends towards it while a transition is armed,
+// sets the view (fn_8030CB10) and the zoom, and tells the audio manager where the camera is.
+// FIXME(shotgun): not compiled, needs fn_8030CD18 (4 KB, not written), the 0x24-byte entry table
+// at lbl_804AA8E8 and the camera-centre position the audio call takes (exact args unchecked)
+#ifdef NONMATCHING
+void Camera_804AA9E4::fn_8030E154() {
+    JGeometry::TBox2f box = field_0x154;
+    if (gGameRoot_8053AAF8->field_0x7e != 0) {
+        field_0x174 = field_0x179 != 0 ? 3 : 1;
+    } else if (field_0x179 != 0) {
+        field_0x174 = 3;
+    } else if (field_0x17a != 0) {
+        field_0x174 = 6;
+    } else if (field_0x178 != 0) {
+        field_0x174 = 2;
+    } else if (field_0x17b != 0) {
+        field_0x174 = 5;
+    } else if (field_0x7f0 == 0) {
+        field_0x174 = 4;
+    } else {
+        field_0x174 = 0;
+    }
+    field_0x179 = 0;
+    field_0x178 = 0;
+    field_0x17a = 0;
+    field_0x17b = 0;
+    if (field_0x1b4.i.x == 0.0f && field_0x1b4.i.y == 0.0f && field_0x1b4.f.x == 0.0f &&
+        field_0x1b4.f.y == 0.0f) {
+        field_0x7f5 = 0;
+    }
+    if (field_0x17c != 0) {
+        f32 w = box.f.x - box.i.x;
+        f32 h = box.f.y - box.i.y;
+        box.i.x = box.i.x - w;
+        box.i.y = box.i.y - h;
+        box.f.x = box.f.x + w;
+        box.f.y = box.f.y + h;
+    }
+    if (field_0x17d == 0) {
+        JGeometry::TBox2f target;
+        f32 depth;
+        fn_8030CD18(&box, &lbl_804AA8E8[field_0x174], &field_0x1b4, &target, &depth);
+        if (field_0x1e8 != 0) {
+            f32 t = (f32)field_0x1ec / 30.0f;
+            t = t * t;
+            f32 u = 1.0f - t;
+            target.i.x = t * target.i.x + u * field_0x1a0[0];
+            target.i.y = t * target.i.y + u * field_0x1a0[1];
+            target.f.x = t * target.f.x + u * field_0x1a0[2];
+            target.f.y = t * target.f.y + u * field_0x1a0[3];
+            depth = t * depth + u * field_0x1b0;
+            if (field_0x1ec == 0) {
+                field_0x1e8 = 0;
+                fn_8030C85C();  // the reset of the armed state (inlined in the target)
+            } else {
+                field_0x1ec--;
+            }
+        }
+        if (field_0x17e != 0) {
+            field_0x1b4.i.x = 0.0f;
+            field_0x1b4.i.y = 0.0f;
+            field_0x1b4.f.x = 0.0f;
+            field_0x1b4.f.y = 0.0f;
+            target = field_0x180;
+            depth = 0.5f * (target.i.y + target.f.y) + 3072.0f;
+            field_0x17e = 0;
+        }
+        fn_8030CB10(&target, depth);
+        field_0x858 = (f32)(s32)JUTVideo::sManager->getFbWidth() / (target.f.x - target.i.x);
+        JGeometry::TVec3f center;
+        center.set(0.5f * (target.i.x + target.f.x), 0.5f * (target.i.y + target.f.y), 0.5f * depth);
+        gAudioMgr_8053AF80->fn_80459624(&center, field_0x4, 0);
+    }
+    field_0x7f0 = 0;
+    field_0x7f4 = 0;
+    field_0x7f5 = 0;
+    field_0x840 = 0;
+    field_0x17c = 0;
+    field_0x17d = 0;
+}
+#endif
+
 void Camera_804AA9E4::fn_8030E150() {}
+
+// Loads the projection / view into the GX state (taking the pending matrices first when copy is
+// set) and sets the viewport and scissor to the screen rect.
+// FIXME(shotgun): 99.5 %, regalloc-only
+void Camera_804AA9E4::fn_8030DFE8(bool copy) {
+    if (copy) {
+        JMath::gekko_ps_copy12(field_0x74, field_0x4);
+        JMath::gekko_ps_copy16(field_0xa4, field_0x34);
+    }
+    GXSetProjection(field_0xa4, GX_ORTHOGRAPHIC);
+    GXLoadPosMtxImm(field_0x74, GX_PNMTX8);
+    GXLoadNrmMtxImm(field_0x74, GX_PNMTX8);
+    GXSetCurrentMtx(GX_PNMTX8);
+    u32 w = field_0x144.x1 - field_0x144.x0;
+    u32 h = field_0x144.y1 - field_0x144.y0;
+    GXSetViewport((f32)field_0x144.x0, (f32)field_0x144.y0, (f32)w, (f32)h, 0.0f, 1.0f);
+    GXSetScissor(field_0x144.x0, field_0x144.y0, w, h);
+    GXSetZScaleOffset(1.0f, 0.0f);
+}
+
+// The 2D view of the box: the view matrix straight into the GX one, the projection from the box's
+// size, and (when light is set) the light matrices; then the GX state of fn_8030DFE8.
+// FIXME(shotgun): 75 %, missing/extra
+void Camera_804AA9E4::fn_8030DD8C(const JGeometry::TBox2f* box, bool light) {
+    field_0x164 = *box;
+    f32 halfW = 0.5f * (box->f.x - box->i.x);
+    f32 halfH = 0.5f * (box->f.y - box->i.y);
+    f32 centerX = 0.5f * (box->i.x + box->f.x);
+    f32 centerY = 0.5f * (box->i.y + box->f.y);
+    f32 depth = 2048.0f;
+    field_0x74[0][0] = 1.0f;
+    field_0x74[0][1] = 0.0f;
+    field_0x74[0][2] = 0.0f;
+    field_0x74[0][3] = -centerX;
+    field_0x74[1][0] = 0.0f;
+    field_0x74[1][1] = 1.0f;
+    field_0x74[1][2] = -1.0f;
+    field_0x74[1][3] = -centerY;
+    field_0x74[2][0] = 0.0f;
+    field_0x74[2][1] = 1.0f;
+    field_0x74[2][2] = 0.0f;
+    field_0x74[2][3] = -depth;
+    C_MTXOrtho(field_0xa4, -halfH, halfH, -halfW, halfW, 0.0f, 4096.0f);
+    if (light) {
+        PSMTXCopy(field_0x74, field_0xe4.mCamMtx);
+        C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
+    }
+    fn_8030DFE8(false);
+}
 
 void Camera_804AA9E4::fn_8030DD68() {
     GXSetCurrentMtx(GX_PNMTX8);
@@ -86,7 +218,7 @@ void Camera_804AA9E4::fn_8030DD20(const Mtx m) {
 
 // Not inlined into its caller fn_8030E5BC in the original.
 #pragma auto_inline off
-// FIXME(shotgun): 52 %, missing/extra (the target keeps the box corners in float registers)
+// FIXME(shotgun): 70 %, missing/extra (the target keeps the box corners in float registers)
 void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     f32 halfW = 0.5f * (box->f.x - box->i.x);
     f32 halfH = 0.5f * (box->f.y - box->i.y);
@@ -108,8 +240,8 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     C_MTXOrtho(field_0x34, -halfH, halfH, -halfW, halfW, 0.0f, 1024.0f);
     PSMTXCopy(field_0x4, field_0xe4.mCamMtx);
     C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
-    PSMTXCopy(field_0x4, field_0x74);
-    memcpy(field_0xa4, field_0x34, sizeof(Mtx44));
+    JMath::gekko_ps_copy12(field_0x74, field_0x4);
+    JMath::gekko_ps_copy16(field_0xa4, field_0x34);
     field_0x164 = *box;
 }
 #pragma auto_inline reset

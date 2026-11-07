@@ -157,7 +157,8 @@ public:
     /* 0x17E */ u8 field_0x17e; // set by fn_8030C7C4
     /* 0x180 */ JGeometry::TBox2f field_0x180; // fn_8030C7C4
     /* 0x190 */ JGeometry::TBox2f field_0x190; // fn_8030C928; fn_8030C85C
-    /* 0x1A0 */ u8 field_0x1a0[0x1B4 - 0x1A0];
+    /* 0x1A0 */ f32 field_0x1a0[4]; // the box the transition leaves (fn_8030E154 blends from it)
+    /* 0x1B0 */ f32 field_0x1b0;     // and its depth
     // fn_8030C85C sets all four floats to one constant.
     /* 0x1B4 */ JGeometry::TBox2f field_0x1b4;
     /* 0x1C4 */ s32 field_0x1c4[4]; // cleared by fn_8030E5BC
