@@ -39,6 +39,18 @@ bool cls_804B1D58::fn_80453848() {
 
 cls_80453830::cls_80453830() {}
 
+// FIXME(shotgun): 0 %, not written (0xDB0 bytes; constructs TColor/cls_80453830 arrays, allocates
+// J2DScreen, calls setPriority("kk_sc_kaihuda.blo", 0x1100000, lbl_80529DEC.field_0x4c), loads
+// 4 animation loaders (fn_80403084('SCRN', ...) then J2DAnmLoaderDataBase::load/setAnimation),
+// sets up 15 field_0xc[] / 3 field_0x48[] / field_0x54[] / field_0x60[] PaneCtrl_804AF86C,
+// searches panes for color init / alpha / field_0x108[0-2], zeroes emitter arrays and flags)
+#ifdef NONMATCHING
+cls_804B1D58::cls_804B1D58() {
+    lbl_8053AF40 = this;
+    // FIXME(shotgun): not written
+}
+#endif
+
 // FIXME(shotgun): 99 %, reloc-name
 cls_804B1D58::~cls_804B1D58() {
     gAudioMgr_8053AF80->fn_80459274();
@@ -141,6 +153,26 @@ s32 fn_8044F664() {
     }
     return 9;
 }
+
+// FIXME(shotgun): 0 %, not written (0x2C48 bytes; large per-row update/state function:
+// iterates lbl_80490FC8[]-indexed panes (7 rows, field_0x138), sets colors, alphas, emitters
+// via spawnEmitter_8013CC50; several sub-states and inner loops; size too large to decode in pass)
+#ifdef NONMATCHING
+s32 cls_804B1D58::fn_8044F680() {
+    // FIXME(shotgun): not written
+    return 0;
+}
+#endif
+
+// FIXME(shotgun): 0 %, not written (0x1DD0 bytes; per-row update of the first list (field_0xf8),
+// iterates lbl_80490FC8[]-indexed panes: sets J2DPicture black/white colors from field_0x154/0x14c,
+// J2DWindow contents colors from field_0x164[], searches/spawns emitters field_0x6c[]/field_0x88[]
+// via spawnEmitter_8013CC50; inner loop over 3 items; then large unread state block)
+#ifdef NONMATCHING
+void cls_804B1D58::fn_8044D894() {
+    // FIXME(shotgun): not written
+}
+#endif
 
 // Selects row `arg` (0-3) of the second list; like fn_8044CB08, with one emitter (field_0xb0).
 // FIXME(shotgun): 67 %, missing/extra + reloc-name
