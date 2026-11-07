@@ -6,6 +6,9 @@
 #include "game/GameView.h"
 #include "game/act/tu_801286C0.h"
 #include "game/act/tu_8044C028.h"
+#include "game/ActorManager.h"
+#include "game/Effect.h"
+#include "JSystem/JUtility/JUTVideo.h"
 
 // Auto-inlining is off for the whole file (docs/INLINING.md, pragma rule 2): the
 // original inlines no same-unit plain function. Checked: built with inlining off,
@@ -21,6 +24,68 @@ const s32 lbl_80464FC0[11] = {0, 60, 60, 60, 150, 280, 340, 610, 670, 820, 880};
 // Stores the value in the byte at 0xC of gGameRoot2_8053AB10->0x2C (ShadowCircle_804A0160).
 void fn_80128C58(s32 value) {
     gGameRoot2_8053AB10->field_0x2c->field_0xc = value;
+}
+
+// FIXME(shotgun): 63.1 %, missing/extra: the camera-box centre in case 4 and the screen-centre vector of cases 5 / 7 are built differently; jump table is @NNN
+void cls_8049E500::fn_80128728(int state) {
+    switch (state) {
+    case 0:
+        fn_80119DD0()->fn_80119998(0xB4, 0, 0, 0, 0, 0, 0);
+        fn_80119DD0()->field_0x1 = 1;
+        break;
+    case 1:
+        gAudioMgr_8053AF80->fn_80458FF0(0x10002C, false, 0);
+        fn_8011921C()->fn_80118454();
+        fn_80119DD0()->field_0x1 = 0;
+        break;
+    case 3:
+        fn_80119DD0()->fn_80119998(0xB4, 0, 1, 0, 0, 0, 0);
+        fn_80119DD0()->field_0x1 = 0;
+        break;
+    case 4: {
+        gAudioMgr_8053AF80->fn_80458F9C(0x3C);
+        fn_80119DD0()->field_0x1 = 0;
+        GameView_804A9950* view = getGameView_802D6A9C();
+        JGeometry::TBox2f box = view->mVisibleBox;
+        JGeometry::TVec3f pos(0.5f * (box.f.x - box.i.x) + box.i.x, 0.5f * (box.f.y - box.i.y) + box.i.y, 0.0f);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33C, 1, 2, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33D, 1, 2, NULL, NULL, true, 1.0f);
+        break;
+    }
+    case 5:
+    case 7: {
+        GXRenderModeObj* mode = JUTVideo::getManager()->getRenderMode();
+        JGeometry::TVec3f pos(0.5f * (s32)mode->fbWidth, 0.5f * (s32)mode->efbHeight - 40.0f, 0.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_8038BD08(0, state == 5 ? 0x231 : 0x23C, field_0x4, pos, 0x62)) {
+            fn_8011921C()->fn_80118454();
+        }
+        break;
+    }
+    case 6:
+        gAudioMgr_8053AF80->fn_80458FF0(0x10001D, false, 0);
+        getActorManager_801F856C()->spawnActor_801F9484('SEV2', field_0x4, &mPos, 0x2000, -1, -1);
+        break;
+    case 8:
+        fn_80119DD0()->fn_80119998(0x10E, 0, 2, 0, 0, 0x3C, 0);
+        gAudioMgr_8053AF80->fn_80458F9C(0x96);
+        break;
+    case 9: {
+        s32 serial = getActorManager_801F856C()->fn_801F7A08('SEV2');
+        if (serial >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->fn_801F3668();
+            }
+        }
+        break;
+    }
+    case 10:
+        fn_8011921C()->fn_801184F0(false);
+        getGameView_802D6A9C()->fn_802D9FF4(2, 4);
+        getGameView_802D6A9C()->fn_802DA8DC();
+        break;
+    }
 }
 
 s32 cls_8049E500::vfunc_0x5C() {
