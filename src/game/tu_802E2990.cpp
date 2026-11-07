@@ -177,9 +177,6 @@ void cls_804A9C20::update() {
                 field_0x230 = 0;
             }
         }
-        if (field_0x230 < 0) {
-            break;
-        }
         {
             s32 downCount = 0;
             for (s32 i = 0; i < 4; i++) {

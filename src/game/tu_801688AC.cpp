@@ -92,6 +92,7 @@ static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f d, bool fas
     }
 }
 
+// NOTE: the |dx|, |dy| <= 16 tests below were read with the fabs lines filtered out of the asm dump.
 // 0x80169030. A chaser: it follows the trail of positions the player recorded, then the
 // player, and is caught by the player (state 1) or lost when it leaves the room.
 // FIXME(shotgun): 69.4 %, missing/extra + reloc-name
