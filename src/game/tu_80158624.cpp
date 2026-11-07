@@ -1,3 +1,6 @@
+// FIXME(shotgun): 99.6 %, operands -- __sinit_tu_80158624_cpp (0x80159594) is compiler-generated: it constructs the JAudio
+// memory pools that game/GameAudio.h instantiates; the .bss still differs (50 %).
+#include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameMode.h"
 #include "JSystem/JUtility/JUTTexture.h"
