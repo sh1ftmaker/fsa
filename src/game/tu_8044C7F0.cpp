@@ -40,29 +40,7 @@ cls_80453830::cls_80453830() {
 // FIXME(shotgun): 92 %, missing/extra + reloc-name
 cls_804B1D58::~cls_804B1D58() {
     gAudioMgr_8053AF80->fn_80459274();
-    for (s32 i = 0; i < 7; i++) {
-        if (field_0x6c[i] != NULL) {
-            field_0x6c[i]->field_0xf4 |= 1;
-            field_0x6c[i]->field_0x24 = 1;
-            field_0x6c[i] = NULL;
-        }
-        if (field_0x88[i] != NULL) {
-            field_0x88[i]->field_0xf4 |= 1;
-            field_0x88[i]->field_0x24 = 1;
-            field_0x88[i] = NULL;
-        }
-    }
-    for (s32 i = 0; i < 4; i++) {
-        if (field_0xb0[i] != NULL) {
-            field_0xb0[i]->field_0xf4 |= 1;
-            field_0xb0[i]->field_0x24 = 1;
-            field_0xb0[i] = NULL;
-        }
-    }
-    for (s32 i = 0; i < 3; i++) {
-        deleteEmitter(&field_0xa4[i]);
-        deleteEmitter(&field_0xc0[i]);
-    }
+    fn_8044C7F0();
     delete mScreen;
     mScreen = NULL;
     for (s32 i = 0; i < 4; i++) {
@@ -189,4 +167,32 @@ void cls_804B1D58::fn_8044C968() {
     field_0x132 = 0;
     field_0xfe = 0;
     field_0xfa = 2;
+}
+
+// Releases the item slots and deletes the emitters (the destructor inlines it).
+// FIXME(shotgun): 86 %, missing/extra (the original hoists the 1 and 0 constants out of the loop)
+void cls_804B1D58::fn_8044C7F0() {
+    for (s32 i = 0; i < 7; i++) {
+        if (field_0x6c[i] != NULL) {
+            field_0x6c[i]->field_0xf4 |= 1;
+            field_0x6c[i]->field_0x24 = 1;
+            field_0x6c[i] = NULL;
+        }
+        if (field_0x88[i] != NULL) {
+            field_0x88[i]->field_0xf4 |= 1;
+            field_0x88[i]->field_0x24 = 1;
+            field_0x88[i] = NULL;
+        }
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0xb0[i] != NULL) {
+            field_0xb0[i]->field_0xf4 |= 1;
+            field_0xb0[i]->field_0x24 = 1;
+            field_0xb0[i] = NULL;
+        }
+    }
+    for (s32 i = 0; i < 3; i++) {
+        deleteEmitter(&field_0xa4[i]);
+        deleteEmitter(&field_0xc0[i]);
+    }
 }

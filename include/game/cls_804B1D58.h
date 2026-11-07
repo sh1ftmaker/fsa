@@ -49,6 +49,9 @@ public:
     // 0x8044C968: puts the pane controls back (slid out by 300, alpha 0) and moves 'Pcul01' to the
     // row field_0xf8; state 2.
     void fn_8044C968();
+    // 0x8044C7F0: flags the item slots for release (bit 0 of 0xF4, 0x24 = 1, pointer cleared) and
+    // deletes the emitters; the destructor inlines it.
+    void fn_8044C7F0();
     // 0x80453848: bit 8 of field_0xf4 is set and field_0xd0 + field_0xdc is 0.
     bool fn_80453848();
 
