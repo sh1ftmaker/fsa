@@ -95,6 +95,7 @@ public:
     // (then mode 2); mode 2 runs fn_803D75B0.
     void fn_803D8718();
     void fn_803D75B0();
+    void fn_803D7098();
 
     /* 0x04 */ J2DScreen* field_0x4;
     /* 0x08 */ J2DScreen* field_0x8;
