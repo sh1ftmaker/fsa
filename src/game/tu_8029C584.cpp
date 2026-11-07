@@ -69,6 +69,16 @@ void UnknownFORM_804A7BE8::init() {
     }
 }
 
+UnknownFORM_804A7BE8::~UnknownFORM_804A7BE8() {
+    if (field_0x244 == 0 && field_0x240 != field_0x23c) {
+        fn_8022CA6C(field_0x90 & 3, field_0x23c, true);
+    }
+    if (gGameRoot_8053AAF8->field_0x7e == 0) {
+        gGameRoot_8053AAF8->fn_80134FE0(0);
+    }
+    fn_8022CDD4(field_0x90 & 3);
+}
+
 // Keeps x inside [lo, hi): below lo it becomes lo, from hi up it becomes hi.
 static inline void clampX(f32& x, f32 lo, f32 hi) {
     if (x < lo) {
@@ -124,14 +134,4 @@ void UnknownFORM_804A7BE8::draw() {
     } else {
         fn_80307AC8(mSerial, field_0x4, &pos, field_0x230, 1, 0, -1);
     }
-}
-
-UnknownFORM_804A7BE8::~UnknownFORM_804A7BE8() {
-    if (field_0x244 == 0 && field_0x240 != field_0x23c) {
-        fn_8022CA6C(field_0x90 & 3, field_0x23c, true);
-    }
-    if (gGameRoot_8053AAF8->field_0x7e == 0) {
-        gGameRoot_8053AAF8->fn_80134FE0(0);
-    }
-    fn_8022CDD4(field_0x90 & 3);
 }
