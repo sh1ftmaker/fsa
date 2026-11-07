@@ -1752,6 +1752,9 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
     gAudioMgr_8053AF80->fn_80458880(id, -1);
 }
 
+// FIXME(shotgun): drawSprite_801F06F0 (0x630: hit-flash colour blend on the params copy, then
+// fn_801EF830) and fn_801EFD34 (0x588, the same with a loaded resource) not written in this pass.
+
 // FIXME(shotgun): 67.5 %, missing/extra + reloc-name (params copied differently, scale literals)
 void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params,
                                      s32 flags, s32 mode, bool arg, f32 scaleX, f32 scaleY) {
