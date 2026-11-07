@@ -742,6 +742,43 @@ void MapScreen_804B1288::fn_80408F38(f32 alpha) {
     }
 }
 
+// FIXME: 90.43. Missing/extra: for the selected row's text-box move the original loads the
+// y operands (getBounds()->i.y, row[0]->field_0xc, row[2]->field_0xc) before the second
+// getBounds call and adds them after it (f29-f31 saved, five FPRs); ours computes y before
+// that call (three saved FPRs, 8 instructions fewer). Everything else is the same.
+void MapScreen_804B1288::fn_804083D8() {
+    f32 scaleX = field_0x28[0][0]->field_0x18 / 72.0f;
+    f32 scaleY = field_0x28[0][0]->field_0x1c / 36.0f;
+    field_0x42e = 30;
+    for (int i = 0; i < 8; i++) {
+        if (i == field_0x340) {
+            field_0x28[i][0]->fn_80402CE0(1.0f / scaleX, 1.0f / scaleY);
+            field_0x28[i][1]->mPane->resize(72.0f, 36.0f);
+            field_0x28[i][2]->mPane->move(
+                field_0x28[i][2]->field_0x8 + (field_0x28[i][0]->field_0x8 - field_0x28[i][0]->mPane->getBounds()->i.x),
+                field_0x28[i][2]->field_0xc + (field_0x28[i][0]->field_0xc - field_0x28[i][0]->mPane->getBounds()->i.y));
+            ((J2DPicture*)field_0x28[i][0]->mPane)->setBlackWhite(field_0x328[3], field_0x310[3]);
+            ((J2DPicture*)field_0x28[i][1]->mPane)->setBlackWhite(field_0x328[4], field_0x310[4]);
+            ((J2DTextBox*)field_0x28[i][2]->mPane)->setBlackWhite(field_0x328[5], field_0x310[5]);
+        } else {
+            field_0x28[i][0]->fn_80402CE0(1.0f, 1.0f);
+            field_0x28[i][1]->mPane->resize(field_0x28[i][1]->field_0x18, field_0x28[i][1]->field_0x1c);
+            field_0x28[i][2]->mPane->move(field_0x28[i][2]->field_0x8, field_0x28[i][2]->field_0xc);
+            ((J2DPicture*)field_0x28[i][0]->mPane)->setBlackWhite(field_0x328[0], field_0x310[0]);
+            ((J2DPicture*)field_0x28[i][1]->mPane)->setBlackWhite(field_0x328[1], field_0x310[1]);
+            ((J2DTextBox*)field_0x28[i][2]->mPane)->setBlackWhite(field_0x328[2], field_0x310[2]);
+        }
+    }
+    if (field_0x340 < 8) {
+        for (int i = 0; i < 8; i++) {
+            if (i != field_0x340) {
+                field_0x10->search('Ndata01')->appendChild(field_0x28[i][0]->mPane);
+            }
+        }
+        field_0x10->search('Ndata01')->appendChild(field_0x28[field_0x340][0]->mPane);
+    }
+}
+
 void MapScreen_804B1288::fn_80408114() {
     if (field_0x350 == 0xB || field_0x350 == 0xC || field_0x350 == 0xD) {
         for (int i = 0; i < 8; i++) {

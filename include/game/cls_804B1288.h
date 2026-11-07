@@ -154,6 +154,11 @@ public:
     // with a sine of field_0x380, and lbl_8048CB58[(field_0x380 % 40) / 10] + 0xC0 /
     // + 0xC3 16 to the left and right of it.
     void fn_80406F68(f32 x, f32 y);
+    // 0x804083D8: highlights row field_0x340 of field_0x28 (its picture scaled back by
+    // the 72 x 36 size, the second resized to 72 x 36, the text box moved with it, the
+    // colours field_0x328[3-5] / field_0x310[3-5]); the other rows get their own size,
+    // place and colours [0-2]; then hangs the rows under 'Ndata01', the selected one last.
+    void fn_804083D8();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68
@@ -231,7 +236,7 @@ public:
     /* 0x428 */ s16 field_0x428; // step of fn_8040B5A0 (0: drop in, 1: rise out)
     /* 0x42A */ s16 field_0x42a;
     /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
-    /* 0x42E */ u8 field_0x42e[0x430 - 0x42E];
+    /* 0x42E */ s16 field_0x42e; // 30 after fn_804083D8
     /* 0x430 */ s16 field_0x430; // frame of field_0x2b4's slide
     /* 0x432 */ s16 field_0x432; // frame counter of the cursor sprite (0-5999, fn_80406634)
     /* 0x434 */ s16 field_0x434;
