@@ -15,7 +15,9 @@ public:
     /* 0x0C */ virtual void init();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
-    /* 0x230 */ u8 field_0x230[0x44]; // not yet known
+    /* 0x230 */ u8 field_0x230[0x25C - 0x230]; // not yet known
+    /* 0x25C */ s32 field_0x25c; // state; act_small_key bounces off it in 0 and 2
+    /* 0x260 */ u8 field_0x260[0x274 - 0x260]; // not yet known
 }; // Size: 0x274
 
 #endif

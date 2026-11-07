@@ -8,6 +8,146 @@
 #include "game/Player.h"
 #include "game/ViewLayer.h"
 #include "game/act/act_small_key.h"
+#include "game/act/act_strange_block.h"
+#include "game/act/act_obj_lift.h"
+#include "game/act/act_seesaw_lift.h"
+
+// 0x802C52DC.
+// FIXME(shotgun): 95.50 %, missing/extra + reloc-name
+void SmallKey_804A8CD8::init() {
+    field_0x280 = field_0x90 & 0x1F;
+    field_0x27c = (field_0x90 >> 7) & 0xF;
+    field_0x278 = (field_0x90 >> 12) & 0x1F;
+    field_0x270 = (field_0x90 >> 22) & 0x1F;
+    field_0x274 = (field_0x90 >> 17) & 0x1F;
+    u32 held = (field_0x90 >> 5) & 1;
+    field_0x26c = field_0x4;
+    field_0x290 = -1;
+    field_0x28c = -1;
+    if (field_0x27c != 1) {
+        field_0xb0 = 0x20000;
+    }
+    field_0x284 = 2;
+    field_0x2b1 = 0;
+    field_0x2b5 = 0;
+    if ((field_0x90 & 0x800) == 0) {
+        field_0x230.x = mPos.x;
+        field_0x230.y = mPos.y;
+        s32 row = getGameView_802D6A9C()->field_0x18;
+        s32 col = getGameView_802D6A9C()->field_0x14;
+        field_0x238 = ((col & 0xFF) << 16) | ((field_0x280 << 24) & 0x1F000000) | ((row & 0xFF) << 8) |
+                      (field_0x4 & 0xFF);
+        field_0x23c = 0;
+    } else if (held != 0) {
+        field_0x2b5 = 1;
+    }
+    switch (field_0x27c) {
+    case 0:
+        if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
+            mAlive = false;
+            break;
+        }
+        getGameView_802D6A9C()->fn_802D7584(field_0x16c, 1);
+        field_0x240 = 2;
+        break;
+    case 1:
+        if (fn_8022F9E4(field_0x278, mSerial, false, false)) {
+            field_0x240 = 4;
+        } else {
+            field_0x240 = 8;
+            field_0x23c = field_0x278;
+        }
+        break;
+    case 2:
+        if (!getGameView_802D6A9C()->fn_802D800C(field_0x270)) {
+            field_0x240 = 0;
+        } else {
+            mAlive = false;
+        }
+        break;
+    case 3:
+        field_0x240 = 6;
+        break;
+    case 4:
+        if (!getGameView_802D6A9C()->fn_802D800C(field_0x270)) {
+            field_0x240 = 1;
+        } else {
+            mAlive = false;
+        }
+        break;
+    case 5: {
+        field_0x240 = 4;
+        field_0x2b1 = 1;
+        u32 value = (field_0x23c << 30) | (field_0x2b5 << 29) | ((field_0x280 << 24) & 0x1F000000) |
+                    (field_0x4 & 0xFF);
+        if (!getGameView_802D6A9C()->fn_802DCD0C()) {
+            s32 row = getGameView_802D6A9C()->field_0x18;
+            s32 col = getGameView_802D6A9C()->field_0x14;
+            value |= ((row & 0xFF) << 8) | ((col & 0xFF) << 16);
+        } else {
+            value = field_0x2aa << 8;
+        }
+        JGeometry::TVec2f a(field_0x230.x, field_0x230.y);
+        JGeometry::TVec2f b(mPos.x, mPos.y);
+        s32 layer = field_0x238;
+        getGameView_802D6A9C()->fn_802D6D70(a, b, value, layer);
+        break;
+    }
+    case 6:
+        if (getGameView_802D6A9C()->fn_802D7544(field_0x16c)) {
+            mAlive = false;
+            break;
+        }
+        field_0x240 = 2;
+        field_0xb0 = 0;
+        field_0x240 = 9;
+        break;
+    default:
+        field_0x240 = 2;
+        break;
+    }
+    field_0x2ad = 0xFF;
+    field_0x2b4 = 1;
+    field_0x260 = mPos;
+    field_0x26c = field_0x4;
+    if (field_0x280 == 0) {
+        mBox.i.x = -4.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 4.0f;
+        mBox.f.y = 6.0f;
+    } else if (field_0x280 == 1 || field_0x280 >= 6) {
+        mBox.i.x = -6.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 6.0f;
+    } else {
+        mBox.i.x = -8.0f;
+        mBox.i.y = -8.0f;
+        mBox.f.x = 8.0f;
+        mBox.f.y = 8.0f;
+    }
+    field_0x80.i.x = -6.0f;
+    field_0x80.i.y = -6.0f;
+    field_0x80.f.x = 6.0f;
+    field_0x80.f.y = 6.0f;
+    field_0x288 = 0;
+    field_0x2b2 = 0;
+    field_0x2b3 = 0;
+    field_0x2af = 0;
+    field_0x294 = 0;
+    field_0x2ae = 0;
+    field_0x2b0 = false;
+    field_0x2a8 = 0xFFFF;
+    field_0x298 = -1;
+    field_0x29c = -1;
+    s32 row = getGameView_802D6A9C()->field_0x18;
+    s32 col = getGameView_802D6A9C()->field_0x14;
+    field_0x2aa = (row & 0xFF) | ((col << 8) & 0xFF00);
+    field_0x2a0 = -1;
+    if (held == 0) {
+        field_0x2a4 = -1;
+    }
+}
 
 void SmallKey_804A8CD8::fn_802C5284() {
     JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
@@ -28,6 +168,130 @@ void SmallKey_804A8CD8::fn_802C2B64() {
         JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
         s32 layer = field_0x238;
         getGameView_802D6A9C()->fn_802D6C10(pos, layer);
+    }
+}
+
+// 0x802C2840.
+// FIXME(shotgun): 87.92 %, missing/extra + reloc-name
+void SmallKey_804A8CD8::fn_802C2840() {
+    s32 layer = field_0x4;
+    if (getGameView_802D6A9C()->field_0x131df[layer] != 0 || mPos.z > 2.0f || field_0x3c.z > 0.0f) {
+        field_0x298 = -1;
+        return;
+    }
+    if (field_0x280 == 0) {
+        mBox.i.x = -2.0f;
+        mBox.i.y = -3.0f;
+        mBox.f.x = 2.0f;
+        mBox.f.y = 3.0f;
+    } else if (field_0x280 == 1 || field_0x280 >= 6) {
+        mBox.i.x = -3.0f;
+        mBox.i.y = -3.0f;
+        mBox.f.x = 3.0f;
+        mBox.f.y = 3.0f;
+    } else {
+        mBox.i.x = -4.0f;
+        mBox.i.y = -4.0f;
+        mBox.f.x = 4.0f;
+        mBox.f.y = 4.0f;
+    }
+    JGeometry::TBox2f box(mBox);
+    if (field_0x280 == 0) {
+        mBox.i.x = -4.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 4.0f;
+        mBox.f.y = 6.0f;
+    } else if (field_0x280 == 1 || field_0x280 >= 6) {
+        mBox.i.x = -6.0f;
+        mBox.i.y = -6.0f;
+        mBox.f.x = 6.0f;
+        mBox.f.y = 6.0f;
+    } else {
+        mBox.i.x = -8.0f;
+        mBox.i.y = -8.0f;
+        mBox.f.x = 8.0f;
+        mBox.f.y = 8.0f;
+    }
+    box.addPos(mPos.x, mPos.y);
+    s32 viewLayer = field_0x4;
+    JGeometry::TBox2f* screen = viewLayer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+    box.addPos(-screen->i.x, -screen->i.y);
+    s32 slot = field_0x298;
+    if (slot != -1) {
+        ActorBase_804A5770* carrier = getActorManager_801F856C()->mActors[slot];
+        if (fn_802C2684(carrier, &box)) {
+            mPos.z = 0.0f;
+            JGeometry::TVec3f d = carrier->mPos - field_0x254;
+            mPos += d;
+            field_0x254 = carrier->mPos;
+            return;
+        }
+    }
+    field_0x298 = -1;
+    s32 end = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < end; i++) {
+        if (i != mSerial) {
+            ActorBase_804A5770* other = getActorManager_801F856C()->mActors[i];
+            if (fn_802C2684(other, &box)) {
+                field_0x298 = i;
+                mPos.z = 0.0f;
+                field_0x254 = other->mPos;
+            }
+        }
+    }
+}
+
+// 0x802C2684.
+// FIXME(shotgun): 91.07 %, missing/extra
+bool SmallKey_804A8CD8::fn_802C2684(ActorBase_804A5770* other, JGeometry::TBox2f* box) {
+    if (other == NULL) {
+        return false;
+    }
+    u32 id = other->mActorId;
+    if (id == ACTOR_LIFT || id == ACTOR_LIF2 || id == ACTOR_CLOD ||
+        (id == ACTOR_OBLF && static_cast<OBJLift_804ACA00*>(other)->field_0x230 != 0) ||
+        (id == ACTOR_SSLF && (static_cast<SeesawLift_804AD348*>(other)->field_0x230 & 0x7FFF) == 0)) {
+        JGeometry::TBox2f theirs(other->mBox);
+        theirs.addPos(other->mPos.x, other->mPos.y);
+        s32 layer = other->field_0x4;
+        JGeometry::TBox2f* screen = layer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+        theirs.addPos(-screen->i.x, -screen->i.y);
+        if (theirs.intersect(*box)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// 0x802C24A8.
+// FIXME(shotgun): 98.70 %, regalloc-only + reloc-name
+void SmallKey_804A8CD8::fn_802C24A8() {
+    JGeometry::TBox2f ours(mBox);
+    ours.addPos(mPos.x, mPos.y);
+    s32 serial = -1;
+    while (true) {
+        serial = getActorManager_801F856C()->fn_801F78F4('STBL', serial);
+        if (serial < 0) {
+            return;
+        }
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (other == NULL || field_0x4 != other->field_0x4) {
+            continue;
+        }
+        s32 state = static_cast<StrangeBlock_804AC2D8*>(other)->field_0x25c;
+        if (state != 0 && state != 2) {
+            continue;
+        }
+        JGeometry::TBox2f theirs(other->mBox);
+        theirs.addPos(other->mPos.x, other->mPos.y);
+        if (theirs.intersect(ours)) {
+            field_0x3c.x = -field_0x3c.x;
+            field_0x3c.y = -field_0x3c.y;
+            mPos.add(field_0x3c);
+            field_0x3c.x /= 3.0f;
+            field_0x3c.y /= 3.0f;
+            return;
+        }
     }
 }
 
@@ -80,6 +344,89 @@ bool SmallKey_804A8CD8::fn_802C2300(u8 playerBits) {
         return true;
     }
     return false;
+}
+
+// 0x802C2154.
+// FIXME(shotgun): 97.93 %, different
+bool SmallKey_804A8CD8::fn_802C2154() {
+    JGeometry::TBox2f ours(mBox);
+    ours.i.x -= 4.0f;
+    ours.i.y -= 4.0f;
+    ours.f.x += 4.0f;
+    ours.f.y += 4.0f;
+    ours.addPos(mPos.x, mPos.y);
+    s32 serial = -1;
+    while (true) {
+        serial = getActorManager_801F856C()->fn_801F78F4('WARP', serial);
+        if (serial < 0) {
+            return false;
+        }
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (other == NULL || field_0x4 != other->field_0x4) {
+            continue;
+        }
+        if ((other->field_0x90 & 0x7F) != 4) {
+            continue;
+        }
+        JGeometry::TBox2f theirs(other->mBox);
+        theirs.addPos(other->mPos.x, other->mPos.y);
+        if (theirs.intersect(ours)) {
+            field_0x2b0 = true;
+            return true;
+        }
+    }
+}
+
+// 0x802C1EC4.
+// FIXME(shotgun): 93.93 %, missing/extra + reloc-name
+void SmallKey_804A8CD8::draw() {
+    if (field_0x27c == 8 || field_0x2b4 == 0 || field_0x280 >= 16 || field_0x240 < 2) {
+        return;
+    }
+    SpriteParams_801F5AE0 params;
+    params.field_0x10.a = field_0x2ad;
+    if (field_0x294 >= 0x2BD4) {
+        if (field_0x294 & 2) {
+            params.field_0x10.a = 0;
+        }
+    } else if (field_0x294 >= 0x2B20) {
+        if (field_0x294 & 4) {
+            params.field_0x10.a = 0;
+        }
+    } else if (field_0x294 >= 0x2AA8) {
+        if (field_0x294 & 8) {
+            params.field_0x10.a = 0;
+        }
+    } else if (field_0x294 >= 0x2A30) {
+        if (field_0x294 & 0x10) {
+            params.field_0x10.a = 0;
+        }
+    }
+    if (field_0xc4) {
+        params.field_0x20 = 0;
+        params.field_0x1d = fn_8023CB24(field_0xc8) + 1;
+        params.field_0x1c = fn_8023CA88(field_0xc8);
+    } else {
+        params.field_0x1c = field_0x2ac;
+    }
+    s32 frame = field_0x280;
+    if (field_0x2ac != 0) {
+        frame += 10;
+    }
+    params.field_0x2d = 1;
+    u8 flag = field_0xc4;
+    if (field_0x240 == 7 || field_0x240 == 10 || (field_0x27c == 2 && field_0xc4 == 0)) {
+        params.field_0x1d = 7;
+        flag = 1;
+    }
+    s32 flags = 7;
+    if (field_0xc4) {
+        flags = -1;
+    }
+    fn_801F02BC("enemy_both2_sob.bin", frame + 0x2D, &params, flags, 0, flag, 1.0f, 1.0f);
+    if (field_0x240 == 7) {
+        field_0xc4 = 0;
+    }
 }
 
 void SmallKey_804A8CD8::fn_802C1DFC() {
@@ -195,3 +542,44 @@ bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 SmallKey_804A8CD8::~SmallKey_804A8CD8() {}
+
+// The key's registration with the view (fn_802D6D70): the key's value packs its mode,
+// flag, state, id and layer.
+// FIXME(shotgun): 79.96 %, missing/extra
+void SmallKey_804A8CD8::fn_802C1778() {
+    if (field_0x4 >= 8 && field_0x2a8 != 0xFFFF) {
+        bool registered = false;
+        if (fn_8022F478(field_0x23c) == true) {
+            if (fn_8023EF50(field_0x23c) == mSerial) {
+                registered = true;
+            }
+        } else if (fn_8022F478(field_0xd0) == true) {
+            if (field_0x240 == 10 && field_0xcc != 0) {
+                registered = true;
+            }
+        }
+        if (registered) {
+            JGeometry::TVec2f a(field_0x230.x, field_0x230.y);
+            JGeometry::TVec2f b(mPos.x, mPos.y);
+            u32 value = (field_0x23c << 30) | (field_0x2b5 << 29) | ((field_0x280 << 24) & 0x1F000000) |
+                        (field_0x2a8 << 8) | (field_0x4 & 0xFF);
+            s32 layer = field_0x238;
+            getGameView_802D6A9C()->fn_802D6D70(a, b, value, layer);
+            field_0x2a8 = 0xFFFF;
+        }
+    }
+}
+
+// FIXME(shotgun): 83.45 %, different
+void SmallKey_804A8CD8::fn_802C1674() {
+    if (field_0x240 == 4 && field_0xc4 == 0 && field_0x2af != 0 && field_0x2a8 != 0xFFFF) {
+        JGeometry::TVec2f a(field_0x230.x, field_0x230.y);
+        JGeometry::TVec2f b(mPos.x, mPos.y);
+        u32 value = (field_0x23c << 30) | (field_0x2b5 << 29) | ((field_0x280 << 24) & 0x1F000000) |
+                    (field_0x2a8 << 8) | (field_0x4 & 0xFF);
+        s32 layer = field_0x238;
+        getGameView_802D6A9C()->fn_802D6D70(a, b, value, layer);
+        field_0x2a8 = 0xFFFF;
+        field_0x2af = 0;
+    }
+}

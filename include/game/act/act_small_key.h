@@ -23,6 +23,15 @@ public:
     // arguments besides the key; Player_804A6F38::fn_80242560 calls them on
     // every 'KEY0' actor (fn_802C1778 also on the key a player holds).
     void fn_802C1674();
+    // 0x802C2684: whether `other` is a lift ('LIFT', 'LIF2', 'CLOD', a running 'OBLF' or 'SSLF')
+    // whose box (relative to the view) overlaps `box`.
+    bool fn_802C2684(ActorBase_804A5770* other, JGeometry::TBox2f* box);
+    // 0x802C2840: rides the lift the key stands on.
+    void fn_802C2840();
+    // 0x802C2154: whether a 'WARP' actor of state 4 on this layer overlaps the key's box (grown by 4); sets field_0x2b0.
+    bool fn_802C2154();
+    // 0x802C24A8: bounces the key off an overlapping 'STBL' actor (state 0 or 2).
+    void fn_802C24A8();
     void fn_802C1778();
     // 0x802C2BD0 (act_small_key's range): takes the key in r3, sets byte
     // 0x2B0 and passes its (0x230, 0x234) position and 0x238 to GameView's
@@ -64,21 +73,37 @@ public:
     /* 0x238 */ s32 field_0x238; // layer
     /* 0x23C */ u32 field_0x23c; // GameView_804A9950::fn_802D8328 stores the key value's top 2 bits (stw)
     /* 0x240 */ s32 field_0x240; // state; 4 is tested by act_invisible_npc_wall_tomi
-    /* 0x244 */ u8 field_0x244[0x260 - 0x244]; // not yet known
+    /* 0x244 */ u8 field_0x244[0x254 - 0x244]; // not yet known
+    /* 0x254 */ JGeometry::TVec3f field_0x254; // position of the actor carrying the key
     /* 0x260 */ JGeometry::TVec3f field_0x260; // position, set by fn_802C1D30
     /* 0x26C */ s32 field_0x26c; // layer, set by fn_802C1D30
-    /* 0x270 */ u8 field_0x270[0x280 - 0x270]; // not yet known
+    /* 0x270 */ s32 field_0x270; // spawn parameter bits 22-26
+    /* 0x274 */ s32 field_0x274; // bits 17-21
+    /* 0x278 */ s32 field_0x278; // bits 12-16
+    /* 0x27C */ s32 field_0x27c; // kind: 8 hides the key, 2 draws it as held
     /* 0x280 */ s32 field_0x280; // 6 is tested by act_magic_circle_generator fn_802E7DB8 (word compare)
-    /* 0x284 */ u8 field_0x284[0x288 - 0x284]; // not yet known
+    /* 0x284 */ s32 field_0x284;
     /* 0x288 */ s32 field_0x288; // countdown: while nonzero, vfunc_0x4C decrements it and returns 0
-    /* 0x28C */ u8 field_0x28c[0x2A0 - 0x28C]; // not yet known
+    /* 0x28C */ s32 field_0x28c;
+    /* 0x290 */ s32 field_0x290;
+    /* 0x294 */ s32 field_0x294; // a counter; its thresholds pick which of the bits 2/4/8/0x10 hides the key
+    /* 0x298 */ s32 field_0x298; // slot of the actor carrying the key, -1 for none
+    /* 0x29C */ s32 field_0x29c;
     /* 0x2A0 */ s32 field_0x2a0; // player's index (0..3, u8), set by 0x802C2300
     /* 0x2A4 */ s32 field_0x2a4; // player's index (0..3, u8), set by 0x802C2300
-    /* 0x2A8 */ u8 field_0x2a8[0x2AA - 0x2A8]; // not yet known
+    /* 0x2A8 */ u16 field_0x2a8; // 0xFFFF when nothing is registered with the view
     /* 0x2AA */ u16 field_0x2aa; // screen column in the high byte, row in the low
-    /* 0x2AC */ u8 field_0x2ac[0x2B0 - 0x2AC]; // not yet known
+    /* 0x2AC */ s8 field_0x2ac;
+    /* 0x2AD */ u8 field_0x2ad; // alpha of the draw colour
+    /* 0x2AE */ u8 field_0x2ae; // not yet known
+    /* 0x2AF */ u8 field_0x2af; // set: fn_802C1674 registers the key with the view
     /* 0x2B0 */ bool field_0x2b0; // set to true by fn_802C2BD0
-    /* 0x2B1 */ u8 field_0x2b1[0x2B8 - 0x2B1]; // not yet known
+    /* 0x2B1 */ u8 field_0x2b1;
+    /* 0x2B2 */ u8 field_0x2b2;
+    /* 0x2B3 */ u8 field_0x2b3;
+    /* 0x2B4 */ u8 field_0x2b4; // draw only while set
+    /* 0x2B5 */ u8 field_0x2b5;
+    /* 0x2B6 */ u8 field_0x2b6[2]; // not yet known
 }; // Size: 0x2B8
 
 #endif
