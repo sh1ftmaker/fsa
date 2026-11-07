@@ -4,12 +4,12 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 87.7 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.8 %, missing/extra
 // 0x800FE3EC
 bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
     field_0x0 = group;
     clear();
-    for (s32 i = 0; i < 0x31; i++) {
+    for (u32 i = 0; i < 0x31; i++) {
         field_0x4[i] = NULL;
     }
     ActorBase_804A5770* found[0x31];
