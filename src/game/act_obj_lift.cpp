@@ -87,6 +87,8 @@ void OBJLift_804ACA00::fn_803511F0() {
 }
 
 // 0x80351020.
+// Not auto-inlined: fn_80350974 calls fn_80351020 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME(shotgun): 83.88 %, missing/extra + reloc-name
 bool OBJLift_804ACA00::fn_80351020(s32 player) {
     s32 layer = field_0x4;
@@ -112,6 +114,150 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 }
 
 // 0x803506E0.
+#pragma auto_inline reset
+
+// FIXME(shotgun): 70.4 %, missing/extra + reloc-name
+s32 OBJLift_804ACA00::fn_80350974() {
+    field_0x283[0] = 0;
+    field_0x283[1] = 0;
+    field_0x283[2] = 0;
+    field_0x283[3] = 0;
+    if (field_0x230 == 7) {
+        return 0;
+    }
+    u8 onLift = 0;
+    s32 count = 0;
+    JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x258 == 4) {
+            JGeometry::TBox2f saved = field_0x80;
+            for (s32 j = 0; j < 4; j++) {
+                field_0x80 = lbl_8050ADF8[j];
+                field_0x283[i] = fn_80351020(i);
+                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                    count++;
+                    break;
+                }
+            }
+            field_0x80 = saved;
+        } else if (field_0x258 >= 0x10 && field_0x258 <= 0x14) {
+            JGeometry::TBox2f saved = field_0x80;
+            for (s32 j = 0; j < 2; j++) {
+                field_0x80 = lbl_8050AE38[(field_0x258 - 0x10) * 2 + j];
+                field_0x283[i] = fn_80351020(i);
+                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                    count++;
+                    break;
+                }
+            }
+            field_0x80 = saved;
+        } else if (field_0x258 >= 6 && field_0x258 <= 9) {
+            bool hit = fn_80351020(i);
+            field_0x283[i] = hit;
+            if (i == field_0x258 - 6) {
+                field_0x280 = hit;
+            }
+        } else {
+            field_0x283[i] = fn_80351020(i);
+            if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                count++;
+            }
+        }
+    }
+
+    if (field_0x258 >= 6 && field_0x258 <= 9) {
+        push = field_0x3c;
+    } else if (field_0x230 == 1 || field_0x230 == 3 ||
+               ((field_0x258 == 5 || field_0x258 == 0xC) && PSVECMag(&field_0x3c) > 0.0f)) {
+        push = field_0x3c;
+    } else if (field_0x230 == 5) {
+        push.y = 0.1f;
+    } else if (field_0x230 == 6) {
+        push.y = -0.1f;
+    }
+
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x283[i] == 1 && (fn_80230188(i) || fn_8022CCAC(i))) {
+            onLift = 1;
+        }
+    }
+
+    if (field_0x258 == 5 && count == 0) {
+        f32 dx = mPos.x - mSpawnPos.x;
+        f32 dy = mPos.y - mSpawnPos.y;
+        if (dx * dx + dy * dy > 8.0f) {
+            field_0x250++;
+            if (field_0x250 > 0xF0) {
+                s32 layer = field_0x4;
+                if (layer >= 8) {
+                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                    field_0x28c = 1.0f;
+                } else {
+                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
+                }
+                mPos.x = mSpawnPos.x;
+                mPos.y = mSpawnPos.y;
+                mPos.z = mSpawnPos.z;
+                field_0x28c = 0.0f;
+                layer = field_0x4;
+                if (layer >= 8) {
+                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                    field_0x28c = 1.0f;
+                } else {
+                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
+                }
+                startSound_801F0E34(0x30003, 0);
+            }
+        } else {
+            field_0x250 = 0;
+        }
+    } else {
+        field_0x250 = 0;
+    }
+    field_0x288 = onLift;
+
+    if (field_0x289 == 1) {
+        for (s32 i = 0; i < 4; i++) {
+            if (field_0x283[i] == 0) {
+                s32 layer = getPlayerLayer_8023DE58(i);
+                if ((u16)fn_8022461C(getPlayerPos_8023E724(i), layer) == 0) {
+                    field_0x289 = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f && field_0x288 == 0) {
+            if (push.x * push.x + push.y * push.y + push.z * push.z > 32.0f * FLT_EPSILON) {
+                bool apply = false;
+                if (!fn_8022F478(i)) {
+                    apply = true;
+                } else {
+                    if (field_0x283[fn_8022F3DC(i)] == 1 && (fn_8022CAF8(i) == 5 || fn_8022CAF8(i) == 4)) {
+                        apply = true;
+                    } else if (fn_80235580(i)) {
+                        apply = true;
+                    }
+                }
+                if (apply) {
+                    if (field_0x289 == 1 && field_0x258 != 5 && field_0x258 != 0xC &&
+                        !(field_0x258 >= 6 && field_0x258 <= 9)) {
+                        fn_8023DEDC(i, &push);
+                    } else {
+                        fn_8023DEDC(i, &push);
+                        for (s32 k = 0; k < 3; k++) {
+                            fn_8022CB94(i);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return count;
+}
+
 // FIXME(shotgun): 92.65 %, missing/extra + reloc-name
 s32 OBJLift_804ACA00::fn_803506E0() {
     static JGeometry::TVec2f lbl_8050AED8[4] = {

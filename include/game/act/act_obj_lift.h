@@ -28,6 +28,8 @@ public:
     s32 fn_803506E0();
     // 0x803502CC: moves the lift's box by the push and tests it against the map.
     bool fn_803502CC();
+    // 0x80350974: the players on / pushing the lift; returns how many stand on it.
+    s32 fn_80350974();
     // 0x803511F0: respawns the lift at its spawn position (with an effect when it was far away).
     void fn_803511F0();
     /* 0x230 */ s32 field_0x230; // act_small_key rides it while nonzero
@@ -36,7 +38,7 @@ public:
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;
-    /* 0x250 */ u8 field_0x250[4]; // not yet known
+    /* 0x250 */ s32 field_0x250; // frames away from the spawn position (fn_80350974)
     /* 0x254 */ s32 field_0x254;
     /* 0x258 */ s32 field_0x258; // state
     /* 0x25C */ u8 field_0x25c[4]; // not yet known
@@ -48,9 +50,14 @@ public:
     /* 0x274 */ s32 field_0x274; // pushing player
     /* 0x278 */ u8 field_0x278[4]; // not yet known
     /* 0x27C */ s32 field_0x27c;
-    /* 0x280 */ u8 field_0x280[2]; // not yet known
+    /* 0x280 */ u8 field_0x280;
+    /* 0x281 */ u8 field_0x281;
     /* 0x282 */ u8 field_0x282;
-    /* 0x283 */ u8 field_0x283[9]; // not yet known
+    /* 0x283 */ u8 field_0x283[4]; // per player: hit by / standing on the lift (fn_80350974)
+    /* 0x287 */ u8 field_0x287;
+    /* 0x288 */ u8 field_0x288;
+    /* 0x289 */ u8 field_0x289;
+    /* 0x28A */ u8 field_0x28a[2]; // not yet known
     /* 0x28C */ f32 field_0x28c;
     /* 0x290 */ f32 field_0x290;
     /* 0x294 */ u8 field_0x294[0xC]; // not yet known
