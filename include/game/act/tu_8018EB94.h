@@ -10,6 +10,11 @@ class cls_804A1FA0 : public ActorBase_804A5770 {
 public:
     cls_804A1FA0() {}
     /* 0x08 */ virtual ~cls_804A1FA0();
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    // Slot 0x44: stops the three emitters and forgets them.
+    /* 0x44 */ virtual void vfunc_0x44();
     /* 0x230 */ u8 field_0x230[0x58];
     /* 0x288 */ JGeometry::TVec3f field_0x288[6];
     /* 0x2D0 */ JGeometry::TVec3f field_0x2d0[20];
