@@ -149,6 +149,109 @@ void TennisShop_804A2BF4::update() {
     }
 }
 
+// FIXME(shotgun): 37.7 %, missing/extra + reloc-name (skeleton: the state machine, the ball-hit search (fn_801F2740, fn_801F285C,
+// fn_801F2B7C), the bounce and the hit counters are written; the pane-colour part of the selection screen
+// and the pause-menu branch of states 0xE / 0xF are approximated)
+void TennisShop_804A2BF4::fn_801A0F90() {
+    bool grounded = false;
+    mPos.x += field_0x3c.x;
+    mPos.y += field_0x3c.y;
+    mPos.z += field_0x3c.z;
+    gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+    switch (field_0x230) {
+    case 0xE:
+        field_0x230 = 0xF;
+        // fall through
+    case 0xF:
+        if (field_0x3c.x == 0.0f && field_0x3c.y == 0.0f) {
+            if (mPos.z <= 0.0f) {
+                startSound_801F0E34(0x3004C, 0);
+                mPos.z = 0.0f;
+                field_0x3c.z = 5.0f;
+            } else {
+                field_0x3c.z -= 0.5f;
+            }
+        } else {
+            field_0x3c.z -= 0.5f;
+        }
+        break;
+    case 0x10: {
+        if (mPos.z <= 0.0f) {
+            startSound_801F0E34(0x3004C, 0);
+            mPos.z = 0.0f;
+            field_0x3c.z = 3.0f;
+        } else {
+            field_0x3c.z -= 0.3f;
+        }
+        addCalc2_801F71A4(&mPos.z, 16.0f, 0.3f, 2.0f);
+        if (field_0x238[1] == 0) {
+            mBox.i.x = -4.0f;
+            mBox.i.y = -4.0f;
+            mBox.f.x = 4.0f;
+            mBox.f.y = 4.0f;
+            if (fn_801F2740(-1)) {
+                s32 player = 0;
+                if (field_0x264 != player && field_0x264 != fn_8022F3DC(player)) {
+                    break;
+                }
+                if (fn_801F2B7C(0, -1, 1)) {
+                    startSound_801F0E34(0x3004D, 0);
+                    grounded = true;
+                    lbl_8053ABC5 = 1;
+                }
+            }
+        }
+        break;
+    }
+    case 0x11:
+        addCalc2_801F71A4(&field_0x340, 0.0f, 0.5f, 5.0f);
+        if (mPos.z <= 0.0f) {
+            startSound_801F0E34(0x3004C, 0);
+            mPos.z = 0.0f;
+            field_0x3c.z = 3.0f;
+        } else {
+            field_0x3c.z -= 0.5f;
+        }
+        if (field_0x238[1] != 0 && field_0x340 < 1.0f) {
+            mAlive = false;
+        }
+        break;
+    }
+    if (field_0x230 != 0x11) {
+        if ((mLife == 0 || grounded) || fn_801F6758(&mPos, field_0x4, 20.0f)) {
+            field_0x238[1] = 50;
+            if (mLife != 0) {
+                s32 serial = field_0x320;
+                if (serial >= 0) {
+                    ActorBase_804A5770* shop = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (shop != NULL) {
+                        // the shop keeper counts the missed ball for the player
+                        field_0x268 = field_0x264;
+                    }
+                }
+                field_0x3c.x *= -0.5f;
+                field_0x3c.y *= -0.5f;
+                field_0x3c.z = 3.0f;
+                startSound_801F0E34(0x3004D, 0);
+                lbl_8053ABC0 = 1;
+                field_0x230 = 0x11;
+            }
+        }
+    }
+    if (field_0x238[0] > 0) {
+        field_0x238[0]--;
+    }
+    if (field_0x238[1] > 0) {
+        field_0x238[1]--;
+    }
+    if (field_0x238[2] > 0) {
+        field_0x238[2]--;
+    }
+    if (field_0x238[3] > 0) {
+        field_0x238[3]--;
+    }
+}
+
 // FIXME(shotgun): 85.9 %, missing/extra
 void TennisShop_804A2BF4::fn_801A0BE4() {
     mPos.x += field_0x3c.x;
