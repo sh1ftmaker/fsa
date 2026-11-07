@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/BgRewrite.h"
 #include "game/Effect.h"
@@ -117,6 +118,70 @@ void BgRewrite_804A7C98::fn_802A381C(const JGeometry::TVec3f* pos, s32 layer, u1
     JGeometry::TVec2f p(pos->x, pos->y);
     s32 cell = fn_80226BC4(&p, layer & 0xFE);
     gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, tile);
+}
+
+// FIXME(shotgun): 99.1 %, scheduling+regalloc
+bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
+    JGeometry::TVec2f p(pos->x, pos->y);
+    field_0x20 = fn_80226BC4(&p, layer);
+    field_0x24 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, field_0x20);
+    bool result = true;
+    if (field_0x24 >= 0x40 && field_0x24 <= 0x44) {
+        if (field_0x24 == 0x41) {
+            gBgRewrite_8053AC98->fn_802A3884(pos, 0, layer, 0x12);
+            s32 count = getActorManager_801F856C()->mActorEnd;
+            for (s32 i = 0; i < count; i++) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+                if (actor != NULL && actor->mActorId == 'TBO2' && layer == actor->field_0x4) {
+                    JGeometry::TVec3f actorPos = actor->mPos;
+                    JGeometry::TVec2f q(actorPos.x, actorPos.y);
+                    if (field_0x20 == fn_80226BC4(&q, layer)) {
+                        actor->fn_801F3668();
+                        break;
+                    }
+                }
+            }
+        } else if (field_0x24 == 0x43) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x50);
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x11);
+        }
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('TUBO', layer, pos, field_0x24 - 0x40, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else if (field_0x24 >= 0x45 && field_0x24 <= 0x49) {
+        if (field_0x24 == 0x46) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x14);
+        } else if (field_0x24 == 0x48) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x52);
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x15);
+        }
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('TUBO', layer, pos, field_0x24 - 0x45, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else if (field_0x24 == 0x4E) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x11);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('TUBO', layer, pos, 0x80, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else if (field_0x24 == 0x4F) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x11);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('TUBO', layer, pos, 0x100, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else {
+        result = false;
+    }
+    return result;
 }
 
 // FIXME(shotgun): 99.5 %, regalloc-only
@@ -249,6 +314,176 @@ bool BgRewrite_804A7C98::fn_802A1490(const JGeometry::TVec3f* pos) {
         return true;
     }
     return false;
+}
+
+// FIXME(shotgun): 99.0 %, 3 opcodes differ (literal pool order)
+void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
+    JGeometry::TVec2f p(pos->x, pos->y);
+    field_0x20 = fn_80226BC4(&p, 0);
+    field_0x24 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(0, field_0x20);
+    u16 tile = field_0x24;
+    if (tile == 0x69 || tile == 0x68 || tile == 0x75 || (u16)(tile - 0x6A) <= 1 || tile == 0x82 || tile == 0x5F ||
+        (u16)(tile - 0x70) <= 3 || (u16)(tile - 0x40) <= 4 || tile == 0xE5) {
+        switch (tile) {
+        case 0x72:
+        case 0x73:
+        case 0x82: {
+            if (tile == 0x72 || tile == 0x73) {
+                gBgRewrite_8053AC98->fn_802A3948(pos, 0, 0, 0x7C);
+            } else {
+                gBgRewrite_8053AC98->fn_802A3948(pos, 0, 0, 0x83);
+            }
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('STON', 0, pos, 0, -1, -1);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->vfunc_0x24();
+            }
+            break;
+        }
+        case 0x5F: {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, 0, 0x83);
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('YASI', 0, pos, 0, -1, -1);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->vfunc_0x24();
+            }
+            break;
+        }
+        case 0xE5:
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, 0, 0x9D);
+            spawnEmitter_8013CC50(0, pos, 0xF9, 1, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(0, pos, 0xFA, 1, 0, NULL, NULL, true, 1.0f);
+            field_0x4->startSound(0x50045);
+            break;
+        }
+    }
+}
+
+// FIXME(shotgun): 97.8 %, 2 more insns (register copies)
+s32 BgRewrite_804A7C98::fn_802A02A8(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
+    JGeometry::TVec2f p(pos->x, pos->y);
+    field_0x20 = fn_80226BC4(&p, layer);
+    field_0x24 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, field_0x20);
+    s32 kind = -1;
+    s32 code = 0x79;
+    switch (field_0x24) {
+    case 0x69:
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7A);
+        fn_80230FD0(player, 0x20007);
+        gAudioMgr_8053AF80->fn_80458880(3, -1);
+        return 0;
+    case 0x16:
+    case 0x17:
+        if (fn_802A0800(player, layer) == true) {
+            return 0x25;
+        }
+        return -1;
+    case 0x68:
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x12);
+        fn_80230FD0(player, 0x20007);
+        return 0;
+    case 0x70:
+        kind = 0;
+        break;
+    case 0x75:
+        kind = 1;
+        break;
+    case 0x6A:
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x50);
+        fn_80230FD0(player, 0x20007);
+        return 0;
+    case 0x6B:
+        kind = 3;
+        break;
+    case 0x72:
+    case 0x82:
+        kind = 5;
+        if (field_0x24 == 0x72) {
+            code = 0x7C;
+        } else {
+            code = 0x83;
+        }
+        break;
+    case 0x5F:
+        kind = 0x27;
+        code = 0x83;
+        break;
+    case 0x71:
+        kind = 7;
+        code = 0x7B;
+        break;
+    case 0x40:
+        kind = 0x18;
+        code = 0x11;
+        break;
+    case 0x41:
+        kind = 0x19;
+        code = 0x12;
+        break;
+    case 0x42:
+        kind = 0x1A;
+        code = 0x11;
+        break;
+    case 0x43:
+        kind = 0x1B;
+        code = 0x50;
+        break;
+    case 0x44:
+        kind = 0x1C;
+        code = 0x11;
+        break;
+    case 0x45:
+        kind = 0x1D;
+        code = 0x15;
+        break;
+    case 0x46:
+        kind = 0x1E;
+        code = 0x14;
+        break;
+    case 0x47:
+        kind = 0x1F;
+        code = 0x15;
+        break;
+    case 0x48:
+        kind = 0x20;
+        code = 0x52;
+        break;
+    case 0x49:
+        kind = 0x21;
+        code = 0x15;
+        break;
+    case 0x4E:
+        kind = 0x22;
+        code = 0x11;
+        break;
+    case 0x4F:
+        kind = 0x23;
+        code = 0x11;
+        break;
+    }
+    if (kind == -1 || kind == 0x25 || kind == 0xC) {
+        return kind;
+    }
+    if (kind == 0x19) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, code);
+        fn_80230FD0(player, 0x20007);
+        s32 count = getActorManager_801F856C()->mActorEnd;
+        for (s32 i = 0; i < count; i++) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == 'TBO2' && layer == actor->field_0x4) {
+                JGeometry::TVec3f actorPos = actor->mPos;
+                JGeometry::TVec2f q(actorPos.x, actorPos.y);
+                if (field_0x20 == fn_80226BC4(&q, layer)) {
+                    actor->fn_801F3668();
+                    break;
+                }
+            }
+        }
+    } else {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, code);
+        fn_80230FD0(player, 0x20007);
+    }
+    return kind;
 }
 
 bool BgRewrite_804A7C98::fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
