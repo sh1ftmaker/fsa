@@ -69,8 +69,6 @@ bool Boulder_8049C4C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return fn_802265DC(pos, layer, false);
 }
 
-void BoulderSpawner_8049C46C::draw() {}
-
 // FIXME(shotgun): 99 %, reloc-name
 void BoulderSpawner_8049C46C::init() {
     field_0x230 = field_0x90;
@@ -82,5 +80,7 @@ void BoulderSpawner_8049C46C::init() {
         field_0x234 = (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     }
 }
+
+void BoulderSpawner_8049C46C::draw() {}
 
 BoulderSpawner_8049C46C::~BoulderSpawner_8049C46C() {}
