@@ -84,8 +84,13 @@ public:
     bool fn_801D95F4();
     // 0x801D9960: counts the throw timers down and starts the next state.
     void fn_801D9960();
-    // 0x801DE12C (game/tu_801DD1AC.cpp, not written yet).
+    // 0x801DE12C (game/tu_801DD1AC.cpp): sets the hit box (mBox, copied to mBox2) from the state and the sequencer.
     void fn_801DE12C();
+    // 0x801DDBE4 (game/tu_801DD1AC.cpp): the contact check against the actor fn_801F82CC finds in the
+    // box; true when a hit landed.
+    bool fn_801DDBE4();
+    // 0x801DD410 (game/tu_801DD1AC.cpp): the player contact check; true when a hit landed.
+    bool fn_801DD410();
     // 0x801DE018 (game/tu_801DD1AC.cpp): in states 4-7, if a player is inside the box around mPos
     // (-40..40, -16..50), switches to state 5; true when it did.
     bool fn_801DE018();
