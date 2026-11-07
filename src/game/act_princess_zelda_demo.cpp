@@ -10,6 +10,7 @@
 #include "game/Player.h"
 #include "game/GameRootSub20.h"
 #include "game/SpriteParams.h"
+#include "game/RotMatrix.h"
 #include "JSystem/JMath/JMath.h"
 
 // FIXME(shotgun): 63.6 %, missing/extra
@@ -662,7 +663,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
 
 // The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
 // FIXME(shotgun): 61 %, missing/extra + reloc-name
-void fn_8010F668(Mtx m, const Vec* axis, f32 rad) {
+void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
     f32 sq = axis->x * axis->x + axis->y * axis->y + axis->z * axis->z;
     f32 x;
     f32 y;
@@ -695,12 +696,12 @@ void fn_8010F668(Mtx m, const Vec* axis, f32 rad) {
 }
 
 // Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
-// FIXME(shotgun): 69 %, different + reloc-name
+// FIXME(shotgun): 85 %, missing/extra + reloc-name
 void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
     field_0x268[0] += 0.01f;
     Mtx mtx;
     PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
-    Vec axisX = {1.0f, 0.0f, 0.0f};
+    JGeometry::TVec3f axisX(1.0f, 0.0f, 0.0f);
     fn_8010F668(mtx, &axisX, 0.08726646f);
     Mtx rot;
     for (s32 i = 0; i < 3; i++) {
@@ -708,7 +709,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
             rot[i][j] = 0.0f;
         }
     }
-    Vec axisZ = {0.0f, 0.0f, 1.0f};
+    JGeometry::TVec3f axisZ(0.0f, 0.0f, 1.0f);
     fn_8010F668(rot, &axisZ, field_0x268[0]);
     PSMTXConcat(mtx, rot, mtx);
     field_0x240++;
