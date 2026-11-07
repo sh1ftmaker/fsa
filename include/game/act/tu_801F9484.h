@@ -580,12 +580,24 @@ public:
     /* 0x288 */ u8 field_0x288[0x70];
 }; // Size: 0x2F8
 
-// Spawned for 'SWDL'.
+// Spawned for 'SWDL'. Code: game/act_player_sword_level_check_npc.cpp.
+class ActorSoundObj_804578F4;
 class PlayerSwordLevelCheckNPC_804AA590 : public ActorBase_804A5770 {
 public:
     PlayerSwordLevelCheckNPC_804AA590() {}
     /* 0x08 */ virtual ~PlayerSwordLevelCheckNPC_804AA590();
-    /* 0x230 */ u8 field_0x230[0x44];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    // 0x802F032C: empty.
+    /* 0x20 */ virtual void draw();
+    /* 0x230 */ ActorSoundObj_804578F4* mSoundObj;
+    /* 0x234 */ JPABaseEmitter* mEmitters[4];
+    /* 0x244 */ s32 field_0x244;
+    /* 0x248 */ u8 field_0x248[0x258 - 0x248];
+    /* 0x258 */ s32 field_0x258;
+    /* 0x25C */ s32 field_0x25c;
+    /* 0x260 */ u8 field_0x260[4];
+    /* 0x264 */ s32 field_0x264[4];
 }; // Size: 0x274
 
 // Spawned for 'TWTG'.

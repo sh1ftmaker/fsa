@@ -2,7 +2,6 @@ unit	family	function	class	vtable	src_before	hdr_before
 act_great_fairy_bfry	sinit	__sinit_act_great_fairy_bfry_cpp	-	-	new	-
 act_knight_of_hyrule	dtor	__dt__23KnightOfHyrule_804AABA8Fv	KnightOfHyrule_804AABA8	0x804AABA8	new	new
 act_knight_of_hyrule	sinit	__sinit_act_knight_of_hyrule_cpp	-	-	new	new
-act_player_sword_level_check_npc	sinit	__sinit_act_player_sword_level_check_npc_cpp	-	-	new	-
 act_trick_floor	dtor	__dt__19TrickFloor_804A83A0Fv	TrickFloor_804A83A0	0x804A83A0	new	new
 act_trick_floor	sinit	__sinit_act_trick_floor_cpp	-	-	new	new
 act_trick_floor_2	dtor	__dt__20TrickFloor2_804AA628Fv	TrickFloor2_804AA628	0x804AA628	new	new
