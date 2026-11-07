@@ -4,8 +4,100 @@
 #include "game/tu_80215A94.h"
 #include "game/tu_801ED3DC.h"
 #include "game/tu_803B8C74.h"
+#include "game/GameView.h"
+#include "game/Player.h"
+#include <float.h>
 
 static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
+
+// Moves v toward target by 1/d of the way (all the way once d is below epsilon).
+static inline void stepToward(f32& v, f32 target, f32 d) {
+    if (d >= FLT_EPSILON) {
+        v += (1.0f / d) * (target - v);
+    } else {
+        v = target;
+    }
+}
+
+// The body both paths of fn_802162B8 run (the original has it twice). flag is &entry->mFlag8:
+// flag[2] is the frame countdown, and the cls_8021BFA8 of the entry sits 4 bytes after it.
+static inline void fn_802162B8_loop(u8* flag, s32 id, s32 key) {
+    s32 player = id;
+    if (fn_8022F514(player)) {
+        player = fn_8022F3DC(player);
+    }
+    u16 effect = fn_8023CBC0(player);
+    f32 yTarget = 16.0f * (17.5f + key);
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8022E438(i, id)) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(id);
+            if (key < 0) {
+                fn_80230498(i, &pos, effect, 0xFF, -0x80, -0x80, true);
+            } else if (flag[2] == 30) {
+                fn_80230498(i, &pos, effect, 0xFF, -0x80, -0x80, true);
+            } else {
+                GameView_804A9950* view = getGameView_802D6A9C();
+                f32 d = flag[2];
+                stepToward(pos.x, 32.0f + view->mVisibleBox.i.x, d);
+                stepToward(pos.y, view->mVisibleBox.i.y + yTarget, d);
+                stepToward(pos.z, 0.0f, d);
+                // FIXME: the signature is pinned by the symbol (u8*), so the entry's
+                // cls_8021BFA8 is reached from the flag pointer.
+                cls_8021BFA8* c = (cls_8021BFA8*)(flag + 4);
+                fn_80230498(i, &pos, c->field_0x0 + 0x33A, 0xFF, -0x80, -0x80, true);
+            }
+        }
+    }
+}
+
+// FIXME(shotgun): 85.1 %, missing/extra + reloc-name
+void fn_802162B8(u8* flag, s32 id, s32 key) {
+    if (flag[0]) {
+        if (flag[2]) {
+            ((cls_8021BFA8*)(flag + 4))->fn_8021BFA8();
+            flag[2]--;
+            if (flag[2]) {
+                fn_802162B8_loop(flag, id, key);
+            }
+        }
+    } else if (flag[1]) {
+        if (fn_802308E0(id)) {
+            flag[0] = 1;
+            flag[1] = 0;
+            flag[2] = 30;
+            fn_802162B8_loop(flag, id, key);
+        }
+    }
+}
+
+// FIXME(shotgun): 96.9 %, missing/extra
+void cls_80216238::fn_80216238() {
+    field_0xc.fn_8021C00C();
+    mFlag8 = 0;
+    mFlag9 = 0;
+    mFlagA = 0;
+    field_0xc.fn_8021C00C();
+    mWatch.fn_801ED80C();
+    mId = 0;
+    mKey = -1;
+    mFlag8 = 0;
+    mFlag9 = 0;
+    mFlagA = 0;
+    field_0xc.fn_8021C00C();
+    mWatch.fn_801ED7F0();
+}
+
+// FIXME(shotgun): 55.0 %, missing/extra + reloc-name; the original builds the entries with __construct_array(fn_80216238), which
+// needs a constructor on cls_80216238 (not added: it would make the horse-race man's inline
+// constructor build its table member).
+cls_80215E48* fn_80216178(cls_80215E48* table) {
+    table->mCount = gGameRoot_8053AAF8->fn_80138A30();
+    for (s32 i = 0; i < 4; i++) {
+        table->mEntries[i].fn_80216238();
+    }
+    table->fn_802160F4();
+    return table;
+}
 
 void cls_80215E48::fn_802160F4() {
     for (s32 i = 0; i < mCount; i++) {

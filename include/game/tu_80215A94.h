@@ -22,6 +22,9 @@ struct cls_80216238 {
     /* 0x18 */ cls_801ED3DC mWatch;
     // 0x80215E18: fn_802162B8(&mFlag8, mId, mKey).
     void fn_80215E18();
+    // 0x80216238: the entry's constructor (the original passes it to __construct_array); resets
+    // the entry twice over, to the state fn_802160F4 sets.
+    void fn_80216238();
 }; // Size: 0x24
 
 // The table the horse-race man keeps at 0x2B8. No vtable, ctor or dtor
@@ -86,7 +89,7 @@ void fn_802162B8(u8* flag, s32 id, s32 key);
 // the horse-race man's constructor (game/act_horse_race_man.cpp) on its 0x2B8
 // member. Stores the player count (fn_80138A30) as the entry count.
 extern "C" {
-void fn_80216178(cls_80215E48* table);
+cls_80215E48* fn_80216178(cls_80215E48* table);
 }
 
 #endif
