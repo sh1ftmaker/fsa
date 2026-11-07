@@ -172,6 +172,29 @@ void cls_804A5568::fn_801E8C74(s32 arg) {
     mBox.f.y += off.y;
 }
 
+// Draws one strip of the chain (two vertices) at `center`, from angle `ang` to `ang + span`, `a` and
+// `b` scaling the texture coordinate.
+// FIXME(shotgun): 69 %, missing/extra + reloc-name
+void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 span) {
+    static f32 sZ = -256.0f;
+    f32 h = 0.5f * (f32)(s32)(ang + span);
+    s16 half = (s16)(h + (h > 0.0f ? 0.5f : -0.5f));
+    f32 v = a * (1.0f / (4.0f * b));
+    s16 delta = half - ang;
+    f32 s0 = JMath::sincosTable_.sinShort(ang);
+    f32 c0 = JMath::sincosTable_.cosShort(ang);
+    f32 scale = 2.0f * (1.0f / JMath::sincosTable_.cosShort(delta));
+    s16 perp = -(s16)(delta - 0x4000);
+    f32 s2 = JMath::sincosTable_.sinShort(perp);
+    f32 c2 = JMath::sincosTable_.cosShort(perp);
+    f32 dx = (s0 * c2 - c0 * s2) * scale;
+    f32 dy = (s0 * s2 + c0 * c2) * scale;
+    GXPosition3f32(center->x + dx, sZ + (center->y + dy), sZ);
+    GXTexCoord2f32(1.0f, v);
+    GXPosition3f32(center->x + -dx, sZ + (center->y + -dy), sZ);
+    GXTexCoord2f32(0.0f, v);
+}
+
 // FIXME(shotgun): 99.20 %, reloc-name
 void cls_804A5568::fn_801E801C() {
     static f32 sZ = -256.0f;
