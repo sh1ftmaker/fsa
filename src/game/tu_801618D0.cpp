@@ -9,7 +9,7 @@ static const f32 lbl_804A0410[8] = {-80.0f, -40.0f, 80.0f, -40.0f, -80.0f, 40.0f
 
 // FIXME(shotgun): table not written out (gate.py literal tripwire); 8 colour sets of three
 // RGBA colours (96 bytes), then the three texture names; extern-declared, size from symbols.txt.
-extern const u8 lbl_804661E0[0x94];
+extern const JUtility::TColor lbl_804661E0[24];
 
 // A flag of the ghost's attacks, .sbss at 0x8053AB58.
 s32 lbl_8053AB58;
@@ -99,14 +99,14 @@ void cls_804A0440::init() {
 }
 
 // 0x80161F98.
-// FIXME(shotgun): 58.56 %, missing/extra + reloc-name
+// FIXME(shotgun): 62.92 %, missing/extra
 void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
     if (field_0x2ec != set) {
         if (field_0x2ec < 0) {
-            const u32* row = (const u32*)(lbl_804661E0 + set * 12);
-            field_0x2f4[0] = JUtility::TColor(row[0]);
-            field_0x2f4[1] = JUtility::TColor(row[1]);
-            field_0x2f4[2] = JUtility::TColor(row[2]);
+            const JUtility::TColor* row = lbl_804661E0 + set * 3;
+            field_0x2f4[0] = row[0];
+            field_0x2f4[1] = row[1];
+            field_0x2f4[2] = row[2];
         }
         field_0x2ec = set;
         if (field_0x2f0 < 0) {
@@ -117,12 +117,12 @@ void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
     } else if (field_0x2f0 > 0) {
         f32 weight = 1.0f / field_0x2f0;
         for (s32 i = 0; i < 3; i++) {
-            u8* c = &field_0x2f4[i].r;
-            const u8* target = lbl_804661E0 + set * 12 + i * 4;
-            c[0] = (u8)((f32)c[0] * (1.0f - weight) + weight * (f32)target[0]);
-            c[1] = (u8)((f32)c[1] * (1.0f - weight) + weight * (f32)target[1]);
-            c[2] = (u8)((f32)c[2] * (1.0f - weight) + weight * (f32)target[2]);
-            c[3] = (u8)((f32)c[3] * (1.0f - weight) + weight * (f32)target[3]);
+            JUtility::TColor& c = field_0x2f4[i];
+            const JUtility::TColor& target = lbl_804661E0[set * 3 + i];
+            c.r = (u8)((f32)c.r * (1.0f - weight) + weight * (f32)target.r);
+            c.g = (u8)((f32)c.g * (1.0f - weight) + weight * (f32)target.g);
+            c.b = (u8)((f32)c.b * (1.0f - weight) + weight * (f32)target.b);
+            c.a = (u8)((f32)c.a * (1.0f - weight) + weight * (f32)target.a);
         }
         field_0x2f0--;
     }
