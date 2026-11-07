@@ -142,6 +142,8 @@ public:
     void fn_803D3C90();
     void fn_803D3D50();
     void fn_803D3EC8();
+    void fn_803D4068();
+    void fn_803D4298();
     void fn_803D49A4();
     void fn_803D4DB0();
 
