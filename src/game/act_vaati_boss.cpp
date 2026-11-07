@@ -321,7 +321,10 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
         fn_801E4618(&box, fn_801CD2F8(field_0x5fc));
         field_0x600.x = (box.f.x - box.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.x;
         field_0x600.y = (box.f.y - box.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.y;
-        fn_801E44CC(&box, &field_0x600, NULL);
+        JGeometry::TVec2f spot(field_0x600.x, field_0x600.y);
+        fn_801E44CC(&box, &spot, NULL);
+        field_0x600.x = spot.x;
+        field_0x600.y = spot.y;
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
         field_0x3c.x = 0.0f;

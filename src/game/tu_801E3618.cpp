@@ -54,7 +54,7 @@ void VaatiBoss_804A4958::fn_801E4618(JGeometry::TBox2f* out, bool region) {
 }
 
 // FIXME(shotgun): 78.23 %, missing/extra + reloc-name
-bool VaatiBoss_804A4958::fn_801E44CC(const JGeometry::TBox2f* area, JGeometry::TVec3f* pos, JGeometry::TVec3f* outDir) {
+bool VaatiBoss_804A4958::fn_801E44CC(const JGeometry::TBox2f* area, JGeometry::TVec2f* pos, JGeometry::TVec3f* outDir) {
     JGeometry::TBox2f box;
     box.i.x = field_0x80.i.x + pos->x;
     box.i.y = field_0x80.i.y + pos->y;
