@@ -3,8 +3,7 @@
 #include "game/Player.h"
 #include "game/GameGlobals.h"
 
-// FIXME(shotgun): not written (size 0x410): fn_8028DDD8
-// FIXME(shotgun): not written (size 0x16A4): update (0x8028E1EC)
+// FIXME(shotgun): update (0x8028E1EC) is a skeleton under NONMATCHING below
 
 // FIXME(shotgun): 98.6 %, reloc-name
 void cls_804A7A68::init() {
@@ -41,6 +40,88 @@ void cls_804A7A68::init() {
     field_0x234 = 0;
     field_0x268 = 0xFF;
 }
+
+#ifdef NONMATCHING
+// 0x8028E1EC.
+// FIXME(shotgun): not compiled, skeleton of the 0x16A4-byte cutscene sequencer: the state
+// switch, the per-player loops and the real calls are here, the conditions and the per-variant
+// (field_0x90 & 0xF, 0-7) positions are not.
+void cls_804A7A68::update() {
+    switch (field_0x230) {
+    case 0: {
+        s32 ready = 0;
+        for (s32 i = 0; i < 4; i++) {
+            // players that are on this layer, alive and standing inside the box count
+        }
+        if (gGameRoot_8053AAF8->fn_80138A30() <= ready) {
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023ED8C(i)) {
+                    fn_80230C6C(i);
+                }
+            }
+            s32 order[4];
+            fn_8028DDD8(order);
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023F264(i)) {
+                    getPlayerPos_8023E724(i);
+                    fn_80230AD4(i);
+                    switch (field_0x90) {
+                    case 5:
+                        fn_80230BF4(i, 2);
+                        break;
+                    case 6:
+                        fn_80230BF4(i, 0);
+                        break;
+                    case 7:
+                        fn_80230BF4(i, 1);
+                        break;
+                    default:
+                        fn_80230BF4(i, 3);
+                        break;
+                    }
+                    fn_80230FD0(i, 0x20000);
+                    fn_802303FC(i, NULL, field_0x268 != 0);
+                }
+            }
+            field_0x230 = 1;
+        }
+        break;
+    }
+    case 1:
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023F264(i)) {
+                // walk the player to its slot: fn_8022E088(i, direction, &target)
+                fn_802303FC(i, NULL, field_0x268 != 0);
+            }
+        }
+        if (field_0x234 >= (field_0x90 >= 4 ? 0x28 : 0x40)) {
+            field_0x230 = 2;
+        }
+        break;
+    case 2:
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_80230188(i)) {
+                getPlayerPos_8023E724(i);
+                fn_8023CBC0(i);
+                fn_80230498(i, NULL, 0, 0xFF, 0, 0, true);
+                fn_80230BF4(i, 2);
+            }
+        }
+        getGameView_802D6A9C()->fn_802D9FF4(0, 0);
+        // the same for the remaining variants of field_0x90 (0-7)
+        break;
+    case 4:
+        fn_80231368();
+        for (s32 i = 0; i < 4; i++) {
+            if (fn_8023F264(i)) {
+                fn_8022CA6C(i, 5, false);
+                fn_80230224(i, 0);
+            }
+        }
+        break;
+    }
+}
+#endif
 
 // 0x8028DDD8. Orders the players for the four marker slots: out[] gets the player indices
 // sorted by their x (y for the vertical variants 6 and 7), grouped by team for two players.
