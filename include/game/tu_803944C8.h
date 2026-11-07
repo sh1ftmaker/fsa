@@ -6,6 +6,7 @@
 // window object cls_804AF5A0 (game/Message.h) owns them; only the members the
 // unit's functions touch are declared.
 
+#include <string.h>
 #include "game/Message.h"
 #include "JSystem/JMessage/TProcessor.h"
 #include "JSystem/JUtility/JUTFont.h"
@@ -77,6 +78,28 @@ public:
     // same nouns as cls_804AF774::fn_803A2CB0; singular when count is 1) to
     // the current line, like do_character. Called by the do_tag (0x803997B8).
     void fn_80398700(u8 noun, s32 count);
+    // 0x80398A34: adds the width of a number's characters to the current line (like do_character).
+    void fn_80398A34(s32 number);
+    // 0x80398EF4: the width of a time (minutes' seconds') added to the current line.
+    void fn_80398EF4(s32 minutes, s32 seconds);
+    // 0x8039934C: the same, leaving out the minutes when they are 0 (clamped to 99'59'').
+    void fn_8039934C(s32 minutes, s32 seconds);
+    // Inlined: the seconds' mark is a doubled apostrophe, one character twice as wide.
+    void addSecondsMarkWidth(f32 ratio) {
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry('\'', &width);
+        field_0x4c[field_0x201] += 2.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 6.0f;
+        field_0x22d[field_0x201]++;
+    }
+    // Inlined: the width of one character, scaled by `ratio`, added to the current line.
+    void addCharWidth(f32 ratio, int c) {
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(c, &width);
+        field_0x4c[field_0x201] += ratio * (field_0x44 * (s32)width.w1);
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+    }
 
     // Inlined by cls_804AF72C::do_begin (its body is under NONMATCHING; the four window getters are read
     // first, last argument first, then the four stores); no out-of-line copy.
@@ -85,6 +108,17 @@ public:
         field_0x1ec = b;
         field_0x1e0 = c;
         field_0x1e4 = d;
+    }
+
+    // Whether bit `index` (0..63) of the two mask words at 0x3C / 0x40 is set.
+    int isMasked(int index) const {
+        if (index < 32) {
+            return ((u64)(u32)field_0x3c & (u64)(s64)(1 << index)) ? 1 : 0;
+        }
+        if (index < 64) {
+            return ((u64)(u32)field_0x40 & (u64)(s64)(1 << (index - 32))) ? 1 : 0;
+        }
+        return 0;
     }
 
     // The font do_character measures with (getCellWidth, getWidthEntry).
@@ -139,6 +173,32 @@ public:
     virtual void do_reset();
     virtual void do_begin(const void*, const char*);
     virtual void do_end();
+    // 0x8039D0DC: records the current slot's offset and line count, then the value.
+    void fn_8039D0DC(u8 value);
+    // 0x8039D30C: the same for the text buffer, as -2 marked control bytes.
+    void fn_8039D30C(u8 value);
+    // 0x8039F540: lays one character of the message out in the line buffers (handles the newline,
+    // the leading offset, two-byte characters).
+    void fn_8039F540(int c);
+    // 0x8039CDF8: places a picture (field_0x68 entry) in the first free slot.
+    void fn_8039CDF8(u8 value);
+    // 0x8039C9A0: writes a number's digits (with a leading '-', and a colour-code offset first).
+    void fn_8039C9A0(s32 number);
+    // 0x8039C630: appends a counted noun (the nouns of fn_803A2CB0), singular when count is 1.
+    void fn_8039C630(u8 noun, s32 count);
+    // 0x8039C258: the same number as fn_8039C9A0, as glyph codes in the first line buffer.
+    void fn_8039C258(s32 number);
+    // Inlined: appends a glyph code (two bytes) to the first line buffer.
+    void appendGlyph(u16 glyph) {
+        field_0x2c0[field_0x2d0++] = glyph >> 8;
+        field_0x2c0[field_0x2d0++] = glyph;
+    }
+    // Inlined: appends a short text to both line buffers.
+    void appendText(const char* text, int length = 1) {
+        strcat((char*)field_0x2c0, text);
+        strcat((char*)field_0x2c4, text);
+        field_0x2d0 += length;
+    }
 
     // Destroyed by the destructor at 0x38 (vtable 0x804AF6E4 stored there).
     /* 0x038 */ cls_804AF6E4 field_0x38;

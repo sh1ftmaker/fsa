@@ -89,6 +89,20 @@ static const SjisGlyph_80475830 lbl_80475830[317] = {
     {0x0079, 0x3980}, {0x007A, 0x39A0}, {0x002E, 0x39C0}, {0x0027, 0x39E0}, {0x002B, 0x0000}, {0x0028, 0x0020},
     {0x0029, 0x0040}, {0x003A, 0x0060}, {0x0025, 0x0080}, {0x0022, 0x3CA0}, {0xFFFF, 0xFFFF},
 };
+// The buffers fn_8039F540 / fn_8039C9A0 format the colour code "\033CR[%d]" into.
+static char lbl_8050E518[16];
+static char lbl_8050E528[16];
+
+// The glyph of a character in the text-image font (the space's when it has none).
+static inline u16 findGlyph(u16 code) {
+    for (int i = 0; lbl_80475830[i].code != 0xFFFF; i++) {
+        if (code == lbl_80475830[i].code) {
+            return lbl_80475830[i].glyph;
+        }
+    }
+    return 0x1420;
+}
+
 static const u8 lbl_80475D24[32] = {
     0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x13, 0x11, 0x10, 0x12, 0x14, 0x16,
     0x19, 0x25, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x00, 0x00,
@@ -559,6 +573,387 @@ void cls_804AF72C::do_end() {
     field_0x2c0[field_0x2d0++] = -2;
 }
 
+// FIXME(shotgun): 99.55 %, regalloc-only
+void cls_804AF72C::fn_8039C9A0(s32 number) {
+    bool started = false;
+    bool negative = false;
+    if (number < 0) {
+        number *= -1;
+        negative = true;
+    }
+    if (field_0x2d6 != 0) {
+        s32 index = field_0x2cc;
+        if (!field_0x38.isMasked(index)) {
+            if (!(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                f32 base;
+                f32 pos;
+                if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+                    base = field_0x2d8->field_0xe8;
+                    pos = field_0x38.field_0x4c[index];
+                } else {
+                    base = field_0x2d8->field_0xf0;
+                    pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+                }
+                s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
+                if (offset > 0) {
+                    snprintf(lbl_8050E528, 15, "\033CR[%d]", offset);
+                    strcat((char*)field_0x2c0, lbl_8050E528);
+                    strcat((char*)field_0x2c4, lbl_8050E528);
+                    field_0x2d0 += strlen(lbl_8050E528);
+                }
+            }
+            field_0x2d6 = 0;
+        }
+    }
+    char ch[3];
+    ch[2] = 0;
+    ch[1] = 0;
+    ch[0] = 0;
+    if (negative) {
+        ch[0] = '-';
+        appendText(ch);
+    }
+    s32 digit = number / 10000;
+    number %= 10000;
+    if (digit != 0) {
+        ch[0] = digit + '0';
+        started = true;
+        appendText(ch);
+    }
+    digit = number / 1000;
+    number %= 1000;
+    if (digit != 0 || started) {
+        ch[0] = digit + '0';
+        started = true;
+        appendText(ch);
+    }
+    digit = number / 100;
+    number %= 100;
+    if (digit != 0 || started) {
+        ch[0] = digit + '0';
+        started = true;
+        appendText(ch);
+    }
+    digit = number / 10;
+    number %= 10;
+    if (digit != 0 || started) {
+        ch[0] = digit + '0';
+        appendText(ch);
+    }
+    ch[0] = number + '0';
+    appendText(ch);
+}
+
+// FIXME(shotgun): 99.11 %, reloc-name
+void cls_804AF72C::fn_8039C630(u8 noun, s32 count) {
+    switch (noun) {
+    case 1:
+        if (count == 1) {
+            appendText(" Force Gem", 10);
+        } else {
+            appendText(" Force Gems", 11);
+        }
+        break;
+    case 2:
+        if (count == 1) {
+            appendText(" Cucco", 6);
+        } else {
+            appendText(" Cuccos", 6);
+        }
+        break;
+    case 3:
+        if (count == 1) {
+            appendText(" baddy", 6);
+        } else {
+            appendText(" baddies", 8);
+        }
+        break;
+    case 4:
+        if (count == 1) {
+            appendText(" time", 5);
+        } else {
+            appendText(" times", 6);
+        }
+        break;
+    case 5:
+        if (count == 1) {
+            appendText(" system", 7);
+        } else {
+            appendText(" systems", 8);
+        }
+        break;
+    case 6:
+        if (count == 1) {
+            appendText(" thief", 6);
+        } else {
+            appendText(" thieves", 8);
+        }
+        break;
+    case 7:
+        if (count == 1) {
+            appendText(" mole", 5);
+        } else {
+            appendText(" moles", 6);
+        }
+        break;
+    case 8:
+        if (count == 1) {
+            appendText(" return", 7);
+        } else {
+            appendText(" returns", 8);
+        }
+        break;
+    case 9:
+        if (count == 1) {
+            appendText(" Force Fairy", 7);
+        } else {
+            appendText(" Force Fairies", 8);
+        }
+        break;
+    }
+}
+
+// FIXME(shotgun): 97.05 %, scheduling+regalloc
+void cls_804AF72C::fn_8039C258(s32 number) {
+    bool started = false;
+    if (number < 0) {
+        number *= -1;
+        appendGlyph(findGlyph('-'));
+    }
+    s32 digit = number / 10000;
+    number %= 10000;
+    if (digit != 0) {
+        started = true;
+        appendGlyph(findGlyph(digit + '0'));
+    }
+    digit = number / 1000;
+    number %= 1000;
+    if (digit != 0 || started) {
+        started = true;
+        appendGlyph(findGlyph(digit + '0'));
+    }
+    digit = number / 100;
+    number %= 100;
+    if (digit != 0 || started) {
+        started = true;
+        appendGlyph(findGlyph(digit + '0'));
+    }
+    digit = number / 10;
+    number %= 10;
+    if (digit != 0 || started) {
+        appendGlyph(findGlyph(digit + '0'));
+    }
+    appendGlyph(findGlyph(number + '0'));
+}
+
+// FIXME(shotgun): 98.29 %, scheduling+regalloc
+void cls_804AF72C::fn_8039CDF8(u8 value) {
+    if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+        strcat((char*)field_0x2c0, "  ");
+        strcat((char*)field_0x2c4, "  ");
+        field_0x2d0 += 4;
+    } else {
+        field_0x2d5++;
+        return;
+    }
+    s32 index = field_0x2cc;
+    s32 offset = 0;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        f32 base;
+        f32 pos;
+        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+            base = field_0x2d8->field_0xe8;
+            pos = field_0x38.field_0x4c[index];
+        } else {
+            base = field_0x2d8->field_0xf0;
+            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+        }
+        offset = (s32)((base - pos) * 0.5f + 0.5f);
+    }
+    cls_804AF5A0* window = field_0x2d8;
+    u8 slot = field_0x2d5;
+    f32 x = (f32)offset + field_0x38.field_0x19c[slot + 3];
+    f32 y = (f32)(field_0x38.field_0x1ee[slot + 3] - (s8)field_0x38.field_0x202[window->field_0x15c] - 1);
+    for (int i = 0; i < 12; i++) {
+        if (window->field_0x68[i]->field_0x8 == 0xFF) {
+            window->field_0x68[i]->field_0x0 = x;
+            window->field_0x68[i]->field_0x4 = y;
+            window->field_0x68[i]->field_0x8 = value;
+            break;
+        }
+    }
+    field_0x2d5++;
+}
+
+// FIXME(shotgun): 99.03 %, different (the text pointer is formed before the clearing store)
+void cls_804AF72C::fn_8039F540(int c) {
+    char* text = field_0x2d8->field_0x3ab;
+    field_0x2d8->field_0x3ab[0] = 0;
+    if (field_0x2d8->field_0x1aa == 0) {
+        char newline[2];
+        newline[1] = 0;
+        if (c == '\n') {
+            field_0x2cc++;
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
+                field_0x2d6 = 1;
+                newline[0] = c;
+                strcat((char*)field_0x2c0, newline);
+                strcat((char*)field_0x2c4, newline);
+                field_0x2d0++;
+            }
+        }
+        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+            if (field_0x2d6 != 0) {
+                s32 index = field_0x2cc;
+                cls_804AF5A0* window = field_0x2d8;
+                if (!field_0x38.isMasked(index) && !(window->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                    f32 base;
+                    f32 pos;
+                    if (!(window->field_0x3b8->field_0x28 & 0x40)) {
+                        base = window->field_0xe8;
+                        pos = field_0x38.field_0x4c[index];
+                    } else {
+                        base = window->field_0xf0;
+                        pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+                    }
+                    s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
+                    if (offset > 0) {
+                        snprintf(lbl_8050E518, 15, "\033CR[%d]", offset);
+                        strcat((char*)field_0x2c0, lbl_8050E518);
+                        strcat((char*)field_0x2c4, lbl_8050E518);
+                        field_0x2d0 += strlen(lbl_8050E518);
+                    }
+                }
+                field_0x2d6 = 0;
+            }
+            if (c == '\n') {
+                return;
+            }
+            s32 length = 0;
+            s8 high = c >> 8;
+            if (high != 0) {
+                field_0x2d0++;
+                c &= 0xFF;
+                length = 1;
+                text[0] = high;
+            }
+            field_0x2d0++;
+            text[length] = c;
+            s32 shown = field_0x2d0 - (length + 1);
+            if (shown != field_0x2d8->field_0x170) {
+                field_0x2d8->field_0x170 = shown;
+            }
+            strcat((char*)field_0x2c0, text);
+            strcat((char*)field_0x2c4, text);
+        }
+    } else if (c == '\n') {
+        field_0x2cc++;
+        if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] + 1) {
+            field_0x2c0[field_0x2d0++] = -1;
+            field_0x2c0[field_0x2d0++] = -0x10;
+            field_0x2d6 = 1;
+        }
+    } else if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+        if (field_0x2d6 != 0) {
+            s32 index = field_0x2cc;
+            if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                s32 offset = 0x1C - (s8)field_0x38.field_0x22d[index];
+                if (offset > 0 && offset < 0x1C) {
+                    field_0x2c0[field_0x2d0++] = -1;
+                    field_0x2c0[field_0x2d0++] = offset + 0xD0;
+                }
+            }
+            field_0x2d6 = 0;
+        }
+        appendGlyph(findGlyph(c));
+    }
+}
+
+// FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)
+void cls_804AF72C::fn_8039D30C(u8 value) {
+    s32 index = field_0x2cc;
+    s32 offset = 0;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        offset = (0x1C - (s8)field_0x38.field_0x22d[index]) / 2;
+    }
+    switch (field_0x2d4) {
+    case 0: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4];
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0x20 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x1f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    case 1: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x40;
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0x60 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x5f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    case 2: {
+        field_0x2c0[field_0x2d0++] = -2;
+        field_0x2c0[field_0x2d0++] = offset + (s8)field_0x38.field_0x1fe[field_0x2d4] + 0x80;
+        field_0x2c0[field_0x2d0++] = -2;
+        cls_804AF5A0* window = field_0x2d8;
+        if (window->field_0x1a1 != 0) {
+            u8 lines = field_0x38.field_0x1ee[field_0x2d4];
+            s8 first = field_0x38.field_0x202[window->field_0x15c];
+            if (lines - first == 1) {
+                field_0x2c0[field_0x2d0++] = lines + 0xa0 - first;
+                break;
+            }
+        }
+        field_0x2c0[field_0x2d0++] = field_0x38.field_0x1ee[field_0x2d4] + 0x9f - (s8)field_0x38.field_0x202[window->field_0x15c];
+        break;
+    }
+    }
+    field_0x2d8->field_0x3b2[field_0x2d4] = value;
+    field_0x2d4++;
+}
+
+// FIXME(shotgun): 82.41 %, different (schedule of the window load / int conversion)
+void cls_804AF72C::fn_8039D0DC(u8 value) {
+    s32 offset = 0;
+    s32 index = field_0x2cc;
+    if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+        f32 base;
+        f32 pos;
+        if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+            base = field_0x2d8->field_0xe8;
+            pos = field_0x38.field_0x4c[index];
+        } else {
+            base = field_0x2d8->field_0xf0;
+            pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+        }
+        offset = (s32)((base - pos) * 0.5f + 0.5f);
+    }
+    cls_804AF5A0* window = field_0x2d8;
+    u8 slot = field_0x2d4;
+    window->field_0x124[slot] = (f32)offset + field_0x38.field_0x19c[slot];
+    window->field_0x130[slot] = (f32)(field_0x38.field_0x1ee[slot] - field_0x38.field_0x202[window->field_0x15c] - 1);
+    field_0x2d8->field_0x3b2[field_0x2d4] = value;
+    field_0x2d4++;
+}
+
 // FIXME: 93.34. scheduling (+ the unsplit 0.0f literal): the original
 // interleaves the field_0x1fe stores and field_0x1fd with the first three
 // iterations of the unrolled 15-entry loop.
@@ -613,6 +1008,89 @@ void cls_804AF6E4::do_character(int c) {
         field_0xf4[field_0x201] += 3.0f;
         field_0x22d[field_0x201]++;
     }
+}
+
+// FIXME(shotgun): 99.75 %, reloc-name
+void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    if (minutes > 0) {
+        if (minutes > 99) {
+            minutes = 99;
+            seconds = 59;
+        }
+        s32 digit = minutes / 10;
+        s32 ones = minutes % 10;
+        if (digit > 0) {
+            addCharWidth(ratio, digit + '0');
+        }
+        addCharWidth(ratio, ones + '0');
+        addCharWidth(ratio, '\'');
+    }
+    if (seconds > 59) {
+        seconds = 59;
+    }
+    s32 digit = seconds / 10;
+    s32 ones = seconds % 10;
+    if (digit > 0 || minutes > 0) {
+        addCharWidth(ratio, digit + '0');
+    }
+    addCharWidth(ratio, ones + '0');
+    addSecondsMarkWidth(ratio);
+}
+
+// FIXME(shotgun): 98.68 %, scheduling+regalloc
+void cls_804AF6E4::fn_80398EF4(s32 minutes, s32 seconds) {
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    if (minutes > 99) {
+        minutes = 99;
+    }
+    s32 digit = minutes / 10;
+    minutes %= 10;
+    if (digit > 0) {
+        addCharWidth(ratio, digit + '0');
+    }
+    addCharWidth(ratio, minutes + '0');
+    addCharWidth(ratio, '\'');
+    if (seconds > 99) {
+        seconds = 99;
+    }
+    addCharWidth(ratio, seconds / 10 + '0');
+    addCharWidth(ratio, seconds % 10 + '0');
+    addSecondsMarkWidth(ratio);
+}
+
+// FIXME(shotgun): 99.79 %, reloc-name
+void cls_804AF6E4::fn_80398A34(s32 number) {
+    bool started = false;
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    if (number < 0) {
+        number *= -1;
+        addCharWidth(ratio, '-');
+    }
+    s32 digit = number / 10000;
+    number %= 10000;
+    if (digit != 0) {
+        started = true;
+        addCharWidth(ratio, digit + '0');
+    }
+    digit = number / 1000;
+    number %= 1000;
+    if (digit != 0 || started) {
+        started = true;
+        addCharWidth(ratio, digit + '0');
+    }
+    digit = number / 100;
+    number %= 100;
+    if (digit != 0 || started) {
+        started = true;
+        addCharWidth(ratio, digit + '0');
+    }
+    digit = number / 10;
+    number %= 10;
+    if (digit != 0 || started) {
+        addCharWidth(ratio, digit + '0');
+    }
+    addCharWidth(ratio, number + '0');
 }
 
 // FIXME: 98.15. Scheduling only: the original increments and compares the
@@ -938,6 +1416,125 @@ void cls_804AF5A0::fn_80396F94() {
     fn_80396884();
     fn_80395BE8();
     field_0x3b0 = 1;
+}
+
+// Pops a window pane in: its alpha rises over 10 frames; once it is full, its size
+// follows a five-point curve per axis over the frame counts of the layout constants, then
+// the pane is moved so that it stays centred on the box.
+// FIXME(shotgun): 93.00 %, missing/extra (setAlpha argument masking, window load order)
+void cls_804AF5A0::fn_80395834(J2DPane* pane) {
+    s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
+    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    field_0x194++;
+    if (pane->getAlpha() < field_0x1a3) {
+        if (field_0x194 == 10) {
+            field_0x194 = 0;
+            pane->setAlpha(field_0x1a3);
+        } else {
+            pane->setAlpha((s32)(field_0x1a3 * ((f32)field_0x194 / 10.0f)));
+        }
+        return;
+    }
+    f32 width;
+    f32 height;
+    s16 frame = field_0x194;
+    if (frame <= t0) {
+        width = 1.0f;
+        height = width;
+    } else if (frame <= t1) {
+        f32 dt = (f32)(t1 - t0);
+        f32 df = (f32)(frame - t0);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475D78[0] + r * (lbl_80475D78[1] - lbl_80475D78[0]);
+        height = lbl_80475D8C[0] + r * (lbl_80475D8C[1] - lbl_80475D8C[0]);
+    } else if (frame <= t2) {
+        f32 dt = (f32)(t2 - t1);
+        f32 df = (f32)(frame - t1);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475D78[1] + r * (lbl_80475D78[2] - lbl_80475D78[1]);
+        height = lbl_80475D8C[1] + r * (lbl_80475D8C[2] - lbl_80475D8C[1]);
+    } else if (frame <= t3) {
+        f32 dt = (f32)(t3 - t2);
+        f32 df = (f32)(frame - t2);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475D78[2] + r * (lbl_80475D78[3] - lbl_80475D78[2]);
+        height = lbl_80475D8C[2] + r * (lbl_80475D8C[3] - lbl_80475D8C[2]);
+    } else if (frame <= t4) {
+        f32 dt = (f32)(t4 - t3);
+        f32 df = (f32)(frame - t3);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475D78[3] + r * (lbl_80475D78[4] - lbl_80475D78[3]);
+        height = lbl_80475D8C[3] + r * (lbl_80475D8C[4] - lbl_80475D8C[3]);
+    } else {
+        width = 1.0f;
+        field_0x194 = 0;
+        height = width;
+    }
+    f32 w = width * field_0x110;
+    f32 h = height * field_0x114;
+    pane->resize(w, h);
+    pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
+}
+
+// FIXME(shotgun): 93.03 %, missing/extra (setAlpha argument masking, window load order)
+void cls_804AF5A0::fn_80395480(J2DPane* pane) {
+    s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
+    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    field_0x194++;
+    if (pane->getAlpha() < field_0x1a4) {
+        if (field_0x194 == 10) {
+            field_0x194 = 0;
+            pane->setAlpha(field_0x1a4);
+        } else {
+            pane->setAlpha((s32)(field_0x1a4 * ((f32)field_0x194 / 10.0f)));
+        }
+        return;
+    }
+    f32 width;
+    f32 height;
+    s16 frame = field_0x194;
+    if (frame <= t0) {
+        width = 1.0f;
+        height = width;
+    } else if (frame <= t1) {
+        f32 dt = (f32)(t1 - t0);
+        f32 df = (f32)(frame - t0);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475DA0[0] + r * (lbl_80475DA0[1] - lbl_80475DA0[0]);
+        height = lbl_80475DB4[0] + r * (lbl_80475DB4[1] - lbl_80475DB4[0]);
+    } else if (frame <= t2) {
+        f32 dt = (f32)(t2 - t1);
+        f32 df = (f32)(frame - t1);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475DA0[1] + r * (lbl_80475DA0[2] - lbl_80475DA0[1]);
+        height = lbl_80475DB4[1] + r * (lbl_80475DB4[2] - lbl_80475DB4[1]);
+    } else if (frame <= t3) {
+        f32 dt = (f32)(t3 - t2);
+        f32 df = (f32)(frame - t2);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475DA0[2] + r * (lbl_80475DA0[3] - lbl_80475DA0[2]);
+        height = lbl_80475DB4[2] + r * (lbl_80475DB4[3] - lbl_80475DB4[2]);
+    } else if (frame <= t4) {
+        f32 dt = (f32)(t4 - t3);
+        f32 df = (f32)(frame - t3);
+        f32 r = (df * df) / (dt * dt);
+        width = lbl_80475DA0[3] + r * (lbl_80475DA0[4] - lbl_80475DA0[3]);
+        height = lbl_80475DB4[3] + r * (lbl_80475DB4[4] - lbl_80475DB4[3]);
+    } else {
+        width = 1.0f;
+        field_0x194 = 0;
+        height = width;
+    }
+    f32 w = width * field_0x110;
+    f32 h = height * field_0x114;
+    pane->resize(w, h);
+    pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
 // FIXME: 98.31. Missing 2 instructions around the clamp: the original copies

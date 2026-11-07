@@ -47,6 +47,7 @@ class cls_804AF6D4;
 class cls_804AF72C;
 class cls_804AF774;
 struct J2DPicture;
+class J2DPane;
 class J2DScreen;
 class J2DTextBox;
 class JUTResFont;
@@ -143,7 +144,9 @@ public:
     /* 0x118 */ f32 field_0x118;
     /* 0x11C */ f32 field_0x11c;
     /* 0x120 */ f32 field_0x120;
-    /* 0x124 */ u8 field_0x124[0x13C - 0x124];
+    // fn_8039D0DC stores a line's x offset and its line count here, per slot.
+    /* 0x124 */ f32 field_0x124[3];
+    /* 0x130 */ f32 field_0x130[3];
     // fn_803A30FC stores into it by index (the constructor leaves it).
     /* 0x13C */ s32 field_0x13c[3];
     /* 0x148 */ s32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
@@ -228,6 +231,9 @@ public:
     void fn_803944EC(f32 scale);
     void fn_80396F94();
     void fn_80395BE8();
+    // 0x80395834 / 0x80395480: pop a pane in (alpha, then a scaling curve); `pane` is a window pane.
+    void fn_80395834(J2DPane* pane);
+    void fn_80395480(J2DPane* pane);
     void fn_80396884();
     s32 fn_803A3050();
     s32 fn_803A3058();
