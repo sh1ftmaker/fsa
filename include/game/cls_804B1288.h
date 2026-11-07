@@ -183,6 +183,8 @@ public:
     // field_0x340 into field_0x438: message lbl_8048C1F8[0][stage] for stages 0-7, the
     // debug names "Test-1", "ECTS", "E3", "Boss1-4", "Boss5-8" for 8-12, else "".
     void setStageName();
+    // Inline (fn_8040873C, fn_8040BC1C): the stage picture and texts (see the .cpp).
+    void loadStageInfo();
 
 
     /* 0x004 */ cls_804B1B60* field_0x4; // __nw__(0x50), fn_80444B68

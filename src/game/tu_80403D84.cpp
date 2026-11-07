@@ -226,6 +226,27 @@ inline bool MapScreen_804B1288::isCursorState() {
     return false;
 }
 
+// Inline (fn_8040873C, fn_8040BC1C twice: each copy has its own name buffer): for stages
+// 0-7, the picture w0<stage>_0<sub>.bti into Pplan01 / Pplan02 and the four texts of
+// field_0x564.
+inline void MapScreen_804B1288::loadStageInfo() {
+    if (field_0x340 != 8 && field_0x340 != 9 && field_0x340 != 10 && field_0x340 != 11 && field_0x340 != 12) {
+        char name[11];
+        snprintf(name, sizeof(name), "w0%d_0%d.bti", field_0x340 + 1, field_0x348 + 1);
+        ResTIMG* picture = (ResTIMG*)fn_80403184('TIMG', name);
+        ((J2DPicture*)field_0x10->search('Pplan01'))->remove((u8)0);
+        ((J2DPicture*)field_0x10->search('Pplan01'))->append(picture, 1.0f);
+        ((J2DPicture*)field_0x10->search('Pplan01'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        ((J2DPicture*)field_0x10->search('Pplan02'))->remove((u8)0);
+        ((J2DPicture*)field_0x10->search('Pplan02'))->append(picture, 1.0f);
+        ((J2DPicture*)field_0x10->search('Pplan02'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+        getMessageText_803832BC(field_0x564[0], lbl_8048C238[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[1], lbl_8048C258[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[2], lbl_8048C278[field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x564[3], lbl_8048C298[field_0x340], 0, NULL, NULL);
+    }
+}
+
 // Inlined where the stage name changes (fn_804096E8 twice, fn_8040C950, fn_8040CE90); its
 // debug-name literals sit in fn_804096E8's block of .sdata2, so it is an inline.
 inline void MapScreen_804B1288::setStageName() {
@@ -810,8 +831,9 @@ void MapScreen_804B1288::fn_8040E700() {
     }
 }
 
-// FIXME: 96.81. Missing/extra: ours extends the u16 angle again (clrlwi r0, r3, 16) before
-// the third range test; the original keeps the one clrlwi'd copy in r0. Pool literals
+// FIXME: 96.8. Missing/extra: ours extends the u16 angle again (clrlwi r0, r3, 16) before
+// the third range test; the original keeps the one clrlwi'd copy in r0 (a u32 local
+// holding the (u16) value gives scheduling+regalloc, 97.3 %, but no precedent proves it). Pool literals
 // (3.4f, the sqrtf doubles, 50.0f, 32768/pi) are first used by unwritten functions below.
 void MapScreen_804B1288::fn_8040E3A0() {
     f32 speed = 3.4f + lbl_8050DB0C.field_0x4c[311] / 100.0f;
@@ -942,6 +964,146 @@ void MapScreen_804B1288::fn_8040C950() {
     }
 }
 #endif
+
+// FIXME: 97.68. scheduling+regalloc (+ pool literals of unwritten functions); the
+// "cleared" test after the stage branch is in both branches, as in fn_804096E8.
+void MapScreen_804B1288::fn_8040BC1C() {
+    u8 faded = false;
+    u8 moved = false;
+    u8 cleared = false;
+    u8 listed = false;
+    field_0x41e++;
+    if (field_0x340 == 7) {
+        if (field_0x41e >= 15) {
+            field_0x640 = 1;
+            f32 t = (field_0x41e - 15) / 30.0f;
+            if (t > 1.0f) {
+                t = 1.0f;
+            }
+            fn_80408F38(t);
+            if (field_0x41e >= 45) {
+                faded = true;
+            }
+        }
+        if (field_0x41e == 21) {
+            if (field_0x65e == 0) {
+                field_0x120[0]->field_0x22 = 0;
+                field_0x120[0]->field_0x26 = 0;
+                field_0x120[1]->field_0x26 = 0;
+                loadStageInfo();
+                field_0x65e = 1;
+            }
+        } else if (field_0x41e > 40) {
+            cleared = true;
+        }
+    } else {
+        if (field_0x340 < 7) {
+            if (field_0x41e >= 15) {
+                field_0xc8->fn_80402B10(30, 0, 0.0f, lbl_8048C86C[field_0x340]);
+                field_0xc8->fn_80402940(30, 0, 0.0f, lbl_8048C87C[field_0x340]);
+                faded = field_0xc8->fn_8040271C(30, 1.0f, lbl_8048C850[field_0x340] / field_0xc8->field_0x18);
+                f32 scale = lbl_8048C850[field_0x340] / field_0xc8->field_0x18 - 1.0f;
+                f32 dx = scale * (field_0xcc->field_0x10 - field_0xc8->field_0x10);
+                f32 dy = scale * (field_0xcc->field_0x14 - field_0xc8->field_0x14);
+                field_0xcc->fn_80402B10(30, 0, 0.0f, dx + lbl_8048C86C[field_0x340]);
+                field_0xcc->fn_80402940(30, 0, 0.0f, dy + lbl_8048C87C[field_0x340]);
+                field_0xcc->fn_8040271C(30, 1.0f, lbl_8048C850[field_0x340] / field_0xc8->field_0x18);
+                dx = scale * (field_0xd0->field_0x10 - field_0xc8->field_0x10);
+                dy = scale * (field_0xd0->field_0x14 - field_0xc8->field_0x14);
+                field_0xd0->fn_80402B10(30, 0, 0.0f, dx + lbl_8048C86C[field_0x340]);
+                field_0xd0->fn_80402940(30, 0, 0.0f, dy + lbl_8048C87C[field_0x340]);
+                field_0xd0->fn_8040271C(30, 1.0f, lbl_8048C850[field_0x340] / field_0xc8->field_0x18);
+                for (int i = 0; i < 18; i++) {
+                    dx = scale * field_0xd4[i]->field_0x10;
+                    dy = scale * field_0xd4[i]->field_0x14;
+                    field_0xd4[i]->fn_80402B10(30, 0, 0.0f, dx);
+                    field_0xd4[i]->fn_80402940(30, 0, 0.0f, dy);
+                    field_0xd4[i]->fn_8040271C(30, 1.0f, lbl_8048C850[field_0x340] / field_0xc8->field_0x18);
+                }
+            }
+        } else {
+            faded = true;
+        }
+        if (field_0x41e == 21) {
+            if (field_0x65e == 0) {
+                field_0x120[0]->field_0x22 = 0;
+                field_0x120[0]->field_0x26 = 0;
+                field_0x120[1]->field_0x26 = 0;
+                loadStageInfo();
+                field_0x65e = 1;
+            }
+        } else if (field_0x41e > 40) {
+            cleared = true;
+        }
+    }
+    if (field_0x657 == 0) {
+        if (field_0x41e >= 0 && field_0x41e <= 15) {
+            for (int i = 0; i < 2; i++) {
+                for (int j = 0; j < 2; j++) {
+                    moved = field_0x228[i][j]->fn_80402940(15, 0, 0.0f, -150.0f);
+                }
+            }
+            field_0x238->fn_80402940(15, 0, 0.0f, -150.0f);
+            field_0x23c->fn_80402940(15, 0, 0.0f, -150.0f);
+        } else if (field_0x41e > 15) {
+            moved = true;
+        }
+    } else {
+        moved = true;
+    }
+    s32 rows = field_0x370;
+    if (rows >= 8) {
+        rows = 7;
+    }
+    if (field_0x41e >= 0 && field_0x41e <= rows * 5 + 20) {
+        for (int i = 0; i < rows + 1; i++) {
+            if (field_0x41e >= i * 5) {
+                field_0x28[rows - i][0]->fn_80402B10(20, 0, 0.0f, -150.0f);
+                for (int j = 0; j < 3; j++) {
+                    field_0x28[rows - i][j]->fn_80402628(20, field_0x28[rows - i][j]->field_0x28, 0);
+                }
+            }
+        }
+    } else if (field_0x41e > rows * 5 + 20) {
+        listed = true;
+    }
+    if (faded && moved && cleared && listed) {
+        if (field_0x340 <= 7) {
+            f32 x = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+            f32 y = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+            field_0x394 = x;
+            field_0x398 = y;
+        } else {
+            field_0x394 = field_0x398 = 0.0f;
+        }
+        if (field_0x663) {
+            field_0x2c8->startSound(JAISoundID(0x400E4));
+            field_0x350 = 3;
+            field_0x358 = 0;
+        } else if (fn_80404270(field_0x340)) {
+            if (field_0x657) {
+                field_0x658 = 1;
+            }
+            field_0x350 = 0x10;
+            if (field_0x65d == 1) {
+                for (int i = 0; i < 15; i++) {
+                    field_0x278[i]->field_0x26 = 0;
+                    field_0x65d = 0;
+                }
+            }
+            field_0x4->fn_804446F0(0);
+            gAudioMgr_8053AF80->fn_80458880(0x56, -1);
+        } else if (field_0x657) {
+            field_0x350 = 0x15;
+        } else {
+            field_0x350 = 0xF;
+        }
+        field_0x657 = 0;
+    }
+    if (field_0x41e >= 15) {
+        gAudioMgr_8053AF80->fn_80458880(0x55, -1);
+    }
+}
 
 // FIXME: 99.81. regalloc-only: the original loads field_0x3b8 into f0 and the pane's
 // field_0xc into f2 for `offset`; ours swaps them. 0.5f / 400.0f are pooled by unwritten
@@ -1310,7 +1472,7 @@ void MapScreen_804B1288::fn_80408F38(f32 alpha) {
     }
 }
 
-// FIXME: 95.81. Missing/extra (one instruction): ours moves fn_80403184's result through
+// FIXME: 96.04. Missing/extra (one instruction): ours moves fn_80403184's result through
 // r0 into r26 (mr, mr) where the original keeps it in r28; the zoom divisions load
 // field_0x18 before the lbl_8048C850 entry in the original (order only). The tail after the
 // stage branch is in both branches: the original has its own copy in the stage 7 branch.
@@ -1380,34 +1542,7 @@ void MapScreen_804B1288::fn_8040873C() {
         field_0x208[field_0x340]->mPane->setAlpha(field_0x208[field_0x340]->field_0x28);
     }
     field_0x400 = 1.0f;
-    if (field_0x340 == 8) {
-        return;
-    }
-    if (field_0x340 == 9) {
-        return;
-    }
-    if (field_0x340 == 10) {
-        return;
-    }
-    if (field_0x340 == 11) {
-        return;
-    }
-    if (field_0x340 == 12) {
-        return;
-    }
-    char name[11];
-    snprintf(name, sizeof(name), "w0%d_0%d.bti", field_0x340 + 1, field_0x348 + 1);
-    ResTIMG* picture = (ResTIMG*)fn_80403184('TIMG', name);
-    ((J2DPicture*)field_0x10->search('Pplan01'))->remove((u8)0);
-    ((J2DPicture*)field_0x10->search('Pplan01'))->append(picture, 1.0f);
-    ((J2DPicture*)field_0x10->search('Pplan01'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-    ((J2DPicture*)field_0x10->search('Pplan02'))->remove((u8)0);
-    ((J2DPicture*)field_0x10->search('Pplan02'))->append(picture, 1.0f);
-    ((J2DPicture*)field_0x10->search('Pplan02'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-    getMessageText_803832BC(field_0x564[0], lbl_8048C238[field_0x340], 0, NULL, NULL);
-    getMessageText_803832BC(field_0x564[1], lbl_8048C258[field_0x340], 0, NULL, NULL);
-    getMessageText_803832BC(field_0x564[2], lbl_8048C278[field_0x340], 0, NULL, NULL);
-    getMessageText_803832BC(field_0x564[3], lbl_8048C298[field_0x340], 0, NULL, NULL);
+    loadStageInfo();
 }
 
 // FIXME: 90.43. Missing/extra: for the selected row's text-box move the original loads the
