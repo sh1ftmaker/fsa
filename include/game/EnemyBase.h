@@ -429,6 +429,8 @@ bool fn_801CCFE4(s32 player);
 // 'ARRW' with field_0x108 > 0: *out = its field_0x3c, then fn_801F3668 on
 // it; `out` is zeroed first. Returns whether it was found.
 bool fn_801CC820(s32 player, JGeometry::TVec3f* out);
+// game/tu_801CB4A4 (hit spark at `pos` on `layer`; the two longs are 0 in its callers here).
+void fn_801CB4A4(s32 layer, const JGeometry::TVec3f* pos, s32 a, s32 b);
 // 'BOME': *outPlayer = the index (-1 first), its field_0x254 = 1 and, when
 // `out` is given, *out = (pos.x, pos.y, 0) minus its field_0x3c * lbl_8053EF90.
 // Returns whether it was found.

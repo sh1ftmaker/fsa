@@ -105,6 +105,7 @@ public:
     // game/tu_801C9AF8.cpp (0x801CA0F8): hits the actor overlapping this one
     // (fn_801F82CC) with fn_801F37AC unless it is 'SWBM' or 'FLME'; true if it hit.
     bool fn_801CA0F8();
+    bool fn_801CA564();
     u8 fn_801CA274();
     bool fn_801C9EB8();
     bool fn_801C9CB0();
