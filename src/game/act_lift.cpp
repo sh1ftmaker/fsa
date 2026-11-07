@@ -92,9 +92,12 @@ bool Lift_804A6F6C::fn_802565BC(s32 index) {
                 if (res->mLutFormat == 2) {
                     s32 tilesPerRow = ((res->mSizeX + 7) & 0xFFF8) >> 3;
                     s32 offset = (((px >> 3) + (py >> 3) * tilesPerRow) << 6) + ((py & 7) << 3) + (px & 7);
-                    u8 byte = ((u8*)res)[res->mImageDataOffset + (offset >> 1)];
+                    const u8* base = (const u8*)res;
+                    const u8* image = base + res->mImageDataOffset;
+                    const u16* palette = (const u16*)(base + res->mPaletteOffset);
+                    u8 byte = image[offset >> 1];
                     u32 paletteIndex = (px & 1) == 0 ? (byte >> 4) & 7 : byte & 7;
-                    u16 color = *(u16*)((u8*)res + res->mPaletteOffset + (paletteIndex & 0xFF) * 2);
+                    u16 color = palette[paletteIndex & 0xFF];
                     if ((color & 0x8000) || (color & 0xF000) == 0x7000) {
                         hit = true;
                     }

@@ -28,6 +28,22 @@ WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
 
 WarpCannon_8049EAE0::~WarpCannon_8049EAE0() {}
 
+void WarpCannon_8049EAE0::init() {
+    field_0x274 = field_0x90 >> 8 & 0xFF;
+    field_0x270 = field_0x90 >> 16 & 0xFF;
+    mBox.set(-16.0f, -16.0f, 16.0f, -12.0f);
+    mBox2.set(mBox);
+    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
+    mLife = 0;
+    field_0xb0 = 0x50303;
+    mAnim.fn_801D2608(lbl_80539F48, 1);
+    mAnim.startAnim_801D22DC(0, 2, false);
+    mAnim.fn_801D1F14(0.0f);
+    field_0x284 = mPos.x;
+    field_0x288 = mPos.y;
+    field_0x28c = mPos.z;
+}
+
 // FIXME(shotgun): 91.2 %, missing/extra: a few instructions (state 0 probe loop, shared statics @NNN)
 void WarpCannon_8049EAE0::update() {
     switch (field_0x268) {
@@ -164,22 +180,6 @@ void WarpCannon_8049EAE0::update() {
     }
     }
     mAnim.fn_801D1C18();
-}
-
-void WarpCannon_8049EAE0::init() {
-    field_0x274 = field_0x90 >> 8 & 0xFF;
-    field_0x270 = field_0x90 >> 16 & 0xFF;
-    mBox.set(-16.0f, -16.0f, 16.0f, -12.0f);
-    mBox2.set(mBox);
-    field_0x80.set(0.0f, 0.0f, 0.0f, 0.0f);
-    mLife = 0;
-    field_0xb0 = 0x50303;
-    mAnim.fn_801D2608(lbl_80539F48, 1);
-    mAnim.startAnim_801D22DC(0, 2, false);
-    mAnim.fn_801D1F14(0.0f);
-    field_0x284 = mPos.x;
-    field_0x288 = mPos.y;
-    field_0x28c = mPos.z;
 }
 
 // FIXME: 99.90 %. Only the .sdata2 offsets of its literals differ: the
