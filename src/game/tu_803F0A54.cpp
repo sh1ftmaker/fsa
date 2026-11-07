@@ -942,6 +942,7 @@ void ConnectScreen_804B0F10::fn_803FB6F4() {
     stepCursorTimer(this);
 }
 
+// FIXME(shotgun): 97 %, different
 void ConnectScreen_804B0F10::fn_803FAA88() {
     s32 others[2];
     s32* dst = others;
@@ -1208,6 +1209,7 @@ void ConnectScreen_804B0F10::fn_803F9EA8() {
     field_0x8->search('Ppllbk32')->move(field_0xbc[3], field_0xcc[3] + field_0xdc[3]);
 }
 
+// FIXME(shotgun): 97 %, different
 void ConnectScreen_804B0F10::fn_803F943C() {
     field_0x240[0]++;
     if (field_0x240[0] > 0) {
@@ -1580,6 +1582,7 @@ void ConnectScreen_804B0F10::fn_803F8050() {
     stepCursorTimer(this);
 }
 
+// FIXME(shotgun): 97 %, different
 void ConnectScreen_804B0F10::fn_803F726C() {
     if (field_0x1ac != 2) {
         if (field_0x210[0] < 100) {
@@ -1773,6 +1776,7 @@ void ConnectScreen_804B0F10::fn_803F715C() {
     }
 }
 
+// FIXME(shotgun): 95 %, different
 void ConnectScreen_804B0F10::fn_803F5A0C() {
     for (s32 i = 0; i < 4; i++) {
         if (field_0x240[i] != 0) {
@@ -2026,6 +2030,7 @@ void ConnectScreen_804B0F10::fn_803F5410() {
     lbl_8053AED8->fn_80440EE8();
 }
 
+// FIXME(shotgun): 96 %, different
 void ConnectScreen_804B0F10::fn_803F4120() {
     for (s32 i = 0; i < 4; i++) {
         if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << (i + 4))) {

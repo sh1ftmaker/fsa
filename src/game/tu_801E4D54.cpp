@@ -65,6 +65,7 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
     }
 }
 
+// FIXME(shotgun): 99 %, different
 // FIXME: 98.83 %. The loop counter and element pointer take other registers (the
 // original: counter r30, element r28; the layer is read through getField_0x4(),
 // before getPlayerLayer_8023DE58, as the original), and the original tests the countdown twice (a second ble

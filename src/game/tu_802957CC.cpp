@@ -1038,6 +1038,7 @@ inline void registerBox_802984B0(cls_804A7AE0* actor, f32 x0, f32 y0, f32 x1, f3
     fn_80239914(&box, actor->field_0x4, actor->mSerial);
 }
 
+// FIXME(shotgun): 98 %, different
 void cls_804A7AE0::fn_802984B0() {
     switch (field_0x2b0) {
     case 0: {

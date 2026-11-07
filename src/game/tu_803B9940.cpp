@@ -73,7 +73,7 @@ static inline bool mapCardResult(cls_803B9940* self, s32 result) {
 }
 
 // 0x803B9F40
-// FIXME(shotgun): written from asm
+// FIXME(shotgun): 98 %, different (written from asm)
 void cls_803B9940::fn_803B9F40() {
     while (true) {
         OSLockMutex(&mMutex);

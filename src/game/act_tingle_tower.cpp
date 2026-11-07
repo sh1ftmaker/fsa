@@ -85,6 +85,7 @@ cls_804AAD60::~cls_804AAD60() {
     }
 }
 
+// FIXME(shotgun): 96 %, different
 void cls_804AAD60::init() {
     field_0x230 = field_0x90 & 3;
     field_0x234 = 0;
@@ -172,6 +173,7 @@ void cls_804AAD60::draw() {
     }
 }
 
+// FIXME(shotgun): 85 %, different
 void cls_804AAD60::fn_80315EE8() {
     updateFacing();
     if (field_0x234 == 0) {
@@ -310,6 +312,7 @@ void cls_804AAD60::fn_80315EE8() {
     }
 }
 
+// FIXME(shotgun): 92 %, different
 void cls_804AAD60::fn_80315C84() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -338,6 +341,7 @@ void cls_804AAD60::fn_80315C84() {
 
 void cls_804AAD60::fn_80315C80() {}
 
+// FIXME(shotgun): 97 %, different
 void cls_804AAD60::fn_80315864() {
     JGeometry::TBox2f box(field_0x258);
     box.i.x += mPos.x;
@@ -459,6 +463,7 @@ void cls_804AAD60::fn_80315864() {
     }
 }
 
+// FIXME(shotgun): 93 %, different
 void cls_804AAD60::fn_80315460() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -538,6 +543,7 @@ void cls_804AAD60::fn_80315460() {
     }
 }
 
+// FIXME(shotgun): 93 %, different
 void cls_804AAD60::fn_80315080() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -612,6 +618,7 @@ void cls_804AAD60::fn_80315080() {
     }
 }
 
+// FIXME(shotgun): 91 %, different
 void cls_804AAD60::fn_80314B1C() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -728,6 +735,7 @@ void cls_804AAD60::fn_80314B1C() {
     }
 }
 
+// FIXME(shotgun): 96 %, different
 void cls_804AAD60::fn_803146DC() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -815,6 +823,7 @@ void cls_804AAD60::fn_803146DC() {
     }
 }
 
+// FIXME(shotgun): 93 %, different
 void cls_804AAD60::fn_803142E4() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -883,6 +892,7 @@ void cls_804AAD60::fn_803142E4() {
     }
 }
 
+// FIXME(shotgun): 92 %, different
 void cls_804AAD60::fn_80313D7C() {
     updateFacing();
     JGeometry::TBox2f box(field_0x258);
@@ -999,6 +1009,7 @@ void cls_804AAD60::fn_80313D7C() {
     }
 }
 
+// FIXME(shotgun): 52 %, different
 void cls_804AAD60::fn_80313C20() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
