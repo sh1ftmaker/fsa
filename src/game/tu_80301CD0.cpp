@@ -5,6 +5,7 @@
 #include "game/GameState.h"
 #include "game/GameView.h"
 #include "JSystem/JKernel/JKRArchive.h"
+#include "game/GbaClient.h"
 #include <string.h>
 
 // The GBA link of each player: a queue of files sent to the GBA (names such as
@@ -72,7 +73,9 @@ u8 lbl_80506DB8[4][4];
 u8 lbl_80506DC8[4][4];
 s32 lbl_80506DD8[4];
 cls_804AA858Sub11C lbl_80506DE8[4];
-u8 lbl_80506F88[4][0x98];
+// Two halves of 19 sprite words per player (fn_803068D0 fills one half from
+// a record's field_0x18 words and hides the rest).
+GbaSprite_80506F88 lbl_80506F88[4][2][19];
 s16 lbl_805071E8[4][0x80];
 
 u8 lbl_8053ACD0;
@@ -84,7 +87,7 @@ u8 lbl_8053ACE4[4];
 u8 lbl_8053ACE8[4];
 u8 lbl_8053ACEC[4];
 u8 lbl_8053ACF0[4];
-s32 lbl_8053ACF4;
+u8 lbl_8053ACF4[4];
 u8 lbl_8053ACF8[4];
 u8 lbl_8053ACFC[4];
 u8 lbl_8053AD00[4];
@@ -331,6 +334,154 @@ s32 fn_803074A4(s32 kind, s32 id) {
     return 0;
 }
 
+// Copies a record's sprite words into the half of the player's sprite table
+// its mode selects, hides the rest of that half and the kind-2 sprites below
+// 0x45 of the other half.
+// FIXME(shotgun): 92.6 %, different (the loop bound is loaded inside the loop in ours)
+void fn_803068D0(cls_804AA858Sub11C* record) {
+    if (record->mValid == 0) {
+        return;
+    }
+    u32 half = record->mMode & 1;
+    GbaSprite_80506F88* sprites = lbl_80506F88[fn_8022F340(record->mPlayer)][0];
+    GbaSprite_80506F88* dst = sprites + half * 19;
+    s32 i;
+    for (i = 0; i < lbl_80541618[record->field_0x3_0 & 3] - 7; i++) {
+        dst[i].mWord = record->field_0x18[i].mWord;
+    }
+    for (; i < 19; i++) {
+        dst[i].f.field_0x3_0 = 1;
+        dst[i].f.field_0x2 = 0x80;
+    }
+    GbaSprite_80506F88* other = sprites + (half ^ 1) * 19;
+    for (i = 0; i < 19; i++) {
+        if (other[i].f.mKind == 2 && (other[i].f.field_0x0 | other[i].f.field_0x3_1 << 8) < 0x45) {
+            other[i].f.field_0x3_0 = 1;
+            other[i].f.field_0x2 = 0x80;
+        }
+    }
+}
+
+// Fills the player's record sprite words from the player's active short-list
+// sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
+// kind 4 or more; every sprite it looks at is marked for removal. Returns the
+// count written.
+// FIXME(shotgun): 77.5 %, missing/extra (the original tests mode 11 as a bool, cntlzw)
+s32 fn_803066F0(s32 unused, s32 player, s32 max) {
+    s32 count = 0;
+    s32 big = 0;
+    GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
+    s32 slot = fn_8022EA0C(player);
+    for (s32 timer = 5; timer >= 0; timer--) {
+        cls_803099FC* sprite = lbl_80504A38[player];
+        for (s32 i = 0; i < 16; i++, sprite++) {
+            if (sprite->mActive != 1 || sprite->mTimer != timer) {
+                continue;
+            }
+            if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
+                ((gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 != 0) &&
+                 sprite->field_0x23 == 0)) {
+                sprite->mRemove = 1;
+                continue;
+            }
+            s32 x = fn_8023D9B0(&sprite->mPos, slot) & 0x1FF;
+            u8 y = fn_8023D4F8(&sprite->mPos, slot);
+            if (x == 0x180 || y == 0xE0) {
+                sprite->mRemove = 1;
+                continue;
+            }
+            if (sprite->field_0x20 >= 4) {
+                if (big >= 4) {
+                    sprite->mRemove = 1;
+                    continue;
+                }
+                big++;
+            }
+            count++;
+            dst->f.field_0x3_0 = x >> 8;
+            s32 id = sprite->mId;
+            dst->f.field_0x2 = x;
+            dst->f.field_0x1 = y;
+            sprite->mRemove = 1;
+            dst->f.field_0x3_1 = id >> 8;
+            dst->f.field_0x0 = id;
+            dst->f.mKind = sprite->field_0x20;
+            dst->f.field_0x3_4 = sprite->field_0x21;
+            dst->f.field_0x3_3 = sprite->field_0x22;
+            if (count >= max) {
+                return count;
+            }
+            dst++;
+        }
+    }
+    return count;
+}
+
+// Appends the player's long-list sprites (lbl_80505438), timer 5 down to 1
+// (or any timer for the player's own), to the record's sprite words after
+// fn_803066F0's `start` ones, until `max`; ids above 0x3FF are kind 2.
+// FIXME(shotgun): 88.1 %, missing/extra
+void fn_803064A8(s32 unused, s32 player, s32 max, s32 start) {
+    s32 count = start;
+    if (max == 0) {
+        return;
+    }
+    s32 slot = fn_8022EA0C(player);
+    GbaSprite_80506F88* dst = &lbl_80506DE8[player].field_0x18[start];
+    for (s32 timer = 5; timer > 0; timer--) {
+        cls_803099FC* sprite = lbl_80505438[player];
+        for (s32 i = 0; i < 40; i++, sprite++) {
+            if (sprite->mActive == 0) {
+                continue;
+            }
+            if ((sprite->mLayer != getPlayerLayer_8023DE58(slot) && sprite->field_0xc != player) ||
+                (gGameRoot_8053AAF8->field_0x4c == 11 && sprite->field_0x23 == 0)) {
+                sprite->mTimer = 0;
+                sprite->mRemove = 1;
+                continue;
+            }
+            if (sprite->mTimer != timer && sprite->field_0xc != player) {
+                continue;
+            }
+            if (sprite->field_0xc >= 0) {
+                dst->f.field_0x3_0 = (s32)sprite->mPos.x >> 8;
+                dst->f.field_0x2 = (s32)sprite->mPos.x;
+                dst->f.field_0x1 = (s32)sprite->mPos.y;
+            } else {
+                s32 x = fn_8023D9B0(&sprite->mPos, slot) & 0x1FF;
+                u8 y = fn_8023D4F8(&sprite->mPos, slot);
+                if (x == 0x180 || y == 0xE0) {
+                    sprite->mTimer = 0;
+                    sprite->mRemove = 1;
+                    continue;
+                }
+                dst->f.field_0x3_0 = x >> 8;
+                dst->f.field_0x2 = x;
+                dst->f.field_0x1 = y;
+            }
+            s32 id = sprite->mId;
+            if (id > 0x3FF) {
+                id -= 0x400;
+                dst->f.field_0x3_1 = id >> 8;
+                dst->f.field_0x0 = id;
+                dst->f.mKind = 2;
+            } else {
+                dst->f.field_0x3_1 = id >> 8;
+                dst->f.field_0x0 = id;
+                dst->f.mKind = sprite->field_0x20;
+            }
+            count++;
+            dst->f.field_0x3_4 = sprite->field_0x21;
+            dst->f.field_0x3_3 = sprite->field_0x22;
+            sprite->mRemove = 1;
+            dst++;
+            if (count >= max) {
+                return;
+            }
+        }
+    }
+}
+
 // FIXME: 98.47. Regalloc only: the original keeps the list bases in r6 / r7 and the element in
 // r8 (ours r7 / r8 and r6).
 // 0x80304D64
@@ -514,6 +665,134 @@ void fn_8030361C() {
             }
         }
         lbl_8053AD20[player] = 0;
+    }
+}
+
+// Draws one GBA sprite word on the map: the "SOB " frame of its 10-bit id at
+// its (sign-extended 9 / 8-bit) x, y, tinted per player and scaled by the
+// player's lbl_8053ACFC count (or lbl_80506DB8's flag).
+// FIXME(shotgun): 88.0 %, missing/extra (control flow of the early return, the 16 tint stores)
+void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 mask, u8 flag) {
+    SpriteParams_801F5AE0 params;
+    s32 x = sprite->f.field_0x2 | sprite->f.field_0x3_0 << 8;
+    s32 y = sprite->f.field_0x1;
+    if (x == 0x180 || y == 0xE0 || lbl_8053ACFC[player] >= 0x11) {
+        return;
+    }
+    if (x >= 0x180) {
+        x |= -0x100;
+    }
+    if (y >= 0xE0) {
+        y |= -0x100;
+    }
+    s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
+    if (lbl_80506DC8[record][player] != 0) {
+        params.field_0x10.a = 0xA0;
+    }
+    if ((mask >> player) & 1) {
+        for (u8 i = 0; i < 16; i++) {
+            params.field_0x0[i] = 7;
+        }
+    } else {
+        params.field_0x0[7] = player + 0xC;
+    }
+    if (fn_80237060(player) >= 2) {
+        params.field_0x0[10] = 6;
+    }
+    JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
+    Mtx scale;
+    if (lbl_8053ACFC[player] != 0) {
+        PSMTXScale(scale, 1.0f - 0.75f * lbl_8053ACFC[player] * 0.0625f, 1.0f,
+                   lbl_8053ACFC[player] * 0.0625f + 1.0f);
+    } else if (lbl_80506DB8[record][player] == 1) {
+        PSMTXScale(scale, 1.0f, 1.0f, 0.5f);
+    } else {
+        PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
+    }
+    params.field_0x2c = 0;
+    params.field_0x26 = 0;
+    params.field_0x2d = 0;
+    if (!flag) {
+        params.field_0x34 = 2;
+    }
+    params.field_0x1f = 0;
+    params.field_0x38 = 0;
+    params.mMtx = scale;
+    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+}
+
+// Works out the link state lbl_8053ACE8[slot] (1-3, 0 for none) of a
+// connected player from the two layers a and b (8 counts as set, above 8
+// asks the view's fn_802D7804), stores them and the timer of `mode`.
+// FIXME(shotgun): 100 %
+void fn_803020C8(s32 player, s32 a, s32 b, u8 mode) {
+    s32 slot = fn_8022F340(player);
+    if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << slot)) == 0) {
+        return;
+    }
+    if (a < 8) {
+        if (b < 8) {
+            lbl_8053ACE8[slot] = 0;
+        } else if (b == 8 || getGameView_802D6A9C()->fn_802D7804(b, 1)) {
+            lbl_8053ACE8[slot] = 1;
+        } else {
+            lbl_8053ACE8[slot] = 3;
+        }
+    } else if (a == 8 || getGameView_802D6A9C()->fn_802D7804(a, 1)) {
+        if (b < 8) {
+            lbl_8053ACE8[slot] = 3;
+            lbl_8053ACF8[player] = 1;
+        } else if (b == 8 || getGameView_802D6A9C()->fn_802D7804(b, 1)) {
+            lbl_8053ACE8[slot] = 2;
+        } else {
+            lbl_8053ACE8[slot] = 2;
+            lbl_8053ACF8[player] = 1;
+        }
+    } else {
+        if (b < 8) {
+            lbl_8053ACE8[slot] = 3;
+        } else if (b == 8 || getGameView_802D6A9C()->fn_802D7804(b, 1)) {
+            lbl_8053ACE8[slot] = 1;
+        } else {
+            lbl_8053ACE8[slot] = 2;
+        }
+    }
+    lbl_80506D88[slot] = a;
+    lbl_80506D98[slot] = b;
+    switch (mode) {
+    case 0:
+        lbl_8053ACF4[slot] = 0;
+        break;
+    case 2:
+        lbl_8053ACF4[slot] = 0x5A;
+        break;
+    case 1:
+    default:
+        lbl_8053ACF4[slot] = 0x14;
+        break;
+    }
+}
+
+// Resets the player's link state (or marks it 0xFF while lbl_8053ACF0 is
+// set), then does the same for the player fn_8023ECF0 names, while there is
+// one that is its own fn_8022EA0C.
+// FIXME(shotgun): 100 %
+void fn_80301D54(s32 player) {
+    s32 slot = fn_8022F340(player);
+    if (lbl_8053ACF0[slot] == 0) {
+        lbl_8053ACE8[slot] = 0;
+        lbl_8053ACEC[slot] = 0;
+        lbl_8053ACF4[slot] = 0;
+    } else {
+        lbl_8053ACEC[slot] = 0xFF;
+    }
+    lbl_8053ACF8[player] = 0;
+    if (fn_8023ED8C(player)) {
+        s32 other = fn_8023ECF0(player);
+        if (other == fn_8022EA0C(other)) {
+            fn_80301D54(other);
+        }
     }
 }
 

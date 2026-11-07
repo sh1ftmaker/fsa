@@ -1444,15 +1444,27 @@ bool fn_80304C10(s32 player, const char* name, u32 address, u8 arg3, s32 arg4);
 // fn_803FF420 / fn_803FFAA8 each frame while mState is below 4, then
 // fn_803FF2C4 (which frees its archives) once it reaches 4.
 class JKRArchive;
+class cls_804A8578;
+class cls_804B1A38;
 class cls_804B0F50 {
 public:
+    // 0x804009CC: sets lbl_8053AAF0, takes the boot flags from the save
+    // region (bytes 0xD-0xF), sets the render mode, creates field_0xc and
+    // field_0x14 and starts loading the GBA client archive (field_0x44).
     cls_804B0F50();
+    // 0x804007C4 (vtable 0x804B0F50, its only slot): unmounts
+    // lbl_80529DEC.field_0x18, deletes field_0xc, field_0x14 and the seven
+    // archives (fn_803FF2C4, inlined) and clears save-region byte 0xF.
+    virtual ~cls_804B0F50();
     void fn_803FF2C4();
     void fn_803FF420();
     void fn_803FFAA8();
 
-    /* 0x00 */ void* field_0x0; // vtable 0x804B0F50, kept opaque: its slots are not known yet
-    /* 0x04 */ u8 field_0x4[0x18 - 0x4];
+    /* 0x04 */ u32 field_0x4;
+    /* 0x08 */ u32 field_0x8;
+    /* 0x0C */ cls_804A8578* field_0xc;
+    /* 0x10 */ u32 field_0x10;
+    /* 0x14 */ cls_804B1A38* field_0x14;
     // The loader's seven archives; fn_803FF2C4 (and the destructor) delete them.
     /* 0x18 */ JKRArchive* field_0x18;
     /* 0x1C */ JKRArchive* field_0x1c;
@@ -1461,12 +1473,24 @@ public:
     /* 0x28 */ JKRArchive* field_0x28;
     /* 0x2C */ JKRArchive* field_0x2c;
     /* 0x30 */ JKRArchive* field_0x30;
-    /* 0x34 */ u8 field_0x34[0x60 - 0x34];
+    /* 0x34 */ u8 field_0x34[0x44 - 0x34];
+    /* 0x44 */ cls_804B0FC0* field_0x44; // fn_80401E10("/GC4Sword_usa/agb/client_thread.arc")
+    /* 0x48 */ u8 field_0x48[0x60 - 0x48];
     /* 0x60 */ u8 field_0x60; // tested by cls_804AA8C8::fn_8030A43C
-    /* 0x61 */ u8 field_0x61[0x78 - 0x61];
+    /* 0x61 */ u8 field_0x61[0x64 - 0x61];
+    /* 0x64 */ f32 field_0x64;
+    /* 0x68 */ f32 field_0x68;
+    /* 0x6C */ u8 field_0x6c[0x6E - 0x6C];
+    /* 0x6E */ s16 field_0x6e;
+    /* 0x70 */ s16 field_0x70;
+    /* 0x72 */ s16 field_0x72;
+    /* 0x74 */ s16 field_0x74; // 0x30 from the constructor
+    /* 0x76 */ u8 field_0x76;
+    /* 0x77 */ u8 field_0x77;
     /* 0x78 */ u8 mState;
     /* 0x79 */ u8 field_0x79; // fn_802B1610 tests it
-    /* 0x7A */ u8 field_0x7a[0x7C - 0x7A];
+    /* 0x7A */ u8 field_0x7a; // set by the constructor from the save-region boot flags
+    /* 0x7B */ u8 field_0x7b;
 }; // Size: 0x7C
 extern cls_804B0F50* lbl_8053AAF0;
 
@@ -1631,8 +1655,8 @@ extern const GXRenderModeObj lbl_8048C17C;
 // the bytes act_environment_control_2 writes are declared.
 struct GameRootSub24_8016A3AC {
     GameRootSub24_8016A3AC(JKRHeap* heap); // fn_8016F0BC (not written yet)
-    // Unknown pointers: 0x0, 0x30, 0x38, 0x54, 0x68.
-    /* 0x000 */ void* field_0x0;
+    // Unknown pointers: 0x30, 0x38, 0x54, 0x68.
+    /* 0x000 */ JKRHeap* field_0x0; // destroyed by the destructor
     // The J3DModels below (0x4 ... 0xEC) are passed to fn_8016A7DC.
     /* 0x004 */ struct J3DModel* field_0x4;
     /* 0x008 */ u8 field_0x8[0xC - 0x8];
@@ -1677,7 +1701,13 @@ struct GameRootSub24_8016A3AC {
     /* 0x0F0 */ u8 field_0xf0[0xF4 - 0xF0];
     // The full-screen backdrop texture fn_8016ADE0 draws.
     /* 0x0F4 */ struct JUTTexture* field_0xf4;
-    /* 0x0F8 */ u8 field_0xf8[0x110 - 0xF8];
+    // The destructor deletes 0xF4-0x120.
+    /* 0x0F8 */ struct JUTTexture* field_0xf8;
+    /* 0x0FC */ struct JUTTexture* field_0xfc;
+    /* 0x100 */ struct JUTTexture* field_0x100;
+    /* 0x104 */ struct JUTTexture* field_0x104;
+    /* 0x108 */ struct JUTTexture* field_0x108;
+    /* 0x10C */ struct JUTTexture* field_0x10c;
     // Backdrop textures: fn_8016B4D4 draws 0x114 / 0x110 (or 0x11C / 0x118),
     // fn_8016B248 draws 0x120.
     /* 0x110 */ struct JUTTexture* field_0x110;
@@ -1689,11 +1719,11 @@ struct GameRootSub24_8016A3AC {
     /* 0x124 */ struct JPABaseEmitter* field_0x124;
     /* 0x128 */ struct JPABaseEmitter* field_0x128;
     /* 0x12C */ struct JPABaseEmitter* field_0x12c;
-    // Words cleared by fn_8016EDB0 (types unknown).
-    /* 0x130 */ s32 field_0x130;
-    /* 0x134 */ s32 field_0x134;
-    /* 0x138 */ s32 field_0x138;
-    /* 0x13C */ s32 field_0x13c;
+    // Emitters cleared by fn_8016EDB0; the destructor deletes them.
+    /* 0x130 */ struct JPABaseEmitter* field_0x130;
+    /* 0x134 */ struct JPABaseEmitter* field_0x134;
+    /* 0x138 */ struct JPABaseEmitter* field_0x138;
+    /* 0x13C */ struct JPABaseEmitter* field_0x13c;
     // Four entries; cleared by fn_8016EDB0 (fn_8016ED88 inlined) and passed
     // to fn_8016D398 by fn_8016DCEC.
     /* 0x140 */ cls_8016ED88 field_0x140;
@@ -1787,10 +1817,10 @@ struct GameRootSub24_8016A3AC {
     void fn_8016DB60();
     // game/tu_8016A2B4.cpp (0x8016EDB0, not written yet); called by fn_8013A1A4.
     void fn_8016EDB0();
-    // game/tu_8016A2B4.cpp (0x8016EE84, 0x238 bytes, not written yet). Called
-    // with 1 by GameRootSub04_801F856C's destructor, without a null check,
-    // before it clears field_0x24.
-    void fn_8016EE84(s32 arg);
+    // 0x8016EE84 (game/tu_8016A2B4.cpp): deletes the entries' emitters and
+    // sound objects, the emitters, the textures, and destroys the heap.
+    // GameRootSub04_801F856C's destructor deletes field_0x24 with it.
+    ~GameRootSub24_8016A3AC();
 };
 // game/tu_8016A2B4.cpp (0x8016A3AC): returns gGameRoot_8053AAF8->field_0x4->field_0x24.
 GameRootSub24_8016A3AC* fn_8016A3AC();

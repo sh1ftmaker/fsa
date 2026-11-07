@@ -2,13 +2,16 @@
 #include "dolphin/os.h"
 #include "game/GbaClient.h"
 #include "JSystem/JKernel/JKRArchive.h"
+#include "dolphin/gba/GBA.h"
+#include "dolphin/dvd/dvd.h"
+#include "game/GameState.h"
+#include <string.h>
 
 // The GBA client threads: fn_803007D0 loads "client_thread.bin" (the GBA program
 // sent with GBAJoyBoot) and starts one thread per controller port, each running
 // fn_80300E1C on its client's message queue.
 //
-// Not written yet: fn_803007D0, fn_80300A8C, fn_80300E1C (thread setup, checksum and the client
-// thread body) and fn_80301A88 (OSResumeThread of the thread at +0x28 of an unidentified object). The file holds the unit's .bss objects, in
+// Not written yet: fn_80300E1C (the client thread body). The file holds the unit's .bss objects, in
 // the original's order, and the JAudio pool __sinit (game/GameAudio.h).
 
 GbaPacket_80300A8C lbl_804D6AB8[4];
@@ -20,6 +23,177 @@ GbaClient_803007D0 lbl_804DB798[4];
 
 // The archive the client program is loaded from (lbl_80529DEC + 0x58); fn_803007D0 sets it.
 JKRArchive* lbl_8053ACB8;
+// The client program image ("client_thread.bin"), a GBA multiboot ROM:
+// fn_803007D0 patches header bytes 0xAC-0xAF (game code), 0xBD (header
+// checksum over 0xA0-0xBC) and the word at 0xC8.
+struct GbaProgram_8053ACBC {
+    /* 0x00 */ u8 mBytes[0xC8];
+    /* 0xC8 */ OSTick field_0xc8; // lbl_8053ACC8
+};
+GbaProgram_8053ACBC* lbl_8053ACBC;
+s32 lbl_8053ACC0;        // its size
+DVDDiskID* lbl_8053ACC4; // the current disc's id
+OSTick lbl_8053ACC8;     // OSGetTick at fn_803007D0
+
+// 0x80300E1C (not written yet): the client thread body.
+void* fn_80300E1C(void* arg);
+
+// The alarm fn_80300E1C sleeps on (on its stack): the alarm, then the thread
+// to wake (OSGetCurrentThread, stored right after it at +0x28).
+struct GbaAlarm_80301A88 : public OSAlarm {
+    /* 0x28 */ OSThread* mThread;
+};
+
+// The alarm handler: resumes the thread that set the alarm.
+void fn_80301A88(OSAlarm* alarm, OSContext* context) {
+    OSResumeThread(static_cast<GbaAlarm_80301A88*>(alarm)->mThread);
+}
+
+// The client's message callback: syncs the client's packet with the port's
+// shared one (lbl_804D6AB8[port]), posts 5 (new), 4 or 3 (changed) to the
+// client's queue, and exchanges a tick word with the GBA.
+// FIXME(shotgun): 99.5 %, regalloc-only
+void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
+    BOOL changed = TRUE;
+    BOOL resent = FALSE;
+    client->field_0xd8 = 0;
+    client->field_0xd9 = 1;
+    client->field_0xd3 = 3;
+    OSTick tick = client->mPacket.field_0x8;
+    client->mPacket.field_0x8 = lbl_804D6AB8[client->mPort].field_0x8;
+    if (client->mPacket.field_0x0 == 0) {
+        if (client->mPacket.field_0x3 == 0) {
+            GbaPacket_80300A8C* packet = &lbl_804D6AB8[client->mPort];
+            memset(packet, 0, 0x20);
+            packet->mPort = client->mPort;
+            packet->field_0x3 = 1;
+            packet->field_0x4 = lbl_8053ACC8;
+            lbl_804D6AB8[client->mPort].field_0x2 = client->mPacket.field_0x2;
+            lbl_804D6AB8[client->mPort].field_0xc = client->mPacket.field_0xc;
+            client->field_0x48 = OSGetTick();
+            lbl_804D6AB8[client->mPort].field_0x8 = client->field_0x48;
+            OSSendMessage(&client->mQueue, (OSMessage)5, OS_MESSAGE_BLOCK);
+        } else {
+            if (memcmp(&client->mPacket, &lbl_804D6AB8[client->mPort], 0x20) == 0 && client->field_0xdd == 0) {
+                if (tick == lbl_804D6AB8[client->mPort].field_0x8 || tick == client->field_0x48) {
+                    lbl_804D6AB8[client->mPort].field_0x8 = tick;
+                    changed = FALSE;
+                    client->field_0x48 = tick;
+                }
+            }
+            if (changed) {
+                resent = TRUE;
+                OSSendMessage(&client->mQueue, (OSMessage)4, OS_MESSAGE_BLOCK);
+                client->field_0xdd = 0;
+            }
+        }
+    } else {
+        u8 savedField2 = client->mPacket.field_0x2;
+        client->mPacket.field_0x2 = lbl_804D6AB8[client->mPort].field_0x2;
+        u32 savedFieldC = client->mPacket.field_0xc;
+        client->mPacket.field_0xc = lbl_804D6AB8[client->mPort].field_0xc;
+        if (memcmp(&client->mPacket, &lbl_804D6AB8[client->mPort], 0x20) == 0 && client->field_0xdd == 0) {
+            if (tick == lbl_804D6AB8[client->mPort].field_0x8 || tick == client->field_0x48) {
+                lbl_804D6AB8[client->mPort].field_0x8 = tick;
+                changed = FALSE;
+                client->field_0x48 = tick;
+                lbl_804D6AB8[client->mPort].field_0x2 = savedField2;
+                lbl_804D6AB8[client->mPort].field_0xc = savedFieldC;
+            }
+        }
+        if (changed) {
+            OSSendMessage(&client->mQueue, (OSMessage)3, OS_MESSAGE_BLOCK);
+            client->field_0xdd = 0;
+        }
+    }
+    if (!changed || resent) {
+        if (GBAGetStatus(client->mPort, &client->mStatus) != 0) {
+            return;
+        }
+        if (client->mStatus != 0x30) {
+            return;
+        }
+        OSTick sent;
+        OSTick received;
+        if (resent) {
+            sent = tick;
+        } else {
+            sent = OSGetTick();
+            lbl_804D6AB8[client->mPort].field_0x8 = sent;
+        }
+        if (GBAWrite(client->mPort, (u8*)&sent, &client->mStatus) != 0) {
+            return;
+        }
+        if ((client->mStatus & 0x30) != 0x30) {
+            return;
+        }
+        if (GBAGetStatus(client->mPort, &client->mStatus) != 0) {
+            return;
+        }
+        if (client->mStatus != 0x38) {
+            return;
+        }
+        s32 result = GBARead(client->mPort, (u8*)&received, &client->mStatus);
+        if (resent) {
+            return;
+        }
+        if (result != 0) {
+            return;
+        }
+        if (sent != received) {
+            return;
+        }
+        if ((client->mStatus & 0x30) != 0x30) {
+            return;
+        }
+        client->field_0x48 = sent;
+        client->field_0xd8 = 1;
+        client->field_0xd9 = 0;
+        client->field_0xd3 = 0;
+        client->field_0xde = 1;
+    }
+}
+
+// Loads the client program, patches its header (the tick at 0xC8, the disc's
+// game code at 0xAC and the header checksum at 0xBD) and starts one client
+// thread per port.
+// FIXME(shotgun): 89.3 %, missing/extra (the port loop's register use)
+void fn_803007D0() {
+    lbl_8053ACC4 = DVDGetCurrentDiskID();
+    GBAInit();
+    lbl_8053ACB8 = lbl_80529DEC.field_0x58;
+    lbl_8053ACBC = (GbaProgram_8053ACBC*)lbl_8053ACB8->getResource('????', "client_thread.bin");
+    lbl_8053ACC0 = lbl_8053ACB8->getResSize(lbl_8053ACB8->getResource('????', "client_thread.bin"));
+    lbl_8053ACC8 = OSGetTick();
+    lbl_8053ACBC->field_0xc8 = lbl_8053ACC8;
+    DVDDiskID* diskID = lbl_8053ACC4;
+    u8* bytes = lbl_8053ACBC->mBytes;
+    bytes[0xAC] = diskID->gameName[0];
+    bytes[0xAD] = diskID->gameName[1];
+    bytes[0xAE] = diskID->gameName[2];
+    bytes[0xAF] = diskID->gameName[3];
+    u8 sum = 0xE7;
+    s32 i;
+    for (i = 0xA0; i < 0xBD; i++) {
+        sum -= bytes[i];
+    }
+    bytes[i] = sum;
+    for (s32 port = 0; port < 4; port++) {
+        GbaClient_803007D0* client = &lbl_804DB798[port];
+        memset(client, 0, sizeof(GbaClient_803007D0));
+        client->mPort = port;
+        client->mCallback = fn_80300A8C;
+        client->mProgram = lbl_8053ACBC->mBytes;
+        client->mLength = lbl_8053ACC0;
+        client->field_0xda = 0x1A;
+        client->field_0xdc = 1;
+        client->field_0xdd = 0;
+        client->field_0xde = 0;
+        OSInitMessageQueue(&client->mQueue, client->mMessage, 1);
+        OSCreateThread(&lbl_804D6B38[port], fn_80300E1C, client, lbl_804D7798[port] + 0x1000, 0x1000, 8, 0);
+        OSResumeThread(&lbl_804D6B38[port]);
+    }
+}
 
 // FIXME(shotgun): 100 %
 void fn_803007A0() {

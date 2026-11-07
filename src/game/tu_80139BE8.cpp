@@ -86,7 +86,7 @@ GameRootSub04_801F856C::~GameRootSub04_801F856C() {
         field_0x30->destroy();
     }
     lbl_8053AB00->getTotalFreeSize();
-    field_0x24->fn_8016EE84(1);
+    delete field_0x24;
     field_0x24 = NULL;
     lbl_8053AB00->getTotalFreeSize();
     field_0x20->fn_80191744(1);

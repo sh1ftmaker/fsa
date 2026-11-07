@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/cls_8016ED88.h"
+#include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "game/GameMode.h"
 #include "JSystem/JParticle/JPAEmitter.h"
@@ -37,6 +38,52 @@ static const GXColor lbl_8053D934 = {0xCF, 0xE7, 0xE7, 0xFF}; // fn_8016B910
 void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}
+
+// FIXME(shotgun): 80.8 %, missing/extra (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
+GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
+    for (int i = 0; i < 4; i++) {
+        if (field_0x140.mEntries[i].field_0x0 != NULL) {
+            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x140.mEntries[i].field_0x0);
+        }
+        if (field_0x140.mEntries[i].field_0x18 != NULL) {
+            delete field_0x140.mEntries[i].field_0x18;
+        }
+    }
+    if (field_0x138 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x138);
+    }
+    if (field_0x13c != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x13c);
+    }
+    if (field_0x130 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x130);
+    }
+    if (field_0x134 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x134);
+    }
+    if (field_0x124 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x124);
+    }
+    if (field_0x128 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x128);
+    }
+    if (field_0x12c != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x12c);
+    }
+    delete field_0x120;
+    delete field_0x11c;
+    delete field_0x118;
+    delete field_0x114;
+    delete field_0x110;
+    delete field_0x10c;
+    delete field_0x108;
+    delete field_0x104;
+    delete field_0x100;
+    delete field_0xfc;
+    delete field_0xf8;
+    delete field_0xf4;
+    field_0x0->destroy();
+}
 
 void GameRootSub24_8016A3AC::fn_8016EDB0() {
     fn_8016A330();

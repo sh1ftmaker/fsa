@@ -34,6 +34,7 @@ class JAUAudience_withSetting_doppler;
 template <int N> class JAUDopplerAudible;
 template <int N, class Audible, class State, class Audience> class JAUAudience_;
 class JKRSolidHeap;
+namespace GameAudio { class CustomSoundTable; } // Inagaki/GameSoundTable.h
 
 struct AudioMgr_8045A080 {
     /* 0x00 */ u32 field_0x0;
@@ -50,7 +51,7 @@ struct AudioMgr_8045A080 {
     /* 0x34 */ JAISeMgr* field_0x34; // its categories 0-6 are paused / faded here
     /* 0x38 */ JAISeqMgr* field_0x38; // fn_80459AE4: field_0x30 + 0x728
     /* 0x3C */ JAUAudience_<4, JAUDopplerAudible<4>, JAUDopplerAudienceState, JAUAudience_withSetting_doppler>* field_0x3c; // fn_80459AE4 news it
-    /* 0x40 */ u8 field_0x40[0x44 - 0x40];
+    /* 0x40 */ GameAudio::CustomSoundTable* field_0x40; // fn_80459AE4 builds it (vtable __vt__Q29GameAudio16CustomSoundTable)
     /* 0x44 */ JAUSectionHeap* field_0x44; // fn_80458090 loads wave archives of it
     /* 0x48 */ u8 field_0x48[0x4C - 0x48];
     /* 0x4C */ f32 field_0x4c; // music volume (fn_80458744 tables), times field_0x54

@@ -4,6 +4,7 @@
 #include "types.h"
 
 class ActorSoundObj_804578F4;
+class JPABaseEmitter;
 
 // A 0x1C-byte entry whose constructor is the empty fn_8016FDE0 (game/tu_8016A2B4.cpp);
 // arrays of four are built with __construct_array by fn_8016F0BC (at its
@@ -12,7 +13,7 @@ class ActorSoundObj_804578F4;
 struct cls_8016FDE0 {
     cls_8016FDE0();
 
-    /* 0x00 */ void* field_0x0;  // cleared by cls_8016ED88::fn_8016ED88
+    /* 0x00 */ JPABaseEmitter* field_0x0;  // cleared by cls_8016ED88::fn_8016ED88
     /* 0x04 */ u8 field_0x4[0x14 - 0x4];
     /* 0x14 */ void* field_0x14; // cleared by cls_8016ED88::fn_8016ED88
     // Title_804AF820's constructor puts a new ActorSoundObj_804578F4(NULL,

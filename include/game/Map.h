@@ -99,6 +99,23 @@ struct cls_804AA858Sub11CEntry {
     u8 mXHigh : 1;
 }; // Size: 0x4
 
+// A GBA sprite word: tu_80301CD0's per-player sprite tables (lbl_80506F88)
+// and a record's field_0x18 words (fn_803066F0 / fn_803064A8 fill them,
+// fn_803068D0 copies them).
+union GbaSprite_80506F88 {
+    u32 mWord;
+    struct {
+        /* 0x0 */ u8 field_0x0; // low byte of the 10-bit id (high bits: field_0x3_1)
+        /* 0x1 */ u8 field_0x1; // y
+        /* 0x2 */ u8 field_0x2; // x low byte; 0x80 (with field_0x3_0) hides it
+        /* 0x3 */ u8 mKind : 3;
+        u8 field_0x3_4 : 1;
+        u8 field_0x3_3 : 1;
+        u8 field_0x3_1 : 2;
+        u8 field_0x3_0 : 1; // x bit 8
+    } f;
+}; // Size: 0x4
+
 // TileMap_804AA858::field_0x11c: four of these, plain new(0x68) (no constructor).
 // fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
 // reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
@@ -126,7 +143,7 @@ struct cls_804AA858Sub11C {
     // mEntries[0].mScroll << 5 | mEntries[0].mScrollBit << 4 | mEntries[1].mScroll,
     // y likewise from entries 2 and 3; mEntries[3].mScrollBit is the overlay flag.
     /* 0x08 */ cls_804AA858Sub11CEntry mEntries[4];
-    /* 0x18 */ u32 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
+    /* 0x18 */ GbaSprite_80506F88 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
 
 

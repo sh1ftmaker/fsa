@@ -2,6 +2,7 @@
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "JSystem/JAudio/System/JASTrack.h"
+#include "Inagaki/GameSoundTable.h"
 
 // FIXME(shotgun): 92.9 %, extra/missing insns (the original also stores 0x54/0x58 to stack temporaries)
 ActorSoundObj_804578F4::ActorSoundObj_804578F4(JGeometry::TVec3f* pos, JKRHeap* heap, u8 numHandles)
@@ -111,6 +112,13 @@ void ActorSoundObj_804578F4::fn_80456154() {
 void ActorSoundObj_804578F4::fn_80456120() {
     field_0x31 = 0;
     dispose();
+}
+
+// A sound may stop unless its sound-table switch bits have 0x8000 set.
+// FIXME(shotgun): 89.0 %, scheduling+regalloc
+bool ActorSoundObj_804578F4::stopOK(JAISoundHandle& handle) {
+    u32 bits = gAudioMgr_8053AF80->field_0x40->getSwBit(handle->getID());
+    return !(bits & 0x8000);
 }
 
 void ActorSoundObj_804578F4::fn_80455F40(JAISoundHandle* handle) {
