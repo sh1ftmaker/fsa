@@ -41,12 +41,13 @@ public:
     /* 0x250 */ s32 field_0x250;
     /* 0x254 */ s32 field_0x254;
     /* 0x258 */ s32 field_0x258;
-    /* 0x25C */ s32 field_0x25c;
-    /* 0x260 */ s32 field_0x260;
-    /* 0x264 */ s32 field_0x264;
-    /* 0x268 */ s32 field_0x268;
+    /* 0x25C */ ActorBase_804A5770* field_0x25c[4]; // per player: the actor it carries
     /* 0x26C */ s32 field_0x26c;
-    /* 0x270 */ s32 field_0x270;
+    // init clears the word, fn_803584C0 uses the first half as a signed step.
+    union {
+        s32 field_0x270w;
+        s16 field_0x270;
+    };
 }; // Size: 0x274 (init also stores words at 0x274 and 0x278, past the allocation)
 
 #endif
