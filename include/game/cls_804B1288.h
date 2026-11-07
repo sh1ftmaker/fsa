@@ -105,6 +105,10 @@ public:
     bool isCursorState();
     // 0x8040732C (called by fn_804108B4), not written yet.
     void fn_8040732C();
+    // 0x8040873C: puts the screen in its start position for the selected stage (zoomed
+    // to it for stages 0-6, the Penback fade for stage 7), loads the stage picture
+    // w0<stage>_0<sub>.bti into Pplan01 / Pplan02 and the four texts of field_0x564.
+    void fn_8040873C();
     // 0x804111C4: draws the screen.
     void fn_804111C4();
     void fn_80411230(); // 0x80411230
@@ -271,8 +275,10 @@ public:
     /* 0x434 */ s16 field_0x434;
     /* 0x436 */ s16 field_0x436;
     // The stage name (getMessageText_803832BC or a debug name) fn_8040C950 copies into
-    // Ttlv11 / Ttlv12; its length is not proven (it runs to field_0x5dc at most).
-    /* 0x438 */ char field_0x438[0x5DC - 0x438];
+    // Ttlv11 / Ttlv12; its length is not proven (it runs to field_0x564 at most).
+    /* 0x438 */ char field_0x438[0x564 - 0x438];
+    // The texts of messages lbl_8048C1F8[2..5][stage] (fn_8040873C).
+    /* 0x564 */ char field_0x564[4][0x1E];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
     /* 0x5DD */ u8 field_0x5dd[0x640 - 0x5DD];
     /* 0x640 */ u8 field_0x640; // set by fn_804096E8 (stage 7)

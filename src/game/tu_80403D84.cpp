@@ -6,6 +6,7 @@
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
 #include <string.h>
+#include <stdio.h>
 #include "game/tu_80379F84.h"
 #include "game/tu_803B8C74.h"
 #include "JSystem/JMath/JMath.h"
@@ -32,14 +33,14 @@ static const s16 lbl_80543890[4] = {0, 1, 2, 1};
 
 // .rodata 0x8048C1F8-0x8048CC1C in address order: map.blo pane-tag tables (u64 J2D tags),
 // the screen's s32 / s16 / u8 index tables and the rupee-digit texture names (lbl_804B1260, .data).
-static const s32 lbl_8048C1F8[6][8] = {
-    {288, 289, 290, 291, 292, 293, 294, 295},
-    {580, 581, 582, 583, 584, 585, 586, 587},
-    {0, 4, 8, 12, 16, 20, 24, 28},
-    {1, 5, 9, 14, 17, 21, 25, 29},
-    {2, 6, 10, 13, 18, 22, 26, 30},
-    {3, 7, 11, 15, 19, 23, 27, 31},
-};
+// Message ids per stage: the stage names (setStageName), 0x244.. (580..), and the four texts
+// fn_8040873C reads (each its own array: fn_8040873C addresses them off the section base).
+static const s32 lbl_8048C1F8[8] = {288, 289, 290, 291, 292, 293, 294, 295};
+static const s32 lbl_8048C218[8] = {580, 581, 582, 583, 584, 585, 586, 587};
+static const s32 lbl_8048C238[8] = {0, 4, 8, 12, 16, 20, 24, 28};
+static const s32 lbl_8048C258[8] = {1, 5, 9, 14, 17, 21, 25, 29};
+static const s32 lbl_8048C278[8] = {2, 6, 10, 13, 18, 22, 26, 30};
+static const s32 lbl_8048C298[8] = {3, 7, 11, 15, 19, 23, 27, 31};
 static const u64 lbl_8048C2B8[8] = {
     'Pwarea01', 'Pwarea02', 'Pwarea03', 'Pwarea04', 'Pwarea05', 'Pwarea06', 'Pwarea07', 'Pwarea08',
 };
@@ -229,7 +230,7 @@ inline bool MapScreen_804B1288::isCursorState() {
 // debug-name literals sit in fn_804096E8's block of .sdata2, so it is an inline.
 inline void MapScreen_804B1288::setStageName() {
     if (field_0x340 < 8) {
-        getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
+        getMessageText_803832BC(field_0x438, lbl_8048C1F8[field_0x340], 0, NULL, NULL);
     } else if (field_0x340 == 8) {
         strcpy(field_0x438, "Test-1");
     } else if (field_0x340 == 9) {
@@ -1301,6 +1302,106 @@ void MapScreen_804B1288::fn_80409014() {
         picture->setBlendRatio(t, 1.0f - t, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
         picture->rotate(field_0x23c->field_0x18 * 0.5f, field_0x23c->field_0x1c * 0.5f, J2DROTATE_Z, 270.0f);
     }
+}
+
+// FIXME: 95.81. Missing/extra (one instruction): ours moves fn_80403184's result through
+// r0 into r26 (mr, mr) where the original keeps it in r28; the zoom divisions load
+// field_0x18 before the lbl_8048C850 entry in the original (order only). The tail after the
+// stage branch is in both branches: the original has its own copy in the stage 7 branch.
+void MapScreen_804B1288::fn_8040873C() {
+    if (field_0x340 == 7) {
+        fn_80408F38(1.0f);
+        field_0x120[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0x120[i]->mPane->setAlpha(field_0x120[i]->field_0x28);
+        }
+        field_0x65e = 1;
+    } else {
+        if (field_0x340 < 7) {
+            field_0xc8->moveFromCentre_80402E08(lbl_8048C86C[field_0x340], lbl_8048C87C[field_0x340]);
+            f32 zoom = lbl_8048C850[field_0x340] / field_0xc8->field_0x18;
+            field_0xc8->fn_80402CE0(zoom, zoom);
+            f32 scale = lbl_8048C850[field_0x340] / field_0xc8->field_0x18 - 1.0f;
+            f32 dx = scale * (field_0xcc->field_0x10 - field_0xc8->field_0x10);
+            f32 dy = scale * (field_0xcc->field_0x14 - field_0xc8->field_0x14);
+            field_0xcc->moveFromCentre_80402E08(dx + lbl_8048C86C[field_0x340], dy + lbl_8048C87C[field_0x340]);
+            zoom = lbl_8048C850[field_0x340] / field_0xc8->field_0x18;
+            field_0xcc->fn_80402CE0(zoom, zoom);
+            dx = scale * (field_0xd0->field_0x10 - field_0xc8->field_0x10);
+            dy = scale * (field_0xd0->field_0x14 - field_0xc8->field_0x14);
+            field_0xd0->moveFromCentre_80402E08(dx + lbl_8048C86C[field_0x340], dy + lbl_8048C87C[field_0x340]);
+            zoom = lbl_8048C850[field_0x340] / field_0xc8->field_0x18;
+            field_0xd0->fn_80402CE0(zoom, zoom);
+            for (int i = 0; i < 18; i++) {
+                field_0xd4[i]->moveFromCentre_80402E08(scale * field_0xd4[i]->field_0x10,
+                                                       scale * field_0xd4[i]->field_0x14);
+                zoom = lbl_8048C850[field_0x340] / field_0xc8->field_0x18;
+                field_0xd4[i]->fn_80402CE0(zoom, zoom);
+            }
+        }
+        field_0x120[0]->moveFromCentre_80402E08(0.0f, 0.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0x120[i]->mPane->setAlpha(field_0x120[i]->field_0x28);
+        }
+        field_0x65e = 1;
+    }
+    for (int i = 0; i < 8; i++) {
+        field_0x28[i][0]->moveFromCentre_80402E08(-150.0f, 0.0f);
+        field_0x28[i][0]->field_0x20 = 0;
+        for (int j = 0; j < 3; j++) {
+            field_0x28[i][j]->mPane->setAlpha(0);
+        }
+    }
+    field_0x11c->moveFromCentre_80402E08(0.0f, 0.0f);
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 2; j++) {
+            field_0x228[i][j]->moveFromCentre_80402E08(0.0f, -150.0f);
+        }
+    }
+    field_0x238->moveFromCentre_80402E08(0.0f, -150.0f);
+    field_0x23c->moveFromCentre_80402E08(0.0f, -150.0f);
+    if (field_0x340 <= 7) {
+        if (field_0x350 != 6) {
+            f32 x = lbl_8048C95C[field_0x340 * 4 + field_0x348][0];
+            f32 y = lbl_8048C95C[field_0x340 * 4 + field_0x348][1];
+            field_0x394 = x;
+            field_0x398 = y;
+        }
+    } else {
+        field_0x394 = field_0x398 = 0.0f;
+    }
+    if (fn_804045F8(field_0x340)) {
+        field_0x208[field_0x340]->mPane->setAlpha(field_0x208[field_0x340]->field_0x28);
+    }
+    field_0x400 = 1.0f;
+    if (field_0x340 == 8) {
+        return;
+    }
+    if (field_0x340 == 9) {
+        return;
+    }
+    if (field_0x340 == 10) {
+        return;
+    }
+    if (field_0x340 == 11) {
+        return;
+    }
+    if (field_0x340 == 12) {
+        return;
+    }
+    char name[11];
+    snprintf(name, sizeof(name), "w0%d_0%d.bti", field_0x340 + 1, field_0x348 + 1);
+    ResTIMG* picture = (ResTIMG*)fn_80403184('TIMG', name);
+    ((J2DPicture*)field_0x10->search('Pplan01'))->remove((u8)0);
+    ((J2DPicture*)field_0x10->search('Pplan01'))->append(picture, 1.0f);
+    ((J2DPicture*)field_0x10->search('Pplan01'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+    ((J2DPicture*)field_0x10->search('Pplan02'))->remove((u8)0);
+    ((J2DPicture*)field_0x10->search('Pplan02'))->append(picture, 1.0f);
+    ((J2DPicture*)field_0x10->search('Pplan02'))->setBlendRatio(0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+    getMessageText_803832BC(field_0x564[0], lbl_8048C238[field_0x340], 0, NULL, NULL);
+    getMessageText_803832BC(field_0x564[1], lbl_8048C258[field_0x340], 0, NULL, NULL);
+    getMessageText_803832BC(field_0x564[2], lbl_8048C278[field_0x340], 0, NULL, NULL);
+    getMessageText_803832BC(field_0x564[3], lbl_8048C298[field_0x340], 0, NULL, NULL);
 }
 
 void MapScreen_804B1288::fn_80408F38(f32 alpha) {
