@@ -14,6 +14,8 @@ class cls_804B20F8;
 class ActorSoundObj_804578F4;
 class JPABaseEmitter;
 class PaneCtrl_804AF86C;
+class J2DAnmTransform;
+class J2DAnmTevRegKey;
 
 // The four screen objects whose constructors store them in .sbss globals
 // (lbl_8053ADA0, lbl_8053ADA8, lbl_8053ADC0, lbl_8053ADB8). Each is named after
@@ -96,21 +98,39 @@ public:
 
     /* 0x04 */ J2DScreen* field_0x4;
     /* 0x08 */ J2DScreen* field_0x8;
-    /* 0x0C */ u8 field_0xc[0x1C - 0xC];
+    /* 0x0C */ void* field_0xc; // total_star.bck
+    /* 0x10 */ J2DAnmTransform* field_0x10;
+    /* 0x14 */ void* field_0x14; // total_star.brk
+    /* 0x18 */ J2DAnmTevRegKey* field_0x18;
     /* 0x1C */ J2DPicture* field_0x1c; // the fade picture
     /* 0x20 */ J2DPicture* field_0x20; // the dark picture (alpha field_0x81)
-    /* 0x24 */ PaneCtrl_804AF86C* field_0x24;
-    /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
+    /* 0x24 */ PaneCtrl_804AF86C* field_0x24[2];
     /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
-    /* 0x30 */ u8 field_0x30[0x6C - 0x30];
+    /* 0x30 */ PaneCtrl_804AF86C* field_0x30;
+    /* 0x34 */ PaneCtrl_804AF86C* field_0x34[4];
+    /* 0x44 */ PaneCtrl_804AF86C* field_0x44;
+    /* 0x48 */ PaneCtrl_804AF86C* field_0x48; // lbl_8053AED8->field_0x8
+    /* 0x4C */ JPABaseEmitter* field_0x4c[3];
+    /* 0x58 */ f32 field_0x58;
+    /* 0x5C */ f32 field_0x5c;
+    /* 0x60 */ s32 field_0x60;
+    /* 0x64 */ s32 field_0x64;
+    /* 0x68 */ s16 field_0x68;
+    /* 0x6A */ s16 field_0x6a;
     /* 0x6C */ s16 field_0x6c; // frame counter (0-59)
     /* 0x6E */ s16 field_0x6e; // frame of the bounce (0-10), 0 when idle
-    /* 0x70 */ u8 field_0x70[0x76 - 0x70];
+    /* 0x70 */ s16 field_0x70;
+    /* 0x72 */ s16 field_0x72;
+    /* 0x74 */ s16 field_0x74;
     /* 0x76 */ u8 field_0x76; // mode, read by fn_8037A120
     /* 0x77 */ u8 field_0x77; // the fade picture's alpha
     /* 0x78 */ u8 field_0x78;
     /* 0x79 */ u8 field_0x79;
-    /* 0x7A */ u8 field_0x7a[0x7F - 0x7A];
+    /* 0x7A */ u8 field_0x7a;
+    /* 0x7B */ u8 field_0x7b; // pane alphas the constructor reads
+    /* 0x7C */ u8 field_0x7c;
+    /* 0x7D */ u8 field_0x7d;
+    /* 0x7E */ u8 field_0x7e;
     /* 0x7F */ u8 field_0x7f;
     /* 0x80 */ u8 field_0x80;
     /* 0x81 */ u8 field_0x81;
