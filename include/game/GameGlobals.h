@@ -1891,9 +1891,19 @@ public:
     // 0x803A71F0 (not written yet): starts by setting the display's clear colour;
     // GameRoot's fn_80136828 calls it on lbl_8053AD90 in screen mode 5.
     void fn_803A71F0();
+    // 0x803A7708 is the destructor.
 
     /* 0x00 */ // vtable
-    /* 0x04 */ u8 field_0x4[0x84 - 0x4];
+    /* 0x04 */ J2DScreen* field_0x4;
+    /* 0x08 */ J2DScreen* field_0x8;
+    /* 0x0C */ PaneCtrl_804AF86C* field_0xc[6];
+    /* 0x24 */ PaneCtrl_804AF86C* field_0x24;
+    /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
+    /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
+    /* 0x30 */ PaneCtrl_804AF86C* field_0x30;
+    /* 0x34 */ u8 field_0x34[0x80 - 0x34];
+    /* 0x80 */ s32 field_0x80; // returned by fn_803A65EC (5 without the screen)
+    /* 0x84 */ u8 field_0x84[0];
 }; // Size: 0x84 (__nw__(0x84) in tu_803DAC3C's constructor)
 // .sbss pointer the constructor sets (0x803A8350).
 extern cls_804AF860* lbl_8053AD90;
