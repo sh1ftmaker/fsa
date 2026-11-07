@@ -262,20 +262,20 @@ inline cls_801192AC::cls_801192AC() {
     mExtend = JGadget::vector::extend_default;
 }
 
-// FIXME(shotgun): 20.6 %, stand-in (the original is the TVector member: erase(begin(), end()),
+// FIXME(shotgun): 20.6 %, missing/extra (stand-in: the original is the TVector member: erase(begin(), end()),
 // then the member dtor's null check, erase again and the delete)
 cls_801192AC::~cls_801192AC() {
     mEnd = mBegin;
     delete mBegin;
 }
 
-// FIXME(shotgun): 82.2 %
+// FIXME(shotgun): 82.2 %, missing/extra + reloc-name
 extern "C" cls_801192AC* fn_8011921C() {
     static cls_801192AC instance;
     return &instance;
 }
 
-// FIXME(shotgun): 48.2 %, stand-in (the original is the TVector reserve(20) inline)
+// FIXME(shotgun): 48.2 %, missing/extra (stand-in: the original is the TVector reserve(20) inline)
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
         return;
@@ -294,7 +294,7 @@ void cls_801192AC::fn_801190E4() {
     operator delete(old);
 }
 
-// FIXME(shotgun): 73.7 %
+// FIXME(shotgun): 73.7 %, missing/extra
 // The per-frame pass: clears the four player bits of lbl_8053AED0's 0xDD; with field_0x2
 // raises the flag at field_0x30's 0x284 (0.05f at 0x28C); unless paused (field_0x1) runs each
 // listed actor's vfunc_0x54 and, when all their vfunc_0x5C say done and field_0x4 < 0xE,
