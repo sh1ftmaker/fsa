@@ -603,6 +603,92 @@ void MapScreen_804B1288::fn_8040E278() {
     }
 }
 
+// FIXME: 92.50, different (NONMATCHING). Only the fade argument differs: the original
+// computes 1 - field_0x426 * 0.125 unfused (fmuls, fsubs) and after the first
+// search('Ttlv11') of the inlined fn_80411A94; ours evaluates the argument first, fused
+// (fnmsubs). The rest, including the 1.0f fade and the stage-name copy, is the same.
+#ifdef NONMATCHING
+void MapScreen_804B1288::fn_8040CE90() {
+    field_0x426++;
+    if (field_0x426 >= 8) {
+        if (field_0x340 < 8) {
+            getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
+        } else if (field_0x340 == 8) {
+            strcpy(field_0x438, "Test-1");
+        } else if (field_0x340 == 9) {
+            strcpy(field_0x438, "ECTS");
+        } else if (field_0x340 == 10) {
+            strcpy(field_0x438, "E3");
+        } else if (field_0x340 == 11) {
+            strcpy(field_0x438, "Boss1-4");
+        } else if (field_0x340 == 12) {
+            strcpy(field_0x438, "Boss5-8");
+        } else {
+            field_0x438[0] = 0;
+        }
+        strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
+        strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
+        fn_80411A94(1.0f);
+        field_0x350 = 0xB;
+    } else {
+        if (field_0x426 < 5) {
+            f32 y = 7.0f * (field_0x426 * field_0x426) / 25.0f;
+            field_0x228[1][0]->moveFromCentre_80402E08(0.0f, y);
+            field_0x228[1][1]->moveFromCentre_80402E08(0.0f, y);
+        } else if (field_0x426 <= 10) {
+            s32 n = 10 - field_0x426;
+            f32 y = 7.0f * (n * n) / 25.0f;
+            field_0x228[1][0]->moveFromCentre_80402E08(0.0f, y);
+            field_0x228[1][1]->moveFromCentre_80402E08(0.0f, y);
+        }
+        fn_80411A94(1.0f - field_0x426 * 0.125f);
+    }
+}
+#endif
+
+// FIXME: 92.47, different (NONMATCHING). Only the fade argument differs: the original
+// computes 1 - field_0x426 * 0.125 unfused (fmuls, fsubs) and after the first
+// search('Ttlv11') of the inlined fn_80411A94; ours evaluates the argument first, fused
+// (fnmsubs). The rest, including the 1.0f fade and the stage-name copy, is the same.
+#ifdef NONMATCHING
+void MapScreen_804B1288::fn_8040C950() {
+    field_0x426++;
+    if (field_0x426 >= 8) {
+        if (field_0x340 < 8) {
+            getMessageText_803832BC(field_0x438, lbl_8048C1F8[0][field_0x340], 0, NULL, NULL);
+        } else if (field_0x340 == 8) {
+            strcpy(field_0x438, "Test-1");
+        } else if (field_0x340 == 9) {
+            strcpy(field_0x438, "ECTS");
+        } else if (field_0x340 == 10) {
+            strcpy(field_0x438, "E3");
+        } else if (field_0x340 == 11) {
+            strcpy(field_0x438, "Boss1-4");
+        } else if (field_0x340 == 12) {
+            strcpy(field_0x438, "Boss5-8");
+        } else {
+            field_0x438[0] = 0;
+        }
+        strcpy(((J2DTextBox*)field_0x10->search('Ttlv11'))->getStringPtr(), field_0x438);
+        strcpy(((J2DTextBox*)field_0x10->search('Ttlv12'))->getStringPtr(), field_0x438);
+        fn_80411A94(1.0f);
+        field_0x350 = 0xB;
+    } else {
+        if (field_0x426 < 5) {
+            f32 y = -7.0f * (field_0x426 * field_0x426) / 25.0f;
+            field_0x228[0][0]->moveFromCentre_80402E08(0.0f, y);
+            field_0x228[0][1]->moveFromCentre_80402E08(0.0f, y);
+        } else if (field_0x426 <= 10) {
+            s32 n = 10 - field_0x426;
+            f32 y = -7.0f * (n * n) / 25.0f;
+            field_0x228[0][0]->moveFromCentre_80402E08(0.0f, y);
+            field_0x228[0][1]->moveFromCentre_80402E08(0.0f, y);
+        }
+        fn_80411A94(1.0f - field_0x426 * 0.125f);
+    }
+}
+#endif
+
 // FIXME: 99.81. regalloc-only: the original loads field_0x3b8 into f0 and the pane's
 // field_0xc into f2 for `offset`; ours swaps them. 0.5f / 400.0f are pooled by unwritten
 // functions.

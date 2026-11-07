@@ -238,7 +238,8 @@ public:
     /* 0x41E */ s16 field_0x41e;
     /* 0x420 */ s16 field_0x420; // 0-179, the blend / turn cycle of field_0x23c (fn_80409014)
     /* 0x422 */ s16 field_0x422; // blink counter of field_0x228 (fn_80409014)
-    /* 0x424 */ u8 field_0x424[0x428 - 0x424];
+    /* 0x424 */ u8 field_0x424[0x426 - 0x424];
+    /* 0x426 */ s16 field_0x426; // frame counter of fn_8040C950 / fn_8040CE90
     /* 0x428 */ s16 field_0x428; // step of fn_8040B5A0 (0: drop in, 1: rise out)
     /* 0x42A */ s16 field_0x42a;
     /* 0x42C */ s16 field_0x42c; // frame counter of fn_8040E298
@@ -247,7 +248,9 @@ public:
     /* 0x432 */ s16 field_0x432; // frame counter of the cursor sprite (0-5999, fn_80406634)
     /* 0x434 */ s16 field_0x434;
     /* 0x436 */ s16 field_0x436;
-    /* 0x438 */ u8 field_0x438[0x5DC - 0x438];
+    // The stage name (getMessageText_803832BC or a debug name) fn_8040C950 copies into
+    // Ttlv11 / Ttlv12; its length is not proven (it runs to field_0x5dc at most).
+    /* 0x438 */ char field_0x438[0x5DC - 0x438];
     /* 0x5DC */ char field_0x5dc[1]; // text buffer, length not known
     /* 0x5DD */ u8 field_0x5dd[0x641 - 0x5DD];
     /* 0x641 */ u8 field_0x641; // alpha of the Ppoint panes (fn_80404648)
