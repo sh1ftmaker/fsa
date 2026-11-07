@@ -8,7 +8,7 @@
 // Named after its vtable, 0x804A5568.
 class cls_804A5568 : public EnemyBase_804A4808 {
 public:
-    cls_804A5568() {}
+    cls_804A5568();
     /* 0x08 */ virtual ~cls_804A5568();
     /* 0x0C */ virtual void init();
     /* 0x5C */ virtual u8 vfunc_0x5C();
@@ -26,7 +26,17 @@ public:
     // 0x801E8EB4: sets bit `index` of the word at 0x2A8 and stores pos's x / y
     // at 0x2B0 + 8 * index; arg is unused.
     void fn_801E8EB4(u8 index, s32 arg, const JGeometry::TVec2f* pos);
-    /* 0x2A8 */ u8 field_0x2a8[0x118]; // not yet known
+    // Shotgun pass: fn_801E9224 is the chain's per-frame step (not written yet).
+    void fn_801E9224();
+
+    /* 0x2A8 */ u32 mMask; // bit i: link i is set (fn_801E8EB4)
+    /* 0x2AC */ u8 field_0x2ac;
+    /* 0x2AD */ u8 mCount; // the run of low bits set in mMask (fn_801E8C74)
+    /* 0x2B0 */ JGeometry::TVec2f field_0x2b0[32]; // link positions (8 groups of 4 in the original's construct_array)
+    /* 0x3B0 */ u8 field_0x3b0;
+    /* 0x3B4 */ f32 field_0x3b4;
+    /* 0x3B8 */ s32 field_0x3b8;
+    /* 0x3BC */ s16 field_0x3bc;
     /* 0x3C0 */ JPABaseEmitter* mEmitter3c0; // released by the destructor
 }; // Size: 0x3C4
 
