@@ -1280,7 +1280,7 @@ struct cls_801192AC {
     // 0x801184F0 (0x1C0 bytes, not written yet). Called on fn_8011921C() with a
     // flag (1 from game/tu_80139BE8.cpp, 0 from act_opening_goal's vfunc_0x54
     // and tu_801286C0); the flag is tested as a byte.
-    void fn_801184F0(bool flag);
+    bool fn_801184F0(bool flag);
     // 0x8011871C (not written yet). Returns the first entry at or after
     // `from` whose actor's mActorId (0x1A0) is `actorId`, or mEnd if none.
     ActorBase_804A5770** fn_8011871C(ActorBase_804A5770** from, u32 actorId);

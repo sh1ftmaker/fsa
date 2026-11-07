@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/ActorBase.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
@@ -232,6 +233,57 @@ void cls_80119E5C::fn_801194C4() {
 
 void cls_80119E5C::fn_80119468(s32 g, s32 mode) {
     fn_80119998(fadeFrames(mode), 0, mode, 0, 2, 0, g);
+}
+
+// FIXME(shotgun): not written: fn_80118E20 (0x2C4: the per-frame pass over the actor list
+// with the lbl_8053AED0 flag bits and the inlined fn_801184F0 reset), fn_801190E4 (the vector
+// reserve), the vector internals fn_801188B8 / fn_801188E0 / fn_80118938 / fn_801189B0
+// (JGadget TVector insert machinery at this+0xC, needs a typed vector member), fn_8011888C
+// (calls them), fn_8011921C (the static getter) and the destructor fn_801192AC.
+// FIXME(shotgun): 79 %, missing/extra (erase is a plain copy loop; the original is a vector erase)
+void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
+    ActorBase_804A5770** it = mBegin;
+    ActorBase_804A5770** end = mEnd;
+    while (it != end && (*it)->mSerial != actor->mSerial) {
+        it++;
+    }
+    if (it != end) {
+        ActorBase_804A5770** next = it + 1;
+        while (next < end) {
+            *it++ = *next++;
+        }
+        mEnd = it;
+    }
+}
+
+// FIXME(shotgun): 37 %, missing/extra
+ActorBase_804A5770** cls_801192AC::fn_8011871C(ActorBase_804A5770** from, u32 actorId) {
+    if (mBegin == NULL || mEnd == mBegin) {
+        return mEnd;
+    }
+    while (from != mEnd) {
+        if ((*from)->mActorId == actorId) {
+            return from;
+        }
+        from++;
+    }
+    return mEnd;
+}
+
+// FIXME(shotgun): 57 %, missing/extra (the vector clear is a plain assignment)
+bool cls_801192AC::fn_801184F0(bool flag) {
+    getActorManager_801F856C()->fn_801F6884();
+    field_0x0 = 0;
+    if (flag) {
+        fadeObject()->fn_80119958();
+        mEnd = mBegin;
+        field_0x0 = 0;
+        field_0x1 = 0;
+        field_0x2 = 0;
+        field_0x4 = 0x13;
+        field_0x8 = 0;
+    }
+    return true;
 }
 
 bool cls_801192AC::fn_801186B0(u32 value) {
