@@ -88,11 +88,48 @@ void ZoraEscortGoal_8049E424::init() {
     }
 }
 
-inline bool ZoraEscortGoal_8049E424::talk(s32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
-    return fn_8038AD24(player, msg, serial, layer, pos, flags);
+// The bobbing of states 8 and 9: z follows a sine of field_0x248, and the emitters follow mPos.
+inline void ZoraEscortGoal_8049E424::hover() {
+    JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+    field_0x248 += 600;
+    if (field_0x248 >= 0x10000) {
+        field_0x248 = 0;
+    }
+    pos.z = 4.0f * JMath::sincosTable_.sinShort(field_0x248) + 4.0f;
+    mPos.z = field_0x26c + pos.z;
+    if (field_0x258) {
+        pos = mPos;
+        pos.x += 8.0f;
+        setEmitterPos_8013CB44(field_0x37c, &pos, 0, -1, true);
+        setEmitterPos_8013CB44(field_0x380, &pos, 0, -1, true);
+    }
 }
 
-// FIXME: 96.19 %, missing/extra + reloc-name: minor stack offset differences in local variables and box coordinate translation.
+// Shared by update's states 1 and 8, which differ only in the message: the player who
+// started the talk, or -1.
+inline s32 ZoraEscortGoal_8049E424::startTalk(u32 msg) {
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+    s32 player = fn_8022FD8C(mSerial);
+    if (player < 0) {
+        return -1;
+    }
+    if (!fn_802300EC(player)) {
+        return -1;
+    }
+    JGeometry::TVec3f msgPos(mPos);
+    msgPos.y -= 64.0f;
+    if (fn_8038AD24(player, msg, mSerial, field_0x4, msgPos, 0x28)) {
+        return player;
+    }
+    return -1;
+}
+
+// FIXME: 96.63 %, missing/extra + reloc-name: ours has 1 fewer instruction (563 vs 564). The original loads the angle of the rail walk with lha + clrlwi (ours lhz), loads r5/r6 for fn_8038AD24 before the by-value position copy is stored, and orders a few box float stores differently.
 void ZoraEscortGoal_8049E424::update() {
     ActorBase_804A5770::update();
     field_0x260 = 1.0f;
@@ -118,23 +155,7 @@ void ZoraEscortGoal_8049E424::update() {
             if (fn_801283E8()->fn_801282E0()) {
                 fn_80126A4C(12);
             } else {
-                JGeometry::TVec3f msgPos;
-                JGeometry::TBox2f box(mBox);
-                box.i.x += mPos.x;
-                box.f.x += mPos.x;
-                box.i.y += mPos.y;
-                box.f.y += mPos.y;
-                fn_8022FEB8(&box, field_0x4, mSerial, true, false);
-                s32 player = fn_8022FD8C(mSerial);
-                if (player < 0 || !fn_802300EC(player)) {
-                    player = -1;
-                } else {
-                    msgPos = mPos;
-                    msgPos.y -= 20.0f;
-                    if (!talk(player, 0x2B7, mSerial, field_0x4, msgPos, 0x28)) {
-                        player = -1;
-                    }
-                }
+                s32 player = startTalk(0x2B7);
                 if (player >= 0) {
                     field_0x23c = player;
                     fn_80126A4C(2);
@@ -167,7 +188,7 @@ void ZoraEscortGoal_8049E424::update() {
             if (mRail.fn_800FDEA0(&pos, 0.5f, &step, &layer, &angle, 0x200) == 3) {
                 flag = true;
             } else {
-                field_0x3c = step;
+                field_0x3c.set(step);
                 mPos += field_0x3c;
                 s32 anim = fn_801F681C(angle);
                 if (anim != mAnim27c.mAnim) {
@@ -197,37 +218,9 @@ void ZoraEscortGoal_8049E424::update() {
         break;
     }
     case 8: {
-        JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-        field_0x248 += 600;
-        if (field_0x248 >= 0x10000) {
-            field_0x248 = 0;
-        }
-        pos.z = 4.0f * JMath::sincosTable_.sinShort(field_0x248) + 4.0f;
-        mPos.z = field_0x26c + pos.z;
-        if (field_0x258) {
-            pos = mPos;
-            pos.x += 8.0f;
-            setEmitterPos_8013CB44(field_0x37c, &pos, 0, -1, true);
-            setEmitterPos_8013CB44(field_0x380, &pos, 0, -1, true);
-        }
+        hover();
         if (!fn_801283E8()->fn_801280F8()) {
-            JGeometry::TVec3f msgPos;
-            JGeometry::TBox2f box8(mBox);
-            box8.i.x += mPos.x;
-            box8.f.x += mPos.x;
-            box8.i.y += mPos.y;
-            box8.f.y += mPos.y;
-            fn_8022FEB8(&box8, field_0x4, mSerial, true, false);
-            s32 player = fn_8022FD8C(mSerial);
-            if (player < 0 || !fn_802300EC(player)) {
-                player = -1;
-            } else {
-                msgPos = mPos;
-                msgPos.y -= 20.0f;
-                if (!talk(player, 0x3FB, mSerial, field_0x4, msgPos, 0x28)) {
-                    player = -1;
-                }
-            }
+            s32 player = startTalk(0x3FB);
             if (player >= 0) {
                 field_0x23c = player;
                 fn_80126A4C(9);
@@ -236,19 +229,7 @@ void ZoraEscortGoal_8049E424::update() {
         break;
     }
     case 9: {
-        JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-        field_0x248 += 600;
-        if (field_0x248 >= 0x10000) {
-            field_0x248 = 0;
-        }
-        pos.z = 4.0f * JMath::sincosTable_.sinShort(field_0x248) + 4.0f;
-        mPos.z = field_0x26c + pos.z;
-        if (field_0x258) {
-            pos = mPos;
-            pos.x += 8.0f;
-            setEmitterPos_8013CB44(field_0x37c, &pos, 0, -1, true);
-            setEmitterPos_8013CB44(field_0x380, &pos, 0, -1, true);
-        }
+        hover();
         fn_8022FF8C(field_0x23c, &box, field_0x4, mSerial, true, false);
         if (fn_80388CAC(field_0x23c, mSerial)) {
             fn_801283E8()->fn_801281A4();
@@ -316,7 +297,7 @@ bool ZoraEscortGoal_8049E424::fn_80126EF8() const {
     return false;
 }
 
-// FIXME: 96.41 %, missing/extra + reloc-name: MWCC emits clrlwi for field_0x238 when passed to u8 parameter (same quirk as tu_801213EC:323), and minor stack layout differences.
+// FIXME: 97.76 %, missing/extra + reloc-name: ours has 1 more instruction (a clrlwi of field_0x238 before fn_800FE3EC's u8 argument, cases 5 and 11; the original passes the lwz'd value as is), and in case 11 the original schedules the clrlwi / psq_st pair before the call differently.
 void ZoraEscortGoal_8049E424::fn_80126A4C(s32 arg) {
     field_0x230 = arg;
     switch (arg) {
@@ -378,7 +359,7 @@ void ZoraEscortGoal_8049E424::fn_80126A4C(s32 arg) {
         JGeometry::TVec3f temp;
         fn_800FDC70(&temp, &mRail, mPos, 1, count - 1);
         step = temp;
-        field_0x3c = step;
+        field_0x3c.set(step);
         mPos += field_0x3c;
         field_0x264 = mPos.x;
         field_0x268 = mPos.y;

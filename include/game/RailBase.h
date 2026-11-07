@@ -81,6 +81,9 @@ extern "C" {
 // `index` (0xFF: the current one, entry field_0x3) of the buffer, read from
 // the entry's +0xC. r3 out, r4 buffer, r5 index (clrlwi 24).
 void fn_800FE294(JGeometry::TVec3f* out, cls_800FE3EC* buffer, u8 index);
+// game/RailBase.cpp (0x800FDC70, not written yet): r3 out vector, r4 rail buffer, r5 position
+// (by value), r6 the constant 1, r7 entry index (clrlwi 24); game/act_zora_escort_goal.cpp state 11
+// passes the last entry (count - 1). What it computes is not yet known.
 void fn_800FDC70(JGeometry::TVec3f* out, cls_800FE3EC* rail, JGeometry::TVec3f pos, s32 arg4, u8 index);
 
 }
