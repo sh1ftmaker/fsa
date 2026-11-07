@@ -22,6 +22,7 @@ extern const char lbl_80465960[];
 
 // FIXME(shotgun): 33.1 %, missing/extra (the colour is copied byte by byte; fn_8013A884 takes a u32* in tu_802EF76C.h)
 // 0x8013A884
+// auto_inline off: the original GameRootSub04 destructor (bl at 0x8013A2B8) calls it out of line.
 #pragma auto_inline off
 void fn_8013A884(u32* color) {
     gGameRoot2_8053AB10->field_0x2c->field_0x4.set(*color);
