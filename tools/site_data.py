@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Write the progress website's data (site/data/) from the honest report.
+"""Write the progress website's data (site/data/) from the objdiff report (report_honest.json).
 
 Inputs (all local; CI can't build the game, so this runs before each commit):
-  build/G4SE01/report_honest.json  honest per-unit and per-function measures
+  build/G4SE01/report_honest.json  per-unit and per-function measures
   objdiff.json                     unit -> source path, Matching flag
   config/G4SE01/splits.txt         unit -> address ranges
   config/G4SE01/lib_map.tsv        library ranges not split yet (docs/LIBMAP.md)
@@ -434,7 +434,7 @@ def write(report, files, data_unsplit, subject):
                 detail[str(i)] = r["fns"]
                 row = {"n": r["name"], "p": r["path"], "a": r["addr"], "s": r["status"],
                        "c": r["code"], "cm": r["cm"], "f": r["fn"], "fm": r["fm"]}
-                if r["wm"] > 0:  # weighted: honest plus partial credit (tools/structural.py)
+                if r["wm"] > 0:  # structural progress: matched bytes plus size * match % (tools/structural.py)
                     row["wm"] = round(r["cm"] + r["wm"])
                 if r["data"]:
                     row["d"], row["dm"] = r["data"], r["dm"]
@@ -485,7 +485,7 @@ def write(report, files, data_unsplit, subject):
         totals.update({
             "fns_structural": st["structural"]["functions"], "code_structural": st["structural"]["code"],
             "fns_structural_close": st["close"]["functions"], "code_structural_close": st["close"]["code"],
-            # weighted: honest bytes + size * match % for structurally done/close functions
+            # structural progress: matched bytes + size * match % for structurally done/close functions
             "code_weighted": round(st["weighted"]["code"]), "code_weighted_partial": round(st["weighted"]["partial"]),
         })
     # the four library regions as one group (the site's and README's "Libraries" section)

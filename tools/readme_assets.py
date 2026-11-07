@@ -191,9 +191,9 @@ def emblem(summary, cx, cy, k, t):
         if not r:
             continue
         col = HUE["gold"] if key == "libs" else part_color(r)
-        # Each gem shows weighted progress (honest 100 % functions plus partial credit for
-        # structurally matched ones, which the crack pass finishes): the solid fill is the
-        # honest share, the paler fill above it the rest of the weighted share.
+        # Each gem shows structural progress (fully matched functions plus size * match %
+        # for structurally matched ones, tools/structural.py): the solid fill is the
+        # matched-code share, the paler fill above it the rest of the structural share.
         frac = r["cm"] / r["c"] if r["c"] else 0
         wfrac = max(frac, r.get("wm", r["cm"]) / r["c"]) if r["c"] else 0
         fh = rhombus_fill(frac, h)
@@ -226,10 +226,20 @@ def hero(summary):
     sha = tot["sha1_ok"]
     seal = ("SHA-1 OK" if sha else "SHA-1 NOT OK" if sha is not None else "SHA-1 not checked")
     seal_col = "#6fdc8c" if sha else HUE["red"]
-    weighted_line = ""
+    # headline: structural progress first, matched code (fully matched functions) second
     if tot.get("code_weighted"):
-        weighted_line = (f'<text x="290" y="346" class="mono" font-size="14" fill="{t["gold"]}">weighted '
-                         f'{esc(pct(tot["code_weighted"], tot["code"], 2))} with partial credit</text>')
+        big = pct(tot["code_weighted"], tot["code"], 2)
+        lines = [("structural progress", 15, t["ink2"], ""),
+                 (f'{pct(tot["code_matched"], tot["code"], 2)} matched code · '
+                  f'{num(tot["fns_matched"])} / {num(tot["fns"])} functions', 14, t["gold"], ' class="mono"'),
+                 (f'{num(tot["matching"])} units Matching', 14, t["ink3"], ' class="mono"')]
+    else:
+        big = pct(tot["code_matched"], tot["code"], 2)
+        lines = [("matched code", 15, t["ink2"], ""),
+                 (f'{num(tot["fns_matched"])} / {num(tot["fns"])} functions · {num(tot["matching"])} units Matching',
+                  14, t["ink3"], ' class="mono"')]
+    head_lines = "\n".join(f'<text x="290" y="{306 + 20 * i}"{cls} font-size="{fs}" fill="{col}">{esc(txt)}</text>'
+                           for i, (txt, fs, col, cls) in enumerate(lines))
     glows = "".join(
         f'<radialGradient id="glow{i}" cx="{x}" cy="{y}" r="0.6"><stop offset="0" stop-color="{c}" stop-opacity="0.22"/>'
         f'<stop offset="1" stop-color="{c}" stop-opacity="0"/></radialGradient>'
@@ -254,10 +264,8 @@ def hero(summary):
 <text x="60" y="178" font-size="82" font-weight="700" letter-spacing="-1.5" fill="url(#four)">Four Swords</text>
 <text x="66" y="224" font-size="30" font-weight="500" letter-spacing="0.12em" fill="{t['ink']}">ADVENTURES</text>
 <text x="66" y="262" font-size="19" fill="{t['ink2']}">A byte-matching decompilation, built with the original compilers</text>
-<text x="64" y="336" class="mono" font-size="46" font-weight="700" fill="url(#goldtext)">{esc(pct(tot['code_matched'], tot['code'], 2))}</text>
-<text x="290" y="306" font-size="15" fill="{t['ink2']}">of the code byte-identical (honest)</text>
-<text x="290" y="326" class="mono" font-size="14" fill="{t['ink3']}">{num(tot['fns_matched'])} / {num(tot['fns'])} functions · {num(tot['matching'])} units Matching</text>
-{weighted_line}
+<text x="64" y="336" class="mono" font-size="46" font-weight="700" fill="url(#goldtext)">{esc(big)}</text>
+{head_lines}
 <g transform="translate(64 356)"><rect width="{24 + 8.4 * len(seal)}" height="24" rx="12" fill="{t['bg']}" fill-opacity="0.6" stroke="{t['line2']}"/>
 <text x="12" y="16.5" class="mono" font-size="12" font-weight="600" fill="{seal_col}">{esc(seal)}</text></g>
 {emblem(summary, 912, 200, 1.3, t)}"""
@@ -265,7 +273,9 @@ def hero(summary):
              "@keyframes spin { to { transform: rotate(360deg); } } "
              ".rise { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 1.6s cubic-bezier(.2,.8,.2,1) both; } "
              "@keyframes rise { from { transform: scaleY(0); } }")
-    title = (f"Four Swords Adventures decompilation: {pct(tot['code_matched'], tot['code'], 2)} of the code matched, "
+    title = (f"Four Swords Adventures decompilation: "
+             + (f"{pct(tot['code_weighted'], tot['code'], 2)} structural progress, " if tot.get("code_weighted") else "")
+             + f"{pct(tot['code_matched'], tot['code'], 2)} matched code, "
              f"{num(tot['fns_matched'])} of {num(tot['fns'])} functions")
     return svg(W, H, body, title, style)
 
@@ -278,8 +288,8 @@ def kib(b):
 
 def regions_svg(summary, theme):
     """The overview: where the remaining work is, the libraries as one row
-    (with each library's share), then the eight game categories with honest bars
-    and a lighter weighted extension."""
+    (with each library's share), then the eight game categories with matched-code bars
+    and a lighter structural-progress extension."""
     t = THEMES[theme]
     tot = summary["totals"]
     parts = game_parts(summary)
@@ -291,7 +301,7 @@ def regions_svg(summary, theme):
     left = sum(x[2] for x in segs)
     game_left = left - segs[-1][2]
     out.append(f'<text x="28" y="40" font-size="16" font-weight="700" fill="{t["ink"]}">Remaining work</text>')
-    out.append(f'<text x="28" y="60" font-size="12" fill="{t["ink3"]}">code not yet byte-identical, by category and the libraries</text>')
+    out.append(f'<text x="28" y="60" font-size="12" fill="{t["ink3"]}">code not matched yet, by category and the libraries</text>')
     out.append(f'<clipPath id="rw"><rect x="{BX}" y="28" width="{BW}" height="16" rx="4"/></clipPath><g clip-path="url(#rw)">')
     x = BX
     for _, col, b in segs:
@@ -302,8 +312,9 @@ def regions_svg(summary, theme):
     out.append(f'<text x="{BX}" y="62" class="mono" font-size="11.5" fill="{t["ink3"]}">'
                f'{num(left)} bytes left · game code {esc(pct(game_left, left))} of it</text>')
     out.append(f'<text x="{W - 28}" y="42" text-anchor="end" class="mono" font-size="20" font-weight="700" fill="{t["ink"]}">'
-               f'{esc(pct(tot["code_matched"], tot["code"], 2))}</text>')
-    wtxt = f'weighted {pct(tot["code_weighted"], tot["code"], 2)}' if tot.get("code_weighted") else f'{num(tot["fns_matched"])} fns'
+               f'{esc(pct(tot.get("code_weighted") or tot["code_matched"], tot["code"], 2))}</text>')
+    wtxt = (f'structural · {pct(tot["code_matched"], tot["code"], 2)} matched' if tot.get("code_weighted")
+            else f'{num(tot["fns_matched"])} fns')
     out.append(f'<text x="{W - 28}" y="62" text-anchor="end" class="mono" font-size="11.5" fill="{t["gold"]}">{esc(wtxt)}</text>')
 
     rows = [{"n": "Libraries", "col": HUE["gold"], "c": L["c"], "cm": L["cm"], "wm": L.get("wm", L["cm"]),
@@ -323,7 +334,8 @@ def regions_svg(summary, theme):
         y = TOP + i * ROW + (12 if i else 0)
         if i == 1:
             out.append(f'<text x="28" y="{y - 10}" class="mono" font-size="10.5" letter-spacing="0.14em" fill="{t["ink3"]}">'
-                       f'GAME CODE · {esc(pct(sum(p["cm"] for p in parts), sum(p["c"] for p in parts)))}</text>')
+                       f'GAME CODE · {esc(pct(sum(p.get("wm", p["cm"]) for p in parts), sum(p["c"] for p in parts)))} STRUCTURAL · '
+                       f'{esc(pct(sum(p["cm"] for p in parts), sum(p["c"] for p in parts)))} MATCHED</text>')
         if r.get("lib"):
             out.append(glyph("jsystem", 28, y + 7, 13, HUE["gold"]))
         else:
@@ -339,18 +351,20 @@ def regions_svg(summary, theme):
         if fc > 0:
             out.append(f'<rect class="grow" style="animation-delay:{0.1 * i:.1f}s" x="{BX}" y="{y + 6}" '
                        f'width="{max(BW * fc, 3):.2f}" height="14" rx="4" fill="{r["col"]}"/>')
-        wnote = f' · weighted {pct(r["wm"], r["c"])}' if fw > fc else ""
+        mnote = f'structural {pct(r["wm"], r["c"])} · matched code {pct(r["cm"], r["c"])}' if fw > fc \
+            else f'matched code {pct(r["cm"], r["c"])}'
         out.append(f'<text x="{BX}" y="{y + 39}" class="mono" font-size="11.5" fill="{t["ink3"]}">'
-                   f'{esc(r.get("line") or "honest " + pct(r["cm"], r["c"]) + wnote)}</text>')
+                   f'{esc(r.get("line") or mnote)}</text>')
         out.append(f'<text x="{W - 28}" y="{y + 20}" text-anchor="end" class="mono" font-size="20" font-weight="700" '
-                   f'fill="{r["col"]}">{esc(pct(r["cm"], r["c"]))}</text>')
+                   f'fill="{r["col"]}">{esc(pct(max(r["wm"], r["cm"]), r["c"]))}</text>')
         out.append(f'<text x="{W - 28}" y="{y + 40}" text-anchor="end" class="mono" font-size="11.5" fill="{t["ink3"]}">'
                    f'{num(r["fm"])} / {num(r["f"])} fns</text>')
-    out.append(f'<text x="28" y="{H - 14}" font-size="11.5" fill="{t["ink3"]}">solid = byte-identical (honest) · light = weighted, '
-               f'with partial credit for structurally matched functions</text>')
+    out.append(f'<text x="28" y="{H - 14}" font-size="11.5" fill="{t["ink3"]}">big number = structural progress · '
+               f'solid = matched code · light = size × match % of structurally matched functions</text>')
     style = (".grow { transform-box: fill-box; transform-origin: 0 50%; animation: grow 1.4s cubic-bezier(.2,.8,.2,1) both; } "
              "@keyframes grow { from { transform: scaleX(0); } }")
-    title = "Progress overview: " + "; ".join(f"{r['n']} {pct(r['cm'], r['c'])} of code, {r['fm']} of {r['f']} functions"
+    title = "Progress overview: " + "; ".join(f"{r['n']} {pct(max(r['wm'], r['cm']), r['c'])} structural, "
+                                              f"{pct(r['cm'], r['c'])} matched code, {r['fm']} of {r['f']} functions"
                                               for r in rows)
     return svg(W, H, "\n".join(out), title, style)
 
@@ -529,7 +543,7 @@ def treemap_legend(summary, theme="dark"):
     H = y + 37
     out = [f'<rect x="3.5" y="3.5" width="{W - 7}" height="{H - 7}" rx="8" fill="{t["panel"]}" stroke="{t["line"]}"/>'] + items
     out.append(f'<text x="16" y="{H - 11}" font-size="11.5" fill="{t["ink3"]}">'
-               f'area = bytes of code · fill = byte-identical · top row the game code by category, bottom row the libraries · '
+               f'area = bytes of code · fill = matched code · top row the game code by category, bottom row the libraries · '
                f'click a block to explore it on the site ↗</text>')
     return svg(W, H, "\n".join(out), "Treemap legend: the game code's categories and the libraries, and their matched share of code")
 
@@ -646,7 +660,9 @@ def badges(summary):
     tot = summary["totals"]
     sha = tot["sha1_ok"]
     items = {
-        "code": ("code", pct(tot["code_matched"], tot["code"], 2), "d29a2e"),
+        **({"structural": ("structural progress", pct(tot["code_weighted"], tot["code"], 2), "d29a2e")}
+           if tot.get("code_weighted") else {}),
+        "code": ("matched code", pct(tot["code_matched"], tot["code"], 2), "3aae5c"),
         "functions": ("functions", f"{num(tot['fns_matched'])} / {num(tot['fns'])}", "3d9cf0"),
         "units": ("units Matching", f"{num(tot['matching'])} / {num(tot['units'])}", "c35ee6"),
         "sha1": ("main.dol SHA-1", "OK" if sha else "not OK" if sha is not None else "not checked",
@@ -669,13 +685,14 @@ def readme_blocks(summary, rm):
     day = summary["generated"][:10]
     sha = {True: "links byte-identically (SHA-1 OK)", False: "does **not** link byte-identically",
            None: "was not linked for this run"}[tot["sha1_ok"]]
-    progress = [f"As of {day}:", "",
-                f"- **Honest: {pct(tot['code_matched'], tot['code'], 2)}** of the code is byte-identical, "
-                f"**{num(tot['fns_matched'])} / {num(tot['fns'])}** functions "
-                f"({num(tot['code_matched'])} of {num(tot['code'])} bytes; 100 % functions only)."]
+    progress = [f"As of {day}:", ""]
     if tot.get("code_weighted"):
-        progress.append(f"- **Weighted: {pct(tot['code_weighted'], tot['code'], 2)}**, the honest bytes plus partial "
-                        f"credit for structurally matched functions (a separate, secondary measure).")
+        progress.append(f"- **Structural progress: {pct(tot['code_weighted'], tot['code'], 2)}** "
+                        f"({num(tot['code_weighted'])} of {num(tot['code'])} bytes): matched code plus, for each "
+                        f"structurally matched or close function, its size times its match percent.")
+    progress.append(f"- **Matched code: {pct(tot['code_matched'], tot['code'], 2)}** "
+                    f"({num(tot['code_matched'])} of {num(tot['code'])} bytes), "
+                    f"**{num(tot['fns_matched'])} / {num(tot['fns'])}** functions fully matched.")
     if tot.get("fns_structural"):
         progress.append(f"- **Structurally matched:** {num(tot['fns_structural'])} / {num(tot['fns'])} functions "
                         f"(same instructions, register or order differences only), "
@@ -685,9 +702,10 @@ def readme_blocks(summary, rm):
 
     # libraries: one combined line, then a row per library region, each with its libraries folded away
     L = libraries(summary)
-    lib = [f"**{pct(L['cm'], L['c'])}** of {num(L['c'])} bytes of library code and "
-           f"**{num(L['fm'])} / {num(L['f'])}** functions match"
-           + (f" (weighted {pct(L['wm'], L['c'])})" if L.get("wm", 0) > L["cm"] else "") + ".", "",
+    lib = [f"Of {num(L['c'])} bytes of library code: "
+           + (f"**{pct(L['wm'], L['c'])}** structural progress, " if L.get("wm", 0) > L["cm"] else "")
+           + f"**{pct(L['cm'], L['c'])}** matched code; "
+           f"**{num(L['fm'])} / {num(L['f'])}** functions fully matched.", "",
            "| Library | Code matched | Functions | Left |", "|---|--:|--:|--:|"]
     for r in lib_regions(summary):
         lib.append(f"| [{r['n']}]({SITE}#/{r['id']}) | {pct(r['cm'], r['c'])} of {num(r['c'])} bytes "
@@ -708,14 +726,16 @@ def readme_blocks(summary, rm):
     # game code: a row per category
     parts = game_parts(summary)
     g = next(r for r in summary["regions"] if r["id"] == "game")
-    game = [f"**{pct(g['cm'], g['c'])}** of {num(g['c'])} bytes of game code and **{num(g['fm'])} / {num(g['f'])}** "
-            f"functions match" + (f" (weighted {pct(g['wm'], g['c'])})" if g.get("wm", 0) > g["cm"] else "") + ".", "",
-            "| Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |", "|---|--:|--:|--:|--:|--:|"]
+    game = [f"Of {num(g['c'])} bytes of game code: "
+            + (f"**{pct(g['wm'], g['c'])}** structural progress, " if g.get("wm", 0) > g["cm"] else "")
+            + f"**{pct(g['cm'], g['c'])}** matched code; "
+            f"**{num(g['fm'])} / {num(g['f'])}** functions fully matched.", "",
+            "| Category | Structural | Code matched | Functions | Files Matching | Unconfirmed |", "|---|--:|--:|--:|--:|--:|"]
     for p in parts:
         m = sum(1 for f in p["files"] if f["s"] == "M")
         u = sum(1 for f in p["files"] if f.get("u"))
-        game.append(f"| [{md(p['n'])}]({SITE}#/game/{p['id']}) | {pct(p['cm'], p['c'])} of {num(p['c'])} bytes "
-                    f"| {pct(p.get('wm', p['cm']), p['c'])} | {num(p['fm'])} / {num(p['f'])} | {m} / {len(p['files'])} "
+        game.append(f"| [{md(p['n'])}]({SITE}#/game/{p['id']}) | {pct(p.get('wm', p['cm']), p['c'])} "
+                    f"| {pct(p['cm'], p['c'])} of {num(p['c'])} bytes | {num(p['fm'])} / {num(p['f'])} | {m} / {len(p['files'])} "
                     f"| {u or '–'} |")
     game.append("")
     for p in parts:

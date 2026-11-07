@@ -1,5 +1,5 @@
 /* FSA decomp progress site. Data: data/summary.json, data/lib/<id>.json, data/history.json,
-   data/roadmap.json (written by tools/site_data.py from the honest objdiff report and
+   data/roadmap.json (written by tools/site_data.py from the objdiff report and
    docs/roadmap.yml). */
 "use strict";
 
@@ -47,7 +47,7 @@ const hex = (a) => "0x" + a.toString(16).toUpperCase().padStart(8, "0");
 
 // a node's colour: its game part's, else its region's
 const colOf = (n) => (n.part && PART[n.part] ? PART[n.part].color : REGION[n.region].color);
-// weighted bytes: honest plus partial credit for structurally matched functions
+// structural progress in bytes: matched code plus size * match % for structurally matched functions
 const wOf = (n) => Math.max(n.cm, n.wm ?? n.cm);
 const gradOf = (n) => (n.part && PART[n.part] ? `tg-p-${n.part}` : `tg-${n.region}`);
 function partGlyph(key, size = 10) {
@@ -156,7 +156,7 @@ function rhombusFill(a, h) {
 }
 
 // The emblem: the game code's eight categories as gems on a ring (clockwise from the
-// top, in their order), each filled to its weighted share (honest share solid); the gold gem in the middle
+// top, in their order), each filled to its structural share (matched code solid); the gold gem in the middle
 // is the libraries, all four together. Same layout as tools/readme_assets.py emblem_layout.
 function drawEmblem() {
   const svg = d3.select("#emblem");
@@ -176,8 +176,8 @@ function drawEmblem() {
     const node = g.lib ? null : byId.get(`game/game-${g.part}`);
     const r = g.lib ? { name: "Libraries", c: L.c, cm: L.cm, wm: L.wm } : node;
     const col = g.lib ? "#d29a2e" : PART[g.part].color;
-    // Weighted progress (honest plus partial credit for structurally matched functions, which
-    // the crack pass finishes): solid fill = honest share, paler fill above it = the rest.
+    // Structural progress (matched code plus size * match % for structurally matched functions):
+    // solid fill = matched code, paler fill above it = the rest of the structural share.
     const frac = r.c ? r.cm / r.c : 0;
     const wfrac = r.c ? Math.max(frac, (r.wm ?? r.cm) / r.c) : 0;
     const grad = defs.append("linearGradient").attr("id", `eg-${key}`).attr("x1", 0).attr("y1", 1).attr("x2", 0).attr("y2", 0);
@@ -185,7 +185,7 @@ function drawEmblem() {
     grad.append("stop").attr("offset", 1).attr("stop-color", d3.color(col).brighter(0.9));
     defs.append("clipPath").attr("id", `ec-${key}`).append("path").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h));
     const grp = svg.append("g").attr("class", "gem").attr("tabindex", 0).attr("role", "button")
-      .attr("aria-label", `${r.name}: ${pct(100 * wfrac)} weighted, ${pct(100 * frac)} byte-identical`);
+      .attr("aria-label", `${r.name}: ${pct(100 * wfrac)} structural progress, ${pct(100 * frac)} matched code`);
     grp.append("path").attr("class", "gem-bg").attr("d", rhombusPath(g.cx, g.cy, g.w, g.h))
       .attr("fill", d3.color(col).copy({ opacity: 0.12 })).attr("stroke", d3.color(col).copy({ opacity: 0.7 }));
     const wfillH = rhombusFill(wfrac, g.h);
@@ -214,7 +214,7 @@ function drawEmblem() {
       tip.classList.remove("sheet");
       tip.innerHTML = `<div class="t-name">Libraries</div><div class="t-path">Dolphin SDK, GX, JSystem, MSL/Runtime/TRK</div>
         <div class="bar"><i style="width:${ratio(L.cm, L.c)}%;background:${col}"></i></div>
-        <dl><dt>Matched</dt><dd>${pct(ratio(L.cm, L.c))} of ${bytes(L.c)}</dd><dt>Functions</dt><dd>${num(L.fm)} / ${num(L.f)}</dd></dl>`;
+        <dl>${L.wm > L.cm ? `<dt>Structural</dt><dd>${pct(ratio(L.wm, L.c))}</dd>` : ""}<dt>Matched</dt><dd>${pct(ratio(L.cm, L.c))} of ${bytes(L.c)}</dd><dt>Functions</dt><dd>${num(L.fm)} / ${num(L.f)}</dd></dl>`;
       tip.hidden = false; place(ev);
     }).on("pointerleave", hideTip);
   }
@@ -236,10 +236,10 @@ function countUp(el, to, fmt) {
 function drawStats() {
   const t = S.totals;
   const tiles = [
-    { k: "Code matched", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes, byte-identical functions only`, c: "var(--green)" },
-    ...(t.code_weighted == null ? [] : [{ k: "Weighted progress", v: ratio(t.code_weighted, t.code), fmt: (x) => x.toFixed(2), unit: "%",
-      d: `${num(t.code_weighted)} of ${num(t.code)} bytes <br>includes partial credit for functions that are structurally matched. Honest (${pct(ratio(t.code_matched, t.code))}) counts only byte-identical functions`,
-      title: "Weighted progress: honest matched bytes plus, for each structurally matched function, its size times its match percent. Honest counts only byte-identical functions.", c: "var(--gold)" }]),
+    ...(t.code_weighted == null ? [] : [{ k: "Structural progress", v: ratio(t.code_weighted, t.code), fmt: (x) => x.toFixed(2), unit: "%",
+      d: `${num(t.code_weighted)} of ${num(t.code)} bytes <br>matched code plus size &times; match % of structurally matched functions`,
+      title: "Structural progress: matched code plus, for each structurally matched function (same instructions, registers or order differ), its size times its match percent (tools/structural.py).", c: "var(--gold)" }]),
+    { k: "Matched code", v: ratio(t.code_matched, t.code), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.code_matched)} of ${num(t.code)} bytes <br>fully matched functions`, c: "var(--green)" },
     { k: "Functions", v: t.fns_matched, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.fns)}`, d: `${pct(ratio(t.fns_matched, t.fns))} of all functions`, m: ratio(t.fns_matched, t.fns), c: "var(--red)" },
     { k: "Data matched", v: ratio(t.data_matched, t.data), fmt: (x) => x.toFixed(2), unit: "%", d: `${num(t.data_matched)} of ${num(t.data)} bytes`, c: "var(--blue)" },
     { k: "Units Matching", v: t.matching, fmt: (x) => num(Math.round(x)), unit: `/ ${num(t.units)}`,
@@ -254,19 +254,19 @@ function drawStats() {
   tiles.forEach((x, i) => countUp(host.querySelector(`[data-i="${i}"]`), x.v, x.fmt));
   requestAnimationFrame(() => host.querySelectorAll(".meter i").forEach((el) => (el.style.width = `${Math.max(0.6, +el.dataset.w)}%`)));
 
-  // secondary measure, shown under the honest tiles
+  // structurally matched functions, under the tiles
   const sx = $("#structural");
   if (sx) {
     sx.innerHTML = t.fns_structural == null ? "" :
       `<span class="sx-k">structurally matched</span> <b>${num(t.fns_structural)}</b> / ${num(t.fns)} functions &middot; ${num(t.code_structural)} bytes`
-      + ` <span class="sx-d">(same instructions, register/order differences only; the honest numbers above count byte-identical functions only)</span>`
-      + (t.code_weighted == null ? "" : (g => ` <span class="sx-d">Weighted game code: ${g ? pct(ratio(g.wm, g.c)) : "–"} (honest ${g ? pct(ratio(g.cm, g.c)) : "–"}).</span>`)(S.regions.find((r) => r.id === "game")));
+      + ` <span class="sx-d">(same instructions, register or order differences only)</span>`
+      + (t.code_weighted == null ? "" : (g => ` <span class="sx-d">Game code: ${g ? pct(ratio(g.wm, g.c)) : "–"} structural, ${g ? pct(ratio(g.cm, g.c)) : "–"} matched.</span>`)(S.regions.find((r) => r.id === "game")));
   }
 
   const seal = $("#seal");
   seal.innerHTML = t.sha1_ok
-    ? `<span class="ok">&#10003; main.dol SHA-1 OK</span> <span>${esc(S.sha1.slice(0, 12))}&hellip;</span> <span>&middot; honest objdiff report</span>`
-    : `<span class="bad">&#10007; main.dol SHA-1 mismatch</span> <span>&middot; numbers from the honest objdiff report</span>`;
+    ? `<span class="ok">&#10003; main.dol SHA-1 OK</span> <span>${esc(S.sha1.slice(0, 12))}&hellip;</span> <span>&middot; objdiff, relocations checked</span>`
+    : `<span class="bad">&#10007; main.dol SHA-1 mismatch</span> <span>&middot; numbers from objdiff</span>`;
 }
 
 /* ---------- treemap ---------- */
@@ -322,7 +322,7 @@ function drawLayer(focus) {
   head.append("text").attr("class", "grp-label").attr("x", (d) => d.x0 + 6).attr("y", (d) => d.y0 + 13)
     .each(function (d) {
       const n = d.data.node, w = d.x1 - d.x0 - 12;
-      const p = ` ${pct(ratio(n.cm, n.c))}${wOf(n) > n.cm ? ` (${pct(ratio(wOf(n), n.c))} w)` : ""}`;
+      const p = wOf(n) > n.cm ? ` ${pct(ratio(wOf(n), n.c))} (${pct(ratio(n.cm, n.c))} matched)` : ` ${pct(ratio(n.cm, n.c))}`;
       const label = fit(n.name, w - p.length * 6.6, 6.8);
       const t = d3.select(this);
       t.append("tspan").text(label);
@@ -341,8 +341,8 @@ function drawLayer(focus) {
     .attr("fill", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.07 : 0.16 }))
     .attr("stroke", (d) => tileFill(d.data.node).copy({ opacity: unsplit(d.data.node) ? 0.45 : 0.4 }))
     .attr("stroke-dasharray", (d) => (unsplit(d.data.node) && d.x1 - d.x0 > 10 ? "3 2" : null));
-  // weighted share (partial credit for structurally matched functions): a paler liquid
-  // under the honest one, so the solid part stays byte-identical bytes only
+  // structural share (size * match % of structurally matched functions): a paler liquid
+  // under the matched one, so the solid part stays fully matched functions only
   lg.filter((d) => wOf(d.data.node) > d.data.node.cm).append("rect").attr("class", "wfill")
     .attr("x", (d) => d.x0).attr("width", (d) => d.x1 - d.x0)
     .attr("y", (d) => d.y1).attr("height", 0)
@@ -373,7 +373,7 @@ function drawLayer(focus) {
     g.append("text").attr("class", "tl").attr("x", d.x0 + 5).attr("y", d.y0 + 14).text(name);
     if (d.y1 - d.y0 > 34) g.append("text").attr("class", "tl p").attr("x", d.x0 + 5).attr("y", d.y0 + 28)
       .text(fit(n.kind === "fn" ? (n.m > 0 && n.m < 100 ? `${n.m} % · ${bytes(n.c)}` : bytes(n.c))
-        : `${pct(ratio(n.cm, n.c))}${wOf(n) > n.cm ? ` · ${pct(ratio(wOf(n), n.c))} w` : ""} · ${bytes(n.c)}`, w, 6));
+        : `${wOf(n) > n.cm ? `${pct(ratio(wOf(n), n.c))} · ${pct(ratio(n.cm, n.c))} matched` : pct(ratio(n.cm, n.c))} · ${bytes(n.c)}`, w, 6));
   });
   // unconfirmed category (low confidence in docs/names/categories.tsv): a small dashed ring
   // with "?" in the top-right corner of the file's tile (a leaf, or a group of its functions)
@@ -509,12 +509,12 @@ function tipHTML(n) {
     const st = n.m === 100 ? "matched" : n.m === -1 ? "not split yet" : n.m > 0 ? `${n.m} % similar, not matched` : "not matched";
     return `<div class="t-name">${esc(n.name)}</div><div class="t-path">${esc(n.parent.path)} &middot; ${hex(n.addr)}</div>
       <dl><dt>Size</dt><dd>${num(n.c)} bytes</dd><dt>Of the DOL</dt><dd>${pct(share)}</dd><dt>Status</dt><dd>${st}</dd>${
-        n.m !== 100 && n.wm > 0 ? `<dt>Weighted</dt><dd>${pct(ratio(n.wm, n.c))} (${bytes(n.wm)}, structurally matched)</dd>` : ""}</dl>`;
+        n.m !== 100 && n.wm > 0 ? `<dt>Structural</dt><dd>${pct(ratio(n.wm, n.c))} (${bytes(n.wm)}, structurally matched)</dd>` : ""}</dl>`;
   }
   const rows = [
     ["Size", `${bytes(n.c)}`], ["Of the DOL", pct(share)],
+    ...(wOf(n) > n.cm ? [["Structural", `${pct(ratio(wOf(n), n.c))} (${bytes(wOf(n))})`]] : []),
     ["Matched", `${pct(ratio(n.cm, n.c))} (${bytes(n.cm)})`],
-    ...(wOf(n) > n.cm ? [["Weighted", `${pct(ratio(wOf(n), n.c))} (${bytes(wOf(n))})`]] : []),
     ["Functions", `${num(n.fm)} / ${num(n.f)}`],
   ];
   if (n.kind === "file") {
@@ -604,7 +604,7 @@ function initMap() {
 function drawLegend() {
   $("#legend").innerHTML = gameGroups().map((l) => `<span>${partGlyph(l.part)} ${esc(PART[l.part].name)}</span>`).join("")
     + `<span>${glyph("jsystem")} Libraries</span>`
-    + `<span><i class="fillkey"></i> matched share</span><span><i class="wfillkey"></i> weighted (partial credit)</span><span><i class="dashkey"></i> not split yet</span>`
+    + `<span><i class="fillkey"></i> matched code</span><span><i class="wfillkey"></i> structural progress</span><span><i class="dashkey"></i> not split yet</span>`
     + `<span><i class="unconfkey">?</i> category unconfirmed</span>`;
 }
 
@@ -652,7 +652,7 @@ function drawRemaining() {
     { name: "Libraries", col: "#d29a2e", left: L.c - L.cm, glyph: glyph("jsystem") }];
   const total = segs.reduce((a, x) => a + x.left, 0);
   const game = segs.slice(0, -1).reduce((a, x) => a + x.left, 0);
-  host.innerHTML = `<div class="rw-k">Where the remaining work is <span>${bytes(total)} of code not yet byte-identical; the game code is ${pct(ratio(game, total))} of it</span></div>
+  host.innerHTML = `<div class="rw-k">Where the remaining work is <span>${bytes(total)} of code not matched yet; the game code is ${pct(ratio(game, total))} of it</span></div>
     <div class="rw-bar" role="img" aria-label="${esc(segs.map((x) => `${x.name} ${pct(ratio(x.left, total))}`).join(", "))}">${segs.map((x) =>
       `<i style="flex:${x.left} 1 0;background:${x.col}" title="${esc(`${x.name}: ${bytes(x.left)} left (${pct(ratio(x.left, total))})`)}"></i>`).join("")}</div>
     <div class="rw-legend">${segs.map((x) => `<span>${x.glyph} ${esc(x.name)} <b>${pct(ratio(x.left, total))}</b></span>`).join("")}</div>`;
@@ -670,9 +670,9 @@ function drawLibraries() {
       <span class="lv"><b>${pct(ratio(r.cm, r.c))}</b> &middot; ${num(r.fm)}/${num(r.f)} fn${left ? ` &middot; ${num(left)} left` : ""}</span></div>`;
   }).join("");
   host.innerHTML = `<div class="lsum">
-      <div class="big">${pct(ratio(L.cm, L.c))}</div>
-      <div class="lsum-d">of ${bytes(L.c)} of library code byte-identical &middot; ${num(L.fm)} / ${num(L.f)} functions &middot;
-        ${num(L.matching)} / ${num(L.units)} files Matching${L.wm > L.cm ? ` <span class="wnote">weighted ${pct(ratio(L.wm, L.c))}</span>` : ""}</div>
+      <div class="big">${pct(ratio(wOf(L), L.c))}</div>
+      <div class="lsum-d">structural progress of ${bytes(L.c)} of library code &middot; <span class="wnote">${pct(ratio(L.cm, L.c))} matched code</span> &middot;
+        ${num(L.fm)} / ${num(L.f)} functions &middot; ${num(L.matching)} / ${num(L.units)} files Matching</div>
       <div class="track big-track"><i data-w="${ratio(L.cm, L.c)}" style="background:var(--gold)"></i></div>
     </div><div class="lrows">${rows}</div>`;
   growOnView(host);
@@ -685,18 +685,18 @@ function drawGameParts() {
   const parts = gameGroups();
   const gw = g.wm ?? g.cm;
   $("#game-sub").textContent = GROUP === "boot"
-    ? "FSA's own code by boot-path phase (docs/BOOT_PATH.md): the two stretches the game runs from power-on to a live Shadow Battle, in that order, then the actors and everything else. Solid bars are byte-identical; weighted progress is shown per category only."
-    : "FSA's own code in eight categories, by what each file is (docs/names/categories.tsv). Solid bars are byte-identical; the lighter extension is weighted progress (partial credit for structurally matched functions). A ? marks files placed on thin evidence.";
-  $("#game-sum").innerHTML = `<b>${pct(ratio(g.cm, g.c))}</b> byte-identical &middot; <span class="wnote">weighted ${pct(ratio(gw, g.c))}</span> &middot; ${num(g.fm)} / ${num(g.f)} functions &middot; ${bytes(g.c)}`;
+    ? "FSA's own code by boot-path phase (docs/BOOT_PATH.md): the two stretches the game runs from power-on to a live Shadow Battle, in that order, then the actors and everything else. Solid bars are matched code; structural progress is shown per category only."
+    : "FSA's own code in eight categories, by what each file is (docs/names/categories.tsv). Solid bars are matched code; the lighter extension is structural progress (size × match % of structurally matched functions). A ? marks files placed on thin evidence.";
+  $("#game-sum").innerHTML = `<b>${pct(ratio(gw, g.c))}</b> structural &middot; <span class="wnote">${pct(ratio(g.cm, g.c))} matched code</span> &middot; ${num(g.fm)} / ${num(g.f)} functions &middot; ${bytes(g.c)}`;
   host.innerHTML = parts.map((n) => {
     const p = PART[n.part], files = n.children, m = files.filter((f) => f.s === "M").length, wm = n.wm ?? n.cm;
     const uc = files.filter((f) => f.u).length;
     return `<div class="part" data-id="${esc(n.id)}" role="button" tabindex="0" style="--c:${p.color}">
-      <div class="p-head"><span class="p-name">${partGlyph(n.part, 12)} ${esc(p.name)}</span><span class="p-pct">${pct(ratio(n.cm, n.c))}</span></div>
+      <div class="p-head"><span class="p-name">${partGlyph(n.part, 12)} ${esc(p.name)}</span><span class="p-pct">${pct(ratio(wm, n.c))}</span></div>
       <div class="p-desc">${esc(p.desc)}</div>
-      <div class="p-bar" title="solid: byte-identical; light: weighted (partial credit for structurally matched functions)">
+      <div class="p-bar" title="solid: matched code; light: structural progress (size × match % of structurally matched functions)">
         <i class="w" data-w="${ratio(wm, n.c)}"></i><i class="h" data-w="${ratio(n.cm, n.c)}"></i></div>
-      <div class="p-nums">${n.wm != null ? `<span>weighted <b>${pct(ratio(wm, n.c))}</b></span>` : ""}<span><b>${num(n.fm)}</b> / ${num(n.f)} functions</span>
+      <div class="p-nums">${n.wm != null ? `<span>matched code <b>${pct(ratio(n.cm, n.c))}</b></span>` : ""}<span><b>${num(n.fm)}</b> / ${num(n.f)} functions</span>
         <span><b>${num(m)}</b> / ${num(files.length)} files Matching</span><span>${bytes(n.c)} &middot; ${pct(ratio(n.c, g.c))} of the game</span>
         ${uc ? `<span class="p-unconf" title="Files placed in this category on thin evidence (low confidence in docs/names/categories.tsv)"><i class="unconfkey">?</i> ${num(uc)} unconfirmed</span>` : ""}</div>
     </div>`;
@@ -836,16 +836,17 @@ function renderTable() {
   }));
 }
 
-/* ---------- honesty note ---------- */
+/* ---------- how this is measured ---------- */
 
-function drawHonest() {
+function drawMethod() {
   const t = S.totals;
   const when = new Date(S.generated);
-  $("#honest-body").innerHTML = `
-    <p>Every number here comes from the project's <b>honest objdiff report</b> (<code>build/G4SE01/report_honest.json</code>,
-      objdiff-cli with <code>functionRelocDiffs=all</code>). Every unit is diffed, even those flagged Matching, so a function
-      counts only when its instructions <i>and</i> relocations match the original. Byte-pattern hits and objdiff's lenient default
-      are never counted.</p>
+  $("#method-body").innerHTML = `
+    <p>The headline figure is <b>structural progress</b>: matched code plus, for each function
+      <code>tools/structural.py</code> finds structurally matched (same instructions, registers or order differ), its size times its
+      match percent. <b>Matched code</b> counts fully matched functions only. Both come from one objdiff report
+      (<code>build/G4SE01/report_honest.json</code>, objdiff-cli with <code>functionRelocDiffs=all</code>): every unit is diffed,
+      even those flagged Matching, so a function is fully matched only when its instructions <i>and</i> relocations match the original.</p>
     <p>The link is the final authority: a plain <code>ninja</code> links every Matching unit's own object into <code>main.dol</code>
       and checks its SHA-1 (<code>${esc(S.sha1)}</code>). ${t.sha1_ok ? `It matched for this snapshot, so all ${num(t.matching)} Matching units link byte-identical.` : `<b>It did not match for this snapshot.</b>`}</p>
     <p>The total is the whole DOL: ${num(t.code)} bytes of code in ${num(t.fns)} functions. Code dtk has not split into a source file yet
@@ -858,10 +859,7 @@ function drawHonest() {
       way <code>docs/BOOT_PATH.md</code> orders the work: Dolphin recorded every instruction the game runs from power-on to a live
       Shadow Battle, and each file goes to the first stretch that runs it (boot to the main menu, or main menu to the battle); of the
       rest, <b>Actors</b> are the <code>act_*</code> files and the files whose classes the actor spawner constructs; <b>Everything else</b>
-      is the remainder. Either grouping only sorts files: every number is the same honest count.</p>
-    <p>Weighted progress is a second, clearly separate figure: the honest bytes plus, for each function
-      <code>tools/structural.py</code> finds structurally matched (same instructions, registers or order differ), its size times its
-      match percent. It shows work under way in big functions; the honest numbers never include it.</p>
+      is the remainder. Either grouping only sorts files: the numbers are the same.</p>
     <p>Game code is compiled the way the original was: <code>-inline auto,deferred</code>, with each source's functions in descending
       address order (<code>docs/INLINING.md</code>). Names come from a reviewed manifest (<code>docs/names/names.tsv</code>); a name without
       enough evidence keeps its address-based placeholder.</p>
@@ -1095,7 +1093,7 @@ async function main() {
   drawGameParts();
   drawHistory(hist.length ? hist : []);
   initTable();
-  drawHonest();
+  drawMethod();
 }
 main().catch((e) => {
   console.error(e);

@@ -20,5 +20,5 @@
 <text x="173.6" y="41" font-size="12.5" fill="#b4b9d8">Media &amp; link 42.1 %</text>
 <g fill="#d29a2e"><path d="M322.5 31L328 42L317 42Z"/></g>
 <text x="334" y="41" font-size="12.5" fill="#b4b9d8">Libraries 97.6 %</text>
-<text x="16" y="57" font-size="11.5" fill="#7c82a8">area = bytes of code · fill = byte-identical · top row the game code by category, bottom row the libraries · click a block to explore it on the site ↗</text>
+<text x="16" y="57" font-size="11.5" fill="#7c82a8">area = bytes of code · fill = matched code · top row the game code by category, bottom row the libraries · click a block to explore it on the site ↗</text>
 </svg>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>FSA Decomp Progress</title>
-<meta name="description" content="Live progress of the Four Swords Adventures byte-matching decompilation, measured with the honest objdiff report and confirmed by main.dol's SHA-1.">
+<meta name="description" content="Live progress of the Four Swords Adventures byte-matching decompilation, measured with objdiff and confirmed by main.dol's SHA-1.">
 <meta name="theme-color" content="#0b0d1a">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 1 22 9 16 15 10 9Z' fill='%233aae5c'/%3E%3Cpath d='M31 16 23 22 17 16 23 10Z' fill='%23ef5b52'/%3E%3Cpath d='M16 31 10 23 16 17 22 23Z' fill='%233d9cf0'/%3E%3Cpath d='M1 16 9 10 15 16 9 22Z' fill='%23c35ee6'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,8 +30,8 @@
     <div class="nownext" id="nownext" aria-label="What's happening now and next"></div>
   </div>
   <figure class="emblem-wrap">
-    <svg id="emblem" class="emblem" viewBox="-150 -150 300 300" role="img" aria-label="Progress emblem: one gem per category of the game code and a gold one for the libraries, each filled to its matched share of code"></svg>
-    <figcaption id="emblem-cap">Eight gems for the game code's categories, gold in the middle for the libraries; each fills with its matched code</figcaption>
+    <svg id="emblem" class="emblem" viewBox="-150 -150 300 300" role="img" aria-label="Progress emblem: one gem per category of the game code and a gold one for the libraries, each filled to its structural progress, matched code solid"></svg>
+    <figcaption id="emblem-cap">Eight gems for the game code's categories, gold in the middle for the libraries; each fills to its structural progress, matched code solid</figcaption>
   </figure>
 </header>
 
@@ -40,7 +40,7 @@
     <div class="panel-head">
       <div>
         <h2>The whole DOL</h2>
-        <p class="sub">Area is bytes of code. The bright fill rising in each tile is the share already matched; the paler band above it is weighted progress (“w”: partial credit for structurally matched functions).
+        <p class="sub">Area is bytes of code. The bright fill rising in each tile is matched code; the paler band above it is structural progress (size × match % of structurally matched functions). Labels give structural progress first, matched code second.
           The game code is coloured by its eight categories (or, switched, by boot-path phase), the libraries in gold.
           Tap or click to dive in: region, category or library, file, function.</p>
         <div class="groupby" id="groupby-map"></div>
@@ -58,7 +58,7 @@
 
   <section class="headline" aria-label="Headline numbers">
     <div class="stats" id="stats"></div>
-    <p class="structural" id="structural" aria-label="Secondary measure: structurally matched"></p>
+    <p class="structural" id="structural" aria-label="Structurally matched functions"></p>
     <div class="remaining" id="remaining"></div>
   </section>
 
@@ -78,7 +78,7 @@
       <div>
         <h2>Game code</h2>
         <p class="sub" id="game-sub">FSA's own code in eight categories, by what each file is.
-          Solid bars are byte-identical; the lighter extension is weighted progress (partial credit for structurally matched functions).</p>
+          Solid bars are matched code; the lighter extension is structural progress (size × match % of structurally matched functions).</p>
         <div class="groupby" id="groupby-game"></div>
         <p class="game-sum" id="game-sum"></p>
       </div>
@@ -144,9 +144,9 @@
     <div class="more"><span id="count"></span> <button id="more" type="button">Show more</button></div>
   </section>
 
-  <section class="panel honest" id="honest">
+  <section class="panel method" id="method">
     <h2>How this is measured</h2>
-    <div id="honest-body"></div>
+    <div id="method-body"></div>
   </section>
 </main>
 

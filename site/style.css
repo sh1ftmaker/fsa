@@ -261,10 +261,10 @@ table.files { width: 100%; border-collapse: collapse; font-size: 13px; }
 .more { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; color: var(--ink3); font-size: 13px; }
 .more button { font: 600 13px var(--sans); color: var(--ink); background: rgba(255,255,255,.06); border: 1px solid var(--line2); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
 
-.honest { font-size: 14px; color: var(--ink2); }
-.honest h2 { color: var(--ink); margin-bottom: 10px; }
-.honest p { margin: 0 0 10px; max-width: 60em; }
-.honest code { word-break: break-all; }
+.method { font-size: 14px; color: var(--ink2); }
+.method h2 { color: var(--ink); margin-bottom: 10px; }
+.method p { margin: 0 0 10px; max-width: 60em; }
+.method code { word-break: break-all; }
 
 footer { max-width: 1180px; margin: 0 auto; padding: 10px 20px 40px; color: var(--ink3); font-size: 12px; }
 
@@ -418,7 +418,7 @@ footer { max-width: 1180px; margin: 0 auto; padding: 10px 20px 40px; color: var(
   .parts { grid-template-columns: 1fr; }
 }
 
-/* secondary measure: structurally matched, quieter than the honest tiles */
+/* structurally matched functions, quieter than the tiles */
 .structural { margin: 10px 2px 0; font-size: 13px; color: var(--ink3); font-variant-numeric: tabular-nums; }
 .structural:empty { display: none; }
 .structural b { color: var(--ink2); font-weight: 600; }

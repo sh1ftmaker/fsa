@@ -1,11 +1,12 @@
 <p align="center">
   <a href="https://sh1ftmaker.github.io/fsa/">
-    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: an emblem with a gem for each of the eight categories of game code and a gold one for the libraries, each filled to its matched code, and the honest and weighted share of the code matched">
+    <img src="site/badges/hero.svg" width="100%" alt="Four Swords Adventures decompilation: an emblem with a gem for each of the eight categories of game code and a gold one for the libraries, each filled to its structural progress, with the structural progress and matched code of the whole DOL">
   </a>
 </p>
 
 <p align="center">
-  <a href="https://sh1ftmaker.github.io/fsa/"><img alt="Code matched" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-code.json&style=flat-square"></a>
+  <a href="https://sh1ftmaker.github.io/fsa/"><img alt="Structural progress" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-structural.json&style=flat-square"></a>
+  <a href="https://sh1ftmaker.github.io/fsa/"><img alt="Matched code" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-code.json&style=flat-square"></a>
   <a href="https://sh1ftmaker.github.io/fsa/"><img alt="Functions matched" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-functions.json&style=flat-square"></a>
   <a href="https://sh1ftmaker.github.io/fsa/"><img alt="Units Matching" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-units.json&style=flat-square"></a>
   <a href="https://sh1ftmaker.github.io/fsa/"><img alt="main.dol SHA-1" src="https://img.shields.io/endpoint?url=https%3A%2F%2Fsh1ftmaker.github.io%2Ffsa%2Fdata%2Fbadge-sha1.json&style=flat-square"></a>
@@ -36,7 +37,7 @@
 </p>
 <!-- treemap:end -->
 
-<p align="center"><sub>The whole DOL: area is bytes of code, the fill is the share byte-identical. The top row is the
+<p align="center"><sub>The whole DOL: area is bytes of code, the fill is matched code. The top row is the
 game code in its eight categories, the bottom row the libraries. Click a block to open it in the
 <a href="https://sh1ftmaker.github.io/fsa/#treemap">interactive treemap</a>, which goes down to single functions.</sub></p>
 
@@ -47,8 +48,8 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 <!-- progress:start -->
 As of 2026-11-07:
 
-- **Honest: 45.47 %** of the code is byte-identical, **9,412 / 11,557** functions (2,019,696 of 4,442,032 bytes; 100 % functions only).
-- **Weighted: 62.17 %**, the honest bytes plus partial credit for structurally matched functions (a separate, secondary measure).
+- **Structural progress: 62.17 %** (2,761,828 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
+- **Matched code: 45.47 %** (2,019,696 of 4,442,032 bytes), **9,412 / 11,557** functions fully matched.
 - **Structurally matched:** 10,103 / 11,557 functions (same instructions, register or order differences only), +275 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
@@ -56,7 +57,7 @@ As of 2026-11-07:
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="site/badges/regions-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="site/badges/regions-light.svg">
-  <img src="site/badges/regions-light.svg" width="100%" alt="Progress overview: where the remaining work is, the libraries as one group, and the game code's eight categories with honest and weighted bars">
+  <img src="site/badges/regions-light.svg" width="100%" alt="Progress overview: where the remaining work is, the libraries as one group, and the game code's eight categories with matched-code and structural-progress bars">
 </picture>
 
 ### Libraries
@@ -66,7 +67,7 @@ other decompilations and finished file by file. What is left is a few dozen
 holdouts.
 
 <!-- libraries:start -->
-**97.6 %** of 868,248 bytes of library code and **4,713 / 4,768** functions match (weighted 98.6 %).
+Of 868,248 bytes of library code: **98.6 %** structural progress, **97.6 %** matched code; **4,713 / 4,768** functions fully matched.
 
 | Library | Code matched | Functions | Left |
 |---|--:|--:|--:|
@@ -145,18 +146,18 @@ Dolphin); the progress site's *Group by* switch shows the game code that way
 too.
 
 <!-- game:start -->
-**32.8 %** of 3,573,784 bytes of game code and **4,699 / 6,789** functions match (weighted 53.3 %).
+Of 3,573,784 bytes of game code: **53.3 %** structural progress, **32.8 %** matched code; **4,699 / 6,789** functions fully matched.
 
-| Category | Code matched | Weighted | Functions | Files Matching | Unconfirmed |
+| Category | Structural | Code matched | Functions | Files Matching | Unconfirmed |
 |---|--:|--:|--:|--:|--:|
-| [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 59.4 % of 407,528 bytes | 94.6 % | 934 / 1,054 | 0 / 10 | – |
-| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 28.2 % of 679,252 bytes | 42.8 % | 852 / 1,339 | 29 / 139 | 54 |
-| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 29.0 % of 291,360 bytes | 47.0 % | 366 / 594 | 10 / 54 | 17 |
-| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 31.5 % of 900,452 bytes | 47.3 % | 983 / 1,518 | 68 / 229 | 56 |
-| [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 15.0 % of 182,272 bytes | 38.0 % | 159 / 311 | 0 / 10 | 2 |
-| [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 23.6 % of 801,744 bytes | 49.6 % | 490 / 872 | 8 / 47 | 11 |
-| [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 53.3 % of 198,580 bytes | 71.5 % | 640 / 773 | 4 / 24 | 7 |
-| [Media & link](https://sh1ftmaker.github.io/fsa/#/game/game-media) | 42.1 % of 112,596 bytes | 51.5 % | 275 / 328 | 6 / 15 | 2 |
+| [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 94.6 % | 59.4 % of 407,528 bytes | 934 / 1,054 | 0 / 10 | – |
+| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 42.8 % | 28.2 % of 679,252 bytes | 852 / 1,339 | 29 / 139 | 54 |
+| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 47.0 % | 29.0 % of 291,360 bytes | 366 / 594 | 10 / 54 | 17 |
+| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 47.3 % | 31.5 % of 900,452 bytes | 983 / 1,518 | 68 / 229 | 56 |
+| [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 38.0 % | 15.0 % of 182,272 bytes | 159 / 311 | 0 / 10 | 2 |
+| [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 49.6 % | 23.6 % of 801,744 bytes | 490 / 872 | 8 / 47 | 11 |
+| [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 71.5 % | 53.3 % of 198,580 bytes | 640 / 773 | 4 / 24 | 7 |
+| [Media & link](https://sh1ftmaker.github.io/fsa/#/game/game-media) | 51.5 % | 42.1 % of 112,596 bytes | 275 / 328 | 6 / 15 | 2 |
 
 - **Player:** The four players and their manager: the ten Player units of docs/PLAYER.md (states, movement, drawing).
 - **Enemies & bosses:** Enemies and bosses: EnemyBase subclasses and actors docs/names/actors.tsv names as enemies, and their helpers.
@@ -170,11 +171,14 @@ too.
 Each game file's category, its evidence and its confidence are in [docs/names/categories.tsv](docs/names/categories.tsv) (method: [docs/names/METHOD.md](docs/names/METHOD.md#categories)); the 149 files placed on thin evidence (low confidence) are marked unconfirmed. The progress site can also group the game code by boot-path phase (Boot to main menu, Main menu to Shadow Battle, Actors, Everything else, from [docs/BOOT_PATH.md](docs/BOOT_PATH.md)) with its *Group by* switch.
 <!-- game:end -->
 
-All figures come from the honest objdiff report
-(`build/G4SE01/report_honest.json`): every unit is diffed, and a function
-counts only if its relocations point at the same symbols too. The weighted
-figure is shown separately and never mixed into the honest one. They are
-regenerated with every merge; see [How it works](#how-it-works).
+**Structural progress** is matched code plus, for each structurally matched
+function (same instructions, only register numbers or order differ) or
+structurally close one, its size times its match percent (`tools/structural.py`). **Matched code**
+counts fully matched functions only. Both come from one objdiff report
+(`build/G4SE01/report_honest.json`, relocation diffs on): every unit is
+diffed, and a function is fully matched only if its relocations point at the
+same symbols too. They are regenerated with every merge; see
+[How it works](#how-it-works).
 
 ## Roadmap
 
@@ -243,7 +247,7 @@ flowchart LR
   evidenced `auto_inline off/reset` regions) or `goto` the donor file doesn't have; no m2c leftovers; no field access
   through casts and offsets; no embedded bytes; no changes to measuring
   tools or report settings; `symbols.txt` only renames placeholders. Every
-  unit marked `Matching` is 100 % in code and data in the honest report, and
+  unit marked `Matching` is 100 % in code and data in the objdiff report, and
   `main.dol` links with the original SHA-1.
 - **Review** (`docs/REVIEW_BRIEF.md`): a separate reviewer that never saw the
   author's reasoning reads every changed function against the target
@@ -251,7 +255,7 @@ flowchart LR
   every new name, and returns ACCEPT, CHANGES or REJECT. Only ACCEPT merges.
 - **Merge** (`tools/merge_unit.py`): squash-merges the branch, re-splits,
   runs the full `ninja` (link and SHA-1), runs the gate again and refuses if
-  the honest total went down.
+  matched code went down.
 - **Publish**: `tools/site_data.py` writes the site data, the images in
   `site/badges/` and the numbers in this README in the same merge commit.
   CI cannot build the game (there is no disc), so GitHub Actions only
@@ -264,9 +268,9 @@ flowchart LR
 - **No fakematches.** A function counts only when natural source compiles to
   the original bytes. Register pins, ordering tricks and asm stand-ins stay
   `NonMatching` with a `FIXME` saying what differs.
-- **Honest measurement.** Only the honest objdiff report is quoted, and the
-  linked `main.dol`'s SHA-1 is the final authority. Byte-pattern hits and
-  lenient diffs never count.
+- **One report, relocations checked.** Every figure comes from the same
+  objdiff report, and the linked `main.dol`'s SHA-1 is the final authority.
+  Byte-pattern hits and lenient diffs never count.
 - **Every submission is reviewed** adversarially before it merges.
 - **AI-first, no tricks.** Most of the work is done by AI agents under the
   same gate and review as anyone else. Names need evidence: donor code, SDK
@@ -297,14 +301,14 @@ in this repository.
 
 The compilers, dtk, objdiff-cli and (on Linux) wibo are downloaded into
 `build/` on the first run. A plain `ninja` compiles every unit, writes the
-honest report, links `main.dol` and checks its SHA-1 against
+objdiff report, links `main.dol` and checks its SHA-1 against
 `config/G4SE01/build.sha1`. On Windows the compilers run natively.
 
 <details>
 <summary>Reports, objdiff and decomp.me</summary>
 
 ```sh
-ninja build/G4SE01/report_honest.json   # compile every unit and write the honest report
+ninja build/G4SE01/report_honest.json   # compile every unit and write the objdiff report
 python3 tools/progress.py               # totals and per-library breakdown
 python3 tools/fdiff.py <unit>           # per-function match of one unit
 python3 tools/link_check.py             # which Matching units break the link, if the SHA-1 fails
