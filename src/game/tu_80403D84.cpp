@@ -1304,6 +1304,12 @@ void MapScreen_804B1288::fn_80409014() {
     }
 }
 
+void MapScreen_804B1288::fn_80408F38(f32 alpha) {
+    for (int i = 0; i < 9; i++) {
+        field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);
+    }
+}
+
 // FIXME: 95.81. Missing/extra (one instruction): ours moves fn_80403184's result through
 // r0 into r26 (mr, mr) where the original keeps it in r28; the zoom divisions load
 // field_0x18 before the lbl_8048C850 entry in the original (order only). The tail after the
@@ -1402,12 +1408,6 @@ void MapScreen_804B1288::fn_8040873C() {
     getMessageText_803832BC(field_0x564[1], lbl_8048C258[field_0x340], 0, NULL, NULL);
     getMessageText_803832BC(field_0x564[2], lbl_8048C278[field_0x340], 0, NULL, NULL);
     getMessageText_803832BC(field_0x564[3], lbl_8048C298[field_0x340], 0, NULL, NULL);
-}
-
-void MapScreen_804B1288::fn_80408F38(f32 alpha) {
-    for (int i = 0; i < 9; i++) {
-        field_0x14->search(lbl_8048C5D0[i])->setAlpha(field_0x642[i] * alpha);
-    }
 }
 
 // FIXME: 90.43. Missing/extra: for the selected row's text-box move the original loads the
