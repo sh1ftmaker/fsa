@@ -3,6 +3,45 @@
 #include "game/RotMatrix.h"
 #include "game/act/tu_801A908C.h"
 
+// A counter of the live instances in state 5 (defined elsewhere).
+extern s32 lbl_8053ABD0;
+
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_801AA464)
+cls_804A2FB0::~cls_804A2FB0() {
+    releaseEmitter_801EE434(field_0x2b8);
+    if (field_0x258 == 0 && gGameRoot_8053AAF8->field_0x4c != 9) {
+        gGameRoot_8053AAF8->fn_80138B7C();
+    }
+    if (field_0x258 == 5) {
+        lbl_8053ABD0--;
+    }
+}
+
+// FIXME(shotgun): not measurable (the original symbol is the plain fn_801A961C)
+void cls_804A2FB0::update() {
+    switch (field_0x258) {
+    case 0:
+    case 5:
+        fn_801A96B4();
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        fn_801A9CF4();
+        break;
+    }
+    if (field_0x234 > 0) {
+        field_0x234--;
+    }
+    if (field_0x238 > 0) {
+        field_0x238--;
+    }
+    if (field_0x23c > 0) {
+        field_0x23c--;
+    }
+}
+
 // FIXME: 99.0 %. regalloc-only: the original keeps the angle (and then
 // cos y) in f30 and cos x in f31, ours the other way round, and sin x / sin z
 // get f29 / f27 there, f27 / f29 here.
