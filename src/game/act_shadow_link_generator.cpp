@@ -5,6 +5,8 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
+#include "game/EmitterDelete.h"
+#include "game/act/act_princess_zelda_demo.h"
 
 // Effect ids of the five emitters fn_801C1768 starts (mEmitters2) and of the
 // four it starts without keeping them.
@@ -12,6 +14,9 @@ static const u16 lbl_80469424[6] = {0x3FC, 0x3FD, 0x3FE, 0x3FF, 0x400, 0x0};
 static const u16 lbl_8053EDB8[4] = {0x401, 0x402, 0x403, 0x404};
 // The three effect ids init() starts (mEmitters).
 static const u16 lbl_8053EDA8[4] = {0x4B, 0x4C, 0x4D, 0x0};
+// The three effect ids state 5 starts, and the five state 9 starts.
+static const u16 lbl_8053EDB0[4] = {0xF6, 0xF7, 0xF8, 0x0};
+static const u16 lbl_80469418[6] = {0x4CA, 0x4CB, 0x4CC, 0x4CD, 0x4CE, 0x0};
 
 ShadowLinkGenerator_804A4310::ShadowLinkGenerator_804A4310()
     : mSlotFirst(0), mSlotLast(0), mWaitTimer(0), field_0x2ac(0), mEmitter(NULL), mTexture(NULL) {
@@ -62,6 +67,157 @@ void ShadowLinkGenerator_804A4310::init() {
         }
     }
     fn_801C0D70()->field_0x50 = mSerial;
+}
+
+// FIXME(shotgun): 93.49 %, missing/extra
+void ShadowLinkGenerator_804A4310::update() {
+    mPieces.fn_8021C2B4();
+    mStateTimer++;
+    if (mStateTimer < 0) {
+        mStateTimer = 0;
+    }
+    switch (mState) {
+    case 0:
+        if (fn_801C0D70()->field_0x0 & 0x40) {
+            mStateTimer = 0;
+            mState = 1;
+        }
+        break;
+    case 1:
+        if (mStateTimer >= 0xB4) {
+            mWaitTimer = fn_801CD664(0x3D) + 0xB4;
+            mStateTimer = 0;
+            mState = 2;
+        }
+        break;
+    case 2:
+        if (mWaitTimer != 0) {
+            mWaitTimer--;
+            if (mWaitTimer == 0) {
+                fn_801C186C();
+            }
+        } else if (!(fn_801C0D70()->field_0x0 & 0x40)) {
+            mStateTimer = 0;
+            mState = 3;
+        }
+        break;
+    case 4:
+        if (mStateTimer >= 0x3C) {
+            for (s32 i = 0; i < 3; i++) {
+                deleteEmitter(&mEmitters[i]);
+            }
+            mStateTimer = 0;
+            mState = 5;
+        } else {
+            f32 t = 0.016666668f * (f32)(0x3C - mStateTimer);
+            if (mEmitters[1] != NULL) {
+                mEmitters[1]->mGlobalPScl.x = t;
+                mEmitters[1]->mGlobalPScl.y = 1.0f;
+            }
+            if (mEmitters[2] != NULL) {
+                mEmitters[2]->setGlobalAlpha((s32)(255.0f * t));
+            }
+        }
+        break;
+    case 5:
+        if (mStateTimer == 0xB4) {
+            startSound_801F0E34(0x5004B, 0);
+        }
+        if (fn_801C0D70()->field_0x0 & 0x80) {
+            vfunc_0x30(0xFF, true);
+            for (s32 i = 0; i < 3; i++) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8053EDB0[i], 0, 0, NULL, NULL, true, 1.0f);
+            }
+            mStateTimer = 0;
+            mState = 6;
+        }
+        break;
+    case 6:
+        startSound_801F0E34(0x5004C, 0);
+        if (mStateTimer >= 0x78) {
+            static const char* lbl_8053AC20 = "jen_8_3_tsume.bti";
+            mTexture = fn_804032E8('TIMG', lbl_8053AC20);
+            JGeometry::TVec3f at(mPos.x, mPos.y + -32.0f, 0.0f);
+            mSequence.fn_8021F9AC(&at);
+            mStateTimer = 0;
+            mState = 7;
+        }
+        break;
+    case 7:
+        startSound_801F0E34(0x5004C, 0);
+        if (mSequence.fn_8021F4B0()) {
+            for (s32 i = 0; i < 5; i++) {
+                deleteEmitter(&mEmitters2[i]);
+            }
+            s32 serial = getActorManager_801F856C()->fn_801F7884('DMZL', field_0x4);
+            if (serial >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (actor != NULL) {
+                    ((PrincessZeldaDemo_8049D208*)actor)->fn_8010F9F0();
+                }
+            }
+            fn_801C0D70()->field_0x0 |= 0x1000;
+            mStateTimer = 0;
+            mState = 8;
+        } else if (field_0x2ac != 0) {
+            field_0x2ac--;
+            if (field_0x2ac == 0) {
+                for (s32 i = 0; i < 5; i++) {
+                    deleteEmitter(&mEmitters2[i]);
+                }
+            } else {
+                u8 alpha = (s32)(0.008333334f * (f32)field_0x2ac * 255.0f);
+                for (s32 i = 0; i < 5; i++) {
+                    if (mEmitters2[i] != NULL) {
+                        mEmitters2[i]->setGlobalAlpha(alpha);
+                    }
+                }
+            }
+        } else if (mStateTimer == 0xF0) {
+            field_0x2ac = 0x78;
+        }
+        break;
+    case 8:
+        startSound_801F0E34(0x5004C, 0);
+        if (!(fn_801C0D70()->field_0x0 & 0x1000)) {
+            mSequence.fn_8021F914(5);
+            mStateTimer = 0;
+            mState = 9;
+        }
+        break;
+    case 9:
+        if (mStateTimer >= 0x5A) {
+            mSequence.fn_8021F924();
+            for (s32 i = 0; i < 5; i++) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80469418[i], 0, 0, NULL, NULL, true, 1.0f);
+            }
+            startSound_801F0E34(0x5006F, 0);
+            mStateTimer = 0;
+            mState = 10;
+        } else {
+            mSequence.fn_8021F4B0();
+        }
+        break;
+    case 10:
+        if (mStateTimer >= 0xB4) {
+            fn_8022ADCC();
+            mStateTimer = 0;
+            mState = 11;
+        }
+        break;
+    }
+    if (mEmitters[0] != NULL) {
+        u32 frame = mEmitters[0]->mCurrentFrame;
+        if (frame >= 0x14) {
+            if ((frame - 0x14) % 0x5A == 0) {
+                startSound_801F0E34(0x50048, 0);
+            }
+        }
+    }
+    if (mState >= 4 && mState < 7) {
+        startSound_801F0E34(0x5004A, 0);
+    }
+    mLife = mLifeBackup;
 }
 
 // Draws the "TIMG" texture at the generator's position, on the layers below 8,
