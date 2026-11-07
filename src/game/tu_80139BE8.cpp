@@ -189,8 +189,7 @@ void GameRootSub04_801F856C::fn_80139D9C() {
         fn_8023F390();
         gBgRewrite_8053AC98->fn_802A3A0C();
     }
-    fn_8011921C();
-    fn_80118E20();
+    fn_8011921C()->fn_80118E20();
     field_0x34++;
     for (s32 i = 0; i < 4; i++) {
         s32 v = fn_80236100(i);

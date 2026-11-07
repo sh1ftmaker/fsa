@@ -1256,6 +1256,8 @@ struct cls_801192AC {
 
     // 0x80118384 (game/tu_80118384.cpp): getActorManager_801F856C()->fn_801F6884(); field_0x0 = 0.
     void fn_80118384();
+    // 0x80118E20 (game/tu_80118384.cpp, not written yet): called on fn_8011921C() by GameRootSub04's fn_80139D9C.
+    void fn_80118E20();
     // 0x801183BC: field_0x1 = 0, and the same in the fade object fn_80119DD0 returns.
     void fn_801183BC();
     // 0x80118454: field_0x1 = 1, and the same in the fade object fn_80119DD0 returns.
@@ -1775,15 +1777,6 @@ void fn_8023F6C4();
 // called by GameRootSub04's fn_80139D9C).
 void fn_8023F2BC();
 void fn_8023F390();
-// Owner: game/tu_8022AD64.cpp (not written yet). The four per-player lookups GameRootSub04's
-// fn_80139D9C stores into lbl_80529DEC's 0x150..0x190 tables.
-s32 fn_80236100(s32 player);
-s32 fn_80237774(s32 player);
-s32 fn_80235A30(s32 player);
-s32 fn_8023587C(s32 player);
-s32 fn_80235ACC(s32 player);
-// game/tu_80118384.cpp (0x80118E20).
-void fn_80118E20();
 struct cls_8016ED88; // game/cls_8016ED88.h
 extern "C" {
 // Owner: game/tu_8016A2B4.cpp (0x8016D398, not written yet). Steps the four
