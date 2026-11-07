@@ -3,10 +3,14 @@
 
 #include "types.h"
 #include "game/tu_803A8DFC.h"
+#include "JSystem/JGeometry.h"
 
 class JKRArchive;
 class J2DScreen;
 class J2DPicture;
+class cls_804B20F8;
+class ActorSoundObj_804578F4;
+class JPABaseEmitter;
 class PaneCtrl_804AF86C;
 
 // The four screen objects whose constructors store them in .sbss globals
@@ -21,14 +25,56 @@ class PaneCtrl_804AF86C;
 class cls_804AFAB0 {
 public:
     /* 0x08 */ virtual ~cls_804AFAB0();
-    // game/tu_803B7DCC.cpp, not written yet; no other arguments.
-    void fn_803B7DCC();
-    void fn_803B7E64();
-    void fn_803B8188();
+    // game/tu_803B7DCC.cpp; no other arguments.
+    void fn_803B7DCC(); // draws the screen with its fade (unless stage 8 / sub 3)
+    void fn_803B7E64(); // the same, first telling lbl_8053ADC8 to draw in modes 3 and 4
+    void fn_803B8188(); // (re)starts the screen: clears the state and takes the stage from lbl_80529DEC
+    void fn_803B7F6C(); // steps the state machine of field_0x294
+    cls_804AFAB0(); // fn_803B8414
 
-    /* 0x004 */ u8 field_0x4[0x294 - 0x4];
+    /* 0x004 */ J2DPicture* field_0x4; // the screen's picture
+    /* 0x008 */ u8 field_0x8[0x1C - 0x8];
+    /* 0x01C */ cls_804B20F8* field_0x1c; // sound object
+    /* 0x020 */ ActorSoundObj_804578F4* field_0x20;
+    /* 0x024 */ JPABaseEmitter* field_0x24[50];
+    /* 0x0EC */ JGeometry::TVec3f field_0xec; // the sound object's position
+    /* 0x0F8 */ JGeometry::TVec3f field_0xf8[10];
+    /* 0x170 */ s32 field_0x170[10]; // -1 after construction
+    /* 0x198 */ s32 field_0x198;
+    /* 0x19C */ s32 field_0x19c;
+    /* 0x1A0 */ s32 field_0x1a0;
+    /* 0x1A4 */ s32 field_0x1a4;
+    /* 0x1A8 */ s32 field_0x1a8;
+    /* 0x1AC */ s32 field_0x1ac;
+    /* 0x1B0 */ u8 field_0x1b0[0x1B8 - 0x1B0];
+    /* 0x1B8 */ s32 field_0x1b8;
+    /* 0x1BC */ s32 field_0x1bc;
+    /* 0x1C0 */ s32 field_0x1c0;
+    /* 0x1C4 */ s32 field_0x1c4;
+    /* 0x1C8 */ s32 field_0x1c8;
+    /* 0x1CC */ s32 field_0x1cc;
+    /* 0x1D0 */ s32 field_0x1d0;
+    /* 0x1D4 */ s32 field_0x1d4;
+    /* 0x1D8 */ s32 field_0x1d8;
+    /* 0x1DC */ s16 field_0x1dc;
+    /* 0x1DE */ u8 field_0x1de[0x280 - 0x1DE];
+    /* 0x280 */ s32 field_0x280; // frame counter
+    /* 0x284 */ s32 field_0x284; // stage (0-7)
+    /* 0x288 */ s32 field_0x288; // sub-stage (0-3)
+    /* 0x28C */ s32 field_0x28c; // -1 after construction
+    /* 0x290 */ s32 field_0x290; // -1 after construction
     /* 0x294 */ u8 field_0x294; // mode, read by fn_8037A120
-}; // Size: at least 0x295
+    /* 0x295 */ u8 field_0x295; // step within a mode
+    /* 0x296 */ u8 field_0x296; // alpha of the screen
+    /* 0x297 */ u8 field_0x297;
+    /* 0x298 */ u8 field_0x298;
+    /* 0x299 */ u8 field_0x299[0x29B - 0x299];
+    /* 0x29B */ u8 field_0x29b;
+    /* 0x29C */ u8 field_0x29c;
+    /* 0x29D */ u8 field_0x29d;
+    /* 0x29E */ u8 field_0x29e;
+    /* 0x29F */ u8 field_0x29f;
+}; // Size: at least 0x2A0
 
 // Vtable 0x804B03D8; constructor fn_803D901C, destructor fn_803D8D74
 // (game/tu_803D7098.cpp). The constructor stores the object in lbl_8053ADC0.
