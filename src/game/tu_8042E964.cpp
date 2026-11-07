@@ -397,6 +397,152 @@ f32 cls_804B1634::fn_80430368(u8 noun, s32 count, char* out) {
     return 0.0f;
 }
 
+// FIXME(shotgun): 98.74 %, cls_804B1634
+void cls_804B1634::fn_8042F6DC() {
+    f32 w = field_0xb8[0] + 48.0f;
+    f32 lineSpace = static_cast<J2DTextBox*>(field_0x8->search(0x0000005477743031ull))->getLineSpace();
+    f32 h = (f32)field_0xe4 * lineSpace + 24.0f;
+    if (w < 128.0f) {
+        w = 128.0f;
+    }
+    if (h < 128.0f) {
+        h = 128.0f;
+    }
+    s16 tilesW = (s32)(w + 64.0f) / 128;
+    s16 tilesH = (s32)(h + 64.0f) / 128;
+    if (tilesW <= 1) {
+        tilesW++;
+    }
+    if (tilesH <= 1) {
+        tilesH++;
+    }
+    f32 sx0 = (w + (field_0x24[0]->field_0x18 - field_0x24[4]->field_0x18)) / field_0x24[0]->field_0x18;
+    field_0x24[0]->fn_80402CE0(sx0, 1.0f);
+    field_0x24[1]->fn_80402CE0(sx0, 1.0f);
+    f32 sy2 = h / field_0x24[4]->field_0x1c;
+    f32 sx2 = w / field_0x24[4]->field_0x18;
+    field_0x24[2]->fn_80402CE0(1.0f, sy2);
+    field_0x24[3]->fn_80402CE0(1.0f, sy2);
+    field_0x24[4]->fn_80402CE0(sx2, sy2);
+
+    f32 sx_bb0 = (w + (field_0x10[0]->field_0x18 - field_0x24[4]->field_0x18)) / field_0x10[0]->field_0x18;
+    field_0x10[0]->fn_80402CE0(sx_bb0, 1.0f);
+    field_0x10[1]->fn_80402CE0(sx_bb0, 1.0f);
+
+    f32 w4 = field_0x24[4]->field_0x18;
+    f32 w_bb4 = field_0x10[4]->field_0x18;
+    f32 sy_bb2 = (h + (field_0x10[4]->field_0x1c - field_0x24[4]->field_0x1c)) / field_0x10[4]->field_0x1c;
+    field_0x10[2]->fn_80402CE0(1.0f, sy_bb2);
+    field_0x10[3]->fn_80402CE0(1.0f, sy_bb2);
+    field_0x10[4]->fn_80402CE0((w + (w_bb4 - w4)) / w_bb4, sy_bb2);
+
+    f32 dx4 = field_0x24[4]->field_0x8 - field_0x24[4]->mPane->getBounds()->i.x;
+    field_0x24[0]->moveFromCentre_80402E08(dx4, 0.0f);
+    field_0x24[1]->moveFromCentre_80402E08(dx4, field_0x24[4]->mPane->getHeight() - field_0x24[4]->field_0x1c);
+
+    f32 dy4 = field_0x24[4]->field_0xc - field_0x24[4]->mPane->getBounds()->i.y;
+    field_0x24[2]->moveFromCentre_80402E08(0.0f, dy4);
+    field_0x24[3]->moveFromCentre_80402E08(field_0x24[4]->mPane->getWidth() - field_0x24[4]->field_0x18, dy4);
+
+    f32 dx_bb4 = field_0x10[4]->field_0x8 - field_0x10[4]->mPane->getBounds()->i.x;
+    field_0x10[0]->moveFromCentre_80402E08(dx_bb4, 0.0f);
+    field_0x10[1]->moveFromCentre_80402E08(dx_bb4, field_0x10[4]->mPane->getHeight() - field_0x10[4]->field_0x1c);
+
+    f32 dy_bb4 = field_0x10[4]->field_0xc - field_0x10[4]->mPane->getBounds()->i.y;
+    field_0x10[2]->moveFromCentre_80402E08(0.0f, dy_bb4);
+    field_0x10[3]->moveFromCentre_80402E08(field_0x10[4]->mPane->getWidth() - field_0x10[4]->field_0x18, dy_bb4);
+
+    JGeometry::TVec2<s16> tcA[4];
+    JGeometry::TVec2<s16> tcB[4];
+    s16 tx = tilesW << 8;
+    for (s32 i = 0; i < 4; i++) {
+        tcA[i] = field_0x38[i];
+        tcB[i] = field_0x78[i];
+    }
+    tcA[1].x = tx;
+    tcA[3].x = tx;
+    tcB[1].x = tx;
+    tcB[3].x = tx;
+    static_cast<J2DPicture*>(field_0x10[0]->mPane)->setTexCoord(tcA);
+    static_cast<J2DPicture*>(field_0x24[0]->mPane)->setTexCoord(tcB);
+
+    for (s32 i = 0; i < 4; i++) {
+        tcA[i] = field_0x38[4 + i];
+        tcB[i] = field_0x78[4 + i];
+    }
+    tcA[0].x = tx;
+    tcA[2].x = tx;
+    tcB[0].x = tx;
+    tcB[2].x = tx;
+    static_cast<J2DPicture*>(field_0x10[1]->mPane)->setTexCoord(tcA);
+    static_cast<J2DPicture*>(field_0x24[1]->mPane)->setTexCoord(tcB);
+
+    s16 ty = tilesH << 8;
+    for (s32 i = 0; i < 4; i++) {
+        tcA[i] = field_0x38[8 + i];
+        tcB[i] = field_0x78[8 + i];
+    }
+    tcA[2].x = ty;
+    tcA[3].x = ty;
+    tcB[2].x = ty;
+    tcB[3].x = ty;
+    static_cast<J2DPicture*>(field_0x10[2]->mPane)->setTexCoord(tcA);
+    static_cast<J2DPicture*>(field_0x24[2]->mPane)->setTexCoord(tcB);
+
+    for (s32 i = 0; i < 4; i++) {
+        tcA[i] = field_0x38[12 + i];
+        tcB[i] = field_0x78[12 + i];
+    }
+    tcA[0].x = ty;
+    tcA[1].x = ty;
+    tcB[0].x = ty;
+    tcB[1].x = ty;
+    static_cast<J2DPicture*>(field_0x10[3]->mPane)->setTexCoord(tcA);
+    static_cast<J2DPicture*>(field_0x24[3]->mPane)->setTexCoord(tcB);
+
+    if (field_0xea != 0xFF) {
+        if (field_0xb8[1] >= field_0xb8[2]) {
+            J2DPane* cur1 = field_0x8->search(0x0050776375723031ull);
+            field_0x8->search(0x0050776375723031ull)->resize(field_0xb8[1], cur1->getHeight());
+            J2DPane* cur2 = field_0x8->search(0x0050776375723032ull);
+            field_0x8->search(0x0050776375723032ull)->resize(field_0xb8[1], cur2->getHeight());
+        } else {
+            J2DPane* cur1 = field_0x8->search(0x0050776375723031ull);
+            field_0x8->search(0x0050776375723031ull)->resize(field_0xb8[2], cur1->getHeight());
+            J2DPane* cur2 = field_0x8->search(0x0050776375723032ull);
+            field_0x8->search(0x0050776375723032ull)->resize(field_0xb8[2], cur2->getHeight());
+        }
+        u8 cursor = field_0xea;
+        f32 y;
+        f32 x;
+        J2DPane* textX = field_0x8->search(0x0000005477743031ull);
+        x = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getBounds()->i.x + textX->getWidth() * 0.5f;
+        J2DPane* textY = field_0x8->search(0x0000005477743031ull);
+        y = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getBounds()->i.y + textY->getHeight() * 0.5f;
+        if (cursor == 0) {
+            x += (field_0xb8[1] - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f;
+        } else {
+            x += (field_0xb8[2] - field_0xc8 - field_0x8->search(0x0050776375723031ull)->getWidth()) * 0.5f +
+                 (field_0xcc[1] - field_0xcc[0]);
+        }
+        f32 curHeight = field_0x8->search(0x0050776375723031ull)->getHeight();
+        f32 ls1 = ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getLineSpace();
+        y += (field_0xd8[cursor] - (f32)field_0xe4 * 0.5f - 1.0f) *
+                 ((J2DTextBox*)field_0x8->search(0x0000005477743031ull))->getLineSpace() +
+             (ls1 - curHeight) * 0.5f;
+        field_0x8->search(0x0050776375723031ull)->move(x, y);
+        field_0x8->search(0x0050776375723032ull)->move(x, y);
+        f32 height1 = field_0x8->search(0x0050776375723031ull)->getHeight();
+        J2DPane* cur1 = field_0x8->search(0x0050776375723031ull);
+        field_0x8->search(0x0050776375723031ull)
+            ->rotate(0.5f * cur1->getWidth(), 0.5f * height1, J2DROTATE_Z, lbl_80543AE8[field_0xeb]);
+        f32 height2 = field_0x8->search(0x0050776375723032ull)->getHeight();
+        J2DPane* cur2 = field_0x8->search(0x0050776375723032ull);
+        field_0x8->search(0x0050776375723032ull)
+            ->rotate(0.5f * cur2->getWidth(), 0.5f * height2, J2DROTATE_Z, lbl_80543AF0[field_0xeb]);
+    }
+}
+
 // FIXME(shotgun): 93.21 %, missing/extra + reloc-name
 // Lays message `id` out into `str` with each line centred in 428 (a "\x1BCR[n]" prefix), the
 // 0x1A size-3 commands replaced by the digit `value` and its counted noun; on the way it
