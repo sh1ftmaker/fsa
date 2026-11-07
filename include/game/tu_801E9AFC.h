@@ -72,8 +72,8 @@ struct cls_801E9AFC {
     // 0x801E9C74: draws the outlines and then the sprites of every element
     // (both when the view's flag is set, else the selected one).
     void fn_801E9C74();
-    // 0x801EA108 (not written: the original reloads the sin/cos table for every
-    // vertex, our best was 52 %): draws the sprite quad at pos (x, y only) rotated by angle (an
+    // 0x801EA108 (the original reloads the sin/cos table for every
+    // vertex): draws the sprite quad at pos (x, y only) rotated by angle (an
     // index into the sin/cos table); `z` is added to the quad's y and used as
     // its z. r3 is unused.
     void fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z);

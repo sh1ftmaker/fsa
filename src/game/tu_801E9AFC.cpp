@@ -167,6 +167,35 @@ void cls_801E9AFC::fn_801EA304() {
     GXLoadTexObj(&field_0xf4[1], GX_TEXMAP0);
 }
 
+// 0x801EA108.
+// FIXME(shotgun): 46.2 %, missing/extra; the original reloads the sin/cos table for every vertex.
+void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
+    f32 s0 = 0.0f;
+    f32 s1 = 1.0f;
+    f32 centerX = 0.0f;
+    f32 centerY = 2.0f;
+    if (angle < 0) {
+        centerX = -0.0f;
+        s0 = s1;
+        s1 = 0.0f;
+        centerY = -2.0f;
+    }
+    s16 rot = -angle;
+    f32 sn = JMath::sincosTable_.sinShort(rot);
+    f32 cs = JMath::sincosTable_.cosShort(rot);
+    f32 x = pos->x + (centerY * cs - centerX * sn);
+    f32 y = pos->y + (centerY * sn + centerX * cs);
+    GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+    GXPosition3f32(x + (-4.0f * cs - -4.0f * sn), y + (-4.0f * sn + -4.0f * cs) + z, z);
+    GXTexCoord2f32(s0, 0.0f);
+    GXPosition3f32(x + (4.0f * cs - -4.0f * sn), y + (4.0f * sn + -4.0f * cs) + z, z);
+    GXTexCoord2f32(s1, 0.0f);
+    GXPosition3f32(x + (4.0f * cs - 4.0f * sn), y + (4.0f * sn + 4.0f * cs) + z, z);
+    GXTexCoord2f32(s1, 1.0f);
+    GXPosition3f32(x + (-4.0f * cs - 4.0f * sn), y + (-4.0f * sn + 4.0f * cs) + z, z);
+    GXTexCoord2f32(s0, 1.0f);
+}
+
 // FIXME: 91.0. Three fewer-instruction spots: the original converts the
 // "outlines" / "sprites" tests to bool through a byte (clrlwi, neg, or, srwi)
 // where ours keeps the compare result; the rest is the same code, registers
