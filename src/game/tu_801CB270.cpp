@@ -373,6 +373,8 @@ s32 fn_801CCF34(s32 player) {
     return fn_80236228(target);
 }
 
+#ifdef NONMATCHING
+// FIXME(shotgun): gated out: compiled, its FLT_MAX literal moves fn_801CD6D8 from 100 % to 99.35 % (literal pool order).
 // FIXME(shotgun): 91.05 %, missing/extra
 s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer) {
     s32 best = -1;
@@ -390,6 +392,7 @@ s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer) {
     }
     return best;
 }
+#endif
 
 // The player (fn_8023F264) whose fn_80236228 value is the lowest, or -1 when
 // none qualifies or the lowest is shared.
