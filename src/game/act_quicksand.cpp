@@ -174,6 +174,59 @@ void cls_804A6270::vfunc_0x9C(u8 mapHit) {
     }
 }
 
+// FIXME(shotgun): 90.16 %, missing/extra
+void cls_804A6270::fn_802110A8() {
+    if ((mFlags & 0x8000) && mState != 0) {
+        if (field_0x2bc != 0) {
+            JGeometry::TVec3f pos(mPos);
+            field_0x2c0.fn_800FDEA0(&pos, 1.0f, &field_0x3c, NULL, NULL, 0x200);
+        } else {
+            bool inside = false;
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_801D0B44(i) && fn_80211000(getPlayerPos_8023E724(i))) {
+                    inside = true;
+                    break;
+                }
+            }
+            if (inside) {
+                field_0x3ac = -1;
+                field_0x3b0 = 0;
+                return;
+            }
+            if (field_0x3b0 != 0) {
+                field_0x3b0--;
+            }
+            s32 player = fn_801D05F8(&mPos, 0.0f);
+            if (player != field_0x3ac) {
+                if (player < 0) {
+                    field_0x3ac = -1;
+                    field_0x3b0 = 0;
+                } else if (field_0x3ac < 0) {
+                    field_0x3ac = player;
+                    field_0x3b0 = 45;
+                } else if (field_0x3b0 == 0) {
+                    field_0x3ac = player;
+                    field_0x3b0 = 45;
+                }
+            }
+            if (field_0x3ac >= 0) {
+                JGeometry::TVec2f step;
+                fn_801D00B4(field_0x3ac, &step, 1.0f);
+                field_0x3c.x = step.x;
+                field_0x3c.y = step.y;
+            }
+        }
+        if (field_0x388 >= 0) {
+            if (!(field_0x3c.squared() <= 32.0f * JGeometry::TUtilf::epsilon())) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x388);
+                if (actor != NULL) {
+                    actor->mPos += field_0x3c;
+                }
+            }
+        }
+    }
+}
+
 void cls_804A6270::vfunc_0x88() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     fn_802110A8();
