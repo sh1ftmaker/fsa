@@ -17,11 +17,65 @@ struct GemDrop {
     s32 type;
     s32 amount;
 };
-extern const GemDrop lbl_8046A288[];
+
+// Sprite sequences ({cel, frames} pairs ending in -1, -1), indexed through
+// lbl_804A59B0 (eight per mType). The one-cel ones are small enough for .sdata2.
+static const s16 lbl_8053F840[] = { 0, 20, -1, -1 };
+static const s16 lbl_8053F848[] = { 8, 20, -1, -1 };
+static const s16 lbl_8053F850[] = { 16, 20, -1, -1 };
+static const s16 lbl_8053F858[] = { 24, 20, -1, -1 };
+static const s16 lbl_8046A058[] = { 0, 1, 1, 2, 2, 2, 3, 1, 4, 1, 5, 2, 6, 2, 7, 1, -1, -1 };
+static const s16 lbl_8046A07C[] = { 8, 1, 9, 2, 10, 2, 11, 1, 12, 1, 13, 2, 14, 2, 15, 1, -1, -1 };
+static const s16 lbl_8046A0A0[] = { 16, 2, 17, 2, 18, 2, 19, 2, 20, 2, 21, 2, 22, 2, 23, 2, -1, -1 };
+static const s16 lbl_8046A0C4[] = { 24, 2, 25, 2, 26, 2, 27, 2, 28, 2, 29, 2, 30, 2, 31, 2, -1, -1 };
+static const s16 lbl_8046A0E8[] = { 0, 15, 1, 15, -1, -1 };
+static const s16 lbl_8046A0F4[] = { 4, 15, 5, 15, -1, -1 };
+static const s16 lbl_8046A100[] = { 8, 15, 9, 15, -1, -1 };
+static const s16 lbl_8046A10C[] = { 12, 15, 13, 15, -1, -1 };
+static const s16 lbl_8046A118[] = { 2, 10, 1, 7, 3, 10, 1, 7, -1, -1 };
+static const s16 lbl_8046A12C[] = { 6, 10, 5, 7, 7, 10, 5, 7, -1, -1 };
+static const s16 lbl_8046A140[] = { 10, 10, 9, 7, 11, 10, 9, 7, -1, -1 };
+static const s16 lbl_8046A154[] = { 14, 10, 13, 7, 15, 10, 13, 7, -1, -1 };
+static const s16 lbl_8046A168[] = { 0, 10, 1, 8, 0, 10, 2, 8, -1, -1 };
+static const s16 lbl_8046A17C[] = { 3, 10, 4, 8, 3, 10, 5, 8, -1, -1 };
+static const s16 lbl_8046A190[] = { 6, 10, 7, 8, 6, 10, 8, 8, -1, -1 };
+static const s16 lbl_8046A1A4[] = { 9, 10, 10, 8, 9, 10, 11, 8, -1, -1 };
+static const s16 lbl_8046A1B8[] = { 0, 20, 1, 20, -1, -1 };
+static const s16 lbl_8046A1C4[] = { 4, 20, 5, 20, -1, -1 };
+static const s16 lbl_8046A1D0[] = { 8, 20, 9, 20, -1, -1 };
+static const s16 lbl_8046A1DC[] = { 12, 20, 13, 20, -1, -1 };
+static const s16 lbl_8046A1E8[] = { 2, 10, 1, 7, 3, 10, 1, 7, -1, -1 };
+static const s16 lbl_8046A1FC[] = { 6, 10, 5, 7, 7, 10, 5, 7, -1, -1 };
+static const s16 lbl_8046A210[] = { 10, 10, 9, 7, 11, 10, 9, 7, -1, -1 };
+static const s16 lbl_8046A224[] = { 14, 10, 13, 7, 15, 10, 13, 7, -1, -1 };
+
+// Per-type parameters (mType 0..3).
+const Thief_804A5A30::TypeParams lbl_8046A238[4] = {
+    { 1.0f, 1.5f, 5, 0xC3, -9.0f },
+    { 0.6f, 1.2f, 6, 0x7F, -11.0f },
+    { 1.2f, 1.2f, 4, 0x4D, -6.0f },
+    { 0.8f, 0.8f, 6, 0x6F, -11.0f },
+};
+
+// Gem drops: {gem type, amount}, tested from the largest amount down.
+static const GemDrop lbl_8046A288[12] = {
+    { 0, 1 }, { 1, 5 }, { 2, 20 }, { 3, 50 }, { 4, 100 }, { 5, 150 },
+    { 6, 200 }, { 7, 300 }, { 8, 1000 }, { 9, 1500 }, { 10, 2000 }, { 11, 3000 },
+};
+
+static const s16* lbl_804A59B0[32] = {
+    lbl_8053F840, lbl_8053F848, lbl_8053F850, lbl_8053F858,
+    lbl_8046A058, lbl_8046A07C, lbl_8046A0A0, lbl_8046A0C4,
+    lbl_8046A0E8, lbl_8046A0F4, lbl_8046A100, lbl_8046A10C,
+    lbl_8046A118, lbl_8046A12C, lbl_8046A140, lbl_8046A154,
+    lbl_8046A168, lbl_8046A17C, lbl_8046A190, lbl_8046A1A4,
+    lbl_8046A168, lbl_8046A17C, lbl_8046A190, lbl_8046A1A4,
+    lbl_8046A1B8, lbl_8046A1C4, lbl_8046A1D0, lbl_8046A1DC,
+    lbl_8046A1E8, lbl_8046A1FC, lbl_8046A210, lbl_8046A224,
+};
 
 static JGeometry::TVec2f lbl_8053AC60; // the sort origin, set by fn_802063FC
 static int fn_802068A0(const void* a, const void* b);
-extern const s16* lbl_804A59B0[];
 
 static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec3f& p) {
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
@@ -43,7 +97,6 @@ static int fn_802068A0(const void* a, const void* b) {
     return result;
 }
 
-// FIXME: 99.86% (reloc-name). Differs only in literal symbol relocations.
 Thief_804A5A30::Thief_804A5A30() {
     field_0x340 = -1;
     field_0x344 = 0;
@@ -67,7 +120,7 @@ Thief_804A5A30::~Thief_804A5A30() {
     fn_80204638()->fn_802049E0(this);
 }
 
-// FIXME: 99.60% (regalloc-only + reloc-name). Register allocation and literal relocations.
+// FIXME: 99.74% (regalloc-only + reloc-name). Register allocation; its 1.0f is vfunc_0x90's (see there).
 void Thief_804A5A30::init() {
     EnemyBase_804A4808::init();
 
@@ -159,7 +212,7 @@ s32 Thief_804A5A30::fn_802063FC() {
     return result;
 }
 
-// FIXME: 98.73% (regalloc-only + reloc-name). Register allocation swap between r29 and r30.
+// FIXME: 98.85% (regalloc-only + reloc-name). Register allocation swap between r29 and r30; 1.0f pool slot (see vfunc_0x90).
 void Thief_804A5A30::fn_80206168() {
     if (field_0x344 == 0) {
         return;
@@ -222,7 +275,7 @@ bool Thief_804A5A30::fn_8020609C() const {
     return result;
 }
 
-// FIXME: 80.27% (scheduling + reloc-name). Instruction scheduling and literal relocations.
+// FIXME: 80.45% (scheduling). Instruction scheduling.
 void Thief_804A5A30::fn_80205E0C(s32 newState) {
     if (newState == 7) {
         switch (mState) {
@@ -312,9 +365,10 @@ void Thief_804A5A30::fn_80205E0C(s32 newState) {
     mState = newState;
 }
 
-// FIXME: 94.19%. Ours has one more instruction (539 vs 538), the rest is register allocation (this in r29 vs
+// FIXME: 94.33%. Ours has one more instruction (539 vs 538), the rest is register allocation (this in r29 vs
 // r31, the layer argument of fn_801CF888 in states 0 and 6 is loaded into a saved register before
-// getPlayerPos_8023E724 in the original) and literal relocations.
+// getPlayerPos_8023E724 in the original) and literal relocations (the original pools 1.0f before
+// 1.2f / 2.0f; ours pools it last).
 void Thief_804A5A30::vfunc_0x90(u8 mapHit) {
     // Declared at function scope (not in the state 4 loop) for the original's register assignment.
     u32 gemType = 0;
@@ -627,7 +681,6 @@ void Thief_804A5A30::vfunc_0x9C(u8 mapHit) {
     fn_8020FADC();
 }
 
-// FIXME: 99.91% (reloc-name). Differs only in literal symbol relocations.
 void Thief_804A5A30::vfunc_0x88() {
     vfunc_0x84();
     if (fn_8020609C()) {
@@ -682,7 +735,6 @@ void Thief_804A5A30::vfunc_0x8C() {
     }
 }
 
-// FIXME: 99.93% (reloc-name). Differs only in literal symbol relocations.
 void Thief_804A5A30::vfunc_0x98() {
     if (mState == 3) {
         if (field_0xc4 != 0) {
