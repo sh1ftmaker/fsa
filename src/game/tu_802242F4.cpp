@@ -20,7 +20,7 @@ bool fn_802242F4(ActorBase_804A5770* actor) {
             if (player >= 0 && player < 4) {
                 if (viewLayerFlag(actor->field_0x4) != 0 ||
                     !(__fabsf(actor->mPos.z - getPlayerPos_8023E724(player)->z) > 32.0f)) {
-                    fn_801A3C50(actor, player);
+                    actor->fn_801A3C50(player);
                     result = true;
                 }
             }

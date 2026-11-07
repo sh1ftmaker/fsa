@@ -330,6 +330,23 @@ public:
     // right before draw(): rebuilds mSpriteParams (r3 is the actor; only its
     // fields from 0x120 on are touched). Result unused.
     void fn_801A3CFC();
+    // game/tu_801A3C50.cpp. The actor was hit by `player`: mLife = 0, field_0x10c /
+    // field_0xa0 = player, field_0x48 = (1.4, 0.4, 0.4), field_0xa8 = 30 (layer 8 and up)
+    // or 35, lbl_8053A100 = player, then vfunc_0x44. tu_802242F4 calls it; fn_801A4D74
+    // inlines it.
+    void fn_801A3C50(s32 player);
+    // game/tu_801A3C50.cpp: the per-frame damage checks fn_801A6160 runs on the actor's
+    // box (field_0x70 moved to the actor's top-down position) and that position; each
+    // returns 0 when nothing hit. The extern "C" wrappers below look the actor up by
+    // serial and call fn_801A41D8 / fn_801A4754 / fn_801A4D74 / fn_801A5400.
+    s32 fn_801A41D8(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+    s32 fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+    s32 fn_801A4D74(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+    s32 fn_801A4FB4();
+    s32 fn_801A5400(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+    // game/tu_801A3C50.cpp; tu_801F6058 calls it. Runs the damage checks above and
+    // returns 0-3.
+    s32 fn_801A6160();
     // 88 units / 153 calls. Hits every player (except skipPlayer; -1 in 138
     // calls) whose box (fn_8023B190) overlaps mBox on this layer, with
     // fn_80238548(player, damage, &pos, arg); damage -100 means field_0x114
@@ -658,23 +675,19 @@ void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
 
 } // extern "C"
 
-// Not written yet in game/tu_801A3C50.cpp (a member of an actor class derived
-// from ActorBase_804A5770, so it takes the actor in r3): extern "C" keeps the
-// dtk name until that unit defines it. 1 unit (tu_802242F4). Stores 0 in
-// field 0x108 and `player` in fields 0x10C and 0xA0, then calls vtable slot
-// 0x44.
+// game/tu_801A3C50.cpp (C linkage, no mangled names): map checks act_deadrock's
+// update() makes with its mSerial, its box and its top-down position. Each looks
+// the actor up by serial and returns its ActorBase_804A5770 check's result
+// (fn_801A5400 / fn_801A4754 / fn_801A41D8 / fn_801A4D74).
 extern "C" {
-void fn_801A3C50(ActorBase_804A5770* actor, s32 player);
+s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
+s32 fn_801A4F5C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos);
 } // extern "C"
 
-// game/tu_801A3C50.cpp (not written yet; C linkage, no mangled names): map
-// checks act_deadrock's update() makes with its mSerial, its box and its
-// top-down position.
-extern "C" {
-s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-s32 fn_801A4F5C(s32 serial, const JGeometry::TBox2f* box, const JGeometry::TVec2f* pos);
-} // extern "C"
+// game/tu_802242F4.cpp: whether a player of the actor's layer touches its box (then
+// fn_801A3C50 has run). fn_801A6160 calls it.
+bool fn_802242F4(ActorBase_804A5770* actor);
 
 #endif
