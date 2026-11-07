@@ -229,7 +229,7 @@ static inline void reappear(ReaperShinigami_804A886C* self) {
 }
 
 // 0x802B8078 is a plain `fn_802B8078` symbol in the original; ours is the mangled member.
-// FIXME(shotgun): not measurable (symbol name); compiles at roughly the original size
+// FIXME(shotgun): 77.86 %, missing/extra + reloc-name
 void ReaperShinigami_804A886C::fn_802B8078() {
     field_0x29c = getPlayerLayer_8023DE58(field_0x298);
     if (field_0x29c < 8) {

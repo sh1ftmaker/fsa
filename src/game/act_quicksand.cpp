@@ -70,7 +70,7 @@ cls_804A6270::~cls_804A6270() {
     fn_80212AC0()->fn_80212BA0(mSerial);
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_80212288); its literals fixed .sdata2 to 94.74 %
+// FIXME(shotgun): 98.53 %, missing/extra + reloc-name; its literals fixed .sdata2 to 94.74 %
 void cls_804A6270::init() {
     EnemyBase_804A4808::init();
     s32 kind = field_0x90 & 7;
@@ -231,7 +231,7 @@ void cls_804A6270::init() {
     }
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_802121C8)
+// FIXME(shotgun): 99.90 %, reloc-name
 void cls_804A6270::fn_802121C8() {
     if (!(mFlags & 0x2000)) {
         field_0x38c = getActorManager_801F856C()->fn_801F76F0('WARP', field_0x4, &mPos, -1);
@@ -257,7 +257,7 @@ void cls_804A6270::vfunc_0x54() {
     }
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_80211EB0)
+// FIXME(shotgun): 94.06 %, missing/extra
 void cls_804A6270::fn_80211EB0() {
     if (mState != 0) {
         for (s32 i = 0; i < 4; i++) {

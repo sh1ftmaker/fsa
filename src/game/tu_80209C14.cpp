@@ -81,7 +81,7 @@ void cls_804A5D60::vfunc_0x54() {
     field_0x2c0 = offset;
 }
 
-// FIXME(shotgun): not measurable, the original symbol is the plain `fn_8020AA78` (ours is mangled).
+// FIXME(shotgun): 78.11 %, missing/extra + reloc-name
 // 0x8020AA78: enters `state`, starting its animation and
 // velocity. While bit 0x2000 is set only 8, 11 and 12 are taken.
 void cls_804A5D60::fn_8020AA78(s32 state) {

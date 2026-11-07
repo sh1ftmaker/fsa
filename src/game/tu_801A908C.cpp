@@ -6,7 +6,7 @@
 // A counter of the live instances in state 5 (defined elsewhere).
 extern s32 lbl_8053ABD0;
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_801AA8F4)
+// FIXME(shotgun): 100.00 %, match
 void cls_804A2FB0::fn_801AA8F4() {
     if (field_0x234 == 0) {
         field_0x24c = field_0x25c + field_0x240;
@@ -55,7 +55,7 @@ void cls_804A2FB0::fn_801AA8F4() {
     }
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_801AA464)
+// FIXME(shotgun): 100.00 %, match
 cls_804A2FB0::~cls_804A2FB0() {
     releaseEmitter_801EE434(field_0x2b8);
     if (field_0x258 == 0 && gGameRoot_8053AAF8->field_0x4c != 9) {
@@ -66,7 +66,7 @@ cls_804A2FB0::~cls_804A2FB0() {
     }
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_801A961C)
+// FIXME(shotgun): 96.95 %, missing/extra + reloc-name
 void cls_804A2FB0::update() {
     switch (field_0x258) {
     case 0:

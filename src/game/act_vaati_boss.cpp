@@ -192,7 +192,7 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_801D5B70)
+// FIXME(shotgun): 88.96 %, different + reloc-name
 void VaatiBoss_804A4958::fn_801D5B70() {
     if (mStateTimer >= field_0x250) {
         if (fn_801CD2F8(field_0x4)) {
@@ -251,7 +251,7 @@ void VaatiBoss_804A4958::vfunc_0x94() {
 }
 
 // The step of the vtable slot 0x9C (0x801D5180, a plain `fn_801D5180` symbol in the original).
-// FIXME(shotgun): not measurable (the original symbol is the plain fn_801D5180)
+// FIXME(shotgun): 93.87 %, missing/extra + reloc-name
 void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
     if (!(mFlags & 0x2000)) {
         if (mState >= 1 && mState < 4) {
@@ -294,7 +294,7 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
 }
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
-// FIXME(shotgun): not measurable (symbol name)
+// FIXME(shotgun): 92.28 %, missing/extra + reloc-name
 void VaatiBoss_804A4958::vfunc_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
@@ -518,7 +518,7 @@ void VaatiBoss_804A4958::vfunc_0x74() {
 
 // The camera step of the vtable slot 0xA0 (0x801D47DC, a plain `fn_801D47DC` symbol in the original):
 // follows Vaati (its ground position) with the camera, by state.
-// FIXME(shotgun): not measurable (symbol name), class from try.py in the commit log
+// FIXME(shotgun): 90.17 %, different + reloc-name
 void VaatiBoss_804A4958::vfunc_0xA0() {
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* box = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
