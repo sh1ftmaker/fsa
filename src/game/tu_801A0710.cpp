@@ -135,22 +135,6 @@ TennisShop_804A2BF4::~TennisShop_804A2BF4() {
     }
 }
 
-void TennisShop_804A2BF4::update() {
-    switch (field_0x274) {
-    case 0:
-        fn_801A17B8();
-        break;
-    case 1:
-        fn_801A0F90();
-        break;
-    case 2:
-        fn_801A0BE4();
-        break;
-    }
-}
-
-// FIXME(shotgun): not written (size 0x17D8): fn_801A17B8 (mode 0 update, 14 states; asm read to 0x801A29xx, see report)
-
 // FIXME(shotgun): 37.7 %, missing/extra + reloc-name (skeleton: the state machine, the ball-hit search (fn_801F2740, fn_801F285C,
 // fn_801F2B7C), the bounce and the hit counters are written; the pane-colour part of the selection screen
 // and the pause-menu branch of states 0xE / 0xF are approximated)
@@ -309,6 +293,22 @@ void TennisShop_804A2BF4::fn_801A0BE4() {
         break;
     }
 }
+
+void TennisShop_804A2BF4::update() {
+    switch (field_0x274) {
+    case 0:
+        fn_801A17B8();
+        break;
+    case 1:
+        fn_801A0F90();
+        break;
+    case 2:
+        fn_801A0BE4();
+        break;
+    }
+}
+
+// FIXME(shotgun): not written (size 0x17D8): fn_801A17B8 (mode 0 update, 14 states; asm read to 0x801A29xx, see report)
 
 // Not auto-inlined: draw calls fn_801A0910 / fn_801A0754 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
