@@ -109,6 +109,8 @@ public:
     void fn_80121FA8();
     void fn_8012202C();
     void fn_801220C4();
+    // fn_80122F6C (tu_801213EC): the position offset of a life-meter slot for the player *player, as the vfunc_0xA8-0xB8 family.
+    void fn_80122F6C(f32* x, f32* y, s32* player);
     void fn_80122148();
     void fn_80122548();
     // fn_80122898 (tu_801213EC): asks the player at the escort to talk (message msg); remembers

@@ -309,6 +309,33 @@ void EscortBase_8049E0C8::vfunc_0x98(s32 a, s32 b, f32 limit) {
     }
 }
 
+// FIXME(shotgun): 99.5 %, reloc-name
+void EscortBase_8049E0C8::fn_80122F6C(f32* x, f32* y, s32* player) {
+    f32 v = 0.0f;
+    if (vfunc_0xC4()) {
+        v = 16.0f;
+    }
+    f32 off = 0.5f * (fn_8022E970(*player) - 1) - 0.5f;
+    switch (fn_80230CFC(*player)) {
+    case 0:
+        *x = 16.0f * off + v;
+        *y = 16.0f;
+        break;
+    case 1:
+        *x = 16.0f * off + v;
+        *y = 16.0f;
+        break;
+    case 2:
+        *x = 16.0f * off + v;
+        *y = -16.0f;
+        break;
+    case 3:
+        *x = 16.0f * off + v;
+        *y = 16.0f;
+        break;
+    }
+}
+
 void EscortBase_8049E0C8::vfunc_0xA8(f32* x, f32* y, s32* player) {
     f32 v = 0.0f;
     if (vfunc_0xC4()) {

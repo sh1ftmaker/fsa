@@ -82,7 +82,7 @@ void cls_804ADF28::fn_80365AB8() {
 }
 #endif
 
-// FIXME(shotgun): 72 %, missing/extra (the function-local TVec3f statics are guarded with an out-of-line constructor here; the original initialises them inline; the formation offsets of cases 1-3 are guesses)
+// FIXME(shotgun): 72 %, missing/extra (the function-local TVec3f statics are guarded with an out-of-line constructor here; the original initialises them inline; cases 1-3 of the switch are not written; case 0's offsets were read from partly filtered asm)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -137,36 +137,10 @@ void cls_804ADF28::fn_803653EC() {
             break;
         }
         case 1:
-            field_0x26c = 0x388;
-            for (int i = 0; i < 3; i++) {
-                JGeometry::TVec3f offset(16.0f * (i + 1), 0.0f, 0.0f);
-                field_0x2a0[i] = mPos + offset;
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
-                field_0x2e8[i] = 0x388;
-            }
-            break;
         case 2:
-            field_0x26c = 0x38E;
-            for (int i = 0; i < 3; i++) {
-                JGeometry::TVec3f offset(0.0f, 16.0f * (i + 1), 0.0f);
-                field_0x2a0[i] = mPos + offset;
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
-                field_0x2e8[i] = 0x38E;
-            }
+        case 3:
+            // FIXME(shotgun): cases 1-3 not written (the three formation set-ups; sprites 0x388, 0x38E, 0x391 respectively).
             break;
-        case 3: {
-            field_0x26c = 0x391;
-            static JGeometry::TVec3f offsets[3];
-            for (int i = 0; i < 3; i++) {
-                field_0x2a0[i] = mPos + offsets[i];
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
-                field_0x2e8[i] = 0x391;
-            }
-            break;
-        }
         }
         field_0x238++;
     } else if (field_0x248 == 0x76) {
