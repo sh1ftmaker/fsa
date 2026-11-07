@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
+#include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
@@ -22,6 +23,48 @@ static inline void difference(JGeometry::TVec3f& result, JGeometry::TVec3f a,
                               const JGeometry::TVec3f& b) {
     a.sub(b);
     result = a;
+}
+
+// FIXME(shotgun): 83.0 %, missing/extra: frame layout of the spawn-position temporaries (0x10 bytes) and the parameter word are computed in a different order
+void FourPersonPullSwitch_804AE230::init() {
+    if (((field_0x90 >> 4) & 3) == 0) {
+        for (s32 i = 0; i < 3; i++) {
+            field_0x234[i] = -1;
+            JGeometry::TVec3f offset((f32)(i + 1) * 16.0f, 0.0f, 0.0f);
+            JGeometry::TVec3f pos = mPos;
+            pos.add(offset);
+            u32 param = (field_0x90 & 0xF800000F) | ((i + 1) << 4);
+            field_0x234[i] = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_PSW2, field_0x4, &pos, param, -1, -1);
+            if (field_0x234[i] >= 0) {
+                FourPersonPullSwitch_804AE230* child =
+                    (FourPersonPullSwitch_804AE230*)getActorManager_801F856C()->findActorBySerial_801F666C(field_0x234[i]);
+                child->field_0x230 = mSerial;
+            } else {
+                fn_801F3668();
+            }
+        }
+    }
+    mBox.i.x = -8.0f;
+    mBox.i.y = -8.0f;
+    mBox.f.x = 8.0f;
+    mBox.f.y = 8.0f;
+    field_0x80.i.x = 0.0f;
+    field_0x80.i.y = 0.0f;
+    field_0x80.f.x = 0.0f;
+    field_0x80.f.y = 0.0f;
+    mLife = 0;
+    field_0x24c = 0;
+    field_0x250 = vfunc_0x34();
+    if (field_0x250) {
+        field_0x254 = 8.0f;
+        mPos.y = mSpawnPos.y + field_0x254;
+    } else {
+        field_0x254 = 0.0f;
+    }
+    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x258 = 0;
+    field_0x25c = -1;
+    field_0x260 = 0;
 }
 
 // FIXME: 99.54%. operands (stack frame 0xa0 vs 0xb0, regalloc r29/r30).
