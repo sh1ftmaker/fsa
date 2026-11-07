@@ -565,9 +565,25 @@ class cls_804A9C20 : public ActorBase_804A5770 {
 public:
     cls_804A9C20() {}
     /* 0x08 */ virtual ~cls_804A9C20();
-    /* 0x230 */ u8 field_0x230[0x28];
+    /* 0x0C */ virtual void init();
+    /* 0x14 */ virtual void update();
+    /* 0x20 */ virtual void draw();
+    // Code: game/tu_802E2990.cpp.
+    void fn_802E2990(u8 value);
+    /* 0x230 */ s32 field_0x230; // state; draw shows the four sprites in states 0-3
+    /* 0x234 */ u8 field_0x234[4];
+    /* 0x238 */ s32 field_0x238; // mode; 5 draws the shikimono.bti tile (the destructor skips the audio call)
+    /* 0x23C */ u8 field_0x23c[0x258 - 0x23C];
     /* 0x258 */ JGeometry::TVec3f field_0x258[4];
-    /* 0x288 */ u8 field_0x288[0x70];
+    /* 0x288 */ s32 field_0x288[4]; // per sprite: 1 picks frame 0x25A, else 0x25B
+    /* 0x298 */ u8 field_0x298[0x2C8 - 0x298];
+    /* 0x2C8 */ JPABaseEmitter* mEmitters2c8[4]; // released by the destructor
+    /* 0x2D8 */ JPABaseEmitter* mEmitters2d8[4];
+    /* 0x2E8 */ JPABaseEmitter* mEmitter2e8;
+    /* 0x2EC */ JPABaseEmitter* mEmitter2ec;
+    /* 0x2F0 */ u8 field_0x2f0[4];
+    /* 0x2F4 */ u8 field_0x2f4;
+    /* 0x2F5 */ u8 field_0x2f5[3];
 }; // Size: 0x2F8
 
 // Spawned for 'SWDL'. Code: game/act_player_sword_level_check_npc.cpp.
