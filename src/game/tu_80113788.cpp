@@ -346,7 +346,7 @@ void cls_8049D83C::vfunc_0x54() {
 }
 
 // 0x80113EC4.
-// FIXME(shotgun): 37.6 %, partly written: cases 3, 5, 6 (they index tables inside lbl_804647C8 /
+// FIXME(shotgun): 36.7 %, partly written: cases 3, 5, 6 (they index tables inside lbl_804647C8 /
 // lbl_8046486C that this file does not carve) and 11-17 are not written.
 void cls_8049D83C::vfunc_0x60(s32 arg) {
     switch (arg) {
@@ -443,6 +443,7 @@ void cls_8049D83C::vfunc_0x60(s32 arg) {
         }
         break;
     }
+    field_0x23c = arg;
 }
 
 // 0x80113E98.
