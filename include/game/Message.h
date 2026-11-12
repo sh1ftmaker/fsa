@@ -83,12 +83,10 @@ public:
     // stores 0 and parses it only when non-zero).
     /* 0x018 */ const void* field_0x18;
     /* 0x01C */ const void* field_0x1c;
-    // The first of the four J2DScreens the constructor loads; fn_803944EC
-    // scales its 'Tm01' / 'Tm02' text boxes.
-    /* 0x020 */ J2DScreen* field_0x20;
-    /* 0x024 */ J2DScreen* field_0x24;
-    /* 0x028 */ J2DScreen* field_0x28;
-    /* 0x02C */ J2DScreen* field_0x2c;
+    // The four J2DScreens the constructor loads (hukidashi, _wood, _stone,
+    // op_zelda); fn_8039499C indexes them by 0x1A2, fn_803944EC scales the
+    // first one's 'Tm01' / 'Tm02' text boxes.
+    /* 0x020 */ J2DScreen* field_0x20[4];
     // Eleven pictures from 'TIMG' resources and one more at 0x5C (the
     // destructor deletes 0x30.. in a loop of 11, then 0x5C).
     /* 0x030 */ J2DPicture* field_0x30[11];
@@ -186,10 +184,8 @@ public:
     // stored), 'P1n02', 'P1n01'.
     /* 0x1A3 */ u8 field_0x1a3;
     /* 0x1A4 */ u8 field_0x1a4;
-    /* 0x1A5 */ u8 field_0x1a5;
-    /* 0x1A6 */ u8 field_0x1a6;
-    /* 0x1A7 */ u8 field_0x1a7;
-    /* 0x1A8 */ u8 field_0x1a8;
+    // The alphas of the four 'PNb02', 'PNb01', 'PNn02', 'PNn01' panes (fn_80395BE8 indexes them).
+    /* 0x1A5 */ u8 field_0x1a5[4];
     /* 0x1A9 */ u8 field_0x1a9;
     /* 0x1AA */ u8 field_0x1aa;
     // Two 0x100-byte buffers; the constructor points cls_804AF72C's 0x2C0 /

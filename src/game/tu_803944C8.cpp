@@ -111,7 +111,8 @@ static const u8 lbl_80475D44[32] = {
     0x49, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x13, 0x11, 0x10, 0x12, 0x14, 0x16,
     0x19, 0x25, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x00, 0x00,
 };
-static const GXColor lbl_80475D64[5] = {{0xFF, 0xFF, 0xFF, 0xFF}, {0x64, 0xFF, 0x00, 0xFF}, {0xFA, 0x50, 0x00, 0xFF}, {0x32, 0xD2, 0xFF, 0xFF}, {0xF0, 0x64, 0xFF, 0xFF}};
+// The text colours (RGBA words) of the colour tag 0x2001E.
+static const u32 lbl_80475D64[5] = {0xFFFFFFFF, 0x64FF00FF, 0xFA5000FF, 0x32D2FFFF, 0xF064FFFF};
 static const f32 lbl_80475D78[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
 static const f32 lbl_80475D8C[5] = {1.0f, 0.3f, 1.1f, 0.8f, 1.0f};
 static const f32 lbl_80475DA0[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
@@ -274,7 +275,8 @@ void cls_804AF774::fn_803A2F74() {
 
 // Adds the number of characters `value` prints as (a sign, then its digits
 // without leading zeros, at most five) to the column count.
-// FIXME: 93.87. scheduling+regalloc: in the ten-thousands step the original
+// FIXME: 93.87 %, scheduling+regalloc; behaviour clean.
+// scheduling+regalloc: in the ten-thousands step the original
 // computes value % 10000 before the digit test (the later steps match).
 void cls_804AF774::fn_803A2E48(s32 value) {
     bool started = false;
@@ -309,6 +311,7 @@ void cls_804AF774::fn_803A2E48(s32 value) {
 // Adds the length of the counted noun that follows a number (singular when
 // count is 1): the unit's " Force Gem" / " Force Gems" ... " Force Fairy" /
 // " Force Fairies" strings (lbl_80475DC8), plus one.
+// FIXME: 99.85 %, reloc-name; behaviour drift.
 void cls_804AF774::fn_803A2CB0(u8 noun, s32 count) {
     switch (noun) {
     case 1:
@@ -573,7 +576,8 @@ void cls_804AF72C::do_end() {
     field_0x2c0[field_0x2d0++] = -2;
 }
 
-// FIXME(shotgun): 99.03 %, different (the text pointer is formed before the clearing store)
+// FIXME(shotgun): 99.03 %, different + reloc-name; behaviour near.
+// (the text pointer is formed before the clearing store)
 void cls_804AF72C::fn_8039F540(int c) {
     char* text = field_0x2d8->field_0x3ab;
     field_0x2d8->field_0x3ab[0] = 0;
@@ -657,7 +661,532 @@ void cls_804AF72C::fn_8039F540(int c) {
     }
 }
 
-// FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)
+// Builds the window text of a message tag: in the text-image windows (window field_0x1aa) as glyph
+// codes in the first line buffer, otherwise as text in both buffers.
+// FIXME: 99.94 %, reloc-name; behaviour clean.
+bool cls_804AF72C::do_tag(u32 tag, const void* data, u32) {
+    if (field_0x2d8->field_0x1aa == 0) {
+        switch (tag) {
+        case 0:
+            return true;
+        case 0x10000:
+            fn_8039CDF8(0);
+            return true;
+        case 0x10001:
+            fn_8039CDF8(1);
+            return true;
+        case 0x10002:
+            fn_8039CDF8(2);
+            return true;
+        case 0x10003:
+            fn_8039CDF8(3);
+            return true;
+        case 0x10007:
+            fn_8039CDF8(7);
+            return true;
+        case 0x10008:
+            fn_8039CDF8(8);
+            return true;
+        case 0x10009:
+            fn_8039CDF8(9);
+            return true;
+        case 0x1000A:
+            fn_8039CDF8(10);
+            return true;
+        case 0x10004:
+            fn_8039CDF8(4);
+            return true;
+        case 0x10005:
+            fn_8039CDF8(5);
+            return true;
+        case 0x10006:
+            fn_8039CDF8(6);
+            return true;
+        case 0x1000B:
+        case 0x1000C:
+            return true;
+        case 0x10010:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA7");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA8");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10012:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA6");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA5");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x20000:
+        case 0x20001:
+        case 0x20002:
+        case 0x20003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("    ", 4);
+                fn_8039D0DC(((const u8*)data)[0]);
+            }
+            return true;
+        case 0x20011:
+        case 0x20012:
+        case 0x20013:
+        case 0x20014:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("    ", 4);
+                fn_8039D0DC(((const u8*)data)[4]);
+            }
+            return true;
+        case 0x20009:
+        case 0x2000A:
+        case 0x2000B:
+        case 0x2000C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                for (int i = 0; i < lbl_8050DB0C.field_0x4c[0x151]; i++) {
+                    strcat(field_0x2c0, " ");
+                    strcat(field_0x2c4, " ");
+                }
+                field_0x2d0 += lbl_8050DB0C.field_0x4c[0x151];
+                fn_8039D0DC(((const u8*)data)[4]);
+            }
+            return true;
+        case 0x20019:
+        case 0x2001A:
+        case 0x2001B:
+        case 0x2001C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                for (int i = 0; i < lbl_8050DB0C.field_0x4c[0x151]; i++) {
+                    strcat(field_0x2c0, " ");
+                    strcat(field_0x2c4, " ");
+                }
+                field_0x2d0 += lbl_8050DB0C.field_0x4c[0x151];
+                fn_8039D0DC(((const u8*)data)[0]);
+            }
+            return true;
+        case 0x20004:
+        case 0x20005:
+        case 0x20006:
+        case 0x20007:
+        case 0x20008:
+            return true;
+        case 0x2000D:
+        case 0x2000E:
+        case 0x2000F:
+        case 0x20010:
+        case 0x20015:
+        case 0x20016:
+        case 0x20017:
+        case 0x20018:
+        case 0x2001D:
+            return true;
+        case 0x2001E:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 colour = *(const u8*)data;
+                if (colour < 5) {
+                    char code[30];
+                    field_0x2d8->field_0x154 = lbl_80475D64[colour];
+                    snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", lbl_80475D64[colour]);
+                    strcat(field_0x2c0, code);
+                    if ((field_0x2d8->field_0x3b8->field_0x28 & 0x40) || field_0x2d8->field_0x1a2 == 0) {
+                        snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", 0xFF);
+                        strcat(field_0x2c4, code);
+                    } else {
+                        snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", -1);
+                        strcat(field_0x2c4, code);
+                    }
+                    field_0x2d0 += strlen(code);
+                }
+            }
+            return true;
+        case 0x2001F:
+        case 0x20020:
+        case 0x20021:
+        case 0x20022:
+        case 0x20023:
+        case 0x20024:
+            return true;
+        case 0x20025:
+        case 0x20026:
+        case 0x20027:
+        case 0x20028:
+            return true;
+        case 0x20029:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039ACD0(0);
+            }
+            return true;
+        case 0x2002A:
+        case 0x2002B:
+            return true;
+        case 0x2002C:
+            return true;
+        case 0x2002D:
+            return true;
+        case 0x2002E:
+            return true;
+        case 0x2002F:
+            return true;
+        case 0x20030:
+            return true;
+        case 0x20031:
+            return true;
+        case 0x20032:
+            return true;
+        case 0x20033:
+            return true;
+        case 0x30000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x190);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x190);
+            }
+            return true;
+        case 0x30001:
+            return true;
+        case 0x30002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x192);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x192);
+            }
+            return true;
+        case 0x30003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x178);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x178);
+            }
+            return true;
+        case 0x30004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x17c);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x17c);
+            }
+            return true;
+        case 0x30005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039A638(0);
+            }
+            return true;
+        case 0x30006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8050EC80.getCurrentFile().field_0x14);
+                fn_8039C630(4, lbl_8050EC80.getCurrentFile().field_0x14);
+            }
+            return true;
+        case 0x30007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8050EC80.getCurrentFile().field_0x16);
+                fn_8039C630(4, lbl_8050EC80.getCurrentFile().field_0x16);
+            }
+            return true;
+        case 0x30008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8053AD78->field_0x10c);
+                fn_8039C630(6, lbl_8053AD78->field_0x10c);
+            }
+            return true;
+        }
+    } else {
+        if (tag != 0 && field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] && field_0x2d6 != 0) {
+            s32 index = field_0x2cc;
+            if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                s32 offset = 0x1C - (s8)field_0x38.field_0x22d[index];
+                if (offset > 0 && offset < 0x1C) {
+                    field_0x2c0[field_0x2d0++] = -1;
+                    field_0x2c0[field_0x2d0++] = offset + 0xD0;
+                }
+            }
+            field_0x2d6 = 0;
+        }
+        switch (tag) {
+        case 0:
+            return true;
+        case 0x10000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF1);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10001:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF2);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF3);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF4);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF5);
+                appendGlyph(0x3D00);
+                appendGlyph(0x3D20);
+            }
+            return true;
+        case 0x10008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF6);
+                appendGlyph(0x3D40);
+                appendGlyph(0x3D60);
+            }
+            return true;
+        case 0x10009:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF7);
+                appendGlyph(0x3D80);
+                appendGlyph(0x3DA0);
+            }
+            return true;
+        case 0x1000A:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF8);
+                appendGlyph(0x3DC0);
+                appendGlyph(0x3DE0);
+            }
+            return true;
+        case 0x10004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C00);
+            }
+            return true;
+        case 0x10005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C20);
+            }
+            return true;
+        case 0x10006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C40);
+            }
+            return true;
+        case 0x1000B:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C60);
+            }
+            return true;
+        case 0x1000C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C80);
+            }
+            return true;
+        case 0x10010:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x14E0);
+            }
+            return true;
+        case 0x10011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1500);
+            }
+            return true;
+        case 0x10012:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1540);
+            }
+            return true;
+        case 0x10013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1520);
+            }
+            return true;
+        case 0x2000A:
+        case 0x2000C:
+        case 0x20012:
+        case 0x20014:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20000:
+        case 0x20002:
+        case 0x20019:
+        case 0x2001B:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20009:
+        case 0x20011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0xFFB0);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20001:
+        case 0x2001A:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0xFFB0);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x2000B:
+        case 0x20013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0xFFB1);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20003:
+        case 0x2001C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0xFFB1);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20004:
+        case 0x20005:
+        case 0x20006:
+        case 0x20007:
+        case 0x20008:
+        case 0x2000D:
+        case 0x2000E:
+        case 0x2000F:
+        case 0x20010:
+        case 0x20015:
+            return true;
+        case 0x20016: {
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 value = *(const u8*)data;
+                if (value <= 5 || value == 11) {
+                    field_0x2c0[field_0x2d0++] = -3;
+                    field_0x2c0[field_0x2d0++] = value;
+                }
+            }
+            return true;
+        }
+        case 0x20017:
+        case 0x20018:
+        case 0x2001D:
+            return true;
+        case 0x2001E: {
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 colour = *(const u8*)data;
+                if (colour < 5) {
+                    field_0x2c0[field_0x2d0++] = -5;
+                    field_0x2c0[field_0x2d0++] = colour;
+                }
+            }
+            return true;
+        }
+        case 0x2001F:
+        case 0x20020:
+        case 0x20021:
+        case 0x20022:
+        case 0x20023:
+        case 0x20024:
+            return true;
+        case 0x20025:
+        case 0x20026:
+        case 0x20027:
+        case 0x20028:
+            return true;
+        case 0x20029:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039ACD0(1);
+            }
+            return true;
+        case 0x2002A:
+        case 0x2002B:
+            return true;
+        case 0x2002C:
+            return true;
+        case 0x2002D:
+            return true;
+        case 0x2002E:
+            return true;
+        case 0x2002F:
+            return true;
+        case 0x20030:
+            return true;
+        case 0x20031:
+            return true;
+        case 0x20032:
+            return true;
+        case 0x20033:
+            return true;
+        case 0x30000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x190);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x190);
+            }
+            return true;
+        case 0x30001:
+            return true;
+        case 0x30002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x192);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x192);
+            }
+            return true;
+        case 0x30003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x178);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x178);
+            }
+            return true;
+        case 0x30004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x17c);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x17c);
+            }
+            return true;
+        case 0x30005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039A638(1);
+            }
+            return true;
+        case 0x30006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8050EC80.getCurrentFile().field_0x14);
+                fn_8039B3EC(4, lbl_8050EC80.getCurrentFile().field_0x14);
+            }
+            return true;
+        case 0x30007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8050EC80.getCurrentFile().field_0x16);
+                fn_8039B3EC(4, lbl_8050EC80.getCurrentFile().field_0x16);
+            }
+            return true;
+        case 0x30008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8053AD78->field_0x10c);
+                fn_8039B3EC(6, lbl_8053AD78->field_0x10c);
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+// FIXME(shotgun): 96.37 %, missing/extra; behaviour drift.
+// (the u8 line count is subtracted as an int in the original)
 void cls_804AF72C::fn_8039D30C(u8 value) {
     s32 index = field_0x2cc;
     s32 offset = 0;
@@ -718,7 +1247,8 @@ void cls_804AF72C::fn_8039D30C(u8 value) {
     field_0x2d4++;
 }
 
-// FIXME(shotgun): 82.41 %, different (schedule of the window load / int conversion)
+// FIXME(shotgun): 82.41 %, different + reloc-name; behaviour near.
+// (schedule of the window load / int conversion)
 void cls_804AF72C::fn_8039D0DC(u8 value) {
     s32 offset = 0;
     s32 index = field_0x2cc;
@@ -742,7 +1272,7 @@ void cls_804AF72C::fn_8039D0DC(u8 value) {
     field_0x2d4++;
 }
 
-// FIXME(shotgun): 98.29 %, scheduling+regalloc
+// FIXME(shotgun): 98.29 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039CDF8(u8 value) {
     if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
         strcat(field_0x2c0, "  ");
@@ -781,7 +1311,7 @@ void cls_804AF72C::fn_8039CDF8(u8 value) {
     field_0x2d5++;
 }
 
-// FIXME(shotgun): 99.55 %, regalloc-only
+// FIXME(shotgun): 99.55 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039C9A0(s32 number) {
     bool started = false;
     bool negative = false;
@@ -852,7 +1382,7 @@ void cls_804AF72C::fn_8039C9A0(s32 number) {
     appendText(ch);
 }
 
-// FIXME(shotgun): 99.11 %, reloc-name
+// FIXME(shotgun): 99.18 %, reloc-name; behaviour drift.
 void cls_804AF72C::fn_8039C630(u8 noun, s32 count) {
     switch (noun) {
     case 1:
@@ -921,7 +1451,7 @@ void cls_804AF72C::fn_8039C630(u8 noun, s32 count) {
     }
 }
 
-// FIXME(shotgun): 97.05 %, scheduling+regalloc
+// FIXME(shotgun): 97.05 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039C258(s32 number) {
     bool started = false;
     if (number < 0) {
@@ -954,7 +1484,132 @@ void cls_804AF72C::fn_8039C258(s32 number) {
     appendGlyph(findGlyph(number + '0'));
 }
 
-// FIXME: 93.34. scheduling (+ the unsplit 0.0f literal): the original
+// The nouns of fn_8039C630 as glyph codes in the first line buffer.
+void cls_804AF72C::fn_8039B3EC(u8 noun, s32 count) {
+    switch (noun) {
+    case 1: // " Force Gem"
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3840);
+        appendGlyph(0x38A0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3500);
+        appendGlyph(0x1420);
+        appendGlyph(0x3000);
+        appendGlyph(0x3500);
+        appendGlyph(0x3800);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 2: // " Cucco"
+        appendGlyph(0x1420);
+        appendGlyph(0x2D80);
+        appendGlyph(0x3900);
+        appendGlyph(0x34C0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3840);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 3: // " baddy / baddies"
+        appendGlyph(0x1420);
+        appendGlyph(0x34A0);
+        appendGlyph(0x3480);
+        appendGlyph(0x34E0);
+        appendGlyph(0x34E0);
+        if (count == 1) {
+            appendGlyph(0x3980);
+        } else {
+            appendGlyph(0x3580);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 4: // " time"
+        appendGlyph(0x1420);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3580);
+        appendGlyph(0x3800);
+        appendGlyph(0x3500);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 5: // " system"
+        appendGlyph(0x1420);
+        appendGlyph(0x38C0);
+        appendGlyph(0x3980);
+        appendGlyph(0x38C0);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3500);
+        appendGlyph(0x3800);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 6: // " thief / thieves"
+        appendGlyph(0x1420);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3560);
+        appendGlyph(0x3580);
+        appendGlyph(0x3500);
+        if (count == 1) {
+            appendGlyph(0x3520);
+        } else {
+            appendGlyph(0x3920);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 7: // " mole"
+        appendGlyph(0x1420);
+        appendGlyph(0x3800);
+        appendGlyph(0x3840);
+        appendGlyph(0x35E0);
+        appendGlyph(0x3500);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 8: // " return"
+        appendGlyph(0x1420);
+        appendGlyph(0x38A0);
+        appendGlyph(0x3500);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3900);
+        appendGlyph(0x38A0);
+        appendGlyph(0x3820);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 9: // " Force Fairy / Force Fairies"
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3840);
+        appendGlyph(0x38A0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3500);
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3480);
+        appendGlyph(0x3580);
+        appendGlyph(0x38A0);
+        if (count == 1) {
+            appendGlyph(0x3980);
+        } else {
+            appendGlyph(0x3580);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    }
+}
+
+// FIXME: 93.34 %, scheduling + reloc-name; behaviour clean.
+// scheduling (+ the unsplit 0.0f literal): the original
 // interleaves the field_0x1fe stores and field_0x1fd with the first three
 // iterations of the unrolled 15-entry loop.
 void cls_804AF6E4::do_begin(const void*, const char*) {
@@ -986,6 +1641,7 @@ void cls_804AF6E4::do_end() {
     field_0x257[field_0x281] = 0;
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 void cls_804AF6E4::do_character(int c) {
     if (c == '\n') {
         field_0x201++;
@@ -1010,7 +1666,201 @@ void cls_804AF6E4::do_character(int c) {
     }
 }
 
-// FIXME(shotgun): 99.75 %, reloc-name
+// FIXME: 99.63 %, missing/extra + reloc-name; behaviour near.
+bool cls_804AF6E4::do_tag(u32 tag, const void* data, u32) {
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    switch (tag) {
+    case 0:
+        if (field_0x202[field_0x281] != field_0x22c) {
+            field_0x281++;
+            field_0x202[field_0x281] = field_0x22c;
+            field_0x257[field_0x281] = 0;
+        }
+        return true;
+    case 0x10000:
+    case 0x10001:
+    case 0x10002:
+    case 0x10003:
+    case 0x10007:
+    case 0x10008:
+    case 0x10009:
+    case 0x1000A: {
+        field_0x19c[field_0x1fd + 3] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x1fd + 3] = field_0x201;
+        field_0x1fd++;
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 2.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201] += 2;
+        return true;
+    }
+    case 0x10004:
+    case 0x10005:
+    case 0x10006: {
+        field_0x19c[field_0x1fd + 3] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x1fd + 3] = field_0x201;
+        field_0x1fd++;
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 2.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        return true;
+    }
+    case 0x1000B:
+    case 0x1000C:
+        field_0x22d[field_0x201]++;
+        return true;
+    case 0x10010:
+        addCharWidth(ratio, 0xA7);
+        return true;
+    case 0x10011:
+        addCharWidth(ratio, 0xA8);
+        return true;
+    case 0x10012:
+        addCharWidth(ratio, 0xA6);
+        return true;
+    case 0x10013:
+        addCharWidth(ratio, 0xA5);
+        return true;
+    case 0x20000:
+    case 0x20001:
+    case 0x20002:
+    case 0x20003:
+    case 0x20011:
+    case 0x20012:
+    case 0x20013:
+    case 0x20014: {
+        setMasked(field_0x201);
+        field_0x19c[field_0x282] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x282] = field_0x201;
+        field_0x1fe[field_0x282] = field_0x22d[field_0x201];
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 5.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        field_0x282++;
+        return true;
+    }
+    case 0x20009:
+    case 0x2000A:
+    case 0x2000B:
+    case 0x2000C:
+    case 0x20019:
+    case 0x2001A:
+    case 0x2001B:
+    case 0x2001C: {
+        clearMasked(field_0x201);
+        field_0x19c[field_0x282] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x282] = field_0x201;
+        field_0x1fe[field_0x282] = field_0x22d[field_0x201];
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += lbl_8050DB0C.field_0x4c[0x151] * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        field_0x282++;
+        return true;
+    }
+    case 0x20004:
+    case 0x20005:
+    case 0x20006:
+    case 0x20007:
+    case 0x20008:
+    case 0x2000D:
+    case 0x2000E:
+    case 0x2000F:
+    case 0x20010:
+    case 0x20016:
+    case 0x20017:
+    case 0x20018:
+    case 0x2001D:
+    case 0x2001E:
+    case 0x2001F:
+    case 0x20020:
+    case 0x20021:
+    case 0x20022:
+    case 0x20023:
+    case 0x20024:
+        return true;
+    case 0x20015:
+        if (&static_cast<const u32*>(data)[1] != NULL) {
+            return true;
+        }
+    case 0x20025:
+        if (field_0x1e8 != 0) {
+            field_0x257[field_0x281 - 1] = 1;
+        } else {
+            field_0x257[field_0x281] = 1;
+        }
+        return true;
+    case 0x20026:
+    case 0x20027:
+    case 0x20028:
+        return true;
+    case 0x20029:
+        fn_8039934C(field_0x1d8, field_0x1dc);
+        return true;
+    case 0x2002A:
+    case 0x2002B:
+        return true;
+    case 0x2002C:
+        return true;
+    case 0x2002D:
+        return true;
+    case 0x2002E:
+        return true;
+    case 0x2002F:
+        return true;
+    case 0x20030:
+        return true;
+    case 0x20031:
+        return true;
+    case 0x20032:
+        return true;
+    case 0x20033:
+        return true;
+    case 0x30000:
+        fn_80398A34(field_0x1ea);
+        fn_80398700(*(const u8*)data, field_0x1ea);
+        return true;
+    case 0x30001:
+        return true;
+    case 0x30002:
+        fn_80398A34(field_0x1ec);
+        fn_80398700(*(const u8*)data, field_0x1ec);
+        return true;
+    case 0x30003:
+        fn_80398A34(field_0x1e0);
+        fn_80398700(*(const u8*)data, field_0x1e0);
+        return true;
+    case 0x30004:
+        fn_80398A34(field_0x1e4);
+        fn_80398700(*(const u8*)data, field_0x1e4);
+        return true;
+    // The original reads the save file through a 0xC8-stride row at lbl_8050EC80 (no addi 0x20).
+    case 0x30005:
+        fn_80398EF4(lbl_8050EC80.getCurrentFile().field_0x59, lbl_8050EC80.getCurrentFile().field_0x58);
+        return true;
+    case 0x30006:
+        fn_80398A34(lbl_8050EC80.getCurrentFile().field_0x14);
+        fn_80398700(4, lbl_8050EC80.getCurrentFile().field_0x14);
+        return true;
+    case 0x30007:
+        fn_80398A34(lbl_8050EC80.getCurrentFile().field_0x16);
+        fn_80398700(4, lbl_8050EC80.getCurrentFile().field_0x16);
+        return true;
+    case 0x30008:
+        fn_80398A34(lbl_8053AD78->field_0x10c);
+        fn_80398700(6, lbl_8053AD78->field_0x10c);
+        return true;
+    }
+    return false;
+}
+
+// FIXME(shotgun): 99.75 %, reloc-name; behaviour clean.
 void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
     if (minutes > 0) {
@@ -1038,7 +1888,7 @@ void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
     addSecondsMarkWidth(ratio);
 }
 
-// FIXME(shotgun): 98.68 %, scheduling+regalloc
+// FIXME(shotgun): 98.72 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804AF6E4::fn_80398EF4(s32 minutes, s32 seconds) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
     if (minutes > 99) {
@@ -1059,7 +1909,7 @@ void cls_804AF6E4::fn_80398EF4(s32 minutes, s32 seconds) {
     addSecondsMarkWidth(ratio);
 }
 
-// FIXME(shotgun): 99.79 %, reloc-name
+// FIXME(shotgun): 99.79 %, reloc-name; behaviour clean.
 void cls_804AF6E4::fn_80398A34(s32 number) {
     bool started = false;
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
@@ -1093,7 +1943,8 @@ void cls_804AF6E4::fn_80398A34(s32 number) {
     addCharWidth(ratio, number + '0');
 }
 
-// FIXME: 98.15. Scheduling only: the original increments and compares the
+// FIXME: 98.15 %, scheduling + reloc-name; behaviour drift.
+// Scheduling only: the original increments and compares the
 // loop index right after getWidthEntry, ours at the end of the body.
 void cls_804AF6E4::fn_80398700(u8 noun, s32 count) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
@@ -1177,7 +2028,8 @@ void cls_804AF6E4::fn_80398700(u8 noun, s32 count) {
 
 cls_804AF6E4::~cls_804AF6E4() {}
 
-// FIXME: 99.79. Regalloc + stack slots + reloc-name: the message font goes
+// FIXME: 99.79 %, operands + reloc-name; behaviour clean.
+// Regalloc + stack slots + reloc-name: the message font goes
 // through r27 instead of r28 (the eight setFont calls); the random draw's
 // and the two parse_next pointers' stack slots differ (0x8 / 0x10 / 0xC);
 // the string offsets are relative to the section base (lbl_80475768+0x670..)
@@ -1237,14 +2089,14 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0xa4.z = 0.0f;
     field_0x3bc = new cls_804B20F8(index, &field_0xa4, NULL, 8);
 
-    field_0x20 = new J2DScreen;
-    field_0x20->setPriority("hukidashi.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x24 = new J2DScreen;
-    field_0x24->setPriority("hukidashi_wood.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x28 = new J2DScreen;
-    field_0x28->setPriority("hukidashi_stone.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x2c = new J2DScreen;
-    field_0x2c->setPriority("op_zelda.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[0] = new J2DScreen;
+    field_0x20[0]->setPriority("hukidashi.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[1] = new J2DScreen;
+    field_0x20[1]->setPriority("hukidashi_wood.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[2] = new J2DScreen;
+    field_0x20[2]->setPriority("hukidashi_stone.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[3] = new J2DScreen;
+    field_0x20[3]->setPriority("op_zelda.blo", 0x1100000, lbl_80529DEC.field_0x20);
 
     timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkGr_01.bti");
     field_0x30[0] = new J2DPicture(timg);
@@ -1269,65 +2121,65 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     timg = (const ResTIMG*)fn_804030C4('TIMG', "heart_03.bti");
     field_0x30[10] = new J2DPicture(timg);
 
-    field_0xb8 = field_0x20->search('Pm00')->getWidth();
-    field_0xbc = field_0x20->search('Pm00')->getHeight();
-    field_0xc0 = field_0x20->search('Nmdata01')->getBounds()->i.x;
-    field_0xc4 = field_0x20->search('Nmdata01')->getBounds()->i.y;
-    field_0xc8 = field_0x20->search('Tm01')->getBounds()->i.x;
-    field_0xcc = field_0x20->search('Tm01')->getBounds()->i.y;
-    field_0xd0 = field_0x20->search('Tm02')->getBounds()->i.x - field_0x20->search('Tm01')->getBounds()->i.x;
-    field_0xd4 = field_0x20->search('Tm02')->getBounds()->i.y - field_0x20->search('Tm01')->getBounds()->i.y;
-    field_0xe8 = field_0x20->search('Tm01')->getWidth();
-    field_0xec = field_0x20->search('Tm01')->getHeight();
-    field_0x11c = field_0x20->search('ROOT')->getBounds()->i.x;
-    field_0x120 = field_0x20->search('ROOT')->getBounds()->i.y;
-    field_0xf8 = field_0x20->search('P1ar')->getBounds()->i.x;
-    field_0xfc = field_0x20->search('P1ar')->getBounds()->i.y;
-    field_0x100 = field_0x20->search('P1ar')->getWidth();
-    field_0x104 = field_0x20->search('P1ar')->getHeight();
-    field_0x1a3 = field_0x20->search('P1ar')->getAlpha();
-    field_0x1a5 = field_0x20->search('P1b01')->getAlpha();
-    field_0x1a6 = field_0x20->search('P1b01')->getAlpha();
-    field_0x1a7 = field_0x20->search('P1n02')->getAlpha();
-    field_0x1a8 = field_0x20->search('P1n01')->getAlpha();
-    field_0xd8 = field_0x2c->search('Tm01')->getBounds()->i.x;
-    field_0xdc = field_0x2c->search('Tm01')->getBounds()->i.y;
-    field_0xf0 = field_0x2c->search('Tm01')->getWidth();
-    field_0xf4 = field_0x2c->search('Tm01')->getHeight();
-    field_0xe0 = field_0x2c->search('Tm02')->getBounds()->i.x - field_0x2c->search('Tm01')->getBounds()->i.x;
-    field_0xe4 = field_0x2c->search('Tm02')->getBounds()->i.y - field_0x2c->search('Tm01')->getBounds()->i.y;
-    field_0x108 = field_0x2c->search('P1ar')->getBounds()->i.x;
-    field_0x10c = field_0x2c->search('P1ar')->getBounds()->i.y;
-    field_0x110 = field_0x2c->search('P1ar')->getWidth();
-    field_0x114 = field_0x2c->search('P1ar')->getHeight();
-    field_0x1a3 = field_0x2c->search('P1ar')->getAlpha();
+    field_0xb8 = field_0x20[0]->search('Pm00')->getWidth();
+    field_0xbc = field_0x20[0]->search('Pm00')->getHeight();
+    field_0xc0 = field_0x20[0]->search('Nmdata01')->getBounds()->i.x;
+    field_0xc4 = field_0x20[0]->search('Nmdata01')->getBounds()->i.y;
+    field_0xc8 = field_0x20[0]->search('Tm01')->getBounds()->i.x;
+    field_0xcc = field_0x20[0]->search('Tm01')->getBounds()->i.y;
+    field_0xd0 = field_0x20[0]->search('Tm02')->getBounds()->i.x - field_0x20[0]->search('Tm01')->getBounds()->i.x;
+    field_0xd4 = field_0x20[0]->search('Tm02')->getBounds()->i.y - field_0x20[0]->search('Tm01')->getBounds()->i.y;
+    field_0xe8 = field_0x20[0]->search('Tm01')->getWidth();
+    field_0xec = field_0x20[0]->search('Tm01')->getHeight();
+    field_0x11c = field_0x20[0]->search('ROOT')->getBounds()->i.x;
+    field_0x120 = field_0x20[0]->search('ROOT')->getBounds()->i.y;
+    field_0xf8 = field_0x20[0]->search('P1ar')->getBounds()->i.x;
+    field_0xfc = field_0x20[0]->search('P1ar')->getBounds()->i.y;
+    field_0x100 = field_0x20[0]->search('P1ar')->getWidth();
+    field_0x104 = field_0x20[0]->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x20[0]->search('P1ar')->getAlpha();
+    field_0x1a5[0] = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a5[1] = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a5[2] = field_0x20[0]->search('P1n02')->getAlpha();
+    field_0x1a5[3] = field_0x20[0]->search('P1n01')->getAlpha();
+    field_0xd8 = field_0x20[3]->search('Tm01')->getBounds()->i.x;
+    field_0xdc = field_0x20[3]->search('Tm01')->getBounds()->i.y;
+    field_0xf0 = field_0x20[3]->search('Tm01')->getWidth();
+    field_0xf4 = field_0x20[3]->search('Tm01')->getHeight();
+    field_0xe0 = field_0x20[3]->search('Tm02')->getBounds()->i.x - field_0x20[3]->search('Tm01')->getBounds()->i.x;
+    field_0xe4 = field_0x20[3]->search('Tm02')->getBounds()->i.y - field_0x20[3]->search('Tm01')->getBounds()->i.y;
+    field_0x108 = field_0x20[3]->search('P1ar')->getBounds()->i.x;
+    field_0x10c = field_0x20[3]->search('P1ar')->getBounds()->i.y;
+    field_0x110 = field_0x20[3]->search('P1ar')->getWidth();
+    field_0x114 = field_0x20[3]->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x20[3]->search('P1ar')->getAlpha();
 
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x24->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[1]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x28->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[2]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x24->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[1]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x28->search('Tm02'))->setFont(font);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setBlackWhite(
+    static_cast<J2DTextBox*>(field_0x20[2]->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setBlackWhite(
         JUtility::TColor(lbl_8050DB0C.field_0x304[3], lbl_8050DB0C.field_0x304[4], lbl_8050DB0C.field_0x304[5], 0),
         JUtility::TColor(lbl_8050DB0C.field_0x304[0], lbl_8050DB0C.field_0x304[1], lbl_8050DB0C.field_0x304[2], 0xFF));
-    field_0x2c->search('Ndata05')->hide();
-    field_0x2c->search('Ndata01')->hide();
+    field_0x20[3]->search('Ndata05')->hide();
+    field_0x20[3]->search('Ndata01')->hide();
 
     timg = (const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "kk_yazirushi_01.bti");
     field_0x5c = new J2DPicture(timg);
     field_0x5c->setBlackWhite(JUtility::TColor(0xFF, 0xFF, 0x8C, 0), JUtility::TColor(0xFF, 0xFF, 0x8C, 0xFF));
-    field_0x5c->rotate(9.6f, 14.4f, J2DROTATE_Z, -96.0f);
+    field_0x5c->rotate(9.6f, 9.6f * 1.5f, J2DROTATE_Z, -96.0f);
     field_0x118 = 0.0f;
     field_0x198 = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x19a = -0x60;
@@ -1344,7 +2196,7 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x10->field_0x60 = field_0x3c0;
     field_0x14 = NULL;
     field_0x14 = new cls_804AF72C(field_0xc);
-    field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getFont();
+    field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->getFont();
     // Local only to match: the original loads field_0x14 once for the two buffer stores.
     cls_804AF72C* layout = field_0x14;
     layout->field_0x2c0 = field_0x1ab;
@@ -1352,10 +2204,10 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x14->field_0x2d8 = field_0x3c0;
 
     // One 'Tm01' search serves both font-size loads (two searches: 99.12 %).
-    J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20->search('Tm01'));
+    J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'));
     field_0x60 = text->mFontSize.x;
     field_0x64 = text->mFontSize.y;
-    field_0xb0 = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getLineSpace();
+    field_0xb0 = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->getLineSpace();
     fn_803944EC(1.0f);
 
     field_0xc->setResourceContainer(field_0x4);
@@ -1384,14 +2236,14 @@ cls_804AF5A0::~cls_804AF5A0() {
     }
     delete field_0x3bc;
     field_0x3bc = NULL;
-    delete field_0x20;
-    field_0x20 = NULL;
-    delete field_0x24;
-    field_0x24 = NULL;
-    delete field_0x28;
-    field_0x28 = NULL;
-    delete field_0x2c;
-    field_0x2c = NULL;
+    delete field_0x20[0];
+    field_0x20[0] = NULL;
+    delete field_0x20[1];
+    field_0x20[1] = NULL;
+    delete field_0x20[2];
+    field_0x20[2] = NULL;
+    delete field_0x20[3];
+    field_0x20[3] = NULL;
     for (int i = 0; i < 11; i++) {
         delete field_0x30[i];
         field_0x30[i] = NULL;
@@ -1418,10 +2270,177 @@ void cls_804AF5A0::fn_80396F94() {
     field_0x3b0 = 1;
 }
 
+// Shows the current player's window frame ('PNar') and pane set: while the text runs it
+// pulses the pane alphas over lbl_8050DB0C's period, while the window waits (99999)
+// it pops the frame in; otherwise all frames are hidden. Bit 0x40 uses the op_zelda
+// screen (0x2C) and only players 1 and 5.
+// FIXME: 98.43 %, scheduling+regalloc + reloc-name; behaviour clean.
+void cls_804AF5A0::fn_80395BE8() {
+    s32 player = field_0x160;
+    if ((field_0x3c0->field_0x3b8->field_0x28 & 0x100) && gGameRoot_8053AAF8->field_0x7e) {
+        player = 4;
+    }
+    if (!field_0x3af && !field_0x1a9) {
+        field_0x194 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (i == player) {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    J2DScreen* screen = field_0x20[field_0x1a2];
+                    s16 period = lbl_8050DB0C.field_0x4c[(0x284 - 0x4C) / 2];
+                    s32 half = period / 2;
+                    field_0x196++;
+                    if (field_0x196 >= period) {
+                        field_0x196 = 0;
+                    }
+                    f32 ratio = (f32)(field_0x196 < half ? field_0x196 : period - field_0x196) / (f32)half;
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            screen->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j] * ratio);
+                        }
+                    }
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->show();
+                    }
+                } else {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        } else {
+            if (player != 4) {
+                player = 0;
+            }
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (i == player) {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    J2DScreen* screen = field_0x20[3];
+                    s16 period = lbl_8050DB0C.field_0x4c[(0x284 - 0x4C) / 2];
+                    s32 half = period / 2;
+                    field_0x196++;
+                    if (field_0x196 >= period) {
+                        field_0x196 = 0;
+                    }
+                    f32 ratio = (f32)(field_0x196 < half ? field_0x196 : period - field_0x196) / (f32)half;
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            screen->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j] * ratio);
+                        }
+                    }
+                    if (!field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->show();
+                    }
+                } else {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        }
+    } else if (field_0x10->field_0x4c == 99999 && !field_0x1a9) {
+        field_0x196 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (i == player) {
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->show();
+                    }
+                    fn_80395834(field_0x20[field_0x1a2]->search(lbl_80475768[i]));
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->show();
+                    }
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            field_0x20[field_0x1a2]->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j]);
+                        }
+                    }
+                } else {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        } else {
+            if (player != 4) {
+                player = 0;
+            }
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (i == player) {
+                    if (!field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->show();
+                    }
+                    fn_80395480(field_0x20[3]->search(lbl_80475768[i]));
+                    if (!field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->show();
+                    }
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            field_0x20[3]->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j]);
+                        }
+                    }
+                } else {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        }
+    } else {
+        field_0x194 = 0;
+        field_0x196 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                    field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                }
+                if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                    field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                }
+            }
+        } else {
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                    field_0x20[3]->search(lbl_80475768[i])->hide();
+                }
+                if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                    field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                }
+            }
+        }
+    }
+}
+
 // Pops a window pane in: its alpha rises over 10 frames; once it is full, its size
 // follows a five-point curve per axis over the frame counts of the layout constants, then
 // the pane is moved so that it stays centred on the box.
-// FIXME(shotgun): 93.00 %, missing/extra (setAlpha argument masking, window load order)
+// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour drift.
+// (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
     s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
@@ -1479,7 +2498,8 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
-// FIXME(shotgun): 93.03 %, missing/extra (setAlpha argument masking, window load order)
+// FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
+// (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
     s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
@@ -1537,7 +2557,139 @@ void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
-// FIXME: 98.31. Missing 2 instructions around the clamp: the original copies
+// FIXME: 99.69 %, reloc-name; behaviour clean.
+void cls_804AF5A0::fn_8039499C(bool flag) {
+    if (field_0x1aa == 0) {
+        f32 x = field_0xc0;
+        f32 y = field_0xc4;
+        f32 line;
+        J2DScreen* screen = field_0x20[field_0x1a2];
+        J2DTextBox* tm01 = static_cast<J2DTextBox*>(screen->search('Tm01'));
+        J2DTextBox* tm02 = static_cast<J2DTextBox*>(screen->search('Tm02'));
+        J2DPane* nmdata = screen->search('Nmdata01');
+        if (field_0x3b0 != 0) {
+            field_0x8->render();
+            field_0x3b0 = 0;
+        }
+        if (flag) {
+            screen->search('ROOT')->move(field_0x11c + field_0x98, lbl_8050DB0C.field_0x30[3] + (field_0x120 + field_0x9c));
+        } else {
+            field_0x98 = 0.0f;
+            field_0x9c = 0.0f;
+            field_0xa0 = 0.0f;
+            screen->search('ROOT')->move(field_0x11c, field_0x120);
+        }
+        f32 offset = 0.5f * ((3.0f - field_0x164) * tm01->getLineSpace());
+        if (screen == field_0x20[0] && !field_0x20[0]->search('Pm00')->isVisible()) {
+            field_0x20[0]->search('Pm00')->show();
+            field_0x20[0]->search('P5b02')->show();
+            field_0x20[0]->search('P5ar')->show();
+            field_0x20[0]->search('P4b02')->show();
+            field_0x20[0]->search('P4ar')->show();
+            field_0x20[0]->search('P3b02')->show();
+            field_0x20[0]->search('P3ar')->show();
+            field_0x20[0]->search('P2b02')->show();
+            field_0x20[0]->search('P2ar')->show();
+            field_0x20[0]->search('P1b02')->show();
+            field_0x20[0]->search('P1ar')->show();
+        }
+        strcpy(tm01->getStringPtr(), field_0x1ab);
+        strcpy(tm02->getStringPtr(), field_0x2ab);
+        nmdata->move(x, y);
+        tm01->move(field_0xc8, field_0xcc + offset);
+        tm01->resize(100.0f + field_0xe8, field_0xec);
+        tm02->move(field_0xc8 + field_0xd0, field_0xd4 + (field_0xcc + offset));
+        tm02->resize(100.0f + field_0xe8, field_0xec);
+        gGameRoot2_8053AB10->fn_8013B490();
+        screen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+
+        // The pictures placed in the text (cls_804AF72C::fn_8039CDF8).
+        for (int i = 0; i < 12; i++) {
+            if (field_0x68[i]->field_0x8 != 0xFF) {
+                f32 px = field_0x68[i]->field_0x0 + ((field_0x98 + x) + tm01->getBounds()->i.x);
+                f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x68[i]->field_0x4 * tm01->getLineSpace();
+                if (field_0x164 == 1) {
+                    py -= 26.0f;
+                } else if (field_0x164 == 2) {
+                    py -= 13.0f;
+                }
+                field_0x30[field_0x68[i]->field_0x8]->draw(px, py, 29.0f, 29.0f, false, false, false);
+            }
+        }
+
+        // The arrow (0x5C): it bobs over 10 frames when 0x19C is set and flips its angle at random intervals.
+        if (field_0x1a0 != 0) {
+            f32 ox = 0.0f; // a zero base the original still adds (a literal 0.0f + x folds away)
+            f32 dx = 0.0f;
+            s16 t = field_0x19c;
+            int v;
+            if (t < 0) {
+                if (t > -5) {
+                    v = -t;
+                } else {
+                    v = t + 10;
+                    if (t == -10) {
+                        field_0x19c = 0;
+                    }
+                }
+                dx = -5.0f * (v * v) / 25.0f;
+                if (field_0x19c != 0) {
+                    field_0x19c--;
+                }
+            } else if (t > 0) {
+                if (t < 5) {
+                    v = t;
+                } else {
+                    v = 10 - t;
+                    if (t == 10) {
+                        field_0x19c = 0;
+                    }
+                }
+                dx = 5.0f * (v * v) / 25.0f;
+                if (field_0x19c != 0) {
+                    field_0x19c++;
+                }
+            }
+            if (field_0x1a1 == 0) {
+                if (field_0x164 == 2) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (field_0x164 == 3) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                }
+            } else {
+                line = field_0x130[field_0x168];
+                if (line == 0.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 30.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (line == 1.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (line == 2.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                }
+            }
+            field_0x198--;
+            if (field_0x198 <= 0) {
+                if (field_0x19a == -0x60) {
+                    field_0x19a = -0x54;
+                } else {
+                    field_0x19a = -0x60;
+                }
+                field_0x5c->rotate(9.6f, 9.6f * 1.5f, J2DROTATE_Z, field_0x19a);
+                field_0x198 = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+            }
+        }
+    } else if (field_0x3b0 != 0) {
+        field_0x8->render();
+        field_0x3b0 = 0;
+    }
+}
+
+// FIXME: 98.31 %, missing/extra + reloc-name; behaviour clean.
+// Missing 2 instructions around the clamp: the original copies
 // the processor's frame count (mr r4,r6) and clamps the copy to 0; ours clamps
 // in place (separate-variable, ternary and if/else forms tried: same or worse).
 void cls_804AF5A0::fn_80394690() {
@@ -1545,7 +2697,7 @@ void cls_804AF5A0::fn_80394690() {
         field_0x8->render();
         field_0x3b0 = 0;
     }
-    f32 offset = 60.0f + 0.5f * ((3.0f - field_0x164) * static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getLineSpace());
+    f32 offset = 60.0f + 0.5f * ((3.0f - field_0x164) * static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->getLineSpace());
     if (field_0x1aa == 0) {
         char line1[0x100];
         char line2[0x100];
@@ -1568,24 +2720,25 @@ void cls_804AF5A0::fn_80394690() {
             strcat(line2, color);
             strcat(line2, field_0x3ab);
         }
-        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getStringPtr(), line1);
-        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->getStringPtr(), line2);
-        field_0x2c->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
-        field_0x2c->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
+        strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->getStringPtr(), line1);
+        strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->getStringPtr(), line2);
+        field_0x20[3]->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
+        field_0x20[3]->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
         gGameRoot2_8053AB10->fn_8013B490();
-        field_0x2c->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        field_0x20[3]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
+// FIXME: 99.81 %, reloc-name; behaviour clean.
 void cls_804AF5A0::fn_803944EC(f32 scale) {
     field_0xb4 = scale;
     J2DTextBox::TFontSize size;
     size.x = field_0x60 * scale;
     size.y = field_0x64 * scale;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFontSize(size);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setLineSpace(field_0xb0 * scale);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFontSize(size);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setLineSpace(field_0xb0 * scale);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setLineSpace(field_0xb0 * scale);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setLineSpace(field_0xb0 * scale);
     field_0x14->setScale(scale, field_0x60);
 }
 

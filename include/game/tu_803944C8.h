@@ -121,6 +121,23 @@ public:
         return 0;
     }
 
+    // Inlined by do_tag: sets bit `index` (0..63) of the two mask words.
+    void setMasked(int index) {
+        if (index < 32) {
+            field_0x3c |= 1 << index;
+        } else if (index < 64) {
+            field_0x40 |= 1 << (index - 32);
+        }
+    }
+    // Inlined by do_tag: clears it (the upper word without the 32 offset, as the original).
+    void clearMasked(int index) {
+        if (index < 32) {
+            field_0x3c = (u64)(u32)field_0x3c & ~(u64)(s64)(1 << index);
+        } else if (index < 64) {
+            field_0x40 = (u64)(u32)field_0x40 & ~(u64)(s64)(1 << index);
+        }
+    }
+
     // The font do_character measures with (getCellWidth, getWidthEntry).
     /* 0x038 */ JUTFont* field_0x38;
     /* 0x03C */ s32 field_0x3c;
@@ -173,6 +190,11 @@ public:
     virtual void do_reset();
     virtual void do_begin(const void*, const char*);
     virtual void do_end();
+    virtual bool do_tag(u32 tag, const void* data, u32);
+    // 0x8039A638 / 0x8039ACD0: called by do_tag for the tags 0x30005 and 0x20029 (0 in the text
+    // windows, 1 in the text-image windows).
+    void fn_8039A638(s16 mode);
+    void fn_8039ACD0(s16 mode);
     // 0x8039D0DC: records the current slot's offset and line count, then the value.
     void fn_8039D0DC(u8 value);
     // 0x8039D30C: the same for the text buffer, as -2 marked control bytes.
@@ -188,6 +210,8 @@ public:
     void fn_8039C630(u8 noun, s32 count);
     // 0x8039C258: the same number as fn_8039C9A0, as glyph codes in the first line buffer.
     void fn_8039C258(s32 number);
+    // 0x8039B3EC: the nouns of fn_8039C630 as glyph codes.
+    void fn_8039B3EC(u8 noun, s32 count);
     // Inlined: appends a glyph code (two bytes) to the first line buffer.
     void appendGlyph(u16 glyph) {
         field_0x2c0[field_0x2d0++] = glyph >> 8;
