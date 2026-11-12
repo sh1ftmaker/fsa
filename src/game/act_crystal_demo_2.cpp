@@ -78,6 +78,77 @@ cls_804AE088::~cls_804AE088() {
 // Table lbl_804AE070 is filled by this file's static initializer; its definition is not written yet.
 extern void (cls_804AE088::*lbl_804AE070[2])();
 
+static const s16 lbl_80542C48[2] = {9, -1};
+static const s16 lbl_80542C50[2] = {9, -1};
+static const s16* lbl_8053A1C0[2] = {lbl_80542C48, lbl_80542C50};
+
+const char* lbl_8053A1C8 = "kk_black.bti";
+
+static const s16 sEmitterAngles[5] = {-5461, 5461, 16384, 27307, -27307};
+static const u16 sEmitterIds[5] = {0x105, 0x106, 0x107, 0x108, 0x109};
+static const s32 sEmitterDepths[5] = {2, 0, 0, 0, 0};
+
+void cls_804AE088::init() {
+    cls_8049D140::init();
+    field_0x23c = field_0x90 & 0x1F;
+    field_0x248 = (field_0x90 >> 22) & 0x1F;
+    if (field_0x23c != 4 && field_0x23c != 5) {
+        fn_801F3668();
+        return;
+    }
+    if (field_0x23c == 5) {
+        field_0x240 = 0x13;
+        field_0x268 = 5;
+    } else {
+        field_0x268 = 0;
+    }
+    field_0x310 = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_8053A1C8);
+    field_0x318.fn_801D2608(lbl_8053A1C0, 2);
+    switch (field_0x23c) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        field_0x318.startAnim_801D22DC(0, 2, false);
+        break;
+    case 6:
+    default:
+        field_0x318.startAnim_801D22DC(1, 2, false);
+        break;
+    }
+    field_0x318.fn_801D1F14(0.0f);
+    mPos.y -= 32.0f;
+    JGeometry::TVec3f pts[5] = {
+        mPos,
+        JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y - 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y - 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y + 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y + 48.0f, 0.0f),
+    };
+    for (s32 i = 0; i < 5; i++) {
+        field_0x384[i] = spawnEmitter_8013CC50(field_0x4, &pts[i], sEmitterIds[i], 0, sEmitterDepths[i], NULL,
+                                               NULL, true, 1.0f);
+    }
+    getGameView_802D6A9C()->fn_802D7440(0);
+    for (s32 i = 0; i < 5; i++) {
+        s16 angle = sEmitterAngles[i];
+        field_0x2a8[i].x = 55.0f * JMath::sincosTable_.cosShort(angle) + mPos.x;
+        field_0x2a8[i].y = 32.0f + (35.0f * JMath::sincosTable_.sinShort(angle) + mPos.y);
+        field_0x2a8[i].z = 0.0f;
+    }
+    field_0x2a8[5] = mPos;
+    s32 count = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < count; i++) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+        if (actor != NULL && actor->mActorId == ACTOR_GOL2) {
+            field_0x2f4 = (cls_804A9C20*)actor;
+            break;
+        }
+    }
+}
+
 void cls_804AE088::update() {
     if (field_0x2f0 != 0) {
         field_0x2f0--;
@@ -90,8 +161,6 @@ void cls_804AE088::update() {
     }
     (this->*lbl_804AE070[field_0x23c - 4])();
 }
-
-const char* lbl_8053A1C8 = "kk_black.bti";
 
 const s32 lbl_80474C48[8] = {0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3, 0x21B, 0x21B};
 
