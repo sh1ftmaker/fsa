@@ -26,22 +26,18 @@ cls_804A4C58::cls_804A4C58() : mSeq2a8(), field_0x2d0(0.0f) {
     field_0x33c = 0;
     field_0x33e = 0;
     field_0x33f = 0;
-    mEmitter2c0 = NULL;
-    mEmitter2c4 = NULL;
-    mEmitter2c8 = NULL;
-    mEmitter2cc = NULL;
+    mEmitter2c[0] = NULL;
+    mEmitter2c[1] = NULL;
+    mEmitter2c[2] = NULL;
+    mEmitter2c[3] = NULL;
 }
 
-// FIXME(shotgun): 58.63 %, missing/extra + reloc-name.
+// Only scheduling differs: ours loads -1 for the serial before the fn_801DAC6C call.
 cls_804A4C58::~cls_804A4C58() {
-    releaseEmitter_801EE434(mEmitter2c0);
-    mEmitter2c0 = NULL;
-    releaseEmitter_801EE434(mEmitter2c4);
-    mEmitter2c4 = NULL;
-    releaseEmitter_801EE434(mEmitter2c8);
-    mEmitter2c8 = NULL;
-    releaseEmitter_801EE434(mEmitter2cc);
-    mEmitter2cc = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        releaseEmitter_801EE434(mEmitter2c[i]);
+        mEmitter2c[i] = NULL;
+    }
     fn_801DAC6C()->mSerial0 = -1;
     getGameView_802D6A9C()->fn_802D7440(true);
 }
@@ -665,10 +661,10 @@ void cls_804A4C58::vfunc_0x90(u8 mapHit) {
         break;
     case 19:
         if (getActorManager_801F856C()->fn_801F68E0() != 0) {
-            releaseEmitter_801EE434(mEmitter2c8);
-            releaseEmitter_801EE434(mEmitter2cc);
-            mEmitter2c8 = NULL;
-            mEmitter2cc = NULL;
+            releaseEmitter_801EE434(mEmitter2c[2]);
+            releaseEmitter_801EE434(mEmitter2c[3]);
+            mEmitter2c[2] = NULL;
+            mEmitter2c[3] = NULL;
             vfunc_0x28(0, 0.0f, -16.0f);
             fn_801D9C58(20);
         }
