@@ -364,8 +364,8 @@ void cls_8049D940::fn_80115D8C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // Not auto-inlined: fn_80115A7C calls fn_80115BC4 out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 92.46%, missing/extra + reloc-name: the target picks min(dist, speed) with one fsel
-// where ours branches (4 extra instructions), plus .sdata2 literal symbol names.
+// FIXME: 93.33%, missing/extra + reloc-name: the target picks min(dist, speed) with one fsel
+// (dist - speed >= 0 ? speed : dist) where ours branches, plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     JGeometry::TVec3f pull(0.0f, 0.0f, 0.0f);
     if (pos->z <= 100.0f) {
@@ -383,7 +383,7 @@ void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
             pull.sub(mPos, *pos);
             pull.z = 0.0f;
             pull.normalize();
-            pull.scale(dist >= speed ? speed : dist);
+            pull.scale(dist < speed ? dist : speed);
         }
     }
     JGeometry::TVec3f spin;
