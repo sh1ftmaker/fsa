@@ -945,8 +945,8 @@ def revert(wt):
     sh(["git", "clean", "-fdq", "--", "src", "include", "libs", "config"], wt)
 
 
-def reset_to_integration(wt):
-    sh(["git", "reset", "-q", "--hard", BRANCH], wt, check=True)
+def reset_to_integration(wt, ref=BRANCH):
+    sh(["git", "reset", "-q", "--hard", ref], wt, check=True)
     sh(["git", "clean", "-fdq", "--", "src", "include", "libs", "config"], wt)
     r = sh("python3 configure.py >/dev/null && timeout 3000 ninja >/dev/null 2>&1", wt)
     if r.returncode:
@@ -1252,7 +1252,7 @@ def cmd_worker(args):
         skip.add(unit)
         changes = []
         try:
-            reset_to_integration(wt)
+            reset_to_integration(wt, args.start or BRANCH)
             base_head = head(wt)
             sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
             base = first = evaluate(wt, unit)
@@ -1574,6 +1574,7 @@ def main():
     p.add_argument("--effort", choices=["low", "medium", "high"])
     p.add_argument("--no-review", action="store_true", help="skip the adversarial review (never for work that will be merged)")
     p.add_argument("--dry", action="store_true", help="experiment: no claim, no integration; the result stays on the worker branch")
+    p.add_argument("--start", help="experiment: start the unit from this commit instead of grind2 (with --dry)")
     p.add_argument("--any-tier", action="store_true", help="experiment: take functions whatever tier they are at")
     p.add_argument("--ledger", default="ledger.tsv", help="experiment: log to this file in g2-logs instead")
     p.add_argument("--review-tier", choices=ORDER, help="reviewer model (default: one tier above the author)")
