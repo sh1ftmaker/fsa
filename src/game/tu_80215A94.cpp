@@ -45,7 +45,8 @@ static inline void fn_802162B8_loop(cls_80216238Sub* sub, s32 id, s32 key) {
     }
 }
 
-// FIXME(shotgun): 85.1 %, cls_80216238Sub
+// FIXME(shotgun): 85.09 %, missing/extra + reloc-name; behaviour drift.
+// cls_80216238Sub
 void cls_80216238Sub::fn_802162B8(s32 id, s32 key) {
     if (mFlag8) {
         if (mFlagA) {
@@ -65,7 +66,7 @@ void cls_80216238Sub::fn_802162B8(s32 id, s32 key) {
     }
 }
 
-// FIXME(shotgun): 96.9 %, missing/extra
+// FIXME(shotgun): 96.88 %, missing/extra; behaviour clean.
 void cls_80216238::fn_80216238() {
     mSub.field_0xc.fn_8021C00C();
     mSub.mFlag8 = 0;
@@ -82,7 +83,8 @@ void cls_80216238::fn_80216238() {
     mWatch.fn_801ED7F0();
 }
 
-// FIXME(shotgun): 55.0 %, missing/extra + reloc-name; the original builds the entries with __construct_array(fn_80216238), which
+// FIXME(shotgun): 54.96 %, missing/extra + reloc-name; behaviour drift.
+// the original builds the entries with __construct_array(fn_80216238), which
 // needs a constructor on cls_80216238 (not added: it would make the horse-race man's inline
 // constructor build its table member).
 cls_80215E48* fn_80216178(cls_80215E48* table) {
@@ -143,6 +145,7 @@ void cls_80215E48::fn_80215F30() {
     }
 }
 
+// FIXME: 89.48 %, different; behaviour drift.
 void cls_80215E48::fn_80215ECC() {
     s32 count = mCount;
     cls_80216238* entry = mEntries;
@@ -220,7 +223,7 @@ bool cls_80215E48::fn_80215D38() {
     return result;
 }
 
-// FIXME(shotgun): 82.3 %, missing/extra
+// FIXME(shotgun): 83.67 %, different; behaviour drift.
 bool cls_80215E48::fn_80215C6C(s32 index) {
     bool result = false;
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
@@ -228,15 +231,17 @@ bool cls_80215E48::fn_80215C6C(s32 index) {
         u8 centis = lbl_8050EC80.getCurrentFile().field_0x58;
         if (seconds == 0 && centis == 0) {
             result = true;
-        } else if (mEntries[index].mWatch.mSeconds < seconds ||
-                   (mEntries[index].mWatch.mSeconds == seconds && mEntries[index].mWatch.mCentis < centis)) {
+        } else if (mEntries[index].mWatch.mSeconds < seconds) {
+            result = true;
+        } else if (mEntries[index].mWatch.mSeconds == seconds && mEntries[index].mWatch.mCentis < centis) {
             result = true;
         }
     }
     return result;
 }
 
-// FIXME: 93.62 %. The original loads mCentis (lbz 0x25) right after
+// FIXME: 93.62 %, scheduling+regalloc; behaviour clean.
+// The original loads mCentis (lbz 0x25) right after
 // mSeconds, before the second save-row index load; ours loads it after.
 void cls_80215E48::fn_80215BCC(s32 index) {
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
@@ -256,7 +261,7 @@ void cls_80215E48::fn_80215B6C(s32 index) {
     }
 }
 
-// FIXME(shotgun): 85.1 %, missing/extra
+// FIXME(shotgun): 85.09 %, missing/extra; behaviour drift.
 s32 cls_80215E48::fn_80215A94() {
     s32 count = mCount;
     s32 result = -1;
