@@ -107,7 +107,10 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
             result = 3;
             if (mode != 1) {
                 if (mode != 2) {
-                    *out = field_0x4[field_0x3]->mPos;
+                    const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
+                    out->x = p.x;
+                    out->y = p.y;
+                    out->z = p.z;
                     return result;
                 }
                 field_0x1 ^= 1;
@@ -125,7 +128,10 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
             field_0x3 = field_0x2 - 1;
         }
     }
-    *out = field_0x4[field_0x3]->mPos;
+    const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
+    out->x = p.x;
+    out->y = p.y;
+    out->z = p.z;
     return result;
 }
 #pragma auto_inline reset
