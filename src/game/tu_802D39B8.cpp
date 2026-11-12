@@ -278,12 +278,14 @@ bool fn_802DEDFC(const s32* dir) {
 }
 
 // The view's fn_802D7B34 / fn_802D7BE8 as free functions (forwards).
-// FIXME(shotgun): 78.00 %, missing/extra; behaviour near. (view reload after __shl2i)
+// FIXME(shotgun): 78.00 %, missing/extra; behaviour near.
+// (view reload after __shl2i)
 s32 fn_802DED40(s32 layer, s32 slot) {
     return getGameView_802D6A9C()->fn_802D7B34(layer, slot);
 }
 
-// FIXME(shotgun): 79.73 %, missing/extra; behaviour near. (view reload after __shl2i)
+// FIXME(shotgun): 79.73 %, missing/extra; behaviour near.
+// (view reload after __shl2i)
 void fn_802DEC40(s32 layer, s32 slot, u32 value) {
     getGameView_802D6A9C()->fn_802D7BE8(layer, slot, value);
 }
@@ -298,7 +300,7 @@ bool fn_802DEBF8(void) {
     return false;
 }
 
-// FIXME: 89.77 %, different; behaviour near.
+// FIXME: 89.77 %, missing/extra; behaviour near.
 // Same as fn_802DE9A0: the target reloads the view (lwz 0xc off the kept gGameRoot_8053AAF8->0x4)
 // for the stage >= 13 test; ours loads it once.
 // Stage (9, 3), or stage 13 and up, with gGameRoot_8053AAF8->0x7F set (vfunc_0x10 inlines it).
@@ -322,7 +324,8 @@ bool fn_802DEB58(void) {
     return false;
 }
 
-// FIXME: 94.23 %, missing/extra; behaviour near. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
+// FIXME: 94.23 %, missing/extra; behaviour near.
+// The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
 // loads both once. An inline view getter in this file is a no-op. Re-reading
 // the view into a local before each pair gives 96.9 % (field_0x4 reloaded,
@@ -364,7 +367,8 @@ bool fn_802DEA34(void) {
     return false;
 }
 
-// FIXME: 95.68 %, different; behaviour near. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
+// FIXME: 95.68 %, different; behaviour near.
+// The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
 // loads both once. No-ops: a local for gGameRoot_8053AAF8->0x4, an inline view
 // getter defined in this file (with or without a local), a free inline on
@@ -386,7 +390,8 @@ bool fn_802DE9A0(void) {
     return false;
 }
 
-// FIXME: 93.60 %, different; behaviour near. Same as fn_802DE9A0: the target keeps gGameRoot_8053AAF8->0x4 in r4
+// FIXME: 93.60 %, different; behaviour near.
+// Same as fn_802DE9A0: the target keeps gGameRoot_8053AAF8->0x4 in r4
 // and reloads the view (lwz 0xc) for the second pair; ours loads it once.
 bool fn_802DE93C(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
@@ -442,7 +447,8 @@ bool fn_802DE764(s32 stage, s32 level, s32 value) {
     return false;
 }
 
-// FIXME: 99.93 %, reloc-name; behaviour clean. Reloc-name only: 512.0f (lbl_80541144) is pooled early, the literal users
+// FIXME: 99.93 %, reloc-name; behaviour clean.
+// Reloc-name only: 512.0f (lbl_80541144) is pooled early, the literal users
 // between fn_802D8328 and here are not written yet. Code identical.
 GameView_804A9950::GameView_804A9950() {
     field_0x4 = 0;
@@ -469,7 +475,8 @@ GameView_804A9950::GameView_804A9950() {
 
 GameView_804A9950::~GameView_804A9950() {}
 
-// FIXME: 99.13 %, different; behaviour near. Structurally close: regalloc in clearStageTables' first loop (as fn_802DA8DC),
+// FIXME: 99.13 %, different; behaviour near.
+// Structurally close: regalloc in clearStageTables' first loop (as fn_802DA8DC),
 // the 0x131b8 loop's set-up (the target copies 0 with mr r7, r4; ours li r7, 0) and the four
 // save-row flag tests (missing 9): the target rematerialises lbl_8050EC80 and adds 0x28 per
 // test; ours hoists the row's address + 0x28 once (also with the masks written out
@@ -556,7 +563,8 @@ void GameView_804A9950::vfunc_0xC() {
     }
 }
 
-// FIXME: 99.09 %, different; behaviour near. Two instructions: in the inlined fn_802DEBA0 the target reloads the view
+// FIXME: 98.71 %, missing/extra; behaviour near.
+// Two instructions: in the inlined fn_802DEBA0 the target reloads the view
 // for the stage >= 13 test, as fn_802DEBA0 itself does (see there).
 void GameView_804A9950::vfunc_0x10() {
     f32 x = field_0xf0[0].x;
@@ -618,7 +626,8 @@ void GameView_804A9950::vfunc_0x10() {
 
 void GameView_804A9950::vfunc_0x14() {}
 
-// FIXME: 99.02 %, different; behaviour near. One opcode: the target returns the result through clrlwi r3, r29, 24 (as
+// FIXME: 99.02 %, different; behaviour near.
+// One opcode: the target returns the result through clrlwi r3, r29, 24 (as
 // fn_802DCD1C does), ours with mr; the result's declared type in the original is unknown.
 bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     s32 col = field_0x14;
@@ -663,7 +672,8 @@ bool GameView_804A9950::fn_802DD3D4(const s32* dir) {
     return entered;
 }
 
-// FIXME: 97.94 %, missing/extra; behaviour near. One instruction, as fn_802DCD1C: the target keeps the result in r6 (li r6, 0
+// FIXME: 97.94 %, missing/extra; behaviour near.
+// One instruction, as fn_802DCD1C: the target keeps the result in r6 (li r6, 0
 // at entry) and returns it through clrlwi r3, r6, 24; ours builds it in r3.
 bool GameView_804A9950::fn_802DCE5C(const s32* dir) {
     bool moved = false;
@@ -707,7 +717,8 @@ void GameView_804A9950::fn_802DCDF4() {
     field_0xc9 = 0;
 }
 
-// FIXME: 94.17 %, missing/extra; behaviour near. One instruction: the target keeps the result in r6 (li r6, 0 at entry) and
+// FIXME: 94.17 %, missing/extra; behaviour near.
+// One instruction: the target keeps the result in r6 (li r6, 0 at entry) and
 // returns it through clrlwi r3, r6, 24; ours builds it in r3 directly.
 bool GameView_804A9950::fn_802DCD1C(const s32* dir) {
     bool moved = false;
@@ -735,7 +746,8 @@ u8 GameView_804A9950::fn_802DCD0C() {
     return gGameRoot2_8053AB10->field_0x24->field_0x1e8;
 }
 
-// FIXME: 98.81 %, missing/extra; behaviour clean. Structurally close, one instruction: regalloc in clearStageTables' first loop
+// FIXME: 98.81 %, missing/extra; behaviour clean.
+// Structurally close, one instruction: regalloc in clearStageTables' first loop
 // (as fn_802DA8DC; the target copies its zero with two mr, ours one li), clearScreenState's
 // bit-table loop as in fn_802DB6F0, and fn_802D7970's inlined view in r3 / value in r4
 // swapped. Reloc-name: 1.0f / -1.0f as in fn_802DA010.
@@ -835,7 +847,8 @@ void GameView_804A9950::fn_802DBD60() {
 }
 
 
-// FIXME: 99.02 %, regalloc-only; behaviour clean. Regalloc only, in the inlined clearScreenState's bit-table loop (0x328 /
+// FIXME: 99.02 %, regalloc-only; behaviour clean.
+// Regalloc only, in the inlined clearScreenState's bit-table loop (0x328 /
 // 0x12F68: the target's offset and word counters are r7 / r8, ours r8 / r4). Reloc-name:
 // 1.0f / -1.0f, as in fn_802DA010. The camera corners are stored f.x, i.x, f.y, i.y (chained assignments; TBox2::set
 // stores i first).
@@ -876,7 +889,8 @@ void GameView_804A9950::fn_802DB6F0() {
     }
 }
 
-// FIXME: 98.63 %, different; behaviour clean. Structurally close: regalloc in clearStageTables' first loop (the target's
+// FIXME: 98.63 %, different; behaviour clean.
+// Structurally close: regalloc in clearStageTables' first loop (the target's
 // zero and row counters are r3 / r4, ours r4 / r3, as in fn_802DBD60 and vfunc_0xC) and one
 // instruction in clearScreenState's bit-table loop (the target copies the 0 with mr r8, r0
 // where ours loads li r7, 0xFF a slot later). Reloc-name: 1.0f / -1.0f as in fn_802DA010.
@@ -947,7 +961,8 @@ void GameView_804A9950::fn_802DA788() {
     }
 }
 
-// FIXME: 94.59 %, different; behaviour clean. Regalloc in the actor loop (the target keeps i, i * 4 and the end in r28,
+// FIXME: 94.59 %, different; behaviour clean.
+// Regalloc in the actor loop (the target keeps i, i * 4 and the end in r28,
 // r29, r30, starting i * 4 with mr from i where ours uses li: try.py counts those as
 // 3 differing opcodes) and reloc-name: -70.0f / 70.0f are pooled after literals of
 // functions not written yet (lbl_80541160 / lbl_80541164).
@@ -979,7 +994,8 @@ u8 GameView_804A9950::fn_802DA630() {
     return busy;
 }
 
-// FIXME: 98.97 %, regalloc-only; behaviour clean. Regalloc only, as fn_802DB6F0 (clearScreenState's bit-table loop); the camera
+// FIXME: 98.97 %, regalloc-only; behaviour clean.
+// Regalloc only, as fn_802DB6F0 (clearScreenState's bit-table loop); the camera
 // corners as in fn_802DB6F0. Reloc-name: 1.0f / -1.0f are pooled after literals of functions
 // not written yet.
 void GameView_804A9950::fn_802DA010() {
@@ -1038,7 +1054,8 @@ void GameView_804A9950::fn_802D9FBC() {
     }
 }
 
-// FIXME: 96.32 %, different; behaviour clean. One opcode at the loop set-up: the target starts the row offsets with
+// FIXME: 96.32 %, different; behaviour clean.
+// One opcode at the loop set-up: the target starts the row offsets with
 // mr from the row counter (li r5, 0; mr r8, r5; mr r9, r5), ours with a second li.
 void GameView_804A9950::fn_802D9CD8() {
     fn_802D3D48();
@@ -1090,7 +1107,8 @@ const char* GameView_804A9950::fn_802D9C1C() {
     return "0";
 }
 
-// FIXME: 99.46 %, different; behaviour drift. Structurally close, two instructions: in the inlined fn_802DEBA0 the target
+// FIXME: 99.35 %, missing/extra; behaviour drift.
+// Structurally close, two instructions: in the inlined fn_802DEBA0 the target
 // reloads the view for the stage >= 13 test (the fn_802DEBA0 family). The .rodata strings
 // sit elsewhere in the target: "bg_%s_scl.szs", "bg_%s_ura_scl.szs" (not used here) and
 // "bg_%s_gb_scl.szs" come before "bg_base_sch.szs".
@@ -1176,7 +1194,8 @@ static inline TileMap_804AA858* getTileMap() {
     return gGameRoot2_8053AB10->field_0x20;
 }
 
-// FIXME: 98.41 %, missing/extra + reloc-name; behaviour drift. Structurally close: the target builds the resource type with 'M   ' in a
+// FIXME: 98.23 %, missing/extra + reloc-name; behaviour drift.
+// Structurally close: the target builds the resource type with 'M   ' in a
 // register (lis/addi 0x4D202020, add, then subi 0x20 for the last ' '); ours folds the
 // constant (addis/addi 0x2000) and adds it first; the inlined fn_802DEBA0 reloads the view
 // in the target (as fn_802DEBA0); the int-to-float temporaries of field_0x14 / field_0x18
@@ -1237,7 +1256,8 @@ void GameView_804A9950::fn_802D8D50(bool reload) {
     map->field_0x2384 = h;
 }
 
-// FIXME: 96.23 %, different + reloc-name; behaviour near. Structurally close: the target converts the record's cell bytes with a
+// FIXME: 96.13 %, missing/extra + reloc-name; behaviour near.
+// Structurally close: the target converts the record's cell bytes with a
 // clrlwi 16 first (as if u16; a u16 local folds it), computes the inlined fn_802D766C's slot
 // before its flag test, and extracts both screen bytes before the first compare in the key
 // loop; regalloc (and a 16-byte larger frame from one more saved register) follows.
@@ -1394,7 +1414,8 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
     field_0xec = 50;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean. Reloc-name only: the format string waits for the unit's .rodata to be written.
+// FIXME: 99.84 %, reloc-name; behaviour clean.
+// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8228(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1412,7 +1433,8 @@ const char* GameView_804A9950::fn_802D8228(s32 layer) {
     return NULL;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean. Reloc-name only: the format string waits for the unit's .rodata to be written.
+// FIXME: 99.84 %, reloc-name; behaviour clean.
+// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8128(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1457,7 +1479,8 @@ void GameView_804A9950::fn_802D7F84(s32 bit, bool set) {
     }
 }
 
-// FIXME: 85.18 %, scheduling; behaviour clean. Scheduling: the target loads field_0x8 before the stage
+// FIXME: 85.18 %, scheduling; behaviour clean.
+// Scheduling: the target loads field_0x8 before the stage
 // (field_0x4) and the view; ours loads the stage first.
 bool GameView_804A9950::fn_802D7F40(s32 bit) {
     return ((1 << bit) & getGameView_802D6A9C()->field_0x348[field_0x4][field_0x8]) != 0;
@@ -1502,7 +1525,8 @@ void GameView_804A9950::fn_802D7D00(s32 layer, s32 bit, bool set) {
     }
 }
 
-// FIXME: 99.43 %, regalloc-only; behaviour clean. Regalloc only, as fn_802D7B34: the target keeps the shift in r31 and the slot index in r30.
+// FIXME: 99.43 %, regalloc-only; behaviour clean.
+// Regalloc only, as fn_802D7B34: the target keeps the shift in r31 and the slot index in r30.
 void GameView_804A9950::fn_802D7BE8(s32 layer, s32 slot, u32 value) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
@@ -1510,7 +1534,8 @@ void GameView_804A9950::fn_802D7BE8(s32 layer, s32 slot, u32 value) {
     getGameView_802D6A9C()->field_0x1048[field_0x18][field_0x14][idx] |= (u64)value << shift;
 }
 
-// FIXME: 99.44 %, regalloc-only; behaviour clean. Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
+// FIXME: 99.44 %, regalloc-only; behaviour clean.
+// Regalloc only: the target keeps the shift count in r31 and the slot index in r30; ours swaps them.
 s32 GameView_804A9950::fn_802D7B34(s32 layer, s32 slot) {
     s32 idx = layer < 8 ? 0 : layer - 7;
     s32 shift = 60 - slot * 4;
@@ -1609,7 +1634,8 @@ void GameView_804A9950::fn_802D782C(u8 value) {
     getGameView_802D6A9C()->field_0x131de = value;
 }
 
-// FIXME: 80.00 %, scheduling; behaviour clean. The clrlwi of bits is emitted before the lhz load in ours,
+// FIXME: 80.00 %, scheduling; behaviour clean.
+// The clrlwi of bits is emitted before the lhz load in ours,
 // after it in the target; swapping the & operands is worse.
 bool GameView_804A9950::fn_802D7804(s32 index, u16 bits) {
     return (field_0x131b8[index] & bits) != 0;
@@ -1635,7 +1661,8 @@ void GameView_804A9950::fn_802D7704(s32 bit, bool count, s32 layer) {
     }
 }
 
-// FIXME: 91.30 %, scheduling; behaviour clean. Only scheduling: the word address add is emitted two slots earlier than in the target
+// FIXME: 91.30 %, scheduling; behaviour clean.
+// Only scheduling: the word address add is emitted two slots earlier than in the target
 // (same as fn_802D6AC4; swapped & operands are worse).
 bool GameView_804A9950::fn_802D76A8(s32 bit) {
     return (field_0x3548[field_0x18][field_0x14][bit / 32] & (1 << (bit % 32))) != 0;
@@ -1651,7 +1678,8 @@ void GameView_804A9950::fn_802D7618(s32 bit) {
     field_0x6768[field_0x18][field_0x14][bit / 32] |= 1 << (bit % 32);
 }
 
-// FIXME: 91.30 %, scheduling; behaviour clean. Only scheduling: the word address add is emitted two slots earlier than in the target
+// FIXME: 91.30 %, scheduling; behaviour clean.
+// Only scheduling: the word address add is emitted two slots earlier than in the target
 // (same as fn_802D6AC4; swapped & operands are worse).
 bool GameView_804A9950::fn_802D75BC(s32 bit) {
     return (field_0x6768[field_0x18][field_0x14][bit / 32] & (1 << (bit % 32))) != 0;
@@ -1710,7 +1738,8 @@ void GameView_804A9950::fn_802D73CC(s32 bit, bool set) {
     }
 }
 
-// FIXME: 88.06 %, scheduling; behaviour clean. Scheduling: one add (the word address) is emitted two slots
+// FIXME: 88.06 %, scheduling; behaviour clean.
+// Scheduling: one add (the word address) is emitted two slots
 // earlier than in the target; a mask local and swapped & operands are worse.
 bool GameView_804A9950::fn_802D7384(s32 bit) {
     return (field_0x12f68[bit / 32] & (1 << (bit % 32))) != 0;
@@ -1732,7 +1761,8 @@ bool GameView_804A9950::fn_802D72BC(s32 bit) {
     return ((1 << (bit % 32)) & getGameView_802D6A9C()->field_0x12fe8[bit / 32]) != 0;
 }
 
-// FIXME: 96.44 %, missing/extra; behaviour drift. The free-slot search: the target's loop has no entry test (body first, then
+// FIXME: 96.44 %, missing/extra; behaviour drift.
+// The free-slot search: the target's loop has no entry test (body first, then
 // i < 8 at the bottom, falling into the shift); ours jumps to the test first (b plus a
 // second i < 8 test, 3 instructions). A plain for/break is unrolled instead. Registers
 // differ in the epsilon compare.
@@ -1772,7 +1802,8 @@ void GameView_804A9950::fn_802D6F38(u32 key, JGeometry::TVec2f pos, s32 value, b
     }
 }
 
-// FIXME: 85.99 %, missing/extra; behaviour drift. Two instructions short: the target loads b.x once before the first loop
+// FIXME: 85.99 %, missing/extra; behaviour drift.
+// Two instructions short: the target loads b.x once before the first loop
 // and reloads mView (lwz 0xc) for the id test after the epsilon compare; ours keeps both
 // in the loop body / one register. Registers differ throughout.
 bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s32 value, u32 id) {
@@ -1798,7 +1829,8 @@ bool GameView_804A9950::fn_802D6D70(JGeometry::TVec2f a, JGeometry::TVec2f b, s3
     return found;
 }
 
-// FIXME: 98.12 %, regalloc-only; behaviour clean. Regalloc only: the loop's i * 4 / i * 8 counters and the match flag take other
+// FIXME: 98.12 %, regalloc-only; behaviour clean.
+// Regalloc only: the loop's i * 4 / i * 8 counters and the match flag take other
 // registers.
 void GameView_804A9950::fn_802D6C10(JGeometry::TVec2f pos, u32 id) {
     for (int i = 0; i < 8; i++) {
@@ -1852,7 +1884,8 @@ GameView_804A9950* getGameView_802D6A9C(void) {
     return gGameRoot_8053AAF8->field_0x4->mView;
 }
 
-// FIXME: 94.79 %, scheduling+regalloc; behaviour clean. Scheduling and regalloc: the target adds the view to i * 2 before the slot
+// FIXME: 94.79 %, scheduling+regalloc; behaviour clean.
+// Scheduling and regalloc: the target adds the view to i * 2 before the slot
 // row (view + i * 2 + 0x2948, then lhzx with slot << 7); ours adds the row and i first and
 // loads the view (r5) after.
 s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
@@ -1865,7 +1898,8 @@ s32 GameView_804A9950::fn_802D4C10(s32 layer, u16 id) {
     return -1;
 }
 
-// FIXME: 95.52 %, scheduling+regalloc; behaviour clean. Scheduling and regalloc, as fn_802D4C10. The match test, the i >= 0x40 check
+// FIXME: 95.52 %, scheduling+regalloc; behaviour clean.
+// Scheduling and regalloc, as fn_802D4C10. The match test, the i >= 0x40 check
 // (0x802D4B30) and the rest sit inside the loop in the target; the check is kept as it is.
 bool GameView_804A9950::fn_802D4ADC(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
@@ -1891,7 +1925,8 @@ bool GameView_804A9950::fn_802D4ADC(s32 layer, u16 id) {
     return false;
 }
 
-// FIXME: 97.14 %, scheduling+regalloc; behaviour clean. Scheduling and regalloc, as fn_802D4C10; the shift loop as in fn_802D4874.
+// FIXME: 97.14 %, scheduling+regalloc; behaviour clean.
+// Scheduling and regalloc, as fn_802D4C10; the shift loop as in fn_802D4874.
 bool GameView_804A9950::fn_802D49A8(s32 layer, u16 id) {
     s32 slot = layer < 8 ? 0 : layer - 7;
     s32 i;
@@ -1915,7 +1950,8 @@ bool GameView_804A9950::fn_802D49A8(s32 layer, u16 id) {
     return false;
 }
 
-// FIXME: 97.14 %, scheduling+regalloc; behaviour clean. Scheduling and regalloc, as fn_802D4C10 (the search loop's address add).
+// FIXME: 97.14 %, scheduling+regalloc; behaviour clean.
+// Scheduling and regalloc, as fn_802D4C10 (the search loop's address add).
 // The shift loop is a for (;;) with the test at the top: the target's loop has its test at
 // the top and a plain branch back (0x802D48FC), which MWCC emits for neither while nor for
 // with a condition (those it rotates and unrolls).
@@ -1939,7 +1975,8 @@ void GameView_804A9950::fn_802D4874(s32 layer, u16 id, u64* outBit, u64* outMask
     *outMask = fn_802D7AC4(layer);
 }
 
-// FIXME: 96.72 %, scheduling+regalloc; behaviour clean. Scheduling and regalloc, as fn_802D4C10: the target adds the view to i * 2
+// FIXME: 96.72 %, scheduling+regalloc; behaviour clean.
+// Scheduling and regalloc, as fn_802D4C10: the target adds the view to i * 2
 // before the slot row in the search loop.
 void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMask) {
     s32 slot = layer < 8 ? 0 : layer - 7;
@@ -1966,7 +2003,8 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     return true;
 }
 
-// FIXME: 99.48 %, missing/extra; behaviour clean. One instruction: the target stores the spawn position's z (0.0f) twice
+// FIXME: 99.48 %, missing/extra; behaviour clean.
+// One instruction: the target stores the spawn position's z (0.0f) twice
 // (x, z, z, y); a second `pos.z = 0.0f;` matches but would be a duplicated statement, so the
 // source the original had here (an inline that also zeroes z?) is still unknown.
 void GameView_804A9950::fn_802D3A18() {
