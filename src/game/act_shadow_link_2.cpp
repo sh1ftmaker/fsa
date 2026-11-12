@@ -1155,10 +1155,12 @@ void ShadowLink2_804A43E8::vfunc_0x88() {
             field_0x3c.y *= 0.78f;
         }
         break;
-    case 0x11:
-        field_0x3c.x = JMath::sincosTable_.sinShort(field_0x33c) * speed;
-        field_0x3c.y = JMath::sincosTable_.cosShort(field_0x33c) * mSpeed;
+    case 0x11: {
+        s16 angle = field_0x33c;
+        field_0x3c.x = JMath::sincosTable_.sinShort(angle) * speed;
+        field_0x3c.y = JMath::sincosTable_.cosShort(angle) * mSpeed;
         break;
+    }
     default:
         if (mState == 0x1C) {
             switch (field_0x340.mIndex) {
@@ -1171,8 +1173,11 @@ void ShadowLink2_804A43E8::vfunc_0x88() {
                 break;
             }
         }
-        field_0x3c.x = JMath::sincosTable_.sinShort(field_0x33c) * speed;
-        field_0x3c.y = JMath::sincosTable_.cosShort(field_0x33c) * speed;
+        {
+            s16 angle = field_0x33c;
+            field_0x3c.x = JMath::sincosTable_.sinShort(angle) * speed;
+            field_0x3c.y = JMath::sincosTable_.cosShort(angle) * speed;
+        }
         break;
     }
     vfunc_0x84();
