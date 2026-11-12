@@ -1026,6 +1026,13 @@ static inline s32 markKey(const cls_804AA858Sub11C* record, s32 player, s32 i) {
     return lbl_80506DA8[player][i];
 }
 
+static inline s32 markKey2(s32 mask, s32 player, s32 i) {
+    if ((mask >> i & 1) != (mask >> lbl_80506DD8[player] & 1)) {
+        return -1;
+    }
+    return lbl_80506DA8[player][i];
+}
+
 // A sprite word that is off screen (x = 0x180).
 static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
     return sprite.f.field_0x3_0 == 1 && sprite.f.field_0x2 == 0x80;
@@ -1040,6 +1047,7 @@ static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
 // FIXME: 79.92 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
+    s32 mask = record->mMask;
     for (s32 i = 0; i < 4; i++) {
         order[i] = i;
     }
@@ -1047,8 +1055,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
         for (s32 j = 0; j < i; j++) {
             s32 a = order[j];
             s32 b = order[j + 1];
-            if (markKey(record, player, a) < markKey(record, player, b) ||
-                (markKey(record, player, a) == markKey(record, player, b) &&
+            if (markKey2(mask, player, a) < markKey2(mask, player, b) ||
+                (markKey2(mask, player, a) == markKey2(mask, player, b) &&
                  record->mEntries[a].mY < record->mEntries[b].mY))
             {
                 order[j] = b;
