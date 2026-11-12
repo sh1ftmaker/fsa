@@ -32,7 +32,7 @@ Camera_804AA9E4::Camera_804AA9E4() {}
 
 Camera_804AA9E4::~Camera_804AA9E4() {}
 
-// FIXME(shotgun): 89.90 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.62 %, scheduling+regalloc + reloc-name; behaviour clean.
 // Remaining diff: float literal pool order and register scheduling.
 void Camera_804AA9E4::fn_8030E5BC() {
     field_0x154.i.x = 0.0f;
@@ -878,7 +878,7 @@ void Camera_804AA9E4::fn_8030C5F0(const Vec* pos, bool inRect, bool normalised, 
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 32.30 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 46.87 %, scheduling+regalloc; behaviour clean.
 // (instruction order of the conversions)
 void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeometry::TVec3f* out) {
     if (flag) {
@@ -943,7 +943,7 @@ u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
 
 // Adds the box's two corners as focus points when both lie inside the camera box and there is
 // room for two.
-// FIXME(shotgun): 90.15 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 90.43 %, missing/extra; behaviour drift.
 // (operand load order)
 bool Camera_804AA9E4::fn_8030C058(const JGeometry::TBox2f* box) {
     s32 count = field_0x7f0;
