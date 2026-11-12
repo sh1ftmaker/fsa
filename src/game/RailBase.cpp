@@ -4,7 +4,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 92.8 %, missing/extra
+// FIXME(shotgun): 92.81 %, missing/extra; behaviour drift.
 // 0x800FE3EC
 bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
     field_0x0 = group;
@@ -46,7 +46,7 @@ bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
     return true;
 }
 
-// FIXME(shotgun): 90.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.48 %, missing/extra; behaviour near.
 // 0x800FE2E4
 u8 cls_800FE3EC::fn_800FE2E4(const JGeometry::TVec3f* pos, s32 layer) {
     f32 best = 10000.0f;
@@ -90,6 +90,7 @@ u8 cls_800FE3EC::fn_800FE21C(u8 index) {
 // 0x800FE090
 // auto_inline off: the original's fn_800FDEA0 (bl at 0x800FDEFC) calls it out of line.
 #pragma auto_inline off
+// FIXME: 91.57 %, missing/extra; behaviour drift.
 s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     s32 result = 0;
     f32 dx = field_0x4[field_0x3]->mPos.x - pos->x;
@@ -136,7 +137,7 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 71.4 %, missing/extra
+// FIXME(shotgun): 87.20 %, missing/extra; behaviour near.
 // 0x800FDEA0
 s32 cls_800FE3EC::fn_800FDEA0(JGeometry::TVec3f* pos, f32 speed, JGeometry::TVec3f* outStep, s32* layer,
                               u16* outAngle, s32 arg) {
@@ -190,7 +191,7 @@ void cls_800FE3EC::fn_800FDE38() {
     }
 }
 
-// FIXME(shotgun): 95.9 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.97 %, missing/extra; behaviour clean.
 // 0x800FDC70
 void fn_800FDC70(JGeometry::TVec3f* out, cls_800FE3EC* rail, JGeometry::TVec3f pos, s32 arg4, u8 index) {
     JGeometry::TVec3f target;
@@ -211,7 +212,8 @@ void fn_800FDC70(JGeometry::TVec3f* out, cls_800FE3EC* rail, JGeometry::TVec3f p
     *out = diff;
 }
 
-// FIXME(shotgun): 80.6 %, missing/extra (the original copies the target point through a stack temp and keeps the sum/difference in registers)
+// FIXME(shotgun): 80.59 %, missing/extra; behaviour clean.
+// (the original copies the target point through a stack temp and keeps the sum/difference in registers)
 // 0x800FD998
 JGeometry::TVec3f cls_800FE3EC::fn_800FD998(JGeometry::TVec3f pos, s32 step, s32 steps, u8 index) {
     JGeometry::TVec3f target;
@@ -249,7 +251,7 @@ JGeometry::TVec3f cls_800FE3EC::fn_800FD998(JGeometry::TVec3f pos, s32 step, s32
     return result;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
+// FIXME(shotgun): 99.85 %, reloc-name; behaviour clean.
 // 0x800FD894
 u8 cls_800FE3EC::fn_800FD894(s32 layer, u8* out, s32 max) {
     if (layer == -1) {
@@ -272,7 +274,7 @@ u8 cls_800FE3EC::fn_800FD894(s32 layer, u8* out, s32 max) {
     return n;
 }
 
-// FIXME(shotgun): 85.3 %, missing/extra
+// FIXME(shotgun): 85.32 %, missing/extra; behaviour drift.
 // 0x800FD818
 void cls_800FE3EC::fn_800FD818(s32 dir) {
     u8 count = field_0x2;
@@ -297,7 +299,7 @@ void cls_800FE3EC::fn_800FD818(s32 dir) {
     field_0x3 = pos;
 }
 
-// FIXME(shotgun): 80.0 %, missing/extra
+// FIXME(shotgun): 79.96 %, missing/extra; behaviour drift.
 // 0x800FD5E8
 bool cls_800FE3EC::fn_800FD5E8(u8 index) {
     u8 count = field_0x2;
