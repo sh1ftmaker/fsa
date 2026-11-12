@@ -63,8 +63,9 @@ cls_804ADF28::~cls_804ADF28() {
     }
 }
 
-// FIXME(shotgun): table lbl_804ADC38 (member function pointers, 0xC each) is not written yet.
-#ifdef NONMATCHING
+// Table lbl_804ADC38: member function pointers (0xC bytes each, 0x1B0 bytes in the original); contents not written yet.
+extern void (cls_804ADF28::*lbl_804ADC38[36])();
+
 void cls_804ADF28::fn_80365AF0() {
     if (field_0x230 == 0) {
         if (field_0x248 != 0) {
@@ -76,7 +77,6 @@ void cls_804ADF28::fn_80365AF0() {
         (this->*lbl_804ADC38[field_0x234])();
     }
 }
-#endif
 
 // Table lbl_804ADDE8: member function pointers (0xC bytes each, 0x140 bytes in the original); contents not written yet.
 extern void (cls_804ADF28::*lbl_804ADDE8[64])();

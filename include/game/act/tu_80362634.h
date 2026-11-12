@@ -61,7 +61,7 @@ public:
     void fn_803653EC();
     // 0x80363880 / 0x803653EC / 0x80365B5C / 0x80366E60: see the definitions.
     // 0x80365AF0: counts timers down, calls member function of table lbl_804ADC38[field_0x234].
-    void fn_80365AF0();
+    /* 0x14 */ virtual void fn_80365AF0();
     // 0x80362634: deletes the emitter.
     void fn_80362634();
     // 0x80362B14: draws the "fune.bti" image at mPos.
