@@ -98,7 +98,7 @@ public:
     /* 0x2C0 */ s32 field_0x2c0;
     /* 0x2C4 */ JGeometry::TVec2f field_0x2c4; // vfunc_0x54: set(mPos.x, mPos.y)
     /* 0x2CC */ s16 field_0x2cc;
-    /* 0x2CE */ s16 field_0x2ce;
+    /* 0x2CE */ u16 field_0x2ce;
     /* 0x2D0 */ s32 field_0x2d0;
 };
 
