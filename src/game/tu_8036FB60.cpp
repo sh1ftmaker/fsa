@@ -84,7 +84,7 @@ void cls_804AE4B0::init() {
 }
 
 // FIXME(shotgun): the original copies this table at run time from a constant one
-// (lbl_804AE390 -> lbl_804AE420, __sinit-style, fn_80372B00); here it is initialised.
+// (lbl_804AE390 -> lbl_804AE420, __sinit_tu_8036FB60_cpp); here it is initialised.
 static void (cls_804AE4B0::*lbl_804AE420[12])() = {
     &cls_804AE4B0::fn_803717CC, &cls_804AE4B0::fn_80371284, &cls_804AE4B0::fn_803711F0, &cls_804AE4B0::fn_8037100C,
     &cls_804AE4B0::fn_80370C84, &cls_804AE4B0::fn_80370C18, &cls_804AE4B0::fn_80370A7C, &cls_804AE4B0::fn_80370764,
