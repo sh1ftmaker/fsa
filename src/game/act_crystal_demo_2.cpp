@@ -15,6 +15,7 @@
 #include "game/SpriteAnim.h"
 #include "game/Unk_8045A080.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JUtility/JUTVideo.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JMath/JMath.h"
 
@@ -89,6 +90,8 @@ void cls_804AE088::update() {
     }
     (this->*lbl_804AE070[field_0x23c - 4])();
 }
+
+const char* lbl_8053A1C8 = "kk_black.bti";
 
 const s32 lbl_80474C48[8] = {0x199, 0x1E7, 0x17F, 0x201, 0x1CD, 0x1B3, 0x21B, 0x21B};
 
@@ -246,3 +249,37 @@ void cls_804AE088::fn_8036A894() {
     }
 }
 #pragma auto_inline reset
+
+void cls_804AE088::fn_80368198() {
+    if (field_0x270 != 0) {
+        if (field_0x274 < 0x80) {
+            field_0x290 -= 8.0f;
+        } else {
+            field_0x290 += 8.0f;
+        }
+        if (field_0x290 >= 255.0f) {
+            field_0x290 = 255.0f;
+        } else if (field_0x290 < 0.0f) {
+            field_0x290 = 0.0f;
+        }
+        if (field_0x314 == NULL) {
+            const ResTIMG* tex = (const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_8053A1C8);
+            field_0x314 = new J2DPicture(tex);
+        }
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x314->setBlackWhite(JUtility::TColor(0), JUtility::TColor(0xFFFFFFFF));
+        field_0x314->setAlpha((s32)field_0x290);
+        field_0x314->draw(0.0f, 0.0f, (s32)JUTVideo::getManager()->getRenderMode()->fbWidth,
+                          (s32)JUTVideo::getManager()->getRenderMode()->efbHeight, false, false, false);
+        if (field_0x274 == 0x80) {
+            field_0x234 = 0;
+            field_0x236 = 1;
+            field_0x24c = 1;
+            fn_8036A65C();
+        } else if (field_0x274 == 0) {
+            field_0x270 = 0;
+            vfunc_0x60(0x26);
+            fn_8011921C()->fn_801183BC();
+        }
+    }
+}
