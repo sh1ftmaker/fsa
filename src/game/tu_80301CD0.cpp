@@ -165,6 +165,7 @@ void fn_80308D0C() {
 // Builds the player's first GBA record: the kind, the four marks and the hidden sprites,
 // then the checksum.
 // 0x8030801C
+// FIXME: 64.78 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AA8B8::fn_8030801C(s32 player) {
     cls_804AA858Sub11C* record;
     if (lbl_8053AAF0->mState >= 4) {
@@ -736,7 +737,7 @@ bool fn_803049F0(s32 layer, s32 index) {
 }
 
 // 0x80303870
-// FIXME: 98.89 %, operands; behaviour drift.
+// FIXME: 98.91 %, regalloc-only; behaviour clean.
 void fn_80303870(s32 player) {
     char name[32];
     char name2[32];
@@ -824,6 +825,7 @@ void fn_8030361C() {
 
 // Draws one GBA sprite word on the map in the resource its kind selects, with a
 // scale (or rotation about y by `scale`) chosen by its flag bits.
+// FIXME: 94.75 %, missing/extra + reloc-name; behaviour drift.
 void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
     s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
     s32 y = sprite->f.field_0x1;
