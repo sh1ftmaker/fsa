@@ -705,7 +705,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
         crystal.mPos.x = scale;
         crystal.mPos.y = scale;
         crystal.mPos.z = scale;
-        PSMTXCopy(mtx, crystal.mMtx);
+        JMath::gekko_ps_copy12(crystal.mMtx, mtx);
         crystal.field_0x48 = -1.0f;
         crystal.field_0x4c = frame;
         crystal.field_0x54 = 0;
