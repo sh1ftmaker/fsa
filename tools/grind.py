@@ -48,8 +48,10 @@ small open functions this shares the class and header reading between them.
 Adversarial review: before a unit's kept changes are integrated, a separate reviewer session
 (sonnet for haiku and sonnet authors, opus for opus; --review-tier overrides) reads each diff
 against the original assembly and gives a verdict per change. It looks for what scripts can't see: statements that only move a metric, codegen
-steering, fakes, wrong facts, guesswork. A change without an explicit ACCEPT is dropped, its
-function moves up a tier and the reviewer's reason is given to the next attempt.
+steering, fakes, wrong facts, guesswork. Its first duty is to save honest work: where a change
+carries a trick next to real progress it repairs the source itself (verdict FIXED; the script
+keeps the repair if the unit still stands better than at its start). Only a change with nothing
+honest left is rejected; its function then moves up a tier and the reason goes to the next attempt.
 
 Integration branch `grind2` (worktree ../fsa-wt/g2). Workers never touch `matching`; `publish`
 fast-forwards it to grind2 after the full checks and pushes (owner's instruction 2026-11-12). Logs:
@@ -166,9 +168,12 @@ def head(wt):
     return sh(["git", "rev-parse", "HEAD"], wt, check=True).stdout.strip()
 
 
+LEDGER = "ledger.tsv"  # --ledger (experiments keep their rows out of the real history)
+
+
 def ledger_rows():
     try:
-        return [l.rstrip("\n").split("\t") for l in open(LOGS / "ledger.tsv")]
+        return [l.rstrip("\n").split("\t") for l in open(LOGS / LEDGER)]
     except OSError:
         return []
 
@@ -179,7 +184,7 @@ COLS = ["ts", "worker", "tier", "lane", "unit", "fn", "size", "pct0", "score0", 
 
 def log(row):
     LOGS.mkdir(parents=True, exist_ok=True)
-    with open(LOGS / "ledger.tsv", "a") as f:
+    with open(LOGS / LEDGER, "a") as f:
         fcntl.flock(f, fcntl.LOCK_EX)
         f.write("\t".join(str(x).replace("\t", " ").replace("\n", " ") for x in [now()] + row) + "\n")
 
@@ -297,13 +302,16 @@ def _build_queue(cache, force):
 LIBRARY = re.compile(r"^(JAS|JKR|JGeometry|JUtility|JMath|JGadget|J2D|J3D|JPA|JAI|JSU|JUT|JMessage|std)\w*(::|<)")
 
 
+ANY_TIER = False  # --any-tier (experiments): a worker takes functions whatever tier they are at
+
+
 def eligible(fns, unit, tier, lanes, lo, hi, hist):
     out = []
     for n, e in fns.items():
         lane = lane_of(e)
         if lane == "write" and LIBRARY.match(e.get("demangled", "")):
             continue
-        if lane in lanes and lo <= e["size"] <= hi and tier_index(e["size"], hist.get((unit, n), [])) == ORDER.index(tier):
+        if lane in lanes and lo <= e["size"] <= hi and (ANY_TIER or tier_index(e["size"], hist.get((unit, n), [])) == ORDER.index(tier)):
             out.append((LANES.index(lane), e["size"], n))
     return [n for _, _, n in sorted(out)]
 
@@ -987,7 +995,7 @@ def integrate(wt, branch, unit):
 # The reviewer is never weaker than the author and never below sonnet. (Pilot: an opus review of two sonnet
 # changes cost more than writing them; sonnet and haiku reviewers both caught a planted trick.)
 REVIEW_TIER = {"haiku": "sonnet", "sonnet": "sonnet", "opus": "opus"}
-REVIEW_SYSTEM = """You are the adversarial reviewer of a decompilation project: The Legend of Zelda: Four Swords Adventures (GameCube), C++ that Metrowerks GC/2.6 must compile back to the original code. The repository in your working directory is a private read-only copy with the changes applied.
+REVIEW_SYSTEM = """You are the adversarial reviewer of a decompilation project: The Legend of Zelda: Four Swords Adventures (GameCube), C++ that Metrowerks GC/2.6 must compile back to the original code. The repository in your working directory is a private copy with the changes applied.
 
 The authors are other models. Scripts reward them for two numbers: objdiff's match % and a behaviour fingerprint that counts a function's calls, constants, compares, field accesses, immediates and operations against the original. The scripts already proved that every change builds, that no function got worse and that some regex style rules hold. They cannot see intent. Assume each author may have gamed the numbers. You never saw the author's reasoning: judge only the diff against the original assembly.
 
@@ -1000,11 +1008,17 @@ REJECT a change that contains any of these:
 
 ACCEPT a change that is faithful and natural even when its function is still far from 100 %. Honest partial structure is the goal: a function at 60-80 % whose code follows the original is welcome. Do not reject for incompleteness, a low %, placeholder names (fn_, lbl_, cls_, field_0x), FIXME percentage lines (a script writes those) or style nits. Project conventions that are not tricks: a static or table without name evidence carries its lbl_<address> name, also as a function-local static; a placeholder function is renamed in config/G4SE01/symbols.txt to the mangled name the source emits; header inline accessors (getGameView_802D6A9C() and the like) where the original inlined them.
 
-The task text has each change's diff and the original assembly or where to find it. Look further only to settle a suspicion; useful read-only commands: grep, sed -n, `python3 tools/fingerprint.py <unit> '<function>'`, `python3 tools/try.py <unit> '<function>'`. You cannot edit.
+Your first duty is to save honest work, your second to keep trickery out. A change is thrown away only when there is no saving it. For each change decide:
+- ACCEPT: faithful and natural as it stands.
+- FIXED: it carries one of the problems above next to honest progress. Repair it yourself with Edit: take the trick out and put the natural form back, correct the wrong fact, undo only the offending lines, keep everything honest. Then run `python3 tools/try.py <unit> '<function>'` and `python3 tools/grind.py check`. The check compares the unit with its state before these changes and must not say REJECT; ending on a lower % than the author reached is fine.
+- REJECT: only when nothing honest is left once the trick is out, or the change is wrong at its core (guessed logic, a body pasted from elsewhere) and a few edits cannot repair it. Leave the files alone for a rejected change; the script removes it.
+
+The task text has each change's diff and the original assembly or where to find it. Look further only to settle a suspicion or to make a repair; useful: grep, sed -n, `python3 tools/fingerprint.py <unit> '<function>'`. Don't run git or ninja; edit nothing but what a repair needs.
 
 Finish with exactly one line per change and nothing after them:
 VERDICT <id> ACCEPT
-VERDICT <id> REJECT: <the trick or wrong fact, naming the line>"""
+VERDICT <id> FIXED: <what you took out or corrected>
+VERDICT <id> REJECT: <why it cannot be saved>"""
 
 
 def review_packet(wt, unit, changes):
@@ -1037,49 +1051,87 @@ def review_notes():
         return {}
 
 
+def rebuild(wt, base_head, keep):
+    """Reset the worker branch to its base and replay the changes in `keep`; returns those that applied."""
+    sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
+    out = []
+    for c in keep:
+        if sh(["git", "cherry-pick", "--allow-empty", c["sha"]], wt).returncode:
+            sh(["git", "cherry-pick", "--abort"], wt)
+            continue
+        out.append(dict(c, sha=head(wt)))
+    return out
+
+
 def run_review(wt, owner, unit, base_head, first, changes, args):
-    """Ask a reviewer (REVIEW_TIER of the strongest author) for a verdict per kept change, rebuild
-    the worker branch from the accepted ones and return those. A change without an explicit
-    ACCEPT is out."""
-    tier = REVIEW_TIER[max((c["tier"] for c in changes), key=ORDER.index)]
-    if args.review_tier:
-        tier = args.review_tier
+    """A reviewer session (REVIEW_TIER of the strongest author) gives each kept change a verdict:
+    ACCEPT, FIXED (it repaired the change in the source itself) or REJECT (nothing honest to save).
+    The script removes rejected changes, applies the reviewer's repairs if the unit still stands
+    better than at its start, and returns the changes that survive."""
+    tier = args.review_tier or REVIEW_TIER[max((c["tier"] for c in changes), key=ORDER.index)]
     tag = f"{datetime.datetime.now():%m%d-%H%M%S}_review-{tier}_{Path(unit).stem}"
-    s = run_session(wt, tier, REVIEW_SYSTEM, review_packet(wt, unit, changes), 6 + 4 * len(changes), 1800, tag,
-                    tools="Bash,Read")
-    revert(wt)  # a reviewer cannot edit; make sure nothing is left behind
+    (wt / "build/grind/task.json").write_text(json.dumps({"unit": unit, "fn": None, "addr": None, "base": first}))
+    s = run_session(wt, tier, REVIEW_SYSTEM, review_packet(wt, unit, changes), 10 + 6 * len(changes), 2700, tag,
+                    tools="Bash,Read,Edit")
+    discard_outside(wt)
+    fix = sh(["git", "diff", "--", "src", "include", "libs", "config"], wt).stdout
+    revert(wt)
     verdicts = {m.group(1): (m.group(2), m.group(3).strip()) for m in
-                re.finditer(r"^VERDICT[ \t]+(c\d+)[ \t]+(ACCEPT|REJECT)\b:?[ \t]*([^\n]*)$", s["text"], re.M)}
-    good = [c for c in changes if verdicts.get(c["id"], ("", ""))[0] == "ACCEPT"]
-    bad = [c for c in changes if c not in good]
+                re.finditer(r"^VERDICT[ \t]+(c\d+)[ \t]+(ACCEPT|FIXED|REJECT)\b:?[ \t]*([^\n]*)$", s["text"], re.M)}
+    verdict = lambda c: verdicts.get(c["id"], ("REJECT", "no verdict from the reviewer"))
     notes = review_notes()
-    for c in bad:
-        why = verdicts.get(c["id"], ("", "no verdict from the reviewer"))[1] or "rejected in review"
+
+    def out(c, why):
         for fn in c["fns"] or [c["fn"]]:
             notes[f"{unit}\t{fn}"] = why[:400]
         log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "TRICK", why] + [""] * 7)
-    if bad:
-        (LOGS / "review_notes.json").write_text(json.dumps(notes, indent=1))
-        sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
-        kept = []
+
+    good = [c for c in changes if verdict(c)[0] in ("ACCEPT", "FIXED")]
+    for c in changes:
+        if c not in good:
+            out(c, verdict(c)[1] or "rejected in review")
+    fixed = [c for c in good if verdict(c)[0] == "FIXED"]
+    if len(good) < len(changes):
+        kept = rebuild(wt, base_head, good)
         for c in good:
-            if sh(["git", "cherry-pick", "--allow-empty", c["sha"]], wt).returncode:
-                sh(["git", "cherry-pick", "--abort"], wt)
-                log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "TRICK",
-                     "built on a change the reviewer rejected"] + [""] * 7)
-                continue
-            kept.append(dict(c, sha=head(wt)))
+            if c["id"] not in {k["id"] for k in kept}:
+                out(c, "built on a change the reviewer rejected")
         good = kept
-        if good:  # the surviving changes must still stand on their own
-            sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
-            ev = evaluate(wt, unit)
-            old, new = by_addr(first), by_addr(ev) if ev else {}
-            if not ev or any(old[a]["pct"] >= 100 > new.get(a, {"pct": 0})["pct"] or new.get(a, {"score": MISSING * 2})["score"] > old[a]["score"]
-                             for a in old):
-                sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
-                good = []
+        fixed = [c for c in good if verdict(c)[0] == "FIXED"]
+    nfixed = 0
+    if fixed:
+        why = "the reviewer said FIXED but changed nothing" if not fix.strip() else None
+        if why is None:
+            r = subprocess.run(["git", "apply", "--3way", "--whitespace=nowarn", "-"], cwd=wt, input=fix, capture_output=True, text=True)
+            sh(["git", "reset", "-q"], wt)
+            why = "the reviewer's repair no longer applies once the rejected changes are out" if r.returncode else None
+        if why is None:
+            why, _, _ = judge(wt, unit, first, None)
+            why = f"the reviewer's repair fails the checks ({why})" if why else None
+        if why is None:
+            sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
+                "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
+            what = "; ".join(f"{c['fn'].split('__')[0] or c['fn']}: {verdict(c)[1]}" for c in fixed)[:600]
+            sh(["git", "commit", "-qm", f"{unit[:-4]}: repaired in review\n\n{what}\n\n"
+                f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+            nfixed = len(fixed)
+            for c in fixed:
+                log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "FIXED", verdict(c)[1]] + [""] * 7)
+        else:  # without the repair these changes still carry what the reviewer objected to
+            revert(wt)
+            for c in fixed:
+                out(c, f"{verdict(c)[1]} ({why})")
+            good = rebuild(wt, base_head, [c for c in good if c not in fixed])
+    if good and len(good) < len(changes):  # what survives must still stand on its own
+        sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+        ev = evaluate(wt, unit)
+        old, new = by_addr(first), by_addr(ev) if ev else {}
+        if not ev or any(old[a]["pct"] >= 100 > new.get(a, {"pct": 0})["pct"] for a in old):
+            sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
+            good = []
+    (LOGS / "review_notes.json").write_text(json.dumps(notes, indent=1))
     log([owner, tier, "review", unit, "-", "-", "-", "-", "-", "-", "REVIEW",
-         f"{len(good)} accepted, {len(changes) - len(good)} rejected"] + stats_of(s))
+         f"{len(good) - nfixed} accepted, {nfixed} fixed, {len(changes) - len(good)} rejected"] + stats_of(s))
     return good
 
 
@@ -1153,6 +1205,8 @@ def stamp_commit(wt, unit):
 
 
 def cmd_worker(args):
+    global ANY_TIER, LEDGER
+    ANY_TIER, LEDGER = args.any_tier, args.ledger
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
     owner, tier = f"g2-w{args.n}", args.tier
     wt, branch = WT / owner, f"{BRANCH}-w{args.n}"
@@ -1163,7 +1217,12 @@ def cmd_worker(args):
     (LOGS / "pids").mkdir(parents=True, exist_ok=True)
     (LOGS / "pids" / f"{owner}.pid").write_text(str(os.getpid()))
     more = lambda: not (LOGS / "STOP").exists() and (not args.sessions or done < args.sessions)
+    loaded = Path(__file__).stat().st_mtime
     while more():
+        if Path(__file__).stat().st_mtime != loaded and not args.sessions:
+            with open(LOGS / "merge.lock", "a") as lock:  # tools changed: run the new code from this unit on
+                fcntl.flock(lock, fcntl.LOCK_SH)
+                os.execv(sys.executable, [sys.executable] + sys.argv)
         if args.usage_stop and done and done % 10 == 0:
             u = usage()
             if u is not None and u >= args.usage_stop:
@@ -1186,7 +1245,7 @@ def cmd_worker(args):
             if el:  # units with unwritten code first (most bytes), then the ones with most open functions
                 wb = sum(fns[n]["size"] for n in el if lane_of(fns[n]) == "write")
                 pool.append((-wb, -len(el), unit))
-        unit = next((u for *_, u in sorted(pool) if claim(u, owner, wt)), None)
+        unit = next((u for *_, u in sorted(pool) if args.dry or claim(u, owner, wt)), None)
         if unit is None:
             notify("FSA grind", f"{owner} ({tier}, {args.mode}): nothing left in its lanes")
             return
@@ -1224,7 +1283,10 @@ def cmd_worker(args):
                 changes = run_review(wt, owner, unit, base_head, first, changes, args)
             if changes:
                 stamp_commit(wt, unit)
-            result = integrate(wt, branch, unit) if changes else "nothing kept"
+            if args.dry:
+                result = f"dry: {len(changes)} change(s) left on {branch}"
+            else:
+                result = integrate(wt, branch, unit) if changes else "nothing kept"
             if result == "merge conflict":
                 if sh(["git", "rebase", BRANCH], wt).returncode == 0:
                     result = integrate(wt, branch, unit) + " (rebased)"
@@ -1235,7 +1297,8 @@ def cmd_worker(args):
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "ERROR", str(ex)[:300]] + [""] * 7)
             revert(wt)
         finally:
-            sh(["python3", "tools/claim.py", "release", unit], MAIN)
+            if not args.dry:
+                sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
 def cmd_rejudge(args):
@@ -1453,8 +1516,9 @@ def cmd_status(_):
     if rev:
         acc = sum(int(re.match(r"(\d+) accepted", r["why"]).group(1)) for r in rev)
         rej = sum(int(re.search(r"(\d+) rejected", r["why"]).group(1)) for r in rev)
-        print(f"review: {len(rev)} sessions, {acc} changes accepted, {rej} rejected ({len(tricked)} functions sent back), "
-              f"cost {sum(num(r, 'cost') for r in rev):.2f}")
+        fx = sum(int(m.group(1)) for r in rev for m in [re.search(r"(\d+) fixed", r["why"])] if m)
+        print(f"review: {len(rev)} sessions, {acc} changes accepted, {fx} repaired by the reviewer, {rej} rejected "
+              f"({len(tricked)} functions sent back), cost {sum(num(r, 'cost') for r in rev):.2f}")
         for r in rows:
             if r["verdict"] == "TRICK":
                 print(f"  reviewer rejected {r['unit']} {r['fn'].split('__')[0]}: {r['why'][:150]}")
@@ -1509,6 +1573,9 @@ def main():
     p.add_argument("--unit", help="only this unit (game/X.cpp)")
     p.add_argument("--effort", choices=["low", "medium", "high"])
     p.add_argument("--no-review", action="store_true", help="skip the adversarial review (never for work that will be merged)")
+    p.add_argument("--dry", action="store_true", help="experiment: no claim, no integration; the result stays on the worker branch")
+    p.add_argument("--any-tier", action="store_true", help="experiment: take functions whatever tier they are at")
+    p.add_argument("--ledger", default="ledger.tsv", help="experiment: log to this file in g2-logs instead")
     p.add_argument("--review-tier", choices=ORDER, help="reviewer model (default: one tier above the author)")
     p.add_argument("--usage-stop", type=float, default=0.85, help="stop all workers at this weekly utilization (0 = off)")
     p.set_defaults(fn=cmd_worker)
