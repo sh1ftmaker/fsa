@@ -35,7 +35,7 @@ static const GXTlut lbl_8046F940[16] = {
 // after the floats of fn_802F5040), and the two white ones are separate.
 static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
 static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0
-static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10 (not written yet), TEVREG0
+static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
 // The draw offset of a sprite with params at pos: field_0x1c / field_0x1d
@@ -834,6 +834,202 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
         fn_8013B004(&fill, &color);
     }
     gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(true);
+}
+
+// Draws the panel tile grid field_0x48[layer] (2 x 2 blocks of 16 x 16) scrolled
+// by (x, y): only the 8-unit rows on screen (and, without offsets, the columns),
+// one palette at a time of field_0x18[1] (layers 0 / 8 or flag) or
+// field_0x18[2], tinted grey / alpha unless both are 0xFF. With offsets, each
+// 8-line row is shifted by the average of its screen lines' offsets, wrapped by
+// 512 when the whole row is off one side.
+// Still differs: ours hoists 8.0f + py out of the corner loops (one more FPR, f29),
+// the shift loop's line index is not one induction variable, count-loop scheduling.
+void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets) {
+    static const GXTlut lbl_8046FA30[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    if (x > 0x180) {
+        x -= 0x200;
+    }
+    if (y > 0x180) {
+        y -= 0x200;
+    }
+    f32 originX = -x;
+    f32 originY = -y;
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_INDEX16);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetArray(GX_VA_TEX0, field_0x110, sizeof(JGeometry::TVec2f));
+    if (grey == 0xFF && alpha == 0xFF) {
+        GXSetTevColor(GX_TEVREG0, lbl_805414F0);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_TEXC);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_TEXA, GX_CA_A0, GX_CA_KONST, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_COMP_A8_GT, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    } else {
+        GXColor color = {grey, grey, grey, alpha};
+        GXSetTevColor(GX_TEVREG0, color);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_C0, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetNumTevStages(2);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_SRCALPHA, GX_LO_NOOP);
+    }
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetCullMode(GX_CULL_NONE);
+    u16* grid = field_0x48[layer];
+    s32 set;
+    if ((layer & 7) == 0 || flag != 0) {
+        set = 1;
+    } else {
+        set = 2;
+    }
+    GXTlutObj tluts[16];
+    for (int i = 0; i < 16; i++) {
+        GXInitTlutObj(&tluts[i], field_0x18[set] + i * 0x20, GX_TL_RGB5A3, 16);
+        GXLoadTlut(&tluts[i], lbl_8046FA30[i]);
+    }
+    s32 counts[16];
+    for (int i = 0; i < 16; i++) {
+        counts[i] = 0;
+    }
+    for (int by = 0; by < 2; by++) {
+        for (int bx = 0; bx < 2; bx++) {
+            s32 block = by * 2 + bx;
+            for (int ty = 0; ty < 16; ty++) {
+                s32 dy = (by * 32 + ty * 2) * 8 - y;
+                if (dy <= -16 || dy >= 0xA0) {
+                    continue;
+                }
+                for (int tx = 0; tx < 16; tx++) {
+                    s32 dx = (bx * 32 + tx * 2) * 8 - x;
+                    if (offsets == NULL && (dx <= -16 || dx >= 0xF0)) {
+                        continue;
+                    }
+                    u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                    if (tile != 0) {
+                        for (int k = 0; k < 4; k++) {
+                            counts[(field_0x24[tile * 4 + k] >> 12) & 0xF]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    GXTexObj tex;
+    for (int palette = 0; palette < 16; palette++) {
+        if (counts[palette] <= 0) {
+            continue;
+        }
+        GXInitTexObjCI(&tex, field_0x4[1], 0x80, 0x200, GX_TF_C4, GX_CLAMP, GX_CLAMP, GX_FALSE,
+                       lbl_8046FA30[palette]);
+        GXLoadTexObj(&tex, GX_TEXMAP0);
+        GXBegin(GX_QUADS, GX_VTXFMT0, counts[palette] * 4);
+        for (int by = 0; by < 2; by++) {
+            for (int bx = 0; bx < 2; bx++) {
+                s32 block = by * 2 + bx;
+                for (int ty = 0; ty < 16; ty++) {
+                    s32 dy = (by * 32 + ty * 2) * 8 - y;
+                    if (dy <= -16 || dy >= 0xA0) {
+                        continue;
+                    }
+                    if (offsets != NULL) {
+                        f32 shifts[3];
+                        for (int j = 0; j < 3; j++) {
+                            shifts[j] = 0.0f;
+                            for (int k = 0; k < 8; k++) {
+                                s32 line = dy + j * 8 + k;
+                                s32 clamped;
+                                if (line < 0) {
+                                    clamped = 0;
+                                } else if (line > 0x9F) {
+                                    clamped = 0x9F;
+                                } else {
+                                    clamped = line;
+                                }
+                                shifts[j] -= offsets[clamped];
+                            }
+                            shifts[j] *= 0.125f;
+                        }
+                        for (int tx = 0; tx < 16; tx++) {
+                            u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            f32 px = originX + (bx * 32 + tx * 2) * 8;
+                            if (px + shifts[0] < -16.0f && px + shifts[1] < -16.0f && px + shifts[2] < -16.0f) {
+                                px += 512.0f;
+                            } else if (px + shifts[0] > 240.0f && px + shifts[1] > 240.0f &&
+                                       px + shifts[2] > 240.0f) {
+                                px -= 512.0f;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                f32 py = originY + (by * 32 + ty * 2 + j) * 8;
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    u16 corner = entry & 0xFFF;
+                                    f32 left = px + i * 8;
+                                    GXPosition3f32(left + shifts[j], py, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + left + shifts[j], py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + left + shifts[j + 1], 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(left + shifts[j + 1], 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
+                            }
+                        }
+                    } else {
+                        for (int tx = 0; tx < 16; tx++) {
+                            s32 dx = (bx * 32 + tx * 2) * 8 - x;
+                            if (dx <= -16 || dx >= 0xF0) {
+                                continue;
+                            }
+                            u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                f32 py = originY + (by * 32 + ty * 2 + j) * 8;
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    u16 corner = entry & 0xFFF;
+                                    f32 left = originX + (bx * 32 + tx * 2 + i) * 8;
+                                    GXPosition3f32(left, py, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + left, py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + left, 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(left, 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GXEnd();
+    }
 }
 
 // FIXME: 98.1. Register allocation, stack slots and data offsets only (try.py

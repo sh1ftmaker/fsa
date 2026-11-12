@@ -357,7 +357,7 @@ public:
     // field_0x230 is that player or -1 (all); clears field_0xbf98. Called by
     // GameRoot2_8049F108::fn_8013B538 / fn_8013B618 with field_0x20.
     void fn_802FF0EC();
-    // 0x802FAC10 (not written yet; 99.2 attempt differed in opcodes): draws the panel tile grid field_0x48[layer] (2 x 2 blocks of
+    // 0x802FAC10: draws the panel tile grid field_0x48[layer] (2 x 2 blocks of
     // 16 x 16, field_0x4[1]'s colour-index texture, palette set field_0x18[1]
     // for layers 0 / 8 or a nonzero flag, else field_0x18[2]) scrolled by (x, y),
     // tinted grey / alpha unless both are 0xFF; offsets (or NULL): a shift per
