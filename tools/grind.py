@@ -11,7 +11,7 @@
   python3 tools/grind.py status                    # sessions, accept rate, tokens per tier
   python3 tools/grind.py watch --stop 0.10         # stop everything at this weekly utilization
   python3 tools/grind.py publish [--every N]       # reviewed grind2 work -> matching: verify, site data, push
-  touch ../fsa-wt/g2-logs/STOP                     # workers finish their session and exit
+  touch ../fsa-wt/g2-logs/HALT                     # workers finish their session and exit
 
 What changed from the first grinder (branch `grind`), each from its logs:
   * 33k tokens of fixed context per turn -> about 7k: sessions run with their own short
@@ -84,6 +84,7 @@ WT = MAIN.parent / "fsa-wt"
 INTEG = WT / "g2"
 LOGS = WT / "g2-logs"
 BRANCH = "grind2"
+HALT = LOGS / "HALT"  # workers finish their session and exit (the watchdog sets it; or touch it by hand)
 TIERS = {"haiku": ("claude-haiku-5-5", "Claude Haiku 5.5"),
          "sonnet": ("claude-sonnet-5-5", "Claude Sonnet 5.5"),
          "opus": ("claude-opus-5-5", "Claude Opus 5.5")}
@@ -1215,8 +1216,9 @@ def cmd_worker(args):
         sys.exit(f"{wt} missing: run `python3 tools/grind.py setup --workers {args.n}`")
     done, skip = 0, set()
     (LOGS / "pids").mkdir(parents=True, exist_ok=True)
-    (LOGS / "pids" / f"{owner}.pid").write_text(str(os.getpid()))
-    more = lambda: not (LOGS / "STOP").exists() and (not args.sessions or done < args.sessions)
+    if not args.ignore_stop:  # the watchdog's hard stop goes by these
+        (LOGS / "pids" / f"{owner}.pid").write_text(str(os.getpid()))
+    more = lambda: (args.ignore_stop or not HALT.exists()) and (not args.sessions or done < args.sessions)
     loaded = Path(__file__).stat().st_mtime
     while more():
         if Path(__file__).stat().st_mtime != loaded and not args.sessions:
@@ -1226,7 +1228,7 @@ def cmd_worker(args):
         if args.usage_stop and done and done % 10 == 0:
             u = usage()
             if u is not None and u >= args.usage_stop:
-                (LOGS / "STOP").touch()
+                HALT.touch()
                 notify("FSA grind stopping", f"{owner}: weekly usage {u:.0%}")
                 return
         q, hist = build_queue(), history()
@@ -1457,8 +1459,9 @@ def cmd_publish(args):
 # ---------------------------------------------------------------- usage watchdog
 
 def cmd_watch(args):
-    """Poll the weekly utilization. One point below --stop: STOP file (workers finish their session
-    and exit). At --stop: SIGTERM to every worker (a running session is cut off; nothing of it is kept)."""
+    """Poll the weekly utilization. One point below --stop: HALT file (workers finish their session
+    and exit). At --stop: SIGTERM to every worker with a pid file (a running session is cut off; nothing
+    of it is kept). Runs started with --ignore-stop are left alone."""
     LOGS.mkdir(parents=True, exist_ok=True)
     soft = args.stop - 0.01
     while True:
@@ -1473,7 +1476,7 @@ def cmd_watch(args):
             except (OSError, ValueError):
                 pf.unlink(missing_ok=True)
         if u is not None and u >= args.stop:
-            (LOGS / "STOP").touch()
+            HALT.touch()
             for pf in alive:
                 try:
                     os.kill(int(pf.read_text()), signal.SIGTERM)
@@ -1481,10 +1484,10 @@ def cmd_watch(args):
                     pass
             notify("FSA grind: hard stop", f"weekly usage {u:.0%} (limit {args.stop:.0%})")
             return
-        if u is not None and u >= soft and not (LOGS / "STOP").exists():
-            (LOGS / "STOP").touch()
+        if u is not None and u >= soft and not HALT.exists():
+            HALT.touch()
             notify("FSA grind: stopping", f"weekly usage {u:.0%}; workers finish their session")
-        if (LOGS / "STOP").exists() and not alive:
+        if HALT.exists() and not alive:
             notify("FSA grind stopped", f"weekly usage {u if u is None else format(u, '.0%')}")
             return
         time.sleep(args.every)
@@ -1575,6 +1578,7 @@ def main():
     p.add_argument("--no-review", action="store_true", help="skip the adversarial review (never for work that will be merged)")
     p.add_argument("--dry", action="store_true", help="experiment: no claim, no integration; the result stays on the worker branch")
     p.add_argument("--start", help="experiment: start the unit from this commit instead of grind2 (with --dry)")
+    p.add_argument("--ignore-stop", action="store_true", help="run to the end whatever the usage watchdog says (owner-approved runs only)")
     p.add_argument("--any-tier", action="store_true", help="experiment: take functions whatever tier they are at")
     p.add_argument("--ledger", default="ledger.tsv", help="experiment: log to this file in g2-logs instead")
     p.add_argument("--review-tier", choices=ORDER, help="reviewer model (default: one tier above the author)")
