@@ -228,8 +228,9 @@ bool cls_80215E48::fn_80215C6C(s32 index) {
         u8 centis = lbl_8050EC80.getCurrentFile().field_0x58;
         if (seconds == 0 && centis == 0) {
             result = true;
-        } else if (mEntries[index].mWatch.mSeconds < seconds ||
-                   (mEntries[index].mWatch.mSeconds == seconds && mEntries[index].mWatch.mCentis < centis)) {
+        } else if (mEntries[index].mWatch.mSeconds < seconds) {
+            result = true;
+        } else if (mEntries[index].mWatch.mSeconds == seconds && mEntries[index].mWatch.mCentis < centis) {
             result = true;
         }
     }
