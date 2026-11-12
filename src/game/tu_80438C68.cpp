@@ -120,7 +120,7 @@ void cls_804B17A0::fn_80439AB0() {
 void cls_804B17A0::fn_804399A0() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x34->setAlpha((u8)field_0x50);
-    field_0x34->draw(0.0f, 0.0f, 640.0f, 480.0f, false, false, false);
+    field_0x34->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
     field_0x8->mCurrentFrame = field_0x3c;
     field_0x4->search('Ndata01')->animationTransform();
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
