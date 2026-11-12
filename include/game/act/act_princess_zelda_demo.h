@@ -22,6 +22,7 @@ public:
     /* 0x10 */ virtual void vfunc_0x10();
     /* 0x14 */ virtual void update();
     /* 0x20 */ virtual void draw();
+    /* 0x54 */ virtual void vfunc_0x54();
     /* 0x58 */ virtual s32 vfunc_0x58();
 
     void fn_8010E2D4(s32 arg);
@@ -31,7 +32,6 @@ public:
     void fn_8010F7EC(s32 arg);
     void fn_8010F4DC();
     void fn_8010F9F0();
-    void fn_8010FA8C();
     void fn_8011093C();
     void fn_80110454();
     void fn_80110210();

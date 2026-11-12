@@ -462,10 +462,7 @@ void PrincessZeldaDemo_8049D208::draw() {
 
 // Starts the demo scene for the GameView scenario `key` (fn_8011921C()'s field_0x8): maps it to the
 // scene's first state, per demo variant (field_0x234) and chapter (field_0x4).
-// FIXME(shotgun): 98 %, missing/extra (wrapped: compiled, it inlines fn_8010F478 (the original calls it out of line) and
-// a not-inlined pragma would stop init from inlining it, dropping init from 98.6 % to 82 %)
-#ifdef NONMATCHING
-void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
+void PrincessZeldaDemo_8049D208::vfunc_0x54() {
     s32 key = fn_8011921C()->field_0x8;
     switch (field_0x234) {
     case 0:
@@ -549,6 +546,29 @@ void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
         break;
     case 2:
         switch (fn_8011921C()->field_0x4) {
+        case 0xF:
+            if (key == lbl_80464550[38]) {
+                fn_8010F478(0x26);
+            } else if (key == lbl_80464550[39]) {
+                fn_8010F478(0x27);
+            } else if (key == lbl_80464550[40]) {
+                fn_8010F478(0x28);
+            } else if (key == lbl_80464550[41]) {
+                fn_8010F478(0x29);
+            } else if (key == lbl_80464550[42]) {
+                fn_8010F478(0x2A);
+            } else if (key == lbl_80464550[43]) {
+                fn_8010F478(0x2B);
+            } else if (key == lbl_80464550[44]) {
+                fn_8010F478(0x2C);
+            } else if (key == lbl_80464550[45]) {
+                fn_8010F478(0x2D);
+            } else if (key == lbl_80464550[46]) {
+                fn_8010F478(0x2E);
+            } else if (key == lbl_80464550[47]) {
+                fn_8010F478(0x2F);
+            }
+            break;
         case 0xD:
             if (key == lbl_80464550[48]) {
                 fn_8010F478(0x30);
@@ -578,34 +598,10 @@ void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
                 fn_8010F478(0x3D);
             }
             break;
-        case 0xF:
-            if (key == lbl_80464550[38]) {
-                fn_8010F478(0x26);
-            } else if (key == lbl_80464550[39]) {
-                fn_8010F478(0x27);
-            } else if (key == lbl_80464550[40]) {
-                fn_8010F478(0x28);
-            } else if (key == lbl_80464550[41]) {
-                fn_8010F478(0x29);
-            } else if (key == lbl_80464550[42]) {
-                fn_8010F478(0x2A);
-            } else if (key == lbl_80464550[43]) {
-                fn_8010F478(0x2B);
-            } else if (key == lbl_80464550[44]) {
-                fn_8010F478(0x2C);
-            } else if (key == lbl_80464550[45]) {
-                fn_8010F478(0x2D);
-            } else if (key == lbl_80464550[46]) {
-                fn_8010F478(0x2E);
-            } else if (key == lbl_80464550[47]) {
-                fn_8010F478(0x2F);
-            }
-            break;
         }
         break;
     }
 }
-#endif
 
 s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
@@ -719,6 +715,8 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
 
 #pragma auto_inline reset
 
+// Not auto-inlined: vfunc_0x54 calls fn_8010F478 out of line in the original.
+#pragma auto_inline off
 // FIXME(shotgun): 94.40 %, missing/extra + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     switch (field_0x234) {
@@ -732,6 +730,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     }
     field_0x238 = arg;
 }
+#pragma auto_inline reset
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
