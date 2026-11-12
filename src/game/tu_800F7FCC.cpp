@@ -550,8 +550,8 @@ void cls_8049C718::fn_800FBA14() {
         }
     }
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
     if (field_0x3c.z > -0.5f) {
@@ -594,8 +594,8 @@ void cls_8049C718::fn_800FBA14() {
 // FIXME(shotgun): 86.57 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB6E0(bool first) {
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
     if (player != -1 && dist < 50.0f) {
@@ -606,8 +606,10 @@ void cls_8049C718::fn_800FB6E0(bool first) {
         } else {
             ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[0]);
             ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
-            JGeometry::TVec3f da = mPos - a->mPos;
-            JGeometry::TVec3f db = mPos - b->mPos;
+            JGeometry::TVec3f da = mPos;
+            da.sub(a->mPos);
+            JGeometry::TVec3f db = mPos;
+            db.sub(b->mPos);
             if (PSVECMag((Vec*)&da) < PSVECMag((Vec*)&db)) {
                 angle = (s32)(JMath::atanTable_.atan2_(-da.x, -da.y) * 10430.378f);
             } else {
