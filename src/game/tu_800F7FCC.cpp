@@ -556,17 +556,14 @@ void cls_8049C718::fn_800FBA14() {
         mFlags |= 0x10;
     }
     field_0x3c.z -= 0.1f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos += field_0x3c;
     if (mPos.z <= 0.0f) {
         if (mFlags & 8) {
             field_0x257 = 0;
             fn_800FB6E0(false);
         } else {
-            f32 v = (f32)field_0x257;
-            field_0x3c.x = v;
-            field_0x3c.y = -1.0f * v;
+            field_0x3c.x = field_0x257;
+            field_0x3c.y = -1.0f * field_0x257;
             field_0x3c.z = 0.0f;
             mPos.z = 0.0f;
             mState = 5;
