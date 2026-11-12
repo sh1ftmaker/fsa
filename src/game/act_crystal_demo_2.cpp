@@ -6,6 +6,8 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
+#include "game/GameRootSub20.h"
+#include "game/RotMatrix.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/act/tu_801F9484.h"
@@ -20,7 +22,7 @@
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
 // declared: nothing compiled here reads them yet.
 // FIXME(shotgun): not written: init, vfunc_0x60 (jumptable_804AE184),
-// fn_8036AC58, fn_8036AA60, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
+// fn_8036AC58, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
 // fn_80368CD8 (jumptable_804AE0EC), fn_80368660, fn_803683AC, fn_80368198.
 
 // Functions are listed in descending address order (highest first, lowest last).
@@ -160,6 +162,55 @@ s32 cls_804AE088::vfunc_0x5C() {
     if (s == 0x11 || s == 0x26)
         return 1;
     return 0;
+}
+
+// Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
+extern const s32 lbl_80474C68[120];
+
+// FIXME: 75.8 %, the original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
+void cls_804AE088::fn_8036AA60() {
+    Mtx mtx;
+    PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
+    JGeometry::TVec3f axisX(1.0f, 0.0f, 0.0f);
+    fn_8010F668(mtx, &axisX, 0.08726646f);
+    Mtx rot;
+    for (s32 i = 0; i < 3; i++) {
+        for (s32 j = 0; j < 4; j++) {
+            rot[i][j] = 0.0f;
+        }
+    }
+    JGeometry::TVec3f axisZ(0.0f, 0.0f, 1.0f);
+    fn_8010F668(rot, &axisZ, field_0x280);
+    PSMTXConcat(mtx, rot, mtx);
+    if (field_0x238 != 0) {
+        field_0x254++;
+    }
+    switch (field_0x244) {
+    case 0:
+    case 2:
+        if (field_0x254 >= lbl_80474C68[12 + field_0x244]) {
+            field_0x254 = lbl_80474C68[9 + field_0x244];
+        }
+        break;
+    case 1:
+        if (field_0x254 >= lbl_80474C68[13]) {
+            field_0x244 = 2;
+        }
+        break;
+    }
+    s32 frame = field_0x254;
+    GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[lbl_80474C68[23 + field_0x23c]];
+    if (crystal.mModel != NULL && crystal.mActive == 0) {
+        crystal.mActive = 1;
+        crystal.mPos.x = 0.5f;
+        crystal.mPos.y = 0.5f;
+        crystal.mPos.z = 0.5f;
+        PSMTXCopy(mtx, crystal.mMtx);
+        crystal.field_0x48 = -1.0f;
+        crystal.field_0x4c = frame;
+        crystal.field_0x54 = 0;
+        crystal.field_0x58 = 2;
+    }
 }
 
 // Not auto-inlined: draw calls fn_8036A894 out of line in the original (docs/INLINING.md, pragma rule 1).
