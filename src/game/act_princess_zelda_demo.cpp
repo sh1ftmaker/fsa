@@ -412,9 +412,6 @@ void PrincessZeldaDemo_8049D208::fn_80110210() {
         camBox(mPos.x, y - field_0x274, field_0x274 + y);
         break;
     }
-    case 0x2F:
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-        break;
     case 0x30:
     case 0x31:
     case 0x32:
@@ -444,6 +441,9 @@ void PrincessZeldaDemo_8049D208::fn_80110210() {
         camBox(p.x, p.y - field_0x274, p.y + field_0x274);
         break;
     }
+    case 0x2F:
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        break;
     }
 }
 
