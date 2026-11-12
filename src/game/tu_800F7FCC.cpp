@@ -706,9 +706,7 @@ void cls_8049C718::fn_800FB32C() {
 // FIXME(shotgun): 85.51 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB070() {
     field_0x3c.z -= 0.3f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos.add(field_0x3c);
     if (mPos.z <= 0.0f) {
         mPos.z = 0.0f;
         field_0x3c.z = 0.0f;
@@ -721,8 +719,9 @@ void cls_8049C718::fn_800FB070() {
     } else {
         field_0xb0 = 4;
     }
-    mBox.set(-26.0f * mScale, -50.0f * mScale, 26.0f * mScale, 0.0f);
-    field_0x80.set(-26.0f * mScale, -50.0f * mScale, 26.0f * mScale, 0.0f);
+    f32 scale = mScale;
+    mBox.set(-26.0f * scale, -50.0f * scale, 26.0f * scale, 0.0f);
+    field_0x80.set(-26.0f * scale, -50.0f * scale, 26.0f * scale, 0.0f);
     if (mWobble != 0) {
         mWobble += 0x2000;
         if (mWobble > 0x10000) {
