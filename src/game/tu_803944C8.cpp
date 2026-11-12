@@ -2680,18 +2680,18 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
 // FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395480(J2DPane* pane) {
-    s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
-    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
-    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
-    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
-    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    s32 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
+    s32 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s32 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s32 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s32 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
     field_0x194++;
     if (pane->getAlpha() < field_0x1a4) {
         if (field_0x194 == 10) {
             field_0x194 = 0;
             pane->setAlpha(field_0x1a4);
         } else {
-            pane->setAlpha((s32)(field_0x1a4 * ((f32)field_0x194 / 10.0f)));
+            pane->setAlpha(field_0x1a4 * ((f32)field_0x194 / 10.0f));
         }
         return;
     }
