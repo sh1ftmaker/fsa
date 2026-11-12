@@ -48,9 +48,9 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 <!-- progress:start -->
 As of 2026-11-12:
 
-- **Structural progress: 63.76 %** (2,832,190 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
+- **Structural progress: 63.77 %** (2,832,619 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
 - **Matched code: 46.11 %** (2,048,220 of 4,442,032 bytes), **9,456 / 11,557** functions fully matched.
-- **Structurally matched:** 10,173 / 11,557 functions (same instructions, register or order differences only), +287 close.
+- **Structurally matched:** 10,174 / 11,557 functions (same instructions, register or order differences only), +287 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -153,7 +153,7 @@ Of 3,573,784 bytes of game code: **55.3 %** structural progress, **33.6 %** matc
 | [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 94.6 % | 59.4 % of 407,528 bytes | 934 / 1,054 | 0 / 10 | – |
 | [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 44.3 % | 28.5 % of 679,252 bytes | 857 / 1,339 | 29 / 139 | 54 |
 | [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 48.5 % | 29.6 % of 291,360 bytes | 372 / 594 | 10 / 54 | 17 |
-| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 48.3 % | 31.7 % of 900,452 bytes | 993 / 1,518 | 68 / 229 | 56 |
+| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 48.4 % | 31.7 % of 900,452 bytes | 993 / 1,518 | 68 / 229 | 56 |
 | [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 39.0 % | 15.9 % of 182,272 bytes | 160 / 311 | 0 / 10 | 2 |
 | [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 55.0 % | 26.1 % of 801,744 bytes | 506 / 872 | 8 / 47 | 11 |
 | [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 71.6 % | 53.6 % of 198,580 bytes | 643 / 773 | 4 / 24 | 7 |
