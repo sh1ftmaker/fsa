@@ -524,14 +524,11 @@ void ShadowLink2_804A43E8::fn_801C7F98() {
     }
 }
 
-// FIXME(shotgun): 89 %, missing/extra
 void ShadowLink2_804A43E8::fn_801C7EE4() {
     if (!(mFlags & 0x2000000)) {
         if (field_0x358.fn_80214244()->fn_800FD548(0xFF)) {
-            s32 layer = field_0x4;
-            if (viewLayerFlag(layer) && __fabs(mPos.z - field_0x32c.z) > 1.0f) {
-                mFlags |= 0x400000;
-            } else if (fn_801CF888((const JGeometry::TVec2f*)&mPos, &field_0x32c, field_0x4)) {
+            if ((viewLayerFlag(field_0x4) && __fabsf(mPos.y - field_0x32c.y) > 1.0f) ||
+                fn_801CF888((const JGeometry::TVec2f*)&mPos, &field_0x32c, field_0x4)) {
                 mFlags |= 0x400000;
             }
         }
