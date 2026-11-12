@@ -80,7 +80,7 @@ void IronBallHoming_804AB9C0::init() {
 // 0x80335688.
 // FIXME(shotgun): 85.76 %, different
 bool IronBallHoming_804AB9C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u16 tile = fn_8022461C(pos, layer);
+    s32 tile = fn_8022461C(pos, layer);
     if (field_0x230 != 3 && (tile == 0xC || tile == 3 || tile == 0xE)) {
         if (field_0x230 != 7) {
             field_0x25c = 30;
