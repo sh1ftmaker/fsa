@@ -211,18 +211,34 @@ void cls_8049C718::fn_800FCCCC() {
 }
 
 // FIXME(shotgun): 90.02 %, missing/extra + reloc-name; behaviour drift.
-void cls_8049C718::fn_800FC984() {
-    bool swapped = false;
-    if (mSlot == 0) {
-        field_0xb0 = 4;
-        mAnimState = 1;
-        mTimer = 0;
-        mState = 8;
-        startSound_801F0E34(0x40005, 0);
-        mSignal = 1;
-        swapped = true;
+// Ends the state early when the slot counter is 0 (the boss swaps to state 8).
+static inline bool trySwap(cls_8049C718* p) {
+    if (p->mSlot == 0) {
+        p->field_0xb0 = 4;
+        p->mAnimState = 1;
+        p->mTimer = 0;
+        p->mState = 8;
+        p->startSound_801F0E34(0x40005, 0);
+        p->mSignal = 1;
+        return true;
     }
-    if (swapped) {
+    return false;
+}
+
+// Advances the wobble; true while it is running.
+static inline bool stepWobble(cls_8049C718* p) {
+    if (p->mWobble != 0) {
+        p->mWobble += 0x2000;
+        if (p->mWobble > 0x20000) {
+            p->mWobble = 0;
+        }
+        return true;
+    }
+    return false;
+}
+
+void cls_8049C718::fn_800FC984() {
+    if (trySwap(this)) {
         return;
     }
     if (mCooldown != 0) {
@@ -234,15 +250,7 @@ void cls_8049C718::fn_800FC984() {
         field_0xb0 = 4;
     }
     fn_800FA1A4();
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
@@ -299,15 +307,7 @@ void cls_8049C718::fn_800FC4A8() {
     } else {
         field_0xb0 = 4;
     }
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
@@ -408,15 +408,7 @@ void cls_8049C718::fn_800FC128() {
     } else {
         field_0xb0 = 4;
     }
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
