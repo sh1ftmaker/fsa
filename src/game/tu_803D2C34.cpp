@@ -41,7 +41,7 @@ static inline void touchCurrentFile() {
 // The tags of the eight border panes.
 static const u64 lbl_80476F20[8] = {'Psl01', 'Psl02', 'Psl03', 'Psl04', 'Psl05', 'Psl06', 'Psl07', 'Psl08'};
 
-// FIXME(shotgun): 97.1 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.11 %, missing/extra; behaviour drift.
 cls_804B0288::cls_804B0288(JKRArchive* archive, bool flag) {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053ADB8 = this;
@@ -115,7 +115,6 @@ cls_804B0288::cls_804B0288(JKRArchive* archive, bool flag) {
     field_0x86 = 0;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name (the vtable symbol)
 cls_804B0288::~cls_804B0288() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     delete mScreen;
@@ -141,7 +140,6 @@ cls_804B0288::~cls_804B0288() {
     lbl_8053ADB8 = NULL;
 }
 
-// FIXME(shotgun): 99.86 %, reloc-name
 void cls_804B0288::fn_803D5554() {
     lbl_8053AEC0->fn_804310CC();
     field_0x54 = 0;
@@ -187,7 +185,8 @@ void cls_804B0288::fn_803D5554() {
     lbl_80529DEC.field_0x243[0] = 0;
 }
 
-// FIXME(shotgun): 92.28 %, missing/extra (one more saved register: the bounce step)
+// FIXME(shotgun): 92.50 %, missing/extra; behaviour near.
+// (one more saved register: the bounce step)
 void cls_804B0288::fn_803D521C() {
     gGameRoot2_8053AB10->fn_8013B490();
     if (field_0x216f == 3) {
@@ -241,7 +240,7 @@ void cls_804B0288::fn_803D521C() {
     }
 }
 
-// FIXME(shotgun): 99.95 %, scheduling
+// FIXME(shotgun): 99.95 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D5090() {
     if (field_0x2174 == 1) {
         lbl_8053AEC0->fn_80431174(field_0x2170);
@@ -284,6 +283,7 @@ void cls_804B0288::fn_803D5090() {
     }
 }
 
+// FIXME: 99.99 %, scheduling+regalloc; behaviour clean.
 // FIXME(shotgun): stack slots of the f32 locals b/c are swapped vs. original
 void cls_804B0288::fn_803D4DB0() {
     if (field_0x54 == field_0x50) {
@@ -361,7 +361,7 @@ static inline f32 paneH(PaneCtrl_804AF86C* c) {
     return c->mPane->getHeight();
 }
 
-// FIXME(shotgun): 73.8 %, missing/extra
+// FIXME(shotgun): 88.81 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D49A4() {
     f32 w0 = field_0x2c[0]->field_0x18;
     f32 wide = paneW(field_0x2c[0]);
@@ -397,7 +397,7 @@ void cls_804B0288::fn_803D49A4() {
     }
 }
 
-// FIXME(shotgun): 98.44 %, regalloc-only
+// FIXME(shotgun): 98.58 %, regalloc-only; behaviour clean.
 void cls_804B0288::fn_803D4770() {
     bool done1 = false;
     u8 done2 = 0;
@@ -451,7 +451,8 @@ void cls_804B0288::fn_803D4770() {
     }
 }
 
-// FIXME(shotgun): 91.71 %, missing/extra (register allocation of the loop counters)
+// FIXME(shotgun): 92.03 %, missing/extra; behaviour drift.
+// (register allocation of the loop counters)
 void cls_804B0288::fn_803D4484() {
     s16 fadeStart = lbl_8050DB0C.field_0x4c[(0xE4 - 0x4C) / 2];
     s16 fadeLength = lbl_8050DB0C.field_0x4c[(0xE6 - 0x4C) / 2];
@@ -512,7 +513,7 @@ void cls_804B0288::fn_803D4484() {
     }
 }
 
-// FIXME(shotgun): 94.63 %, scheduling+regalloc
+// FIXME(shotgun): 94.63 %, scheduling+regalloc; behaviour clean.
 void cls_804B0288::fn_803D4298() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -566,7 +567,7 @@ void cls_804B0288::fn_803D4298() {
     }
 }
 
-// FIXME(shotgun): 99.96 %, scheduling
+// FIXME(shotgun): 99.96 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D4068() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -615,7 +616,7 @@ void cls_804B0288::fn_803D4068() {
     }
 }
 
-// FIXME(shotgun): 98.56 %, scheduling+regalloc
+// FIXME(shotgun): 98.56 %, scheduling+regalloc; behaviour clean.
 void cls_804B0288::fn_803D3EC8() {
     u8 done1 = 0;
     u8 done2 = 0;
@@ -653,7 +654,6 @@ void cls_804B0288::fn_803D3EC8() {
     }
 }
 
-// FIXME(shotgun): 99.84 %, reloc-name (the jump table)
 void cls_804B0288::fn_803D3D50() {
     switch (lbl_8051C1A0.fn_803B9940(0)) {
     case 0:
@@ -936,7 +936,8 @@ void cls_804B0288::fn_803D3460() {
     }
 }
 
-// FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
+// FIXME(shotgun): 93.54 %, missing/extra; behaviour near.
+// (the three save-file index setups)
 void cls_804B0288::fn_803D335C() {
     lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
     fn_803BACF8(field_0x1c0, 0);
@@ -953,7 +954,7 @@ void cls_804B0288::fn_803D335C() {
     field_0x216c = 0x10;
 }
 
-// FIXME(shotgun): 78.1 %, missing/extra
+// FIXME(shotgun): 78.13 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D3214() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 1) {
@@ -1017,7 +1018,7 @@ void cls_804B0288::fn_803D3060() {
     }
 }
 
-// FIXME(shotgun): 99.80 %, scheduling
+// FIXME(shotgun): 99.80 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D2FFC() {
     if (field_0x7c > 0) {
         field_0x7c--;
@@ -1035,7 +1036,7 @@ void cls_804B0288::fn_803D2FFC() {
     }
 }
 
-// FIXME(shotgun): 90.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.23 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0288::fn_803D2E10() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -1073,7 +1074,8 @@ void cls_804B0288::fn_803D2E10() {
     }
 }
 
-// FIXME(shotgun): 97.7 %, the flag bytes are reached through an extra addi 0x20 (the row view of the save file)
+// FIXME(shotgun): 97.70 %, missing/extra; behaviour drift.
+// the flag bytes are reached through an extra addi 0x20 (the row view of the save file)
 void cls_804B0288::fn_803D2C9C() {
     s32 result = lbl_8051C1A0.fn_803B9A94(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
     if (result == 0) {
