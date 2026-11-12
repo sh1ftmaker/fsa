@@ -147,7 +147,10 @@ void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
-            field_0x288[i] = *getPlayerPos_8023E724(i);
+            const JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
+            field_0x288[i].x = pos->x;
+            field_0x288[i].y = pos->y;
+            field_0x288[i].z = pos->z;
             if (mode == 0) {
                 if (field_0x258 == 1) {
                     field_0x288[i].y = y;
