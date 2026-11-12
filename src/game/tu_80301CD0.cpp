@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
+#include "game/RotMatrix.h"
 #include "game/Player.h"
 #include "game/GameState.h"
 #include "game/GameView.h"
@@ -159,6 +160,78 @@ void fn_80308D0C() {
             lbl_80505438[player][j].resetAll();
         }
     }
+}
+
+// Builds the player's first GBA record: the kind, the four marks and the hidden sprites,
+// then the checksum.
+// 0x8030801C
+// FIXME: 64.78 %, missing/extra + reloc-name; behaviour drift.
+void cls_804AA8B8::fn_8030801C(s32 player) {
+    cls_804AA858Sub11C* record;
+    if (lbl_8053AAF0->mState >= 4) {
+        s32 mode = gGameRoot_8053AAF8->field_0x4c;
+        if (mode == 7 || mode == 11 || mode == 12) {
+            lbl_80506DE8[player].mKind = 9;
+        } else {
+            lbl_80506DE8[player].mKind = 13;
+        }
+    } else {
+        lbl_80506DE8[player].mKind = 13;
+    }
+    fn_803085A4(player);
+    record = &lbl_80506DE8[player];
+    for (s32 i = 0; i < 4; i++) {
+        record->mEntries[i].mXHigh = 1;
+        record->mEntries[i].mXLow = 0x80;
+        record->mEntries[i].mY = 0xE0;
+        record->mEntries[i].field_0x3_1 = 0;
+        record->mEntries[i].field_0x0 = 0;
+    }
+    record->mEntries[0].mScroll = 0;
+    record->mEntries[0].mScrollBit = 0;
+    record->mEntries[1].mScroll = 0;
+    record->mEntries[2].mScroll = 0;
+    record->mEntries[2].mScrollBit = 0;
+    record->mEntries[3].mScroll = 0;
+    s32 layer = fn_8022EA0C(player);
+    if (lbl_8053AAF0->mState >= 4) {
+        u8 near = 0;
+        if (fn_8037F1E4(player) >= 1 && fn_8037F1E4(player) <= 5) {
+            near = 1;
+        }
+        record->mEntries[1].mScrollBit = near ? true : false;
+        if (lbl_8053ACD0 && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player))) {
+            u8 flag = 0;
+            if (fn_8022F5B0(layer)) {
+                s32 l = getPlayerLayer_8023DE58(layer);
+                if (!getGameView_802D6A9C()->fn_802D7804(l, 2)) {
+                    flag = 1;
+                }
+            }
+            record->mEntries[3].mScrollBit = flag ? true : false;
+        } else {
+            record->mEntries[3].mScrollBit = 0;
+        }
+    } else {
+        record->mEntries[1].mScrollBit = 0;
+        record->mEntries[3].mScrollBit = 0;
+    }
+    for (s32 i = 0; i < lbl_80541618[lbl_8053AD08] - 7; i++) {
+        GbaSprite_80506F88& sprite = record->field_0x18[i];
+        sprite.f.field_0x3_0 = 1;
+        sprite.f.field_0x2 = 0x80;
+        sprite.f.field_0x1 = 0xE0;
+        sprite.f.field_0x3_1 = 0;
+        sprite.f.field_0x0 = 0;
+        sprite.f.mKind = 0;
+        sprite.f.field_0x3_4 = 0;
+    }
+    u8 sum = 0;
+    u8* bytes = (u8*)&record->mSprites[0];
+    for (s32 k = 8; k < lbl_80541618[lbl_8053AD08] * 4; k++) {
+        sum += *bytes++;
+    }
+    record->field_0x0 = sum;
 }
 
 // Byte-reverses a word.
@@ -664,7 +737,7 @@ bool fn_803049F0(s32 layer, s32 index) {
 }
 
 // 0x80303870
-// FIXME: 98.89 %, operands; behaviour drift.
+// FIXME: 98.91 %, regalloc-only; behaviour clean.
 void fn_80303870(s32 player) {
     char name[32];
     char name2[32];
@@ -747,6 +820,82 @@ void fn_8030361C() {
             }
         }
         lbl_8053AD20[player] = 0;
+    }
+}
+
+// Draws one GBA sprite word on the map in the resource its kind selects, with a
+// scale (or rotation about y by `scale`) chosen by its flag bits.
+// FIXME: 94.75 %, missing/extra + reloc-name; behaviour drift.
+void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
+    s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
+    s32 y = sprite->f.field_0x1;
+    if (x == 0x180 || y == 0xE0) {
+        return;
+    }
+    if (x >= 0x180) {
+        x |= -0x100;
+    }
+    if (y >= 0xE0) {
+        y |= -0x100;
+    }
+    s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
+    JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    params.field_0x26 = 0;
+    params.field_0x2c = 0;
+    params.field_0x2d = 0;
+    if (!flag) {
+        params.field_0x34 = 2;
+    }
+    params.field_0x1f = 0;
+    params.field_0x38 = 0;
+    if (sprite->f.mKind == 2 && id >= 0x200) {
+        id &= 0x1FF;
+        if (sprite->f.field_0x3_4 == 1) {
+            PSMTXScale(mtx, 2.0f, 2.0f, -2.0f);
+        } else {
+            PSMTXScale(mtx, 1.0f, 1.0f, -1.0f);
+        }
+    } else if (sprite->f.field_0x3_3 == 1) {
+        PSMTXScale(mtx, 1.0f, 1.0f, 1.0f);
+        JGeometry::TVec3f rot(0.0f, scale, 0.0f);
+        if (sprite->f.field_0x3_4 == 1) {
+            setRotScaleMtx(mtx, rot, 1.5f);
+        } else {
+            setRotScaleMtx(mtx, rot, 0.75f);
+        }
+        for (s32 i = 0; i < 16; i++) {
+            params.field_0x0[i] = 7;
+        }
+    } else if (sprite->f.field_0x3_4 == 1 || (sprite->f.mKind == 2 && id >= 0x39 && id < 0x45)) {
+        PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
+    } else {
+        PSMTXScale(mtx, 1.0f, 1.0f, 1.0f);
+    }
+    params.mMtx = mtx;
+    if (set) {
+        params.field_0x22 = 2;
+    } else {
+        params.field_0x22 = 1;
+    }
+    if (sprite->f.mKind < 2) {
+        if ((id >= 0x37 && id < 0x41) || (id >= 0x3CD && id < 0x3CE)) {
+            params.field_0x10.a = 0xA0;
+        } else if (id == 0x2A8 || id == 0x2A9) {
+            id -= 3;
+        }
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+    } else if (sprite->f.mKind == 2) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+    } else {
+        if (sprite->f.mKind & 4) {
+            params.field_0x0[7] = (sprite->f.mKind & 3) + 12;
+        }
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
 }
 
