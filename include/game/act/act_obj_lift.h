@@ -33,9 +33,7 @@ public:
     // 0x803511F0: respawns the lift at its spawn position (with an effect when it was far away).
     void fn_803511F0();
     /* 0x230 */ s32 field_0x230; // act_small_key rides it while nonzero
-    /* 0x234 */ f32 field_0x234; // the spawn position (init)
-    /* 0x238 */ f32 field_0x238;
-    /* 0x23C */ f32 field_0x23c;
+    /* 0x234 */ JGeometry::TVec3f field_0x234; // the spawn position (init); the position before this frame's move (update)
     /* 0x240 */ s32 field_0x240;
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
@@ -62,9 +60,7 @@ public:
     /* 0x28A */ u8 field_0x28a[2]; // not yet known
     /* 0x28C */ f32 field_0x28c;
     /* 0x290 */ f32 field_0x290;
-    /* 0x294 */ f32 field_0x294;
-    /* 0x298 */ f32 field_0x298;
-    /* 0x29C */ f32 field_0x29c;
+    /* 0x294 */ JGeometry::TVec3f field_0x294; // last frame's push velocity
 }; // Size: 0x2A0
 
 #endif
