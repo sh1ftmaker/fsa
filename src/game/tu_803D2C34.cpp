@@ -277,70 +277,73 @@ void cls_804B0288::fn_803D5090() {
     }
 }
 
-// FIXME(shotgun): 90.1 %, missing/extra + reloc-name
+// FIXME(shotgun): stack slots of the f32 locals b/c are swapped vs. original
 void cls_804B0288::fn_803D4DB0() {
-    if (field_0x54 == field_0x50 || field_0x54 == 0) {
+    if (field_0x54 == field_0x50) {
         return;
     }
-    if (field_0x2174 != 0) {
-        if (field_0x2174 == 1) {
-            field_0x2174 = 3;
-        }
+    if (field_0x54 == 0) {
         return;
     }
-    field_0x50 = field_0x54;
-    u32 msg = field_0x50;
-    if (msg == 0x6B || (msg >= 0x6C && msg <= 0x6E) || (msg >= 0x70 && msg <= 0x71) || msg == 0x77 || msg == 0x7C) {
-        lbl_8053AEC0->fn_80431A9C(msg, 0, NULL);
-        field_0x2173 = 0;
-        field_0x2174 = 2;
-        if (field_0x216f != 0) {
-            field_0x1c[0]->field_0x22 = 0;
-            field_0x1c[1]->field_0x22 = 0;
-            field_0x216f = 2;
-        }
-        strcpy(field_0x10->getStringPtr(), "");
-    } else {
-        char* yes = static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->getStringPtr();
-        char* no = static_cast<J2DTextBox*>(mScreen->search('Tno01'))->getStringPtr();
-        fn_80382B48(field_0x88, field_0x50, 0, yes, no);
-        msg = field_0x50;
-        if (msg == 0x6F || msg == 0x72 || msg == 0x76 || msg == 0x7B || msg == 0x7D || msg == 0x82 || msg == 0x86 ||
-            msg == 0x87) {
-            f32 a, b, c, d;
-            fn_8037EB0C(&a, &b, &c, &d, &field_0x2170);
-            if (field_0x216f != 3) {
-                field_0x1c[0]->field_0x22 = 0;
-                field_0x1c[1]->field_0x22 = 0;
-                field_0x216f = 1;
-            }
-            for (s32 i = 0; (s8)yes[i] != 0; i++) {
-                if ((u8)yes[i] == 0x81 && (u8)yes[i + 1] == 0x40) {
-                    yes[i] = 0;
-                    break;
-                }
-            }
-            strcpy(field_0x10->getStringPtr(), field_0x88);
-        } else {
+    if (field_0x2174 == 0) {
+        field_0x50 = field_0x54;
+        u32 msg = field_0x50;
+        if (msg == 0x6B || msg - 0x6C <= 2 || msg - 0x70 <= 1 || msg == 0x77 || msg == 0x7C) {
+            lbl_8053AEC0->fn_80431A9C(msg, 0, NULL);
+            field_0x2173 = 0;
+            field_0x2174 = 2;
             if (field_0x216f != 0) {
                 field_0x1c[0]->field_0x22 = 0;
                 field_0x1c[1]->field_0x22 = 0;
                 field_0x216f = 2;
             }
-            strcpy(field_0x10->getStringPtr(), field_0x88);
+            strcpy(field_0x10->getStringPtr(), "");
+        } else {
+            char* yes = static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->getStringPtr();
+            char* no = static_cast<J2DTextBox*>(mScreen->search('Tno01'))->getStringPtr();
+            fn_80382B48(field_0x88, field_0x50, 0, yes, no);
+            msg = field_0x50;
+            if (msg == 0x6F || msg == 0x72 || msg == 0x76 || msg == 0x7B || msg == 0x7D || msg == 0x82 || msg == 0x86 ||
+                msg == 0x87) {
+                f32 a, b, c, d;
+                fn_8037EB0C(&a, &b, &c, &d, &field_0x2170);
+                if (field_0x216f != 3) {
+                    field_0x1c[0]->field_0x22 = 0;
+                    field_0x1c[1]->field_0x22 = 0;
+                    field_0x216f = 1;
+                }
+                for (s32 i = 0; (s8)yes[i] != 0; i++) {
+                    if ((u8)yes[i] == 0x81 && (u8)yes[i + 1] == 0x40) {
+                        yes[i] = 0;
+                        break;
+                    }
+                }
+                strcpy(field_0x10->getStringPtr(), field_0x88);
+            } else {
+                if (field_0x216f != 0) {
+                    field_0x1c[0]->field_0x22 = 0;
+                    field_0x1c[1]->field_0x22 = 0;
+                    field_0x216f = 2;
+                }
+                strcpy(field_0x10->getStringPtr(), field_0x88);
+            }
+        }
+        if (field_0x2177 != 0) {
+            field_0x84 = 0;
+            strcpy(field_0xc->getStringPtr(), field_0x88);
+            field_0x216c = 0;
+        } else {
+            field_0x54 = field_0x50;
+            field_0x86 = 0;
+            field_0x216c = 1;
+        }
+        field_0xc->setAlpha(0xFF);
+        field_0x10->setAlpha(0);
+    } else {
+        if (field_0x2174 == 1) {
+            field_0x2174 = 3;
         }
     }
-    if (field_0x2177 != 0) {
-        field_0x84 = 0;
-        strcpy(field_0xc->getStringPtr(), field_0x88);
-        field_0x216c = 0;
-    } else {
-        field_0x54 = field_0x50;
-        field_0x86 = 0;
-        field_0x216c = 1;
-    }
-    field_0xc->setAlpha(0xFF);
-    field_0x10->setAlpha(0);
 }
 
 // The pane's box size (its global bounds), against the size the PaneCtrl stored when it was set.
