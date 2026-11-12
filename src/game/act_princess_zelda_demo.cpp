@@ -768,8 +768,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x2A: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D4, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D4, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -789,8 +788,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x2E: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D3, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D3, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -816,8 +814,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     case 0x32: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         fn_8022FD8C(mSerial);
-        JGeometry::TVec3f at(0.0f, 0.0f, 0.0f);
-        fn_8038BD08(0, 0x2D1, field_0x4, at, 0x22);
+        fn_8038BD08(0, 0x2D1, field_0x4, JGeometry::TVec3f(0.0f, 0.0f, 0.0f), 0x22);
         fn_8011921C()->fn_80118454();
         break;
     }
@@ -828,8 +825,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x36: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D5, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D5, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -866,6 +862,8 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         field_0x231 = 1;
         getGameView_802D6A9C()->fn_802D8050(field_0x250, true, 0xFF);
         mPos.x = 64.0f + mSpawnPos.x;
+        break;
+    default:
         break;
     }
 }
