@@ -626,17 +626,17 @@ void cls_804AE4B0::fn_80370764() {
             fn_80230C6C(i);
         }
     }
-    bool found = false;
-    for (s32 i = 0; i < 4 && !found; i++) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
         if (fn_8023E854(i)) {
             JGeometry::TVec3f d = JGeometry::TVec3f(2232.0f, 1624.0f, 0.0f) - *getPlayerPos_8023E724(0);
             if (PSVECMag((Vec*)&d) > 2.0f) {
                 fn_8023DFF4(0, &d);
             }
-            found = true;
+            break;
         }
     }
-    if (!found && fn_8022CAF8(0) == 4) {
+    if (i == 4 && fn_8022CAF8(0) == 4) {
         fn_8022CA6C(0, 5, false);
     }
     field_0x23c++;
