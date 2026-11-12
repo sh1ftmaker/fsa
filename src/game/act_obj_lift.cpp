@@ -43,7 +43,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
-// FIXME(shotgun): 92.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.63 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::init() {
     field_0x258 = (field_0x90 & 0xF) + ((field_0x90 >> 12) & 0xF0);
     field_0x260 = (field_0x90 >> 4) & 0xF;
@@ -304,7 +304,8 @@ void OBJLift_804ACA00::fn_803511F0() {
 // 0x80351020.
 // Not auto-inlined: fn_80350974 calls fn_80351020 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 85.82 %, literal pool order and register assignment differ.
+// FIXME(shotgun): 85.82 %, missing/extra + reloc-name; behaviour clean.
+// literal pool order and register assignment differ.
 bool OBJLift_804ACA00::fn_80351020(s32 player) {
     s32 layer = field_0x4;
     if (getPlayerLayer_8023DE58(player) != layer) {
