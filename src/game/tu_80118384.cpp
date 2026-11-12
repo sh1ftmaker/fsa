@@ -392,14 +392,21 @@ bool cls_801192AC::fn_801186B0(u32 value) {
 }
 
 // FIXME(shotgun): 60.79 %, missing/extra; behaviour drift. (the vector clear is a plain assignment; the
-// original is the TVector erase(begin(), end()) inline)
+// erase(begin(), end()) inline: the copy and empty destroy loops; the extra copy of the source pointer differs)
 bool cls_801192AC::fn_801184F0(bool flag) {
     getActorManager_801F856C()->fn_801F6884();
     field_0x0 = 0;
     if (flag) {
         fadeObject()->fn_80119958();
     }
-    mEnd = mBegin;
+    ActorBase_804A5770** first = mBegin;
+    ActorBase_804A5770** end = mEnd;
+    for (ActorBase_804A5770** last = end; last < end; last++) {
+        *first++ = *last;
+    }
+    for (ActorBase_804A5770** it = first; it != end; it++) {
+    }
+    mEnd = first;
     field_0x0 = 0;
     field_0x1 = 0;
     field_0x2 = 0;
