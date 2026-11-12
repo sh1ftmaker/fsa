@@ -13,7 +13,8 @@ s32 lbl_80539FD8[2] = {8, 14};
 s32 lbl_80539FE0[2] = {3, 5};
 
 
-// FIXME(shotgun): 85.97 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.04 %, missing/extra + reloc-name: the 0x2d0 loop unrolls by 5 (the original by 10, ctr 2)
+// and the random/sin part allocates f-registers differently.
 void cls_804A1FA0::init() {
     field_0x80.i.x = -6.0f;
     field_0x80.i.y = -6.0f;
@@ -37,8 +38,9 @@ void cls_804A1FA0::init() {
     field_0x288[3].set(mPos);
     field_0x288[4].set(mPos);
     field_0x288[5].set(mPos);
-    for (u8 i = 0; i < 20; i++) {
-        field_0x2d0[i].set(mPos);
+    JGeometry::TVec3f* p = field_0x2d0;
+    for (s32 i = 0; i < 20; i++, p++) {
+        p->set(mPos);
     }
     mEmitters[0] = NULL;
     mEmitters[1] = NULL;
@@ -87,29 +89,23 @@ cls_804A1FA0::~cls_804A1FA0() {
 }
 
 // 0x8018FAB4.
-// FIXME(shotgun): 67.61 %, missing/extra
 void cls_804A1FA0::vfunc_0x44() {
-    if (mEmitters[0] != NULL) {
-        mEmitters[0]->becomeInvalidEmitter();
-        mEmitters[0] = NULL;
-    }
-    if (mEmitters[1] != NULL) {
-        mEmitters[1]->becomeInvalidEmitter();
-        mEmitters[1] = NULL;
-    }
-    if (mEmitters[2] != NULL) {
-        mEmitters[2]->becomeInvalidEmitter();
-        mEmitters[2] = NULL;
+    for (int i = 0; i < 3; i++) {
+        if (mEmitters[i] != NULL) {
+            mEmitters[i]->becomeInvalidEmitter();
+            mEmitters[i] = NULL;
+        }
     }
 }
 
-// FIXME(shotgun): 80.83 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.32 %, missing/extra + reloc-name: the body of `if (field_0x230 == 0)` is laid out
+// with beq/b in the original, ours skips it with bne; register and literal differences in the rest.
 void cls_804A1FA0::update() {
     JGeometry::TVec3f savedPos = mPos;
     f32 z0 = mPos.z;
     JGeometry::TVec3f savedVel = field_0x3c;
     bool hit = false;
-    for (u8 i = 0; i < 5; i++) {
+    for (s32 i = 0; i < 5; i++) {
         if (field_0x234[i] > 0) {
             field_0x234[i]--;
         }
@@ -210,7 +206,7 @@ void cls_804A1FA0::update() {
     }
 }
 
-// FIXME(shotgun): 89.85 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.60 %, missing/extra + reloc-name
 void cls_804A1FA0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -222,14 +218,14 @@ void cls_804A1FA0::draw() {
     PSMTXIdentity(mtx);
     setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
     params.mMtx = mtx;
-    mPos.set(field_0x288[2]);
+    mPos = field_0x288[2];
     mPos.z = z0;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x29, &params, -1, 1.0f, 1.0f);
 
     PSMTXIdentity(mtx);
     setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
     params.mMtx = mtx;
-    mPos.set(field_0x288[1]);
+    mPos = field_0x288[1];
     mPos.z = z0;
     params.field_0x1d = 2;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x27, &params, -1, 1.0f, 1.0f);
@@ -237,7 +233,7 @@ void cls_804A1FA0::draw() {
     PSMTXIdentity(mtx);
     setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x270, 0.0f), 0.5f);
     params.mMtx = mtx;
-    mPos.set(field_0x288[0]);
+    mPos = field_0x288[0];
     mPos.z = z0;
     params.field_0x1d = 3;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x26, &params, -1, 1.0f, 1.0f);
@@ -246,17 +242,17 @@ void cls_804A1FA0::draw() {
     PSMTXIdentity(mtx);
     setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
     params.mMtx = mtx;
-    mPos.set(field_0x288[4]);
+    mPos = field_0x288[4];
     mPos.z = z0;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
 
     PSMTXIdentity(mtx);
     setRotScaleMtx(mtx, JGeometry::TVec3f(0.0f, field_0x274, 0.0f), 0.5f);
     params.mMtx = mtx;
-    mPos.set(field_0x288[5]);
+    mPos = field_0x288[5];
     mPos.z = z0;
     drawSprite_801F06F0("enemy_gc_sob.bin", 0x2A, &params, -1, 1.0f, 1.0f);
 
-    mPos.set(field_0x288[0]);
+    mPos = field_0x288[0];
     mPos.z = z0;
 }
