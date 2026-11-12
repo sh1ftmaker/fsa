@@ -41,7 +41,7 @@ static inline void releaseTarget(cls_804A51E4* self) {
 // FIXME(shotgun): 70.00 %, missing/extra.
 bool cls_804A51E4::fn_801E2F40() {
     bool result = false;
-    u16 code = fn_8022461C(&mPos, field_0x4);
+    s32 code = fn_8022461C(&mPos, field_0x4);
     if (code < 13) {
         if (code == 3) {
             result = true;
