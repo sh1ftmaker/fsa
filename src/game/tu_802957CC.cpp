@@ -1761,7 +1761,6 @@ void cls_804A7AE0::vfunc_0x24() {
 }
 
 // FIXME(shotgun): 58.46 %, missing/extra + reloc-name; behaviour drift.
-// the view-box copy (GameView 0xCC/0xDC, grown by 32) the original leaves dead on the stack is not written
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
@@ -1771,7 +1770,15 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
     mBox.i.y = -44.0f;
     mBox.f.x = 44.0f;
     mBox.f.y = 44.0f;
-    JGeometry::TVec3f p(mPos.x, mPos.y, 0.0f);
+    GameView_804A9950* view = getGameView_802D6A9C();
+    const JGeometry::TBox2f* src = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    JGeometry::TBox2f view_box;
+    view_box = *src;
+    view_box.i.x -= 32.0f;
+    view_box.i.y -= 32.0f;
+    view_box.f.x += 32.0f;
+    JGeometry::TVec3f p = mPos;
+    p.z = 0.0f;
     if (dir == 0 || dir == 1) {
         if (dir == 0) {
             p.x += mBox.f.x;
