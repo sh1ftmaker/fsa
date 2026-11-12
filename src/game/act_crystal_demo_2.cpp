@@ -20,7 +20,7 @@
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
 // declared: nothing compiled here reads them yet.
 // FIXME(shotgun): not written: init, vfunc_0x60 (jumptable_804AE184),
-// fn_8036AC58, fn_8036AA60, fn_8036A894, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
+// fn_8036AC58, fn_8036AA60, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
 // fn_80368CD8 (jumptable_804AE0EC), fn_80368660, fn_803683AC, fn_80368198.
 
 // Functions are listed in descending address order (highest first, lowest last).
@@ -161,3 +161,35 @@ s32 cls_804AE088::vfunc_0x5C() {
         return 1;
     return 0;
 }
+
+// Not auto-inlined: draw calls fn_8036A894 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+void cls_804AE088::fn_8036A894() {
+    if (field_0x24c > 0) {
+        SpriteParams_801F5AE0 params;
+        Mtx mtx;
+        PSMTXTrans(mtx, 0.0f, 0.0f, 0.0f);
+        mtx[0][0] = 96.0f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 1.0f;
+        mtx[1][2] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 96.0f;
+        params.field_0x14.r = 0;
+        params.field_0x14.g = 0;
+        params.field_0x14.b = 0;
+        params.field_0x14.a = field_0x24c;
+        params.field_0x1d = -1;
+        params.field_0x2d = 1;
+        params.mMtx = mtx;
+        JGeometry::TVec3f pos = mPos;
+        pos.z = 0.0f;
+        if (field_0x4 < 8) {
+            gGameRoot2_8053AB10->field_0x20->fn_802F745C(&pos, field_0x310, &params);
+        }
+    }
+}
+#pragma auto_inline reset
