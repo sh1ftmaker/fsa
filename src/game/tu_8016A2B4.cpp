@@ -545,77 +545,56 @@ void GameRootSub24_8016A3AC::fn_8016B8AC() {
     }
 }
 
-#ifdef NONMATCHING
-// FIXME(shotgun): missing/extra
 void GameRootSub24_8016A3AC::fn_8016B4D4() {
-    bool cond1 = false;
-    bool cond2 = false;
-    if (field_0x110 != NULL && field_0x114 != NULL && field_0x1cb[1]) {
-        cond1 = true;
-    }
-    if (field_0x118 != NULL && field_0x11c != NULL && field_0x1cb[2]) {
-        cond2 = true;
-    }
-    if (cond1 || cond2) {
+    if ((field_0x1cb[1] && field_0x110 != NULL) || (field_0x1cb[2] && field_0x118 != NULL)) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
         f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
-        JGeometry::TVec3f center;
-        JGeometry::TVec3f half;
-        getMapTexView(center, half);
-        center.x -= 1.5f;
-        center.y -= 1.0f;
-        center.mul(JGeometry::TVec3f(0.5f, 0.5f, 1.0f));
-        center.x += 0.5f;
-        center.y += 1.0f;
-        half.mul(JGeometry::TVec3f(1.0f, 1.0f, 1.0f));
+        f32 scroll = 0.000244140625f * (f32)(field_0x1c0 & 0xFFF);
+        JGeometry::TVec3f center1;
+        JGeometry::TVec3f half1;
+        getMapTexView(center1, half1);
+        JGeometry::TVec3f center2 = center1;
+        JGeometry::TVec3f half2 = half1;
+        center1.mul(JGeometry::TVec3f(1.0f, 3.0f, 1.0f));
+        center1.x -= scroll;
+        half1.mul(JGeometry::TVec3f(1.0f, 3.0f, 1.0f));
+        center2.mul(JGeometry::TVec3f(1.0f, 0.75f, 1.0f));
+        half2.mul(JGeometry::TVec3f(1.0f, 1.5f, 1.0f));
         gGameRoot2_8053AB10->fn_8013B460();
         gGameRoot2_8053AB10->fn_8013B1E8();
-        f32 midX = width * (0.5f - center.x) / (2.0f * half.x) + 0.5f * width;
-        if (midX > 0.0f) {
-            if (midX > width) {
-                midX = width;
-            }
-            if (cond1) {
-                field_0x114->load(GX_TEXMAP0);
-            } else {
-                field_0x11c->load(GX_TEXMAP0);
-            }
-            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(0.0f, 0.0f, 0.0f);
-            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y - half.y);
-            GXPosition3f32(midX, 0.0f, 0.0f);
-            GXTexCoord2f32(1.0f, center.y - half.y);
-            GXPosition3f32(midX, height, 0.0f);
-            GXTexCoord2f32(1.0f, center.y + half.y);
-            GXPosition3f32(0.0f, height, 0.0f);
-            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y + half.y);
-            GXEnd();
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        if (field_0x1cb[1]) {
+            field_0x114->load(GX_TEXMAP0);
+        } else {
+            field_0x11c->load(GX_TEXMAP0);
         }
-        if (midX < width) {
-            if (midX < 0.0f) {
-                midX = 0.0f;
-            }
-            if (cond1) {
-                field_0x110->load(GX_TEXMAP0);
-            } else {
-                field_0x118->load(GX_TEXMAP0);
-            }
-            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(midX, 0.0f, 0.0f);
-            GXTexCoord2f32(0.0f, center.y - half.y);
-            GXPosition3f32(width, 0.0f, 0.0f);
-            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y - half.y);
-            GXPosition3f32(width, height, 0.0f);
-            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y + half.y);
-            GXPosition3f32(midX, height, 0.0f);
-            GXTexCoord2f32(0.0f, center.y + half.y);
-            GXEnd();
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center1.x - half1.x, center1.y - half1.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center1.x + half1.x, center1.y - half1.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center1.x + half1.x, center1.y + half1.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center1.x - half1.x, center1.y + half1.y);
+        GXEnd();
+        if (field_0x1cb[1]) {
+            field_0x110->load(GX_TEXMAP0);
+        } else {
+            field_0x118->load(GX_TEXMAP0);
         }
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXEnd();
     }
 }
-#endif
 
 #pragma auto_inline reset
 
