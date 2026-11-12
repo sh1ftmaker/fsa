@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
+#include "game/RotMatrix.h"
 #include "game/Player.h"
 #include "game/GameState.h"
 #include "game/GameView.h"
@@ -818,6 +819,81 @@ void fn_8030361C() {
             }
         }
         lbl_8053AD20[player] = 0;
+    }
+}
+
+// Draws one GBA sprite word on the map in the resource its kind selects, with a
+// scale (or rotation about y by `scale`) chosen by its flag bits.
+void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
+    s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
+    s32 y = sprite->f.field_0x1;
+    if (x == 0x180 || y == 0xE0) {
+        return;
+    }
+    if (x >= 0x180) {
+        x |= -0x100;
+    }
+    if (y >= 0xE0) {
+        y |= -0x100;
+    }
+    s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
+    JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
+    SpriteParams_801F5AE0 params;
+    Mtx mtx;
+    params.field_0x26 = 0;
+    params.field_0x2c = 0;
+    params.field_0x2d = 0;
+    if (!flag) {
+        params.field_0x34 = 2;
+    }
+    params.field_0x1f = 0;
+    params.field_0x38 = 0;
+    if (sprite->f.mKind == 2 && id >= 0x200) {
+        id &= 0x1FF;
+        if (sprite->f.field_0x3_4 == 1) {
+            PSMTXScale(mtx, 2.0f, 2.0f, -2.0f);
+        } else {
+            PSMTXScale(mtx, 1.0f, 1.0f, -1.0f);
+        }
+    } else if (sprite->f.field_0x3_3 == 1) {
+        PSMTXScale(mtx, 1.0f, 1.0f, 1.0f);
+        JGeometry::TVec3f rot(0.0f, scale, 0.0f);
+        if (sprite->f.field_0x3_4 == 1) {
+            setRotScaleMtx(mtx, rot, 1.5f);
+        } else {
+            setRotScaleMtx(mtx, rot, 0.75f);
+        }
+        for (s32 i = 0; i < 16; i++) {
+            params.field_0x0[i] = 7;
+        }
+    } else if (sprite->f.field_0x3_4 == 1 || (sprite->f.mKind == 2 && id >= 0x39 && id < 0x45)) {
+        PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
+    } else {
+        PSMTXScale(mtx, 1.0f, 1.0f, 1.0f);
+    }
+    params.mMtx = mtx;
+    if (set) {
+        params.field_0x22 = 2;
+    } else {
+        params.field_0x22 = 1;
+    }
+    if (sprite->f.mKind < 2) {
+        if ((id >= 0x37 && id < 0x41) || (id >= 0x3CD && id < 0x3CE)) {
+            params.field_0x10.a = 0xA0;
+        } else if (id == 0x2A8 || id == 0x2A9) {
+            id -= 3;
+        }
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+    } else if (sprite->f.mKind == 2) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+    } else {
+        if (sprite->f.mKind & 4) {
+            params.field_0x0[7] = (sprite->f.mKind & 3) + 12;
+        }
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
 }
 
