@@ -311,6 +311,41 @@ void cls_804AE088::fn_8036A65C() {
     }
 }
 
+void cls_804AE088::fn_803683AC() {
+    SpriteParams_801F5AE0 params;
+    JGeometry::TVec3f savedPos = mPos;
+    if (field_0x260 != 0) {
+        field_0x260--;
+    }
+    if (field_0x260 == 0) {
+        field_0x264++;
+        if (field_0x264 >= 6) {
+            field_0x264 = 0;
+        }
+        field_0x260 = 1;
+    }
+    for (s32 i = 0; i < 6; i++) {
+        if (field_0x2f8[i] == 0) {
+            mPos = field_0x2a8[i];
+            params.field_0x10.a = 255;
+            drawSprite_801F06F0("enemy_gc_sob.bin", lbl_80474C68[97 + i] + 8, &params, 7, 1.0f, 1.0f);
+        } else if (field_0x2f8[i] != 1 && field_0x2f8[i] != 4) {
+            mPos = field_0x2a8[i];
+            params.field_0x10.a = 255;
+            drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[103 + i], &params, -1, 1.0f, 1.0f);
+            if (field_0x2a8[i].z < 255.0f) {
+                params.field_0x10.a = 255 - (s32)field_0x2a8[i].z;
+            } else {
+                params.field_0x10.a = 0;
+            }
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 0x407, "enemy_both2_sob.bin", field_0x264 + lbl_80474C68[103 + i], NULL);
+            }
+        }
+    }
+    mPos = savedPos;
+}
+
 void cls_804AE088::fn_80368198() {
     if (field_0x270 != 0) {
         if (field_0x274 < 0x80) {
