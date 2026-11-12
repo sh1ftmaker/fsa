@@ -180,7 +180,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
 // FIXME(shotgun): 88.6 %, missing/extra: the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
-    s32 moved = 0;
+    bool moved = false;
     bool all = false;
     if (field_0x246[0] && field_0x246[1] && field_0x246[2] && field_0x246[3]) {
         all = true;
