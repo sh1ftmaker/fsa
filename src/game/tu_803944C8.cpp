@@ -111,7 +111,8 @@ static const u8 lbl_80475D44[32] = {
     0x49, 0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x13, 0x11, 0x10, 0x12, 0x14, 0x16,
     0x19, 0x25, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x00, 0x00,
 };
-static const GXColor lbl_80475D64[5] = {{0xFF, 0xFF, 0xFF, 0xFF}, {0x64, 0xFF, 0x00, 0xFF}, {0xFA, 0x50, 0x00, 0xFF}, {0x32, 0xD2, 0xFF, 0xFF}, {0xF0, 0x64, 0xFF, 0xFF}};
+// The text colours (RGBA words) of the colour tag 0x2001E.
+static const u32 lbl_80475D64[5] = {0xFFFFFFFF, 0x64FF00FF, 0xFA5000FF, 0x32D2FFFF, 0xF064FFFF};
 static const f32 lbl_80475D78[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
 static const f32 lbl_80475D8C[5] = {1.0f, 0.3f, 1.1f, 0.8f, 1.0f};
 static const f32 lbl_80475DA0[5] = {1.0f, 1.3f, 0.8f, 1.2f, 1.0f};
@@ -655,6 +656,529 @@ void cls_804AF72C::fn_8039F540(int c) {
         }
         appendGlyph(findGlyph(c));
     }
+}
+
+// Builds the window text of a message tag: in the text-image windows (window field_0x1aa) as glyph
+// codes in the first line buffer, otherwise as text in both buffers.
+bool cls_804AF72C::do_tag(u32 tag, const void* data, u32) {
+    if (field_0x2d8->field_0x1aa == 0) {
+        switch (tag) {
+        case 0:
+            return true;
+        case 0x10000:
+            fn_8039CDF8(0);
+            return true;
+        case 0x10001:
+            fn_8039CDF8(1);
+            return true;
+        case 0x10002:
+            fn_8039CDF8(2);
+            return true;
+        case 0x10003:
+            fn_8039CDF8(3);
+            return true;
+        case 0x10007:
+            fn_8039CDF8(7);
+            return true;
+        case 0x10008:
+            fn_8039CDF8(8);
+            return true;
+        case 0x10009:
+            fn_8039CDF8(9);
+            return true;
+        case 0x1000A:
+            fn_8039CDF8(10);
+            return true;
+        case 0x10004:
+            fn_8039CDF8(4);
+            return true;
+        case 0x10005:
+            fn_8039CDF8(5);
+            return true;
+        case 0x10006:
+            fn_8039CDF8(6);
+            return true;
+        case 0x1000B:
+        case 0x1000C:
+            return true;
+        case 0x10010:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA7");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA8");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10012:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA6");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x10013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("\xA5");
+                fn_8039D0DC(*(const u8*)data);
+            }
+            return true;
+        case 0x20000:
+        case 0x20001:
+        case 0x20002:
+        case 0x20003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("    ", 4);
+                fn_8039D0DC(((const u8*)data)[0]);
+            }
+            return true;
+        case 0x20011:
+        case 0x20012:
+        case 0x20013:
+        case 0x20014:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendText("    ", 4);
+                fn_8039D0DC(((const u8*)data)[4]);
+            }
+            return true;
+        case 0x20009:
+        case 0x2000A:
+        case 0x2000B:
+        case 0x2000C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                for (int i = 0; i < lbl_8050DB0C.field_0x4c[0x151]; i++) {
+                    strcat(field_0x2c0, " ");
+                    strcat(field_0x2c4, " ");
+                }
+                field_0x2d0 += lbl_8050DB0C.field_0x4c[0x151];
+                fn_8039D0DC(((const u8*)data)[4]);
+            }
+            return true;
+        case 0x20019:
+        case 0x2001A:
+        case 0x2001B:
+        case 0x2001C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                for (int i = 0; i < lbl_8050DB0C.field_0x4c[0x151]; i++) {
+                    strcat(field_0x2c0, " ");
+                    strcat(field_0x2c4, " ");
+                }
+                field_0x2d0 += lbl_8050DB0C.field_0x4c[0x151];
+                fn_8039D0DC(((const u8*)data)[0]);
+            }
+            return true;
+        case 0x20004:
+        case 0x20005:
+        case 0x20006:
+        case 0x20007:
+        case 0x20008:
+            return true;
+        case 0x2000D:
+        case 0x2000E:
+        case 0x2000F:
+        case 0x20010:
+        case 0x20015:
+        case 0x20016:
+        case 0x20017:
+        case 0x20018:
+        case 0x2001D:
+            return true;
+        case 0x2001E:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 colour = *(const u8*)data;
+                if (colour < 5) {
+                    char code[30];
+                    field_0x2d8->field_0x154 = lbl_80475D64[colour];
+                    snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", lbl_80475D64[colour]);
+                    strcat(field_0x2c0, code);
+                    if ((field_0x2d8->field_0x3b8->field_0x28 & 0x40) || field_0x2d8->field_0x1a2 == 0) {
+                        snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", 0xFF);
+                        strcat(field_0x2c4, code);
+                    } else {
+                        snprintf(code, 30, "\x1B" "CC[%08x]\x1B" "GM[0]", -1);
+                        strcat(field_0x2c4, code);
+                    }
+                    field_0x2d0 += strlen(code);
+                }
+            }
+            return true;
+        case 0x2001F:
+        case 0x20020:
+        case 0x20021:
+        case 0x20022:
+        case 0x20023:
+        case 0x20024:
+            return true;
+        case 0x20025:
+        case 0x20026:
+        case 0x20027:
+        case 0x20028:
+            return true;
+        case 0x20029:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039ACD0(0);
+            }
+            return true;
+        case 0x2002A:
+        case 0x2002B:
+            return true;
+        case 0x2002C:
+            return true;
+        case 0x2002D:
+            return true;
+        case 0x2002E:
+            return true;
+        case 0x2002F:
+            return true;
+        case 0x20030:
+            return true;
+        case 0x20031:
+            return true;
+        case 0x20032:
+            return true;
+        case 0x20033:
+            return true;
+        case 0x30000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x190);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x190);
+            }
+            return true;
+        case 0x30001:
+            return true;
+        case 0x30002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x192);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x192);
+            }
+            return true;
+        case 0x30003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x178);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x178);
+            }
+            return true;
+        case 0x30004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(field_0x2d8->field_0x17c);
+                fn_8039C630(*(const u8*)data, field_0x2d8->field_0x17c);
+            }
+            return true;
+        case 0x30005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039A638(0);
+            }
+            return true;
+        case 0x30006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8050EC80.getCurrentFile().field_0x14);
+                fn_8039C630(4, lbl_8050EC80.getCurrentFile().field_0x14);
+            }
+            return true;
+        case 0x30007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8050EC80.getCurrentFile().field_0x16);
+                fn_8039C630(4, lbl_8050EC80.getCurrentFile().field_0x16);
+            }
+            return true;
+        case 0x30008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C9A0(lbl_8053AD78->field_0x10c);
+                fn_8039C630(6, lbl_8053AD78->field_0x10c);
+            }
+            return true;
+        }
+    } else {
+        if (tag != 0 && field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c] && field_0x2d6 != 0) {
+            s32 index = field_0x2cc;
+            if (!field_0x38.isMasked(index) && !(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                s32 offset = 0x1C - (s8)field_0x38.field_0x22d[index];
+                if (offset > 0 && offset < 0x1C) {
+                    field_0x2c0[field_0x2d0++] = -1;
+                    field_0x2c0[field_0x2d0++] = offset + 0xD0;
+                }
+            }
+            field_0x2d6 = 0;
+        }
+        switch (tag) {
+        case 0:
+            return true;
+        case 0x10000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF1);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10001:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF2);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF3);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF4);
+                appendGlyph(0x3CC0);
+                appendGlyph(0x3CE0);
+            }
+            return true;
+        case 0x10007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF5);
+                appendGlyph(0x3D00);
+                appendGlyph(0x3D20);
+            }
+            return true;
+        case 0x10008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF6);
+                appendGlyph(0x3D40);
+                appendGlyph(0x3D60);
+            }
+            return true;
+        case 0x10009:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF7);
+                appendGlyph(0x3D80);
+                appendGlyph(0x3DA0);
+            }
+            return true;
+        case 0x1000A:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0xFFF8);
+                appendGlyph(0x3DC0);
+                appendGlyph(0x3DE0);
+            }
+            return true;
+        case 0x10004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C00);
+            }
+            return true;
+        case 0x10005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C20);
+            }
+            return true;
+        case 0x10006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C40);
+            }
+            return true;
+        case 0x1000B:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C60);
+            }
+            return true;
+        case 0x1000C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x3C80);
+            }
+            return true;
+        case 0x10010:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x14E0);
+            }
+            return true;
+        case 0x10011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1500);
+            }
+            return true;
+        case 0x10012:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1540);
+            }
+            return true;
+        case 0x10013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                appendGlyph(0x1520);
+            }
+            return true;
+        case 0x2000A:
+        case 0x2000C:
+        case 0x20012:
+        case 0x20014:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20000:
+        case 0x20002:
+        case 0x20019:
+        case 0x2001B:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20009:
+        case 0x20011:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0xFFB0);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20001:
+        case 0x2001A:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0xFFB0);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x2000B:
+        case 0x20013:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[4]);
+                appendGlyph(0xFFB1);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20003:
+        case 0x2001C:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039D30C(((const u8*)data)[0]);
+                appendGlyph(0xFFB1);
+                appendGlyph(0x1420);
+            }
+            return true;
+        case 0x20004:
+        case 0x20005:
+        case 0x20006:
+        case 0x20007:
+        case 0x20008:
+        case 0x2000D:
+        case 0x2000E:
+        case 0x2000F:
+        case 0x20010:
+        case 0x20015:
+            return true;
+        case 0x20016: {
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 value = *(const u8*)data;
+                if (value <= 5 || value == 11) {
+                    field_0x2c0[field_0x2d0++] = -3;
+                    field_0x2c0[field_0x2d0++] = value;
+                }
+            }
+            return true;
+        }
+        case 0x20017:
+        case 0x20018:
+        case 0x2001D:
+            return true;
+        case 0x2001E: {
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                u8 colour = *(const u8*)data;
+                if (colour < 5) {
+                    field_0x2c0[field_0x2d0++] = -5;
+                    field_0x2c0[field_0x2d0++] = colour;
+                }
+            }
+            return true;
+        }
+        case 0x2001F:
+        case 0x20020:
+        case 0x20021:
+        case 0x20022:
+        case 0x20023:
+        case 0x20024:
+            return true;
+        case 0x20025:
+        case 0x20026:
+        case 0x20027:
+        case 0x20028:
+            return true;
+        case 0x20029:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039ACD0(1);
+            }
+            return true;
+        case 0x2002A:
+        case 0x2002B:
+            return true;
+        case 0x2002C:
+            return true;
+        case 0x2002D:
+            return true;
+        case 0x2002E:
+            return true;
+        case 0x2002F:
+            return true;
+        case 0x20030:
+            return true;
+        case 0x20031:
+            return true;
+        case 0x20032:
+            return true;
+        case 0x20033:
+            return true;
+        case 0x30000:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x190);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x190);
+            }
+            return true;
+        case 0x30001:
+            return true;
+        case 0x30002:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x192);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x192);
+            }
+            return true;
+        case 0x30003:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x178);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x178);
+            }
+            return true;
+        case 0x30004:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(field_0x2d8->field_0x17c);
+                fn_8039B3EC(*(const u8*)data, field_0x2d8->field_0x17c);
+            }
+            return true;
+        case 0x30005:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039A638(1);
+            }
+            return true;
+        case 0x30006:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8050EC80.getCurrentFile().field_0x14);
+                fn_8039B3EC(4, lbl_8050EC80.getCurrentFile().field_0x14);
+            }
+            return true;
+        case 0x30007:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8050EC80.getCurrentFile().field_0x16);
+                fn_8039B3EC(4, lbl_8050EC80.getCurrentFile().field_0x16);
+            }
+            return true;
+        case 0x30008:
+            if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
+                fn_8039C258(lbl_8053AD78->field_0x10c);
+                fn_8039B3EC(6, lbl_8053AD78->field_0x10c);
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 // FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)

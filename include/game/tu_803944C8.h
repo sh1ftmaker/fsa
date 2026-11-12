@@ -190,6 +190,11 @@ public:
     virtual void do_reset();
     virtual void do_begin(const void*, const char*);
     virtual void do_end();
+    virtual bool do_tag(u32 tag, const void* data, u32);
+    // 0x8039A638 / 0x8039ACD0: called by do_tag for the tags 0x30005 and 0x20029 (0 in the text
+    // windows, 1 in the text-image windows).
+    void fn_8039A638(s16 mode);
+    void fn_8039ACD0(s16 mode);
     // 0x8039D0DC: records the current slot's offset and line count, then the value.
     void fn_8039D0DC(u8 value);
     // 0x8039D30C: the same for the text buffer, as -2 marked control bytes.
