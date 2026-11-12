@@ -207,7 +207,9 @@ def totals(ev):
 def lane_of(e):
     if e["cls"] == "missing":
         return "write"
-    return "structure" if e["grade"] == "drift" else "match"
+    # At 95 % and above what is left is mostly codegen (run 2026-11-12: sonnet and opus gained ~250-300
+    # matched bytes per dollar there, against ~6,800 for writing unwritten functions): the match lane.
+    return "structure" if e["grade"] == "drift" and e["pct"] < 95 else "match"
 
 
 def start_tier(size):
@@ -1179,9 +1181,10 @@ def cmd_worker(args):
                     continue
             else:
                 el = eligible(fns, unit, tier, lanes, args.min_size, args.max_size, hist)
-            if el:
-                pool.append((-len(el), unit))
-        unit = next((u for _, u in sorted(pool) if claim(u, owner, wt)), None)
+            if el:  # units with unwritten code first (most bytes), then the ones with most open functions
+                wb = sum(fns[n]["size"] for n in el if lane_of(fns[n]) == "write")
+                pool.append((-wb, -len(el), unit))
+        unit = next((u for *_, u in sorted(pool) if claim(u, owner, wt)), None)
         if unit is None:
             notify("FSA grind", f"{owner} ({tier}, {args.mode}): nothing left in its lanes")
             return
