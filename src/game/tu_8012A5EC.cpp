@@ -162,16 +162,18 @@ cls_8049E770::~cls_8049E770() {
 // FIXME(shotgun): 81.3 %, missing/extra
 void cls_8049E770::fn_8012C334() {
     for (s32 i = 0; i < 4; i++) {
-        if (fn_80230188(i) && !fn_802300EC(i)) {
+        if (fn_80230188(i)) {
+            return;
+        }
+        if (!fn_802300EC(i)) {
             return;
         }
     }
-    f32 baseY = field_0x3f4 + 384.0f;
     static JGeometry::TVec3f lbl_804BD790[4] = {
-        JGeometry::TVec3f(field_0x3f8 - 48.0f, baseY + 48.0f, 0.0f),
-        JGeometry::TVec3f(field_0x3f8 - 16.0f, baseY + 48.0f, 0.0f),
-        JGeometry::TVec3f(field_0x3f8 + 16.0f, baseY + 48.0f, 0.0f),
-        JGeometry::TVec3f(field_0x3f8 + 48.0f, baseY + 48.0f, 0.0f),
+        JGeometry::TVec3f(field_0x3f8 - 48.0f, field_0x3f4 + 384.0f + 48.0f, 0.0f),
+        JGeometry::TVec3f(field_0x3f8 - 16.0f, field_0x3f4 + 384.0f + 48.0f, 0.0f),
+        JGeometry::TVec3f(field_0x3f8 + 16.0f, field_0x3f4 + 384.0f + 48.0f, 0.0f),
+        JGeometry::TVec3f(field_0x3f8 + 48.0f, field_0x3f4 + 384.0f + 48.0f, 0.0f),
     };
     for (s32 i = 0; i < 4; i++) {
         field_0x3b8[i] = lbl_804BD790[i];
