@@ -26,8 +26,8 @@ void CollisionBoxList_8020D60C::fn_8020D8C0(const JGeometry::TBox2f* box, s32 la
 
 // Adds the box of the actor `serial` (moved by its position) if the actor is
 // alive, the box is not empty and fewer than 0x50 boxes are listed.
-// FIXME: 87.1 %. The original loads the actor's layer (field_0x4) before the
-// count check and adds the box corners in another order; the rest is the same.
+// FIXME: 98.0 %. Register allocation only: the corner loads and adds land in
+// other fp registers than the original's.
 void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     if (actor == NULL) {
@@ -37,9 +37,10 @@ void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
         return;
     }
     f32 x0 = actor->field_0x80.i.x + actor->mPos.x;
-    f32 y0 = actor->field_0x80.i.y + actor->mPos.y;
     f32 x1 = actor->field_0x80.f.x + actor->mPos.x;
+    f32 y0 = actor->field_0x80.i.y + actor->mPos.y;
     f32 y1 = actor->field_0x80.f.y + actor->mPos.y;
+    s32 layer = actor->field_0x4;
     if (mCount >= 0x50) {
         return;
     }
@@ -49,8 +50,8 @@ void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
         entry.mBox.i.y = y0;
         entry.mBox.f.x = x1;
         entry.mBox.f.y = y1;
-        entry.mLayer = actor->field_0x4;
-        entry.mSerial = serial;
+        mBoxes[mCount].mLayer = layer;
+        mBoxes[mCount].mSerial = serial;
         mCount++;
     }
 }
