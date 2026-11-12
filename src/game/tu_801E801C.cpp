@@ -217,10 +217,19 @@ u8 cls_804A5568::vfunc_0x60() {
 u8 cls_804A5568::vfunc_0x68() {
     u8 result = 0;
     if (mFlags & 0x2000) {
-        JGeometry::TBox2f saved = mBox;
-        mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
+        f32 savedIX = mBox.i.x;
+        f32 savedIY = mBox.i.y;
+        f32 savedFX = mBox.f.x;
+        f32 savedFY = mBox.f.y;
+        mBox.i.x = -8.0f;
+        mBox.i.y = -8.0f;
+        mBox.f.x = 8.0f;
+        mBox.f.y = 8.0f;
         result = fn_801F2B7C(0, -1, 0x16);
-        mBox = saved;
+        mBox.i.x = savedIX;
+        mBox.i.y = savedIY;
+        mBox.f.x = savedFX;
+        mBox.f.y = savedFY;
     }
     return result;
 }
