@@ -344,9 +344,82 @@ struct ActorVector {
     JGadget::TAllocator<ActorBase_804A5770*> mAllocator;
     ActorBase_804A5770** mBegin;
     ActorBase_804A5770** mEnd;
+    u32 mCapacity;
+    u32 (*mExtend)(u32, u32, u32);
     ActorBase_804A5770** Insert_raw(ActorBase_804A5770** pos, u32 count);
     void fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value);
 };
+
+// JGadget::TVector<T>::TDestructed_deallocate_: frees its pointer through the allocator on scope exit.
+struct ActorVectorDealloc {
+    ActorVectorDealloc(JGadget::TAllocator<ActorBase_804A5770*>& alloc, ActorBase_804A5770** pointer) {
+        mAllocator = &alloc;
+        mPointer = pointer;
+    }
+    ~ActorVectorDealloc() { mAllocator->deallocate(mPointer, 0); }
+    void set(ActorBase_804A5770** p) { mPointer = p; }
+    JGadget::TAllocator<ActorBase_804A5770*>* mAllocator;
+    ActorBase_804A5770** mPointer;
+};
+
+// stand-ins for std::copy / std::copy_backward (the MSL <algorithm> is not usable from game code)
+static inline ActorBase_804A5770** copyForward(ActorBase_804A5770** first, ActorBase_804A5770** last,
+                                               ActorBase_804A5770** result) {
+    for (; first < last; ++first, ++result) {
+        *result = *first;
+    }
+    return result;
+}
+
+static inline ActorBase_804A5770** copyBackward(ActorBase_804A5770** first, ActorBase_804A5770** last,
+                                                ActorBase_804A5770** result) {
+    while (last > first) {
+        *--result = *--last;
+    }
+    return result;
+}
+
+ActorBase_804A5770** ActorVector::Insert_raw(ActorBase_804A5770** pos, u32 count) {
+    if (count == 0) {
+        return pos;
+    }
+    u32 size = mBegin == NULL ? 0 : mEnd - mBegin;
+    if (count + size <= mCapacity) {
+        ActorBase_804A5770** newEnd = pos + count;
+        if (newEnd < mEnd) {
+            ActorBase_804A5770** tail = mEnd - count;
+            copyForward(tail, mEnd, mEnd);
+            copyBackward(pos, tail, mEnd);
+            for (ActorBase_804A5770** it = pos; it != newEnd; it++) {
+            }
+            mEnd += count;
+            return pos;
+        }
+        copyForward(pos, mEnd, newEnd);
+        for (ActorBase_804A5770** it = pos; it != mEnd; it++) {
+        }
+        mEnd += count;
+        return pos;
+    }
+    u32 oldSize = mBegin == NULL ? 0 : mEnd - mBegin;
+    u32 needed = oldSize + count;
+    u32 extended = mExtend(mCapacity, oldSize, count);
+    u32 newSize = needed > extended ? needed : extended;
+    ActorBase_804A5770** data = mAllocator.allocate(newSize, 0);
+    if (data == NULL) {
+        return mEnd;
+    }
+    ActorVectorDealloc guard(mAllocator, data);
+    ActorBase_804A5770** gap = copyForward(mBegin, pos, data);
+    copyForward(pos, mEnd, gap + count);
+    for (ActorBase_804A5770** it = mBegin; it != mEnd; it++) {
+    }
+    guard.set(mBegin);
+    mEnd = data + (count + (mEnd - mBegin));
+    mBegin = data;
+    mCapacity = newSize;
+    return gap;
+}
 
 // fill-insert: opens a gap with Insert_raw and constructs count copies of *value in it
 void ActorVector::fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value) {
@@ -368,7 +441,7 @@ void cls_801192AC::fn_8011888C(ActorBase_804A5770* actor) {
 
 // FIXME(shotgun): 82.62 %, missing/extra; behaviour drift.
 // (stand-in: the original is std::find_if with a by-value
-// predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
+// predicate, then the JGadget TVector erase(it, it + 1) inline: copyForward, the empty DestroyElement_
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     s32 serial = actor->mSerial;
