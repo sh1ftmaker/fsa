@@ -27,7 +27,6 @@ extern s32 lbl_80474F5C[];
 
 cls_804AE4B0::~cls_804AE4B0() {}
 
-// FIXME(shotgun): 99.98 %, scheduling; behaviour drift.
 void cls_804AE4B0::init() {
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
         fn_8036FDAC();
@@ -173,7 +172,7 @@ void cls_804AE4B0::draw() {
 
 // Not auto-inlined: update-side callers (fn_8037100C, fn_80370764, fn_803704E8) use a plain bl.
 #pragma auto_inline off
-// FIXME(shotgun): 97.89 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 97.90 %, scheduling+regalloc; behaviour clean.
 void cls_804AE4B0::fn_803721F4() {
     bool close = false;
     if (field_0x398 == 1) {
@@ -618,7 +617,7 @@ void cls_804AE4B0::fn_80370A7C() {
     }
 }
 
-// FIXME(shotgun): 85.72 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.04 %, different + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370764() {
     fn_803703C8();
     for (s32 i = 0; i < 4; i++) {
@@ -871,7 +870,7 @@ void cls_804AE4B0::fn_80370020() {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 98.94 %, scheduling+regalloc; behaviour drift.
+// FIXME(shotgun): 98.95 %, regalloc-only; behaviour drift.
 void cls_804AE4B0::fn_8036FDAC() {
     mTimer = 0x50;
     static JGeometry::TVec3f offsets[4] = {
@@ -919,7 +918,7 @@ void cls_804AE4B0::fn_8036FDAC() {
     }
 }
 
-// FIXME(shotgun): 99.31 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 99.32 %, regalloc-only; behaviour clean.
 void cls_804AE4B0::fn_8036FB60() {
     bool close = false;
     if (field_0x398 == 1) {
