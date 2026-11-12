@@ -1609,6 +1609,7 @@ void cls_804AF72C::fn_8039B3EC(u8 noun, s32 count) {
 }
 
 // The play time (minutes, seconds) of the message manager as text (mode 0) or glyph codes.
+// FIXME: 94.26 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039ACD0(s16 mode) {
     char ch[3];
     ch[2] = 0;
@@ -2618,7 +2619,7 @@ void cls_804AF5A0::fn_80395BE8() {
 // Pops a window pane in: its alpha rises over 10 frames; once it is full, its size
 // follows a five-point curve per axis over the frame counts of the layout constants, then
 // the pane is moved so that it stays centred on the box.
-// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.95 %, regalloc-only + reloc-name; behaviour clean.
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
@@ -2677,7 +2678,7 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     pane->move(field_0xf8 + field_0x100 * 0.5f - w * 0.5f, (field_0xfc + field_0x104) - h);
 }
 
-// FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.83 %, regalloc-only + reloc-name; behaviour clean.
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     s32 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
