@@ -30,7 +30,7 @@ static const s32 lbl_804650B0[6] = {0x1B3, 0x1CD, 0x17F, 0x201, 0x1E7, 0x199};
 static const u32 lbl_804650C8[3] = {0x840, 0x841, 0x842};
 static const s16 lbl_804650D4[6] = {-0x4000, -0x1C00, 0x1C00, 0x4000, 0x6400, -0x6400};
 
-// FIXME(shotgun): 92.4 %, missing/extra
+// FIXME(shotgun): 92.36 %, different + reloc-name; behaviour clean.
 void cls_8049E770::init() {
     lbl_8053AD70->fn_8037AE00();
     field_0x3f4 = (s32)(mPos.y / 384.0f) * 384.0f;
@@ -93,7 +93,7 @@ void cls_8049E770::init() {
 
 void cls_8049E770::reset() {}
 
-// FIXME(shotgun): 100.0 %, missing/extra
+// FIXME(shotgun): 99.96 %, reloc-name; behaviour clean.
 void cls_8049E770::update() {
     if (field_0x258 != 0) {
         field_0x258--;
@@ -129,7 +129,7 @@ void cls_8049E770::update() {
     (this->*lbl_8049E6EC[field_0x230])();
 }
 
-// FIXME(shotgun): 99.8 %, missing/extra
+// FIXME(shotgun): 99.77 %, reloc-name; behaviour clean.
 void cls_8049E770::draw() {
     JGeometry::TVec3f savedPos(mPos);
     for (s32 i = 0; i < 6; i++) {
@@ -146,7 +146,8 @@ void cls_8049E770::draw() {
     mPos = savedPos;
 }
 
-// FIXME(shotgun): 38.9 %, missing/extra (the original's 0xF4 |= 0x100 store on each emitter is not declared yet)
+// FIXME(shotgun): 48.83 %, missing/extra; behaviour drift.
+// (the original's 0xF4 |= 0x100 store on each emitter is not declared yet)
 cls_8049E770::~cls_8049E770() {
     for (s32 i = 0; i < 2; i++) {
         for (s32 j = 0; j < 2; j++) {
@@ -159,7 +160,7 @@ cls_8049E770::~cls_8049E770() {
     }
 }
 
-// FIXME(shotgun): 81.3 %, missing/extra
+// FIXME(shotgun): 96.77 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012C334() {
     for (s32 i = 0; i < 4; i++) {
         if (fn_80230188(i)) {
@@ -190,7 +191,7 @@ void cls_8049E770::fn_8012C334() {
     fn_8012A5EC();
 }
 
-// FIXME(shotgun): 72.8 %, missing/extra
+// FIXME(shotgun): 74.84 %, missing/extra + reloc-name; behaviour clean.
 void cls_8049E770::fn_8012C170() {
     if (field_0x250 == 1) {
         fn_80119DD0()->fn_80119468(0, 0);
@@ -225,7 +226,7 @@ void cls_8049E770::fn_8012C170() {
     }
 }
 
-// FIXME(shotgun): 62.4 %, missing/extra
+// FIXME(shotgun): 62.40 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012C030() {
     bool done = fn_8012A5EC();
     if (field_0x238.y == field_0x3f4 + 260.0f && field_0x248 == 85.0f && done == true) {
@@ -240,7 +241,7 @@ void cls_8049E770::fn_8012C030() {
     }
 }
 
-// FIXME(shotgun): 75.0 %, missing/extra
+// FIXME(shotgun): 74.98 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012BE2C() {
     fn_8012A5EC();
     fn_8022FE80(0, field_0x4, mSerial, true, false);
@@ -281,7 +282,7 @@ void cls_8049E770::fn_8012BE2C() {
     }
 }
 
-// FIXME(shotgun): 73.0 %, missing/extra
+// FIXME(shotgun): 72.95 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012BC40() {
     bool done = fn_8012A5EC();
     if (field_0x238.y == field_0x3f4 + 279.0f && field_0x248 == 105.0f && done == true) {
@@ -318,7 +319,7 @@ void cls_8049E770::fn_8012BC40() {
     }
 }
 
-// FIXME(shotgun): 79.2 %, missing/extra
+// FIXME(shotgun): 79.22 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012B218() {
     static JGeometry::TVec3f lbl_804BD7C0[4] = {
         JGeometry::TVec3f(-113.0f, 382.0f, 50.0f),
@@ -451,7 +452,7 @@ void cls_8049E770::fn_8012B218() {
     }
 }
 
-// FIXME(shotgun): 62.4 %, missing/extra
+// FIXME(shotgun): 75.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012B0D8() {
     bool done = fn_8012A5EC();
     if (field_0x238.y == field_0x3f4 + 260.0f && field_0x248 == 85.0f && done == true) {
@@ -466,7 +467,7 @@ void cls_8049E770::fn_8012B0D8() {
     }
 }
 
-// FIXME(shotgun): 99.9 %, missing/extra
+// FIXME(shotgun): 99.88 %, reloc-name; behaviour clean.
 void cls_8049E770::fn_8012B02C() {
     fn_8012A5EC();
     fn_8022FE80(0, field_0x4, mSerial, true, false);
@@ -480,7 +481,7 @@ void cls_8049E770::fn_8012B02C() {
     }
 }
 
-// FIXME(shotgun): 88.8 %, missing/extra
+// FIXME(shotgun): 88.83 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012AA84() {
     if (field_0x250 >= 1300) {
         if (field_0x250 == 1300) {
@@ -592,7 +593,6 @@ void cls_8049E770::fn_8012AA84() {
     }
 }
 
-// FIXME(shotgun): 100.0 %, missing/extra
 void cls_8049E770::fn_8012A9A0() {
     fn_8012A5EC();
     if (field_0x404 == 0) {
@@ -614,7 +614,7 @@ void cls_8049E770::fn_8012A9A0() {
     }
 }
 
-// FIXME(shotgun): 34.2 %, missing/extra
+// FIXME(shotgun): 34.20 %, missing/extra; behaviour clean.
 void cls_8049E770::fn_8012A8C0() {
     JGeometry::TBox2f baseBox(mBox);
     JGeometry::TBox2f box(baseBox);
@@ -628,7 +628,7 @@ void cls_8049E770::fn_8012A8C0() {
     }
 }
 
-// FIXME(shotgun): 91.9 %, missing/extra
+// FIXME(shotgun): 91.57 %, missing/extra + reloc-name; behaviour drift.
 bool cls_8049E770::fn_8012A5EC() {
     switch (field_0x230) {
     case 0:
