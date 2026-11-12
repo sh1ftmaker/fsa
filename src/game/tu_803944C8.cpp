@@ -1479,10 +1479,10 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x100 = field_0x20[0]->search('P1ar')->getWidth();
     field_0x104 = field_0x20[0]->search('P1ar')->getHeight();
     field_0x1a3 = field_0x20[0]->search('P1ar')->getAlpha();
-    field_0x1a5 = field_0x20[0]->search('P1b01')->getAlpha();
-    field_0x1a6 = field_0x20[0]->search('P1b01')->getAlpha();
-    field_0x1a7 = field_0x20[0]->search('P1n02')->getAlpha();
-    field_0x1a8 = field_0x20[0]->search('P1n01')->getAlpha();
+    field_0x1a5[0] = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a5[1] = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a5[2] = field_0x20[0]->search('P1n02')->getAlpha();
+    field_0x1a5[3] = field_0x20[0]->search('P1n01')->getAlpha();
     field_0xd8 = field_0x20[3]->search('Tm01')->getBounds()->i.x;
     field_0xdc = field_0x20[3]->search('Tm01')->getBounds()->i.y;
     field_0xf0 = field_0x20[3]->search('Tm01')->getWidth();
@@ -1609,6 +1609,171 @@ void cls_804AF5A0::fn_80396F94() {
     fn_80396884();
     fn_80395BE8();
     field_0x3b0 = 1;
+}
+
+// Shows the current player's window frame ('PNar') and pane set: while the text runs it
+// pulses the pane alphas over lbl_8050DB0C's period, while the window waits (99999)
+// it pops the frame in; otherwise all frames are hidden. Bit 0x40 uses the op_zelda
+// screen (0x2C) and only players 1 and 5.
+void cls_804AF5A0::fn_80395BE8() {
+    s32 player = field_0x160;
+    if ((field_0x3c0->field_0x3b8->field_0x28 & 0x100) && gGameRoot_8053AAF8->field_0x7e) {
+        player = 4;
+    }
+    if (!field_0x3af && !field_0x1a9) {
+        field_0x194 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (i == player) {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    J2DScreen* screen = field_0x20[field_0x1a2];
+                    s16 period = lbl_8050DB0C.field_0x4c[(0x284 - 0x4C) / 2];
+                    s32 half = period / 2;
+                    field_0x196++;
+                    if (field_0x196 >= period) {
+                        field_0x196 = 0;
+                    }
+                    f32 ratio = (f32)(field_0x196 < half ? field_0x196 : period - field_0x196) / (f32)half;
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            screen->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j] * ratio);
+                        }
+                    }
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->show();
+                    }
+                } else {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        } else {
+            if (player != 4) {
+                player = 0;
+            }
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (i == player) {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    J2DScreen* screen = field_0x20[3];
+                    s16 period = lbl_8050DB0C.field_0x4c[(0x284 - 0x4C) / 2];
+                    s32 half = period / 2;
+                    field_0x196++;
+                    if (field_0x196 >= period) {
+                        field_0x196 = 0;
+                    }
+                    f32 ratio = (f32)(field_0x196 < half ? field_0x196 : period - field_0x196) / (f32)half;
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            screen->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j] * ratio);
+                        }
+                    }
+                    if (!field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->show();
+                    }
+                } else {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        }
+    } else if (field_0x10->field_0x4c == 99999 && !field_0x1a9) {
+        field_0x196 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (i == player) {
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->show();
+                    }
+                    fn_80395834(field_0x20[field_0x1a2]->search(lbl_80475768[i]));
+                    if (!field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->show();
+                    }
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            field_0x20[field_0x1a2]->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j]);
+                        }
+                    }
+                } else {
+                    if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        } else {
+            if (player != 4) {
+                player = 0;
+            }
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (i == player) {
+                    if (!field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->show();
+                    }
+                    fn_80395480(field_0x20[3]->search(lbl_80475768[i]));
+                    if (!field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->show();
+                    }
+                    for (int j = 0; j < 4; j++) {
+                        if (lbl_80475790[i][j] != 0) {
+                            field_0x20[3]->search(lbl_80475790[i][j])->setAlpha(field_0x1a5[j]);
+                        }
+                    }
+                } else {
+                    if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475768[i])->hide();
+                    }
+                    if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                        field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                    }
+                }
+            }
+        }
+    } else {
+        field_0x194 = 0;
+        field_0x196 = 0;
+        if (!(field_0x3c0->field_0x3b8->field_0x28 & 0x40)) {
+            for (int i = 0; i < 5; i++) {
+                if (field_0x20[field_0x1a2]->search(lbl_80475768[i])->isVisible()) {
+                    field_0x20[field_0x1a2]->search(lbl_80475768[i])->hide();
+                }
+                if (field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->isVisible()) {
+                    field_0x20[field_0x1a2]->search(lbl_80475790[i][0])->hide();
+                }
+            }
+        } else {
+            for (int i = 0; i < 5; i++) {
+                if (i >= 1 && i <= 3) {
+                    continue;
+                }
+                if (field_0x20[3]->search(lbl_80475768[i])->isVisible()) {
+                    field_0x20[3]->search(lbl_80475768[i])->hide();
+                }
+                if (field_0x20[3]->search(lbl_80475790[i][0])->isVisible()) {
+                    field_0x20[3]->search(lbl_80475790[i][0])->hide();
+                }
+            }
+        }
+    }
 }
 
 // Pops a window pane in: its alpha rises over 10 frames; once it is full, its size

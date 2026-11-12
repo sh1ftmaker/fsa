@@ -184,10 +184,8 @@ public:
     // stored), 'P1n02', 'P1n01'.
     /* 0x1A3 */ u8 field_0x1a3;
     /* 0x1A4 */ u8 field_0x1a4;
-    /* 0x1A5 */ u8 field_0x1a5;
-    /* 0x1A6 */ u8 field_0x1a6;
-    /* 0x1A7 */ u8 field_0x1a7;
-    /* 0x1A8 */ u8 field_0x1a8;
+    // The alphas of the four 'PNb02', 'PNb01', 'PNn02', 'PNn01' panes (fn_80395BE8 indexes them).
+    /* 0x1A5 */ u8 field_0x1a5[4];
     /* 0x1A9 */ u8 field_0x1a9;
     /* 0x1AA */ u8 field_0x1aa;
     // Two 0x100-byte buffers; the constructor points cls_804AF72C's 0x2C0 /
