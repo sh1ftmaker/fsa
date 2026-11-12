@@ -97,7 +97,7 @@ void fn_80440928(f32 x, f32 y) {
     lbl_8053AED0->fn_8043DF8C(x, y);
 }
 
-// FIXME(shotgun): 57.1 %, scheduling
+// FIXME(shotgun): 57.14 %, scheduling; behaviour clean.
 void fn_804408F0(JGeometry::TVec3f* pos) {
     lbl_8053AED0->fn_8043E7CC(*pos);
 }
@@ -246,7 +246,7 @@ void cls_804B1920::fn_8043EDE8(s32 arg) {
     field_0xe4 = 30;
 }
 
-// FIXME(shotgun): 99.07 %, regalloc-only
+// FIXME(shotgun): 99.20 %, regalloc-only + reloc-name; behaviour drift.
 void cls_804B1920::fn_8043E80C(u32 digit, u8 alpha, u32 top, u32 bottom, f32 x, f32 y, f32 scale) {
     f32 sx;
     f32 sy;
@@ -329,7 +329,8 @@ void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     fn_80440928(screen.x, screen.y);
 }
 
-// FIXME(shotgun): 88.13 %, missing/extra (the cx / cy and box bounds live in fewer float registers)
+// FIXME(shotgun): 88.41 %, missing/extra + reloc-name; behaviour drift.
+// (the cx / cy and box bounds live in fewer float registers)
 void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     Vec screenA;
     Vec screenB;
@@ -356,7 +357,7 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     }
 }
 
-// FIXME(shotgun): 88.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.03 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
     Vec origin;
     origin.x = origin.y = origin.z = 0.0f;
@@ -382,7 +383,8 @@ void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
     }
 }
 
-// FIXME: 96.0. Same instructions, float registers allocated differently (f0/f7/f8).
+// FIXME: 95.96 %, regalloc-only + reloc-name; behaviour clean.
+// Same instructions, float registers allocated differently (f0/f7/f8).
 bool cls_804B1920::fn_8043DF24(f32 x, f32 y, f32 px, f32 py, f32 margin) {
     JGeometry::TBox2f box(x - 94.0f, y - 61.5f, 94.0f + x, 61.5f + y);
     box.i.x -= margin;
@@ -454,7 +456,6 @@ void cls_804B1920::fn_8043DC98() {
     }
 }
 
-// FIXME(shotgun): 99.38 %, reloc-name
 void cls_804B1920::fn_8043DB58() {
     gGameRoot2_8053AB10->fn_8013B490();
     u8 mode = field_0x256;
@@ -479,7 +480,8 @@ void cls_804B1920::fn_8043DB58() {
     }
 }
 
-// FIXME: 99.7. Registers only: the second loop counts in r28 (ours r29, the first loop's).
+// FIXME: 99.70 %, regalloc-only; behaviour clean.
+// Registers only: the second loop counts in r28 (ours r29, the first loop's).
 void cls_804B1920::fn_8043D8B4() {
     int i;
     if (gGameRoot_8053AAF8->field_0x7e == 0) {
@@ -569,7 +571,8 @@ void cls_804B1920::fn_8043D834() {
     }
 }
 
-// FIXME: 95.4. The original tests 0x199 / 0x1B5 unsigned (cmplwi) but switches signed (cmpwi on id
+// FIXME: 95.41 %, missing/extra; behaviour drift.
+// The original tests 0x199 / 0x1B5 unsigned (cmplwi) but switches signed (cmpwi on id
 // itself), compares the message type byte signed (cmpwi 0x2A), and turns field_0xde & bit into a
 // bool first (neg / or / srwi.; ours: and.).
 bool cls_804B1920::fn_8043D67C(s32 id, u32 arg1, u32 arg2) {
@@ -629,7 +632,8 @@ void cls_804B1920::fn_8043D5F0() {
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME: 97.8. Registers differ: the original keeps the bounds value in f2 and the 100.0 literal in f1.
+// FIXME: 98.10 %, regalloc-only; behaviour clean.
+// Registers differ: the original keeps the bounds value in f2 and the 100.0 literal in f1.
 f32 cls_804B1920::fn_8043D57C() {
     f32 result = 0.0f;
     if (field_0x10b != 0 && field_0x10c == 0) {
@@ -638,7 +642,8 @@ f32 cls_804B1920::fn_8043D57C() {
     return result;
 }
 
-// FIXME: 98.1. Registers differ: the original keeps the bounds value in f1 (the 0.0 default is dead there).
+// FIXME: 98.85 %, regalloc-only; behaviour clean.
+// Registers differ: the original keeps the bounds value in f1 (the 0.0 default is dead there).
 f32 cls_804B1920::fn_8043D514() {
     f32 result = 0.0f;
     if (field_0x10b != 0 && field_0x10c == 1) {
@@ -647,7 +652,6 @@ f32 cls_804B1920::fn_8043D514() {
     return result;
 }
 
-// FIXME(shotgun): 99.36 %, reloc-name
 void cls_804B1920::fn_8043D39C() {
     if (gGameRoot_8053AAF8->field_0x7f) {
         field_0x290->fn_8041F5FC();
@@ -670,7 +674,8 @@ void cls_804B1920::fn_8043D39C() {
     }
 }
 
-// FIXME: 98.9. The original loads field_0x70[0]->field_0x18 (f1) before the 0xFC / 0x100 words for
+// FIXME: 99.06 %, scheduling+regalloc; behaviour clean.
+// The original loads field_0x70[0]->field_0x18 (f1) before the 0xFC / 0x100 words for
 // fn_803837A4 (ours after them, in r7); the 1.0 / 16.0 / 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
 void cls_804B1920::fn_8043D034() {
     if (lbl_8053AED0->field_0x10a) {
@@ -727,7 +732,6 @@ void cls_804B1920::fn_8043D034() {
     }
 }
 
-// FIXME: 99.8. Code identical; the 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
 void cls_804B1920::fn_8043CF40() {
     f32 x;
     f32 y;
@@ -762,7 +766,6 @@ void cls_804B1920::fn_8043CEA0() {
     field_0x10b = 3;
 }
 
-// FIXME: 99.8. Code identical; the 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
 void cls_804B1920::fn_8043CDA0() {
     f32 x;
     f32 y;
@@ -787,7 +790,7 @@ void cls_804B1920::fn_8043CDA0() {
     }
 }
 
-// FIXME(shotgun): 79.2 %, missing/extra
+// FIXME(shotgun): 79.16 %, missing/extra; behaviour drift.
 bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale) {
     if (field_0x252 >= 10) {
         return false;
@@ -836,6 +839,82 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
     return true;
 }
 
+// FIXME: 99.96 %, reloc-name; behaviour drift.
+void cls_804B1920::fn_8043ACE4() {
+    // Built once, never read.
+    static JUtility::TColor lbl_8052C5F0[4] = {
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xD8, 0xFF, 0xA1, 0xFF),
+    };
+    if (field_0x253 != 0) {
+        for (s32 i = 0; i < field_0x253; i++) {
+            f32 alpha = field_0x24e[i] / 255.0f;
+            gGameRoot2_8053AB10->fn_8013B490();
+            switch (field_0x1d0[i]) {
+            case 1:
+                field_0x280[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[0]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[0]->setAlpha(200.0f * alpha);
+                field_0x280[0]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[0]->setCornerColor(JUtility::TColor(0xB9, 0x12, 0x12, 0xFF), JUtility::TColor(0xD8, 0x3A, 0x16, 0xFF),
+                                               JUtility::TColor(0xB9, 0x54, 0x12, 0xFF), JUtility::TColor(0xFF, 0x9D, 0x10, 0xFF));
+                field_0x280[0]->setAlpha(field_0x24e[i]);
+                field_0x280[0]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 2:
+                field_0x280[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[1]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[1]->setAlpha(200.0f * alpha);
+                field_0x280[1]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[1]->setCornerColor(JUtility::TColor(0xF2, 0x48, 0x09, 0xFF), JUtility::TColor(0xF2, 0x48, 0x09, 0xFF),
+                                               JUtility::TColor(0xF2, 0xAB, 0x24, 0xFF), JUtility::TColor(0xFC, 0xFF, 0x21, 0xFF));
+                field_0x280[1]->setAlpha(field_0x24e[i]);
+                field_0x280[1]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 3:
+                field_0x280[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[2]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[2]->setAlpha(200.0f * alpha);
+                field_0x280[2]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0x77, 0xFF));
+                field_0x280[2]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[2]->setAlpha(field_0x24e[i]);
+                field_0x280[2]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 4:
+                field_0x280[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[3]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[3]->setAlpha(200.0f * alpha);
+                field_0x280[3]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xD8, 0xFF, 0xA1, 0xFF));
+                field_0x280[3]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[3]->setAlpha(field_0x24e[i]);
+                field_0x280[3]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            }
+        }
+        field_0x253 = 0;
+    }
+}
+
 void cls_804B1920::fn_8043ABCC(s32 index, s32 unused) {
     index = index < 0 ? 0 : index;
     void* res;
@@ -851,7 +930,8 @@ void cls_804B1920::fn_8043ABCC(s32 index, s32 unused) {
     field_0x10d = 0;
 }
 
-// FIXME: 99.5. Registers only: the original keeps delay and wait (both branches) in r31 and the
+// FIXME: 99.50 %, regalloc-only; behaviour clean.
+// Registers only: the original keeps delay and wait (both branches) in r31 and the
 // three timings in r30/r29/r28 (ours: r28, r31, r30, r29); one shared s16 for delay and wait gives 99.87.
 void cls_804B1920::fn_8043A638() {
     f32 dx = 0.0f;
