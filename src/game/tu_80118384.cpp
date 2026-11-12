@@ -339,9 +339,10 @@ void cls_801192AC::fn_80118E20() {
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     s32 serial = actor->mSerial;
-    ActorBase_804A5770** it = mBegin;
+    ActorBase_804A5770** it;
     ActorBase_804A5770** end = mEnd;
-    while (it != end && (*it)->mSerial != serial) {
+    it = mBegin;
+    while (it != end && serial != (*it)->mSerial) {
         it++;
     }
     if (it != end) {
