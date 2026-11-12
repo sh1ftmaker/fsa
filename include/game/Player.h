@@ -1558,6 +1558,12 @@ s32 fn_8023CE10(s32 player); // -> fn_80252F74; else 0
 // off screen or without the player. 1 unit (tu_80301CD0).
 u16 fn_8023D4F8(const JGeometry::TVec3f* pos, s32 player);
 u16 fn_8023D9B0(const JGeometry::TVec3f* pos, s32 player);
+// Screen x / y of `player` against `viewer` (tu_8022AD64): fn_8023D21C / fn_8023CEAC for players
+// below layer 8, fn_8023DAF4 / fn_8023D644 otherwise.
+u16 fn_8023CEAC(s32 player, s32 viewer);
+u16 fn_8023D21C(s32 player, s32 viewer);
+u16 fn_8023D644(s32 player, s32 viewer);
+u16 fn_8023DAF4(s32 player, s32 viewer);
 void fn_8023E080(s32 player, s32 arg); // -> fn_80252F40
 bool fn_8023E854(s32 player); // -> fn_8024F5E4; else false
 bool fn_8023E8F0(s32 player); // -> fn_8025F2CC; else false

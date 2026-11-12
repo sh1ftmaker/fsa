@@ -171,6 +171,7 @@ public:
     void fn_80308E90();
     // game/tu_80301CD0.cpp (0x80304FB0, not written yet): the per-frame update; called by GameRoot's fn_80137300.
     void fn_80304FB0();
+    void fn_80306A94(s32 player);
     void fn_80307B58(s32 player, bool flag);
     void fn_8030801C(s32 player);
     void fn_803085A4(s32 player);

@@ -127,7 +127,7 @@ static inline bool isQueueBusy(s32 player) {
 // tu_803006E8 (the previous unit).
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
-// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
+// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0,
 // fn_80307B58, fn_8030801C and the constructor fn_8030905C (cls_804AA8B8).
 
 // Forward declarations.
@@ -440,6 +440,15 @@ void cls_804AA8B8::fn_8030801C(s32 player) {
     record->field_0x0 = sum;
 }
 
+static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
+    return sprite.f.field_0x0 | sprite.f.field_0x3_1 << 8;
+}
+
+// fn_803074A4's kind of a sprite word.
+static inline s32 spriteKind(const GbaSprite_80506F88& sprite) {
+    return fn_803074A4(sprite.f.mKind, spriteId(sprite));
+}
+
 // Byte-reverses a word.
 static inline u32 swapBytes(u32 v) {
     union {
@@ -670,6 +679,151 @@ s32 fn_803074A4(s32 kind, s32 id) {
         return 0;
     }
     return 0;
+}
+
+// Builds the player's regular GBA record: the kind, the other players' marks
+// (screen position and sprite), the mode's status bits, the scroll, the sprite
+// words sorted by kind, the layer's mask word and the checksum.
+// Still differs: the original has the checksum loop twice (branch on the queue head entry's mUsed).
+// 0x80306A94
+void cls_804AA8B8::fn_80306A94(s32 player) {
+    if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) {
+        lbl_80506DE8[player].mKind = 5;
+    } else {
+        lbl_80506DE8[player].mKind = 14;
+    }
+    fn_803085A4(player);
+    s32 layer = fn_8022EA0C(player);
+    cls_804AA858Sub11C* record = &lbl_80506DE8[player];
+    for (s32 i = 0; i < 4; i++) {
+        s32 idx = fn_802340A0(i);
+        if (!fn_8023F264(i) || !fn_8023188C(i) || getPlayerLayer_8023DE58(layer) < 8 ||
+            (!fn_8022BC38(layer, getPlayerLayer_8023DE58(i), getPlayerPos_8023E724(i)) &&
+             (getPlayerLayer_8023DE58(layer) > 8 || getPlayerLayer_8023DE58(i) > 8))) {
+            record->mEntries[idx].mXHigh = 1;
+            record->mEntries[idx].mXLow = 0x80;
+            record->mEntries[idx].mY = 0xE0;
+            record->mEntries[idx].field_0x3_1 = 0;
+            record->mEntries[idx].field_0x0 = 0;
+        } else {
+            if (getPlayerLayer_8023DE58(i) < 8) {
+                record->mMask |= 1 << idx;
+                record->mEntries[idx].mXHigh = fn_8023D21C(i, layer) >> 8;
+                record->mEntries[idx].mXLow = fn_8023D21C(i, layer);
+                record->mEntries[idx].mY = fn_8023CEAC(i, layer);
+            } else {
+                record->mEntries[idx].mXHigh = fn_8023DAF4(i, layer) >> 8;
+                record->mEntries[idx].mXLow = fn_8023DAF4(i, layer);
+                record->mEntries[idx].mY = fn_8023D644(i, layer);
+            }
+            record->mEntries[idx].field_0x3_1 = fn_8023CBC0(i) >> 8;
+            record->mEntries[idx].field_0x0 = fn_8023CBC0(i);
+        }
+    }
+    if ((lbl_80506D48[player] & 1) == 1) {
+        for (s32 i = 0; i < 4; i++) {
+            s32 idx = fn_802340A0(i);
+            record->field_0x4.mOdd.field_0x7_4 |= fn_8022BECC(idx) << idx;
+            bool skip;
+            if (gGameRoot_8053AAF8->field_0x4c == 11) {
+                skip = true;
+            } else {
+                skip = gGameRoot_8053AAF8->field_0x88 == 2;
+            }
+            u8 state;
+            if (skip) {
+                state = 3;
+            } else if (fn_8023CA88(idx) > 0) {
+                s32 l = getPlayerLayer_8023DE58(i);
+                if (((getGameView_802D6A9C()->field_0x131b8[l] & 0x3000) >> 12) == 0) {
+                    state = 3;
+                } else {
+                    state = 1;
+                }
+            } else if (fn_8023EA28(i)) {
+                state = 1;
+            } else {
+                state = 0;
+            }
+            record->field_0x4.mOdd.field_0x6 |= state << (idx * 2);
+            if (fn_8023BCD4(idx) < 0xA0) {
+                record->field_0x4.mOdd.field_0x7_0 |= 1 << idx;
+            }
+        }
+    }
+    record->mEntries[0].mScroll = (fn_8023CE10(layer) >> 5) & 0xF;
+    record->mEntries[0].mScrollBit = (fn_8023CE10(layer) >> 4) & 1;
+    record->mEntries[1].mScroll = fn_8023CE10(layer);
+    record->mEntries[2].mScroll = (fn_8023CD74(layer) >> 5) & 0xF;
+    record->mEntries[2].mScrollBit = (fn_8023CD74(layer) >> 4) & 1;
+    record->mEntries[3].mScroll = fn_8023CD74(layer);
+    u8 near = 0;
+    if (fn_8037F1E4(player) >= 1 && fn_8037F1E4(player) <= 5) {
+        near = 1;
+    }
+    record->mEntries[1].mScrollBit = near ? true : false;
+    u8 flag = 0;
+    if (fn_8022F5B0(layer)) {
+        s32 l = getPlayerLayer_8023DE58(layer);
+        if (!getGameView_802D6A9C()->fn_802D7804(l, 2)) {
+            flag = 1;
+        }
+    }
+    record->mEntries[3].mScrollBit = flag ? true : false;
+    GbaSprite_80506F88* sprite = record->field_0x18;
+    s32 words = lbl_80541618[lbl_8053AD08] - 7;
+    for (s32 i = 0; i < words; i++, sprite++) {
+        sprite->f.field_0x3_0 = 1;
+        sprite->f.field_0x2 = 0x80;
+        sprite->f.field_0x1 = 0xE0;
+        sprite->f.field_0x3_1 = 0;
+        sprite->f.field_0x0 = 0;
+        sprite->f.mKind = 0;
+        sprite->f.field_0x3_4 = 0;
+    }
+    s32 count = 0;
+    if (fn_8023F264(player)) {
+        count = fn_803066F0((s32)this, player, lbl_80541618[lbl_8053AD08] - 7);
+    }
+    if (fn_8023F264(player)) {
+        fn_803064A8((s32)this, player, lbl_80541618[lbl_8053AD08] - 7 - count, count);
+    }
+    for (s32 n = lbl_80541618[lbl_8053AD08] - 8; n > 0; n--) {
+        for (s32 j = 0; j < n; j++) {
+            s32 a = spriteKind(record->field_0x18[j]);
+            s32 b = spriteKind(record->field_0x18[j + 1]);
+            if (record->field_0x18[j + 1].f.field_0x1 != 0xE0 &&
+                (a < b || (a == b && record->field_0x18[j].f.field_0x1 < record->field_0x18[j + 1].f.field_0x1))) {
+                u32 tmp = record->field_0x18[j + 1].mWord;
+                record->field_0x18[j + 1].mWord = record->field_0x18[j].mWord;
+                record->field_0x18[j].mWord = tmp;
+            }
+        }
+    }
+    if ((lbl_80506D48[player] & 1) == 0) {
+        if (getPlayerLayer_8023DE58(layer) < 8) {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(8);
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask & 0xFFFFFFFF);
+        } else {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(getPlayerLayer_8023DE58(layer));
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask & 0xFFFFFFFF);
+        }
+    } else {
+        if (getPlayerLayer_8023DE58(layer) < 8) {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(8);
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask >> 32);
+        } else {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(getPlayerLayer_8023DE58(layer));
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask >> 32);
+        }
+    }
+    u8 sum = 0;
+    u8* bytes = (u8*)&record->mSprites[0];
+    s32 size = lbl_80541618[lbl_8053AD08] * 4;
+    for (s32 k = 8; k < size; k++) {
+        sum += *bytes++;
+    }
+    record->field_0x0 = sum;
 }
 
 // Copies a record's sprite words into the half of the player's sprite table
@@ -1179,10 +1333,6 @@ static inline s32 markKey2(s32 mask, s32 player, s32 i) {
 // A sprite word that is off screen (x = 0x180).
 static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
     return sprite.f.field_0x3_0 == 1 && sprite.f.field_0x2 == 0x80;
-}
-
-static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
-    return sprite.f.field_0x0 | sprite.f.field_0x3_1 << 8;
 }
 
 // Variant of fn_803022C4.

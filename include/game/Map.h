@@ -188,6 +188,11 @@ extern u8 lbl_80506DB8[4][4];
 extern u8 lbl_80506DC8[4][4];
 extern s32 lbl_80506DD8[4];
 void fn_803068D0(cls_804AA858Sub11C* record);
+// The record's sprite words from the player's short / long sprite lists
+// (cls_804AA8B8::fn_80306A94 passes its this first), and a sprite's kind.
+s32 fn_803066F0(s32 unused, s32 player, s32 max);
+void fn_803064A8(s32 unused, s32 player, s32 max, s32 start);
+s32 fn_803074A4(s32 kind, s32 id);
 // Called by TileMap_804AA858::fn_802FB69C before (fn_8030275C) and after
 // (fn_803022C4) its tint boxes: the record, the player, fn_802FB69C's flag
 // byte and whether field_0x134[player] is set.
