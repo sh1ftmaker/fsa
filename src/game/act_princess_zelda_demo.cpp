@@ -168,11 +168,11 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
 // FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x;
-    box.i.y = mBox.i.y + mPos.y;
-    box.f.x = mBox.f.x + mPos.x;
-    box.f.y = mBox.f.y + mPos.y;
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
     if (field_0x231 != 0) {
         fn_80239914(&box, field_0x4, mSerial);
     }
@@ -195,9 +195,6 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         }
         break;
     case 0x2A:
-    case 0x2E:
-    case 0x32:
-    case 0x36:
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_803865B8(0)) {
             fn_80388EEC(0);
@@ -212,6 +209,20 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
             mAnim0.fn_801D1F14(0.0f);
         }
         break;
+    case 0x2E:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 0x32:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
     case 0x35:
         if (fn_801CD950(&mPos.z, mSpawnPos.z, 0.3f) == 0 && mAnim0.mAnim == 0x13) {
             mAnim0.startAnim_801D22DC(0x17, 0, false);
@@ -220,6 +231,13 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         if (mAnim0.fn_801D208C() && mAnim0.mAnim == 0x17) {
             mAnim0.startAnim_801D22DC(0x19, 0, false);
             mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 0x36:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
         }
         break;
     case 0x37:
@@ -284,6 +302,8 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         }
         break;
     }
+    case 0x3E:
+        break;
     }
 }
 
