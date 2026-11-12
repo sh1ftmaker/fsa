@@ -131,11 +131,12 @@ void cls_804A7AE0::init() {
 // FIXME(shotgun): 77.30 %, missing/extra + reloc-name; behaviour drift.
 // initial position/box arithmetic is scheduled differently, 5 instructions
 void cls_804A7AE0::vfunc_0x10() {
-    JGeometry::TVec3f p = mPos;
-    p.x += mBox.i.x;
-    p.y += mBox.i.y;
-    p.x += 8.0f;
-    p.y += 8.0f;
+    JGeometry::TVec3f origin = mPos;
+    origin.x += mBox.i.x;
+    origin.y += mBox.i.y;
+    origin.x += 8.0f;
+    origin.y += 8.0f;
+    JGeometry::TVec3f p = origin;
     p.z = 0.0f;
     f32 baseY = p.y;
     for (s32 row = 0; row < 6; row++) {
@@ -173,8 +174,10 @@ void cls_804A7AE0::vfunc_0x10() {
         s32 layer = v == 0 ? 0 : v + 7;
         if (warp->field_0x4 == layer) {
             s32 w = (warp->field_0x90 >> 24) & 7;
-            s32 warpLayer = w != 0 ? w + 7 : 0;
-            if (field_0x4 == warpLayer) {
+            if (w != 0) {
+                w += 7;
+            }
+            if (field_0x4 == w) {
                 if (mSerialCountA >= 4) {
                     continue;
                 }
@@ -183,8 +186,10 @@ void cls_804A7AE0::vfunc_0x10() {
             }
         } else {
             s32 w = (warp->field_0x90 >> 24) & 7;
-            s32 warpLayer = w != 0 ? w + 7 : 0;
-            if (layer == warpLayer && field_0x4 == warp->field_0x4) {
+            if (w != 0) {
+                w += 7;
+            }
+            if (layer == w && field_0x4 == warp->field_0x4) {
                 if (mSerialCountB >= 4) {
                     continue;
                 }
