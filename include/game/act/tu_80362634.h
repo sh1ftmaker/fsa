@@ -52,7 +52,7 @@ public:
     // 0x80362C44: state machine of the departure scene (field_0x238).
     void fn_80362C44();
     // 0x80365AB8: calls the member function of table lbl_804ADDE8[field_0x234].
-    void fn_80365AB8();
+    /* 0x20 */ virtual void fn_80365AB8();
     // 0x80364A88: walks along field_0x3c, turning when a leg length is reached.
     void fn_80364A88();
     // 0x80363880: follows the 'EOWL' owl, else wanders near field_0x27c[0].

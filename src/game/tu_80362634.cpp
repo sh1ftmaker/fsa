@@ -76,11 +76,14 @@ void cls_804ADF28::fn_80365AF0() {
         (this->*lbl_804ADC38[field_0x234])();
     }
 }
+#endif
+
+// Table lbl_804ADDE8: member function pointers (0xC bytes each, 0x140 bytes in the original); contents not written yet.
+extern void (cls_804ADF28::*lbl_804ADDE8[64])();
 
 void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
-#endif
 
 // FIXME(shotgun): 52.9 %, missing/extra (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
 void cls_804ADF28::fn_803653EC() {
