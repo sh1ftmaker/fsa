@@ -275,8 +275,8 @@ cls_801192AC::~cls_801192AC() {
 
 // FIXME(shotgun): 82.22 %, missing/extra + reloc-name; behaviour drift.
 extern "C" cls_801192AC* fn_8011921C() {
-    static cls_801192AC instance;
-    return &instance;
+    static cls_801192AC lbl_804BC540;
+    return &lbl_804BC540;
 }
 
 // FIXME(shotgun): 48.18 %, missing/extra; behaviour drift. (stand-in: the original is the TVector reserve(20) inline)
