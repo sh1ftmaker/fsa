@@ -10,9 +10,6 @@ static const f32 lbl_805409C8[2] = {1.0f, -1.0f};
 // update: field_0x244 step by direction (field_0x248).
 static const s32 lbl_805409D0[2] = {0x80, -0x80};
 
-// FIXME: 99.46 %. Instructions identical; only the literal split differs
-// (lbl_80540A0C/0A10/0A14 and others are @NNN here: earlier, unwritten
-// functions of this unit own the first literals).
 void RotatingSkull_804A8588::init() {
     mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
     field_0x80.set(-7.0f, -7.0f, 7.0f, 7.0f);
@@ -57,7 +54,7 @@ void RotatingSkull_804A8588::init() {
 }
 
 // 0x802B28E4.
-// FIXME(shotgun): 99.14 %, scheduling+regalloc + reloc-name
+// FIXME(shotgun): 99.28 %, scheduling+regalloc; behaviour clean.
 void RotatingSkull_804A8588::update() {
     field_0x250--;
     if (field_0x250 == 0) {
@@ -197,7 +194,7 @@ void RotatingSkull_804A8588::fn_802B2728() {
 
 // The sign of a bounce: -1 when the push (`along`) and the other velocity component point
 // the way the axis needs, else 1.
-// FIXME(shotgun): 68.48 %, missing/extra + reloc-name
+// FIXME(shotgun): 68.82 %, missing/extra + reloc-name; behaviour drift.
 void RotatingSkull_804A8588::fn_802B21EC() {
     f32 sign = 1.0f;
     JGeometry::TVec3f hitB(0.0f, 0.0f, 0.0f);
