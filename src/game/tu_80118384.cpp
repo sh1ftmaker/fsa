@@ -280,8 +280,7 @@ extern "C" cls_801192AC* fn_8011921C() {
     return &lbl_804BC540;
 }
 
-// FIXME(shotgun): 48.18 %, missing/extra; behaviour drift.
-// (stand-in: the original is the TVector reserve(20) inline)
+// FIXME(shotgun): TVector::reserve(20) inline; copy loop and empty destroy loop.
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
         return;
@@ -290,9 +289,15 @@ void cls_801192AC::fn_801190E4() {
     if (p == NULL) {
         return;
     }
+    ActorBase_804A5770** dst = p;
+    ActorBase_804A5770** src = mBegin;
+    if (src < mEnd) {
+        for (u32 n = ((u32)mEnd + 3 - (u32)src) >> 2; n != 0; --n) {
+            *dst++ = *src++;
+        }
+    }
     ActorBase_804A5770** old = mBegin;
-    for (ActorBase_804A5770** src = mBegin, **dst = p; src < mEnd; src++, dst++) {
-        *dst = *src;
+    for (ActorBase_804A5770** it = mBegin; it != mEnd; ++it) {
     }
     mEnd = p + (mEnd - mBegin);
     mBegin = p;
