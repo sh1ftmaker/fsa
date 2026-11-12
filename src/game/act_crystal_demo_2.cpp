@@ -429,6 +429,123 @@ void cls_804AE088::fn_8036A65C() {
     }
 }
 
+// FIXME: original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
+void cls_804AE088::fn_80368660() {
+    SpriteParams_801F5AE0 params;
+    if (field_0x23c == 5 && (field_0x270 != 1 || field_0x274 >= 0x80) && field_0x25c >= 0) {
+        if (field_0x260 != 0) {
+            field_0x260--;
+        }
+        s32 state = field_0x240;
+        if (state < 0x1c) {
+            if (field_0x260 == 0) {
+                field_0x260 = 1;
+                field_0x264++;
+                if (field_0x264 >= 6) {
+                    field_0x264 = 0;
+                }
+            }
+        } else if (state == 0x1c || state == 0x1d || state == 0x1e) {
+            if (state == 0x1c) {
+                field_0x264 = 8;
+            } else if (state == 0x1d) {
+                field_0x264 = 8;
+                field_0x260 = 30;
+            } else if (state == 0x1e) {
+                if (field_0x260 == 0) {
+                    if (field_0x264 == 8) {
+                        field_0x264 = 10;
+                        field_0x260 = 30;
+                    } else if (field_0x264 == 10) {
+                        field_0x264 = 11;
+                        field_0x260 = 10;
+                    } else {
+                        field_0x260 = 9;
+                        field_0x264++;
+                        if (field_0x264 >= 6) {
+                            field_0x264 = 0;
+                        }
+                    }
+                }
+            } else {
+                if (field_0x260 == 0) {
+                    field_0x260 = 9;
+                    field_0x264++;
+                    if (field_0x264 >= 6) {
+                        field_0x264 = 0;
+                    }
+                }
+            }
+        } else if (state == 0x22 || state == 0x21) {
+            if (field_0x260 == 0) {
+                field_0x260 = 9;
+                field_0x264++;
+                if (field_0x264 >= 6) {
+                    field_0x264 = 0;
+                }
+            }
+        } else if (state == 0x23) {
+            if (field_0x258 >= 0x50) {
+                if (field_0x260 == 0) {
+                    field_0x260 = 9;
+                    field_0x264++;
+                    if (field_0x264 >= 6) {
+                        field_0x264 = 0;
+                    }
+                }
+            } else if (field_0x258 >= 0x46) {
+                field_0x264 = 11;
+            } else if (field_0x258 >= 0x28) {
+                field_0x264 = 10;
+            } else {
+                field_0x264 = 8;
+            }
+        }
+        JGeometry::TVec3f savedPos = mPos;
+        for (s32 i = 0; i < 5; i++) {
+            if (field_0x240 < 0x1c) {
+                if (field_0x294[i] == 0) {
+                    mPos = field_0x2a8[i];
+                    mPos.z = 20.0f;
+                    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x264 + lbl_80474C68[92 + i], &params, 7, 1.0f, 1.0f);
+                    if (field_0x3bc[i] != NULL) {
+                        JGeometry::TVec3f p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        setEmitterPos_8013CB44(field_0x3bc[i], &p, 0, -1, true);
+                    }
+                    if (field_0x3d4[i] != NULL) {
+                        JGeometry::TVec3f p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        setEmitterPos_8013CB44(field_0x3d4[i], &p, 0, -1, true);
+                    }
+                }
+            } else if (field_0x240 < 0x21) {
+                mPos = field_0x2a8[i];
+                if (field_0x240 >= 0x1e && field_0x240 < 0x21) {
+                    if (field_0x24c < 0xc0 && mSpriteParams.mMtx == NULL) {
+                        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], NULL);
+                    }
+                    params.field_0x10.r = 255;
+                    params.field_0x10.g = 255;
+                    params.field_0x10.b = 255;
+                    params.field_0x10.a = 255 - field_0x24c;
+                    if (field_0x4 < 8) {
+                        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x264 + lbl_80474C68[87 + i], &params, 1.0f, 1.0f);
+                    }
+                    fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + lbl_80474C68[87 + i], 0, 1, -1, false, 0, 0);
+                } else {
+                    drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], &params, 7, 1.0f, 1.0f);
+                }
+            } else {
+                mPos.x = field_0x2a8[i].x;
+                mPos.y = field_0x2a8[i].y;
+                mPos.z = field_0x2a8[i].z;
+                drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], &params, 7, 1.0f, 1.0f);
+            }
+        }
+        mPos = savedPos;
+    }
+}
+
 void cls_804AE088::fn_803683AC() {
     SpriteParams_801F5AE0 params;
     JGeometry::TVec3f savedPos = mPos;
