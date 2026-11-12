@@ -39,10 +39,10 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x154.f.x = 512.0f;
     field_0x154.f.y = 384.0f;
     field_0x1e8 = 0;
-    field_0x1b4.f.y = 0.0f;
     field_0x1b4.i.y = 0.0f;
-    field_0x1b4.f.x = 0.0f;
     field_0x1b4.i.x = 0.0f;
+    field_0x1b4.f.y = 0.0f;
+    field_0x1b4.f.x = 0.0f;
     field_0x1dc.z = 0.0f;
     field_0x1dc.y = 0.0f;
     field_0x1dc.x = 0.0f;
@@ -67,8 +67,9 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x840 = 0;
     field_0x144.x0 = 0;
     field_0x144.y0 = 0;
-    field_0x144.x1 = JUTVideo::sManager->getFbWidth();
-    field_0x144.y1 = JUTVideo::sManager->getEfbHeight();
+    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
+    field_0x144.x1 = renderMode->fbWidth;
+    field_0x144.y1 = renderMode->efbHeight;
     field_0x858 = 1.0f;
     field_0x174 = 0;
     field_0x178 = 0;
