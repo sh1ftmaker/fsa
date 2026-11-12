@@ -19,7 +19,7 @@
 // FIXME(shotgun): not written, .rodata tables lbl_80474C38 (string),
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
 // declared: nothing compiled here reads them yet.
-// FIXME(shotgun): not written: ctor, init, vfunc_0x60 (jumptable_804AE184),
+// FIXME(shotgun): not written: init, vfunc_0x60 (jumptable_804AE184),
 // fn_8036AC58, fn_8036AA60, fn_8036A894, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
 // fn_80368CD8 (jumptable_804AE0EC), fn_80368660, fn_803683AC, fn_80368198.
 
@@ -27,6 +27,41 @@
 
 s32 cls_804AE088::vfunc_0x58() {
     return field_0x240;
+}
+
+// FIXME: 98.05 %, scheduling + reloc-name; behaviour clean.
+cls_804AE088::cls_804AE088()
+    : mNaviActor(NULL), field_0x234(1), field_0x235(1), field_0x236(0), field_0x237(0), field_0x238(1),
+      field_0x23c(0), field_0x240(0), field_0x244(0), field_0x248(0), field_0x24c(0), field_0x250(0.0f),
+      field_0x254(0), field_0x258(0), field_0x25c(-1), field_0x26c(0), field_0x270(0), field_0x274(0),
+      field_0x278(0.0f), field_0x27c(0.0f), field_0x280(0.0f), field_0x284(0.0f), field_0x288(0.0f),
+      field_0x28c(-1), field_0x290(0.0f), field_0x2f0(0), field_0x310(NULL), field_0x314(NULL) {
+    field_0x350 = NULL;
+    field_0x354 = NULL;
+    field_0x358 = NULL;
+    field_0x398 = NULL;
+    for (s32 i = 0; i < 7; i++) {
+        if (i < 2) {
+            field_0x35c[i] = NULL;
+            field_0x3b4[i] = NULL;
+        }
+        if (i < 3) {
+            field_0x378[i] = NULL;
+        }
+        if (i < 5) {
+            field_0x384[i] = NULL;
+            field_0x3ec[i] = NULL;
+            field_0x400[i] = NULL;
+            field_0x294[i] = 0;
+        }
+        if (i < 6) {
+            field_0x3bc[i] = NULL;
+            field_0x3d4[i] = NULL;
+            field_0x39c[i] = NULL;
+            field_0x2f8[i] = 0;
+        }
+    }
+    gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
 cls_804AE088::~cls_804AE088() {
