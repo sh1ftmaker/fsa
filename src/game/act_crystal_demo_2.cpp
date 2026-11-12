@@ -167,7 +167,8 @@ s32 cls_804AE088::vfunc_0x5C() {
 // Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
 extern const s32 lbl_80474C68[120];
 
-// FIXME: 75.8 %, the original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
+// FIXME: 75.80 %, missing/extra + reloc-name; behaviour drift.
+// the original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
 void cls_804AE088::fn_8036AA60() {
     Mtx mtx;
     PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
@@ -215,6 +216,7 @@ void cls_804AE088::fn_8036AA60() {
 
 // Not auto-inlined: draw calls fn_8036A894 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
+// FIXME: 93.25 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AE088::fn_8036A894() {
     if (field_0x24c > 0) {
         SpriteParams_801F5AE0 params;
