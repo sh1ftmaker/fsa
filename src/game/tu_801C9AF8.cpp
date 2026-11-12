@@ -364,13 +364,16 @@ bool ShadowLink2_804A43E8::fn_801CA0F8() {
     if (mBox.f.x - mBox.i.x <= 0.0f || mBox.f.y - mBox.i.y <= 0.0f || fn_801C53C4()) {
         return false;
     }
+    s32 serial;
     bool hit = false;
-    s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+    serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
     if (serial >= 0 && serial != mSerial) {
         ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (other != NULL) {
-            if (other->mActorId == ACTOR_SWBM || other->mActorId == ACTOR_FLME) {
-                return false;
+            switch (other->mActorId) {
+                case ACTOR_SWBM:
+                case ACTOR_FLME:
+                    return false;
             }
             JGeometry::TVec3f from(mPos);
             from -= other->field_0x3c;
