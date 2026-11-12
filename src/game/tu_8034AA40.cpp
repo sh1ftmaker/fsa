@@ -87,9 +87,13 @@ void cls_804AC8C0::init() {
 // FIXME(shotgun): 82.66 %, missing/extra + reloc-name
 void cls_804AC8C0::vfunc_0x10() {
     s32 serials[30];
-    s32 count = 0;
     s32 serial = -1;
-    while ((serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial)) >= 0) {
+    s32 count = 0;
+    for (;;) {
+        serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial);
+        if (serial < 0) {
+            break;
+        }
         if (count < 30) {
             serials[count] = serial;
             count++;
