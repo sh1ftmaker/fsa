@@ -751,14 +751,24 @@ void cls_804A4C58::vfunc_0x88() {
 }
 #endif
 
-#ifdef NONMATCHING
-// FIXME(shotgun): 65.40 %, missing/extra + reloc-name.
+
 void cls_804A4C58::vfunc_0x74() {
-    if (mState >= 0xB && mState < 0xF) {
+    if (mState < 0xF && mState >= 0xB) {
         if (mState == 0xC) {
             if (field_0x33f == 3) {
-                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
-                field_0x334 = columns[fn_801CD664(6)];
+                s32 columns[6];
+                columns[0] = 1;
+                columns[1] = 2;
+                columns[2] = 5;
+                columns[3] = 6;
+                columns[4] = 9;
+                columns[5] = 10;
+                s32 n = 6;
+                if (n > 0) {
+                    field_0x334 = columns[fn_801CD664(6)];
+                } else {
+                    field_0x334 = 0;
+                }
             } else {
                 field_0x334 = fn_801CD664(12);
             }
@@ -775,8 +785,19 @@ void cls_804A4C58::vfunc_0x74() {
             }
         } else {
             if (field_0x33f == 3) {
-                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
-                field_0x334 = columns[fn_801CD664(6)];
+                s32 columns[6];
+                columns[0] = 1;
+                columns[1] = 2;
+                columns[2] = 5;
+                columns[3] = 6;
+                columns[4] = 9;
+                columns[5] = 10;
+                s32 n = 6;
+                if (n > 0) {
+                    field_0x334 = columns[fn_801CD664(6)];
+                } else {
+                    field_0x334 = 0;
+                }
             } else {
                 field_0x334 = fn_801CD664(12);
             }
@@ -804,7 +825,6 @@ void cls_804A4C58::vfunc_0x74() {
         }
     }
 }
-#endif
 
 // Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
 // FIXME: 99.90 %, reloc-name; behaviour clean.
