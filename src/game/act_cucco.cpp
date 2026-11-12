@@ -1460,7 +1460,6 @@ void Cucco_804AB8C0::draw() {
 
 // A one-player version of ActorBase::fn_801EEC98: the angle, direction, distance and
 // player of actor `serial` seen from `player`.
-// FIXME(shotgun): 94.38 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* outDist, s32* outPlayer, s32 player) {
     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
     f32 dist = -1.0f;
@@ -1492,7 +1491,9 @@ void Cucco_804AB8C0::fn_8032F148(s32 serial, u16* outAngle, s32* outDir, f32* ou
         } else {
             s32 layer = getPlayerLayer_8023DE58(player);
             GameView_804A9950* view = getGameView_802D6A9C();
-            JGeometry::TBox2f box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
+            const JGeometry::TBox2f* boxp = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+            JGeometry::TBox2f box;
+            box = *boxp;
             dx = actor->mPos.x - (getPlayerPos_8023E724(player)->x - box.i.x);
             dy = actor->mPos.y - (getPlayerPos_8023E724(player)->y - box.i.y);
         }
