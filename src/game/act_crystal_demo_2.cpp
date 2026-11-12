@@ -19,7 +19,7 @@
 // FIXME(shotgun): not written, .rodata tables lbl_80474C38 (string),
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
 // declared: nothing compiled here reads them yet.
-// FIXME(shotgun): not written: ctor, init, vfunc_0x54, vfunc_0x60 (jumptable_804AE184),
+// FIXME(shotgun): not written: ctor, init, vfunc_0x60 (jumptable_804AE184),
 // fn_8036AC58, fn_8036AA60, fn_8036A894, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
 // fn_80368CD8 (jumptable_804AE0EC), fn_80368660, fn_803683AC, fn_80368198.
 
@@ -68,6 +68,56 @@ void cls_804AE088::draw() {
     }
     fn_80368660();
     mPos = savedPos;
+}
+
+void cls_804AE088::vfunc_0x54() {
+    s32 v = fn_8011921C()->field_0x8;
+    s32 arg;
+    if (field_0x270 == 1) {
+        return;
+    }
+    if (field_0x23c == 4) {
+        if (v == 0) {
+            arg = 2;
+        } else if (v == 0x96) {
+            arg = 3;
+        } else if (v == 0x1FE) {
+            arg = 4;
+        } else if (v == 0x32A) {
+            arg = 5;
+        } else if (v == 0x3F2) {
+            arg = 0xE;
+        } else if (v == 0x51E) {
+            arg = 0xF;
+        } else if (v == 0x5B4) {
+            arg = 0x10;
+        } else if (v == 0x6E0) {
+            arg = 0x11;
+        } else {
+            return;
+        }
+    } else {
+        if (v == 0) {
+            arg = 0x15;
+        } else if (v == 0x96) {
+            arg = 0x16;
+        } else if (v == 0x1FE) {
+            arg = 0x17;
+        } else if (v == 0x32A) {
+            arg = 0x18;
+        } else if (v == 0x3F2) {
+            arg = 0x1A;
+        } else if (v == 0x51E) {
+            arg = 0x1B;
+        } else if (v == 0x5B4) {
+            arg = 0x1C;
+        } else if (v == 0x6E0) {
+            arg = 0x26;
+        } else {
+            return;
+        }
+    }
+    vfunc_0x60(arg);
 }
 
 s32 cls_804AE088::vfunc_0x5C() {
