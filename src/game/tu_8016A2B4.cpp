@@ -70,14 +70,30 @@ GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     if (field_0x12c != NULL) {
         getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x12c);
     }
-    delete field_0x120;
-    delete field_0x11c;
-    delete field_0x118;
-    delete field_0x114;
-    delete field_0x110;
-    delete field_0x10c;
-    delete field_0x108;
-    delete field_0x104;
+    if (field_0x120 != NULL) {
+        delete field_0x120;
+    }
+    if (field_0x11c != NULL) {
+        delete field_0x11c;
+    }
+    if (field_0x118 != NULL) {
+        delete field_0x118;
+    }
+    if (field_0x114 != NULL) {
+        delete field_0x114;
+    }
+    if (field_0x110 != NULL) {
+        delete field_0x110;
+    }
+    if (field_0x10c != NULL) {
+        delete field_0x10c;
+    }
+    if (field_0x108 != NULL) {
+        delete field_0x108;
+    }
+    if (field_0x104 != NULL) {
+        delete field_0x104;
+    }
     delete field_0x100;
     delete field_0xfc;
     delete field_0xf8;
