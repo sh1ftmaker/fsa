@@ -51,7 +51,8 @@ cls_8049D940::~cls_8049D940() {
     field_0x318 = NULL;
 }
 
-// FIXME: 99.9 %. Only the 20.0f literal: .sdata2 not split (lbl_8053C704 vs @NNN).
+// FIXME: 99.93 %, reloc-name; behaviour clean.
+// Only the 20.0f literal: .sdata2 not split (lbl_8053C704 vs @NNN).
 void cls_8049D940::init() {
     cls_8049D140::init();
     for (s32 i = 0; i < 4; i++) {
@@ -83,7 +84,8 @@ static inline void updateBobbing(cls_8049D940* self) {
     }
 }
 
-// FIXME: 99.79%, reloc-name: only the .sdata2 literal and .sbss symbol names differ.
+// FIXME: 99.79 %, reloc-name; behaviour drift.
+// only the .sdata2 literal and .sbss symbol names differ.
 void cls_8049D940::update() {
     cls_8049D140::update();
     if (field_0x230 >= 2 && field_0x230 <= 10) {
@@ -170,7 +172,8 @@ void cls_8049D940::update() {
     field_0x238.fn_801D1C18();
 }
 
-// FIXME: 98.1 %. The only differences are the literal references (lbl_ in the
+// FIXME: 98.09 %, scheduling + reloc-name; behaviour drift.
+// The only differences are the literal references (lbl_ in the
 // original, @NNN here: data split) and &mPos, which the original computes a
 // few instructions earlier, before the layer test.
 void cls_8049D940::draw() {
@@ -249,7 +252,8 @@ s32 cls_8049D940::vfunc_0x5C() {
     }
 }
 
-// FIXME: 94.36%, scheduling+regalloc + reloc-name: register allocation and instruction scheduling
+// FIXME: 94.36 %, scheduling+regalloc + reloc-name; behaviour drift.
+// register allocation and instruction scheduling
 // in cases 9, 10 and 11, plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115F9C(s32 index) {
     switch (index) {
@@ -326,7 +330,8 @@ void cls_8049D940::fn_80115F9C(s32 index) {
 // Not auto-inlined: fn_80115BC4 calls fn_80115D8C out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 98.22%, regalloc-only + reloc-name: FPR allocation in the distance and target position
+// FIXME: 98.22 %, regalloc-only + reloc-name; behaviour clean.
+// FPR allocation in the distance and target position
 // math, plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115D8C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     out->x = 0.0f;
@@ -364,7 +369,8 @@ void cls_8049D940::fn_80115D8C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // Not auto-inlined: fn_80115A7C calls fn_80115BC4 out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 93.33%, missing/extra + reloc-name: the target picks min(dist, speed) with one fsel
+// FIXME: 93.33 %, missing/extra + reloc-name; behaviour drift.
+// the target picks min(dist, speed) with one fsel
 // (dist - speed >= 0 ? speed : dist) where ours branches, plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     JGeometry::TVec3f pull(0.0f, 0.0f, 0.0f);
@@ -396,7 +402,8 @@ void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // Not auto-inlined: update calls fn_80115A7C out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 94.4 %. The original's branch to the fn_8023DFF4 arm is laid out at the
+// FIXME: 94.39 %, missing/extra; behaviour drift.
+// The original's branch to the fn_8023DFF4 arm is laid out at the
 // end of the loop body with the fn_80230498 arm falling through, and it
 // converts the 255 argument from a float at run time (fctiwz of 255.0f);
 // the 90.0f literal is lbl_ in the original and @NNN here (data split).
@@ -423,7 +430,8 @@ bool cls_8049D940::fn_80115A7C() {
 // Not auto-inlined: draw calls fn_801158B8 out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 88.7 %. The original loads the 64.0f and 1.0f literals again after the
+// FIXME: 88.70 %, missing/extra + reloc-name; behaviour clean.
+// The original loads the 64.0f and 1.0f literals again after the
 // PSMTXTrans call and uses other registers for them; the literal references
 // are lbl_ in the original and @NNN here (data split).
 void cls_8049D940::fn_801158B8() {
