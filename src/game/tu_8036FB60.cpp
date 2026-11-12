@@ -27,7 +27,6 @@ extern s32 lbl_80474F5C[];
 
 cls_804AE4B0::~cls_804AE4B0() {}
 
-// FIXME(shotgun): 99.98 %, scheduling; behaviour drift.
 void cls_804AE4B0::init() {
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
         fn_8036FDAC();
@@ -49,7 +48,7 @@ void cls_804AE4B0::init() {
     for (s32 i = 0; i < 4; i++) {
         field_0x2c4[i] = mPos + offsets[i];
         field_0x294[i] = field_0x2c4[i];
-        field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+        field_0x2f4[i].zero();
         field_0x350[i] = 0x38B;
         field_0x330[i] = 0;
         field_0x340[i] = 1;
@@ -84,7 +83,7 @@ void cls_804AE4B0::init() {
 }
 
 // FIXME(shotgun): the original copies this table at run time from a constant one
-// (lbl_804AE390 -> lbl_804AE420, __sinit-style, fn_80372B00); here it is initialised.
+// (lbl_804AE390 -> lbl_804AE420, __sinit_tu_8036FB60_cpp); here it is initialised.
 static void (cls_804AE4B0::*lbl_804AE420[12])() = {
     &cls_804AE4B0::fn_803717CC, &cls_804AE4B0::fn_80371284, &cls_804AE4B0::fn_803711F0, &cls_804AE4B0::fn_8037100C,
     &cls_804AE4B0::fn_80370C84, &cls_804AE4B0::fn_80370C18, &cls_804AE4B0::fn_80370A7C, &cls_804AE4B0::fn_80370764,
@@ -173,7 +172,7 @@ void cls_804AE4B0::draw() {
 
 // Not auto-inlined: update-side callers (fn_8037100C, fn_80370764, fn_803704E8) use a plain bl.
 #pragma auto_inline off
-// FIXME(shotgun): 97.89 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 97.90 %, scheduling+regalloc; behaviour clean.
 void cls_804AE4B0::fn_803721F4() {
     bool close = false;
     if (field_0x398 == 1) {
@@ -208,7 +207,7 @@ void cls_804AE4B0::fn_803721F4() {
         if (mTimer == 0x76) {
             for (s32 i = 0; i < 4; i++) {
                 field_0x294[i] = field_0x2c4[i];
-                field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+                field_0x2f4[i].zero();
                 gAudioMgr_8053AF80->fn_80458880(0x37, -1);
             }
         } else if (mTimer < 0x76) {
@@ -550,7 +549,7 @@ void cls_804AE4B0::fn_80370C84() {
             JGeometry::TVec3f off((f32)i * 16.0f, 0.0f, 0.0f);
             field_0x294[i] = JGeometry::TVec3f(mPos.x, mPos.y, 0.0f) + off;
             field_0x294[i].z = pos.z;
-            field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+            field_0x2f4[i].zero();
             field_0x350[i] = 0x38E;
             field_0x330[i] = 0;
             field_0x340[i] = 2;
@@ -618,7 +617,7 @@ void cls_804AE4B0::fn_80370A7C() {
     }
 }
 
-// FIXME(shotgun): 85.72 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.04 %, different + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370764() {
     fn_803703C8();
     for (s32 i = 0; i < 4; i++) {
@@ -626,17 +625,17 @@ void cls_804AE4B0::fn_80370764() {
             fn_80230C6C(i);
         }
     }
-    bool found = false;
-    for (s32 i = 0; i < 4 && !found; i++) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
         if (fn_8023E854(i)) {
             JGeometry::TVec3f d = JGeometry::TVec3f(2232.0f, 1624.0f, 0.0f) - *getPlayerPos_8023E724(0);
             if (PSVECMag((Vec*)&d) > 2.0f) {
                 fn_8023DFF4(0, &d);
             }
-            found = true;
+            break;
         }
     }
-    if (!found && fn_8022CAF8(0) == 4) {
+    if (i == 4 && fn_8022CAF8(0) == 4) {
         fn_8022CA6C(0, 5, false);
     }
     field_0x23c++;
@@ -871,7 +870,7 @@ void cls_804AE4B0::fn_80370020() {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 98.94 %, scheduling+regalloc; behaviour drift.
+// FIXME(shotgun): 98.95 %, regalloc-only; behaviour drift.
 void cls_804AE4B0::fn_8036FDAC() {
     mTimer = 0x50;
     static JGeometry::TVec3f offsets[4] = {
@@ -885,7 +884,7 @@ void cls_804AE4B0::fn_8036FDAC() {
     for (s32 i = 0; i < 4; i++) {
         field_0x2c4[i] = mPos + offsets[i];
         field_0x294[i] = field_0x2c4[i];
-        field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+        field_0x2f4[i].x = field_0x2f4[i].y = field_0x2f4[i].z = 0.0f;
         s32 serial = getActorManager_801F856C()->spawnActor_801F9484('JIJI', field_0x4, &field_0x294[i], lbl_80474F5C[i], -1, -1);
         field_0x3b0[i] = (cls_804AEED0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         field_0x340[i] = 1;
@@ -919,7 +918,7 @@ void cls_804AE4B0::fn_8036FDAC() {
     }
 }
 
-// FIXME(shotgun): 99.31 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 99.32 %, regalloc-only; behaviour clean.
 void cls_804AE4B0::fn_8036FB60() {
     bool close = false;
     if (field_0x398 == 1) {
@@ -956,7 +955,7 @@ void cls_804AE4B0::fn_8036FB60() {
         if (mTimer == 0x76) {
             for (s32 i = 0; i < 4; i++) {
                 field_0x294[i] = field_0x2c4[i];
-                field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+                field_0x2f4[i].zero();
                 gAudioMgr_8053AF80->fn_80458880(0x37, -1);
             }
         } else if (mTimer < 0x76) {
