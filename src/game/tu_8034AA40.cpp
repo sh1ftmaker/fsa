@@ -17,7 +17,7 @@
 static const s32 lbl_804720E8[28] = {10, 7, 10, 7, 1, 0, 2, 0, 4, 3, 5, 3, 7, 6, 8, 6, 10, 9, 11, 9, 0, 1, 2, 3, 4, 5, 6, 7};
 
 // 0x8034C464.
-// FIXME(shotgun): 96.25 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.25 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::init() {
     field_0x230 = 0;
     field_0xb0 = 0x1000;
@@ -84,12 +84,16 @@ void cls_804AC8C0::init() {
     }
 }
 
-// FIXME(shotgun): 82.66 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.21 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::vfunc_0x10() {
     s32 serials[30];
-    s32 count = 0;
     s32 serial = -1;
-    while ((serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial)) >= 0) {
+    s32 count = 0;
+    for (;;) {
+        serial = getActorManager_801F856C()->fn_801F78F4('NIWA', serial);
+        if (serial < 0) {
+            break;
+        }
         if (count < 30) {
             serials[count] = serial;
             count++;
@@ -103,7 +107,8 @@ void cls_804AC8C0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 11.30 %, missing/extra (partial): only the preamble and state 0 are written; states 1 to 13 (the message
+// FIXME(shotgun): 11.30 %, missing/extra + reloc-name; behaviour drift.
+// (partial): only the preamble and state 0 are written; states 1 to 13 (the message
 // steps, the cucco counting, the rewards) are still missing.
 void cls_804AC8C0::update() {
     s32 found = 0;
@@ -161,7 +166,7 @@ void cls_804AC8C0::update() {
 }
 
 // 0x8034AFE8.
-// FIXME(shotgun): 82.03 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.08 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::draw() {
     const char* name;
     s32 frame;
@@ -181,7 +186,7 @@ void cls_804AC8C0::draw() {
 // The counts per stage (.rodata 0x80472158, whose strings follow).
 static const s32 lbl_80472158[3] = {10, 5, 1};
 
-// FIXME(shotgun): 77.78 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.78 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::fn_8034ACF4() {
     JGeometry::TBox2f box(9.0f, -7.0f, 103.0f, 87.0f);
     box.i.x += mPos.x;
@@ -228,7 +233,7 @@ void cls_804AC8C0::fn_8034ACF4() {
     }
 }
 
-// FIXME(shotgun): 68.97 %, missing/extra + reloc-name
+// FIXME(shotgun): 68.97 %, missing/extra + reloc-name; behaviour clean.
 s32 cls_804AC8C0::fn_8034AAA0() {
     JGeometry::TBox2f box(24.0f, 8.0f, 88.0f, 72.0f);
     box.i.x += mPos.x;
