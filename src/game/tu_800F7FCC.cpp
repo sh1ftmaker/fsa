@@ -157,7 +157,7 @@ void cls_8049C718::init() {
     }
 }
 
-// FIXME(shotgun): 98.74 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.91 %, reloc-name; behaviour clean.
 void cls_8049C718::fn_800FCCCC() {
     u16 angle = 0;
     f32 dist = 0.0f;
@@ -237,6 +237,7 @@ static inline bool stepWobble(cls_8049C718* p) {
     return false;
 }
 
+// FIXME: 93.98 %, missing/extra + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FC984() {
     if (trySwap(this)) {
         return;
@@ -284,7 +285,7 @@ void cls_8049C718::fn_800FC984() {
     fn_801F3D94(1);
 }
 
-// FIXME(shotgun): 97.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.59 %, different + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FC4A8() {
     bool swapped = false;
     if (mSlot == 0) {
@@ -378,7 +379,7 @@ void cls_8049C718::fn_800FC4A8() {
     }
 }
 
-// FIXME(shotgun): 96.25 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.10 %, different + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FC128() {
     bool swapped = false;
     if (mSlot == 0) {
@@ -526,7 +527,7 @@ void cls_8049C718::fn_800FBD90() {
     }
 }
 
-// FIXME(shotgun): 88.30 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.48 %, missing/extra + reloc-name; behaviour near.
 void cls_8049C718::fn_800FBA14() {
     if (fn_801F3D94(1) == 1) {
         field_0x3c.set(0.0f, 0.0f, 10.0f);
@@ -580,7 +581,7 @@ void cls_8049C718::fn_800FBA14() {
     }
 }
 
-// FIXME(shotgun): 86.57 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.90 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB6E0(bool first) {
     u16 angle = 0;
     f32 dist = 0.0f;
@@ -694,7 +695,7 @@ void cls_8049C718::fn_800FB32C() {
     }
 }
 
-// FIXME(shotgun): 85.51 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.60 %, regalloc-only + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FB070() {
     field_0x3c.z -= 0.3f;
     mPos.add(field_0x3c);
@@ -930,7 +931,7 @@ void cls_8049C718::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 99.42 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.87 %, scheduling+regalloc + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FA6B0() {
     if (mAnimState != mAnimPrev) {
         mAnimPrev = mAnimState;
@@ -1006,7 +1007,7 @@ void cls_8049C718::fn_800FA6B0() {
 // FIXME: 70.42 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
-// FIXME(shotgun): 70.42 %, missing/extra + reloc-name
+// 
 void cls_8049C718::fn_800FA1A4() {
     if (!(mFlags & 8)) {
         return;
@@ -1080,7 +1081,7 @@ void cls_8049C718::draw() {
     fn_801EFD34(res, &params, 5, 0.0f, -22.0f * (mScale + b), 0.0f);
 }
 
-// FIXME(shotgun): 96.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.66 %, regalloc-only + reloc-name; behaviour clean.
 void StoneArrghusChildPuff_8049C678::init() {
     mBox2.set(-13.0f, -14.0f, 13.0f, 8.0f);
     mLife = 4;
@@ -1382,7 +1383,7 @@ void StoneArrghusChildPuff_8049C678::vfunc_0x24() {
     ActorBase_804A5770::vfunc_0x24();
 }
 
-// FIXME(shotgun): 95.83 %, different; behaviour drift.
+// FIXME(shotgun): 96.46 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::draw() {
     f32 a = 0.0f;
     f32 b = 0.0f;
