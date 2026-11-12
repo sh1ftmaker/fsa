@@ -1067,7 +1067,7 @@ void cls_804B0288::fn_803D2E10() {
     }
 }
 
-// FIXME(shotgun): 89.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.7 %, the flag bytes are reached through an extra addi 0x20 (the row view of the save file)
 void cls_804B0288::fn_803D2C9C() {
     s32 result = lbl_8051C1A0.fn_803B9A94(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
     if (result == 0) {
@@ -1076,7 +1076,14 @@ void cls_804B0288::fn_803D2C9C() {
     if (result == 1) {
         if (lbl_8050EC80.field_0x8 == lbl_8051C1A0.field_0x1ff8) {
             fn_803BADAC(&field_0x1c0[lbl_8050EC80.mCurrentFile]);
-            touchCurrentFile();
+            OSTime time = OSGetTime();
+            lbl_8050EC80.getCurrentFile().field_0x0 = time;
+            if ((lbl_8050EC80.getCurrentFile().field_0x65 & 1) == 0) {
+                lbl_8050EC80.getCurrentFile().field_0x65 |= 1;
+            }
+            if (lbl_8050EC80.getCurrentFile().mFlags & 1) {
+                lbl_8050EC80.getCurrentFile().field_0x65 |= 2;
+            }
             field_0x54 = 0x7E;
             field_0x2177 = 0;
             field_0x216d = 0x12;
