@@ -20,15 +20,51 @@ const u32 lbl_80469450[4] = {
 // FIXME(shotgun): not written; it is the implicit inline destructor of the base classes.
 
 // 0x801C573C.
-// FIXME(shotgun): 32.43 %, missing/extra + reloc-name; the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
-// (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors.
+// FIXME(shotgun): 92.93 %, missing/extra + reloc-name; behaviour drift.
+// the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
+// (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors, and the
+// member constructors run before the body, so the 0x358 call comes after them.
 ShadowLink2_804A43E8::ShadowLink2_804A43E8() {
     field_0x358.fn_802142A8();
     field_0x550.fn_80217484();
+    field_0x55c[0] = 0;
+    field_0x55c[1] = 0;
+    field_0x55c[2] = 0;
+    field_0x560 = 4;
+    field_0x564 = 0;
+    field_0x568 = lbl_8046A748[0][0];
+    field_0x56c = 0;
+    field_0x570.x = 0.0f;
+    field_0x570.y = 0.0f;
+    field_0x570.z = 0.0f;
+    field_0x57c = 0;
+    field_0x580.x = 0.0f;
+    field_0x580.y = 0.0f;
+    field_0x580.z = 0.0f;
+    field_0x58c = 0;
+    field_0x590 = -1;
+    field_0x594 = 0;
+    field_0x595 = 0;
+    field_0x596 = 0;
+    field_0x597 = 0;
+    field_0x598 = 0;
+    field_0x599 = 0;
+    field_0x59a = 0;
+    field_0x59b = 0;
+    field_0x59c = 0;
+    field_0x59e = 0;
+    field_0x5a0 = 0;
+    field_0x5a2 = 0;
+    field_0x5a4 = 0.0f;
+    field_0x5a8 = 0.0f;
+    field_0x5ac = 0.0f;
+    field_0x5b0 = 0.0f;
+    field_0x4ec.mOwner = this;
+    mHitBox.mOwner = this;
+    mHelper540.mOwner = this;
 }
 
 // 0x801C5680.
-// FIXME(shotgun): 100 %, matches
 ShadowLink2_804A43E8::~ShadowLink2_804A43E8() {
     fn_801C0D70()->fn_801C1440(mSerial);
 }
@@ -39,7 +75,7 @@ u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
 }
 
 // 0x801C544C.
-// FIXME(shotgun): 66.85 %, different + reloc-name
+// FIXME(shotgun): 66.85 %, different + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::init() {
     EnemyBase_804A4808::init();
     field_0x94 = fn_801C0D70()->fn_801C14A8(mSerial);
@@ -117,7 +153,7 @@ bool ShadowLink2_804A43E8::fn_801C53C4() {
     return result;
 }
 
-// FIXME(shotgun): 99 %, reloc-name
+// FIXME(shotgun): 99.84 %, reloc-name; behaviour clean.
 bool ShadowLink2_804A43E8::fn_801C5348(f32 range) {
     bool near = false;
     s32 player = fn_801D05F8(&mPos, 0.0f);
@@ -133,7 +169,7 @@ bool fn_801C5340() {
 }
 
 // 0x801C50A8. Leaves the old state (mState) for `state`.
-// FIXME(shotgun): 77.03 %, different + reloc-name
+// FIXME(shotgun): 77.12 %, different + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C50A8(int state) {
     mFlags &= ~0x40000;
     field_0x55c[0] = 0;
@@ -200,7 +236,7 @@ void ShadowLink2_804A43E8::fn_801C50A8(int state) {
 }
 
 // 0x801C3B7C.
-// FIXME(shotgun): 67.55 %, missing/extra + reloc-name
+// FIXME(shotgun): 67.55 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
     fn_801C50A8(state);
     switch (state) {
@@ -678,7 +714,7 @@ void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
 }
 
 // 0x801C2ED4.
-// FIXME(shotgun): 81.62 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.62 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     if (mapHit) {
         if (vfunc_0x4C(field_0x4, &mPos)) {
@@ -1061,7 +1097,6 @@ void ShadowLink2_804A43E8::fn_801C2E70() {
 }
 
 // 0x801C2D84.
-// FIXME(shotgun): 100 %, matches
 void ShadowLink2_804A43E8::vfunc_0x9C(u8 mapHit) {
     fn_801CE2BC(mapHit);
     if (field_0x59c != 0) {
@@ -1102,7 +1137,7 @@ void ShadowLink2_804A43E8::vfunc_0x84() {
 }
 
 // 0x801C2BF4.
-// FIXME(shotgun): 81.51 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.86 %, different + reloc-name; behaviour near.
 void ShadowLink2_804A43E8::vfunc_0x88() {
     switch (mState) {
     case 6:
@@ -1119,10 +1154,12 @@ void ShadowLink2_804A43E8::vfunc_0x88() {
             field_0x3c.y *= 0.78f;
         }
         break;
-    case 0x11:
-        field_0x3c.x = JMath::sincosTable_.sinShort(field_0x33c) * speed;
-        field_0x3c.y = JMath::sincosTable_.cosShort(field_0x33c) * mSpeed;
+    case 0x11: {
+        s16 angle = field_0x33c;
+        field_0x3c.x = JMath::sincosTable_.sinShort(angle) * speed;
+        field_0x3c.y = JMath::sincosTable_.cosShort(angle) * mSpeed;
         break;
+    }
     default:
         if (mState == 0x1C) {
             switch (field_0x340.mIndex) {
@@ -1135,15 +1172,18 @@ void ShadowLink2_804A43E8::vfunc_0x88() {
                 break;
             }
         }
-        field_0x3c.x = JMath::sincosTable_.sinShort(field_0x33c) * speed;
-        field_0x3c.y = JMath::sincosTable_.cosShort(field_0x33c) * speed;
+        {
+            s16 angle = field_0x33c;
+            field_0x3c.x = JMath::sincosTable_.sinShort(angle) * speed;
+            field_0x3c.y = JMath::sincosTable_.cosShort(angle) * speed;
+        }
         break;
     }
     vfunc_0x84();
 }
 
 // 0x801C2A84.
-// FIXME(shotgun): 90.67 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.36 %, missing/extra + reloc-name; behaviour near.
 void ShadowLink2_804A43E8::vfunc_0x98() {
     switch (mState) {
     case 0x17:
@@ -1151,7 +1191,9 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
     case 0x19:
     case 0x1A:
     case 0x2F:
-        field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
         return;
     }
     u32 flags = mFlags;
@@ -1165,7 +1207,7 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
     if ((field_0x524 & 1) && !fn_801CD2F8(field_0x4) && mPos.z <= 0.0f) {
         switch (mState) {
         case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
-        case 0xF: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
+        case 0xB: case 0xC: case 0xD: case 0xE:
         case 0x17: case 0x18: case 0x19: case 0x1A:
         case 0x29:
             break;
@@ -1180,7 +1222,6 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
 }
 
 // 0x801C2960.
-// FIXME(shotgun): 100 %, matches
 void ShadowLink2_804A43E8::vfunc_0x74() {
     mFlags &= ~0x02000000;
     switch (mState) {
@@ -1219,7 +1260,7 @@ void ShadowLink2_804A43E8::vfunc_0x74() {
 }
 
 // 0x801C283C.
-// FIXME(shotgun): 91.56 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.56 %, missing/extra + reloc-name; behaviour clean.
 void ShadowLink2_804A43E8::vfunc_0xA0() {
     switch (mState) {
     case 0:
@@ -1256,7 +1297,6 @@ void ShadowLink2_804A43E8::vfunc_0xA0() {
     lbl_8053AED0->fn_8043E7CC(mPos);
 }
 
-// FIXME(shotgun): 100 %, matches
 void ShadowLink2_804A43E8::fn_801C27F0() {
     bool flag = (mFlags & 0x08000000) != 0;
     cls_801C0D70* tracker = fn_801C0D70();
@@ -1275,7 +1315,6 @@ void ShadowLink2_804A43E8::fn_801C27A8() {
     fn_801C3B7C(2);
 }
 
-// FIXME(shotgun): 100 %, matches
 void ShadowLink2_804A43E8::fn_801C272C() {
     mDrawEnabled = true;
     if (fn_801C0D70()->fn_801C11F0()) {
