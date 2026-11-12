@@ -21,7 +21,8 @@ static const s32 lbl_80464BBC[11] = {0, 0, 360, 800, 830, 950, 1040, 1160, 1325,
 
 s32 fn_801365A8();
 
-// FIXME(shotgun): 99.7 %, reloc-name only (the two float literals are @NNN, not lbl_)
+// FIXME(shotgun): 99.69 %, reloc-name; behaviour clean.
+// only (the two float literals are @NNN, not lbl_)
 void cls_8049DD68::init() {
     cls_8049D140::init();
     field_0x274.fn_801D2608(lbl_80539F20, 1);
@@ -32,7 +33,8 @@ void cls_8049DD68::init() {
     getGameView_802D6A9C()->fn_802D7440(0);
 }
 
-// FIXME(shotgun): 78.6 %, missing/extra + reloc-name; the guarded static (lbl_8053AA98 / lbl_8053AA9C) update() zero-inits is not written
+// FIXME(shotgun): 78.60 %, missing/extra + reloc-name; behaviour drift.
+// the guarded static (lbl_8053AA98 / lbl_8053AA9C) update() zero-inits is not written
 void cls_8049DD68::update() {
     cls_8049D140::update();
     fn_8011CF48();
@@ -98,7 +100,8 @@ s32 cls_8049DD68::vfunc_0x5C() {
 // Not auto-inlined: update and vfunc_0x54 call fn_8011D1B8 / fn_8011CF48 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 7.1 %, missing/extra + reloc-name; ours keeps 0.0f in f31 (saves f31) where the original reloads the literal
+// FIXME(shotgun): 7.13 %, missing/extra + reloc-name; behaviour drift.
+// ours keeps 0.0f in f31 (saves f31) where the original reloads the literal
 void cls_8049DD68::fn_8011D1B8(s32 state) {
     switch (state) {
     case 1:
@@ -158,7 +161,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 77.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.76 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 2:
