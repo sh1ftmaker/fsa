@@ -139,16 +139,19 @@ void cls_804A00C8::init() {
 
 // FIXME(shotgun): 87.05 %, missing/extra + reloc-name
 cls_804A00C8::~cls_804A00C8() {
-    if (field_0x280 >= 0) {
-        cls_804A00C8* partner = static_cast<cls_804A00C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x280));
+    s32 partnerSerial = field_0x280;
+    if (partnerSerial >= 0) {
+        cls_804A00C8* partner = static_cast<cls_804A00C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(partnerSerial));
         if (partner != NULL) {
             partner->field_0x290--;
         }
     }
-    if (field_0x284 >= 0) {
-        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x284);
+    s32 serial = field_0x284;
+    if (serial >= 0) {
+        ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (other != NULL) {
-            other->field_0x3c.set(0.0f, 0.0f, 5.0f);
+            JGeometry::TVec3f kick(0.0f, 0.0f, 5.0f);
+            other->field_0x3c = kick;
         }
         field_0x284 = -1;
     }
