@@ -363,7 +363,7 @@ void cls_804B146C::fn_80425F6C() {
         if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) || getPlayerLayer_8023DE58(fn_8022EA0C(i)) >= 8) {
             continue;
         }
-        if (field_0x1e8[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x68 != 0) {
+        if (field_0x1e8[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x69 != 0) {
             Vec screen;
             gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
             f32 x = sx * (screen.x / JUTVideo::getManager()->getFbWidth()) - JUTVideo::getManager()->getFbWidth() * 0.5f;
