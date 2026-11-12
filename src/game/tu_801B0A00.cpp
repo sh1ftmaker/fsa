@@ -10,7 +10,7 @@
 static const s32 lbl_804A35A0[3] = {2, 1, 0};
 
 // 0x801B2394.
-// FIXME(shotgun): 83.35 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.35 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A35AC::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -75,7 +75,7 @@ cls_804A35AC::~cls_804A35AC() {
 }
 
 // 0x801B2138.
-// FIXME(shotgun): 96.26 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.26 %, missing/extra + reloc-name; behaviour clean.
 void cls_804A35AC::fn_801B2138(s32 arg) {
     if (field_0x254 != arg) {
         field_0x254 = arg;
@@ -142,12 +142,15 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 }
 
 // 0x801B2000.
-// FIXME(shotgun): 76.51 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.28 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
-            field_0x288[i] = *getPlayerPos_8023E724(i);
+            const JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
+            field_0x288[i].x = pos->x;
+            field_0x288[i].y = pos->y;
+            field_0x288[i].z = pos->z;
             if (mode == 0) {
                 if (field_0x258 == 1) {
                     field_0x288[i].y = y;
@@ -166,10 +169,11 @@ void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
 }
 
 // 0x801B0A00.
-// FIXME(shotgun): 89.62 %, different + reloc-name
+// FIXME(shotgun): 97.31 %, different + reloc-name; behaviour drift.
+// field_0x90 compare is cmplwi (u32), original cmpwi
 void cls_804A35AC::draw() {
+    s32 frame = 0x9B;
     if (field_0x90 == 0) {
-        s32 frame = 0x9B;
         if (field_0x250 == 2 || field_0x250 == 3) {
             frame = 0x274;
         }
