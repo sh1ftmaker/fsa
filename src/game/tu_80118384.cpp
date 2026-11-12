@@ -283,6 +283,7 @@ static inline void eraseRange(ActorBase_804A5770**& end, ActorBase_804A5770** fi
     end = newEnd;
 }
 
+// FIXME: 97.48 %, missing/extra; behaviour near.
 cls_801192AC::~cls_801192AC() {
     eraseRange(mEnd, mBegin, mEnd);
     eraseRange(mEnd, mBegin, mEnd);
@@ -295,6 +296,7 @@ extern "C" cls_801192AC* fn_8011921C() {
     return &lbl_804BC540;
 }
 
+// FIXME: 79.27 %, missing/extra; behaviour drift.
 // FIXME(shotgun): TVector::reserve(20) inline; copy loop and empty destroy loop.
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
@@ -399,6 +401,7 @@ static inline ActorBase_804A5770** copyBackward(ActorBase_804A5770** first, Acto
     return result;
 }
 
+// FIXME: 95.09 %, missing/extra; behaviour clean.
 ActorBase_804A5770** ActorVector::Insert_raw(ActorBase_804A5770** pos, u32 count) {
     if (count == 0) {
         return pos;
