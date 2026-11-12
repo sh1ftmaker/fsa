@@ -26,27 +26,24 @@ cls_804A4C58::cls_804A4C58() : mSeq2a8(), field_0x2d0(0.0f) {
     field_0x33c = 0;
     field_0x33e = 0;
     field_0x33f = 0;
-    mEmitter2c0 = NULL;
-    mEmitter2c4 = NULL;
-    mEmitter2c8 = NULL;
-    mEmitter2cc = NULL;
+    mEmitter2c[0] = NULL;
+    mEmitter2c[1] = NULL;
+    mEmitter2c[2] = NULL;
+    mEmitter2c[3] = NULL;
 }
 
-// FIXME(shotgun): 58.63 %, missing/extra + reloc-name.
+// Only scheduling differs: ours loads -1 for the serial before the fn_801DAC6C call.
+// FIXME: 95.98 %, scheduling+regalloc; behaviour clean.
 cls_804A4C58::~cls_804A4C58() {
-    releaseEmitter_801EE434(mEmitter2c0);
-    mEmitter2c0 = NULL;
-    releaseEmitter_801EE434(mEmitter2c4);
-    mEmitter2c4 = NULL;
-    releaseEmitter_801EE434(mEmitter2c8);
-    mEmitter2c8 = NULL;
-    releaseEmitter_801EE434(mEmitter2cc);
-    mEmitter2cc = NULL;
+    for (s32 i = 0; i < 4; i++) {
+        releaseEmitter_801EE434(mEmitter2c[i]);
+        mEmitter2c[i] = NULL;
+    }
     fn_801DAC6C()->mSerial0 = -1;
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 58.92 %, missing/extra + reloc-name.
+// FIXME(shotgun): 58.97 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -109,7 +106,7 @@ void cls_804A4C58::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
-// FIXME(shotgun): 97.65 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.91 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9C58(int state) {
     field_0x336 = 0;
     if (mState == 0x11) {
@@ -246,7 +243,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 75.91 %, missing/extra + reloc-name.
+// FIXME(shotgun): 75.93 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -309,7 +306,7 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 71.57 %, missing/extra + reloc-name.
+// FIXME(shotgun): 71.70 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
@@ -665,10 +662,10 @@ void cls_804A4C58::vfunc_0x90(u8 mapHit) {
         break;
     case 19:
         if (getActorManager_801F856C()->fn_801F68E0() != 0) {
-            releaseEmitter_801EE434(mEmitter2c8);
-            releaseEmitter_801EE434(mEmitter2cc);
-            mEmitter2c8 = NULL;
-            mEmitter2cc = NULL;
+            releaseEmitter_801EE434(mEmitter2c[2]);
+            releaseEmitter_801EE434(mEmitter2c[3]);
+            mEmitter2c[2] = NULL;
+            mEmitter2c[3] = NULL;
             vfunc_0x28(0, 0.0f, -16.0f);
             fn_801D9C58(20);
         }
@@ -810,6 +807,7 @@ void cls_804A4C58::vfunc_0x74() {
 #endif
 
 // Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
+// FIXME: 99.90 %, reloc-name; behaviour clean.
 void cls_804A4C58::vfunc_0xA0() {
     if (mState == 0) {
         return;

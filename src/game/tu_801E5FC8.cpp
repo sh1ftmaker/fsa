@@ -6,15 +6,15 @@
 #include "game/act/tu_801DAC6C.h"
 
 void cls_804A4C58::fn_801E63D8() {
-    mEmitter2c0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x25e, 0, 0, NULL, NULL, true, 1.0f);
-    mEmitter2c4 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x25f, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2c[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x25e, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2c[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x25f, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 void cls_804A4C58::fn_801E6394() {
-    releaseEmitter_801EE434(mEmitter2c0);
-    releaseEmitter_801EE434(mEmitter2c4);
-    mEmitter2c0 = NULL;
-    mEmitter2c4 = NULL;
+    releaseEmitter_801EE434(mEmitter2c[0]);
+    releaseEmitter_801EE434(mEmitter2c[1]);
+    mEmitter2c[0] = NULL;
+    mEmitter2c[1] = NULL;
 }
 
 void cls_804A4C58::fn_801E631C() const {
@@ -28,14 +28,14 @@ void cls_804A4C58::fn_801E62D4() const {
 
 void cls_804A4C58::fn_801E6234() {
     JGeometry::TVec3f pos(mPos.x, -40.0f + mPos.y, mPos.z);
-    mEmitter2c8 = spawnEmitter_8013CC50(field_0x4, &pos, 0x25c, 0, 0, NULL, NULL, true, 1.0f);
-    mEmitter2cc = spawnEmitter_8013CC50(field_0x4, &pos, 0x25d, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2c[2] = spawnEmitter_8013CC50(field_0x4, &pos, 0x25c, 0, 0, NULL, NULL, true, 1.0f);
+    mEmitter2c[3] = spawnEmitter_8013CC50(field_0x4, &pos, 0x25d, 0, 0, NULL, NULL, true, 1.0f);
 }
 
 void cls_804A4C58::fn_801E61C4() {
     JGeometry::TVec3f pos(mPos.x, -40.0f + mPos.y, mPos.z);
-    fn_801CB71C(&mEmitter2c8, &pos, 0, 0);
-    fn_801CB71C(&mEmitter2cc, &pos, 0, 0);
+    fn_801CB71C(&mEmitter2c[2], &pos, 0, 0);
+    fn_801CB71C(&mEmitter2c[3], &pos, 0, 0);
 }
 
 // FIXME: 98.39%. Only register allocation of the three colour adds differs: the

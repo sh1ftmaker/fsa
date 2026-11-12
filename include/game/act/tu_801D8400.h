@@ -37,8 +37,8 @@ struct Sequencer_801DAA24 {
 // and effect helpers are in game/tu_801E5FC8.cpp: it draws the resource
 // named by its sequencer ('ICEB' in the archive at GameState field_0x10),
 // mirrored when mFlags has 0x2000 and the sequencer is at 28 or more, and
-// keeps two pairs of effects (ids 0x25E/0x25F in mEmitter2c0/2c4, 0x25C/0x25D
-// in mEmitter2c8/2cc).
+// keeps two pairs of effects (ids 0x25E/0x25F in mEmitter2c[0]/[1], 0x25C/0x25D
+// in mEmitter2c[2]/[3]).
 // Size: 0x340 (li r3, 0x340 before the constructor, 0x801DA504 here).
 class cls_804A4C58 : public EnemyBase_804A4808 {
 public:
@@ -115,10 +115,7 @@ public:
     void fn_801E63D8();
 
     /* 0x2A8 */ Sequencer_801DAA24 mSeq2a8;
-    /* 0x2C0 */ JPABaseEmitter* mEmitter2c0;
-    /* 0x2C4 */ JPABaseEmitter* mEmitter2c4;
-    /* 0x2C8 */ JPABaseEmitter* mEmitter2c8;
-    /* 0x2CC */ JPABaseEmitter* mEmitter2cc;
+    /* 0x2C0 */ JPABaseEmitter* mEmitter2c[4];
     /* 0x2D0 */ f32 field_0x2d0; // vfunc_0x80's ceiling for mPos.y
     /* 0x2D4 */ JGeometry::TVec2f field_0x2d4[12]; // constructed by __construct_array (8-byte TVec2f)
     /* 0x334 */ u8 field_0x334; // zeroed by the constructor
