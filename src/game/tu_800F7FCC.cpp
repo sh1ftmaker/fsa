@@ -460,7 +460,8 @@ void cls_8049C718::fn_800FBD90() {
         field_0xb0 = 4;
     }
     fn_800FA1A4();
-    if (--mTimer >= 0) {
+    mTimer--;
+    if (mTimer >= 0) {
         f32 s = 1.4f * mScale;
         mBox.set(-26.0f * s, -50.0f * s, 26.0f * s, 0.0f);
         return;
@@ -512,9 +513,7 @@ void cls_8049C718::fn_800FBD90() {
             startSound_801F0E34(0x4002B, 0);
         }
     } else {
-        mPos.x += field_0x3c.x;
-        mPos.y += field_0x3c.y;
-        mPos.z += field_0x3c.z;
+        mPos.add(field_0x3c);
         startSound_801F0E34(0x4002E, 0);
         JGeometry::TVec3f n;
         if (fn_801F2618(&n, false)) {
