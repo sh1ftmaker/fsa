@@ -892,8 +892,6 @@ void fn_801CB7A0(JPABaseEmitter* emitter) {
     }
 }
 
-// FIXME: 93.9 %. The target has no second NULL test of *emitter in front of the
-// manager call (deleteEmitter()'s own); everything else is identical.
 // Moves the emitter in *emitter to pos with setEmitterPos_8013CB44 (adjust true); or,
 // when it is flagged (bit 0x8 of its word 0xF4) and has no particles left
 // (0xD0 + 0xDC == 0), deletes it and sets *emitter to NULL. Does nothing for
@@ -901,7 +899,9 @@ void fn_801CB7A0(JPABaseEmitter* emitter) {
 void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 height, s32 depth) {
     if (*emitter != NULL) {
         if ((*emitter)->isEnableDeleteEmitter()) {
-            deleteEmitter(emitter);
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(*emitter);
+            *emitter = NULL;
         } else {
             setEmitterPos_8013CB44(*emitter, pos, height, depth, true);
         }
