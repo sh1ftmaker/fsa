@@ -442,7 +442,6 @@ void TileMap_804AA858::fn_802FF0EC() {
 // Draws the field_0x2398 effects, last first: params' alphas fade with the
 // time left, and an effect with a scale shrinks from it to 1 (its matrix is
 // a scaled copy for the draw).
-// FIXME: 99.97 %, reloc-name; behaviour clean.
 void TileMap_804AA858::fn_802FEE68() {
     for (int i = 0xFF; i >= 0; i--) {
         cls_803003AC* effect = &field_0x2398[i];
@@ -496,6 +495,7 @@ void TileMap_804AA858::fn_802FEE68() {
 // (field_0x150 / field_0x190, the field_0x21c window); then every 10 frames
 // copies the next of the four 0x40-byte blocks of field_0x238c to
 // field_0x4[1] + 0x200.
+// FIXME: 71.43 %, missing/extra + reloc-name; behaviour drift.
 void TileMap_804AA858::fn_802FCE74() {
     static const s16 lbl_8046F980[10] = {0, -119, 0, 123, -119, 123, -119, 0, 123, 0};
     static const s16 lbl_8046F994[10] = {0, -107, -107, -107, 0, 0, 70, 70, 70, 0};
@@ -800,7 +800,7 @@ void TileMap_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 87.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 87.09 %, missing/extra; behaviour drift.
 // Structurally close (2 instructions more): the original builds
 // the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
 // -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
@@ -909,7 +909,7 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
     }
 }
 
-// FIXME: 87.94 %, missing/extra + reloc-name; behaviour near.
+// FIXME: 87.97 %, missing/extra + reloc-name; behaviour near.
 // Structurally close (6 instructions more): in the mosaic the
 // original multiplies h * py and w * px per pixel, ours strength-reduces them
 // (four more registers, so flag / alpha live on the stack: lbz 0x8 / 0x9);
@@ -1072,7 +1072,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
 // 512 when the whole row is off one side.
 // Still differs: ours hoists 8.0f + py out of the corner loops (one more FPR, f29),
 // the shift loop's line index is not one induction variable, count-loop scheduling.
-// FIXME: 92.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 92.87 %, missing/extra; behaviour drift.
 void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets) {
     static const GXTlut lbl_8046FA30[16] = {
         GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
@@ -1261,7 +1261,7 @@ void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u
     }
 }
 
-// FIXME: 98.06 %, operands + reloc-name; behaviour drift.
+// FIXME: 98.46 %, operands; behaviour drift.
 // Register allocation, stack slots and data offsets only (try.py
 // "operands + reloc-name"): the tables and "circle.bti" sit 0x70 / 0x1D8 too
 // early in our .rodata (fn_802FCE74's tables and fn_802F6800's five are not
@@ -2044,7 +2044,7 @@ void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXSetCullMode(GX_CULL_NONE);
 }
 
-// FIXME: 88.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 89.03 %, missing/extra + reloc-name; behaviour near.
 // The original keeps obj in memory as if its address were taken:
 // every bit-field store is kept (byte 0x11 stored after each field, the
 // unused mAffineParam = 0 too) and the draw re-reads the fields; ours keeps
@@ -2212,6 +2212,7 @@ static inline bool isOnScreen(const JGeometry::TVec3f* pos) {
 // field_0x24 and field_0xe450 a further TEV stage multiplies in the player's
 // field_0xe428 texture. params' bytes 0x21 / 0x22 queue it instead;
 // field_0x30 adds the effect of fn_802F6800.
+// FIXME: 91.96 %, missing/extra + reloc-name; behaviour drift.
 void TileMap_804AA858::fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params) {
     if (!field_0x2364) {
         return;
@@ -2493,7 +2494,7 @@ void TileMap_804AA858::fn_802F745C(const JGeometry::TVec3f* pos, void* res, Spri
     }
 }
 
-// FIXME: 89.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 89.91 %, missing/extra + reloc-name; behaviour drift.
 // The quad loop: the original converts the tile's pixel x / y
 // ((x * 2 + i) * 8, (y * 2 + j) * 8) to float twice each inside the innermost
 // loop and computes the second texture coordinates as px * (1 / 128) + 0.0f
