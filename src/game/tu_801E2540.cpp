@@ -67,7 +67,10 @@ void cls_804A51E4::fn_801E2D88() {
         mBox.i.y = 1.0f;
         mBox.f.x = -1.0f;
         mBox.f.y = -1.0f;
-        mBox2 = mBox;
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
         break;
     case 12:
         mBox.i.x = -8.0f;
@@ -95,7 +98,10 @@ void cls_804A51E4::fn_801E2D88() {
             mBox.i.y += 4.0f;
             mBox.f.y += 4.0f;
         }
-        mBox2 = mBox;
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
         break;
     }
 }
