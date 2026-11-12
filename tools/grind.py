@@ -9,6 +9,7 @@
                                   [--per-unit K] [--sessions M] [--unit game/X.cpp]
   python3 tools/grind.py check [--full]            # inside a session: the verdict the judge would give now
   python3 tools/grind.py status                    # sessions, accept rate, tokens per tier
+  python3 tools/grind.py watch --stop 0.10         # stop everything at this weekly utilization
   touch ../fsa-wt/g2-logs/STOP                     # workers finish their session and exit
 
 What changed from the first grinder (branch `grind`), each from its logs:
@@ -257,11 +258,21 @@ def build_queue(force=False):
     """{unit source: {function: {pct,size,cls,grade,score,addr}}} for every game function below
     100 %, from the integration worktree; cached per integration commit."""
     LOGS.mkdir(parents=True, exist_ok=True)
-    cache, h = LOGS / "queue.json", head(INTEG)
+    cache = LOGS / "queue.json"
+    with open(LOGS / "merge.lock", "a") as lock:  # not while an integration is rebuilding the tree
+        fcntl.flock(lock, fcntl.LOCK_SH)
+        return _build_queue(cache, force)
+
+
+def _build_queue(cache, force):
+    h = head(INTEG)
     if not force and cache.exists():
-        d = json.loads(cache.read_text())
-        if d.get("head") == h:
-            return d["units"]
+        try:
+            d = json.loads(cache.read_text())
+            if d.get("head") == h:
+                return d["units"]
+        except ValueError:
+            pass
     units = game_units(INTEG)
 
     def one(u):
@@ -273,7 +284,9 @@ def build_queue(force=False):
                       for n, e in (ev or {"functions": {}})["functions"].items() if e["pct"] < 100}
     with ThreadPoolExecutor(12) as ex:
         res = {src: fns for src, fns in ex.map(one, units) if fns}
-    cache.write_text(json.dumps({"head": h, "units": res}))
+    tmp = cache.with_suffix(f".{os.getpid()}.tmp")
+    tmp.write_text(json.dumps({"head": h, "units": res}))
+    tmp.rename(cache)
     return res
 
 
@@ -923,7 +936,7 @@ def reset_to_integration(wt):
 
 def integrate(wt, branch, unit):
     """Bring the worker's kept commits into `grind2` and re-verify the whole project there."""
-    with open(LOGS / "merge.lock", "w") as lock:
+    with open(LOGS / "merge.lock", "a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
         signal.signal(signal.SIGTERM, signal.SIG_IGN)  # never leave grind2 half-checked
         try:
@@ -1133,6 +1146,8 @@ def cmd_worker(args):
     if not wt.exists():
         sys.exit(f"{wt} missing: run `python3 tools/grind.py setup --workers {args.n}`")
     done, skip = 0, set()
+    (LOGS / "pids").mkdir(parents=True, exist_ok=True)
+    (LOGS / "pids" / f"{owner}.pid").write_text(str(os.getpid()))
     more = lambda: not (LOGS / "STOP").exists() and (not args.sessions or done < args.sessions)
     while more():
         if args.usage_stop and done and done % 10 == 0:
@@ -1195,12 +1210,53 @@ def cmd_worker(args):
             if changes:
                 stamp_commit(wt, unit)
             result = integrate(wt, branch, unit) if changes else "nothing kept"
+            if result == "merge conflict":
+                if sh(["git", "rebase", BRANCH], wt).returncode == 0:
+                    result = integrate(wt, branch, unit) + " (rebased)"
+                else:
+                    sh(["git", "rebase", "--abort"], wt)
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "UNIT", result] + [""] * 7)
         except Exception as ex:  # keep the worker alive
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "ERROR", str(ex)[:300]] + [""] * 7)
             revert(wt)
         finally:
             sh(["python3", "tools/claim.py", "release", unit], MAIN)
+
+
+# ---------------------------------------------------------------- usage watchdog
+
+def cmd_watch(args):
+    """Poll the weekly utilization. One point below --stop: STOP file (workers finish their session
+    and exit). At --stop: SIGTERM to every worker (a running session is cut off; nothing of it is kept)."""
+    LOGS.mkdir(parents=True, exist_ok=True)
+    soft = args.stop - 0.01
+    while True:
+        u = usage()
+        with open(LOGS / "usage.tsv", "a") as f:
+            f.write(f"{now()}\t{u}\n")
+        alive = []
+        for pf in (LOGS / "pids").glob("*.pid") if (LOGS / "pids").exists() else []:
+            try:
+                os.kill(int(pf.read_text()), 0)
+                alive.append(pf)
+            except (OSError, ValueError):
+                pf.unlink(missing_ok=True)
+        if u is not None and u >= args.stop:
+            (LOGS / "STOP").touch()
+            for pf in alive:
+                try:
+                    os.kill(int(pf.read_text()), signal.SIGTERM)
+                except (OSError, ValueError):
+                    pass
+            notify("FSA grind: hard stop", f"weekly usage {u:.0%} (limit {args.stop:.0%})")
+            return
+        if u is not None and u >= soft and not (LOGS / "STOP").exists():
+            (LOGS / "STOP").touch()
+            notify("FSA grind: stopping", f"weekly usage {u:.0%}; workers finish their session")
+        if (LOGS / "STOP").exists() and not alive:
+            notify("FSA grind stopped", f"weekly usage {u if u is None else format(u, '.0%')}")
+            return
+        time.sleep(args.every)
 
 
 # ---------------------------------------------------------------- status
@@ -1258,6 +1314,10 @@ def main():
     p = sub.add_parser("packet"); p.add_argument("unit"); p.add_argument("function"); p.set_defaults(fn=cmd_packet)
     p = sub.add_parser("check"); p.add_argument("--full", action="store_true"); p.set_defaults(fn=cmd_check)
     p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
+    p = sub.add_parser("watch")
+    p.add_argument("--stop", type=float, required=True, help="weekly utilization (0..1) at which everything stops")
+    p.add_argument("--every", type=int, default=150, help="seconds between checks")
+    p.set_defaults(fn=cmd_watch)
     p = sub.add_parser("worker")
     p.add_argument("n", type=int)
     p.add_argument("--tier", choices=ORDER, required=True)
