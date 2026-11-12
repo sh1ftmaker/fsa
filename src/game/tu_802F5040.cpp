@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "JSystem/JMath/JMath.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "dolphin/gx.h"
@@ -441,7 +442,6 @@ void TileMap_804AA858::fn_802FF0EC() {
 // Draws the field_0x2398 effects, last first: params' alphas fade with the
 // time left, and an effect with a scale shrinks from it to 1 (its matrix is
 // a scaled copy for the draw).
-// FIXME: 99.97 %, reloc-name; behaviour clean.
 void TileMap_804AA858::fn_802FEE68() {
     for (int i = 0xFF; i >= 0; i--) {
         cls_803003AC* effect = &field_0x2398[i];
@@ -485,6 +485,226 @@ void TileMap_804AA858::fn_802FEE68() {
             if (effect->mScale != 1.0f) {
                 effect->mParams.mMtx = mtx;
             }
+        }
+    }
+}
+
+// Per frame: counts each player's field_0x138 up to 40 while its field_0x12c
+// flag is set (sound 0x52 when a counted player starts, 0x53 when it drops),
+// scales the panels by the sine of the counts and places the views
+// (field_0x150 / field_0x190, the field_0x21c window); then every 10 frames
+// copies the next of the four 0x40-byte blocks of field_0x238c to
+// field_0x4[1] + 0x200.
+// FIXME: 71.43 %, missing/extra + reloc-name; behaviour drift.
+void TileMap_804AA858::fn_802FCE74() {
+    static const s16 lbl_8046F980[10] = {0, -119, 0, 123, -119, 123, -119, 0, 123, 0};
+    static const s16 lbl_8046F994[10] = {0, -107, -107, -107, 0, 0, 70, 70, 70, 0};
+    static const s16 lbl_8046F9A8[2][9] = {
+        {0, -119, 0, 123, -119, 123, -119, 0, 123},
+        {0, -195, 0, 210, -195, 210, -195, 0, 210},
+    };
+    static const s16 lbl_8046F9CC[2][9] = {
+        {0, -107, -107, -107, 0, 0, 70, 70, 70},
+        {0, -163, -163, -163, 0, 0, 123, 123, 123},
+    };
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (field_0x12c[i] && !field_0x216 && field_0x230 == field_0x22c) {
+            if (field_0x138[i] < 40) {
+                field_0x138[i]++;
+                u32 type = gGameRoot_8053AAF8->field_0x83 >> (i * 2) & 3;
+                if (((type == 2 && i == 0) || (type == 1 && i == field_0x230)) && !field_0x215) {
+                    gAudioMgr_8053AF80->fn_80458880(0x52, -1);
+                    field_0x215 = 1;
+                }
+            }
+        } else if (field_0x138[i] > 0) {
+            field_0x138[i]--;
+            if (field_0x215 == 1) {
+                if (gGameRoot_8053AAF8->field_0x4c != 10 && gGameRoot_8053AAF8->field_0x4c != 12) {
+                    gAudioMgr_8053AF80->fn_80458880(0x53, -1);
+                }
+                field_0x215 = 0;
+            }
+        }
+        field_0x12c[i] = 0;
+    }
+    field_0x216 = 0;
+    if (field_0x230 == -1 && field_0x22c != -1) {
+        u32 type = gGameRoot_8053AAF8->field_0x83 >> (field_0x22c * 2) & 3;
+        if (type == 1) {
+            field_0x138[field_0x22c] = 0;
+        }
+    }
+    if ((field_0x230 == -1 || field_0x138[field_0x230] <= 0) &&
+        (field_0x22c == -1 || field_0x138[field_0x22c] <= 0)) {
+        field_0x230 = field_0x22c;
+    }
+    field_0x22c = -1;
+    field_0x248 = 0;
+    field_0x214 = 0;
+
+    f32 scaleX[4];
+    f32 scaleY[4];
+    for (i = 0; i < 4; i++) {
+        f32 t = 0.05f * (field_0x138[i] - 20);
+        if (t <= 0.0f) {
+            t = 0.0f;
+        }
+        scaleX[i] = JMath::sincosTable_.sinDegree(90.0f * t);
+        field_0x148[i] = 0;
+        field_0x14c[i] = 0;
+        scaleY[i] = scaleX[i];
+        field_0x210[i] = 0;
+    }
+
+    if (gGameRoot_8053AAF8->field_0x7e) {
+        for (i = 0; i < 4; i++) {
+            if (field_0x138[i] > 0) {
+                if (field_0x230 == i) {
+                    s32 player = fn_8022EA0C(i);
+                    JGeometry::TVec3f pos;
+                    if (fn_8023E10C(player) < 8) {
+                        pos.set(*fn_8023E214(player));
+                    } else {
+                        pos.set(*fn_8023E32C(player));
+                    }
+                    Vec screen;
+                    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+                    f32 offX = pos.x - 512.0f * (s32)(pos.x / 512.0f) < 256.0f ? -1.0f : 0.0f;
+                    f32 offY = pos.y - 384.0f * (s32)(pos.y * (1.0f / 384.0f)) < 192.0f ? -1.0f : 0.0f;
+
+                    f32 width = field_0xfc->field_0x70[field_0xfc->field_0xa4];
+                    f32 height = field_0xfc->field_0x70[field_0xfc->field_0xa4 + 2];
+                    s32 w = width * scaleX[i];
+                    s32 h = height * scaleY[i];
+                    field_0x214 = 1;
+                    f32 x = lbl_8046F980[field_0x234] +
+                            ((((s32)width - w) >> 1) + field_0xfc->field_0x40[field_0xfc->field_0xa4].x);
+                    f32 y = lbl_8046F994[field_0x234] +
+                            ((((s32)height - h) >> 1) + field_0xfc->field_0x40[field_0xfc->field_0xa4].y);
+                    field_0x21c = (w * offX + screen.x) * (1.0f - scaleX[i]) + scaleX[i] * x;
+                    field_0x220 = (h * offY + screen.y) * (1.0f - scaleY[i]) + scaleY[i] * y;
+                    field_0x224 = w;
+                    field_0x228 = h;
+
+                    width = field_0xfc->field_0x80[field_0xfc->field_0xa4];
+                    height = field_0xfc->field_0x80[field_0xfc->field_0xa4 + 2];
+                    w = width * scaleX[i];
+                    h = height * scaleY[i];
+                    field_0x148[i] = 1;
+                    field_0x150[i].field_0x0 = 0;
+                    field_0x150[i].field_0x4 = 0;
+                    field_0x150[i].field_0x8 = 240.0f;
+                    field_0x150[i].field_0xc = 160.0f;
+                    x = lbl_8046F980[field_0x234] +
+                        ((((s32)width - w) >> 1) + field_0xfc->field_0x58[field_0xfc->field_0xa4].x);
+                    y = lbl_8046F994[field_0x234] +
+                        ((((s32)height - h) >> 1) + field_0xfc->field_0x58[field_0xfc->field_0xa4].y);
+                    field_0x190[i].field_0x0 = (w * offX + screen.x) * (1.0f - scaleX[i]) + scaleX[i] * x;
+                    field_0x190[i].field_0x4 = (h * offY + screen.y) * (1.0f - scaleY[i]) + scaleY[i] * y;
+                    field_0x190[i].field_0x8 = w;
+                    field_0x190[i].field_0xc = h;
+                    field_0x210[i] = 1;
+                } else if (!field_0x217[i]) {
+                    cls_804AA858Sub11CEntry* mark = &field_0x11c[i]->mEntries[lbl_80506DD8[i]];
+                    s32 markX = (mark->mXLow | mark->mXHigh << 8) - 24;
+                    s32 markY = mark->mY - 32;
+                    markX = markX < 0 ? 0 : markX;
+                    markY = markY < 0 ? 0 : markY;
+                    s32 right = markX + 48 > 240 ? 240 : markX + 48;
+                    s32 bottom = markY + 40 > 160 ? 160 : markY + 40;
+                    field_0x148[i] = 1;
+                    field_0x14c[i] = 1;
+                    field_0x150[i].field_0x0 = right - 48;
+                    field_0x150[i].field_0x4 = bottom - 40;
+                    field_0x150[i].field_0x8 = 48;
+                    field_0x150[i].field_0xc = 48;
+                    s32 w = field_0x1d0[i].field_0x8 * scaleX[i];
+                    s32 h = field_0x1d0[i].field_0xc * scaleY[i];
+                    field_0x190[i].field_0x0 = ((field_0x1d0[i].field_0x8 - w) >> 1) + field_0x1d0[i].field_0x0;
+                    field_0x190[i].field_0x4 = ((field_0x1d0[i].field_0xc - h) >> 1) + field_0x1d0[i].field_0x4;
+                    field_0x190[i].field_0x8 = w;
+                    field_0x190[i].field_0xc = h;
+                }
+            }
+            field_0x217[i] = 0;
+        }
+    } else if (field_0x138[0] > 0 && !fn_8022C8EC(0)) {
+        s32 player = fn_8022EA0C(0);
+        JGeometry::TVec3f pos;
+        if (fn_8023E10C(player) < 8) {
+            pos.set(*fn_8023E214(player));
+        } else {
+            pos.set(*fn_8023E32C(player));
+        }
+        Vec screen;
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+        f32 offX = pos.x - 512.0f * (s32)(pos.x / 512.0f) < 256.0f ? -1.0f : 0.0f;
+        f32 offY = pos.y - 384.0f * (s32)(pos.y * (1.0f / 384.0f)) < 192.0f ? -1.0f : 0.0f;
+        field_0xfc->fn_80433718();
+
+        f32 width = field_0xfc->field_0x70[field_0xfc->field_0xa4];
+        f32 height = field_0xfc->field_0x70[field_0xfc->field_0xa4 + 2];
+        s32 w = scaleX[0] * width;
+        s32 h = scaleY[0] * height;
+        field_0x214 = 1;
+        s32 dx = ((s32)width - w) >> 1;
+        s32 dy = ((s32)height - h) >> 1;
+        u16 frame = 0;
+        if (isGameModeSet()) {
+            frame = field_0xfc->field_0x9e;
+        }
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (!camera->field_0x7f4) {
+            camera->field_0x7f5 = 1;
+        }
+        f32 x = dx + field_0xfc->field_0x40[field_0xfc->field_0xa4].x +
+                lbl_8046F9A8[field_0xfc->field_0xa4][frame];
+        f32 y = dy + field_0xfc->field_0x40[field_0xfc->field_0xa4].y +
+                lbl_8046F9CC[field_0xfc->field_0xa4][frame];
+        field_0x21c = (1.0f - scaleX[0]) * (w * offX + screen.x) + scaleX[0] * x;
+        field_0x220 = (1.0f - scaleY[0]) * (h * offY + screen.y) + scaleY[0] * y;
+        field_0x224 = w;
+        field_0x228 = h;
+
+        width = field_0xfc->field_0x80[field_0xfc->field_0xa4];
+        height = field_0xfc->field_0x80[field_0xfc->field_0xa4 + 2];
+        w = scaleX[0] * width;
+        h = scaleY[0] * height;
+        field_0x148[0] = 1;
+        field_0x150[0].field_0x0 = 0;
+        field_0x150[0].field_0x4 = 0;
+        field_0x150[0].field_0x8 = 240.0f;
+        field_0x150[0].field_0xc = 160.0f;
+        dx = ((s32)width - w) >> 1;
+        dy = ((s32)height - h) >> 1;
+        x = dx + field_0xfc->field_0x58[field_0xfc->field_0xa4].x + lbl_8046F9A8[field_0xfc->field_0xa4][frame];
+        y = dy + field_0xfc->field_0x58[field_0xfc->field_0xa4].y + lbl_8046F9CC[field_0xfc->field_0xa4][frame];
+        field_0x190[0].field_0x0 = (1.0f - scaleX[0]) * (w * offX + screen.x) + scaleX[0] * x;
+        field_0x190[0].field_0x4 = (1.0f - scaleY[0]) * (h * offY + screen.y) + scaleY[0] * y;
+        field_0x190[0].field_0x8 = w;
+        field_0x190[0].field_0xc = h;
+        field_0x210[0] = 1;
+    }
+
+    if (field_0x214) {
+        field_0xfc->fn_80432AF8();
+    } else {
+        field_0xfc->field_0xa0 = 0xFFFF;
+        field_0xfc->field_0xa4 = 0;
+    }
+    field_0x2394++;
+    if (field_0x2394 >= 10) {
+        field_0x2394 = 0;
+        field_0x2390++;
+        if (field_0x2390 >= 4) {
+            field_0x2390 = 0;
+        }
+        u8* src = field_0x238c + field_0x2390 * 0x40;
+        u8* dst = field_0x4[1] + 0x200;
+        for (s32 j = 0; j < 0x40; j++) {
+            *dst++ = *src++;
         }
     }
 }
@@ -580,7 +800,7 @@ void TileMap_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 87.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 87.09 %, missing/extra; behaviour drift.
 // Structurally close (2 instructions more): the original builds
 // the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
 // -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
@@ -689,7 +909,7 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
     }
 }
 
-// FIXME: 87.94 %, missing/extra + reloc-name; behaviour near.
+// FIXME: 87.97 %, missing/extra + reloc-name; behaviour near.
 // Structurally close (6 instructions more): in the mosaic the
 // original multiplies h * py and w * px per pixel, ours strength-reduces them
 // (four more registers, so flag / alpha live on the stack: lbz 0x8 / 0x9);
@@ -852,7 +1072,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
 // 512 when the whole row is off one side.
 // Still differs: ours hoists 8.0f + py out of the corner loops (one more FPR, f29),
 // the shift loop's line index is not one induction variable, count-loop scheduling.
-// FIXME: 92.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 92.87 %, missing/extra; behaviour drift.
 void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets) {
     static const GXTlut lbl_8046FA30[16] = {
         GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
@@ -1041,7 +1261,7 @@ void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u
     }
 }
 
-// FIXME: 98.06 %, operands + reloc-name; behaviour drift.
+// FIXME: 98.46 %, operands; behaviour drift.
 // Register allocation, stack slots and data offsets only (try.py
 // "operands + reloc-name"): the tables and "circle.bti" sit 0x70 / 0x1D8 too
 // early in our .rodata (fn_802FCE74's tables and fn_802F6800's five are not
@@ -1824,7 +2044,7 @@ void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXSetCullMode(GX_CULL_NONE);
 }
 
-// FIXME: 88.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 89.03 %, missing/extra + reloc-name; behaviour near.
 // The original keeps obj in memory as if its address were taken:
 // every bit-field store is kept (byte 0x11 stored after each field, the
 // unused mAffineParam = 0 too) and the draw re-reads the fields; ours keeps
@@ -1971,7 +2191,310 @@ void TileMap_804AA858::fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 
     }
 }
 
-// FIXME: 89.83 %, missing/extra + reloc-name; behaviour drift.
+// Whether pos lies in the visible area (top-down x, y - z) of the game view.
+static inline bool isOnScreen(const JGeometry::TVec3f* pos) {
+    f32 x = pos->x;
+    f32 y = pos->y - pos->z;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    bool onScreen = false;
+    if (x >= view->mVisibleBox.i.x && y >= view->mVisibleBox.i.y && x < view->mVisibleBox.f.x &&
+        y < view->mVisibleBox.f.y)
+    {
+        onScreen = true;
+    }
+    return onScreen;
+}
+
+// Draws the "TIMG" image res centred on pos. With params' field_0x23 (and no
+// matrix, on screen) it is drawn as 8 x 8 cells lit by the ground grid
+// field_0x100 / field_0x108; with a matrix and field_0x25 as a quad turned by
+// the matrix and tilted by 45 degrees; else as an upright quad. With params'
+// field_0x24 and field_0xe450 a further TEV stage multiplies in the player's
+// field_0xe428 texture. params' bytes 0x21 / 0x22 queue it instead;
+// field_0x30 adds the effect of fn_802F6800.
+// FIXME: 91.96 %, missing/extra + reloc-name; behaviour drift.
+void TileMap_804AA858::fn_802F745C(const JGeometry::TVec3f* pos, void* res, SpriteParams_801F5AE0* params) {
+    if (!field_0x2364) {
+        return;
+    }
+    if (params != NULL && params->field_0x21 && fn_802F654C(pos, NULL, 0, res, NULL, params)) {
+        return;
+    }
+    if (params != NULL && params->field_0x22 && fn_802F6298(pos, NULL, 0, res, NULL, params)) {
+        return;
+    }
+    JUTTexture tex((const ResTIMG*)res, 0);
+    f32 w = tex.getWidth();
+    f32 h = tex.getHeight();
+    bool multiply = false;
+    bool shaded = false;
+    if (params != NULL && params->field_0x24) {
+        shaded = true;
+    }
+    if (shaded && field_0xe450) {
+        multiply = true;
+    }
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    tex.load(GX_TEXMAP0);
+    JGeometry::TVec3f out;
+    fn_802F5040(pos, params, &out);
+    f32 halfW = 0.5f * w;
+    f32 halfH = 0.5f * h;
+    f32 s0 = pos->x - halfW;
+    f32 t0 = pos->y - halfH;
+    if (params != NULL && params->mMtx != NULL) {
+        s0 += params->mMtx[0][3];
+        t0 += params->mMtx[1][3];
+    }
+    s0 /= 128.0f;
+    t0 /= 128.0f;
+
+    if (params != NULL && params->field_0x23 && params->mMtx == NULL &&
+        !getGameView_802D6A9C()->fn_802DCD0C() && isOnScreen(pos))
+    {
+        f32 du = 8.0f / w;
+        s32 cols = 0.125f * w;
+        s32 rows = 0.125f * h;
+        out.x -= halfW;
+        f32 dv = 8.0f / h;
+        out.y -= halfH;
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_CLR0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_CLR0, GX_CLR_RGB, GX_RGBA8, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+        GXSetChanCtrl(GX_COLOR0A0, GX_FALSE, GX_SRC_REG, GX_SRC_VTX, GX_LIGHT_NULL, GX_DF_NONE, GX_AF_NONE);
+        GXSetNumChans(1);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR0A0);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_ONE, GX_CC_RASC, GX_CC_CPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_KONST, GX_CA_RASA, GX_CA_APREV);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_SUBHALF, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetNumTevStages(2);
+        if (multiply) {
+            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+            GXSetNumTexGens(2);
+            s32 player;
+            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
+                player = getGameView_802D6A9C()->field_0x50;
+            } else {
+                player = 0;
+            }
+            field_0xe428[player]->load(GX_TEXMAP1);
+            GXSetTevOrder(GX_TEVSTAGE2, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+            GXSetTevColorIn(GX_TEVSTAGE2, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+            GXSetTevAlphaIn(GX_TEVSTAGE2, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+            GXSetTevColorOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevAlphaOp(GX_TEVSTAGE2, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevSwapMode(GX_TEVSTAGE2, GX_TEV_SWAP0, GX_TEV_SWAP0);
+            GXSetTevDirect(GX_TEVSTAGE2);
+            GXSetNumTevStages(3);
+        }
+        GXBegin(GX_QUADS, GX_VTXFMT0, cols * rows * 4);
+        for (s32 j = 0; j < rows; j++) {
+            f32 v0 = j * dv;
+            s32 gy = 0.125f * (out.y + j * 8 - out.z - field_0x2368.y);
+            if (gy < 0) {
+                gy = 0;
+            } else if (gy > 64) {
+                gy = 64;
+            }
+            f32 v1 = v0 + dv;
+            f32 t2 = (j * 8) / 128.0f + t0;
+            f32 t3 = 0.0625f + t2;
+            for (s32 i = 0; i < cols; i++) {
+                f32 u0 = i * du;
+                s32 gx = 0.125f * (out.x + i * 8 - field_0x2368.x);
+                if (gx < 0) {
+                    gx = 0;
+                } else if (gx > 64) {
+                    gx = 64;
+                }
+                s32 index = gy * 65 + gx;
+                JGeometry::TVec3f* pt = &field_0x100[field_0x2388][gy][gx];
+                JUtility::TColor* color = &field_0x108[field_0x2388][index];
+                f32 s2 = (i * 8) / 128.0f + s0;
+                f32 s3 = 0.0625f + s2;
+                GXPosition3f32(pt->x + field_0x2368.x, out.z + (pt->y + field_0x2368.y), pt->z + out.z);
+                GXColor4u8(color->r, color->g, color->b, color->a);
+                GXTexCoord2f32(u0, v0);
+                GXTexCoord2f32(s2, t2);
+                pt = &field_0x100[field_0x2388][gy][gx] + 1;
+                color = &field_0x108[field_0x2388][index + 1];
+                GXPosition3f32(pt->x + field_0x2368.x, out.z + (pt->y + field_0x2368.y), pt->z + out.z);
+                GXColor4u8(color->r, color->g, color->b, color->a);
+                f32 u1 = u0 + du;
+                GXTexCoord2f32(u1, v0);
+                GXTexCoord2f32(s3, t2);
+                pt = &field_0x100[field_0x2388][gy][gx] + 66;
+                color = &field_0x108[field_0x2388][index + 66];
+                GXPosition3f32(pt->x + field_0x2368.x, out.z + (pt->y + field_0x2368.y), pt->z + out.z);
+                GXColor4u8(color->r, color->g, color->b, color->a);
+                GXTexCoord2f32(u1, v1);
+                GXTexCoord2f32(s3, t3);
+                pt = &field_0x100[field_0x2388][gy][gx] + 65;
+                color = &field_0x108[field_0x2388][index + 65];
+                GXPosition3f32(pt->x + field_0x2368.x, out.z + (pt->y + field_0x2368.y), pt->z + out.z);
+                GXColor4u8(color->r, color->g, color->b, color->a);
+                GXTexCoord2f32(u0, v1);
+                GXTexCoord2f32(s2, t3);
+            }
+        }
+        GXEnd();
+    } else if (params != NULL && params->mMtx != NULL && params->field_0x25) {
+        f32 q = 0.5f * halfH;
+        GXClearVtxDesc();
+        GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+        if (multiply) {
+            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+            GXSetNumTexGens(2);
+            s32 player;
+            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
+                player = getGameView_802D6A9C()->field_0x50;
+            } else {
+                player = 0;
+            }
+            field_0xe428[player]->load(GX_TEXMAP1);
+            GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+            GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+            GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+            GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+            GXSetTevDirect(GX_TEVSTAGE1);
+            GXSetNumTevStages(2);
+        }
+        JGeometry::TVec3f corners[4];
+        JGeometry::TVec3f r;
+        JGeometry::TVec3f c0(-halfW, -q, q);
+        PSMTXMultVecSR(params->mMtx, &c0, &corners[0]);
+        JGeometry::TVec3f c1(halfW, -q, q);
+        PSMTXMultVecSR(params->mMtx, &c1, &corners[1]);
+        JGeometry::TVec3f c2(halfW, q, -q);
+        PSMTXMultVecSR(params->mMtx, &c2, &corners[2]);
+        JGeometry::TVec3f c3(-halfW, q, -q);
+        PSMTXMultVecSR(params->mMtx, &c3, &corners[3]);
+        f32 x = out.x + params->mMtx[0][3];
+        f32 y = out.y + params->mMtx[1][3];
+        f32 s2 = (x - halfW) / 128.0f;
+        f32 t2 = (y - q) / 128.0f;
+        f32 s3 = (halfW + x) / 128.0f;
+        f32 t3 = (q + y) / 128.0f;
+        Mtx rot;
+        rot[0][3] = 0.0f;
+        rot[1][3] = 0.0f;
+        rot[2][3] = 0.0f;
+        f32 sn = sin(0.7853982f);
+        f32 cs = cos(0.7853982f);
+        rot[0][0] = 1.0f;
+        rot[0][1] = 0.0f;
+        rot[0][2] = 0.0f;
+        rot[1][0] = 0.0f;
+        rot[1][1] = cs;
+        rot[1][2] = -sn;
+        rot[2][0] = 0.0f;
+        rot[2][1] = sn;
+        rot[2][2] = cs;
+        for (s32 i = 0; i < 4; i++) {
+            PSMTXMultVecSR(rot, &corners[i], &r);
+            f32 d = 128.0f - r.z;
+            d = d >= 1.0f ? d : 1.0f;
+            f32 scale = 128.0f / d;
+            corners[i].x = out.x + (scale * corners[i].x + params->mMtx[0][3]);
+            corners[i].y = out.y + (corners[i].y + params->mMtx[1][3]);
+            corners[i].z = out.z + (corners[i].z + params->mMtx[2][3]);
+        }
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(corners[0].x, corners[0].y, corners[0].z);
+        GXTexCoord2f32(0.0f, 0.0f);
+        GXTexCoord2f32(s2, t2);
+        GXPosition3f32(corners[1].x, corners[1].y, corners[1].z);
+        GXTexCoord2f32(1.0f, 0.0f);
+        GXTexCoord2f32(s3, t2);
+        GXPosition3f32(corners[2].x, corners[2].y, corners[2].z);
+        GXTexCoord2f32(1.0f, 1.0f);
+        GXTexCoord2f32(s3, t3);
+        GXPosition3f32(corners[3].x, corners[3].y, corners[3].z);
+        GXTexCoord2f32(0.0f, 1.0f);
+        GXTexCoord2f32(s2, t3);
+        GXEnd();
+    } else {
+        out.x -= halfW;
+        out.z -= halfH;
+        GXSetClipMode(GX_CLIP_ENABLE);
+        if (multiply) {
+            GXClearVtxDesc();
+            GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+            GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
+            GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+            GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
+            GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+            GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+            GXSetNumTexGens(2);
+            s32 player;
+            if (isGameModeSet() && gGameRoot_8053AAF8->field_0x4 != NULL) {
+                player = getGameView_802D6A9C()->field_0x50;
+            } else {
+                player = 0;
+            }
+            field_0xe428[player]->load(GX_TEXMAP1);
+            GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR0A0);
+            GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_TEXC, GX_CC_ZERO);
+            GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_APREV);
+            GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+            GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+            GXSetTevDirect(GX_TEVSTAGE1);
+            GXSetNumTevStages(2);
+            f32 s1 = w / 128.0f + s0;
+            f32 t1 = h / 128.0f + t0;
+            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+            GXPosition3f32(out.x, out.y, out.z + h);
+            GXTexCoord2f32(0.0f, 0.0f);
+            GXTexCoord2f32(s0, t0);
+            GXPosition3f32(out.x + w, out.y, out.z + h);
+            GXTexCoord2f32(1.0f, 0.0f);
+            GXTexCoord2f32(s1, t0);
+            GXPosition3f32(out.x + w, out.y, out.z);
+            GXTexCoord2f32(1.0f, 1.0f);
+            GXTexCoord2f32(s1, t1);
+            GXPosition3f32(out.x, out.y, out.z);
+            GXTexCoord2f32(0.0f, 1.0f);
+            GXTexCoord2f32(s0, t1);
+            GXEnd();
+        } else {
+            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+            GXPosition3f32(out.x, out.y, out.z + h);
+            GXTexCoord2f32(0.0f, 0.0f);
+            GXPosition3f32(out.x + w, out.y, out.z + h);
+            GXTexCoord2f32(1.0f, 0.0f);
+            GXPosition3f32(out.x + w, out.y, out.z);
+            GXTexCoord2f32(1.0f, 1.0f);
+            GXPosition3f32(out.x, out.y, out.z);
+            GXTexCoord2f32(0.0f, 1.0f);
+            GXEnd();
+        }
+        GXSetClipMode(GX_CLIP_DISABLE);
+    }
+    if (params != NULL && params->field_0x30 != -1) {
+        fn_802F6800(pos, NULL, 0, res, NULL, params);
+    }
+}
+
+// FIXME: 89.91 %, missing/extra + reloc-name; behaviour drift.
 // The quad loop: the original converts the tile's pixel x / y
 // ((x * 2 + i) * 8, (y * 2 + j) * 8) to float twice each inside the innermost
 // loop and computes the second texture coordinates as px * (1 / 128) + 0.0f
