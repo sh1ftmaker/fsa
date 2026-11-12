@@ -24,12 +24,26 @@
 
 // Functions are listed in descending address order (highest first, lowest last).
 
-// FIXME(shotgun): 100 %, class
 s32 cls_804AE088::vfunc_0x58() {
     return field_0x240;
 }
 
-// FIXME(shotgun): 100 %, class
+// Table lbl_804AE070 is filled by this file's static initializer; its definition is not written yet.
+extern void (cls_804AE088::*lbl_804AE070[2])();
+
+void cls_804AE088::update() {
+    if (field_0x2f0 != 0) {
+        field_0x2f0--;
+        if (field_0x2f0 == 0xE1) {
+            startSound_801F0E34(0x30082, 0);
+        } else if (field_0x2f0 == 0xB4) {
+            startSound_801F0E34(0x30082, 0);
+            startSound_801F0E34(0x30083, 0);
+        }
+    }
+    (this->*lbl_804AE070[field_0x23c - 4])();
+}
+
 s32 cls_804AE088::vfunc_0x5C() {
     s32 s = field_0x240;
     if (s == 0x11 || s == 0x26)
