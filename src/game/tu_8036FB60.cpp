@@ -776,25 +776,35 @@ void cls_804AE4B0::fn_803703C8() {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 80.21 %, missing/extra + reloc-name
+// FIXME(shotgun): extra li for the match flag init; literal reloc names differ
 s32 cls_804AE4B0::fn_80370200() {
     s32 idx = field_0x39c;
     u8 hit[4] = {0, 0, 0, 0};
     bool any = false;
+    f32 best = 100000.0f;
+    s32 bestIdx = -1;
     for (s32 i = 0; i < 4; i++) {
         u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x264[idx].y - field_0x294[i].y,
                                                   field_0x264[idx].x - field_0x294[i].x) * 10430.378f);
-        s32 want;
+        bool match = false;
         if (angle >= 0x2000 && angle < 0x6000) {
-            want = 2;
+            if (field_0x340[i] == 2) {
+                match = true;
+            }
         } else if (angle >= 0x6000 && angle < 0xA000) {
-            want = 1;
+            if (field_0x340[i] == 1) {
+                match = true;
+            }
         } else if (angle >= 0xA000 && angle < 0xE000) {
-            want = 3;
+            if (field_0x340[i] == 3) {
+                match = true;
+            }
         } else {
-            want = 0;
+            if (field_0x340[i] == 0) {
+                match = true;
+            }
         }
-        if (field_0x340[i] == want) {
+        if (match) {
             if (lbl_80474F4C[field_0x340[i]] == fn_80230CFC(idx)) {
                 any = true;
                 hit[i] = 1;
@@ -804,8 +814,6 @@ s32 cls_804AE4B0::fn_80370200() {
     if (!any) {
         return -1;
     }
-    f32 best = 100000.0f;
-    s32 bestIdx = -1;
     for (s32 i = 0; i < 4; i++) {
         if (hit[i] == 1) {
             f32 d = PSVECDistance(&field_0x264[idx], &field_0x294[i]);
