@@ -1167,63 +1167,71 @@ void cls_804B146C::fn_8042215C(s32 player) {
     if (life < 0) {
         life = 0;
     }
+    const u64* p164 = &lbl_8048E300[0x164];
+    const u64* p174 = &lbl_8048E300[0x174];
+    const u64* p16C = &lbl_8048E300[0x16C];
+    const u64* p17C = &lbl_8048E300[0x17C];
     for (s32 i = 0; i < 8; i++) {
         if (life >= 4) {
-            field_0x8[player]->search(lbl_8048E300[0x164 + i])->show();
-            field_0x8[player]->search(lbl_8048E300[0x174 + i])->show();
-            static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x164 + i]))
+            field_0x8[player]->search(*p164)->show();
+            field_0x8[player]->search(*p174)->show();
+            static_cast<J2DPicture*>(field_0x8[player]->search(*p164))
                 ->setBlendRatio(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x174 + i]))
+            static_cast<J2DPicture*>(field_0x8[player]->search(*p174))
                 ->setBlendRatio(1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-            field_0x8[player]->search(lbl_8048E300[0x16C + i])->hide();
-            field_0x8[player]->search(lbl_8048E300[0x17C + i])->hide();
+            field_0x8[player]->search(*p16C)->hide();
+            field_0x8[player]->search(*p17C)->hide();
             max -= 4;
             life -= 4;
         } else {
             if (life == 0) {
-                field_0x8[player]->search(lbl_8048E300[0x164 + i])->hide();
-                field_0x8[player]->search(lbl_8048E300[0x174 + i])->hide();
+                field_0x8[player]->search(*p164)->hide();
+                field_0x8[player]->search(*p174)->hide();
                 if (max > 0) {
-                    field_0x8[player]->search(lbl_8048E300[0x16C + i])->show();
-                    field_0x8[player]->search(lbl_8048E300[0x17C + i])->show();
+                    field_0x8[player]->search(*p16C)->show();
+                    field_0x8[player]->search(*p17C)->show();
                     max -= 4;
                 } else {
-                    field_0x8[player]->search(lbl_8048E300[0x16C + i])->hide();
-                    field_0x8[player]->search(lbl_8048E300[0x17C + i])->hide();
+                    field_0x8[player]->search(*p16C)->hide();
+                    field_0x8[player]->search(*p17C)->hide();
                 }
             } else if (life == 1) {
-                field_0x8[player]->search(lbl_8048E300[0x164 + i])->show();
-                field_0x8[player]->search(lbl_8048E300[0x174 + i])->show();
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x164 + i]))
+                field_0x8[player]->search(*p164)->show();
+                field_0x8[player]->search(*p174)->show();
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p164))
                     ->setBlendRatio(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x174 + i]))
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p174))
                     ->setBlendRatio(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                field_0x8[player]->search(lbl_8048E300[0x16C + i])->hide();
-                field_0x8[player]->search(lbl_8048E300[0x17C + i])->hide();
+                field_0x8[player]->search(*p16C)->hide();
+                field_0x8[player]->search(*p17C)->hide();
                 max -= 4;
             } else if (life == 2) {
-                field_0x8[player]->search(lbl_8048E300[0x164 + i])->show();
-                field_0x8[player]->search(lbl_8048E300[0x174 + i])->show();
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x164 + i]))
+                field_0x8[player]->search(*p164)->show();
+                field_0x8[player]->search(*p174)->show();
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p164))
                     ->setBlendRatio(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x174 + i]))
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p174))
                     ->setBlendRatio(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                field_0x8[player]->search(lbl_8048E300[0x16C + i])->hide();
-                field_0x8[player]->search(lbl_8048E300[0x17C + i])->hide();
+                field_0x8[player]->search(*p16C)->hide();
+                field_0x8[player]->search(*p17C)->hide();
                 max -= 4;
             } else if (life == 3) {
-                field_0x8[player]->search(lbl_8048E300[0x164 + i])->show();
-                field_0x8[player]->search(lbl_8048E300[0x174 + i])->show();
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x164 + i]))
+                field_0x8[player]->search(*p164)->show();
+                field_0x8[player]->search(*p174)->show();
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p164))
                     ->setBlendRatio(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                static_cast<J2DPicture*>(field_0x8[player]->search(lbl_8048E300[0x174 + i]))
+                static_cast<J2DPicture*>(field_0x8[player]->search(*p174))
                     ->setBlendRatio(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f);
-                field_0x8[player]->search(lbl_8048E300[0x16C + i])->hide();
-                field_0x8[player]->search(lbl_8048E300[0x17C + i])->hide();
+                field_0x8[player]->search(*p16C)->hide();
+                field_0x8[player]->search(*p17C)->hide();
                 max -= 4;
             }
             life = 0;
         }
+        p164++;
+        p174++;
+        p16C++;
+        p17C++;
     }
     field_0x1e8[player]--;
 }
