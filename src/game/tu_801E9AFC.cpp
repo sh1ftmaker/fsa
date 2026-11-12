@@ -175,10 +175,11 @@ void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
     f32 centerX = 0.0f;
     f32 centerY = 2.0f;
     if (angle < 0) {
-        centerX = -0.0f;
+        f32 tmp = s0;
+        centerX = -centerX;
         s0 = s1;
-        s1 = 0.0f;
-        centerY = -2.0f;
+        s1 = tmp;
+        centerY = -centerY;
     }
     s16 rot = -angle;
     f32 x = pos->x + (centerY * JMath::sincosTable_.cosShort(rot) - centerX * JMath::sincosTable_.sinShort(rot));
