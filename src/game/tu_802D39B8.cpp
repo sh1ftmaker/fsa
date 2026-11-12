@@ -386,13 +386,14 @@ bool fn_802DE9A0(void) {
     return false;
 }
 
-// FIXME: 91.00 %, missing/extra; behaviour near. Same as fn_802DE9A0: the target keeps gGameRoot_8053AAF8->0x4 in r4
+// FIXME: 93.60 %, different; behaviour near. Same as fn_802DE9A0: the target keeps gGameRoot_8053AAF8->0x4 in r4
 // and reloads the view (lwz 0xc) for the second pair; ours loads it once.
 bool fn_802DE93C(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if ((getGameView_802D6A9C()->field_0x4 == 4 && getGameView_802D6A9C()->field_0x8 == 0) ||
-            (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 2))
-        {
+        if (getGameView_802D6A9C()->field_0x4 == 4 && getGameView_802D6A9C()->field_0x8 == 0) {
+            return true;
+        }
+        if (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 2) {
             return true;
         }
         return false;
