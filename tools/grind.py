@@ -754,7 +754,7 @@ def describe(base, ev, focus_addr):
     if not f0 or not f1:
         return ""
     s = lambda e: "unwritten" if e["cls"] == "missing" else f"{e['pct']:.2f} % {e['grade']}"
-    return f"{f1['name'].split('__')[0]}: {s(f0)} -> {s(f1)}"
+    return f"{f1['demangled'].split('(')[0]}: {s(f0)} -> {s(f1)}"
 
 
 def cmd_check(args):
