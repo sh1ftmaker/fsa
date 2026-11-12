@@ -978,7 +978,7 @@ void cls_804A7AE0::fn_80298C18() {
 }
 
 // FIXME(shotgun): 76.50 %, missing/extra + reloc-name; behaviour drift.
-// the still-vector test compiles to a cror/mfcr bool in the original; 4 instructions
+// still differs: the still-vector bool (cror/mfcr), the (k & bit) conversions and the warp-layer branch
 void cls_804A7AE0::fn_80298978() {
     for (s32 i = 0; i < mSerialCountA; i++) {
         Warp_804A6DC8* warp = (Warp_804A6DC8*)getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsA[i]);
@@ -1005,7 +1005,10 @@ void cls_804A7AE0::fn_80298978() {
                     pos.x += -16.0f;
                 }
                 s32 w = (warp->field_0x90 >> 24) & 7;
-                s32 warpLayer = w != 0 ? w + 7 : 0;
+                s32 warpLayer = w;
+                if (w != 0) {
+                    warpLayer = w + 7;
+                }
                 if (vfunc_0x4C(warpLayer, &pos) == 1) {
                     blocked = 1;
                     break;
@@ -1023,7 +1026,7 @@ void cls_804A7AE0::fn_80298978() {
             box.i.y += field_0x2dc[i].y;
             box.f.y += field_0x2dc[i].y;
             s32 v = (field_0x90 >> 7) & 0x1F;
-            fn_80239914(&box, v != 0 ? v + 7 : 0, mSerial);
+            fn_80239914(&box, v == 0 ? 0 : v + 7, mSerial);
         }
     }
 }
