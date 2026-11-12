@@ -205,6 +205,8 @@ public:
     void fn_8039C630(u8 noun, s32 count);
     // 0x8039C258: the same number as fn_8039C9A0, as glyph codes in the first line buffer.
     void fn_8039C258(s32 number);
+    // 0x8039B3EC: the nouns of fn_8039C630 as glyph codes.
+    void fn_8039B3EC(u8 noun, s32 count);
     // Inlined: appends a glyph code (two bytes) to the first line buffer.
     void appendGlyph(u16 glyph) {
         field_0x2c0[field_0x2d0++] = glyph >> 8;

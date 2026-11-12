@@ -954,6 +954,130 @@ void cls_804AF72C::fn_8039C258(s32 number) {
     appendGlyph(findGlyph(number + '0'));
 }
 
+// The nouns of fn_8039C630 as glyph codes in the first line buffer.
+void cls_804AF72C::fn_8039B3EC(u8 noun, s32 count) {
+    switch (noun) {
+    case 1: // " Force Gem"
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3840);
+        appendGlyph(0x38A0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3500);
+        appendGlyph(0x1420);
+        appendGlyph(0x3000);
+        appendGlyph(0x3500);
+        appendGlyph(0x3800);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 2: // " Cucco"
+        appendGlyph(0x1420);
+        appendGlyph(0x2D80);
+        appendGlyph(0x3900);
+        appendGlyph(0x34C0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3840);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 3: // " baddy / baddies"
+        appendGlyph(0x1420);
+        appendGlyph(0x34A0);
+        appendGlyph(0x3480);
+        appendGlyph(0x34E0);
+        appendGlyph(0x34E0);
+        if (count == 1) {
+            appendGlyph(0x3980);
+        } else {
+            appendGlyph(0x3580);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 4: // " time"
+        appendGlyph(0x1420);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3580);
+        appendGlyph(0x3800);
+        appendGlyph(0x3500);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 5: // " system"
+        appendGlyph(0x1420);
+        appendGlyph(0x38C0);
+        appendGlyph(0x3980);
+        appendGlyph(0x38C0);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3500);
+        appendGlyph(0x3800);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 6: // " thief / thieves"
+        appendGlyph(0x1420);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3560);
+        appendGlyph(0x3580);
+        appendGlyph(0x3500);
+        if (count == 1) {
+            appendGlyph(0x3520);
+        } else {
+            appendGlyph(0x3920);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 7: // " mole"
+        appendGlyph(0x1420);
+        appendGlyph(0x3800);
+        appendGlyph(0x3840);
+        appendGlyph(0x35E0);
+        appendGlyph(0x3500);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 8: // " return"
+        appendGlyph(0x1420);
+        appendGlyph(0x38A0);
+        appendGlyph(0x3500);
+        appendGlyph(0x38E0);
+        appendGlyph(0x3900);
+        appendGlyph(0x38A0);
+        appendGlyph(0x3820);
+        if (count != 1) {
+            appendGlyph(0x38C0);
+        }
+        break;
+    case 9: // " Force Fairy / Force Fairies"
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3840);
+        appendGlyph(0x38A0);
+        appendGlyph(0x34C0);
+        appendGlyph(0x3500);
+        appendGlyph(0x1420);
+        appendGlyph(0x2DE0);
+        appendGlyph(0x3480);
+        appendGlyph(0x3580);
+        appendGlyph(0x38A0);
+        if (count == 1) {
+            appendGlyph(0x3980);
+        } else {
+            appendGlyph(0x3580);
+            appendGlyph(0x3500);
+            appendGlyph(0x38C0);
+        }
+        break;
+    }
+}
+
 // FIXME: 93.34. scheduling (+ the unsplit 0.0f literal): the original
 // interleaves the field_0x1fe stores and field_0x1fd with the first three
 // iterations of the unrolled 15-entry loop.
