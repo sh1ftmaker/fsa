@@ -2622,17 +2622,17 @@ void cls_804AF5A0::fn_80395BE8() {
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
-    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
-    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
-    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
-    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    s32 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s32 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s32 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s32 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
     field_0x194++;
     if (pane->getAlpha() < field_0x1a3) {
         if (field_0x194 == 10) {
             field_0x194 = 0;
             pane->setAlpha(field_0x1a3);
         } else {
-            pane->setAlpha((s32)(field_0x1a3 * ((f32)field_0x194 / 10.0f)));
+            pane->setAlpha(field_0x1a3 * ((f32)field_0x194 / 10.0f));
         }
         return;
     }
@@ -2640,8 +2640,8 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     f32 height;
     s16 frame = field_0x194;
     if (frame <= t0) {
-        width = 1.0f;
-        height = width;
+        height = 1.0f;
+        width = height;
     } else if (frame <= t1) {
         f32 dt = (f32)(t1 - t0);
         f32 df = (f32)(frame - t0);
@@ -2667,14 +2667,14 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
         width = lbl_80475D78[3] + r * (lbl_80475D78[4] - lbl_80475D78[3]);
         height = lbl_80475D8C[3] + r * (lbl_80475D8C[4] - lbl_80475D8C[3]);
     } else {
-        width = 1.0f;
+        height = 1.0f;
         field_0x194 = 0;
-        height = width;
+        width = height;
     }
-    f32 w = width * field_0x110;
-    f32 h = height * field_0x114;
+    f32 w = width * field_0x100;
+    f32 h = height * field_0x104;
     pane->resize(w, h);
-    pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
+    pane->move(field_0xf8 + field_0x100 * 0.5f - w * 0.5f, (field_0xfc + field_0x104) - h);
 }
 
 // FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
