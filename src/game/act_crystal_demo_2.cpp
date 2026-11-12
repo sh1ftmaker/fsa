@@ -236,6 +236,55 @@ s32 cls_804AE088::vfunc_0x5C() {
     return 0;
 }
 
+// differs: register allocation and the group test (original tests 0x1C, 0x1D-0x1E, 0x21-0x22, 0x23 separately).
+void cls_804AE088::fn_8036AC58(s32 arg) {
+    if (field_0x270 == 1 && field_0x274 < 0x80)
+        return;
+    SpriteParams_801F5AE0 params;
+    s32 frame;
+    if (field_0x23c == 5 && field_0x240 >= 0x1E && field_0x240 < 0x21) {
+        if (field_0x24c < 0xC0) {
+            frame = arg + field_0x318.mCel;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        }
+        params.field_0x10.r = 0xFF;
+        params.field_0x10.g = 0xFF;
+        params.field_0x10.b = 0xFF;
+        params.field_0x10.a = 0xFF - field_0x24c;
+    } else {
+        s32 k = field_0x240;
+        if (k == 0x1C || k == 0x1D || k == 0x1E || k == 0x21 || k == 0x22 || k == 0x23) {
+            frame = field_0x264 + 0x1B3;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        } else {
+            frame = arg + field_0x318.mCel;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        }
+    }
+    s32 k = field_0x240;
+    if (k == 0x1C || k == 0x1D || k == 0x1E || k == 0x21 || k == 0x22 || k == 0x23) {
+        if (field_0x4 < 8) {
+            frame = field_0x264 + 0x1B3;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x1B3, 0, 1, -1, false, 0, 0);
+    } else {
+        if (field_0x4 < 8) {
+            frame = arg + field_0x318.mCel;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, arg + field_0x318.mCel, 0, 1, -1, false, 0, 0);
+    }
+}
+
 // Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
 extern const s32 lbl_80474C68[120];
 
