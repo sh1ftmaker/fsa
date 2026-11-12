@@ -885,7 +885,7 @@ void cls_804AE4B0::fn_8036FDAC() {
     for (s32 i = 0; i < 4; i++) {
         field_0x2c4[i] = mPos + offsets[i];
         field_0x294[i] = field_0x2c4[i];
-        field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+        field_0x2f4[i].x = field_0x2f4[i].y = field_0x2f4[i].z = 0.0f;
         s32 serial = getActorManager_801F856C()->spawnActor_801F9484('JIJI', field_0x4, &field_0x294[i], lbl_80474F5C[i], -1, -1);
         field_0x3b0[i] = (cls_804AEED0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         field_0x340[i] = 1;
