@@ -664,35 +664,20 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
 // The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
 // FIXME(shotgun): 61 %, missing/extra + reloc-name
 void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
-    f32 sq = axis->x * axis->x + axis->y * axis->y + axis->z * axis->z;
-    f32 x;
-    f32 y;
-    f32 z;
-    if (sq <= 32.0f * FLT_EPSILON) {
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
-    } else {
-        f32 inv = sq;
-        if (!(sq <= 0.0f)) {
-            inv = JGeometry::TUtil<f32>::inv_sqrt(sq);
-        }
-        x = axis->x * inv;
-        y = axis->y * inv;
-        z = axis->z * inv;
-    }
+    JGeometry::TVec3f n;
+    n.normalize(*axis);
     f32 s = sin(rad);
     f32 c = cos(rad);
     f32 t = 1.0f - c;
-    m[0][0] = t * (x * x) + c;
-    m[0][1] = y * (t * x) - s * z;
-    m[0][2] = z * (t * x) + s * y;
-    m[1][0] = y * (t * x) + s * z;
-    m[1][1] = t * (y * y) + c;
-    m[1][2] = z * (t * y) - s * x;
-    m[2][0] = z * (t * x) - s * y;
-    m[2][1] = z * (t * y) + s * x;
-    m[2][2] = t * (z * z) + c;
+    m[0][0] = t * (n.x * n.x) + c;
+    m[0][1] = n.y * (t * n.x) - s * n.z;
+    m[0][2] = n.z * (t * n.x) + s * n.y;
+    m[1][0] = n.y * (t * n.x) + s * n.z;
+    m[1][1] = t * (n.y * n.y) + c;
+    m[1][2] = n.z * (t * n.y) - s * n.x;
+    m[2][0] = n.z * (t * n.x) - s * n.y;
+    m[2][1] = n.z * (t * n.y) + s * n.x;
+    m[2][2] = t * (n.z * n.z) + c;
 }
 
 // Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
