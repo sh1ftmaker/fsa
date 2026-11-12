@@ -729,7 +729,8 @@ def wide_problem(wt, unit):
     base = {tuple(k.split("\t")): v for k, v in base.items()}
     r = sh("python3 configure.py >/dev/null && timeout 3000 ninja", wt)
     if r.returncode:
-        bad = [l for l in r.stdout.splitlines() if l.startswith(("FAILED", "###", "#   "))][:4]
+        lines = r.stdout.splitlines()
+        bad = [l for l in lines if l.startswith("FAILED")][:3] + [l.strip() for l in lines if "Error" in l or "undefined" in l][:3]
         return "the project no longer builds or links byte-identical: " + " | ".join(bad)[:400]
     rep = report_map(wt)
     name = next((u for u, src in game_units(wt) if src == unit), None)
