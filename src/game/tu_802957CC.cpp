@@ -843,9 +843,7 @@ void cls_804A7AE0::fn_80298FC4() {
         if (mSerialCountC > 0 && field_0x2cc == -1) {
             idx ^= 1;
         }
-        focus.x += lbl_8046C238[idx][0];
-        focus.y += lbl_8046C238[idx][1];
-        focus.z += lbl_8046C238[idx][2];
+        focus.add(JGeometry::TVec3f(lbl_8046C238[idx][0], lbl_8046C238[idx][1], lbl_8046C238[idx][2]));
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
         bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
         if (still) {
