@@ -775,8 +775,8 @@ void cls_8049C718::update() {
         fn_800FCCCC();
         break;
     case 1:
-        mAngleB = 0;
-        mAngle += mAngleB;
+        mAngleSpeed = 0;
+        mAngle += mAngleSpeed;
         mRadius = 1.0f;
         field_0x260 += 0x200;
         mPos.z = 5.0f * JMath::sincosTable_.sinShort((s16)field_0x260) + mZBase;
