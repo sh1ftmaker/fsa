@@ -1239,8 +1239,8 @@ void GameRoot_8049EF20::fn_801365C8(u8 value) {
     field_0xf8 = 0;
 }
 
-void fn_801365A8() {
-    fn_80021840();
+s32 fn_801365A8() {
+    return fn_80021840();
 }
 
 void GameRoot_8049EF20::fn_80136500() {

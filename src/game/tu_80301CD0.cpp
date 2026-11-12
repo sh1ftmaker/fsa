@@ -127,7 +127,7 @@ static inline bool isQueueBusy(s32 player) {
 // tu_803006E8 (the previous unit).
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
-// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0,
+// fn_80303870, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0,
 // fn_80307B58, fn_8030801C and the constructor fn_8030905C (cls_804AA8B8).
 
 // Forward declarations.
@@ -1094,6 +1094,56 @@ bool fn_803049F0(s32 layer, s32 index) {
         lbl_80504A28[player] = 0;
     }
     return true;
+}
+
+// Resets the player's GBA link state and transfer queue, then queues the
+// files of the GBA program.
+// Prologue only: the zero for the global resets gets its own register instead of the loop counter's.
+// 0x80303CE4
+void fn_80303CE4(s32 player) {
+    lbl_80506D38[player] = 0;
+    lbl_8053ACE0[player] = 0;
+    lbl_8053ACE4[player] = 0;
+    lbl_8053ACD4[player] = 1;
+    lbl_80506D88[player] = 0;
+    lbl_80506D98[player] = 0;
+    lbl_8053ACE8[player] = 0;
+    lbl_8053ACEC[player] = 0;
+    lbl_8053ACF0[player] = 0;
+    lbl_8053ACF8[player] = 0;
+    lbl_8053ACFC[player] = 0;
+    lbl_80504A18[player] = 0;
+    lbl_80504A28[player] = 0;
+    Transfer_8030361C* queue = lbl_804FBC18[player];
+    for (int i = 0; i < 32; i++) {
+        Transfer_8030361C& t = queue[i];
+        t.mUsed = 0;
+        t.field_0x119 = 0;
+        t.field_0x104 = 0;
+        t.mWords = 0;
+        t.mAddress = 0;
+        t.mIndex = i;
+        t.field_0x10c = 0;
+        t.mName[0] = 0;
+    }
+    for (int i = 0; i < 0x2000; i++) {
+        lbl_804DBC18[player][i] = 0xCDCDCDCD;
+    }
+    fn_80304C10(player, "end_code_scl.bin", 0xAAAAAAAA, 0, 0);
+    fn_80304C10(player, "sound_data.szs", 0x02033000, 1, 0);
+    fn_80304C10(player, "gb_ch_obj_base_sch.szs", 0x06010000, 1, 0);
+    fn_80304C10(player, "gb_cl_obj_base_scl.szs", 0x05000201, 1, 0);
+    fn_80304C10(player, "player_sch.szs", 0x02034000, 1, 0);
+    fn_80304C10(player, "bg_a_spl.szs", 0x0203C000, 1, 0);
+    fn_80304C10(player, "player_sob.szs", 0x02010000, 1, 0);
+    fn_80304C10(player, "enemy_both_sob.szs", 0x02021000, 1, 0);
+    fn_80304C10(player, "enemy_both2_sob.szs", 0x02018E00, 1, 0);
+    if (fn_801365A8() == 2) {
+        fn_80304C10(player, "moji_japan_test_sch.szs", 0x02038000, 1, 0);
+    } else if (fn_801365A8() == 0 || fn_801365A8() == 1) {
+        fn_80304C10(player, "moji_english_sch.szs", 0x02038000, 1, 0);
+    }
+    fn_80304C10(player, "end_code_scl.bin", 0xFFFFFFFF, 0, 0);
 }
 
 // 0x80303870

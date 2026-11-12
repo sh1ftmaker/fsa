@@ -1635,6 +1635,9 @@ extern cls_804A8578* lbl_8053ACA8;
 // compares the result with 0, 1 and 2 (a screen mode query).
 s32 fn_80021840();
 
+// game/tu_80134C04.cpp (0x801365A8): returns fn_80021840() (0, 1 or 2).
+s32 fn_801365A8();
+
 // Global object with vtable 0x804B0F90 (destructor 0x80401848, emitted after
 // that unit's __sinit, which registers it), owner game/tu_80400DC4.cpp
 // (its .text, .data and extab end at 0x80401890 / 0x804B0FA0 / 0x80010154:
