@@ -316,6 +316,8 @@ def fmt_pct(p):
 # ---------------------------------------------------------------- main
 
 def main():
+    import grind_broker  # inside a sandboxed grind session the compiler can only run through the broker
+    grind_broker.maybe_delegate("try", sys.argv[1:])
     argv, large = sys.argv[1:], LARGE_BUDGET
     if "--budget" in argv:
         k = argv.index("--budget")

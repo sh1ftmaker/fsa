@@ -44,6 +44,7 @@ import re
 import signal
 import subprocess
 import sys
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -51,6 +52,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "tools"))
 import fingerprint as FP  # noqa: E402
+import grind_broker as BR  # noqa: E402
 import grind_style as ST  # noqa: E402
 
 sh = ST.sh
@@ -94,7 +96,7 @@ Rules (checked by script)
 - Keep fn_/lbl_/cls_ placeholder names unless you have evidence for a real one. Declare another unit's function once, in its owner's shared header under include/game/, never in a .cpp.
 - Shared headers and other files may be changed when the assembly proves the change (a field's type or offset, const, a missing member). Then the whole project is rebuilt and nothing anywhere may get worse.
 - Don't write FIXME percentages (the script stamps them); a one-line comment on what still differs is welcome. No progress logs in source.
-- Don't run git or ninja. tools/try.py and `tools/grind.py check` do the building.
+- Don't run git or ninja. Only `python3 tools/try.py ...` and `python3 tools/grind.py check` can compile: the compiler does not run directly in your sandbox, and tools/ and configure.py must stay unedited.
 
 Useful
 - `python3 tools/fingerprint.py <unit> <function>`: behaviour differences (calls, constants, compares, field offsets), original vs ours.
@@ -434,7 +436,7 @@ def cmd_packet(args):
 
 def changed_paths(wt):
     st = sh(["git", "status", "--porcelain", "-uall"], wt).stdout.splitlines()
-    return [(l[:2], l[3:].split(" -> ")[-1]) for l in st if l[3:] not in IGNORED]
+    return [(l[:2], l[3:].split(" -> ")[-1]) for l in st if l[3:] not in IGNORED and not l[3:].startswith(".")]
 
 
 def is_allowed(path, wt):
@@ -597,8 +599,10 @@ def describe(base, ev, focus_addr):
 
 
 def cmd_check(args):
-    task = json.loads((REPO / "build/grind/task.json").read_text())
-    why, ev, notes = judge(REPO, task["unit"], task["base"], task["addr"], full=True if args.full else None, dry=True)
+    BR.maybe_delegate("check", ["--full"] if args.full else [])
+    wt = Path.cwd()
+    task = json.loads((wt / "build/grind/task.json").read_text())
+    why, ev, notes = judge(wt, task["unit"], task["base"], task["addr"], full=True if args.full else None, dry=True)
     line = describe(task["base"], ev, task["addr"]) if ev else ""
     print(f"check: {'REJECT: ' + why if why else 'ACCEPT'}" + (f"  ({line})" if line else ""))
     for n in notes:
@@ -635,12 +639,18 @@ def run_session(wt, tier, packet, size, tag, effort=None):
         cmd += ["--effort", effort]
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     t0 = time.time()
+    stop = threading.Event()
+    broker = threading.Thread(target=BR.serve, args=(wt, stop), daemon=True)
+    broker.start()
     try:
         out = subprocess.run(cmd, cwd=wt, input=packet, capture_output=True, text=True, timeout=timeout, env=env).stdout
         timed_out = False
     except subprocess.TimeoutExpired as e:
         out = e.stdout.decode(errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
         timed_out = True
+    finally:
+        stop.set()
+        broker.join(timeout=1600)
     result, usage, seen, nturn, denials = {}, {}, set(), 0, 0
     for line in out.splitlines():
         try:
