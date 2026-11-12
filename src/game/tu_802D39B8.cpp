@@ -366,16 +366,17 @@ bool fn_802DEA34(void) {
     return false;
 }
 
-// FIXME: 93.92 %, missing/extra; behaviour near. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
+// FIXME: 95.68 %, different; behaviour near. The target keeps gGameRoot_8053AAF8->0x4 in r4 and reloads its
 // mView (lwz 0xc) and the view's field_0x4 for the second stage pair; ours
 // loads both once. No-ops: a local for gGameRoot_8053AAF8->0x4, an inline view
 // getter defined in this file (with or without a local), a free inline on
 // GameRootSub04_801F856C; an inline isStage(stage, level) helper drops to 78 %.
 bool fn_802DE9A0(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        if ((getGameView_802D6A9C()->field_0x4 == 2 && getGameView_802D6A9C()->field_0x8 == 3) ||
-            (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 1))
-        {
+        if (getGameView_802D6A9C()->field_0x4 == 2 && getGameView_802D6A9C()->field_0x8 == 3) {
+            return true;
+        }
+        if (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 1) {
             return true;
         }
         return false;
