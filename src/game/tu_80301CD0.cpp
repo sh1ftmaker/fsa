@@ -971,50 +971,49 @@ void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 ma
     SpriteParams_801F5AE0 params;
     s32 x = sprite->f.field_0x2 | sprite->f.field_0x3_0 << 8;
     s32 y = sprite->f.field_0x1;
-    if (x == 0x180 || y == 0xE0 || lbl_8053ACFC[player] >= 0x11) {
-        return;
-    }
-    if (x >= 0x180) {
-        x |= -0x100;
-    }
-    if (y >= 0xE0) {
-        y |= -0x100;
-    }
-    s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
-    if (lbl_80506DC8[record][player] != 0) {
-        params.field_0x10.a = 0xA0;
-    }
-    if ((mask >> player) & 1) {
-        for (u8 i = 0; i < 16; i++) {
-            params.field_0x0[i] = 7;
+    if (x != 0x180 && y != 0xE0 && lbl_8053ACFC[player] < 0x11) {
+        if (x >= 0x180) {
+            x |= -0x100;
         }
-    } else {
-        params.field_0x0[7] = player + 0xC;
+        if (y >= 0xE0) {
+            y |= -0x100;
+        }
+        s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
+        if (lbl_80506DC8[record][player] != 0) {
+            params.field_0x10.a = 0xA0;
+        }
+        if ((mask >> player) & 1) {
+            for (int i = 0; i < 16; i++) {
+                params.field_0x0[i] = 7;
+            }
+        } else {
+            params.field_0x0[7] = player + 0xC;
+        }
+        if (fn_80237060(player) >= 2) {
+            params.field_0x0[10] = 6;
+        }
+        JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
+        Mtx scale;
+        if (lbl_8053ACFC[player] != 0) {
+            PSMTXScale(scale, 1.0f - 0.75f * lbl_8053ACFC[player] * 0.0625f, 1.0f,
+                       lbl_8053ACFC[player] * 0.0625f + 1.0f);
+        } else if (lbl_80506DB8[record][player] == 1) {
+            PSMTXScale(scale, 1.0f, 1.0f, 0.5f);
+        } else {
+            PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
+        }
+        params.field_0x2c = 0;
+        params.field_0x26 = 0;
+        params.field_0x2d = 0;
+        if (!flag) {
+            params.field_0x34 = 2;
+        }
+        params.field_0x1f = 0;
+        params.field_0x38 = 0;
+        params.mMtx = scale;
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
-    if (fn_80237060(player) >= 2) {
-        params.field_0x0[10] = 6;
-    }
-    JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
-    Mtx scale;
-    if (lbl_8053ACFC[player] != 0) {
-        PSMTXScale(scale, 1.0f - 0.75f * lbl_8053ACFC[player] * 0.0625f, 1.0f,
-                   lbl_8053ACFC[player] * 0.0625f + 1.0f);
-    } else if (lbl_80506DB8[record][player] == 1) {
-        PSMTXScale(scale, 1.0f, 1.0f, 0.5f);
-    } else {
-        PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
-    }
-    params.field_0x2c = 0;
-    params.field_0x26 = 0;
-    params.field_0x2d = 0;
-    if (!flag) {
-        params.field_0x34 = 2;
-    }
-    params.field_0x1f = 0;
-    params.field_0x38 = 0;
-    params.mMtx = scale;
-    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
 }
 
 // The draw order key of mark `i` of a record: its slot's sprite kind when it is set like the
