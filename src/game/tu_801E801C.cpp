@@ -12,7 +12,7 @@
 f32 fn_801CD6D8(f32 p0, f32 p1, f32 p2, f32 p3, f32 t);
 
 
-// FIXME(shotgun): 67.00 %, missing/extra + reloc-name
+// FIXME(shotgun): 67.00 %, missing/extra + reloc-name; behaviour clean.
 cls_804A5568::cls_804A5568() {
     mMask = 0;
     field_0x2ac = 0;
@@ -28,7 +28,7 @@ cls_804A5568::~cls_804A5568() {
     releaseEmitter_801EE434(mEmitter3c0);
 }
 
-// FIXME(shotgun): 86.04 %, different + reloc-name
+// FIXME(shotgun): 86.04 %, different + reloc-name; behaviour drift.
 void cls_804A5568::init() {
     EnemyBase_804A4808::init();
     field_0x2ac = field_0x90;
@@ -86,7 +86,7 @@ static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* out
 }
 
 // Moves the chain's head along its curve by the speed (0.5 per frame).
-// FIXME(shotgun): 80 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.23 %, missing/extra; behaviour drift.
 void cls_804A5568::fn_801E9224() {
     if (!(mFlags & 0x4000)) {
         f32 budget = 0.5f;
@@ -153,7 +153,7 @@ void cls_804A5568::fn_801E9224() {
     }
 }
 
-// FIXME(shotgun): 98.01 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.07 %, missing/extra; behaviour near.
 void cls_804A5568::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0: {
@@ -197,7 +197,7 @@ u8 cls_804A5568::vfunc_0x5C() {
     return 0;
 }
 
-// FIXME(shotgun): 93.58 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.68 %, missing/extra; behaviour near.
 u8 cls_804A5568::vfunc_0x60() {
     if (mState == 0 && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         if (fn_801E9B58() >= 0) {
@@ -213,7 +213,6 @@ u8 cls_804A5568::vfunc_0x60() {
     return 0;
 }
 
-// FIXME(shotgun): 36.78 %, missing/extra + reloc-name
 u8 cls_804A5568::vfunc_0x68() {
     u8 result = 0;
     if (mFlags & 0x2000) {
@@ -246,7 +245,7 @@ void cls_804A5568::fn_801E8EB4(u8 index, s32 arg, const JGeometry::TVec2f* pos) 
     field_0x2b0[index].y = pos->y;
 }
 
-// FIXME(shotgun): 95.77 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.88 %, missing/extra; behaviour drift.
 void cls_804A5568::fn_801E8C74(s32 arg) {
     field_0x3b8 = arg;
     mCount = 0;
@@ -291,7 +290,7 @@ void cls_804A5568::fn_801E8C74(s32 arg) {
 // `b` scaling the texture coordinate.
 // Not auto-inlined: fn_801E8080 calls fn_801E8B1C out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 69.58 %, missing/extra + reloc-name
+// FIXME(shotgun): 69.58 %, missing/extra + reloc-name; behaviour drift.
 void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 span) {
     static f32 sZ = -256.0f;
     f32 h = 0.5f * (f32)(s32)(ang + span);
@@ -313,7 +312,8 @@ void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 spa
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 75.52 %, cls_804A5568
+// FIXME(shotgun): 75.52 %, missing/extra + reloc-name; behaviour drift.
+// cls_804A5568
 void cls_804A5568::fn_801E8080() {
     f32 len = 0.0f;
     u8 split = 0;
@@ -438,7 +438,6 @@ void cls_804A5568::fn_801E8080() {
     }
 }
 
-// FIXME(shotgun): 99.20 %, reloc-name
 void cls_804A5568::fn_801E801C() {
     static f32 sZ = -256.0f;
     if (mState == 0) {
