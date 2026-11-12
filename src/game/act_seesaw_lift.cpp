@@ -84,7 +84,7 @@ void SeesawLift_804AD348::init() {
     }
 }
 
-// FIXME(shotgun): 81.1 %, missing/extra: scheduling of the player loop
+// FIXME(shotgun): scheduling differs: original hoists the field_0x4 load above the layer call
 s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     if (fn_8022D75C(player)) {
         return 0;
@@ -92,7 +92,7 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     if (fn_80230188(player)) {
         return 0;
     }
-    if (getPlayerLayer_8023DE58(player) != field_0x4) {
+    if (field_0x4 != getPlayerLayer_8023DE58(player)) {
         return 0;
     }
     if (getPlayerPos_8023E724(player)->z > 0.0f) {
@@ -105,11 +105,9 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
         }
         JGeometry::TVec3f rel;
         fn_8022E088(player, i, &rel);
-        rel.x -= mPos.x;
-        rel.y -= mPos.y;
-        rel.z -= mPos.z;
+        rel.sub(mPos);
         rel.z = 0.0f;
-        f32 cosVal = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+        f32 cosVal = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
         bool inside = false;
         if (rel.x >= mBox.i.x && rel.y >= mBox.i.y * cosVal && rel.x < mBox.f.x && rel.y < mBox.f.y * cosVal) {
             inside = true;
@@ -120,7 +118,7 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
             if (field_0x24e && d == 0.0f) {
                 d = 0.1f;
             }
-            if (!field_0x24e && __fabs(d) <= 8.0f) {
+            if (!field_0x24e && __fabsf(d) <= 8.0f) {
                 d = 0.0f;
             }
             field_0x240 += d;
