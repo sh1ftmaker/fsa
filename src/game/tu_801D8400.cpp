@@ -752,6 +752,7 @@ void cls_804A4C58::vfunc_0x88() {
 #endif
 
 
+// FIXME: 77.38 %, missing/extra; behaviour drift.
 void cls_804A4C58::vfunc_0x74() {
     if (mState < 0xF && mState >= 0xB) {
         if (mState == 0xC) {
