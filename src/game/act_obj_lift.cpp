@@ -535,7 +535,6 @@ s32 OBJLift_804ACA00::fn_803506E0() {
 // 0x80350530.
 // Not auto-inlined: update calls fn_80350530 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 90.17 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350530() {
     s32 prev = field_0x270;
     field_0x270 = 0;
@@ -549,8 +548,10 @@ s32 OBJLift_804ACA00::fn_80350530() {
         if (prev != 0) {
             limit = square(8.0f + field_0x260);
         }
-        if (square(cx - getPlayerPos_8023E724(i)->x) + square(cy - getPlayerPos_8023E724(i)->y) < limit &&
-            getPlayerPos_8023E724(i)->z == 0.0f) {
+        JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
+        f32 dx = cx - pos->x;
+        f32 dy = cy - pos->y;
+        if (square(dx) + square(dy) < limit && getPlayerPos_8023E724(i)->z == 0.0f) {
             if (prev == 0) {
                 startSound_801F0E34(0x30009, 0);
                 field_0x27c = 0;
@@ -560,10 +561,10 @@ s32 OBJLift_804ACA00::fn_80350530() {
                 }
             }
             field_0x270 = 1;
-            if (field_0x244 > 0) {
-                return -1;
+            if (field_0x244 <= 0) {
+                return field_0x268;
             }
-            return field_0x268;
+            return -1;
         }
     }
     field_0x27c = 0;
