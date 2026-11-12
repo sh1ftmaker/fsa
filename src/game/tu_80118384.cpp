@@ -266,11 +266,26 @@ inline cls_801192AC::cls_801192AC() {
     mExtend = JGadget::vector::extend_default;
 }
 
-// FIXME(shotgun): 20.62 %, missing/extra; behaviour drift.
-// (stand-in: the original is the TVector member: erase(begin(), end()),
-// then the member dtor's null check, erase again and the delete)
+// JGadget::TVector::erase(first, last): copies the tail down, then destroys the rest.
+static inline ActorBase_804A5770** copyDown(ActorBase_804A5770** first, ActorBase_804A5770** last,
+                                            ActorBase_804A5770** result) {
+    for (; first < last; ++first, ++result) {
+        *result = *first;
+    }
+    return result;
+}
+
+static inline void eraseRange(ActorBase_804A5770**& end, ActorBase_804A5770** first,
+                              ActorBase_804A5770** last) {
+    ActorBase_804A5770** newEnd = copyDown(last, end, first);
+    for (ActorBase_804A5770** it = newEnd; it != end; it++) {
+    }
+    end = newEnd;
+}
+
 cls_801192AC::~cls_801192AC() {
-    mEnd = mBegin;
+    eraseRange(mEnd, mBegin, mEnd);
+    eraseRange(mEnd, mBegin, mEnd);
     delete mBegin;
 }
 
