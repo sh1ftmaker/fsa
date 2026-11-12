@@ -78,9 +78,9 @@ void IronBallHoming_804AB9C0::init() {
 }
 
 // 0x80335688.
-// FIXME(shotgun): 85.76 %, different
+// FIXME(shotgun): 99.68 %, different; behaviour clean.
 bool IronBallHoming_804AB9C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u16 tile = fn_8022461C(pos, layer);
+    s32 tile = fn_8022461C(pos, layer);
     if (field_0x230 != 3 && (tile == 0xC || tile == 3 || tile == 0xE)) {
         if (field_0x230 != 7) {
             field_0x25c = 30;
@@ -95,7 +95,7 @@ bool IronBallHoming_804AB9C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
 }
 
 // 0x80334A04.
-// FIXME(shotgun): 82.95 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.68 %, missing/extra + reloc-name; behaviour drift.
 void IronBallHoming_804AB9C0::update() {
     u16 angle = 0;
     s32 player;
@@ -242,7 +242,7 @@ void IronBallHoming_804AB9C0::update() {
 }
 
 // 0x80334488.
-// FIXME(shotgun): 99.46 %, regalloc-only
+// FIXME(shotgun): 99.46 %, regalloc-only; behaviour clean.
 void IronBallHoming_804AB9C0::draw() {
     if (field_0x230 == 5) {
         return;
@@ -289,7 +289,7 @@ void IronBallHoming_804AB9C0::draw() {
 }
 
 // 0x80334378.
-// FIXME(shotgun): 85.24 %, missing/extra
+// FIXME(shotgun): 99.78 %, regalloc-only; behaviour clean.
 s32 IronBallHoming_804AB9C0::vfunc_0x54() {
     s32 serial = -1;
     while (true) {
@@ -305,12 +305,13 @@ s32 IronBallHoming_804AB9C0::vfunc_0x54() {
         if ((param & 0xFF) != 7) {
             continue;
         }
-        s32 layer = (param >> 3) & 7;
+        s32 layer = (param >> 24) & 7;
         f32 baseX;
         f32 baseY;
         if (layer == 0) {
-            baseX = getGameView_802D6A9C()->mVisibleBox.i.x;
-            baseY = getGameView_802D6A9C()->mVisibleBox.i.y;
+            GameView_804A9950* view = getGameView_802D6A9C();
+            baseX = view->mVisibleBox.i.x;
+            baseY = view->mVisibleBox.i.y;
         } else {
             baseX = 0.0f;
             baseY = 0.0f;
