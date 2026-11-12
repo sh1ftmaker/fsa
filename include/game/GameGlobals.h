@@ -169,12 +169,17 @@ public:
     cls_804AA8B8();
     /* 0x00 */ virtual ~cls_804AA8B8();
     void fn_80308E90();
-    // game/tu_80301CD0.cpp (0x80304FB0, not written yet): the per-frame update; called by GameRoot's fn_80137300.
+    // game/tu_80301CD0.cpp (0x80304FB0): the per-frame GBA link update; called by GameRoot's fn_80137300.
     void fn_80304FB0();
+    void fn_80306A94(s32 player);
     void fn_80307B58(s32 player, bool flag);
     void fn_8030801C(s32 player);
-    void fn_803085A4(s32 player); // game/tu_80301CD0.cpp, not written yet
+    void fn_803085A4(s32 player);
 };
+// game/tu_80301CD0.cpp: fn_80304FB0 ages and frees the sprite lists' entries (0x80304D64) and resets a
+// player's GBA link state and transfer queue (0x80303CE4).
+void fn_80304D64();
+void fn_80303CE4(s32 player);
 class cls_804B0FC0;
 class J2DTextBox;
 class MessageManager_804AF070;
@@ -1640,6 +1645,9 @@ extern cls_804A8578* lbl_8053ACA8;
 // game/tu_80021840.cpp (0x80021840): a stub that returns 0; tu_80134C04
 // compares the result with 0, 1 and 2 (a screen mode query).
 s32 fn_80021840();
+
+// game/tu_80134C04.cpp (0x801365A8): returns fn_80021840() (0, 1 or 2).
+s32 fn_801365A8();
 
 // Global object with vtable 0x804B0F90 (destructor 0x80401848, emitted after
 // that unit's __sinit, which registers it), owner game/tu_80400DC4.cpp

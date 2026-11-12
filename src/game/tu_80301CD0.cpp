@@ -8,6 +8,8 @@
 #include "JSystem/JKernel/JKRArchive.h"
 #include "game/GbaClient.h"
 #include "game/Message.h"
+#include "game/PlayerBit.h"
+#include "game/tu_80379F84.h"
 #include <string.h>
 
 // The GBA link of each player: a queue of files sent to the GBA (names such as
@@ -97,7 +99,7 @@ u8 lbl_8053AD00[4];
 u8 lbl_8053AD04[4];
 u8 lbl_8053AD08;
 u16 lbl_8053AD0C[4];
-s16 lbl_8053AD14[4];
+u16 lbl_8053AD14[4];
 u8 lbl_8053AD1C[4];
 u8 lbl_8053AD20[4];
 u8 lbl_8053AD24[4];
@@ -125,8 +127,8 @@ static inline bool isQueueBusy(s32 player) {
 // tu_803006E8 (the previous unit).
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
-// fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
-// fn_80307B58, fn_8030801C, fn_803085A4 and the constructor fn_8030905C (cls_804AA8B8).
+// fn_80303870, fn_803064A8, fn_803066F0, fn_803068D0,
+// fn_80307B58, fn_8030801C and the constructor fn_8030905C (cls_804AA8B8).
 
 // Forward declarations.
 bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e, s32 f, u8 g);
@@ -226,10 +228,151 @@ void fn_80308D0C() {
     }
 }
 
+// Fills the header of the player's record: player, size, layer, mode and
+// link flags, then the mode's status bits in bytes 4-7.
+// 0x803085A4
+// FIXME: 90.87 %, missing/extra; behaviour drift.
+void cls_804AA8B8::fn_803085A4(s32 player) {
+    s32 layer = fn_8022EA0C(player);
+    cls_804AA858Sub11C* record = &lbl_80506DE8[player];
+    record->field_0x3_0 = lbl_8053AD08;
+    record->mPlayer = layer;
+    if (getPlayerLayer_8023DE58(layer) < 8) {
+        record->mValid = 0;
+    } else {
+        record->mValid = getPlayerLayer_8023DE58(layer) - 7;
+    }
+    record->mMode = lbl_80506D48[player];
+    if (lbl_8053ACD0 && isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+        if (gGameRoot_8053AAF8->field_0x4c == 9 || gGameRoot_8053AAF8->field_0x80 != 0
+            || (lbl_8053ACD8[player] && (fn_8037F1E4(player) < 1 || fn_8037F1E4(player) > 5))) {
+            record->field_0x2_5 = 1;
+        } else {
+            record->field_0x2_5 = 0;
+        }
+        record->field_0x3_2 = lbl_8053ACEC[player] > 1 ? lbl_8053ACE8[player] : 0;
+    } else {
+        record->field_0x2_5 = 1;
+        record->field_0x3_2 = 0;
+    }
+    record->mMask = 0;
+    record->field_0x1_0 = 0;
+    record->field_0x1_0 |= lbl_8053ACF8[0];
+    record->field_0x1_0 |= lbl_8053ACF8[1] << 1;
+    record->field_0x1_0 |= lbl_8053ACF8[2] << 2;
+    record->field_0x1_0 |= lbl_8053ACF8[3] << 3;
+    record->field_0x4.mWord = 0;
+    if (lbl_80506D48[player] == 1) {
+        record->field_0x4.mMode1.field_0x5_4 = 15;
+    }
+    if (lbl_8053AAF0->mState >= 4 && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player))) {
+        record->field_0x4.mOdd.field_0x4_0 = lbl_80506D38[player];
+        lbl_80506D38[player] = 0;
+        if (lbl_8053ACD0 || lbl_8053AD68->fn_80379F84()) {
+            s32 mode = lbl_80506D48[player];
+            if ((mode & 1) == 0) {
+                record->field_0x4.mEven.field_0x5_0 = lbl_80529DEC.field_0xd8[player];
+                record->field_0x4.mEven.field_0x4_5 = (u8)(lbl_80529DEC.field_0xc8[player] / 4 - 1);
+                record->field_0x4.mEven.field_0x6_0 = fn_8037EE8C(player);
+                s32 v = lbl_80529DEC.field_0xe8[player] + 5000;
+                if (v > 14999) {
+                    v = 14999;
+                } else if (v < 0) {
+                    v = 0;
+                }
+                lbl_80506DE8[player].field_0x4.mEven.field_0x7 = (v >> 6) & 0xFF;
+                record->field_0x4.mEven.field_0x6_2 = v & 0x3F;
+            } else if (mode == 1) {
+                bool timed = gGameRoot_8053AAF8->field_0x4c == 11;
+                u8 count = gGameRoot_8053AAF8->field_0x88;
+                bool busy;
+                if (lbl_8053AEC8 != NULL) {
+                    u8 state = lbl_8053AEC8->field_0x40;
+                    if (state == 1 || (u8)(state - 3) <= 1 || state == 6) {
+                        busy = true;
+                    } else {
+                        busy = false;
+                    }
+                } else {
+                    busy = false;
+                }
+                record->field_0x4.mMode1.field_0x4_5 = count | (busy << 1) | timed;
+                record->field_0x4.mMode1.field_0x5_4 = lbl_80529DEC.field_0xf8[player];
+            }
+        }
+        if (lbl_8053ACD0) {
+            s32 mode = lbl_80506D48[player];
+            if (mode == 2) {
+                record->field_0x4.mEven.field_0x5_7 = getGameView_802D6A9C()->fn_802D7804(getPlayerLayer_8023DE58(layer), 1);
+            } else if ((mode & 1) == 1) {
+                if (getPlayerLayer_8023DE58(layer) >= 8) {
+                    u8 skip;
+                    if (gGameRoot_8053AAF8->field_0x4c == 11) {
+                        skip = 1;
+                    } else {
+                        skip = gGameRoot_8053AAF8->field_0x88 == 2;
+                    }
+                    if (!skip) {
+                        s32 t;
+                        if (fn_8023BC38(layer) > 0) {
+                            t = (fn_8023BC38(layer) + 59) / 60;
+                            if (t > 11) {
+                                t = 11;
+                            }
+                            t += 20;
+                        } else {
+                            if (fn_80236768(layer) > 0) {
+                                t = (fn_80236768(layer) + 59) / 60;
+                            } else if (fn_80236630(layer) > 0) {
+                                t = (fn_80236630(layer) + 59) / 60;
+                            } else if (fn_802366CC(layer) > 0) {
+                                t = (fn_802366CC(layer) + 59) / 60;
+                            } else {
+                                t = (getGameView_802D6A9C()->field_0xc4 + 59) / 60;
+                                if (!getGameView_802D6A9C()->field_0x131f0 || t > 5) {
+                                    t = 0;
+                                }
+                            }
+                            if (t > 20) {
+                                t = 20;
+                            }
+                        }
+                        record->field_0x4.mOdd.field_0x4_7 = t;
+                        record->field_0x4.mOdd.field_0x5_0 = (u8)(t >> 1);
+                    }
+                }
+                if (lbl_80506D48[player] == 3) {
+                    if (getGameView_802D6A9C()->fn_802D7804(getPlayerLayer_8023DE58(layer), 12)) {
+                        record->field_0x4.mOdd.mOffsetMode =
+                            (getGameView_802D6A9C()->field_0x131b8[getPlayerLayer_8023DE58(layer)] & 0xC) >> 2;
+                    } else {
+                        record->field_0x4.mOdd.mOffsetMode = fn_802351D8(layer) != 0;
+                    }
+                    record->field_0x4.mOdd.field_0x4_5 =
+                        (getGameView_802D6A9C()->field_0x131b8[getPlayerLayer_8023DE58(layer)] & 0x3000) >> 12;
+                    record->field_0x4.mOdd.field_0x5_6 = (u8)(fn_80237060(player) - 1);
+                    if (!fn_802DEBF8() && !fn_802DEBA0()) {
+                        record->field_0x4.mOdd.field_0x5_7 = 1;
+                    }
+                }
+            }
+        }
+        if (lbl_8053AD68->fn_80379F84()) {
+            s32 mode = lbl_80506D48[player];
+            if (mode == 0) {
+                record->field_0x4.mEven.field_0x5_7 = 1;
+            } else if (mode == 3) {
+                record->field_0x4.mOdd.field_0x5_7 = 1;
+            }
+        }
+    }
+    lbl_8053ACDC[player] = 0;
+}
+
 // Builds the player's first GBA record: the kind, the four marks and the hidden sprites,
 // then the checksum.
 // 0x8030801C
-// FIXME: 64.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 64.80 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_8030801C(s32 player) {
     cls_804AA858Sub11C* record;
     if (lbl_8053AAF0->mState >= 4) {
@@ -298,6 +441,15 @@ void cls_804AA8B8::fn_8030801C(s32 player) {
     record->field_0x0 = sum;
 }
 
+static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
+    return sprite.f.field_0x0 | sprite.f.field_0x3_1 << 8;
+}
+
+// fn_803074A4's kind of a sprite word.
+static inline s32 spriteKind(const GbaSprite_80506F88& sprite) {
+    return fn_803074A4(sprite.f.mKind, spriteId(sprite));
+}
+
 // Byte-reverses a word.
 static inline u32 swapBytes(u32 v) {
     union {
@@ -316,7 +468,7 @@ static inline u32 swapBytes(u32 v) {
 // and its checksum. Still differs: the original has the checksum loop twice (branch on the
 // queue head entry's mUsed) and different register allocation.
 // 0x80307B58
-// FIXME: 71.04 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 71.06 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_80307B58(s32 player, bool flag) {
     if (flag) {
         lbl_80506DE8[player].mKind = 10;
@@ -530,6 +682,152 @@ s32 fn_803074A4(s32 kind, s32 id) {
     return 0;
 }
 
+// Builds the player's regular GBA record: the kind, the other players' marks
+// (screen position and sprite), the mode's status bits, the scroll, the sprite
+// words sorted by kind, the layer's mask word and the checksum.
+// Still differs: the original has the checksum loop twice (branch on the queue head entry's mUsed).
+// 0x80306A94
+// FIXME: 85.19 %, missing/extra; behaviour drift.
+void cls_804AA8B8::fn_80306A94(s32 player) {
+    if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) {
+        lbl_80506DE8[player].mKind = 5;
+    } else {
+        lbl_80506DE8[player].mKind = 14;
+    }
+    fn_803085A4(player);
+    s32 layer = fn_8022EA0C(player);
+    cls_804AA858Sub11C* record = &lbl_80506DE8[player];
+    for (s32 i = 0; i < 4; i++) {
+        s32 idx = fn_802340A0(i);
+        if (!fn_8023F264(i) || !fn_8023188C(i) || getPlayerLayer_8023DE58(layer) < 8 ||
+            (!fn_8022BC38(layer, getPlayerLayer_8023DE58(i), getPlayerPos_8023E724(i)) &&
+             (getPlayerLayer_8023DE58(layer) > 8 || getPlayerLayer_8023DE58(i) > 8))) {
+            record->mEntries[idx].mXHigh = 1;
+            record->mEntries[idx].mXLow = 0x80;
+            record->mEntries[idx].mY = 0xE0;
+            record->mEntries[idx].field_0x3_1 = 0;
+            record->mEntries[idx].field_0x0 = 0;
+        } else {
+            if (getPlayerLayer_8023DE58(i) < 8) {
+                record->mMask |= 1 << idx;
+                record->mEntries[idx].mXHigh = fn_8023D21C(i, layer) >> 8;
+                record->mEntries[idx].mXLow = fn_8023D21C(i, layer);
+                record->mEntries[idx].mY = fn_8023CEAC(i, layer);
+            } else {
+                record->mEntries[idx].mXHigh = fn_8023DAF4(i, layer) >> 8;
+                record->mEntries[idx].mXLow = fn_8023DAF4(i, layer);
+                record->mEntries[idx].mY = fn_8023D644(i, layer);
+            }
+            record->mEntries[idx].field_0x3_1 = fn_8023CBC0(i) >> 8;
+            record->mEntries[idx].field_0x0 = fn_8023CBC0(i);
+        }
+    }
+    if ((lbl_80506D48[player] & 1) == 1) {
+        for (s32 i = 0; i < 4; i++) {
+            s32 idx = fn_802340A0(i);
+            record->field_0x4.mOdd.field_0x7_4 |= fn_8022BECC(idx) << idx;
+            bool skip;
+            if (gGameRoot_8053AAF8->field_0x4c == 11) {
+                skip = true;
+            } else {
+                skip = gGameRoot_8053AAF8->field_0x88 == 2;
+            }
+            u8 state;
+            if (skip) {
+                state = 3;
+            } else if (fn_8023CA88(idx) > 0) {
+                s32 l = getPlayerLayer_8023DE58(i);
+                if (((getGameView_802D6A9C()->field_0x131b8[l] & 0x3000) >> 12) == 0) {
+                    state = 3;
+                } else {
+                    state = 1;
+                }
+            } else if (fn_8023EA28(i)) {
+                state = 1;
+            } else {
+                state = 0;
+            }
+            record->field_0x4.mOdd.field_0x6 |= state << (idx * 2);
+            if (fn_8023BCD4(idx) < 0xA0) {
+                record->field_0x4.mOdd.field_0x7_0 |= 1 << idx;
+            }
+        }
+    }
+    record->mEntries[0].mScroll = (fn_8023CE10(layer) >> 5) & 0xF;
+    record->mEntries[0].mScrollBit = (fn_8023CE10(layer) >> 4) & 1;
+    record->mEntries[1].mScroll = fn_8023CE10(layer);
+    record->mEntries[2].mScroll = (fn_8023CD74(layer) >> 5) & 0xF;
+    record->mEntries[2].mScrollBit = (fn_8023CD74(layer) >> 4) & 1;
+    record->mEntries[3].mScroll = fn_8023CD74(layer);
+    u8 near = 0;
+    if (fn_8037F1E4(player) >= 1 && fn_8037F1E4(player) <= 5) {
+        near = 1;
+    }
+    record->mEntries[1].mScrollBit = near ? true : false;
+    u8 flag = 0;
+    if (fn_8022F5B0(layer)) {
+        s32 l = getPlayerLayer_8023DE58(layer);
+        if (!getGameView_802D6A9C()->fn_802D7804(l, 2)) {
+            flag = 1;
+        }
+    }
+    record->mEntries[3].mScrollBit = flag ? true : false;
+    GbaSprite_80506F88* sprite = record->field_0x18;
+    s32 words = lbl_80541618[lbl_8053AD08] - 7;
+    for (s32 i = 0; i < words; i++, sprite++) {
+        sprite->f.field_0x3_0 = 1;
+        sprite->f.field_0x2 = 0x80;
+        sprite->f.field_0x1 = 0xE0;
+        sprite->f.field_0x3_1 = 0;
+        sprite->f.field_0x0 = 0;
+        sprite->f.mKind = 0;
+        sprite->f.field_0x3_4 = 0;
+    }
+    s32 count = 0;
+    if (fn_8023F264(player)) {
+        count = fn_803066F0((s32)this, player, lbl_80541618[lbl_8053AD08] - 7);
+    }
+    if (fn_8023F264(player)) {
+        fn_803064A8((s32)this, player, lbl_80541618[lbl_8053AD08] - 7 - count, count);
+    }
+    for (s32 n = lbl_80541618[lbl_8053AD08] - 8; n > 0; n--) {
+        for (s32 j = 0; j < n; j++) {
+            s32 a = spriteKind(record->field_0x18[j]);
+            s32 b = spriteKind(record->field_0x18[j + 1]);
+            if (record->field_0x18[j + 1].f.field_0x1 != 0xE0 &&
+                (a < b || (a == b && record->field_0x18[j].f.field_0x1 < record->field_0x18[j + 1].f.field_0x1))) {
+                u32 tmp = record->field_0x18[j + 1].mWord;
+                record->field_0x18[j + 1].mWord = record->field_0x18[j].mWord;
+                record->field_0x18[j].mWord = tmp;
+            }
+        }
+    }
+    if ((lbl_80506D48[player] & 1) == 0) {
+        if (getPlayerLayer_8023DE58(layer) < 8) {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(8);
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask & 0xFFFFFFFF);
+        } else {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(getPlayerLayer_8023DE58(layer));
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask & 0xFFFFFFFF);
+        }
+    } else {
+        if (getPlayerLayer_8023DE58(layer) < 8) {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(8);
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask >> 32);
+        } else {
+            u64 mask = getGameView_802D6A9C()->fn_802D7AC4(getPlayerLayer_8023DE58(layer));
+            record->field_0x18[lbl_80541618[lbl_8053AD08] - 7].mWord = swapBytes(mask >> 32);
+        }
+    }
+    u8 sum = 0;
+    u8* bytes = (u8*)&record->mSprites[0];
+    s32 size = lbl_80541618[lbl_8053AD08] * 4;
+    for (s32 k = 8; k < size; k++) {
+        sum += *bytes++;
+    }
+    record->field_0x0 = sum;
+}
+
 // Copies a record's sprite words into the half of the player's sprite table
 // its mode selects, hides the rest of that half and the kind-2 sprites below
 // 0x45 of the other half.
@@ -543,7 +841,7 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
     GbaSprite_80506F88* sprites = lbl_80506F88[fn_8022F340(record->mPlayer)][0];
     GbaSprite_80506F88* dst = sprites + half * 19;
     s32 i;
-    for (i = 0; i < lbl_80541618[record->field_0x3_0 & 3] - 7; i++) {
+    for (i = 0; i < lbl_80541618[record->field_0x3_0] - 7; i++) {
         dst[i].mWord = record->field_0x18[i].mWord;
     }
     for (; i < 19; i++) {
@@ -680,6 +978,352 @@ void fn_803064A8(s32 unused, s32 player, s32 max, s32 start) {
     }
 }
 
+// The per-frame GBA link update: counts the linked GBAs (the transfer length
+// index), then for every player either sends the regular record, feeds the
+// transfer queue (file words, kinds 6-8) or the message words (kinds 10-12).
+// Still differs: the original has each checksum loop twice (branch on the queue head entry's mUsed).
+// 0x80304FB0
+// FIXME: 76.04 %, missing/extra + reloc-name; behaviour drift.
+void cls_804AA8B8::fn_80304FB0() {
+    GbaClient_803007D0* client = lbl_804DB798;
+    lbl_8053AD08 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (lbl_804DB798[i].field_0xd8 || lbl_804DB798[i].field_0xd9) {
+            lbl_8053AD08++;
+        }
+    }
+    if (lbl_8053AD08 != 0) {
+        lbl_8053AD08 = (lbl_8053AD08 - 1) & 3;
+    }
+    for (s32 player = 0; player < 4; player++, client++) {
+        s32 layer = fn_8022EA0C(player);
+        cls_804AA858Sub11C* record = &lbl_80506DE8[player];
+        if (lbl_8053AD30->fn_8030A364(getPlayerInputSlot_8030AAF4(player))) {
+            if (lbl_8053ACD0 && isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+                fn_80306A94(player);
+                gGameRoot2_8053AB10->field_0x20->fn_802F53F4(player, record);
+                lbl_80506D78[player] += 0.7854;
+                switch (lbl_8053ACEC[player]) {
+                case 0:
+                    if (lbl_8053ACE8[player]) {
+                        lbl_8053ACF0[player] = 0;
+                        lbl_8053ACEC[player]++;
+                    }
+                    break;
+                case 1:
+                    lbl_8053ACF0[player]++;
+                    if ((lbl_8053ACE8[player] == 1 && fn_8022F64C(layer)) ||
+                        (lbl_8053ACE8[player] != 1 && lbl_8053ACF0[player] >= lbl_8053ACF4[player])) {
+                        lbl_8053ACF0[player] = 0;
+                        lbl_8053ACEC[player]++;
+                    }
+                    break;
+                case 2:
+                    if (lbl_8053ACE8[player] == 1) {
+                        if (lbl_8053ACF0[player] < 0x1F) {
+                            lbl_8053ACF0[player]++;
+                        }
+                    } else {
+                        if (lbl_8053ACF0[player] < 0x10) {
+                            lbl_8053ACF0[player]++;
+                        }
+                    }
+                    break;
+                default:
+                    if (lbl_8053ACF0[player] == 0) {
+                        lbl_8053ACE8[player] = 0;
+                        lbl_8053ACEC[player] = 0;
+                        lbl_8053ACF4[player] = 0;
+                    } else {
+                        lbl_8053ACF0[player]--;
+                    }
+                    break;
+                }
+                if (lbl_8053ACF8[layer]) {
+                    if (lbl_8053ACFC[layer] < 0x11) {
+                        lbl_8053ACFC[layer]++;
+                    }
+                } else {
+                    lbl_8053ACFC[layer] = 0;
+                }
+            } else {
+                fn_8030801C(player);
+            }
+            lbl_80506D48[player] = (lbl_80506D48[player] + 1) & 3;
+            continue;
+        }
+        if (!isLinked(player)) {
+            Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A18[player]];
+            if (entry->mUsed == 1) {
+                entry->field_0x119 = 0;
+                entry->field_0x104 = 0;
+                entry->field_0x10c = 0;
+            } else if (lbl_8053AD20[player] == 1 && lbl_8053AD24[player] != 1) {
+                if (lbl_8053AD28[player] == 1) {
+                    lbl_8053AD0C[player] = lbl_8053AD14[player];
+                    lbl_8053AD24[player] = 1;
+                    lbl_8053AD1C[player] = 60;
+                } else {
+                    do {
+                        lbl_805071E8[player][lbl_8053AD0C[player]++] = fn_8037F0CC(player);
+                    } while (fn_8037F1E4(player) == 3);
+                    lbl_8053AD24[player] = 1;
+                    lbl_8053AD1C[player] = 60;
+                }
+            }
+            lbl_80506D48[player + 4] = 5;
+            continue;
+        }
+        if (lbl_8053AD34[player] == 0) {
+            if (isLinked(player) == 1 && lbl_8053ACD0 && isPlayerBitSet(gGameRoot_8053AAF8, player) &&
+                getPlayerLayer_8023DE58(layer) >= 8) {
+                gGameRoot2_8053AB10->field_0x20->field_0x12c[player] = 1;
+            }
+            continue;
+        }
+        if (lbl_8053AAF0->field_0x60) {
+            fn_8030801C(player);
+            continue;
+        }
+        if (client->field_0xdc) {
+            fn_80303CE4(player);
+            client->field_0xdc = 0;
+        }
+        lbl_80506D78[player] += 0.7854;
+        switch (lbl_8053ACEC[player]) {
+        case 0:
+            if (lbl_8053ACE8[player]) {
+                lbl_8053ACF0[player] = 0;
+                lbl_8053ACEC[player]++;
+            }
+            break;
+        case 1:
+            lbl_8053ACF0[player]++;
+            if ((lbl_8053ACE8[player] == 1 && fn_8022F64C(layer)) ||
+                (lbl_8053ACE8[player] != 1 && lbl_8053ACF0[player] >= lbl_8053ACF4[player])) {
+                lbl_8053ACF0[player] = 0;
+                lbl_8053ACEC[player]++;
+            }
+            break;
+        case 2:
+            if (lbl_8053ACE8[player] == 1) {
+                if (lbl_8053ACF0[player] < 0x1F) {
+                    lbl_8053ACF0[player]++;
+                } else {
+                    lbl_8053ACEC[player]++;
+                }
+            } else {
+                if (lbl_8053ACF0[player] < 0x10) {
+                    lbl_8053ACF0[player]++;
+                } else {
+                    lbl_8053ACEC[player]++;
+                }
+            }
+            break;
+        case 3:
+            if (lbl_8053ACF0[player] != 0) {
+                lbl_8053ACF0[player]--;
+            }
+            break;
+        default:
+            lbl_8053ACE8[player] = 0;
+            lbl_8053ACEC[player] = 0;
+            lbl_8053ACF0[player] = 0;
+            lbl_8053ACF4[player] = 0;
+            break;
+        }
+        if (lbl_8053ACF8[layer]) {
+            if (lbl_8053ACFC[layer] < 0x11) {
+                lbl_8053ACFC[layer]++;
+            }
+        } else {
+            lbl_8053ACFC[layer] = 0;
+        }
+        if (lbl_80506D48[player + 4] > 0) {
+            fn_8030801C(player);
+            lbl_80506D48[player] = (lbl_80506D48[player] + 1) & 3;
+            lbl_80506D48[player + 4]--;
+            continue;
+        }
+        Transfer_8030361C* entry = &lbl_804FBC18[player][lbl_80504A18[player]];
+        s32 otherLayer;
+        if (entry->mUsed == 1 && entry->field_0x104 == 0 &&
+            (entry->mAddress == 0x0600C000 || entry->mAddress == 0x0600E000) &&
+            entry->field_0x110 != getPlayerLayer_8023DE58(layer)) {
+            otherLayer = 1;
+        } else {
+            otherLayer = 0;
+        }
+        if (entry->mUsed == 0 || otherLayer == 1) {
+            if (lbl_8053AD20[player] == 1) {
+                if (lbl_8053AD24[player] == 1) {
+                    if (client->mKeys >> 24 == 3) {
+                        lbl_8053AD20[player] = 0;
+                    } else {
+                        lbl_8053AD1C[player]++;
+                        if (lbl_8053AD1C[player] > 40) {
+                            lbl_8053AD14[player] = lbl_8053AD0C[player];
+                            lbl_8053AD0C[player] = 0;
+                            lbl_8053AD24[player] = 0;
+                            lbl_8053AD28[player] = 1;
+                            record->mKind = 10;
+                            fn_803085A4(player);
+                            s32 count = lbl_80541618[lbl_8053AD08] - 2;
+                            s32 i;
+                            for (i = 0; i < count; i++) {
+                                u32 w = lbl_805071E8[player][lbl_8053AD0C[player]] |
+                                        lbl_805071E8[player][lbl_8053AD0C[player] + 1] << 16;
+                                lbl_8053AD0C[player] += 2;
+                                record->mSprites[i].mWord = swapBytes(w);
+                                if (lbl_8053AD0C[player] >= lbl_8053AD14[player]) {
+                                    lbl_8053AD24[player] = 1;
+                                    lbl_8053AD1C[player] = 0;
+                                    record->mKind = 12;
+                                    i++;
+                                    break;
+                                }
+                            }
+                            for (; i < count; i++) {
+                                record->mSprites[i].mWord = 0;
+                            }
+                            u8 sum = 0;
+                            u8* bytes = (u8*)&record->mSprites[0];
+                            s32 size = lbl_80541618[lbl_8053AD08] * 4;
+                            for (s32 k = 8; k < size; k++) {
+                                sum += *bytes++;
+                            }
+                            record->field_0x0 = sum;
+                        } else {
+                            fn_8030801C(player);
+                        }
+                    }
+                } else if (lbl_8053AD28[player] == 1) {
+                    record->mKind = 11;
+                    fn_803085A4(player);
+                    s32 count = lbl_80541618[lbl_8053AD08] - 2;
+                    s32 i;
+                    for (i = 0; i < count; i++) {
+                        u32 w = lbl_805071E8[player][lbl_8053AD0C[player]] |
+                                lbl_805071E8[player][lbl_8053AD0C[player] + 1] << 16;
+                        lbl_8053AD0C[player] += 2;
+                        record->mSprites[i].mWord = swapBytes(w);
+                        if (lbl_8053AD0C[player] >= lbl_8053AD14[player]) {
+                            lbl_8053AD24[player] = 1;
+                            lbl_8053AD1C[player] = 0;
+                            record->mKind = 12;
+                            i++;
+                            break;
+                        }
+                    }
+                    for (; i < count; i++) {
+                        record->mSprites[i].mWord = 0;
+                    }
+                    u8 sum = 0;
+                    u8* bytes = (u8*)&record->mSprites[0];
+                    s32 size = lbl_80541618[lbl_8053AD08] * 4;
+                    for (s32 k = 8; k < size; k++) {
+                        sum += *bytes++;
+                    }
+                    record->field_0x0 = sum;
+                } else {
+                    fn_80307B58(player, false);
+                }
+            } else if (fn_8037F1E4(player) == 3 && isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+                lbl_8053AD20[player] = 1;
+                lbl_8053AD24[player] = 0;
+                lbl_8053AD28[player] = 0;
+                lbl_8053AD0C[player] = 0;
+                fn_80307B58(player, true);
+                lbl_8053AD04[player] = 0;
+            }
+            if (lbl_8053AD20[player] == 0) {
+                if (lbl_8053ACD0 && isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+                    fn_80306A94(player);
+                } else {
+                    fn_8030801C(player);
+                }
+            }
+            if (isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+                gGameRoot2_8053AB10->field_0x20->fn_802F53F4(player, record);
+            }
+        } else if (entry->field_0x10c != 0) {
+            fn_8030801C(player);
+            if (client->mKeys >> 24 == 2) {
+                if (entry->mAddress == 0xFFFFFFFF) {
+                    lbl_8053ACD4[player] = 0;
+                } else if (entry->mAddress == 0x02033000) {
+                    lbl_8053ACE0[player] = 1;
+                }
+                entry->mUsed = 0;
+                entry->field_0x119 = 0;
+                entry->field_0x104 = 0;
+                entry->mName[0] = 0;
+                s32 tail = lbl_80504A28[player];
+                do {
+                    lbl_80504A18[player]++;
+                    if (lbl_80504A18[player] >= 32) {
+                        lbl_80504A18[player] = 0;
+                    }
+                } while (lbl_80504A18[player] != tail && lbl_804FBC18[player][lbl_80504A18[player]].mUsed == 0);
+            } else {
+                entry->field_0x10c--;
+                if (entry->field_0x10c == 0) {
+                    entry->field_0x119 = 0;
+                    entry->field_0x104 = 0;
+                }
+            }
+        } else if (entry->field_0x119 == 1) {
+            record->mKind = 7;
+            fn_803085A4(player);
+            for (s32 i = 0; i < lbl_80541618[lbl_8053AD08] - 2; i++) {
+                record->mSprites[i].mWord = lbl_804DBC18[player][entry->field_0x104++];
+                if (entry->field_0x104 >= entry->mWords) {
+                    record->mKind = 8;
+                    entry->field_0x10c = 60;
+                    break;
+                }
+            }
+            u8 sum = 0;
+            u8* bytes = (u8*)&record->mSprites[0];
+            s32 size = lbl_80541618[lbl_8053AD08] * 4;
+            for (s32 k = 8; k < size; k++) {
+                sum += *bytes++;
+            }
+            record->field_0x0 = sum;
+        } else {
+            record->mKind = 6;
+            fn_803085A4(player);
+            u16* src;
+            if (entry->mAddress == 0x0600C000 || entry->mAddress == 0x0600E000) {
+                src = (u16*)fn_80403328(entry->mName);
+            } else {
+                src = (u16*)gGameRoot_8053AAF8->field_0xa4->getResource('????', entry->mName);
+            }
+            u32* dst = lbl_804DBC18[player];
+            for (s32 i = 0; i < entry->mWords; i++) {
+                *dst++ = src[0] << 16 | src[1];
+                src += 2;
+            }
+            record->mSprites[0].mWord = swapBytes(entry->field_0x11a);
+            record->mSprites[1].mWord = swapBytes(entry->mAddress);
+            u8 sum = 0;
+            u8* bytes = (u8*)&record->mSprites[0];
+            s32 size = lbl_80541618[lbl_8053AD08] * 4;
+            for (s32 k = 8; k < size; k++) {
+                sum += *bytes++;
+            }
+            entry->field_0x104 = 0;
+            record->field_0x0 = sum;
+            entry->field_0x119 = 1;
+        }
+        lbl_80506D48[player] = (lbl_80506D48[player] + 1) & 3;
+        if (lbl_8053AD20[player] == 0) {
+            lbl_8053AD04[player] = lbl_8053AD30->fn_80309A38(getPlayerInputSlot_8030AAF4(player));
+        }
+    }
+    fn_80304D64();
+}
+
 // FIXME: 98.47 %, regalloc-only; behaviour clean.
 // Regalloc only: the original keeps the list bases in r6 / r7 and the element in
 // r8 (ours r7 / r8 and r6).
@@ -798,6 +1442,57 @@ bool fn_803049F0(s32 layer, s32 index) {
         lbl_80504A28[player] = 0;
     }
     return true;
+}
+
+// Resets the player's GBA link state and transfer queue, then queues the
+// files of the GBA program.
+// Prologue only: the zero for the global resets gets its own register instead of the loop counter's.
+// 0x80303CE4
+// FIXME: 98.46 %, missing/extra + reloc-name; behaviour clean.
+void fn_80303CE4(s32 player) {
+    lbl_80506D38[player] = 0;
+    lbl_8053ACE0[player] = 0;
+    lbl_8053ACE4[player] = 0;
+    lbl_8053ACD4[player] = 1;
+    lbl_80506D88[player] = 0;
+    lbl_80506D98[player] = 0;
+    lbl_8053ACE8[player] = 0;
+    lbl_8053ACEC[player] = 0;
+    lbl_8053ACF0[player] = 0;
+    lbl_8053ACF8[player] = 0;
+    lbl_8053ACFC[player] = 0;
+    lbl_80504A18[player] = 0;
+    lbl_80504A28[player] = 0;
+    Transfer_8030361C* queue = lbl_804FBC18[player];
+    for (int i = 0; i < 32; i++) {
+        Transfer_8030361C& t = queue[i];
+        t.mUsed = 0;
+        t.field_0x119 = 0;
+        t.field_0x104 = 0;
+        t.mWords = 0;
+        t.mAddress = 0;
+        t.mIndex = i;
+        t.field_0x10c = 0;
+        t.mName[0] = 0;
+    }
+    for (int i = 0; i < 0x2000; i++) {
+        lbl_804DBC18[player][i] = 0xCDCDCDCD;
+    }
+    fn_80304C10(player, "end_code_scl.bin", 0xAAAAAAAA, 0, 0);
+    fn_80304C10(player, "sound_data.szs", 0x02033000, 1, 0);
+    fn_80304C10(player, "gb_ch_obj_base_sch.szs", 0x06010000, 1, 0);
+    fn_80304C10(player, "gb_cl_obj_base_scl.szs", 0x05000201, 1, 0);
+    fn_80304C10(player, "player_sch.szs", 0x02034000, 1, 0);
+    fn_80304C10(player, "bg_a_spl.szs", 0x0203C000, 1, 0);
+    fn_80304C10(player, "player_sob.szs", 0x02010000, 1, 0);
+    fn_80304C10(player, "enemy_both_sob.szs", 0x02021000, 1, 0);
+    fn_80304C10(player, "enemy_both2_sob.szs", 0x02018E00, 1, 0);
+    if (fn_801365A8() == 2) {
+        fn_80304C10(player, "moji_japan_test_sch.szs", 0x02038000, 1, 0);
+    } else if (fn_801365A8() == 0 || fn_801365A8() == 1) {
+        fn_80304C10(player, "moji_english_sch.szs", 0x02038000, 1, 0);
+    }
+    fn_80304C10(player, "end_code_scl.bin", 0xFFFFFFFF, 0, 0);
 }
 
 // 0x80303870
@@ -1037,10 +1732,6 @@ static inline s32 markKey2(s32 mask, s32 player, s32 i) {
 // A sprite word that is off screen (x = 0x180).
 static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
     return sprite.f.field_0x3_0 == 1 && sprite.f.field_0x2 == 0x80;
-}
-
-static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
-    return sprite.f.field_0x0 | sprite.f.field_0x3_1 << 8;
 }
 
 // Variant of fn_803022C4.
