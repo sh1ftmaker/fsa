@@ -38,10 +38,10 @@ static inline void releaseTarget(cls_804A51E4* self) {
     }
 }
 
-// FIXME(shotgun): 70.00 %, missing/extra.
+// FIXME(shotgun): 77.83 %, missing/extra; behaviour clean.
 bool cls_804A51E4::fn_801E2F40() {
     bool result = false;
-    u16 code = fn_8022461C(&mPos, field_0x4);
+    s32 code = fn_8022461C(&mPos, field_0x4);
     if (code < 13) {
         if (code == 3) {
             result = true;
@@ -52,13 +52,12 @@ bool cls_804A51E4::fn_801E2F40() {
     return result;
 }
 
-// FIXME(shotgun): 44.70 %, scheduling.
+// FIXME(shotgun): 44.70 %, scheduling; behaviour clean.
 void cls_804A51E4::fn_801E2EE4() {
     JGeometry::TBox2f box(mPos.x - 8.0f, mPos.y - 8.0f, mPos.x + 8.0f, mPos.y + 8.0f);
     fn_802397B4(&box, field_0x4, mSerial);
 }
 
-// FIXME(shotgun): 75.83 %, different.
 void cls_804A51E4::fn_801E2D88() {
     switch (mState) {
     case 0:
@@ -67,7 +66,10 @@ void cls_804A51E4::fn_801E2D88() {
         mBox.i.y = 1.0f;
         mBox.f.x = -1.0f;
         mBox.f.y = -1.0f;
-        mBox2 = mBox;
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
         break;
     case 12:
         mBox.i.x = -8.0f;
@@ -95,12 +97,15 @@ void cls_804A51E4::fn_801E2D88() {
             mBox.i.y += 4.0f;
             mBox.f.y += 4.0f;
         }
-        mBox2 = mBox;
+        mBox2.i.x = mBox.i.x;
+        mBox2.i.y = mBox.i.y;
+        mBox2.f.x = mBox.f.x;
+        mBox2.f.y = mBox.f.y;
         break;
     }
 }
 
-// FIXME(shotgun): 79.85 %, different.
+// FIXME(shotgun): 79.85 %, different; behaviour drift.
 u8 cls_804A51E4::vfunc_0x60() {
     u8 hit = 0;
     s32 other = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
@@ -128,7 +133,7 @@ u8 cls_804A51E4::vfunc_0x60() {
     return hit;
 }
 
-// FIXME(shotgun): 94.58 %, missing/extra.
+// FIXME(shotgun): 94.58 %, missing/extra; behaviour near.
 u8 cls_804A51E4::vfunc_0x5C() {
     u8 hit = 0;
     s32 player = fn_801F285C(NULL, NULL, true, -1);
