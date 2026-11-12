@@ -405,17 +405,7 @@ u8 Cucco_804AB8C0::fn_80332378() {
 
 // FIXME(shotgun): 63.12 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_80331E6C() {
-    if (field_0x2a4[0] != 1) {
-        field_0x284--;
-        if (field_0x284 <= 0) {
-            f32 dx = field_0x2c4[3].x - mPos.x;
-            f32 dy = field_0x2c4[3].y - mPos.y;
-            if (JGeometry::TVec2f(dx, dy).length() > 12.0f) {
-                field_0x2a4[0] = 1;
-            }
-        }
-        return;
-    }
+    if (field_0x2a4[0] == 1) {
     s32 warpSerial = -1;
     s32 circleSerial = -1;
     if (field_0x230 == 3) {
@@ -542,6 +532,16 @@ void Cucco_804AB8C0::fn_80331E6C() {
     }
     if (field_0x23c > 0) {
         field_0x23c = 0x14;
+    }
+    } else {
+        field_0x284--;
+        if (field_0x284 <= 0) {
+            f32 dx = field_0x2c4[3].x - mPos.x;
+            f32 dy = field_0x2c4[3].y - mPos.y;
+            if (JGeometry::TVec2f(dx, dy).length() > 12.0f) {
+                field_0x2a4[0] = 1;
+            }
+        }
     }
 }
 
