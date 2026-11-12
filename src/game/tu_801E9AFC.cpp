@@ -54,6 +54,7 @@ int fn_801EA8C0(const void* a, const void* b) {
     return result;
 }
 
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 void cls_801E9B54::fn_801EA75C(u8 id, u8 flag, u8 index, s32 layer, const JGeometry::TVec2f* pos) {
     s32 i = 0;
     for (s32 n = field_0x60; i < n; i++) {
@@ -104,7 +105,8 @@ s32 cls_801E9B54::fn_801EA6D8(u8 arg0, s32 arg1) {
     return result;
 }
 
-// FIXME: 89.9. The slot shift-down loop: the original recomputes the source
+// FIXME: 89.98 %, missing/extra; behaviour drift.
+// The slot shift-down loop: the original recomputes the source
 // slot from the index each pass (addi, mulli, add; 81 instructions), ours
 // walks a second pointer (80).
 void cls_801E9B54::fn_801EA594() {
@@ -140,7 +142,8 @@ void cls_801E9B54::fn_801EA594() {
     }
 }
 
-// FIXME: 99.2. Regalloc only: the texture loop's index is r31 in the original
+// FIXME: 99.24 %, regalloc-only; behaviour clean.
+// Regalloc only: the texture loop's index is r31 in the original
 // (r27 here) and the table, texture, palette and ratio pointers sit one
 // register lower.
 void cls_801E9AFC::fn_801EA384(bool flag) {
@@ -168,7 +171,8 @@ void cls_801E9AFC::fn_801EA304() {
 }
 
 // 0x801EA108.
-// FIXME(shotgun): 49.85 %, missing/extra; the original reloads the sin/cos table for every vertex.
+// FIXME(shotgun): 51.86 %, missing/extra + reloc-name; behaviour drift.
+// the original reloads the sin/cos table for every vertex.
 void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
     f32 s0 = 0.0f;
     f32 s1 = 1.0f;
@@ -199,7 +203,8 @@ void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
     GXTexCoord2f32(s0, 1.0f);
 }
 
-// FIXME: 91.0. Three fewer-instruction spots: the original converts the
+// FIXME: 90.97 %, missing/extra; behaviour drift.
+// Three fewer-instruction spots: the original converts the
 // "outlines" / "sprites" tests to bool through a byte (clrlwi, neg, or, srwi)
 // where ours keeps the compare result; the rest is the same code, registers
 // shifted.
@@ -261,6 +266,7 @@ void cls_801E9AFC::fn_801E9C74() {
     }
 }
 
+// FIXME: 99.66 %, reloc-name; behaviour clean.
 void fn_801E9C00(s16 angle, JGeometry::TVec2f* vec) {
     vec->x = 0.0f;
     vec->y = 4.0f;
@@ -270,7 +276,8 @@ void fn_801E9C00(s16 angle, JGeometry::TVec2f* vec) {
     vec->y = x * JMath::sincosTable_.sinShort(-turn) + vec->y * JMath::sincosTable_.cosShort(-turn);
 }
 
-// FIXME: 97.3. The original copies findActorBySerial_801F666C's result through r0 (mr r0, r3; mr. r30, r0); ours tests it in place.
+// FIXME: 97.26 %, missing/extra + reloc-name; behaviour clean.
+// The original copies findActorBySerial_801F666C's result through r0 (mr r0, r3; mr. r30, r0); ours tests it in place.
 s32 ActorBase_804A5770::fn_801E9B58() {
     s32 serial = getActorManager_801F856C()->fn_801F7F58(this, lbl_80469C78, mSerial, 32.0f);
     if (serial >= 0 && serial != mSerial) {
