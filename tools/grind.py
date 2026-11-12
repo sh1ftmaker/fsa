@@ -674,8 +674,10 @@ def report_map(wt):
         rep = json.loads((wt / "build/G4SE01/report_honest.json").read_text())
     except (OSError, ValueError):
         return None
-    return {(u["name"], f["name"]): float(f.get("fuzzy_match_percent") or 0)
-            for u in rep["units"] for f in u.get("functions", [])}
+    # Keyed by address where the report has one: a function renamed in symbols.txt is still the same function
+    # (a publish was blocked for three rounds on 2026-11-12 by two renamed functions that still matched).
+    return {(u["name"], hex(int(f["metadata"]["virtual_address"])) if (f.get("metadata") or {}).get("virtual_address") else f["name"]):
+            float(f.get("fuzzy_match_percent") or 0) for u in rep["units"] for f in u.get("functions", [])}
 
 
 def rule_problem(wt, unit):
