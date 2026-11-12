@@ -337,13 +337,14 @@ void cls_801192AC::fn_80118E20() {
     field_0x8++;
 }
 
-// FIXME(shotgun): 79.07 %, missing/extra; behaviour drift. (stand-in: the original is std::find_if with a by-value
+// FIXME(shotgun): 82.26 %, missing/extra; behaviour drift. (stand-in: the original is std::find_if with a by-value
 // predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
+    s32 serial = actor->mSerial;
     ActorBase_804A5770** it = mBegin;
     ActorBase_804A5770** end = mEnd;
-    while (it != end && (*it)->mSerial != actor->mSerial) {
+    while (it != end && (*it)->mSerial != serial) {
         it++;
     }
     if (it != end) {
