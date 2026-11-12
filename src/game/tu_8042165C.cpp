@@ -880,14 +880,18 @@ void cls_804B146C::fn_80423DF0(s32 player) {
     }
     if (item != field_0x148[player] || (lbl_8053AED0->field_0x255 & bit)) {
         field_0x148[player] = item;
+        const u64* show = &lbl_8048E300[0xB4 + player * 12];
+        const u64* hide = &lbl_8048E300[0xE4 + player * 12];
         for (s32 i = 0; i < 12; i++) {
             if (i == item) {
-                field_0x4->search(lbl_8048E300[0xB4 + player * 12 + i])->show();
-                field_0x4->search(lbl_8048E300[0xE4 + player * 12 + i])->show();
+                field_0x4->search(*show)->show();
+                field_0x4->search(*hide)->show();
             } else {
-                field_0x4->search(lbl_8048E300[0xB4 + player * 12 + i])->hide();
-                field_0x4->search(lbl_8048E300[0xE4 + player * 12 + i])->hide();
+                field_0x4->search(*show)->hide();
+                field_0x4->search(*hide)->hide();
             }
+            show++;
+            hide++;
         }
         if (fn_8023725C(player) == 2) {
             for (s32 i = 0; i < 3; i++) {
