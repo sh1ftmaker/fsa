@@ -133,6 +133,7 @@ bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
 bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e, s32 player, bool g, u8 h, u8 i);
 
 // 0x8030905C
+// FIXME: 84.65 %, missing/extra + reloc-name; behaviour drift.
 cls_804AA8B8::cls_804AA8B8() {
     for (s32 p = 0; p < 4; p++) {
         lbl_80504A18[p] = 0;
@@ -965,7 +966,7 @@ void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set)
 // Draws one GBA sprite word on the map: the "SOB " frame of its 10-bit id at
 // its (sign-extended 9 / 8-bit) x, y, tinted per player and scaled by the
 // player's lbl_8053ACFC count (or lbl_80506DB8's flag).
-// FIXME(shotgun): 87.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.59 %, regalloc-only + reloc-name; behaviour clean.
 // (control flow of the early return, the 16 tint stores)
 void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 mask, u8 flag) {
     SpriteParams_801F5AE0 params;
@@ -1044,7 +1045,7 @@ static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 79.92 %, missing/extra; behaviour drift.
+// FIXME: 81.15 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     s32 mask = record->mMask;
