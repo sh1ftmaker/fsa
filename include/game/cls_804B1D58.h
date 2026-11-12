@@ -86,7 +86,7 @@ public:
     /* 0x108 */ f32 field_0x108[3];
     /* 0x114 */ f32 field_0x114;
     /* 0x118 */ f32 field_0x118;
-    /* 0x11C */ u8 field_0x11c[0x120 - 0x11C];
+    /* 0x11C */ s32 field_0x11c; // fn_8044D894: the players' fn_80236100 sum
     /* 0x120 */ s32 field_0x120;
     /* 0x124 */ s32 field_0x124;
     /* 0x128 */ s32 field_0x128;

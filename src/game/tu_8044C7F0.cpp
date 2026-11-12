@@ -4,6 +4,10 @@
 #include "game/GameState.h"
 #include "game/EmitterDelete.h"
 #include "game/Unk_8045A080.h"
+#include "game/GameView.h"
+#include "game/Player.h"
+#include "game/Message.h"
+#include "game/tu_803B8C74.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
@@ -31,8 +35,24 @@ static const u64 lbl_80491230[4] = {'Pjb01', 'Pjg01', 'Pjr01', 'Pjp01'};
 static const u64 lbl_80491250[4] = {'Pjb03', 'Pjg03', 'Pjr03', 'Pjp03'};
 static const u64 lbl_80491270[15] = {'Ndata01', 'Pswb01', 'Ndata09', 'Ndata07', 'Ndata04', 'Ndata06', 'Ndatal01', 'Psw02', 'Pfab01', 'Ndata08', 'Ndata03', 'Ndataj02', 'Ndataj01', 'Ndatat01', 'Ndata02'};
 
+// The rupee digit textures (.data; the strings sit in .rodata after the tag tables).
+static const char* lbl_804B1D30[10] = {
+    "kk_rupyNum_00.bti", "kk_rupyNum_01.bti", "kk_rupyNum_02.bti", "kk_rupyNum_03.bti", "kk_rupyNum_04.bti",
+    "kk_rupyNum_05.bti", "kk_rupyNum_06.bti", "kk_rupyNum_07.bti", "kk_rupyNum_08.bti", "kk_rupyNum_09.bti",
+};
+
+// Effect ids of the first list's emitters (.rodata 0x804913B0..0x80491400).
+static const u16 lbl_804913B0[8] = {0xDC, 0xE6, 0xE0, 0xDE, 0xE4, 0xE2, 0xE8, 0};
+static const u16 lbl_804913C0[8] = {0xDD, 0xE7, 0xE1, 0xDF, 0xE5, 0xE3, 0xE9, 0};
+static const u16 lbl_804913D0[8] = {0x1E8, 0x1F7, 0x1EE, 0x1EB, 0x1F4, 0x1F1, 0x1FA, 0};
+static const u16 lbl_804913E0[8] = {0x1E9, 0x1F8, 0x1EF, 0x1EC, 0x1F5, 0x1F2, 0x1FB, 0};
+static const u16 lbl_804913F0[8] = {0x1EA, 0x1F9, 0x1F0, 0x1ED, 0x1F6, 0x1F3, 0x1FC, 0};
+
 // Effect ids of the second list's emitters (.sdata2, before the unit's float literals).
 static const u16 lbl_80543DD8[4] = {0xD8, 0xD9, 0xDB, 0xDA};
+static const u16 lbl_80543DE0[4] = {0x1DC, 0x1DF, 0x1E5, 0x1E2};
+static const u16 lbl_80543DE8[4] = {0x1DD, 0x1E0, 0x1E6, 0x1E3};
+static const u16 lbl_80543DF0[4] = {0x1DE, 0x1E1, 0x1E7, 0x1E4};
 
 void fn_80453884(J2DWindow* window, const JUtility::TColor* colors) {
     window->setContentsColor(colors[0], colors[1], colors[2], colors[3]);
@@ -331,6 +351,293 @@ s32 fn_8044F664() {
     return 9;
 }
 
+// Refreshes the screen: recolours the three tabs, shows the rupee count, the players' rows and
+// emitters, the second list's rows, and the total (field_0x11c) or the digits of what is left.
+void cls_804B1D58::fn_8044D894() {
+    for (s32 i = 0; i < 3; i++) {
+        if (i == field_0xf8) {
+            static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
+            static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
+            cls_80453830 colors = field_0x164[0];
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            mScreen->search(lbl_80490FE0[i])->setAlpha(255);
+        } else {
+            static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
+            static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
+            cls_80453830 colors = field_0x164[1];
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            mScreen->search(lbl_80490FE0[i])->setAlpha(200);
+        }
+    }
+
+    s32 count = 0;
+    for (s32 i = 0; i < 8; i++) {
+        bool set = getGameView_802D6A9C()->field_0x131f8 & (u8)(1 << i);
+        if (set) {
+            count++;
+        }
+    }
+
+    if (lbl_8050EC80.getCurrentFile().field_0x67 & 1) {
+        field_0xc[8]->mPane->show();
+        field_0xc[9]->mPane->show();
+        u8 rupees = lbl_80529DEC.field_0x24f;
+        s32 ones = rupees % 10;
+        s32 tens = rupees / 10;
+        const ResTIMG* image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1D30[tens]));
+        static_cast<J2DPicture*>(mScreen->search('Pfsk01'))->changeTexture(image, 0);
+        static_cast<J2DPicture*>(mScreen->search('Pfs01'))->changeTexture(image, 0);
+        image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1D30[ones]));
+        static_cast<J2DPicture*>(mScreen->search('Pfsk02'))->changeTexture(image, 0);
+        static_cast<J2DPicture*>(mScreen->search('Pfs02'))->changeTexture(image, 0);
+    } else {
+        field_0xc[8]->mPane->hide();
+        field_0xc[9]->mPane->hide();
+    }
+
+    fn_8044C7F0();
+
+    s32 row = -1;
+    if (lbl_80529DEC.field_0x118 < 7 && lbl_80529DEC.field_0x11c == 3) {
+        row = lbl_80529DEC.field_0x118;
+    } else {
+        s16 stage = lbl_8050DB0C.field_0x4c[(0x2EC - 0x4C) / 2];
+        if (stage > 0 && stage <= 7) {
+            row = stage - 1;
+        }
+    }
+    if (row >= 0) {
+        if (field_0xa4[0] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_804911D8[row])->getWidth() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[row])->getBounds()->i.x),
+                mScreen->search(lbl_804911D8[row])->getHeight() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[row])->getBounds()->i.y),
+                0.0f);
+            field_0xa4[0] = spawnEmitter_8013CC50(0, &pos, lbl_804913D0[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xa4[0]->setStatus(0x40);
+            field_0xa4[0]->setStatus(1);
+            field_0xa4[0]->setStatus(2);
+            field_0xa4[0]->setStatus(4);
+        }
+        if (field_0xa4[1] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_804911D8[row])->getWidth() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[row])->getBounds()->i.x),
+                mScreen->search(lbl_804911D8[row])->getHeight() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[row])->getBounds()->i.y),
+                0.0f);
+            field_0xa4[1] = spawnEmitter_8013CC50(0, &pos, lbl_804913E0[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xa4[1]->setStatus(0x40);
+            field_0xa4[1]->setStatus(1);
+            field_0xa4[1]->setStatus(2);
+            field_0xa4[1]->setStatus(4);
+        }
+        if (field_0xa4[2] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_804911D8[row])->getWidth() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[row])->getBounds()->i.x),
+                mScreen->search(lbl_804911D8[row])->getHeight() / 2.0f +
+                    (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[row])->getBounds()->i.y),
+                0.0f);
+            field_0xa4[2] = spawnEmitter_8013CC50(0, &pos, lbl_804913F0[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xa4[2]->setStatus(0x40);
+            field_0xa4[2]->setStatus(1);
+            field_0xa4[2]->setStatus(2);
+            field_0xa4[2]->setStatus(4);
+        }
+    }
+
+    row = -1;
+    s32 mode = lbl_80529DEC.field_0x118;
+    if (mode == 3 && lbl_80529DEC.field_0x11c == 0) {
+        row = 0;
+    } else if (mode == 4 && lbl_80529DEC.field_0x11c == 1) {
+        row = 1;
+    } else if (mode == 5 && lbl_80529DEC.field_0x11c == 0) {
+        row = 2;
+    } else if (mode == 6 && lbl_80529DEC.field_0x11c == 0) {
+        row = 3;
+    } else if (lbl_8050DB0C.field_0x4c[(0x2EC - 0x4C) / 2] >= 8) {
+        row = lbl_8050DB0C.field_0x4c[(0x2EC - 0x4C) / 2] - 8;
+    }
+    if (row >= 0) {
+        if (field_0xc0[0] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_80491230[row])->getWidth() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.x +
+                     (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[row])->getBounds()->i.x)),
+                mScreen->search(lbl_80491230[row])->getHeight() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.y +
+                     (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[row])->getBounds()->i.y)),
+                0.0f);
+            field_0xc0[0] = spawnEmitter_8013CC50(0, &pos, lbl_80543DE0[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xc0[0]->setStatus(0x40);
+            field_0xc0[0]->setStatus(1);
+            field_0xc0[0]->setStatus(2);
+            field_0xc0[0]->setStatus(4);
+        }
+        if (field_0xc0[1] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_80491230[row])->getWidth() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.x +
+                     (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[row])->getBounds()->i.x)),
+                mScreen->search(lbl_80491230[row])->getHeight() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.y +
+                     (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[row])->getBounds()->i.y)),
+                0.0f);
+            field_0xc0[1] = spawnEmitter_8013CC50(0, &pos, lbl_80543DE8[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xc0[1]->setStatus(0x40);
+            field_0xc0[1]->setStatus(1);
+            field_0xc0[1]->setStatus(2);
+            field_0xc0[1]->setStatus(4);
+        }
+        if (field_0xc0[2] == NULL) {
+            JGeometry::TVec3f pos(
+                mScreen->search(lbl_80491230[row])->getWidth() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.x +
+                     (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[row])->getBounds()->i.x)),
+                mScreen->search(lbl_80491230[row])->getHeight() / 2.0f +
+                    (mScreen->search(lbl_80491230[row])->getBounds()->i.y +
+                     (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[row])->getBounds()->i.y)),
+                0.0f);
+            field_0xc0[2] = spawnEmitter_8013CC50(0, &pos, lbl_80543DF0[row], 0, 0, NULL, NULL, true, 1.0f);
+            field_0xc0[2]->setStatus(0x40);
+            field_0xc0[2]->setStatus(1);
+            field_0xc0[2]->setStatus(2);
+            field_0xc0[2]->setStatus(4);
+        }
+    }
+
+    for (s32 i = 0; i < 7; i++) {
+        if (i < count) {
+            mScreen->search(lbl_80491130[i])->hide();
+            mScreen->search(lbl_804911D8[i])->hide();
+            if (field_0x6c[i] == NULL) {
+                JGeometry::TVec3f pos(
+                    mScreen->search(lbl_804911D8[i])->getWidth() / 2.0f +
+                        (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[i])->getBounds()->i.x),
+                    mScreen->search(lbl_804911D8[i])->getHeight() / 2.0f +
+                        (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[i])->getBounds()->i.y),
+                    0.0f);
+                field_0x6c[i] = spawnEmitter_8013CC50(0, &pos, lbl_804913B0[i], 0, 0, NULL, NULL, true, 1.0f);
+            }
+            if (field_0x88[i] == NULL) {
+                JGeometry::TVec3f pos(
+                    mScreen->search(lbl_804911D8[i])->getWidth() / 2.0f +
+                        (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[i])->getBounds()->i.x),
+                    mScreen->search(lbl_804911D8[i])->getHeight() / 2.0f +
+                        (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[i])->getBounds()->i.y),
+                    0.0f);
+                field_0x88[i] = spawnEmitter_8013CC50(0, &pos, lbl_804913C0[i], 0, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            mScreen->search(lbl_80491130[i])->show();
+            mScreen->search(lbl_804911D8[i])->show();
+        }
+    }
+
+    for (s32 i = 0; i < 4; i++) {
+        bool set = getGameView_802D6A9C()->field_0x131f7 & (u8)(1 << i);
+        if (set) {
+            mScreen->search(lbl_80491210[i])->show();
+            if (field_0xb0[i] == NULL) {
+                JGeometry::TVec3f pos(
+                    mScreen->search(lbl_80491230[i])->getWidth() / 2.0f +
+                        (mScreen->search(lbl_80491230[i])->getBounds()->i.x +
+                         (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[i])->getBounds()->i.x)),
+                    mScreen->search(lbl_80491230[i])->getHeight() / 2.0f +
+                        (mScreen->search(lbl_80491230[i])->getBounds()->i.y +
+                         (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[i])->getBounds()->i.y)),
+                    0.0f);
+                field_0xb0[i] = spawnEmitter_8013CC50(0, &pos, lbl_80543DD8[i], 0, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            mScreen->search(lbl_80491210[i])->hide();
+        }
+    }
+
+    field_0x11c = 0;
+    for (s32 i = 0; i < gGameRoot_8053AAF8->fn_80138A30(); i++) {
+        field_0x11c += fn_80236100(i);
+    }
+    if (fn_80237060(0) == 2) {
+        s32 value = 0;
+        s32 div = 10000;
+        bool leading = true;
+        for (s32 i = 0; i < 6; i++) {
+            mScreen->search(lbl_80491070[i])->hide();
+            mScreen->search(lbl_804910A0[i])->hide();
+        }
+        for (s32 i = 0; i < 5; i++) {
+            s32 digit = value / div;
+            value %= div;
+            div /= 10;
+            if (!leading || digit != 0 || i >= 4) {
+                if (leading) {
+                    leading = false;
+                }
+                const ResTIMG* image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1D30[digit]));
+                static_cast<J2DPicture*>(mScreen->search(lbl_80491070[i]))->changeTexture(image, 0);
+                static_cast<J2DPicture*>(mScreen->search(lbl_804910A0[i]))->changeTexture(image, 0);
+                mScreen->search(lbl_80491070[i])->show();
+                mScreen->search(lbl_804910A0[i])->show();
+            }
+        }
+        field_0xc[6]->mPane->show();
+        field_0xc[10]->mPane->hide();
+        field_0x12c = mAnm_0xf4->getFrameMax();
+        mAnm_0xf4->setFrame(field_0x12c);
+        field_0x13e = 1;
+        mAnm_0xd0->setFrame(1.0f);
+        mScreen->search('Pswbli')->setAlpha(30);
+    } else {
+        s32 value = 2000 - field_0x11c;
+        if (value < 0) {
+            value = 0;
+        }
+        s32 div = 10000;
+        bool leading = true;
+        for (s32 i = 0; i < 6; i++) {
+            mScreen->search(lbl_80491070[i])->hide();
+            mScreen->search(lbl_804910A0[i])->hide();
+        }
+        for (s32 i = 0; i < 5; i++) {
+            s32 digit = value / div;
+            value %= div;
+            div /= 10;
+            if (!leading || digit != 0 || i >= 4) {
+                if (leading) {
+                    leading = false;
+                }
+                const ResTIMG* image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1D30[digit]));
+                static_cast<J2DPicture*>(mScreen->search(lbl_80491070[i]))->changeTexture(image, 0);
+                static_cast<J2DPicture*>(mScreen->search(lbl_804910A0[i]))->changeTexture(image, 0);
+                mScreen->search(lbl_80491070[i])->show();
+                mScreen->search(lbl_804910A0[i])->show();
+            }
+        }
+        field_0xc[6]->mPane->hide();
+        if (fn_802DE814()) {
+            field_0xc[10]->mPane->hide();
+            field_0x12c = 0;
+        } else {
+            field_0xc[10]->mPane->show();
+            field_0x12c = (f32)field_0x11c * mAnm_0xf4->getFrameMax() / 2000.0f;
+        }
+        mAnm_0xf4->setFrame(field_0x12c);
+        field_0x13e = 1;
+        mAnm_0xd0->setFrame(0.0f);
+        mScreen->search('Pswbli')->setAlpha(0);
+    }
+
+    field_0x124 = 0;
+    for (s32 i = 0; i < 4; i++) {
+        field_0xd8[i]->setFrame(field_0x124);
+    }
+    mScreen->search('Pcul01')->show();
+}
+
 // Selects row `arg` (0-3) of the second list; like fn_8044CB08, with one emitter (field_0xb0).
 // FIXME(shotgun): 67 %, missing/extra + reloc-name
 void cls_804B1D58::fn_8044D298(int arg) {
@@ -384,8 +691,6 @@ u8 cls_804B1D58::fn_8044D290() {
 // emitters (stopped at once: the status bits 1, 2 and 4).
 // FIXME(shotgun): 70 %, missing/extra + reloc-name
 void cls_804B1D58::fn_8044CB08(int arg) {
-    static const u16 ids0[8] = {0xDC, 0xE6, 0xE0, 0xDE, 0xE4, 0xE2, 0xE8, 0};
-    static const u16 ids1[8] = {0xDD, 0xE7, 0xE1, 0xDF, 0xE5, 0xE3, 0xE9, 0};
     if (arg >= 0 && arg <= 6) {
         gGameRoot_8053AAF8->fn_80134D20(false);
         field_0x140 = 1;
@@ -420,7 +725,7 @@ void cls_804B1D58::fn_8044CB08(int arg) {
             f32 x0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.x;
             f32 x1 = mScreen->search('Ndata06')->getBounds()->i.x;
             JGeometry::TVec3f pos(0.5f * w + (x1 + x0), 0.5f * h + (y1 + y0), 0.0f);
-            field_0x6c[field_0x138] = spawnEmitter_8013CC50(0, &pos, ids0[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
+            field_0x6c[field_0x138] = spawnEmitter_8013CC50(0, &pos, lbl_804913B0[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
         }
         if (field_0x88[field_0x138] == NULL) {
             f32 h = mScreen->search(lbl_804911D8[field_0x138])->mBounds.f.y -
@@ -432,7 +737,7 @@ void cls_804B1D58::fn_8044CB08(int arg) {
             f32 x0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.x;
             f32 x1 = mScreen->search('Ndata06')->getBounds()->i.x;
             JGeometry::TVec3f pos(0.5f * w + (x1 + x0), 0.5f * h + (y1 + y0), 0.0f);
-            field_0x88[field_0x138] = spawnEmitter_8013CC50(0, &pos, ids1[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
+            field_0x88[field_0x138] = spawnEmitter_8013CC50(0, &pos, lbl_804913C0[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x6c[field_0x138]->setStatus(1);
         field_0x6c[field_0x138]->setStatus(2);
