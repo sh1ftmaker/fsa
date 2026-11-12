@@ -34,7 +34,8 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 70.9 %, missing/extra: the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
+// FIXME(shotgun): 70.87 %, missing/extra; behaviour drift.
+// the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
     const u16* res = (const u16*)field_0x234;
@@ -84,6 +85,7 @@ void SeesawLift_804AD348::init() {
     }
 }
 
+// FIXME: 90.79 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling differs: original hoists the field_0x4 load above the layer call
 s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     if (fn_8022D75C(player)) {
@@ -132,6 +134,7 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     return 0;
 }
 
+// FIXME: 90.10 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling of the player loop differs; literal names differ
 s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     if (fn_8022D75C(player)) {
@@ -177,7 +180,8 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 88.6 %, missing/extra: the branches on field_0x240
+// FIXME(shotgun): 92.54 %, missing/extra + reloc-name; behaviour drift.
+// the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
     bool moved = false;
@@ -238,6 +242,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
+// FIXME: 76.71 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
     rel.x -= mPos.x;
@@ -275,7 +280,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 88.9 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.98 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -370,7 +375,8 @@ void SeesawLift_804AD348::update() {
     (this->*lbl_804AD30C[(field_0x90 >> 7) & 0x1F])();
 }
 
-// FIXME(shotgun): 68.8 %, missing/extra: the Euler matrix is the plain RotMatrix.h product with table sin/cos; written by hand here; the original also scales every element by a float (lbl_80542878) that is not modelled
+// FIXME(shotgun): 68.81 %, missing/extra + reloc-name; behaviour drift.
+// the Euler matrix is the plain RotMatrix.h product with table sin/cos; written by hand here; the original also scales every element by a float (lbl_80542878) that is not modelled
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -428,7 +434,7 @@ void SeesawLift_804AD348::draw() {
     }
 }
 
-// FIXME(shotgun): 79.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.80 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803597EC() {
     field_0x240 = 0.0f;
     field_0x24e = 0;
@@ -533,7 +539,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
 }
 
-// FIXME(shotgun): 82.5 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.52 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_80358F98() {
     if (field_0x245) {
         GameRootSub20_801902C0* sub = fn_801902C0();
@@ -663,7 +669,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     }
 }
 
-// FIXME(shotgun): 78.6 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.55 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 > 0) {
         field_0x250--;
