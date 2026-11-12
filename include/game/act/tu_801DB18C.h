@@ -39,7 +39,7 @@ public:
     void fn_801DB9CC();
 
     /* 0x2A8 */ s32 mTargetPlayer;  // fn_801D05F8's result (-1: none)
-    /* 0x2AC */ s32 field_0x2ac;    // cleared when state 1 starts
+    /* 0x2AC */ u32 field_0x2ac;    // cleared when state 1 starts; an unsigned counter
     /* 0x2B0 */ f32 mSearchRange;   // the range of fn_801D05F8
     /* 0x2B4 */ f32 field_0x2b4; // the drift velocity (damped)
     /* 0x2B8 */ f32 field_0x2b8;

@@ -147,6 +147,8 @@ void cls_804A4EE8::fn_801DB9CC() {
     }
 }
 
+// Not auto-inlined: vfunc_0x90 calls fn_801DB950 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void cls_804A4EE8::fn_801DB950(s32 state) {
     // A one-case switch: MWCC's cmpwi/beq/b shape for state 1 is what matches.
     switch (state) {
@@ -161,6 +163,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
     mStateTimer = 0;
     mState = state;
 }
+#pragma auto_inline reset
 
 // FIXME(shotgun): 84.65 %, missing/extra + reloc-name
 void cls_804A4EE8::fn_801DB6C8() {
