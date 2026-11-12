@@ -18,15 +18,15 @@
 inline void cls_804A7AE0::bakeTiles() {
     if (!field_0x24c) {
         field_0x24c = 1;
-        JGeometry::TVec3f p = mPos;
-        p.x += mBox.i.x;
-        p.y += mBox.i.y;
-        p.x += 8.0f;
-        p.y += 8.0f;
-        p.z = 0.0f;
-        f32 baseY = p.y;
+        JGeometry::TVec3f origin = mPos;
+        origin.x += mBox.i.x;
+        origin.y += mBox.i.y;
+        origin.x += 8.0f;
+        origin.y += 8.0f;
+        origin.z = 0.0f;
+        JGeometry::TVec3f p = origin;
         for (s32 row = 0; row < 6; row++) {
-            p.y = baseY;
+            p.y = origin.y;
             for (s32 col = 0; col < 6; col++) {
                 gBgRewrite_8053AC98->fn_802A381C(&p, 0, mTiles[row][col]);
                 gBgRewrite_8053AC98->fn_802A381C(&p, 1, 0);
@@ -1646,19 +1646,22 @@ void cls_804A7AE0::draw() {
 }
 
 // FIXME(shotgun): 84.68 %, missing/extra + reloc-name; behaviour drift.
-// early-out branch layout, 10 instructions fewer
+// float register allocation in the normalize and serial-loop counter registers differ
 void cls_804A7AE0::fn_802961AC() {
     s32 serial = fn_801F2718('SLR3');
     if (serial < 0) {
         return;
     }
     ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-    if (other == NULL || other->field_0x94 != 5) {
+    if (other == NULL) {
         return;
     }
-    field_0x2d0.sub(mPos, other->mPos);
+    if (other->field_0x94 != 5) {
+        return;
+    }
+    field_0x2d0 = mPos - other->mPos;
     f32 sq = field_0x2d0.squared();
-    if (sq > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+    if (!(sq <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         field_0x2d0.scale(JGeometry::TUtil<f32>::inv_sqrt(sq));
     }
     field_0x3c = field_0x2d0;
