@@ -231,6 +231,7 @@ void fn_80308D0C() {
 // Fills the header of the player's record: player, size, layer, mode and
 // link flags, then the mode's status bits in bytes 4-7.
 // 0x803085A4
+// FIXME: 90.87 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_803085A4(s32 player) {
     s32 layer = fn_8022EA0C(player);
     cls_804AA858Sub11C* record = &lbl_80506DE8[player];
@@ -371,7 +372,7 @@ void cls_804AA8B8::fn_803085A4(s32 player) {
 // Builds the player's first GBA record: the kind, the four marks and the hidden sprites,
 // then the checksum.
 // 0x8030801C
-// FIXME: 64.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 64.80 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_8030801C(s32 player) {
     cls_804AA858Sub11C* record;
     if (lbl_8053AAF0->mState >= 4) {
@@ -467,7 +468,7 @@ static inline u32 swapBytes(u32 v) {
 // and its checksum. Still differs: the original has the checksum loop twice (branch on the
 // queue head entry's mUsed) and different register allocation.
 // 0x80307B58
-// FIXME: 71.04 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 71.06 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_80307B58(s32 player, bool flag) {
     if (flag) {
         lbl_80506DE8[player].mKind = 10;
@@ -686,6 +687,7 @@ s32 fn_803074A4(s32 kind, s32 id) {
 // words sorted by kind, the layer's mask word and the checksum.
 // Still differs: the original has the checksum loop twice (branch on the queue head entry's mUsed).
 // 0x80306A94
+// FIXME: 85.19 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_80306A94(s32 player) {
     if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) {
         lbl_80506DE8[player].mKind = 5;
@@ -981,6 +983,7 @@ void fn_803064A8(s32 unused, s32 player, s32 max, s32 start) {
 // transfer queue (file words, kinds 6-8) or the message words (kinds 10-12).
 // Still differs: the original has each checksum loop twice (branch on the queue head entry's mUsed).
 // 0x80304FB0
+// FIXME: 76.04 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AA8B8::fn_80304FB0() {
     GbaClient_803007D0* client = lbl_804DB798;
     lbl_8053AD08 = 0;
@@ -1445,6 +1448,7 @@ bool fn_803049F0(s32 layer, s32 index) {
 // files of the GBA program.
 // Prologue only: the zero for the global resets gets its own register instead of the loop counter's.
 // 0x80303CE4
+// FIXME: 98.46 %, missing/extra + reloc-name; behaviour clean.
 void fn_80303CE4(s32 player) {
     lbl_80506D38[player] = 0;
     lbl_8053ACE0[player] = 0;
