@@ -69,7 +69,7 @@ extern const s16* lbl_80539EF8[2];
 // The scenario keys of the demo (rodata 0x80464550).
 extern const s32 lbl_80464550[];
 
-// FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 82.09 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::init() {
     cls_8049D140::init();
     field_0x234 = field_0x90 & 0xFF;
@@ -166,13 +166,13 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
-// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x;
-    box.i.y = mBox.i.y + mPos.y;
-    box.f.x = mBox.f.x + mPos.x;
-    box.f.y = mBox.f.y + mPos.y;
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
     if (field_0x231 != 0) {
         fn_80239914(&box, field_0x4, mSerial);
     }
@@ -195,9 +195,6 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         }
         break;
     case 0x2A:
-    case 0x2E:
-    case 0x32:
-    case 0x36:
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_803865B8(0)) {
             fn_80388EEC(0);
@@ -212,6 +209,20 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
             mAnim0.fn_801D1F14(0.0f);
         }
         break;
+    case 0x2E:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 0x32:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
     case 0x35:
         if (fn_801CD950(&mPos.z, mSpawnPos.z, 0.3f) == 0 && mAnim0.mAnim == 0x13) {
             mAnim0.startAnim_801D22DC(0x17, 0, false);
@@ -220,6 +231,13 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         if (mAnim0.fn_801D208C() && mAnim0.mAnim == 0x17) {
             mAnim0.startAnim_801D22DC(0x19, 0, false);
             mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 0x36:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
         }
         break;
     case 0x37:
@@ -284,6 +302,8 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         }
         break;
     }
+    case 0x3E:
+        break;
     }
 }
 
@@ -388,7 +408,7 @@ void PrincessZeldaDemo_8049D208::fn_80110454() {
 }
 
 // The camera for the demo states 0x26-0x3C (the second set of scenes).
-// FIXME(shotgun): 91.59 %, scheduling+regalloc + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.52 %, regalloc-only + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_80110210() {
     switch (field_0x238) {
     case 0x26:
@@ -412,9 +432,6 @@ void PrincessZeldaDemo_8049D208::fn_80110210() {
         camBox(mPos.x, y - field_0x274, field_0x274 + y);
         break;
     }
-    case 0x2F:
-        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
-        break;
     case 0x30:
     case 0x31:
     case 0x32:
@@ -444,6 +461,9 @@ void PrincessZeldaDemo_8049D208::fn_80110210() {
         camBox(p.x, p.y - field_0x274, p.y + field_0x274);
         break;
     }
+    case 0x2F:
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
+        break;
     }
 }
 
@@ -462,10 +482,7 @@ void PrincessZeldaDemo_8049D208::draw() {
 
 // Starts the demo scene for the GameView scenario `key` (fn_8011921C()'s field_0x8): maps it to the
 // scene's first state, per demo variant (field_0x234) and chapter (field_0x4).
-// FIXME(shotgun): 98 %, missing/extra (wrapped: compiled, it inlines fn_8010F478 (the original calls it out of line) and
-// a not-inlined pragma would stop init from inlining it, dropping init from 98.6 % to 82 %)
-#ifdef NONMATCHING
-void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
+void PrincessZeldaDemo_8049D208::vfunc_0x54() {
     s32 key = fn_8011921C()->field_0x8;
     switch (field_0x234) {
     case 0:
@@ -549,6 +566,29 @@ void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
         break;
     case 2:
         switch (fn_8011921C()->field_0x4) {
+        case 0xF:
+            if (key == lbl_80464550[38]) {
+                fn_8010F478(0x26);
+            } else if (key == lbl_80464550[39]) {
+                fn_8010F478(0x27);
+            } else if (key == lbl_80464550[40]) {
+                fn_8010F478(0x28);
+            } else if (key == lbl_80464550[41]) {
+                fn_8010F478(0x29);
+            } else if (key == lbl_80464550[42]) {
+                fn_8010F478(0x2A);
+            } else if (key == lbl_80464550[43]) {
+                fn_8010F478(0x2B);
+            } else if (key == lbl_80464550[44]) {
+                fn_8010F478(0x2C);
+            } else if (key == lbl_80464550[45]) {
+                fn_8010F478(0x2D);
+            } else if (key == lbl_80464550[46]) {
+                fn_8010F478(0x2E);
+            } else if (key == lbl_80464550[47]) {
+                fn_8010F478(0x2F);
+            }
+            break;
         case 0xD:
             if (key == lbl_80464550[48]) {
                 fn_8010F478(0x30);
@@ -578,34 +618,10 @@ void PrincessZeldaDemo_8049D208::fn_8010FA8C() {
                 fn_8010F478(0x3D);
             }
             break;
-        case 0xF:
-            if (key == lbl_80464550[38]) {
-                fn_8010F478(0x26);
-            } else if (key == lbl_80464550[39]) {
-                fn_8010F478(0x27);
-            } else if (key == lbl_80464550[40]) {
-                fn_8010F478(0x28);
-            } else if (key == lbl_80464550[41]) {
-                fn_8010F478(0x29);
-            } else if (key == lbl_80464550[42]) {
-                fn_8010F478(0x2A);
-            } else if (key == lbl_80464550[43]) {
-                fn_8010F478(0x2B);
-            } else if (key == lbl_80464550[44]) {
-                fn_8010F478(0x2C);
-            } else if (key == lbl_80464550[45]) {
-                fn_8010F478(0x2D);
-            } else if (key == lbl_80464550[46]) {
-                fn_8010F478(0x2E);
-            } else if (key == lbl_80464550[47]) {
-                fn_8010F478(0x2F);
-            }
-            break;
         }
         break;
     }
 }
-#endif
 
 s32 PrincessZeldaDemo_8049D208::vfunc_0x58() {
     return field_0x238;
@@ -640,7 +656,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
 // (docs/INLINING.md, pragma rule 1); fn_8010F4DC calls fn_8010F668 out of line twice.
 #pragma auto_inline off
 // Draws the maiden's sprite (frame `arg` of the current animation): bobbing in z while state 0x2F.
-// FIXME(shotgun): 71.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.64 %, scheduling+regalloc + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -650,7 +666,17 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
         if (field_0x260[1] >= 0x10000) {
             field_0x260[1] -= 0x10000;
         }
-        PSMTXIdentity(mtx);
+        mtx[0][0] = 1.0f;
+        mtx[0][1] = 0.0f;
+        mtx[0][2] = 0.0f;
+        mtx[0][3] = 0.0f;
+        mtx[1][0] = 0.0f;
+        mtx[1][1] = 1.0f;
+        mtx[1][2] = 0.0f;
+        mtx[1][3] = 0.0f;
+        mtx[2][0] = 0.0f;
+        mtx[2][1] = 0.0f;
+        mtx[2][2] = 1.0f;
         mtx[2][3] = 2.0f * JMath::sincosTable_.sinShort(field_0x260[1]);
         params.mMtx = mtx;
     }
@@ -681,7 +707,7 @@ void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
 }
 
 // Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
-// FIXME(shotgun): 85.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.53 %, scheduling + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
     field_0x268[0] += 0.01f;
     Mtx mtx;
@@ -709,7 +735,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
         crystal.mPos.x = scale;
         crystal.mPos.y = scale;
         crystal.mPos.z = scale;
-        PSMTXCopy(mtx, crystal.mMtx);
+        JMath::gekko_ps_copy12(crystal.mMtx, mtx);
         crystal.field_0x48 = -1.0f;
         crystal.field_0x4c = frame;
         crystal.field_0x54 = 0;
@@ -719,6 +745,8 @@ void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
 
 #pragma auto_inline reset
 
+// Not auto-inlined: vfunc_0x54 calls fn_8010F478 out of line in the original.
+#pragma auto_inline off
 // FIXME(shotgun): 94.40 %, missing/extra + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     switch (field_0x234) {
@@ -732,10 +760,11 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     }
     field_0x238 = arg;
 }
+#pragma auto_inline reset
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
-// FIXME(shotgun): 92.37 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.11 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     switch (arg) {
     case 0x26:
@@ -759,8 +788,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x2A: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D4, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D4, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -780,8 +808,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x2E: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D3, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D3, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -807,8 +834,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     case 0x32: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         fn_8022FD8C(mSerial);
-        JGeometry::TVec3f at(0.0f, 0.0f, 0.0f);
-        fn_8038BD08(0, 0x2D1, field_0x4, at, 0x22);
+        fn_8038BD08(0, 0x2D1, field_0x4, JGeometry::TVec3f(0.0f, 0.0f, 0.0f), 0x22);
         fn_8011921C()->fn_80118454();
         break;
     }
@@ -819,8 +845,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         break;
     case 0x36: {
         fn_8022FE80(0, field_0x4, mSerial, true, false);
-        JGeometry::TVec3f at(0.0f, -10.0f, 0.0f);
-        if (fn_8038BD08(0, 0x2D5, field_0x4, at, 0x4002)) {
+        if (fn_8038BD08(0, 0x2D5, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
             fn_8011921C()->fn_80118454();
         }
         break;
@@ -857,6 +882,8 @@ void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
         field_0x231 = 1;
         getGameView_802D6A9C()->fn_802D8050(field_0x250, true, 0xFF);
         mPos.x = 64.0f + mSpawnPos.x;
+        break;
+    default:
         break;
     }
 }
