@@ -13,13 +13,15 @@ u8 ShadowLink2_804A43E8::fn_801C976C() {
     u8 start = field_0x358.fn_80214244()->field_0x3;
     field_0x358.fn_80214244()->fn_800FD818(1);
     u8 next = field_0x358.fn_80214244()->field_0x3;
-    if (start < field_0x358.fn_80214244()->field_0x2) {
-        field_0x358.fn_80214244()->field_0x3 = start;
+    cls_800FE3EC* a = field_0x358.fn_80214244();
+    if (start < a->field_0x2) {
+        a->field_0x3 = start;
     }
     field_0x358.fn_80214244()->fn_800FD818(-1);
     u8 prev = field_0x358.fn_80214244()->field_0x3;
-    if (start < field_0x358.fn_80214244()->field_0x2) {
-        field_0x358.fn_80214244()->field_0x3 = start;
+    cls_800FE3EC* b = field_0x358.fn_80214244();
+    if (start < b->field_0x2) {
+        b->field_0x3 = start;
     }
     u8 opt[2];
     opt[1] = prev;
