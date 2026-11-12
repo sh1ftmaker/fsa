@@ -8,18 +8,20 @@
 #include "JSystem/JGeometry.h"
 #include "JSystem/JMath/JMath.h"
 
-// FIXME(shotgun): 71 %, missing/extra + reloc-name
+// FIXME(shotgun): 73.31 %, missing/extra; behaviour drift.
 u8 ShadowLink2_804A43E8::fn_801C976C() {
     u8 start = field_0x358.fn_80214244()->field_0x3;
     field_0x358.fn_80214244()->fn_800FD818(1);
     u8 next = field_0x358.fn_80214244()->field_0x3;
-    if (start < field_0x358.fn_80214244()->field_0x2) {
-        field_0x358.fn_80214244()->field_0x3 = start;
+    cls_800FE3EC* a = field_0x358.fn_80214244();
+    if (start < a->field_0x2) {
+        a->field_0x3 = start;
     }
     field_0x358.fn_80214244()->fn_800FD818(-1);
     u8 prev = field_0x358.fn_80214244()->field_0x3;
-    if (start < field_0x358.fn_80214244()->field_0x2) {
-        field_0x358.fn_80214244()->field_0x3 = start;
+    cls_800FE3EC* b = field_0x358.fn_80214244();
+    if (start < b->field_0x2) {
+        b->field_0x3 = start;
     }
     u8 opt[2];
     opt[1] = prev;
@@ -41,7 +43,7 @@ u8 ShadowLink2_804A43E8::fn_801C976C() {
     return pick;
 }
 
-// FIXME(shotgun): 98 %, scheduling+regalloc + reloc-name
+// FIXME(shotgun): 97.82 %, scheduling+regalloc; behaviour clean.
 void ShadowLink2_804A43E8::fn_801C9420(JGeometry::TVec2f* dir) {
     f32 startX = mPos.x;
     f32 startY = mPos.y;
@@ -81,7 +83,8 @@ void ShadowLink2_804A43E8::fn_801C9420(JGeometry::TVec2f* dir) {
     dir->y *= 8.0f;
 }
 
-// FIXME(shotgun): 78 %, missing/extra + reloc-name
+// FIXME: 80.20 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): register order and scheduling differ; lbl_ constant reloc-name
 void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
     f32 nx = mMapHitDir.x;
     f32 ny = mMapHitDir.y;
@@ -94,10 +97,10 @@ void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
     f32 v1y = nx * s1 + ny * c1;
     f32 v2x = nx * c2 - ny * s2;
     f32 v2y = nx * s2 + ny * c2;
-    s16 a1 = (s32)(JMath::atanTable_.atan2_(v1x, v1y) * 10430.378f);
-    f32 d1 = __fabs((f32)(s16)(velAngle - a1));
-    s16 a2 = (s32)(JMath::atanTable_.atan2_(v2x, v2y) * 10430.378f);
-    f32 d2 = __fabs((f32)(s16)(velAngle - a2));
+    s32 a1 = (s32)(JMath::atanTable_.atan2_(v1x, v1y) * 10430.378f);
+    f32 d1 = __fabsf((f32)(s16)(velAngle - a1));
+    s32 a2 = (s32)(JMath::atanTable_.atan2_(v2x, v2y) * 10430.378f);
+    f32 d2 = __fabsf((f32)(s16)(velAngle - a2));
     JGeometry::TVec2f dir;
     if (0.000030517578f * d2 < 0.000030517578f * d1) {
         dir.x = v2x;
@@ -111,7 +114,7 @@ void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
     out->y = mPos.y + dir.y;
 }
 
-// FIXME(shotgun): 59 %, missing/extra + reloc-name
+// FIXME(shotgun): 58.22 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
     if ((u8)arg1 == 0) {
         JGeometry::TVec3f railPos;
@@ -261,7 +264,9 @@ void ShadowLink2_804A43E8::fn_801C8BC4(u8 flag) {
     }
 }
 
-// FIXME(shotgun): 99 %, scheduling
+// Not auto-inlined: fn_801C71BC calls fn_801C8B50 out of line in the original.
+#pragma auto_inline off
+// FIXME(shotgun): 99.59 %, scheduling; behaviour clean.
 void ShadowLink2_804A43E8::fn_801C8B50() {
     mPathCount = 0;
     mFlags &= ~ENEMY_FLAG_NO_MAP_HIT;
@@ -270,8 +275,9 @@ void ShadowLink2_804A43E8::fn_801C8B50() {
     field_0x33c = fn_801D02E0(&field_0x32c);
     mFlags &= ~0x20000;
 }
+#pragma auto_inline reset
 
-// FIXME(shotgun): 71 %, missing/extra
+// FIXME(shotgun): 70.64 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C887C() {
     JGeometry::TVec3f railPos;
     fn_800FE294(&railPos, field_0x358.fn_80214244(), 0xFF);
@@ -339,7 +345,7 @@ void ShadowLink2_804A43E8::fn_801C887C() {
     }
 }
 
-// FIXME(shotgun): 80 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.96 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C844C() {
     JGeometry::TVec3f pos = mPos;
     field_0x358.fn_80214244()->fn_800FE2E4(&pos, field_0x4);
@@ -430,7 +436,7 @@ void ShadowLink2_804A43E8::fn_801C844C() {
     }
 }
 
-// FIXME(shotgun): 77 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.87 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C7F98() {
     fn_801C844C();
     fn_801C8C84(0, 0);
@@ -524,21 +530,18 @@ void ShadowLink2_804A43E8::fn_801C7F98() {
     }
 }
 
-// FIXME(shotgun): 89 %, missing/extra
 void ShadowLink2_804A43E8::fn_801C7EE4() {
     if (!(mFlags & 0x2000000)) {
         if (field_0x358.fn_80214244()->fn_800FD548(0xFF)) {
-            s32 layer = field_0x4;
-            if (viewLayerFlag(layer) && __fabs(mPos.z - field_0x32c.z) > 1.0f) {
-                mFlags |= 0x400000;
-            } else if (fn_801CF888((const JGeometry::TVec2f*)&mPos, &field_0x32c, field_0x4)) {
+            if ((viewLayerFlag(field_0x4) && __fabsf(mPos.y - field_0x32c.y) > 1.0f) ||
+                fn_801CF888((const JGeometry::TVec2f*)&mPos, &field_0x32c, field_0x4)) {
                 mFlags |= 0x400000;
             }
         }
     }
 }
 
-// FIXME(shotgun): 72 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.95 %, missing/extra + reloc-name; behaviour drift.
 u8 ShadowLink2_804A43E8::fn_801C7BD0() {
     u8 ret = 0;
     s32 count = mPathCount;
@@ -656,7 +659,7 @@ void ShadowLink2_804A43E8::fn_801C79A0() {
     }
 }
 
-// FIXME(shotgun): 80 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.02 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
     if (!(mFlags & 0x2000000)) {
         if (fn_801C5340()) {
@@ -788,7 +791,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
     }
 }
 
-// FIXME(shotgun): 67 %, missing/extra + reloc-name
+// FIXME(shotgun): 86.57 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C71BC() {
     mFlags &= ~0x100000;
     if (!(mFlags & 0x2000000)) {
@@ -796,13 +799,15 @@ void ShadowLink2_804A43E8::fn_801C71BC() {
         u8 start = field_0x358.fn_80214244()->field_0x3;
         field_0x358.fn_80214244()->fn_800FD818(1);
         u8 next = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        cls_800FE3EC* buf = field_0x358.fn_80214244();
+        if (start < buf->field_0x2) {
+            buf->field_0x3 = start;
         }
         field_0x358.fn_80214244()->fn_800FD818(-1);
         u8 prev = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        buf = field_0x358.fn_80214244();
+        if (start < buf->field_0x2) {
+            buf->field_0x3 = start;
         }
         u8 opt[3];
         opt[0] = prev;
