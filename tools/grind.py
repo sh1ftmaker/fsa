@@ -31,8 +31,9 @@ What changed from the first grinder (branch `grind`), each from its logs:
 
 Lanes (tools/fingerprint.py): write = not in our object; structure = behaviour differs from
 the original; match = behaviour equal, only codegen differs. Workers take write and structure
-by default (structure first); the match lane is opt-in. Tiers start by size (<= 512 B haiku,
-<= 2 KB sonnet, above that opus). A function moves up one tier after a session that kept
+by default (structure first); the match lane is opt-in. Unwritten functions start by size
+(<= 512 B haiku, <= 2 KB sonnet, above that opus), written ones one size class lower (<= 2 KB
+haiku, <= 8 KB sonnet): cheapest first, what a tier leaves moves up. A function moves up one tier after a session that kept
 nothing or whose change the reviewer threw out, and after 3 (6 above 2 KB, 10 above 8 KB) kept
 sessions that still left it open: big functions are done in passes, each from a fresh context.
 
@@ -220,8 +221,14 @@ def lane_of(e):
     return "structure" if e["grade"] == "drift" and e["pct"] < 95 else "match"
 
 
-def start_tier(size):
-    return 0 if size <= 512 else 1 if size <= 2048 else 2
+def start_tier(size, lane="write"):
+    """Unwritten functions start by size (<= 512 B haiku, <= 2 KB sonnet, above opus): a clean first draft is
+    worth the stronger model. Written ones start one size class lower (<= 2 KB haiku, <= 8 KB sonnet): per
+    dollar haiku gained about 2.5 times the matched bytes of an opus whole-file pass on the same functions
+    (comparison 2026-11-12), a failed cheap session costs cents, and what it leaves moves up a tier."""
+    if lane == "write":
+        return 0 if size <= 512 else 1 if size <= 2048 else 2
+    return 0 if size <= 2048 else 1 if size <= 8192 else 2
 
 
 def max_kept(size):
@@ -229,11 +236,11 @@ def max_kept(size):
     return 3 if size <= 2048 else 6 if size <= 8192 else 10
 
 
-def tier_index(size, hist):
+def tier_index(size, hist, lane="write"):
     """Which tier a function is at now (len(ORDER) = parked), from its ledger rows (tier, verdict):
     up one tier after a session that kept nothing or whose change the reviewer threw out, and
     after max_kept() kept sessions that still left it open."""
-    t = start_tier(size)
+    t = start_tier(size, lane)
     for tier, verdict in hist:
         i = ORDER.index(tier)
         if i >= t and verdict != "ACCEPT":
@@ -312,7 +319,7 @@ def eligible(fns, unit, tier, lanes, lo, hi, hist):
         lane = lane_of(e)
         if lane == "write" and LIBRARY.match(e.get("demangled", "")):
             continue
-        if lane in lanes and lo <= e["size"] <= hi and (ANY_TIER or tier_index(e["size"], hist.get((unit, n), [])) == ORDER.index(tier)):
+        if lane in lanes and lo <= e["size"] <= hi and (ANY_TIER or tier_index(e["size"], hist.get((unit, n), []), lane) == ORDER.index(tier)):
             out.append((LANES.index(lane), e["size"], n))
     return [n for _, _, n in sorted(out)]
 
@@ -322,7 +329,7 @@ def cmd_queue(_):
     tab = {}
     for unit, fns in q.items():
         for n, e in fns.items():
-            t = tier_index(e["size"], hist.get((unit, n), []))
+            t = tier_index(e["size"], hist.get((unit, n), []), lane_of(e))
             k = (lane_of(e), ORDER[t] if t < len(ORDER) else "parked")
             c = tab.setdefault(k, [0, 0])
             c[0] += 1
@@ -731,8 +738,10 @@ def judge(wt, unit, base, focus_addr, full=None, dry=False):
     better = (focus_better or t1["n100"] > t0["n100"] or t1["missing"] < t0["missing"]
               or (t1["score"] < t0["score"] and t1["credit"] >= t0["credit"] - 2)
               or (t1["score"] == t0["score"] and t1["credit"] > t0["credit"] + 2))
-    if secs and not t1["n100"] > t0["n100"]:
+    if secs and not (t1["n100"] > t0["n100"] or t1["credit"] > t0["credit"] + 16 or t1["score"] < t0["score"]):
         return f"data section(s) got worse: {', '.join(secs)}", ev, notes
+    if secs:
+        notes.append(f"side effect: {', '.join(secs)} matches less than before (literal or data order); kept because the code is closer")
     if t1["credit"] < t0["credit"] - 2 and not focus_better:
         return f"the unit as a whole got worse ({t0['credit']:.0f} -> {t1['credit']:.0f} matched bytes)", ev, notes
     if not better:
