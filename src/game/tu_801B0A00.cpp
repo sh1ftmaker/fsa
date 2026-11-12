@@ -166,10 +166,10 @@ void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
 }
 
 // 0x801B0A00.
-// FIXME(shotgun): 89.62 %, different + reloc-name
+// FIXME(shotgun): 97.31 %, different + reloc-name; field_0x90 compare is cmplwi (u32), original cmpwi
 void cls_804A35AC::draw() {
+    s32 frame = 0x9B;
     if (field_0x90 == 0) {
-        s32 frame = 0x9B;
         if (field_0x250 == 2 || field_0x250 == 3) {
             frame = 0x274;
         }
