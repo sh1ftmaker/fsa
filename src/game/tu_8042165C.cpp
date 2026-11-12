@@ -78,7 +78,7 @@ const char* lbl_804B145C[4] = {
     "kk_mainRank_04.bti",
 };
 
-// FIXME(shotgun): 80.15 %, missing/extra + reloc-name
+// FIXME(shotgun): 80.15 %, missing/extra + reloc-name; behaviour drift.
 cls_804B146C::cls_804B146C()
     : field_0x210(0xFFFFFFFF)
     , field_0x214(0xFFFFFFFF)
@@ -197,7 +197,6 @@ cls_804B146C::cls_804B146C()
     }
 }
 
-// FIXME(shotgun): 99.95 %, reloc-name
 cls_804B146C::~cls_804B146C() {
     delete field_0x4c;
     field_0x4c = NULL;
@@ -237,7 +236,7 @@ cls_804B146C::~cls_804B146C() {
     }
 }
 
-// FIXME(shotgun): 88.87 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.87 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_804263A8() {
     for (s32 i = 0; i < 4; i++) {
         u8 bit = (u8)(1 << i);
@@ -351,7 +350,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 75.10 %, missing/extra + reloc-name
+// FIXME(shotgun): 75.13 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_80425F6C() {
     f32 sx = lbl_8050DB0C.field_0x30[4] *
              ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
@@ -396,7 +395,7 @@ void cls_804B146C::fn_80425F24() {
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME(shotgun): 86.53 %, missing/extra + reloc-name
+// FIXME(shotgun): 86.53 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_804257E4() {
     for (s32 i = 0; i < 4; i++) {
         u8 bit = (u8)(1 << i);
@@ -519,6 +518,7 @@ void cls_804B146C::fn_804257E4() {
     field_0x257 = 0;
 }
 
+// FIXME: 95.16 %, scheduling+regalloc; behaviour clean.
 // FIXME(shotgun): register order and scheduling differ (behaviour matches)
 void cls_804B146C::fn_804253E0(s32 player) {
     s32 shown = lbl_80529DEC.field_0xd8[player];
@@ -601,7 +601,7 @@ void cls_804B146C::fn_804253E0(s32 player) {
     }
 }
 
-// FIXME(shotgun): 99.58 %, regalloc-only
+// FIXME(shotgun): 99.58 %, regalloc-only; behaviour clean.
 void cls_804B146C::fn_80425234(s32 id, s32 arg1, u32 arg2) {
     s32 target;
     if (fn_8022F514(id)) {
@@ -644,7 +644,8 @@ void cls_804B146C::fn_80425234(s32 id, s32 arg1, u32 arg2) {
     field_0x257 |= (u8)(1 << target);
 }
 
-// FIXME(shotgun): 98.36 %, missing/extra (the takesPart bool test is one cmplwi longer)
+// FIXME(shotgun): 98.36 %, missing/extra; behaviour near.
+// (the takesPart bool test is one cmplwi longer)
 void cls_804B146C::fn_80425128() {
     for (s32 i = 0; i < 4; i++) {
         bool takesPart = gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i);
@@ -664,7 +665,7 @@ void cls_804B146C::fn_80425128() {
     }
 }
 
-// FIXME(shotgun): 79.63 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.63 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_80424148(s32 player, bool force) {
     f32 prevA = field_0x108[player];
     f32 prevB = field_0x128[player];
@@ -820,7 +821,7 @@ void cls_804B146C::fn_80424148(s32 player, bool force) {
     field_0x4->search(lbl_8048EF40[0x34 + player])->setAlpha(field_0x23b * field_0x108[player]);
 }
 
-// FIXME(shotgun): 68.84 %, missing/extra
+// FIXME(shotgun): 78.58 %, missing/extra; behaviour drift.
 void cls_804B146C::fn_80423DF0(s32 player) {
     u8 bit = (u8)(1 << player);
     s32 item = -1;
@@ -903,7 +904,7 @@ void cls_804B146C::fn_80423DF0(s32 player) {
     }
 }
 
-// FIXME(shotgun): 63.29 %, missing/extra
+// FIXME(shotgun): 93.42 %, missing/extra; behaviour drift.
 void cls_804B146C::fn_80423804(s32 player) {
     if (!(field_0x256 & (u8)(1 << player))) {
         return;
@@ -984,7 +985,7 @@ void cls_804B146C::fn_80423804(s32 player) {
     }
 }
 
-// FIXME(shotgun): 63.23 %, missing/extra + reloc-name
+// FIXME(shotgun): 63.23 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_80423248(s32 player) {
     if (!(field_0x257 & (u8)(1 << player))) {
         return;
@@ -1037,7 +1038,7 @@ void cls_804B146C::fn_80423248(s32 player) {
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048E300[0x130 + player * 5 + start + 3]))->changeTexture(d1, 0);
 }
 
-// FIXME(shotgun): 99.94 %, regalloc-only
+// FIXME(shotgun): 99.94 %, regalloc-only; behaviour clean.
 void cls_804B146C::fn_80422824() {
     s32 count = 0;
     s32 ranked = 0;
@@ -1146,7 +1147,7 @@ void cls_804B146C::fn_80422824() {
     }
 }
 
-// FIXME(shotgun): 81.76 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.14 %, different + reloc-name; behaviour near.
 void cls_804B146C::fn_8042215C(s32 player) {
     if (field_0x1e8[player] == 0) {
         field_0x1a8[player] = fn_80237774(player);
@@ -1236,7 +1237,7 @@ void cls_804B146C::fn_8042215C(s32 player) {
     field_0x1e8[player]--;
 }
 
-// FIXME(shotgun): 99.46 %, missing/extra
+// FIXME(shotgun): 99.46 %, missing/extra; behaviour clean.
 void cls_804B146C::fn_80421D78(s32 player) {
     if (fn_802366CC(fn_8022EA0C(player)) > 0 && fn_802366CC(fn_8022EA0C(player)) < 300) {
         s32 sec = fn_802366CC(fn_8022EA0C(player)) / 60 + 1;
@@ -1277,7 +1278,7 @@ void cls_804B146C::fn_80421D78(s32 player) {
     }
 }
 
-// FIXME(shotgun): 93.22 %, missing/extra
+// FIXME(shotgun): 93.22 %, missing/extra; behaviour drift.
 void cls_804B146C::fn_80421A34(s32 player, bool force) {
     u8 bit = (u8)(1 << player);
     f32 prev = field_0x118[player];
@@ -1321,7 +1322,7 @@ void cls_804B146C::fn_80421A34(s32 player, bool force) {
     }
 }
 
-// FIXME(shotgun): 89.38 %, missing/extra
+// FIXME(shotgun): 89.38 %, missing/extra; behaviour drift.
 void cls_804B146C::fn_8042165C() {
     field_0x1f0[0] = 0;
     field_0x1f0[1] = 0;
