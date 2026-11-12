@@ -1019,12 +1019,14 @@ void cls_8049C718::fn_800FA1A4() {
     ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
     JGeometry::TVec3f posA = a->mPos;
     JGeometry::TVec3f posB = b->mPos;
-    JGeometry::TVec3f d = posA - posB;
+    JGeometry::TVec3f d = posA;
+    d.sub(posB);
     if (PSVECMag((Vec*)&d) < 20.0f) {
         JGeometry::TVec3f t = a->field_0x3c;
         a->field_0x3c = b->field_0x3c;
         b->field_0x3c = t;
-        JGeometry::TVec3f mid = posA + posB;
+        JGeometry::TVec3f mid = posA;
+        mid += posB;
         mid.scale(0.5f);
         d.normalize();
         JGeometry::TVec3f off = d;
@@ -1036,13 +1038,15 @@ void cls_8049C718::fn_800FA1A4() {
     }
     if (mSlot == 0) {
         JGeometry::TVec3f c(mPos.x, mPos.y - 20.0f, mPos.z);
-        JGeometry::TVec3f v = c - posA;
+        JGeometry::TVec3f v = c;
+        v.sub(posA);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
             a->field_0x3c = v;
         }
-        v = c - posB;
+        v = c;
+        v.sub(posB);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
