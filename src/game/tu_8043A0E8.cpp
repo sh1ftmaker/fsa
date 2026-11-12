@@ -836,6 +836,81 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
     return true;
 }
 
+void cls_804B1920::fn_8043ACE4() {
+    // Built once, never read.
+    static JUtility::TColor colors[4] = {
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
+        JUtility::TColor(0xD8, 0xFF, 0xA1, 0xFF),
+    };
+    if (field_0x253 != 0) {
+        for (s32 i = 0; i < field_0x253; i++) {
+            f32 alpha = field_0x24e[i] / 255.0f;
+            gGameRoot2_8053AB10->fn_8013B490();
+            switch (field_0x1d0[i]) {
+            case 1:
+                field_0x280[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[0]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[0]->setAlpha(200.0f * alpha);
+                field_0x280[0]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[0]->setCornerColor(JUtility::TColor(0xB9, 0x12, 0x12, 0xFF), JUtility::TColor(0xD8, 0x3A, 0x16, 0xFF),
+                                               JUtility::TColor(0xB9, 0x54, 0x12, 0xFF), JUtility::TColor(0xFF, 0x9D, 0x10, 0xFF));
+                field_0x280[0]->setAlpha(field_0x24e[i]);
+                field_0x280[0]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 2:
+                field_0x280[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[1]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[1]->setAlpha(200.0f * alpha);
+                field_0x280[1]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[1]->setCornerColor(JUtility::TColor(0xF2, 0x48, 0x09, 0xFF), JUtility::TColor(0xF2, 0x48, 0x09, 0xFF),
+                                               JUtility::TColor(0xF2, 0xAB, 0x24, 0xFF), JUtility::TColor(0xFC, 0xFF, 0x21, 0xFF));
+                field_0x280[1]->setAlpha(field_0x24e[i]);
+                field_0x280[1]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 3:
+                field_0x280[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[2]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[2]->setAlpha(200.0f * alpha);
+                field_0x280[2]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xFF, 0xFF, 0x77, 0xFF));
+                field_0x280[2]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[2]->setAlpha(field_0x24e[i]);
+                field_0x280[2]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            case 4:
+                field_0x280[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x280[3]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[3]->setAlpha(200.0f * alpha);
+                field_0x280[3]->draw(3.0f + field_0x190[i], 3.0f + field_0x1a0[i], 48.0f * field_0x1b0[i],
+                                     48.0f * field_0x1b0[i], false, false, false);
+                field_0x280[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0xD8, 0xFF, 0xA1, 0xFF));
+                field_0x280[3]->setCornerColor(JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+                                               JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF), JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF));
+                field_0x280[3]->setAlpha(field_0x24e[i]);
+                field_0x280[3]->draw(field_0x190[i], field_0x1a0[i], 48.0f * field_0x1b0[i], 48.0f * field_0x1b0[i],
+                                     false, false, false);
+                break;
+            }
+        }
+        field_0x253 = 0;
+    }
+}
+
 void cls_804B1920::fn_8043ABCC(s32 index, s32 unused) {
     index = index < 0 ? 0 : index;
     void* res;
