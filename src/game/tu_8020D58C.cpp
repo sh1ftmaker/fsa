@@ -11,7 +11,8 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
 }
 
 // Adds `box` on `layer` for `serial`, with the same checks as fn_8020D7D0.
-// FIXME: 89.3 %. The original keeps only box->i.x from the size test and
+// FIXME: 89.31 %, missing/extra; behaviour drift.
+// The original keeps only box->i.x from the size test and
 // loads i.y, f.x and f.y again for the copy; ours keeps all four in registers.
 void CollisionBoxList_8020D60C::fn_8020D8C0(const JGeometry::TBox2f* box, s32 layer, s32 serial) {
     if (mCount < 0x50) {
@@ -26,7 +27,8 @@ void CollisionBoxList_8020D60C::fn_8020D8C0(const JGeometry::TBox2f* box, s32 la
 
 // Adds the box of the actor `serial` (moved by its position) if the actor is
 // alive, the box is not empty and fewer than 0x50 boxes are listed.
-// FIXME: 98.0 %. Register allocation only: the corner loads and adds land in
+// FIXME: 98.00 %, regalloc-only; behaviour clean.
+// Register allocation only: the corner loads and adds land in
 // other fp registers than the original's.
 void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -59,7 +61,8 @@ void CollisionBoxList_8020D60C::fn_8020D7D0(s32 serial) {
 // Whether (x, y) lies in a box on `layer` registered by an actor other than
 // `serial`. A box whose actor has one of the ids in `ignoreIds` (a list ending
 // in 'NULL') doesn't count, and neither does a box whose actor is gone.
-// FIXME: 97.7 %. Registers only: the original keeps the box pointer, `found`
+// FIXME: 97.67 %, regalloc-only; behaviour clean.
+// Registers only: the original keeps the box pointer, `found`
 // and the counter in r26/r24/r23, ours in other callee-saved registers. The
 // method is const (the original loads mCount above the prologue moves).
 bool CollisionBoxList_8020D60C::fn_8020D6AC(s32 layer, const JGeometry::TVec3f* pos, s32 serial, const u32* ignoreIds) const {
