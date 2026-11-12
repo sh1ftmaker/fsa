@@ -19,7 +19,7 @@ public:
 
     // Gated by field_0x25c: drawSprite_801F06F0 on "enemy_both2_sob.bin", the shadow,
     // then fn_803075AC.
-    void fn_802B2728();
+    /* 0x20 */ virtual void fn_802B2728();
 
     // 0x802B21EC (a plain `fn_802B21EC` symbol): moves by field_0x3c and field_0x270, bouncing
     // off walls (field_0x27c = 1 while field_0x270 is in use).
