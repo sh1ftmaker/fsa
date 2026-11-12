@@ -878,7 +878,7 @@ void cls_8049C718::update() {
 
 // FIXME(shotgun): 85.54 %, different; behaviour drift.
 bool cls_8049C718::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u16 kind = fn_8022461C(pos, layer);
+    s32 kind = fn_8022461C(pos, layer);
     if (kind == 3 || kind == 14 || kind == 2) {
         return false;
     }
