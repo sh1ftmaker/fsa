@@ -890,10 +890,13 @@ void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeome
                      (f32)(field_0x144.y1 - field_0x144.y0);
         out->z = 0.0f;
     } else {
+        u16 width;
+        u16 height;
+        JUTVideo::sManager->getBounds(width, height);
         out->x = field_0x164.i.x + in->x * (field_0x164.f.x - field_0x164.i.x) /
-                                       (f32)(s32)JUTVideo::sManager->getFbWidth();
+                                       (f32)(s32)width;
         out->y = field_0x164.i.y + in->y * (field_0x164.f.y - field_0x164.i.y) /
-                                       (f32)(s32)JUTVideo::sManager->getEfbHeight();
+                                       (f32)(s32)height;
         out->z = 0.0f;
     }
 }
