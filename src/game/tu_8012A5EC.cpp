@@ -452,7 +452,7 @@ void cls_8049E770::fn_8012B218() {
     }
 }
 
-// FIXME(shotgun): 75.31 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.61 %, missing/extra + reloc-name; behaviour clean.
 void cls_8049E770::fn_8012B0D8() {
     bool done = fn_8012A5EC();
     if (field_0x238.y == field_0x3f4 + 260.0f && field_0x248 == 85.0f && done == true) {
