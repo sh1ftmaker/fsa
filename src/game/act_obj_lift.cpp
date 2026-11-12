@@ -304,7 +304,7 @@ void OBJLift_804ACA00::fn_803511F0() {
 // 0x80351020.
 // Not auto-inlined: fn_80350974 calls fn_80351020 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 83.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.82 %, literal pool order and register assignment differ.
 bool OBJLift_804ACA00::fn_80351020(s32 player) {
     s32 layer = field_0x4;
     if (getPlayerLayer_8023DE58(player) != layer) {
@@ -319,8 +319,9 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
         v.z = 0.0f;
         v.x = dist * JMath::sincosTable_.cosShort(angle);
         v.y = dist * JMath::sincosTable_.sinShort(angle);
-        if (v.x >= field_0x80.i.x - 2.0f && v.y >= field_0x80.i.y - 2.0f && v.x < field_0x80.f.x + 2.0f &&
-            v.y < field_0x80.f.y + 2.0f) {
+        bool inside = v.x >= field_0x80.i.x - -2.0f && v.y >= field_0x80.i.y - -2.0f && v.x < field_0x80.f.x + -2.0f &&
+                      v.y < field_0x80.f.y + -2.0f;
+        if (inside) {
             fn_8022DF48(player);
             return true;
         }
