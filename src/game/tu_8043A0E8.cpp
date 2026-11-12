@@ -838,7 +838,7 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
 
 void cls_804B1920::fn_8043ACE4() {
     // Built once, never read.
-    static JUtility::TColor colors[4] = {
+    static JUtility::TColor lbl_8052C5F0[4] = {
         JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
         JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
         JUtility::TColor(0xF2, 0x49, 0x12, 0xFF),
