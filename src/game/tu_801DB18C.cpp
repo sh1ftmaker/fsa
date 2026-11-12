@@ -9,7 +9,7 @@
 extern const s16* lbl_8053A148[]; // the animation table (.sdata, this unit)
 extern const char lbl_80469AA4[]; // "enemy_both_sob.bin"
 
-// FIXME(shotgun): 99.86 %, reloc-name
+// FIXME(shotgun): 99.86 %, reloc-name; behaviour clean.
 cls_804A4EE8::cls_804A4EE8() {
     mTargetPlayer = -1;
     field_0x2ac = 0;
@@ -38,7 +38,7 @@ cls_804A4EE8::~cls_804A4EE8() {
     }
 }
 
-// FIXME(shotgun): 92.11 %, different + reloc-name
+// FIXME(shotgun): 92.11 %, different + reloc-name; behaviour drift.
 void cls_804A4EE8::init() {
     EnemyBase_804A4808::init();
     mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
@@ -80,7 +80,7 @@ void cls_804A4EE8::init() {
     }
 }
 
-// FIXME(shotgun): 76.89 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.72 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4EE8::fn_801DB9CC() {
     if (fn_801CD664(2) == 0) {
         mFlags &= ~0x2000;
@@ -165,7 +165,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 84.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.62 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
@@ -204,7 +204,6 @@ void cls_804A4EE8::fn_801DB6C8() {
     }
 }
 
-// FIXME(shotgun): 77.56 %, missing/extra + reloc-name
 void cls_804A4EE8::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -252,7 +251,7 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
-// FIXME(shotgun): 87.43 %, scheduling/regalloc
+// FIXME(shotgun): 84.37 %, missing/extra; behaviour drift.
 void cls_804A4EE8::vfunc_0x88() {
     if (field_0x2b4 != 0.0f) {
         if (mState == 0) {
