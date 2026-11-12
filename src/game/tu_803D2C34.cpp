@@ -16,7 +16,14 @@
 #include "game/act/tu_80440BF4.h"
 
 typedef void (cls_804B0288::*StateFunc_804B0288)();
-extern StateFunc_804B0288 lbl_804B0168[24];
+StateFunc_804B0288 lbl_804B0168[24] = {
+    &cls_804B0288::fn_803D4770, &cls_804B0288::fn_803D4484, &cls_804B0288::fn_803D4298, &cls_804B0288::fn_803D4068,
+    &cls_804B0288::fn_803D3EC8, &cls_804B0288::fn_803D3D50, &cls_804B0288::fn_803D3C90, &cls_804B0288::fn_803D3B38,
+    &cls_804B0288::fn_803D39C8, &cls_804B0288::fn_803D3928, &cls_804B0288::fn_803D3898, &cls_804B0288::fn_803D373C,
+    &cls_804B0288::fn_803D35F0, &cls_804B0288::fn_803D35C4, &cls_804B0288::fn_803D3460, &cls_804B0288::fn_803D335C,
+    &cls_804B0288::fn_803D3214, &cls_804B0288::fn_803D3180, &cls_804B0288::fn_803D3108, &cls_804B0288::fn_803D3060,
+    &cls_804B0288::fn_803D2FFC, &cls_804B0288::fn_803D2E10, &cls_804B0288::fn_803D2C9C, &cls_804B0288::fn_803D2C34,
+};
 
 // The three load/save results all stamp the current save file the same way.
 static inline void touchCurrentFile() {
