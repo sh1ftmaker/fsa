@@ -59,4 +59,8 @@ public:
     /* 0x300 */ JPABaseEmitter* mEmitters[3];
 }; // Size: 0x30C
 
+// 0x80178EB8 (game/act_wizzrobe.cpp): out-of-line copy of
+// JPABaseEmitter::setGlobalTranslation(const TVec3&); also called by tu_8044C7F0.
+void fn_80178EB8(JPABaseEmitter* emitter, const JGeometry::TVec3f* trans);
+
 #endif
