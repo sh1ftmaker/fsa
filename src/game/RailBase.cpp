@@ -140,14 +140,14 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
 // 0x800FDEA0
 s32 cls_800FE3EC::fn_800FDEA0(JGeometry::TVec3f* pos, f32 speed, JGeometry::TVec3f* outStep, s32* layer,
                               u16* outAngle, s32 arg) {
-    JGeometry::TVec3f here = *pos;
     JGeometry::TVec3f target;
+    JGeometry::TVec3f here = *pos;
     s32 result = fn_800FE090(&here, &target);
     f32 dx = target.x - pos->x;
     f32 dy = target.y - pos->y;
     s32 angle = (s32)(JMath::atanTable_.atan2_(dx, dy) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
-    if (layer != NULL && *layer != fn_800FE25C(field_0x3)) {
-        *layer = fn_800FE25C(field_0x3);
+    if (layer != NULL && *layer != field_0x4[field_0x3]->field_0x4) {
+        *layer = field_0x4[field_0x3]->field_0x4;
         outStep->x = dx;
         outStep->y = dy;
         return 4;
