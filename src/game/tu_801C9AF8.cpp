@@ -490,7 +490,7 @@ bool ShadowLink2_804A43E8::fn_801C9CB0() {
 
 // FIXME(shotgun): 86 %, missing/extra + reloc-name
 bool ShadowLink2_804A43E8::fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos) {
-    JGeometry::TVec3f p(pos->x, pos->y, pos->z);
+    JGeometry::TVec3f p = *pos;
     if (viewLayerFlag(layer)) {
         p.y = p.y - p.z;
         p.z = 0.0f;
@@ -512,8 +512,12 @@ bool ShadowLink2_804A43E8::fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos) 
             }
             break;
         case 1: {
-            u16 tile = fn_80226850(&p, layer);
-            if ((tile >= 0x9B && tile < 0x9D) || (tile >= 0x322 && tile < 0x324)) {
+            s32 tile = fn_80226850(&p, layer);
+            if (tile >= 0x322) {
+                if (tile < 0x324) {
+                    return false;
+                }
+            } else if (tile >= 0x9B && tile < 0x9D) {
                 return false;
             }
             break;
