@@ -2269,6 +2269,94 @@ void cls_804AF5A0::fn_80396F94() {
     field_0x3b0 = 1;
 }
 
+inline void cls_804AF5A0::reloadSlot() {
+    if (field_0x148 != -1) {
+        field_0x148 = field_0x13c[field_0x168];
+    }
+}
+
+inline void cls_804AF5A0::playMoveSound() {
+    if (field_0x1aa) {
+        fn_803037D4(field_0x160, 9);
+    } else {
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+    }
+}
+
+inline void cls_804AF5A0::selectNext() {
+    if (field_0x1a0 == 2) {
+        if (field_0x168 < 1) {
+            field_0x168++;
+            field_0x19c = 1;
+            reloadSlot();
+            playMoveSound();
+        }
+    } else if (field_0x1a0 == 3) {
+        if (field_0x168 < 2) {
+            field_0x168++;
+            field_0x19c = 1;
+            reloadSlot();
+            playMoveSound();
+        }
+    }
+}
+
+void cls_804AF5A0::fn_80396884() {
+    if (field_0x1a0) {
+        if (field_0x3b8->field_0x28 & 0x100) {
+            if (field_0x1a1 == 0) {
+                if (lbl_8053AD30->fn_80309A9C(4, -1)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309A9C(8, -1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = 1;
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            } else {
+                if (lbl_8053AD30->fn_80309A9C(2, -1)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309A9C(1, -1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = -1;
+                        reloadSlot();
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            }
+        } else {
+            if (field_0x1a1 == 0) {
+                if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 4)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 8)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = 1;
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            } else {
+                if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 2)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = -1;
+                        reloadSlot();
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Shows the current player's window frame ('PNar') and pane set: while the text runs it
 // pulses the pane alphas over lbl_8050DB0C's period, while the window waits (99999)
 // it pops the frame in; otherwise all frames are hidden. Bit 0x40 uses the op_zelda
