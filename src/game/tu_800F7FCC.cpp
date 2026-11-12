@@ -876,9 +876,9 @@ void cls_8049C718::update() {
     fn_800FA6B0();
 }
 
-// FIXME(shotgun): 85.54 %, different; behaviour drift.
+// FIXME(shotgun): 91.96 %, scheduling+regalloc; behaviour clean.
 bool cls_8049C718::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u16 kind = fn_8022461C(pos, layer);
+    s32 kind = fn_8022461C(pos, layer);
     if (kind == 3 || kind == 14 || kind == 2) {
         return false;
     }
@@ -893,44 +893,45 @@ void cls_8049C718::vfunc_0x24() {
     vfunc_0x28(0, 0.0f, -20.0f);
 }
 
-// FIXME(shotgun): 86.96 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 96.55 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): unsigned compares of field_0xb0 (cmplwi) and the early-return branch layout differ.
 void cls_8049C718::vfunc_0x44() {
     if (field_0xb0 == 4 || field_0xb0 == 0x12) {
         return;
     }
-    if (mCooldown != 0) {
-        return;
-    }
-    if (field_0xd8 == 0) {
-        field_0x255++;
-        mCooldown = 0x32;
-        if (mWobble == 0) {
-            mWobble = 1;
+    if (mCooldown == 0) {
+        if (field_0xd8 == 0) {
+            field_0x255++;
+            mCooldown = 0x32;
+            if (mWobble == 0) {
+                mWobble = 1;
+            }
+            fn_801F37AC(0, &mPos, 3, 0, -1);
+            startSound_801F0E34(0x40005, 0);
+            field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
         }
-        fn_801F37AC(0, &mPos, 3, 0, -1);
-        startSound_801F0E34(0x40005, 0);
-        field_0x3c.set(0.0f, 0.0f, 0.0f);
-    }
-    if (mSignal != 0) {
-        if (mState == 9) {
-            return;
+        if (mSignal != 0) {
+            if (mState == 9) {
+                return;
+            }
+            mState = 9;
+            mFlags |= 1;
+            mFlags &= ~4;
+            field_0x3c.set(0.0f, 0.0f, 5.0f);
+            mWobble = 0;
+            field_0x264 = 0;
+            f32 scale = mScale;
+            mBox.i.x = -26.0f * scale;
+            mBox.i.y = -50.0f * scale;
+            mBox.f.x = 26.0f * scale;
+            mBox.f.y = 0.0f;
+            startSound_801F0E34(0x40005, 0);
+            if (mLife <= 10) {
+                vfunc_0x24();
+            }
+        } else if (field_0x255 == 3) {
+            mSignal = 1;
         }
-        mState = 9;
-        mFlags |= 1;
-        mFlags &= ~4;
-        field_0x3c.set(0.0f, 0.0f, 5.0f);
-        mWobble = 0;
-        field_0x264 = 0;
-        mBox.i.x = -26.0f * mScale;
-        mBox.i.y = -50.0f * mScale;
-        mBox.f.x = 26.0f * mScale;
-        mBox.f.y = 0.0f;
-        startSound_801F0E34(0x40005, 0);
-        if (mLife <= 10) {
-            vfunc_0x24();
-        }
-    } else if (field_0x255 == 3) {
-        mSignal = 1;
     }
 }
 
