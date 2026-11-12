@@ -25,11 +25,9 @@ extern s32 lbl_80474F4C[];
 extern s32 lbl_80474F5C[];
 
 
-// FIXME(shotgun): not written: the table copy at 0x80372B00 (a compiler-generated static-init
-// function: lbl_804AE420 below is initialised statically instead).
 cls_804AE4B0::~cls_804AE4B0() {}
 
-// FIXME(shotgun): 99.98 %, scheduling
+// FIXME(shotgun): 99.98 %, scheduling; behaviour drift.
 void cls_804AE4B0::init() {
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
         fn_8036FDAC();
@@ -93,7 +91,7 @@ static void (cls_804AE4B0::*lbl_804AE420[12])() = {
     &cls_804AE4B0::fn_803706AC, &cls_804AE4B0::fn_803705A0, &cls_804AE4B0::fn_80370508, &cls_804AE4B0::fn_803704E8,
 };
 
-// FIXME(shotgun): 82.20 %, missing/extra
+// FIXME(shotgun): 82.20 %, missing/extra; behaviour clean.
 void cls_804AE4B0::update() {
     if (mTimer != 0) {
         mTimer--;
@@ -154,7 +152,7 @@ void cls_804AE4B0::update() {
     (this->*lbl_804AE420[mState])();
 }
 
-// FIXME(shotgun): 76.32 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.32 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::draw() {
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
         return;
@@ -175,7 +173,7 @@ void cls_804AE4B0::draw() {
 
 // Not auto-inlined: update-side callers (fn_8037100C, fn_80370764, fn_803704E8) use a plain bl.
 #pragma auto_inline off
-// FIXME(shotgun): 97.89 %, scheduling+regalloc
+// FIXME(shotgun): 97.89 %, scheduling+regalloc; behaviour clean.
 void cls_804AE4B0::fn_803721F4() {
     bool close = false;
     if (field_0x398 == 1) {
@@ -221,7 +219,7 @@ void cls_804AE4B0::fn_803721F4() {
 #pragma auto_inline reset
 
 // Starts the next lane pattern `arg` (0-3): the four sprites slide in from their start offsets.
-// FIXME(shotgun): 77 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.77 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371D50(s32 arg) {
     mTimer = 0x80;
     field_0x398 = 0;
@@ -280,7 +278,7 @@ void cls_804AE4B0::fn_80371D50(s32 arg) {
 }
 
 // Turns the sprites towards the nearest player, and lets the player pick one up.
-// FIXME(shotgun): 73 %, missing/extra + reloc-name
+// FIXME(shotgun): 73.66 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371A2C() {
     f32 nearest[4] = {49.0f, 49.0f, 49.0f, 49.0f};
     for (s32 i = 0; i < 4; i++) {
@@ -359,7 +357,7 @@ void cls_804AE4B0::fn_80371A2C() {
 }
 
 // The first state: the lanes finish sliding in; the player standing on the start tile starts it.
-// FIXME(shotgun): 70 %, missing/extra + reloc-name
+// FIXME(shotgun): 70.29 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_803717CC() {
     fn_803721F4();
     JGeometry::TBox2f region;
@@ -444,7 +442,7 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
 }
 
 // The second state: the camera pans to the lane tile; when it has arrived the message is shown.
-// FIXME(shotgun): 88 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.24 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371284() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -495,7 +493,7 @@ void cls_804AE4B0::fn_803711F0() {
     }
 }
 
-// FIXME(shotgun): 79.69 %, missing/extra
+// FIXME(shotgun): 79.69 %, missing/extra; behaviour clean.
 void cls_804AE4B0::fn_8037100C() {
     fn_803703C8();
     fn_803721F4();
@@ -536,7 +534,7 @@ void cls_804AE4B0::fn_8037100C() {
     }
 }
 
-// FIXME(shotgun): 50.75 %, missing/extra + reloc-name
+// FIXME(shotgun): 50.75 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370C84() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -594,7 +592,7 @@ void cls_804AE4B0::fn_80370C18() {
     }
 }
 
-// FIXME(shotgun): 89.19 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.19 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370A7C() {
     fn_803703C8();
     if (field_0x240 != 0) {
@@ -620,7 +618,7 @@ void cls_804AE4B0::fn_80370A7C() {
     }
 }
 
-// FIXME(shotgun): 85.72 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.72 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370764() {
     fn_803703C8();
     for (s32 i = 0; i < 4; i++) {
@@ -695,7 +693,7 @@ void cls_804AE4B0::fn_803706AC() {
     }
 }
 
-// FIXME(shotgun): 76.97 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.61 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AE4B0::fn_803705A0() {
     fn_803703C8();
     if (field_0x324.y > 1680.0f) {
@@ -703,7 +701,7 @@ void cls_804AE4B0::fn_803705A0() {
         if (field_0x324.y <= 1680.0f) {
             field_0x324.y = 1680.0f;
             u8 count = (field_0x23c <= 0xB4) + 2;
-            JGeometry::TVec3f pos(field_0x324.x, field_0x324.y - 32.0f, field_0x324.z);
+            JGeometry::TVec3f pos = field_0x324 - JGeometry::TVec3f(0.0f, 32.0f, 0.0f);
             getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, count | 0x30000, -1, -1);
             field_0x240 = 0x1E;
             mState = 10;
@@ -712,11 +710,15 @@ void cls_804AE4B0::fn_803705A0() {
     }
 }
 
-// FIXME(shotgun): 83.50 %, missing/extra + reloc-name
+// FIXME: 99.74 %, reloc-name; behaviour clean.
+// FIXME(shotgun): reloc-name only: float literals lbl_80542E00/E04 not split into this unit
 void cls_804AE4B0::fn_80370508() {
     fn_803703C8();
-    switch (field_0x240) {
-    case 0:
+    if (field_0x240 != 0) {
+        if (field_0x240 == 1) {
+            field_0x368 = 0x104;
+        }
+    } else {
         if (field_0x324.y < 1760.0f) {
             field_0x324.y += 0.5f;
         } else {
@@ -724,10 +726,6 @@ void cls_804AE4B0::fn_80370508() {
             mState = 0xB;
             vfunc_0x30(0xFF, true);
         }
-        break;
-    case 1:
-        field_0x368 = 0x104;
-        break;
     }
 }
 
@@ -737,7 +735,8 @@ void cls_804AE4B0::fn_803704E8() {
 
 // Not auto-inlined: the original state handlers call it with a plain bl (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 80.49 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.44 %, regalloc-only + reloc-name; behaviour clean.
+// (literal pool names)
 void cls_804AE4B0::fn_803703C8() {
     Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
     f32 a = -cam->field_0x4[0][3];
@@ -760,39 +759,53 @@ void cls_804AE4B0::fn_803703C8() {
     } else {
         field_0x25c += field_0x260;
     }
+    f32 yHi = field_0x248 + field_0x25c;
+    f32 yLo = field_0x248 - field_0x25c;
+    f32 x = field_0x244;
     gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
-    cam = gGameRoot2_8053AB10->field_0x24;
-    if (cam->field_0x7f5 == 0) {
+    if (gGameRoot2_8053AB10->field_0x24->field_0x7f5 == 0) {
+        cam = gGameRoot2_8053AB10->field_0x24;
         cam->field_0x7f4 = 1;
         cam->field_0x7f8 = 5;
-        cam->field_0x808.i.x = field_0x244;
-        cam->field_0x808.i.y = field_0x248 - field_0x25c;
-        cam->field_0x808.f.x = field_0x244;
-        cam->field_0x808.f.y = field_0x248 + field_0x25c;
+        cam->field_0x808.i.x = x;
+        cam->field_0x808.i.y = yLo;
+        cam->field_0x808.f.x = x;
+        cam->field_0x808.f.y = yHi;
         cam->field_0x7f6 = 0;
     }
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 80.21 %, missing/extra + reloc-name
+// FIXME: 92.83 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): extra li for the match flag init; literal reloc names differ
 s32 cls_804AE4B0::fn_80370200() {
     s32 idx = field_0x39c;
     u8 hit[4] = {0, 0, 0, 0};
     bool any = false;
+    f32 best = 100000.0f;
+    s32 bestIdx = -1;
     for (s32 i = 0; i < 4; i++) {
         u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x264[idx].y - field_0x294[i].y,
                                                   field_0x264[idx].x - field_0x294[i].x) * 10430.378f);
-        s32 want;
+        bool match = false;
         if (angle >= 0x2000 && angle < 0x6000) {
-            want = 2;
+            if (field_0x340[i] == 2) {
+                match = true;
+            }
         } else if (angle >= 0x6000 && angle < 0xA000) {
-            want = 1;
+            if (field_0x340[i] == 1) {
+                match = true;
+            }
         } else if (angle >= 0xA000 && angle < 0xE000) {
-            want = 3;
+            if (field_0x340[i] == 3) {
+                match = true;
+            }
         } else {
-            want = 0;
+            if (field_0x340[i] == 0) {
+                match = true;
+            }
         }
-        if (field_0x340[i] == want) {
+        if (match) {
             if (lbl_80474F4C[field_0x340[i]] == fn_80230CFC(idx)) {
                 any = true;
                 hit[i] = 1;
@@ -802,8 +815,6 @@ s32 cls_804AE4B0::fn_80370200() {
     if (!any) {
         return -1;
     }
-    f32 best = 100000.0f;
-    s32 bestIdx = -1;
     for (s32 i = 0; i < 4; i++) {
         if (hit[i] == 1) {
             f32 d = PSVECDistance(&field_0x264[idx], &field_0x294[i]);
@@ -818,7 +829,7 @@ s32 cls_804AE4B0::fn_80370200() {
 
 // Not auto-inlined: fn_8037100C calls it with a plain bl.
 #pragma auto_inline off
-// FIXME(shotgun): 75.18 %, missing/extra + reloc-name
+// FIXME(shotgun): 75.18 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AE4B0::fn_80370020() {
     if (field_0x3a8 == 0) {
         if (field_0x3ac == 0) {
@@ -860,7 +871,7 @@ void cls_804AE4B0::fn_80370020() {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 98.59 %, scheduling+regalloc + reloc-name
+// FIXME(shotgun): 98.94 %, scheduling+regalloc; behaviour drift.
 void cls_804AE4B0::fn_8036FDAC() {
     mTimer = 0x50;
     static JGeometry::TVec3f offsets[4] = {
@@ -908,7 +919,7 @@ void cls_804AE4B0::fn_8036FDAC() {
     }
 }
 
-// FIXME(shotgun): 99.31 %, scheduling+regalloc
+// FIXME(shotgun): 99.31 %, scheduling+regalloc; behaviour clean.
 void cls_804AE4B0::fn_8036FB60() {
     bool close = false;
     if (field_0x398 == 1) {
