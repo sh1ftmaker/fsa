@@ -179,7 +179,7 @@ void cls_804A00C8::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 89.71 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.82 %, reloc-name only (literal pool order)
 bool cls_804A00C8::vfunc_0x54() {
     if (mState == 0xD) {
         return true;
@@ -187,13 +187,15 @@ bool cls_804A00C8::vfunc_0x54() {
     if (mPos.z > 2.0f) {
         return false;
     }
-    field_0x2b8 = mPos;
+    field_0x2b8.x = mPos.x;
+    field_0x2b8.y = mPos.y;
+    field_0x2b8.z = mPos.z;
     field_0x2b8.x = (f32)((s32)field_0x2b8.x & 0xFFF8);
     field_0x2b8.y = (f32)((s32)field_0x2b8.y & 0xFFF8);
     const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     field_0x2b8.x += -12.0f * sincos.sinShort(fn_801F6874(field_0x98));
     field_0x2b8.y += -12.0f * sincos.cosShort(fn_801F6874(field_0x98));
-    u16 kind = fn_8022461C(&field_0x2b8, field_0x4);
+    s32 kind = fn_8022461C(&field_0x2b8, field_0x4);
     if (kind == 2 || kind == 3 || kind == 0xE) {
         if (kind == 0xE && fn_802DE9A0() == true) {
             field_0x2a8 = 1;
