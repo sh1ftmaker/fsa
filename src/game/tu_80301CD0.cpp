@@ -132,6 +132,69 @@ static inline bool isQueueBusy(s32 player) {
 bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e, s32 f, u8 g);
 bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e, s32 player, bool g, u8 h, u8 i);
 
+// 0x8030905C
+cls_804AA8B8::cls_804AA8B8() {
+    for (s32 p = 0; p < 4; p++) {
+        lbl_80504A18[p] = 0;
+        lbl_80504A28[p] = 0;
+        for (s32 i = 0; i < 32; i++) {
+            Transfer_8030361C& t = lbl_804FBC18[p][i];
+            t.mUsed = 0;
+            t.field_0x119 = 0;
+            t.field_0x104 = 0;
+            t.mWords = 0;
+            t.mAddress = 0;
+            t.mIndex = i;
+            t.field_0x10c = 0;
+            t.mName[0] = 0;
+        }
+        for (s32 i = 0; i < 0x2000; i++) {
+            lbl_804DBC18[p][i] = 0xCDCDCDCD;
+        }
+        lbl_80506D48[p] = 0;
+        lbl_8053AD00[p] = 0;
+        lbl_80506D48[p + 4] = 5;
+        fn_8030801C(p);
+        lbl_8053ACD4[p] = 1;
+        lbl_80506D38[p] = 0;
+        lbl_8053ACD8[p] = 0;
+        lbl_8053ACDC[p] = 0;
+        lbl_8053ACE0[p] = 0;
+        lbl_8053ACE4[p] = 0;
+        lbl_80506D48[p + 8] = 0;
+        for (s32 i = 0; i < 19; i++) {
+            lbl_80506F88[p][0][i].f.field_0x3_0 = 1;
+            lbl_80506F88[p][0][i].f.field_0x2 = 0x80;
+            lbl_80506F88[p][1][i].f.field_0x3_0 = 1;
+            lbl_80506F88[p][1][i].f.field_0x2 = 0x80;
+        }
+        for (s32 k = 0; k < 4; k++) {
+            lbl_80506DA8[p][k] = 0;
+            lbl_80506DB8[p][k] = 0;
+            lbl_80506DC8[p][k] = 0;
+        }
+        lbl_80506D88[p] = 0;
+        lbl_80506D98[p] = 0;
+        lbl_8053ACE8[p] = 0;
+        lbl_8053ACEC[p] = 0;
+        lbl_8053ACF0[p] = 0;
+        lbl_8053ACF8[p] = 0;
+        lbl_8053ACFC[p] = 0;
+        lbl_80506DD8[p] = 0;
+        for (s32 i = 0; i < 0x80; i++) {
+            lbl_805071E8[p][i] = 0;
+        }
+        lbl_8053AD0C[p] = 0;
+        lbl_8053AD04[p] = 0;
+        lbl_8053AD14[p] = 0;
+        lbl_8053AD1C[p] = 0;
+        lbl_8053AD20[p] = 0;
+        lbl_8053AD24[p] = 0;
+        lbl_8053AD28[p] = 0;
+    }
+    lbl_8053AD08 = 0;
+}
+
 // 0x80309014
 cls_804AA8B8::~cls_804AA8B8() {}
 
