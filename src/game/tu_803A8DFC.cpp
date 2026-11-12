@@ -63,7 +63,8 @@ static s32 lbl_804AF948[14] = {6, 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 76
 extern const char* lbl_804AF980[4];
 extern const char* lbl_804AF990[4];
 
-// FIXME: 99.85. Operands + reloc-name only: .rodata string offsets (one addi) and .sdata2
+// FIXME: 99.85 %, operands + reloc-name; behaviour drift.
+// Operands + reloc-name only: .rodata string offsets (one addi) and .sdata2
 // names differ (the unit's other .rodata objects, function-local tables of unwritten
 // functions, come first in the original).
 // The OSReport arguments read the text box's string length through getStringAllocByte()
@@ -217,6 +218,7 @@ ResultScreen_804AF9A0::~ResultScreen_804AF9A0() {
     lbl_8053ADA0 = NULL;
 }
 
+// FIXME: 99.89 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803B6768() {
@@ -333,10 +335,302 @@ void ResultScreen_804AF9A0::fn_803B6768() {
     fn_8013A884(&color);
 }
 
-// FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
-// not yet in the original order (most of the unit is unwritten).
-// Every case loops over the players with an empty body (the original's
-// code is the same: whatever each case did per player was compiled out).
+// The 4P layout's panes (fn_803B6768), as fn_803B42C0 with four players.
+void ResultScreen_804AF9A0::fn_803B5378() {
+    field_0x30[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran12'));
+    field_0x30[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran22'));
+    field_0x30[2] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran32'));
+    field_0x30[3] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran42'));
+    field_0x42c = field_0x10[field_0x450]->search('Ndatar01')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x430 = field_0x10[field_0x450]->search('Ndatar21')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x40[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran11'));
+    field_0x40[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran21'));
+    field_0x40[2] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran31'));
+    field_0x40[3] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran41'));
+    for (int i = 0; i < 4; i++) {
+        field_0x40[i]->getCornerColor(field_0x46c[i]);
+    }
+    field_0x50[0] = field_0x10[field_0x450]->search('Ndatar01');
+    field_0x50[1] = field_0x10[field_0x450]->search('Ndatar12');
+    field_0x50[2] = field_0x10[field_0x450]->search('Ndatar13');
+    field_0x50[3] = field_0x10[field_0x450]->search('Ndatar14');
+    field_0x60[0] = field_0x10[field_0x450]->search('Ndatar21');
+    field_0x60[1] = field_0x10[field_0x450]->search('Ndatar22');
+    field_0x60[2] = field_0x10[field_0x450]->search('Ndatar23');
+    field_0x60[3] = field_0x10[field_0x450]->search('Ndatar24');
+    field_0xa8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore11'));
+    field_0xb8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore12'));
+    field_0xc8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore13'));
+    field_0xd8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore14'));
+    field_0xe8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore15'));
+    field_0xf8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork11'));
+    field_0x108[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork12'));
+    field_0x118[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork13'));
+    field_0x128[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork14'));
+    field_0x138[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork15'));
+    field_0xa8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore21'));
+    field_0xb8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore22'));
+    field_0xc8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore23'));
+    field_0xd8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore24'));
+    field_0xe8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore25'));
+    field_0xf8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork21'));
+    field_0x108[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork22'));
+    field_0x118[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork23'));
+    field_0x128[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork24'));
+    field_0x138[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork25'));
+    field_0xa8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore31'));
+    field_0xb8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore32'));
+    field_0xc8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore33'));
+    field_0xd8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore34'));
+    field_0xe8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore35'));
+    field_0xf8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork31'));
+    field_0x108[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork32'));
+    field_0x118[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork33'));
+    field_0x128[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork34'));
+    field_0x138[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork35'));
+    field_0xa8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore41'));
+    field_0xb8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore42'));
+    field_0xc8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore43'));
+    field_0xd8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore44'));
+    field_0xe8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore45'));
+    field_0xf8[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork41'));
+    field_0x108[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork42'));
+    field_0x118[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork43'));
+    field_0x128[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork44'));
+    field_0x138[3] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork45'));
+    field_0x148[0] = field_0x4[field_0x450]->search('Pltest1');
+    field_0x148[1] = field_0x4[field_0x450]->search('Pltwst2');
+    field_0x148[2] = field_0x4[field_0x450]->search('Pltest3');
+    field_0x148[3] = field_0x4[field_0x450]->search('Pltest4');
+    field_0x158[0] = field_0x4[field_0x450]->search('Prpst01');
+    field_0x158[1] = field_0x4[field_0x450]->search('Prpst02');
+    field_0x158[2] = field_0x4[field_0x450]->search('Prpst03');
+    field_0x158[3] = field_0x4[field_0x450]->search('Prpst04');
+    field_0x168 = field_0x4[field_0x450]->search('Ndata05');
+    field_0x16c = field_0x1c->search('Prsltbg');
+    for (int i = 0; i < 4; i++) {
+        field_0xa8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xb8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xc8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xd8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xe8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xf8[i]->setFont(lbl_8053AD78->mFont);
+        field_0x108[i]->setFont(lbl_8053AD78->mFont);
+        field_0x118[i]->setFont(lbl_8053AD78->mFont);
+        field_0x128[i]->setFont(lbl_8053AD78->mFont);
+        field_0x138[i]->setFont(lbl_8053AD78->mFont);
+        field_0xa8[i]->hide();
+        field_0xb8[i]->hide();
+        field_0xc8[i]->hide();
+        field_0xd8[i]->hide();
+        field_0xf8[i]->hide();
+        field_0x108[i]->hide();
+        field_0x118[i]->hide();
+        field_0x128[i]->hide();
+        field_0x30[i]->hide();
+        field_0x50[i]->hide();
+        field_0x60[i]->hide();
+        field_0x148[i]->hide();
+    }
+    JUTFont* font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt01'))->setFont(font);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt02'))->getStringPtr(), 0xDD, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt01'))->getStringPtr(), 0xDD, 0, NULL, NULL);
+    for (int i = 0; i < 13; i++) {
+        field_0x4c9[i] = field_0x10[field_0x450]->search(lbl_80476208[i])->getAlpha();
+    }
+    field_0x41c = field_0x10[field_0x450]->search('Pmmwk02')->getBounds()->i.y;
+    for (int i = 0; i < 3; i++) {
+        field_0x4d6[i] = field_0x10[field_0x450]->search(lbl_80476270[0][i])->getAlpha();
+    }
+    field_0x420 = field_0x10[field_0x450]->search('P1agbb02')->getBounds()->i.y;
+    for (int i = 0; i < 2; i++) {
+        field_0x4d9[i] = field_0x10[field_0x450]->search(lbl_804762D0[0][i])->getAlpha();
+    }
+    field_0x424 = field_0x10[field_0x450]->search('P1ok02')->getBounds()->i.y;
+    field_0x428 = field_0x10[field_0x450]->search('P1agb01')->getBounds()->i.y;
+    field_0x10[field_0x450]->search('Ndata02')->hide();
+    field_0x10[field_0x450]->search('Ndata01')->hide();
+    field_0x10[field_0x450]->search('Pmmwk02')->hide();
+}
+
+
+// The 3P layout's panes (fn_803B6768), as fn_803B38E8, then the score
+// screen's message texts and the panes' starting alphas and y.
+void ResultScreen_804AF9A0::fn_803B42C0() {
+    field_0x30[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran12'));
+    field_0x30[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran22'));
+    field_0x30[2] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran32'));
+    field_0x42c = field_0x10[field_0x450]->search('Ndatar01')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x430 = field_0x10[field_0x450]->search('Ndatar21')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x40[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran11'));
+    field_0x40[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran21'));
+    field_0x40[2] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran31'));
+    for (int i = 0; i < 3; i++) {
+        field_0x40[i]->getCornerColor(field_0x46c[i]);
+    }
+    field_0x50[0] = field_0x10[field_0x450]->search('Ndatar01');
+    field_0x50[1] = field_0x10[field_0x450]->search('Ndatar12');
+    field_0x50[2] = field_0x10[field_0x450]->search('Ndatar13');
+    field_0x60[0] = field_0x10[field_0x450]->search('Ndatar21');
+    field_0x60[1] = field_0x10[field_0x450]->search('Ndatar22');
+    field_0x60[2] = field_0x10[field_0x450]->search('Ndatar23');
+    field_0xa8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore11'));
+    field_0xb8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore12'));
+    field_0xc8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore13'));
+    field_0xd8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore14'));
+    field_0xe8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore15'));
+    field_0xf8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork11'));
+    field_0x108[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork12'));
+    field_0x118[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork13'));
+    field_0x128[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork14'));
+    field_0x138[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork15'));
+    field_0xa8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore21'));
+    field_0xb8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore22'));
+    field_0xc8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore23'));
+    field_0xd8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore24'));
+    field_0xe8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore25'));
+    field_0xf8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork21'));
+    field_0x108[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork22'));
+    field_0x118[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork23'));
+    field_0x128[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork24'));
+    field_0x138[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork25'));
+    field_0xa8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore31'));
+    field_0xb8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore32'));
+    field_0xc8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore33'));
+    field_0xd8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore34'));
+    field_0xe8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore35'));
+    field_0xf8[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork31'));
+    field_0x108[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork32'));
+    field_0x118[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork33'));
+    field_0x128[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork34'));
+    field_0x138[2] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork35'));
+    field_0x148[0] = field_0x4[field_0x450]->search('Pltest1');
+    field_0x148[1] = field_0x4[field_0x450]->search('Pltwst2');
+    field_0x148[2] = field_0x4[field_0x450]->search('Pltest3');
+    field_0x158[0] = field_0x4[field_0x450]->search('Prpst01');
+    field_0x158[1] = field_0x4[field_0x450]->search('Prpst02');
+    field_0x158[2] = field_0x4[field_0x450]->search('Prpst03');
+    field_0x168 = field_0x4[field_0x450]->search('Ndata05');
+    field_0x16c = field_0x1c->search('Prsltbg');
+    for (int i = 0; i < 3; i++) {
+        field_0xa8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xb8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xc8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xd8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xe8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xf8[i]->setFont(lbl_8053AD78->mFont);
+        field_0x108[i]->setFont(lbl_8053AD78->mFont);
+        field_0x118[i]->setFont(lbl_8053AD78->mFont);
+        field_0x128[i]->setFont(lbl_8053AD78->mFont);
+        field_0x138[i]->setFont(lbl_8053AD78->mFont);
+        field_0xa8[i]->hide();
+        field_0xb8[i]->hide();
+        field_0xc8[i]->hide();
+        field_0xd8[i]->hide();
+        field_0xf8[i]->hide();
+        field_0x108[i]->hide();
+        field_0x118[i]->hide();
+        field_0x128[i]->hide();
+        field_0x30[i]->hide();
+        field_0x50[i]->hide();
+        field_0x60[i]->hide();
+        field_0x148[i]->hide();
+    }
+    JUTFont* font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt02'))->setFont(font);
+    font = lbl_8053AD78->mFont;
+    static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt01'))->setFont(font);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt02'))->getStringPtr(), 0xDD, 0, NULL, NULL);
+    getMessageText_803832BC(static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tmmt01'))->getStringPtr(), 0xDD, 0, NULL, NULL);
+    for (int i = 0; i < 13; i++) {
+        field_0x4c9[i] = field_0x10[field_0x450]->search(lbl_80476208[i])->getAlpha();
+    }
+    field_0x41c = field_0x10[field_0x450]->search('Pmmwk02')->getBounds()->i.y;
+    for (int i = 0; i < 3; i++) {
+        field_0x4d6[i] = field_0x10[field_0x450]->search(lbl_80476270[0][i])->getAlpha();
+    }
+    field_0x420 = field_0x10[field_0x450]->search('P1agbb02')->getBounds()->i.y;
+    for (int i = 0; i < 2; i++) {
+        field_0x4d9[i] = field_0x10[field_0x450]->search(lbl_804762D0[0][i])->getAlpha();
+    }
+    field_0x424 = field_0x10[field_0x450]->search('P1ok02')->getBounds()->i.y;
+    field_0x428 = field_0x10[field_0x450]->search('P1agb01')->getBounds()->i.y;
+    field_0x10[field_0x450]->search('Ndata02')->hide();
+    field_0x10[field_0x450]->search('Ndata01')->hide();
+    field_0x10[field_0x450]->search('Pmmwk02')->hide();
+}
+
+// The 2P layout's panes (fn_803B6768): rank pictures, score digits and
+// the per-player panes of field_0x10[field_0x450] / field_0x4[field_0x450].
+void ResultScreen_804AF9A0::fn_803B38E8() {
+    field_0x30[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran12'));
+    field_0x30[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran22'));
+    field_0x42c = field_0x10[field_0x450]->search('Ndatar01')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x430 = field_0x10[field_0x450]->search('Ndatar21')->getBounds()->i.y - field_0x30[0]->getBounds()->i.y;
+    field_0x40[0] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran11'));
+    field_0x40[1] = static_cast<J2DPicture*>(field_0x10[field_0x450]->search('Pran21'));
+    for (int i = 0; i < 2; i++) {
+        field_0x40[i]->getCornerColor(field_0x46c[i]);
+    }
+    field_0x50[0] = field_0x10[field_0x450]->search('Ndatar01');
+    field_0x50[1] = field_0x10[field_0x450]->search('Ndatar12');
+    field_0x60[0] = field_0x10[field_0x450]->search('Ndatar21');
+    field_0x60[1] = field_0x10[field_0x450]->search('Ndatar22');
+    field_0xa8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore11'));
+    field_0xb8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore12'));
+    field_0xc8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore13'));
+    field_0xd8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore14'));
+    field_0xe8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore15'));
+    field_0xf8[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork11'));
+    field_0x108[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork12'));
+    field_0x118[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork13'));
+    field_0x128[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork14'));
+    field_0x138[0] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork15'));
+    field_0xa8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore21'));
+    field_0xb8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore22'));
+    field_0xc8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore23'));
+    field_0xd8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore24'));
+    field_0xe8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscore25'));
+    field_0xf8[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork21'));
+    field_0x108[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork22'));
+    field_0x118[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork23'));
+    field_0x128[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork24'));
+    field_0x138[1] = static_cast<J2DTextBox*>(field_0x10[field_0x450]->search('Tscork25'));
+    field_0x148[0] = field_0x4[field_0x450]->search('Pltest1');
+    field_0x148[1] = field_0x4[field_0x450]->search('Pltwst2');
+    field_0x158[0] = field_0x4[field_0x450]->search('Prpst01');
+    field_0x158[1] = field_0x4[field_0x450]->search('Prpst02');
+    field_0x168 = field_0x4[field_0x450]->search('Ndata05');
+    field_0x16c = field_0x1c->search('Prsltbg');
+    for (int i = 0; i < 2; i++) {
+        field_0xa8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xb8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xc8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xd8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xe8[i]->setFont(lbl_8053AD78->mFont);
+        field_0xf8[i]->setFont(lbl_8053AD78->mFont);
+        field_0x108[i]->setFont(lbl_8053AD78->mFont);
+        field_0x118[i]->setFont(lbl_8053AD78->mFont);
+        field_0x128[i]->setFont(lbl_8053AD78->mFont);
+        field_0x138[i]->setFont(lbl_8053AD78->mFont);
+        field_0xa8[i]->hide();
+        field_0xb8[i]->hide();
+        field_0xc8[i]->hide();
+        field_0xd8[i]->hide();
+        field_0xf8[i]->hide();
+        field_0x108[i]->hide();
+        field_0x118[i]->hide();
+        field_0x128[i]->hide();
+        field_0x30[i]->hide();
+        field_0x50[i]->hide();
+        field_0x60[i]->hide();
+        field_0x148[i]->hide();
+    }
+}
+
 void ResultScreen_804AF9A0::fn_803B35F8(s32 index) {
     switch (index) {
     case 0:
@@ -378,10 +672,6 @@ void ResultScreen_804AF9A0::fn_803B35F8(s32 index) {
     }
 }
 
-// FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
-// not yet in the original order (most of the unit is unwritten).
-// Every case loops over the players with an empty body (the original's
-// code is the same: whatever each case did per player was compiled out).
 void ResultScreen_804AF9A0::fn_803B3358(s32 index) {
     switch (index) {
     case 0:
@@ -419,6 +709,7 @@ void ResultScreen_804AF9A0::fn_803B3358(s32 index) {
     }
 }
 
+// FIXME: 99.86 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803B31AC() {
@@ -476,7 +767,8 @@ void ResultScreen_804AF9A0::fn_803B2FB0() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 74.63 %, missing/extra + reloc-name; behaviour drift.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B1B60() {
     if (field_0x440 > 0) {
         field_0x440--;
@@ -571,7 +863,8 @@ void ResultScreen_804AF9A0::fn_803B1B60() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 96.16 %, missing/extra + reloc-name; behaviour near.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B14F8() {
     s32 done = 0;
     s32 t1 = lbl_8050DB0C.field_0x4c[(0x252 - 0x4C) / 2];
@@ -634,7 +927,8 @@ void ResultScreen_804AF9A0::fn_803B14F8() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 99.42 %, regalloc-only + reloc-name; behaviour clean.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B0FD4() {
     field_0x440++;
     s32 t1 = lbl_8050DB0C.field_0x4c[(0x25A - 0x4C) / 2];
@@ -698,7 +992,8 @@ void ResultScreen_804AF9A0::fn_803B0FD4() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 96.13 %, missing/extra + reloc-name; behaviour near.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B0978() {
     s32 done = 0;
     s32 t1 = lbl_8050DB0C.field_0x4c[(0x252 - 0x4C) / 2];
@@ -760,7 +1055,8 @@ void ResultScreen_804AF9A0::fn_803B0978() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 98.15 %, missing/extra + reloc-name; behaviour drift.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B03E8() {
     s32 t0 = lbl_8050DB0C.field_0x4c[(0x260 - 0x4C) / 2];
     s32 t1 = lbl_8050DB0C.field_0x4c[(0x262 - 0x4C) / 2];
@@ -811,6 +1107,7 @@ void ResultScreen_804AF9A0::fn_803B03E8() {
     }
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803B0158() {
@@ -859,6 +1156,7 @@ void ResultScreen_804AF9A0::fn_803B0158() {
     }
 }
 
+// FIXME: 99.89 %, reloc-name; behaviour drift.
 // FIXME: reloc-name only (instructions identical): its function-local point tables
 // are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
@@ -971,6 +1269,7 @@ void ResultScreen_804AF9A0::fn_803AFCF0() {
         gAudioMgr_8053AF80->fn_80458880(0xE, -1);
     }
 }
+// FIXME: 99.87 %, reloc-name; behaviour clean.
 void ResultScreen_804AF9A0::fn_803AFA78() {
     BOOL done = FALSE;
     if (field_0x4c8 != 0xFF && animateWinners()) {
@@ -982,6 +1281,7 @@ void ResultScreen_804AF9A0::fn_803AFA78() {
     }
 }
 
+// FIXME: 98.44 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803AF79C() {
     field_0x440--;
@@ -1023,6 +1323,9 @@ void ResultScreen_804AF9A0::fn_803AF79C() {
     }
 }
 
+// Not auto-inlined: fn_803AA8F8 calls fn_803AF604 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void ResultScreen_804AF9A0::fn_803AF604() {
     field_0x440--;
     if (field_0x440 > 10) {
@@ -1057,7 +1360,9 @@ void ResultScreen_804AF9A0::fn_803AF604() {
         field_0x4c1 = 13;
     }
 }
+#pragma auto_inline reset
 
+// FIXME: 99.89 %, reloc-name; behaviour drift.
 // FIXME: reloc-name only (instructions identical): its function-local point tables
 // are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
@@ -1170,6 +1475,7 @@ void ResultScreen_804AF9A0::fn_803AF1B0() {
         gAudioMgr_8053AF80->fn_80458880(0xE, -1);
     }
 }
+// FIXME: 99.88 %, reloc-name; behaviour clean.
 void ResultScreen_804AF9A0::fn_803AEF08() {
     BOOL done = FALSE;
     if (field_0x4c8 != 0xFF) {
@@ -1190,6 +1496,7 @@ void ResultScreen_804AF9A0::fn_803AEF08() {
     }
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803AEC78() {
@@ -1237,6 +1544,7 @@ void ResultScreen_804AF9A0::fn_803AEC78() {
     }
 }
 
+// FIXME: 99.89 %, reloc-name; behaviour drift.
 // FIXME: reloc-name only (instructions identical): its function-local point tables
 // are named lbl_80476388.. / lbl_80543378.. in the original, points4$NNN here.
 // Bonus page step: field_0x330[i] gets the points for player i's place by
@@ -1350,6 +1658,7 @@ void ResultScreen_804AF9A0::fn_803AE810() {
     }
 }
 
+// FIXME: 99.87 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
 // in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
 void ResultScreen_804AF9A0::fn_803AE598() {
@@ -1363,6 +1672,7 @@ void ResultScreen_804AF9A0::fn_803AE598() {
     }
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803AE308() {
@@ -1507,6 +1817,7 @@ void ResultScreen_804AF9A0::fn_803ADE9C() {
     }
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803ADC0C() {
@@ -1554,6 +1865,7 @@ void ResultScreen_804AF9A0::fn_803ADC0C() {
     }
 }
 
+// FIXME: 99.86 %, reloc-name; behaviour clean.
 // FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803AD894() {
     field_0x440--;
@@ -1624,7 +1936,6 @@ void ResultScreen_804AF9A0::fn_803AD894() {
     }
 }
 
-// FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803AD4B0() {
     s32 done = 0;
     s32 rank = 0;
@@ -1695,6 +2006,7 @@ void ResultScreen_804AF9A0::fn_803AD4B0() {
     }
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803AD220() {
@@ -1742,6 +2054,7 @@ void ResultScreen_804AF9A0::fn_803AD220() {
     }
 }
 
+// FIXME: 99.97 %, reloc-name; behaviour clean.
 // FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803ACDA4() {
     s32 done = 0;
@@ -1824,6 +2137,7 @@ void ResultScreen_804AF9A0::fn_803ACDA4() {
     }
 }
 
+// FIXME: 99.88 %, reloc-name; behaviour clean.
 // FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803AC998() {
     field_0x440--;
@@ -1909,6 +2223,7 @@ void ResultScreen_804AF9A0::fn_803AC998() {
     }
 }
 
+// FIXME: 98.71 %, different + reloc-name; behaviour near.
 // FIXME(shotgun): ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803AC6FC() {
     s32 done = 0;
@@ -2013,6 +2328,7 @@ inline BOOL ResultScreen_804AF9A0::animateWinners() {
     return false;
 }
 
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
 // in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
 void ResultScreen_804AF9A0::fn_803AC154() {
@@ -2043,6 +2359,7 @@ void ResultScreen_804AF9A0::fn_803AC154() {
     }
 }
 
+// FIXME: 99.89 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals are not yet
 // in the original order (fn_803AA8F8's ids and lbl_805433B8 are missing in front).
 // State 32: slide the 'Pttlbk05' title pane out and the winner pane in
@@ -2152,7 +2469,8 @@ void ResultScreen_804AF9A0::fn_803ABCEC() {
     }
 }
 
-// FIXME: 99.52. Registers and stack slots only (the ranks / ranked / totals pointers,
+// FIXME: 99.52 %, operands + reloc-name; behaviour clean.
+// Registers and stack slots only (the ranks / ranked / totals pointers,
 // f29-f31, the corner-colour copy at 0x40 vs 0x1C, the emitter positions) plus .sdata2
 // names.
 // State 33: the winners' and the others' sprite animations
@@ -2283,10 +2601,8 @@ void ResultScreen_804AF9A0::fn_803AB494() {
     }
 }
 
-// FIXME: 98.43, kept out of the build: not register-only. In state 21 the original sets `done` to 0 and copies it
-// into i (li; mr) where ours loads 0 twice; also .sdata2 / jump table / ids names (the
-// literal pool is not yet in the original order).
-#ifdef NONMATCHING
+// State 21: the original sets `done` to 0 and copies it into i (li; mr); also .sdata2 / jump table / ids names.
+// FIXME: 98.45 %, different + reloc-name; behaviour drift.
 void ResultScreen_804AF9A0::fn_803AA8F8() {
     switch (field_0x4c1) {
     case 0:
@@ -2552,7 +2868,6 @@ void ResultScreen_804AF9A0::fn_803AA8F8() {
     }
     fn_803B2FB0();
 }
-#endif
 
 // Defined here, below fn_803AA8F8: the original's .sdata2 / .rodata have the
 // P*.bti / kk_*.bti strings after the function-local tables of fn_803AFCF0,
@@ -2560,7 +2875,8 @@ void ResultScreen_804AF9A0::fn_803AA8F8() {
 const char* lbl_804AF980[4] = {"P1.bti", "P2.bti", "P3.bti", "P4.bti"};
 const char* lbl_804AF990[4] = {"kk_1st_01.bti", "kk_2nd_01.bti", "kk_3rd_01.bti", "kk_4th_01.bti"};
 
-// FIXME: 98.67. Registers (the second player loop), and each of the two ifs of the
+// FIXME: 98.67 %, missing/extra + reloc-name; behaviour near.
+// Registers (the second player loop), and each of the two ifs of the
 // clamp of lbl_8050EC80.getCurrentFile().field_0x10 goes through an extra `addi 0x30`
 // pointer (the original keeps the file row address and stores at 0x30: the save-data
 // row shape of docs/CRACK_PASS.md "Save-data layout"); also .sdata2 names.
@@ -2673,7 +2989,8 @@ void ResultScreen_804AF9A0::fn_803AA1F8() {
 }
 
 
-// FIXME: 98.71. Registers (the second player loop), and each of the two ifs of the
+// FIXME: 98.71 %, missing/extra + reloc-name; behaviour near.
+// Registers (the second player loop), and each of the two ifs of the
 // clamp of lbl_8050EC80.getCurrentFile().field_0x10 goes through an extra `addi 0x30`
 // pointer (the original keeps the file row address and stores at 0x30: the save-data
 // row shape of docs/CRACK_PASS.md "Save-data layout"); also .sdata2 names.
@@ -2789,7 +3106,8 @@ void ResultScreen_804AF9A0::fn_803A9AB8() {
     }
 }
 
-// FIXME: 98.53. The original unrolls the field_0x1b8 loop of mode 6 in two halves (the
+// FIXME: 98.62 %, missing/extra + reloc-name; behaviour drift.
+// The original unrolls the field_0x1b8 loop of mode 6 in two halves (the
 // second through a base register this + 8, one addi more); ours unrolls it flat. Also
 // .sdata2 / jump table names (literal pool not yet in the original order).
 void ResultScreen_804AF9A0::fn_803A9830() {
@@ -2859,6 +3177,7 @@ void ResultScreen_804AF9A0::fn_803A9830() {
     field_0x4[field_0x450]->animation();
 }
 
+// FIXME: 99.86 %, reloc-name; behaviour clean.
 // FIXME: reloc-name only (instructions identical): the .sdata2 literals / jump table are
 // not yet in the original order (most of the unit is unwritten).
 void ResultScreen_804AF9A0::fn_803A97A0() {
@@ -2871,7 +3190,8 @@ void ResultScreen_804AF9A0::fn_803A97A0() {
     field_0x1c->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME: 99.66. Regalloc (the sprite frame of the second loop is in r21, the original
+// FIXME: 99.66 %, regalloc-only + reloc-name; behaviour clean.
+// Regalloc (the sprite frame of the second loop is in r21, the original
 // r23) and .sdata2 names (literal pool not yet in the original order).
 void ResultScreen_804AF9A0::fn_803A8F5C() {
     gGameRoot2_8053AB10->fn_8013B490();

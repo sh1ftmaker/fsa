@@ -142,7 +142,8 @@ public:
     /* 0x118 */ J2DTextBox* field_0x118[4];
     /* 0x128 */ J2DTextBox* field_0x128[4];
     /* 0x138 */ J2DTextBox* field_0x138[4];
-    /* 0x148 */ u8 field_0x148[0x158 - 0x148];
+    // field_0x4[field_0x450]'s per-player panes (fn_803B38E8: 'Pltest1', 'Pltwst2').
+    /* 0x148 */ J2DPane* field_0x148[4];
     // Per-player panes whose centre, with field_0x168's offset, places the
     // player sprite field_0x2f0[i] (fn_803B6768).
     /* 0x158 */ J2DPane* field_0x158[4];
