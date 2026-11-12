@@ -876,7 +876,7 @@ void cls_8049C718::update() {
     fn_800FA6B0();
 }
 
-// FIXME(shotgun): 85.54 %, different; behaviour drift.
+// FIXME(shotgun): 91.96 %, scheduling+regalloc; behaviour clean.
 bool cls_8049C718::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 kind = fn_8022461C(pos, layer);
     if (kind == 3 || kind == 14 || kind == 2) {
@@ -893,6 +893,7 @@ void cls_8049C718::vfunc_0x24() {
     vfunc_0x28(0, 0.0f, -20.0f);
 }
 
+// FIXME: 96.55 %, different + reloc-name; behaviour drift.
 // FIXME(shotgun): unsigned compares of field_0xb0 (cmplwi) and the early-return branch layout differ.
 void cls_8049C718::vfunc_0x44() {
     if (field_0xb0 == 4 || field_0xb0 == 0x12) {
