@@ -78,6 +78,7 @@ bool fn_80453848(JPABaseEmitter* emitter) {
 
 cls_80453830::cls_80453830() {}
 
+// FIXME: 96.89 %, missing/extra; behaviour near.
 cls_804B1D58::cls_804B1D58() {
     lbl_8053AF40 = this;
     mScreen = new J2DScreen;
@@ -248,7 +249,6 @@ cls_804B1D58::cls_804B1D58() {
     }
 }
 
-// FIXME(shotgun): 99 %, reloc-name
 cls_804B1D58::~cls_804B1D58() {
     gAudioMgr_8053AF80->fn_80459274();
     fn_8044C7F0();
@@ -281,7 +281,8 @@ cls_804B1D58::~cls_804B1D58() {
     lbl_8053AF40 = NULL;
 }
 
-// FIXME(shotgun): 88.89 %, missing/extra + reloc-name (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
+// FIXME(shotgun): 89.08 %, missing/extra + reloc-name; behaviour drift.
+// (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
 void cls_804B1D58::fn_80452350() {
     lbl_8053AEC0->fn_804310CC();
     s32 i = 0;
@@ -332,7 +333,6 @@ void cls_804B1D58::fn_80452350() {
     field_0x184 = 9;
 }
 
-// FIXME(shotgun): 99.72 %, reloc-name
 void cls_804B1D58::fn_80452308() {
     gGameRoot2_8053AB10->fn_8013B490();
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
@@ -347,6 +347,7 @@ void cls_804B1D58::fn_804522C8() {
 // Steps the screen's states (field_0xfa): slides the tabs and data panes in and out, moves the
 // cursor between the three tabs, runs the yes/no window, plays the two row-clear sequences;
 // then blinks 'Pswbli' / 'Pcul01', runs the animations and keeps the emitters on their panes.
+// FIXME: 98.54 %, missing/extra; behaviour drift.
 s32 cls_804B1D58::fn_8044F680() {
     field_0x184 = 9;
     s16 start = lbl_8050DB0C.field_0x4c[(0x238 - 0x4C) / 2];
@@ -979,6 +980,7 @@ s32 fn_8044F664() {
 
 // Refreshes the screen: recolours the three tabs, shows the rupee count, the players' rows and
 // emitters, the second list's rows, and the total (field_0x11c) or the digits of what is left.
+// FIXME: 97.17 %, missing/extra + reloc-name; behaviour near.
 void cls_804B1D58::fn_8044D894() {
     for (s32 i = 0; i < 3; i++) {
         if (i == field_0xf8) {
@@ -1263,7 +1265,7 @@ void cls_804B1D58::fn_8044D894() {
 }
 
 // Selects row `arg` (0-3) of the second list; like fn_8044CB08, with one emitter (field_0xb0).
-// FIXME(shotgun): 67 %, missing/extra + reloc-name
+// FIXME(shotgun): 75.35 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1D58::fn_8044D298(int arg) {
     if (arg >= 0 && arg <= 3) {
         gGameRoot_8053AAF8->fn_80134D20(false);
@@ -1313,7 +1315,7 @@ u8 cls_804B1D58::fn_8044D290() {
 
 // Selects row `arg` (0-6): recolours the cursor panes, hides the row's panes and starts its two
 // emitters (stopped at once: the status bits 1, 2 and 4).
-// FIXME(shotgun): 70 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.06 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1D58::fn_8044CB08(int arg) {
     if (arg >= 0 && arg <= 6) {
         gGameRoot_8053AAF8->fn_80134D20(false);
@@ -1377,7 +1379,6 @@ u8 cls_804B1D58::fn_8044CB00() {
     return field_0x140;
 }
 
-// FIXME(shotgun): 99.75 %, reloc-name
 void cls_804B1D58::fn_8044C968() {
     for (s32 i = 0; i < 3; i++) {
         field_0x48[i]->moveFromCentre_80402E08(300.0f, 0.0f);
@@ -1399,7 +1400,6 @@ void cls_804B1D58::fn_8044C968() {
 }
 
 // Stops the emitters of the three arrays and deletes the two others (the destructor inlines it).
-// FIXME(shotgun): 100 %, matches
 void cls_804B1D58::fn_8044C7F0() {
     for (s32 i = 0; i < 7; i++) {
         if (field_0x6c[i] != NULL) {
