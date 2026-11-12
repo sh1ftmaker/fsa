@@ -43,9 +43,9 @@ each sits; assembly inlined for the tiny ones) and is judged on the unit as a wh
 session is kept the next one starts fresh on what is left (--relay). For units with several
 small open functions this shares the class and header reading between them.
 
-Adversarial review: before a unit's kept changes are integrated, a reviewer one tier above the
-author (opus reviews opus) reads each diff against the original assembly and gives a verdict
-per change. It looks for what scripts can't see: statements that only move a metric, codegen
+Adversarial review: before a unit's kept changes are integrated, a separate reviewer session
+(sonnet for haiku and sonnet authors, opus for opus; --review-tier overrides) reads each diff
+against the original assembly and gives a verdict per change. It looks for what scripts can't see: statements that only move a metric, codegen
 steering, fakes, wrong facts, guesswork. A change without an explicit ACCEPT is dropped, its
 function moves up a tier and the reviewer's reason is given to the next attempt.
 
@@ -951,7 +951,9 @@ def integrate(wt, branch, unit):
 
 # ---------------------------------------------------------------- adversarial review
 
-REVIEW_TIER = {"haiku": "sonnet", "sonnet": "opus", "opus": "opus"}
+# The reviewer is never weaker than the author and never below sonnet. (Pilot: an opus review of two sonnet
+# changes cost more than writing them; sonnet and haiku reviewers both caught a planted trick.)
+REVIEW_TIER = {"haiku": "sonnet", "sonnet": "sonnet", "opus": "opus"}
 REVIEW_SYSTEM = """You are the adversarial reviewer of a decompilation project: The Legend of Zelda: Four Swords Adventures (GameCube), C++ that Metrowerks GC/2.6 must compile back to the original code. The repository in your working directory is a private read-only copy with the changes applied.
 
 The authors are other models. Scripts reward them for two numbers: objdiff's match % and a behaviour fingerprint that counts a function's calls, constants, compares, field accesses, immediates and operations against the original. The scripts already proved that every change builds, that no function got worse and that some regex style rules hold. They cannot see intent. Assume each author may have gamed the numbers. You never saw the author's reasoning: judge only the diff against the original assembly.
@@ -1003,7 +1005,7 @@ def review_notes():
 
 
 def run_review(wt, owner, unit, base_head, first, changes, args):
-    """Ask a reviewer one tier above the strongest author for a verdict per kept change, rebuild
+    """Ask a reviewer (REVIEW_TIER of the strongest author) for a verdict per kept change, rebuild
     the worker branch from the accepted ones and return those. A change without an explicit
     ACCEPT is out."""
     tier = REVIEW_TIER[max((c["tier"] for c in changes), key=ORDER.index)]
@@ -1014,7 +1016,7 @@ def run_review(wt, owner, unit, base_head, first, changes, args):
                     tools="Bash,Read")
     revert(wt)  # a reviewer cannot edit; make sure nothing is left behind
     verdicts = {m.group(1): (m.group(2), m.group(3).strip()) for m in
-                re.finditer(r"^VERDICT\s+(c\d+)\s+(ACCEPT|REJECT)\b:?\s*(.*)$", s["text"], re.M)}
+                re.finditer(r"^VERDICT[ \t]+(c\d+)[ \t]+(ACCEPT|REJECT)\b:?[ \t]*([^\n]*)$", s["text"], re.M)}
     good = [c for c in changes if verdicts.get(c["id"], ("", ""))[0] == "ACCEPT"]
     bad = [c for c in changes if c not in good]
     notes = review_notes()
