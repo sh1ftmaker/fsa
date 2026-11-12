@@ -712,11 +712,14 @@ void cls_804AE4B0::fn_803705A0() {
     }
 }
 
-// FIXME(shotgun): 83.50 %, missing/extra + reloc-name
+// FIXME(shotgun): reloc-name only: float literals lbl_80542E00/E04 not split into this unit
 void cls_804AE4B0::fn_80370508() {
     fn_803703C8();
-    switch (field_0x240) {
-    case 0:
+    if (field_0x240 != 0) {
+        if (field_0x240 == 1) {
+            field_0x368 = 0x104;
+        }
+    } else {
         if (field_0x324.y < 1760.0f) {
             field_0x324.y += 0.5f;
         } else {
@@ -724,10 +727,6 @@ void cls_804AE4B0::fn_80370508() {
             mState = 0xB;
             vfunc_0x30(0xFF, true);
         }
-        break;
-    case 1:
-        field_0x368 = 0x104;
-        break;
     }
 }
 
