@@ -65,7 +65,8 @@ s32 lbl_80504A28[4]; // queue tail per player
 cls_803099FC lbl_80504A38[4][16];
 cls_803099FC lbl_80505438[4][40];
 u32 lbl_80506D38[4];
-s32 lbl_80506D48[4][4];
+s32 lbl_80506D48[12];
+f32 lbl_80506D78[4];
 s32 lbl_80506D88[4];
 s32 lbl_80506D98[4];
 u8 lbl_80506DA8[4][4];
@@ -738,6 +739,94 @@ void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 ma
     params.mMtx = scale;
     void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
     gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
+}
+
+// The draw order key of mark `i` of a record: its slot's sprite kind when it is set like the
+// player's own mark (lbl_80506DD8), -1 otherwise.
+static inline s32 markKey(const cls_804AA858Sub11C* record, s32 player, s32 i) {
+    s32 own = lbl_80506DD8[player];
+    if ((record->mMask >> i & 1) != (record->mMask >> own & 1)) {
+        return -1;
+    }
+    return lbl_80506DA8[player][i];
+}
+
+// A sprite word that is off screen (x = 0x180).
+static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
+    return sprite.f.field_0x3_0 == 1 && sprite.f.field_0x2 == 0x80;
+}
+
+static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
+    return sprite.f.field_0x0 | sprite.f.field_0x3_1 << 8;
+}
+
+// Draws a record's marks and the player's two sprite lists (the last visible sprite of each
+// first) in order of their kinds (fn_803074A4), each list from its end towards its start.
+// 0x803022C4
+void fn_803022C4(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
+    s32 order[4];
+    for (s32 i = 0; i < 4; i++) {
+        order[i] = i;
+    }
+    for (s32 i = 3; i > 0; i--) {
+        for (s32 j = 0; j < i; j++) {
+            s32 a = order[j];
+            s32 b = order[j + 1];
+            if (markKey(record, player, a) < markKey(record, player, b) ||
+                (markKey(record, player, a) == markKey(record, player, b) &&
+                 record->mEntries[a].mY < record->mEntries[b].mY))
+            {
+                order[j] = b;
+                order[j + 1] = a;
+            }
+        }
+    }
+    GbaSprite_80506F88* list = lbl_80506F88[player][0];
+    s32 i28 = 18;
+    while (i28 >= 0 && isHiddenSprite(list[i28])) {
+        i28--;
+    }
+    s32 i27 = 18;
+    while (i27 >= 0 && isHiddenSprite(list[19 + i27])) {
+        i27--;
+    }
+    if (record->mValid <= 1) {
+        set = true;
+    }
+    s32 n = 3;
+    while (i28 >= 0 || i27 >= 0 || n >= 0) {
+        s32 keyMark = n >= 0 ? markKey(record, player, order[n]) : 0xFF;
+        s32 keyA = i28 >= 0 ? fn_803074A4(list[i28].f.mKind, spriteId(list[i28])) : 0xFF;
+        s32 keyB = i27 >= 0 ? fn_803074A4(list[19 + i27].f.mKind, spriteId(list[19 + i27])) : 0xFF;
+        if (i27 >= 0 && (n < 0 || keyB < keyMark ||
+                         (keyB == keyMark && record->mEntries[order[n]].mY >= list[19 + i27].f.field_0x1)) &&
+            (i28 < 0 || keyA <= keyB ||
+             (keyA == keyB && list[i28].f.field_0x1 >= list[19 + i27].f.field_0x1)))
+        {
+            if (keyB >= 2) {
+                fn_80302F9C(&list[19 + i27], lbl_80506D78[player], flag, set);
+            }
+            i27--;
+            while (i27 >= 0 && isHiddenSprite(list[19 + i27])) {
+                i27--;
+            }
+        } else if (i28 >= 0 && (n < 0 || keyA < keyMark ||
+                                (keyA == keyMark && record->mEntries[order[n]].mY >= list[i28].f.field_0x1)))
+        {
+            if (keyA >= 2) {
+                fn_80302F9C(&list[i28], lbl_80506D78[player], flag, set);
+            }
+            i28--;
+            while (i28 >= 0 && isHiddenSprite(list[i28])) {
+                i28--;
+            }
+        } else {
+            if (markKey(record, player, order[n]) >= 2) {
+                fn_80302C34(&record->mSprites[order[n]], player, order[n], record->mMask, flag);
+            }
+            n--;
+        }
+    }
 }
 
 // Works out the link state lbl_8053ACE8[slot] (1-3, 0 for none) of a

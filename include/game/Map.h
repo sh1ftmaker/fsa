@@ -122,7 +122,9 @@ union GbaSprite_80506F88 {
 // fn_802F53F4 copies one in whole from tu_80301CD0's data (0x803051A0) and
 // reads its packed bytes; fn_803068D0 reads the same bits of byte 2.
 struct cls_804AA858Sub11C {
-    /* 0x00 */ u32 field_0x0 : 16;
+    /* 0x00 */ u32 field_0x0 : 8;
+    /* 0x01 */ u32 mMask : 4;       // fn_803022C4: which of the four marks are set
+    u32 field_0x1_0 : 4;
     /* 0x02 */ u32 mMode : 2;      // 2 / 3 select the bits of 0x5 / 0x4 kept; bit 0 enables the tables
     u32 field_0x2_5 : 1;
     u32 mValid : 3;                // nonzero for a valid record
@@ -144,7 +146,10 @@ struct cls_804AA858Sub11C {
     // of their last bytes hold the panel's 9-bit scroll (fn_802FB69C): x =
     // mEntries[0].mScroll << 5 | mEntries[0].mScrollBit << 4 | mEntries[1].mScroll,
     // y likewise from entries 2 and 3; mEntries[3].mScrollBit is the overlay flag.
-    /* 0x08 */ cls_804AA858Sub11CEntry mEntries[4];
+    union {
+        /* 0x08 */ cls_804AA858Sub11CEntry mEntries[4];
+        GbaSprite_80506F88 mSprites[4];
+    };
     /* 0x18 */ GbaSprite_80506F88 field_0x18[(0x68 - 0x18) / 4]; // fn_803068D0 copies words from here
 }; // Size: 0x68
 
@@ -163,6 +168,7 @@ void fn_803068D0(cls_804AA858Sub11C* record);
 // byte and whether field_0x134[player] is set.
 void fn_803022C4(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set);
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set);
+void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set);
 // Also tu_80301CD0's, read by TileMap_804AA858::fn_802FF0EC per player:
 // fn_80301D30's state (1 / 2), a byte counter (>> 1, or (0x10 - it) << 4)
 // and two s32 tables compared for equality.
