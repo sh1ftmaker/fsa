@@ -1588,7 +1588,10 @@ inline void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpritePara
 
 // FIXME: 94.99 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A7AE0::draw() {
-    if ((field_0x24c == 0 && field_0x2ac == 0) || field_0x2bb == 1) {
+    if (field_0x24c == 0 && field_0x2ac == 0) {
+        return;
+    }
+    if (field_0x2bb == 1) {
         return;
     }
     SpriteParams_801F5AE0 params;
@@ -1603,20 +1606,34 @@ void cls_804A7AE0::draw() {
     }
     JGeometry::TVec3f pos = mPos;
     if (field_0x244 == 0) {
-        drawSmp_802965BC(field_0x4, &pos, &params, field_0x2b6 != 0 ? "house_smp.bin" : "house2_smp.bin");
+        drawSmp_802965BC(field_0x4, &pos, &params, field_0x2b6 == 0 ? "house2_smp.bin" : "house_smp.bin");
         params.field_0x1c++;
         drawSmp_802965BC(field_0x4, &pos, &params, "house1_smp.bin");
         params.field_0x1c--;
     } else if (field_0x244 == 1) {
-        const char* a = field_0x2b7 == 0 ? "room2_u_smp.bin" : "room_u_smp.bin";
-        const char* b = field_0x2b7 == 0 ? "room3_u_smp.bin" : "room1_u_smp.bin";
+        const char* a;
+        const char* b;
+        if (field_0x2b7 == 0) {
+            a = "room2_u_smp.bin";
+            b = "room3_u_smp.bin";
+        } else {
+            a = "room_u_smp.bin";
+            b = "room1_u_smp.bin";
+        }
         drawSmp_802965BC(field_0x4, &pos, &params, a);
         params.field_0x1c++;
         drawSmp_802965BC(field_0x4, &pos, &params, b);
         params.field_0x1c--;
         pos.x += 48.0f;
-        const char* c = field_0x2b6 == 0 ? "room2_smp.bin" : "room_smp.bin";
-        const char* d = field_0x2b6 == 0 ? "room3_smp.bin" : "room1_smp.bin";
+        const char* c;
+        const char* d;
+        if (field_0x2b6 == 0) {
+            c = "room2_smp.bin";
+            d = "room3_smp.bin";
+        } else {
+            c = "room_smp.bin";
+            d = "room1_smp.bin";
+        }
         drawSmp_802965BC(field_0x4, &pos, &params, c);
         params.field_0x1c++;
         drawSmp_802965BC(field_0x4, &pos, &params, d);
