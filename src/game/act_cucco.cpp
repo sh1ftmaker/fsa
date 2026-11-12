@@ -99,7 +99,7 @@ void Cucco_804AB8C0::init() {
             }
         }
     }
-    field_0x2a8 = 0;
+    field_0x2a4[2] = 0;
     field_0x2b8.x = 0.0f;
     field_0x2b8.y = 0.0f;
     field_0x2b8.z = 0.0f;
@@ -128,7 +128,7 @@ void Cucco_804AB8C0::init() {
         } else {
             field_0x98 = 1;
         }
-        field_0x2a8 = 1;
+        field_0x2a4[2] = 1;
         field_0x230 = 7;
         break;
     }
