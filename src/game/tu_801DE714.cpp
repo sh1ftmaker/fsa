@@ -151,10 +151,12 @@ cls_804A51E4::~cls_804A51E4() {
 // FIXME(shotgun): 80.67 %, missing/extra + reloc-name
 void cls_804A51E4::init() {
     EnemyBase_804A4808::init();
-    mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
     field_0xb0 = 0;
     field_0x98 = 0;
     mFlags |= 0x300;
