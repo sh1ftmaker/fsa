@@ -47,8 +47,6 @@ public:
     // 0x8044C7F0: lets the emitters of 0x6C / 0x88 / 0xB0 run out (stopCreateParticle, setMaxFrame(1), pointer
     // cleared) and deletes the ones of 0xA4 / 0xC0; the destructor inlines it.
     void fn_8044C7F0();
-    // 0x80453848: bit 8 of field_0xf4 is set and field_0xd0 + field_0xdc is 0.
-    bool fn_80453848();
 
     /* 0x004 */ J2DScreen* mScreen; // drawn by fn_80452308
     /* 0x008 */ PaneCtrl_804AF86C* field_0x8;
@@ -62,21 +60,13 @@ public:
     /* 0x0B0 */ JPABaseEmitter* field_0xb0[4];
     /* 0x0C0 */ JPABaseEmitter* field_0xc0[3];
     /* 0x0CC */ void* field_0xcc; // "collect.brk" resource
-    // 0xD0, 0xF4: fn_80453848 reads them as counts / flags (bit 8 of 0xF4); the constructor loads
-    // animations into them and the destructor deletes them.
-    union {
-        /* 0x0D0 */ s32 field_0xd0; // fn_80453848
-        /* 0x0D0 */ J2DAnmTevRegKey* mAnm_0xd0; // "collect.brk"
-    };
+    /* 0x0D0 */ J2DAnmTevRegKey* mAnm_0xd0; // "collect.brk"
     /* 0x0D4 */ void* field_0xd4; // "collect.btk" resource
     /* 0x0D8 */ J2DAnmTextureSRTKey* field_0xd8[4];
     /* 0x0E8 */ void* field_0xe8; // "collect_02.btk" resource
     /* 0x0EC */ J2DAnmTextureSRTKey* field_0xec;
     /* 0x0F0 */ void* field_0xf0; // "collect_03.btk" resource
-    union {
-        /* 0x0F4 */ u32 field_0xf4; // flags; bit 8 is tested by fn_80453848
-        /* 0x0F4 */ J2DAnmTextureSRTKey* mAnm_0xf4;
-    };
+    /* 0x0F4 */ J2DAnmTextureSRTKey* mAnm_0xf4; // "collect_03.btk"
     /* 0x0F8 */ s16 field_0xf8;
     // fn_804522C8 tests it against 7, 8 and 9 (lha).
     /* 0x0FA */ s16 field_0xfa;
@@ -115,6 +105,10 @@ public:
     /* 0x164 */ cls_80453830 field_0x164[2]; // constructed by __construct_array (0x10 x 2)
     /* 0x184 */ s32 field_0x184; // fn_8044F664 returns it
 }; // Size: 0x188
+
+// 0x80453848 (game/tu_8044C7F0.cpp): out-of-line copy of
+// JPABaseEmitter::isEnableDeleteEmitter() (fn_8044F680 passes the emitter in r3).
+bool fn_80453848(JPABaseEmitter* emitter);
 
 // Data of game/tu_8044C7F0.cpp.
 extern cls_804B1D58* lbl_8053AF40;

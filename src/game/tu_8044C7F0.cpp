@@ -8,6 +8,8 @@
 #include "game/Player.h"
 #include "game/Message.h"
 #include "game/tu_803B8C74.h"
+#include "game/tu_80379F84.h"
+#include "game/act/act_wizzrobe.h"
 #include "JSystem/J2D/J2DScreen.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 #include "JSystem/J2D/J2DPicture.h"
@@ -54,24 +56,24 @@ static const u16 lbl_80543DE0[4] = {0x1DC, 0x1DF, 0x1E5, 0x1E2};
 static const u16 lbl_80543DE8[4] = {0x1DD, 0x1E0, 0x1E6, 0x1E3};
 static const u16 lbl_80543DF0[4] = {0x1DE, 0x1E1, 0x1E7, 0x1E4};
 
-void fn_80453884(J2DWindow* window, const JUtility::TColor* colors) {
-    window->setContentsColor(colors[0], colors[1], colors[2], colors[3]);
+void fn_80453884(J2DWindow* window, cls_80453830 colors) {
+    window->setContentsColor(colors.field_0x0, colors.field_0x4, colors.field_0x8, colors.field_0xc);
 }
 
-void fn_80453874(JGeometry::TVec3f* vec, f32 x, f32 y, f32 z) {
+// Not auto-inlined: fn_8044F680, its only caller, calls it out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
+JGeometry::TVec3f* fn_80453874(JGeometry::TVec3f* vec, f32 x, f32 y, f32 z) {
     vec->x = x;
     vec->y = y;
     vec->z = z;
+    return vec;
 }
+#pragma auto_inline reset
 
-bool cls_804B1D58::fn_80453848() {
-    bool result = false;
-    if (field_0xf4 & 8) {
-        if (field_0xd0 + (s32)field_0xd8[1] == 0) {
-            result = true;
-        }
-    }
-    return result;
+// Out-of-line copy of JPABaseEmitter::isEnableDeleteEmitter().
+bool fn_80453848(JPABaseEmitter* emitter) {
+    return emitter->isEnableDeleteEmitter();
 }
 
 cls_80453830::cls_80453830() {}
@@ -217,14 +219,12 @@ cls_804B1D58::cls_804B1D58() {
         if (i == field_0xf8) {
             static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
             static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
-            cls_80453830 colors = field_0x164[0];
-            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
             mScreen->search(lbl_80490FE0[i])->setAlpha(255);
         } else {
             static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
             static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
-            cls_80453830 colors = field_0x164[1];
-            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
             mScreen->search(lbl_80490FE0[i])->setAlpha(200);
         }
     }
@@ -344,6 +344,632 @@ void cls_804B1D58::fn_804522C8() {
     }
 }
 
+// Steps the screen's states (field_0xfa): slides the tabs and data panes in and out, moves the
+// cursor between the three tabs, runs the yes/no window, plays the two row-clear sequences;
+// then blinks 'Pswbli' / 'Pcul01', runs the animations and keeps the emitters on their panes.
+s32 cls_804B1D58::fn_8044F680() {
+    field_0x184 = 9;
+    s16 start = lbl_8050DB0C.field_0x4c[(0x238 - 0x4C) / 2];
+    u8 done = 0;
+    s16 frames = lbl_8050DB0C.field_0x4c[(0x23C - 0x4C) / 2];
+    s16 step = lbl_8050DB0C.field_0x4c[(0x23A - 0x4C) / 2];
+    if (field_0xfa == 2 || field_0xfa == 3) {
+        if (field_0x137 == 0) {
+            if (field_0xfe == 0) {
+                field_0xc[14]->moveFromCentre_80402E08(0.0f, 0.0f);
+            }
+            field_0xfe++;
+            if (field_0xfe >= start) {
+                for (s32 i = 0; i < 3; i++) {
+                    if (field_0xfe >= start + i * step) {
+                        if (i == 2) {
+                            done = field_0x48[i]->fn_80402B10(frames, 0, 300.0f, 0.0f);
+                        } else {
+                            field_0x48[i]->fn_80402B10(frames, 0, 300.0f, 0.0f);
+                        }
+                        field_0x60[i]->fn_80402B10(frames, 0, 300.0f, 0.0f);
+                        field_0x48[i]->fn_80402628(frames, 0, field_0x48[i]->field_0x28);
+                        field_0x54[i]->fn_80402628(frames, 0, field_0x54[i]->field_0x28);
+                        field_0x60[i]->fn_80402628(frames, 0, field_0x60[i]->field_0x28);
+                        if (i == field_0xf8) {
+                            f32 x = field_0x48[i]->mPane->getBounds()->i.x;
+                            mScreen->search('Pcul01')->move(field_0x114 + (x - field_0x48[i]->field_0x8),
+                                                            field_0x118 + field_0x108[field_0xf8]);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (s32 i = 0; i < 3; i++) {
+                field_0x48[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x60[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x48[i]->mPane->setAlpha(field_0x48[i]->field_0x28);
+                field_0x54[i]->mPane->setAlpha(field_0x54[i]->field_0x28);
+                field_0x60[i]->mPane->setAlpha(field_0x60[i]->field_0x28);
+            }
+            mScreen->search('Pcul01')->move(field_0x114, field_0x118 + field_0x108[field_0xf8]);
+            done = 1;
+        }
+    }
+
+    switch (field_0xfa) {
+    case 2:
+        if (field_0x137 == 0) {
+            field_0x8->fn_80402628(16, 0, field_0x8->field_0x28);
+            u8 arrived = field_0xc[0]->fn_80402940(16, 0, -480.0f, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2]);
+            for (s32 i = 1; i < 15; i++) {
+                if (i != 14) {
+                    field_0xc[i]->fn_80402940(16, 0, -480.0f, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2]);
+                }
+            }
+            if (arrived) {
+                field_0xc[0]->field_0x22 = 0;
+                field_0xc[1]->field_0x22 = 0;
+                field_0xc[2]->field_0x22 = 0;
+                field_0xc[3]->field_0x22 = 0;
+                field_0xc[4]->field_0x22 = 0;
+                field_0xc[5]->field_0x22 = 0;
+                field_0xc[6]->field_0x22 = 0;
+                field_0xc[7]->field_0x22 = 0;
+                field_0xc[8]->field_0x22 = 0;
+                field_0xc[9]->field_0x22 = 0;
+                field_0xc[10]->field_0x22 = 0;
+                field_0xc[11]->field_0x22 = 0;
+                field_0xc[12]->field_0x22 = 0;
+                field_0xc[13]->field_0x22 = 0;
+                field_0xc[14]->field_0x22 = 0;
+                field_0xfa = 3;
+            }
+        } else {
+            field_0x8->fn_80402628(lbl_8050DB0C.field_0x4c[(0x8C - 0x4C) / 2], 0, field_0x8->field_0x28);
+            u8 arrived = field_0xc[0]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x8C - 0x4C) / 2], 0, -480.0f, 0.0f);
+            for (s32 i = 1; i < 15; i++) {
+                field_0xc[i]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x8C - 0x4C) / 2], 0, -480.0f, 0.0f);
+            }
+            if (arrived) {
+                field_0xc[0]->field_0x22 = 0;
+                field_0xc[1]->field_0x22 = 0;
+                field_0xc[2]->field_0x22 = 0;
+                field_0xc[3]->field_0x22 = 0;
+                field_0xc[4]->field_0x22 = 0;
+                field_0xc[5]->field_0x22 = 0;
+                field_0xc[6]->field_0x22 = 0;
+                field_0xc[7]->field_0x22 = 0;
+                field_0xc[8]->field_0x22 = 0;
+                field_0xc[9]->field_0x22 = 0;
+                field_0xc[10]->field_0x22 = 0;
+                field_0xc[11]->field_0x22 = 0;
+                field_0xc[12]->field_0x22 = 0;
+                field_0xc[13]->field_0x22 = 0;
+                field_0xc[14]->field_0x22 = 0;
+                if (field_0x137 == 1) {
+                    field_0xfa = 14;
+                } else {
+                    field_0xfa = 15;
+                }
+            }
+        }
+        break;
+    case 3: {
+        u8 arrived = field_0xc[0]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x8E - 0x4C) / 2], 2,
+                                               lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2], 0.0f);
+        for (s32 i = 1; i < 15; i++) {
+            if (i != 14 || field_0x137 != 0) {
+                field_0xc[i]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x8E - 0x4C) / 2], 2,
+                                          lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2], 0.0f);
+            }
+        }
+        if (arrived) {
+            switch (field_0x137) {
+            case 1:
+                field_0xfa = 14;
+                break;
+            case 2:
+                field_0xfa = 15;
+                break;
+            default:
+                if (done) {
+                    field_0xfa = 5;
+                }
+                break;
+            }
+        }
+        break;
+    }
+    case 5: {
+        if (field_0xfc != 0) {
+            field_0xfc++;
+            if (field_0xfc > 10) {
+                field_0xfc = 0;
+            }
+        }
+        if (field_0xf8 > 0 && lbl_8053AD30->fn_80309A9C(8, -1)) {
+            field_0xf8--;
+            field_0xfc = 1;
+            field_0x132 = 30;
+            for (s32 i = 0; i < 3; i++) {
+                if (i == field_0xf8) {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(255);
+                } else {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(200);
+                }
+            }
+            gAudioMgr_8053AF80->fn_80458880(0, -1);
+        } else if (field_0xf8 < 2 && lbl_8053AD30->fn_80309A9C(4, -1)) {
+            field_0xf8++;
+            field_0xfc = 1;
+            field_0x132 = 30;
+            for (s32 i = 0; i < 3; i++) {
+                if (i == field_0xf8) {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(255);
+                } else {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(200);
+                }
+            }
+            gAudioMgr_8053AF80->fn_80458880(0, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x1100, -1)) {
+            if (field_0xf8 == 0) {
+                field_0xfa = 10;
+            } else {
+                field_0xfa = 10;
+            }
+            field_0xfc = 1;
+            field_0x132 = 30;
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        } else if (lbl_8053AD30->fn_80309C4C(0x200, -1)) {
+            field_0xf8 = 0;
+            for (s32 i = 0; i < 3; i++) {
+                if (i == field_0xf8) {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(255);
+                } else {
+                    static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
+                    static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
+                    fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
+                    mScreen->search(lbl_80490FE0[i])->setAlpha(200);
+                }
+            }
+            field_0xfa = 10;
+            field_0xfc = 1;
+            field_0x132 = 30;
+            gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+        }
+        s32 bounce = field_0xfc < 5 ? field_0xfc : 10 - field_0xfc;
+        f32 offset = 5.0f * (bounce * bounce) / 25.0f;
+        mScreen->search('Pcul01')->move(field_0x114, offset + (field_0x118 + field_0x108[field_0xf8]));
+        for (s32 i = 0; i < 3; i++) {
+            if (i == field_0xf8) {
+                field_0x48[i]->moveFromCentre_80402E08(0.0f, offset);
+                field_0x54[i]->moveFromCentre_80402E08(0.0f, offset);
+            } else {
+                field_0x48[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x54[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+            }
+        }
+        break;
+    }
+    case 15:
+        field_0x134++;
+        if (field_0x134 < 172) {
+            if (field_0x134 == 1) {
+                mScreen->search(lbl_80491168[field_0x138])->setAlpha(0);
+                mScreen->search(lbl_804911A0[field_0x138])->setAlpha(0);
+            } else if (field_0x134 == 10) {
+                for (s32 i = 0; i < 3; i++) {
+                    field_0xa4[i]->clearStatus(1);
+                    field_0xa4[i]->clearStatus(2);
+                    field_0xa4[i]->clearStatus(4);
+                }
+                gAudioMgr_8053AF80->fn_80458880(0x5E, -1);
+                if (!fn_8019CE40(6, 3) && field_0x138 == 6) {
+                    gAudioMgr_8053AF80->fn_80458880(0x60, -1);
+                }
+            }
+        } else if (field_0x134 == 172) {
+            field_0x6c[field_0x138]->clearStatus(1);
+            field_0x6c[field_0x138]->clearStatus(2);
+            field_0x6c[field_0x138]->clearStatus(4);
+            field_0x88[field_0x138]->clearStatus(1);
+            field_0x88[field_0x138]->clearStatus(2);
+            field_0x88[field_0x138]->clearStatus(4);
+            mScreen->search(lbl_80491168[field_0x138])->setAlpha(field_0x139);
+            mScreen->search(lbl_804911A0[field_0x138])->setAlpha(field_0x13a);
+        } else if (field_0x134 == lbl_8050DB0C.field_0x4c[(0x2E8 - 0x4C) / 2] + 172) {
+            getGameView_802D6A9C()->field_0x131f8 |= (u8)(1 << field_0x138);
+            field_0xfa = 12;
+            field_0x8->field_0x26 = 0;
+        }
+        break;
+    case 14:
+        field_0x134++;
+        if (field_0x134 < 20) {
+            if (field_0x134 == 10) {
+                for (s32 i = 0; i < 3; i++) {
+                    field_0xc0[i]->clearStatus(1);
+                    field_0xc0[i]->clearStatus(2);
+                    field_0xc0[i]->clearStatus(4);
+                }
+                gAudioMgr_8053AF80->fn_80458880(0x5D, -1);
+                if (!fn_8019CE40(6, 0) && field_0x138 == 3) {
+                    gAudioMgr_8053AF80->fn_80458880(0x5F, -1);
+                }
+            }
+            mScreen->search(lbl_80491210[field_0x138])->setAlpha(0);
+            mScreen->search(lbl_80491230[field_0x138])->setAlpha(0);
+            mScreen->search(lbl_80491250[field_0x138])->setAlpha(0);
+        } else {
+            if (field_0x134 == 20) {
+                mScreen->search(lbl_80491210[field_0x138])->setAlpha(field_0x13b);
+                mScreen->search(lbl_80491230[field_0x138])->setAlpha(field_0x13c);
+                mScreen->search(lbl_80491250[field_0x138])->setAlpha(field_0x13d);
+            }
+            if (field_0x134 > 80) {
+                if (field_0x124 < field_0xd8[field_0x138]->getFrameMax() * 2 - 1) {
+                    field_0x124++;
+                    for (s32 i = 0; i < 4; i++) {
+                        if (i == field_0x138) {
+                            field_0xd8[i]->setFrame(field_0x124 % field_0xd8[i]->getFrameMax());
+                        } else {
+                            field_0xd8[i]->setFrame(0.0f);
+                        }
+                    }
+                }
+                u8 row = field_0x138;
+                s32 length = field_0xd8[row]->getFrameMax() * 2;
+                if (field_0x134 == length + lbl_8050DB0C.field_0x4c[(0x2EA - 0x4C) / 2] + 80) {
+                    getGameView_802D6A9C()->field_0x131f7 |= (u8)(1 << row);
+                    field_0xfa = 12;
+                    field_0x8->field_0x26 = 0;
+                } else if (field_0x134 == length + 80) {
+                    field_0xb0[field_0x138]->clearStatus(1);
+                    field_0xb0[field_0x138]->clearStatus(2);
+                    field_0xb0[field_0x138]->clearStatus(4);
+                }
+            }
+        }
+        break;
+    case 10: {
+        field_0xfc++;
+        s32 bounce;
+        if (field_0xfc < 5) {
+            bounce = field_0xfc;
+        } else if (field_0xfc < 10) {
+            bounce = 10 - field_0xfc;
+        } else {
+            bounce = 0;
+        }
+        f32 offset = 5.0f * (bounce * bounce) / 25.0f;
+        mScreen->search('Pcul01')->move(field_0x114, offset + (field_0x118 + field_0x108[field_0xf8]));
+        for (s32 i = 0; i < 3; i++) {
+            if (i == field_0xf8) {
+                field_0x48[i]->moveFromCentre_80402E08(0.0f, offset);
+                field_0x54[i]->moveFromCentre_80402E08(0.0f, offset);
+            } else {
+                field_0x48[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+                field_0x54[i]->moveFromCentre_80402E08(0.0f, 0.0f);
+            }
+        }
+        if (field_0xfc >= 15) {
+            if (field_0xf8 == 0) {
+                field_0xfa = 11;
+                field_0x8->field_0x26 = 0;
+            } else {
+                field_0xfa = 7;
+                lbl_8053AEC0->fn_80431900(0x10A, 0, &field_0x136);
+            }
+            field_0xfc = 0;
+            field_0xc[0]->field_0x22 = 0;
+            field_0xc[1]->field_0x22 = 0;
+            field_0xc[2]->field_0x22 = 0;
+            field_0xc[3]->field_0x22 = 0;
+            field_0xc[4]->field_0x22 = 0;
+            field_0xc[5]->field_0x22 = 0;
+            field_0xc[6]->field_0x22 = 0;
+            field_0xc[7]->field_0x22 = 0;
+            field_0xc[8]->field_0x22 = 0;
+            field_0xc[9]->field_0x22 = 0;
+            field_0xc[10]->field_0x22 = 0;
+            field_0xc[11]->field_0x22 = 0;
+            field_0xc[12]->field_0x22 = 0;
+            field_0xc[13]->field_0x22 = 0;
+            field_0xc[14]->field_0x22 = 0;
+        }
+        break;
+    }
+    case 11: {
+        u8 arrived = field_0xc[0]->fn_80402940(5, 2, 0.0f, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2]);
+        for (s32 i = 1; i < 15; i++) {
+            field_0xc[i]->fn_80402940(5, 2, 0.0f, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2]);
+        }
+        if (arrived) {
+            field_0xc[0]->field_0x22 = 0;
+            field_0xc[1]->field_0x22 = 0;
+            field_0xc[2]->field_0x22 = 0;
+            field_0xc[3]->field_0x22 = 0;
+            field_0xc[4]->field_0x22 = 0;
+            field_0xc[5]->field_0x22 = 0;
+            field_0xc[6]->field_0x22 = 0;
+            field_0xc[7]->field_0x22 = 0;
+            field_0xc[8]->field_0x22 = 0;
+            field_0xc[9]->field_0x22 = 0;
+            field_0xc[10]->field_0x22 = 0;
+            field_0xc[11]->field_0x22 = 0;
+            field_0xc[12]->field_0x22 = 0;
+            field_0xc[13]->field_0x22 = 0;
+            field_0xc[14]->field_0x22 = 0;
+            field_0xfa = 12;
+        }
+        break;
+    }
+    case 12: {
+        u8 arrived;
+        if (field_0x137 == 0) {
+            field_0x8->fn_80402628(10, field_0x8->field_0x28, 0);
+            arrived = field_0xc[0]->fn_80402940(10, 0, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2], -480.0f);
+            for (s32 i = 1; i < 15; i++) {
+                field_0xc[i]->fn_80402940(10, 0, lbl_8050DB0C.field_0x4c[(0x90 - 0x4C) / 2], -480.0f);
+            }
+        } else {
+            field_0x8->fn_80402628(lbl_8050DB0C.field_0x4c[(0x94 - 0x4C) / 2], field_0x8->field_0x28, 0);
+            arrived = field_0xc[0]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x94 - 0x4C) / 2], 0, 0.0f, -480.0f);
+            for (s32 i = 1; i < 15; i++) {
+                field_0xc[i]->fn_80402940(lbl_8050DB0C.field_0x4c[(0x94 - 0x4C) / 2], 0, 0.0f, -480.0f);
+            }
+        }
+        if (arrived) {
+            fn_8044C7F0();
+            fn_8044C968();
+            for (s32 i = 0; i < 15; i++) {
+                field_0xc[i]->moveFromCentre_80402E08(0.0f, -480.0f);
+                field_0xc[i]->field_0x22 = 0;
+            }
+            field_0x184 = 7;
+            field_0x140 = 0;
+            if (field_0x137 == 0) {
+                gAudioMgr_8053AF80->fn_80458880(2, -1);
+                gAudioMgr_8053AF80->fn_80459274();
+            }
+            field_0x137 = 0;
+        }
+        break;
+    }
+    case 13: {
+        u8 arrived = field_0xc[0]->fn_80402940(10, 0, 0.0f, 480.0f);
+        for (s32 i = 1; i < 15; i++) {
+            field_0xc[i]->fn_80402940(10, 0, 0.0f, 480.0f);
+        }
+        if (arrived) {
+            field_0xfa = 7;
+            lbl_8053AEC0->fn_80431900(0x10A, 0, &field_0x136);
+        }
+        break;
+    }
+    case 7:
+        if (lbl_8053AEC0->fn_804317AC()) {
+            field_0xfa = 8;
+        }
+        break;
+    case 8:
+        if (lbl_8053AD30->fn_80309A9C(2, -1)) {
+            if (field_0x136 == 0) {
+                field_0x136 = 1;
+                gAudioMgr_8053AF80->fn_80458880(0, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309A9C(1, -1)) {
+            if (field_0x136 == 1) {
+                field_0x136 = 0;
+                gAudioMgr_8053AF80->fn_80458880(0, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(0x1100, -1)) {
+            field_0xfa = 9;
+            if (field_0x136 == 1) {
+                gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+            }
+        } else if (lbl_8053AD30->fn_80309C4C(0x200, -1)) {
+            field_0x136 = 1;
+            field_0xfa = 9;
+            if (field_0x136 == 1) {
+                gAudioMgr_8053AF80->fn_80458880(0xB, -1);
+            }
+        }
+        lbl_8053AEC0->fn_80431174(field_0x136);
+        break;
+    case 9: {
+        u8 arrived;
+        if (field_0x136 == 0) {
+            arrived = field_0xc[0]->fn_80402940(10, 0, 0.0f, 480.0f);
+            for (s32 i = 1; i < 15; i++) {
+                field_0xc[i]->fn_80402940(10, 0, 0.0f, 480.0f);
+            }
+        } else {
+            arrived = 1;
+        }
+        if (arrived && lbl_8053AEC0->fn_80431740()) {
+            if (field_0x136 == 0) {
+                if (field_0xf8 == 1) {
+                    gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+                    gAudioMgr_8053AF80->fn_80458F9C(0);
+                    gAudioMgr_8053AF80->fn_80459274();
+                    s32 mode;
+                    if (gGameRoot_8053AAF8->field_0x7f != 0 &&
+                        (((mode = lbl_80529DEC.field_0x118) == 0 && lbl_80529DEC.field_0x11c == 2) ||
+                         (mode == 1 && lbl_80529DEC.field_0x11c == 2) || (mode == 2 && lbl_80529DEC.field_0x11c == 2) ||
+                         (mode == 3 && lbl_80529DEC.field_0x11c == 2) || (mode == 4 && lbl_80529DEC.field_0x11c == 2) ||
+                         (mode == 5 && lbl_80529DEC.field_0x11c == 2) || (mode == 6 && lbl_80529DEC.field_0x11c == 2) ||
+                         (mode == 7 && lbl_80529DEC.field_0x11c == 1))) {
+                        fn_8044C7F0();
+                        field_0x184 = 7;
+                        field_0x137 = 0;
+                        field_0x140 = 0;
+                        gGameRoot_8053AAF8->fn_8013665C(10, 2);
+                    } else {
+                        field_0x184 = 6;
+                        if (gGameRoot_8053AAF8->field_0x7f != 0) {
+                            if (lbl_80529DEC.field_0x118 == 10 && lbl_80529DEC.field_0x11c == 2) {
+                                lbl_80529DEC.field_0x118 = lbl_80529DEC.field_0x120;
+                                lbl_80529DEC.field_0x11c = lbl_80529DEC.field_0x124;
+                            }
+                            lbl_80529DEC.field_0x237 = 7;
+                        }
+                    }
+                } else {
+                    field_0x184 = 2;
+                    gAudioMgr_8053AF80->fn_80458880(0xC, -1);
+                    gAudioMgr_8053AF80->fn_80458F9C(0);
+                    gAudioMgr_8053AF80->fn_80459274();
+                }
+            } else {
+                field_0xfc = 0;
+                field_0xfa = 5;
+                field_0xf8 = 0;
+                for (s32 i = 0; i < 3; i++) {
+                    if (i == field_0xf8) {
+                        static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
+                        static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
+                        fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
+                        mScreen->search(lbl_80490FE0[i])->setAlpha(255);
+                    } else {
+                        static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
+                        static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
+                        fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
+                        mScreen->search(lbl_80490FE0[i])->setAlpha(200);
+                    }
+                }
+            }
+            lbl_8053AEC0->fn_804310BC();
+        }
+        break;
+    }
+    }
+
+    if (fn_80237060(0) == 2) {
+        field_0x130++;
+        if (field_0x130 >= 100) {
+            field_0x130 = 0;
+        }
+        f32 blink;
+        if (field_0x130 < 50) {
+            blink = field_0x130 / 50.0f;
+        } else {
+            blink = (100.0f - field_0x130) / 50.0f;
+        }
+        mScreen->search('Pswbli')->setAlpha(30.0f + 110.0f * blink);
+    }
+
+    if (field_0xfa != 2 && field_0xfa != 3) {
+        field_0x132++;
+        if (field_0x132 >= 60) {
+            field_0x132 = 0;
+        }
+        f32 blink;
+        if (field_0x132 < 30) {
+            blink = (field_0x132 * field_0x132) / 900.0f;
+        } else {
+            blink = 1.0f - ((field_0x132 - 30.0f) * (field_0x132 - 30.0f)) / 900.0f;
+        }
+        mScreen->search('Pcul01')->setAlpha(156.0f * blink);
+    }
+
+    field_0x128++;
+    if (field_0x128 >= field_0xec->getFrameMax()) {
+        field_0x128 = 0;
+    }
+    field_0xec->setFrame(field_0x128);
+    mScreen->animation();
+    if (field_0x13e == 1) {
+        field_0x13e = 0;
+    }
+
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xa4[i] != NULL) {
+            f32 h = mScreen->search(lbl_804911D8[field_0x138])->getHeight();
+            f32 w = mScreen->search(lbl_804911D8[field_0x138])->getWidth();
+            JGeometry::TVec3f pos;
+            fn_80178EB8(field_0xa4[i], fn_80453874(&pos,
+                            w * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.x),
+                            h * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.y),
+                            0.0f));
+        }
+        if (field_0xc0[i] != NULL) {
+            f32 h = mScreen->search(lbl_80491230[field_0x138])->getHeight();
+            f32 w = mScreen->search(lbl_80491230[field_0x138])->getWidth();
+            JGeometry::TVec3f pos;
+            fn_80178EB8(field_0xc0[i], fn_80453874(&pos,
+                            w * 0.5f + (mScreen->search(lbl_80491230[field_0x138])->getBounds()->i.x +
+                                        (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[field_0x138])->getBounds()->i.x)),
+                            h * 0.5f + (mScreen->search(lbl_80491230[field_0x138])->getBounds()->i.y +
+                                        (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[field_0x138])->getBounds()->i.y)),
+                            0.0f));
+        }
+    }
+
+    for (s32 i = 0; i < 7; i++) {
+        if (field_0x88[i] != NULL) {
+            f32 h = mScreen->search(lbl_804911D8[i])->getHeight();
+            f32 w = mScreen->search(lbl_804911D8[i])->getWidth();
+            JGeometry::TVec3f pos;
+            fn_80178EB8(field_0x88[i], fn_80453874(&pos,
+                            w * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[i])->getBounds()->i.x),
+                            h * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[i])->getBounds()->i.y),
+                            0.0f));
+            field_0x88[i]->setGlobalAlpha(mScreen->search(lbl_80491168[i])->getAlpha());
+        }
+        if (field_0x6c[i] != NULL) {
+            f32 h = mScreen->search(lbl_804911D8[i])->getHeight();
+            f32 w = mScreen->search(lbl_804911D8[i])->getWidth();
+            JGeometry::TVec3f pos;
+            fn_80178EB8(field_0x6c[i], fn_80453874(&pos,
+                            w * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.x + mScreen->search(lbl_804911D8[i])->getBounds()->i.x),
+                            h * 0.5f + (mScreen->search('Ndata06')->getBounds()->i.y + mScreen->search(lbl_804911D8[i])->getBounds()->i.y),
+                            0.0f));
+            field_0x6c[i]->setGlobalAlpha(mScreen->search(lbl_80491168[i])->getAlpha());
+        }
+    }
+
+    for (s32 i = 0; i < 4; i++) {
+        if (field_0xb0[i] != NULL) {
+            f32 h = mScreen->search(lbl_80491230[i])->getHeight();
+            f32 w = mScreen->search(lbl_80491230[i])->getWidth();
+            JGeometry::TVec3f pos;
+            fn_80178EB8(field_0xb0[i], fn_80453874(&pos,
+                            w * 0.5f + (mScreen->search(lbl_80491230[i])->getBounds()->i.x +
+                                        (mScreen->search('Ndataj01')->getBounds()->i.x + mScreen->search(lbl_80491210[i])->getBounds()->i.x)),
+                            h * 0.5f + (mScreen->search(lbl_80491230[i])->getBounds()->i.y +
+                                        (mScreen->search('Ndataj01')->getBounds()->i.y + mScreen->search(lbl_80491210[i])->getBounds()->i.y)),
+                            0.0f));
+            field_0xb0[i]->setGlobalAlpha(mScreen->search(lbl_80491230[i])->getAlpha());
+        }
+    }
+
+    for (s32 i = 0; i < 3; i++) {
+        if (field_0xa4[i] != NULL && fn_80453848(field_0xa4[i])) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0xa4[i]);
+            field_0xa4[i] = NULL;
+        }
+        if (field_0xc0[i] != NULL && fn_80453848(field_0xc0[i])) {
+            JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+            manager->forceDeleteEmitter(field_0xc0[i]);
+            field_0xc0[i] = NULL;
+        }
+    }
+    return 0;
+}
+
 s32 fn_8044F664() {
     if (lbl_8053AF40 != NULL) {
         return lbl_8053AF40->field_0x184;
@@ -358,14 +984,12 @@ void cls_804B1D58::fn_8044D894() {
         if (i == field_0xf8) {
             static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[0], field_0x15c[0]);
             static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[0], field_0x14c[0]);
-            cls_80453830 colors = field_0x164[0];
-            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[0]);
             mScreen->search(lbl_80490FE0[i])->setAlpha(255);
         } else {
             static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(field_0x154[1], field_0x15c[1]);
             static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(field_0x144[1], field_0x14c[1]);
-            cls_80453830 colors = field_0x164[1];
-            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), &colors.field_0x0);
+            fn_80453884(static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i])), field_0x164[1]);
             mScreen->search(lbl_80490FE0[i])->setAlpha(200);
         }
     }
