@@ -171,6 +171,8 @@ public:
     void fn_80308E90();
     // game/tu_80301CD0.cpp (0x80304FB0, not written yet): the per-frame update; called by GameRoot's fn_80137300.
     void fn_80304FB0();
+    void fn_80307B58(s32 player, bool flag);
+    void fn_803085A4(s32 player); // game/tu_80301CD0.cpp, not written yet
 };
 class cls_804B0FC0;
 class J2DTextBox;

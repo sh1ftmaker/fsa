@@ -6,6 +6,7 @@
 #include "game/GameView.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "game/GbaClient.h"
+#include "game/Message.h"
 #include <string.h>
 
 // The GBA link of each player: a queue of files sent to the GBA (names such as
@@ -77,7 +78,7 @@ cls_804AA858Sub11C lbl_80506DE8[4];
 // Two halves of 19 sprite words per player (fn_803068D0 fills one half from
 // a record's field_0x18 words and hides the rest).
 GbaSprite_80506F88 lbl_80506F88[4][2][19];
-s16 lbl_805071E8[4][0x80];
+u16 lbl_805071E8[4][0x80];
 
 u8 lbl_8053ACD0;
 u8 lbl_8053ACD4[4];
@@ -94,7 +95,7 @@ u8 lbl_8053ACFC[4];
 u8 lbl_8053AD00[4];
 u8 lbl_8053AD04[4];
 u8 lbl_8053AD08;
-s16 lbl_8053AD0C[4];
+u16 lbl_8053AD0C[4];
 s16 lbl_8053AD14[4];
 u8 lbl_8053AD1C[4];
 u8 lbl_8053AD20[4];
@@ -157,6 +158,61 @@ void fn_80308D0C() {
             lbl_80505438[player][j].resetAll();
         }
     }
+}
+
+// Byte-reverses a word.
+static inline u32 swapBytes(u32 v) {
+    union {
+        u32 w;
+        u8 b[4];
+    } in, out;
+    in.w = v;
+    out.b[0] = in.b[3];
+    out.b[1] = in.b[2];
+    out.b[2] = in.b[1];
+    out.b[3] = in.b[0];
+    return out.w;
+}
+
+// Fills the player's record with the message words (mode 10 or 11), byte-swapped,
+// and its checksum. Still differs: the original has the checksum loop twice (branch on the
+// queue head entry's mUsed) and different register allocation.
+// 0x80307B58
+void cls_804AA8B8::fn_80307B58(s32 player, bool flag) {
+    if (flag) {
+        lbl_80506DE8[player].mKind = 10;
+    } else {
+        lbl_80506DE8[player].mKind = 11;
+    }
+    fn_803085A4(player);
+    s32 count = (lbl_80541618[lbl_8053AD08] - 2) * 2;
+    s32 start = lbl_8053AD0C[player];
+    s32 i;
+    for (i = 0; i < count; i++) {
+        lbl_805071E8[player][start + i] = fn_8037F0CC(player);
+        if (fn_8037F1E4(player) != 3) {
+            lbl_8053AD24[player] = 1;
+            lbl_8053AD1C[player] = 0;
+            lbl_80506DE8[player].mKind = 12;
+            i++;
+            break;
+        }
+    }
+    lbl_8053AD0C[player] += i;
+    for (; i < count; i++) {
+        lbl_805071E8[player][start + i] = 0;
+    }
+    s32 n = lbl_80541618[lbl_8053AD08] - 2;
+    for (s32 j = 0; j < n; j++) {
+        u32 w = (u16)lbl_805071E8[player][start + j * 2] | (u32)(u16)lbl_805071E8[player][start + j * 2 + 1] << 16;
+        lbl_80506DE8[player].mSprites[j].mWord = swapBytes(w);
+    }
+    u8 sum = 0;
+    u8* bytes = (u8*)&lbl_80506DE8[player].mSprites[0];
+    for (s32 k = 8; k < lbl_80541618[lbl_8053AD08] * 4; k++) {
+        sum += *bytes++;
+    }
+    lbl_80506DE8[player].field_0x0 = sum;
 }
 
 // Sprite ids below 0x45 (after adding 0x200 when e is 2) go to the 16-entry
