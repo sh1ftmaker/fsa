@@ -63,11 +63,7 @@ EscortBase_8049E0C8::~EscortBase_8049E0C8() {
 }
 
 // The escort's answer to a screen change (see the header).
-// FIXME(shotgun): not compiled (86.1 % as written), the slot-0x5C calls drop the r4 argument the asm
-// passes: dir. EscortWoman's override (fn_80125668) reads it and hands it to fn_80130030(const long*),
-// so it is real data. The slot's parameter type is not known, and giving it one renames the mangled
-// symbols of EscortBase's and ZoraEscort's overrides, so the body stays out of the build.
-#ifdef NONMATCHING
+// FIXME(shotgun): 96.4 %, the final flag test is branchless here (the asm branches on it)
 s32 fn_80124600(const JGeometry::TVec2<s32>* dir) {
     s32 count = fn_80131F0C()->mCount;
     if (count == 0) {
@@ -80,33 +76,32 @@ s32 fn_80124600(const JGeometry::TVec2<s32>* dir) {
             return 3;
         }
         escort->field_0x334 = 1;
-        return escort->vfunc_0x5C();
+        return escort->vfunc_0x5C(&dir->x);
     }
-    bool flag = false;
+    u8 flag = 0;
     for (s32 i = 0; i < count; i++) {
         EscortBase_8049E0C8* escort = static_cast<EscortBase_8049E0C8*>(fn_80131F0C()->fn_80131E30(i));
         if (escort != NULL && escort->mActorId == ACTOR_FAZR) {
             escort->field_0x334 = 1;
-            switch (escort->vfunc_0x5C()) {
+            switch (escort->vfunc_0x5C(&dir->x)) {
             case 1:
                 return 1;
             case 2:
-                flag = false;
+                flag = 0;
                 break;
             case 3:
                 break;
             default:
-                flag = false;
+                flag = 0;
                 break;
             }
         }
     }
-    if (flag) {
-        return 3;
+    if (flag == 0) {
+        return 2;
     }
-    return 2;
+    return 3;
 }
-#endif
 
 // FIXME(shotgun): 99.4 %, regalloc-only + reloc-name
 void EscortBase_8049E0C8::fn_80124448() {
