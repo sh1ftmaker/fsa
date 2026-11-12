@@ -87,7 +87,6 @@ cls_804B17A0::~cls_804B17A0() {
     lbl_8053AEC8 = NULL;
 }
 
-// FIXME(shotgun): 86.1 %, missing/extra
 // 0x80439AB0
 void cls_804B17A0::fn_80439AB0() {
     field_0x40 = 0;
@@ -103,9 +102,16 @@ void cls_804B17A0::fn_80439AB0() {
     field_0x54 = 0;
     field_0x56 = 0;
     field_0x3c = 0;
-    for (s32 i = 0; i < 10; i++) {
-        field_0xc[i] = NULL;
-    }
+    field_0xc[0] = NULL;
+    field_0xc[1] = NULL;
+    field_0xc[2] = NULL;
+    field_0xc[3] = NULL;
+    field_0xc[4] = NULL;
+    field_0xc[5] = NULL;
+    field_0xc[6] = NULL;
+    field_0xc[7] = NULL;
+    field_0xc[8] = NULL;
+    field_0xc[9] = NULL;
     field_0x5f = 0;
 }
 
