@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "JSystem/JMath/JMath.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "dolphin/gx.h"
@@ -485,6 +486,225 @@ void TileMap_804AA858::fn_802FEE68() {
             if (effect->mScale != 1.0f) {
                 effect->mParams.mMtx = mtx;
             }
+        }
+    }
+}
+
+// Per frame: counts each player's field_0x138 up to 40 while its field_0x12c
+// flag is set (sound 0x52 when a counted player starts, 0x53 when it drops),
+// scales the panels by the sine of the counts and places the views
+// (field_0x150 / field_0x190, the field_0x21c window); then every 10 frames
+// copies the next of the four 0x40-byte blocks of field_0x238c to
+// field_0x4[1] + 0x200.
+void TileMap_804AA858::fn_802FCE74() {
+    static const s16 lbl_8046F980[10] = {0, -119, 0, 123, -119, 123, -119, 0, 123, 0};
+    static const s16 lbl_8046F994[10] = {0, -107, -107, -107, 0, 0, 70, 70, 70, 0};
+    static const s16 lbl_8046F9A8[2][9] = {
+        {0, -119, 0, 123, -119, 123, -119, 0, 123},
+        {0, -195, 0, 210, -195, 210, -195, 0, 210},
+    };
+    static const s16 lbl_8046F9CC[2][9] = {
+        {0, -107, -107, -107, 0, 0, 70, 70, 70},
+        {0, -163, -163, -163, 0, 0, 123, 123, 123},
+    };
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (field_0x12c[i] && !field_0x216 && field_0x230 == field_0x22c) {
+            if (field_0x138[i] < 40) {
+                field_0x138[i]++;
+                u32 type = gGameRoot_8053AAF8->field_0x83 >> (i * 2) & 3;
+                if (((type == 2 && i == 0) || (type == 1 && i == field_0x230)) && !field_0x215) {
+                    gAudioMgr_8053AF80->fn_80458880(0x52, -1);
+                    field_0x215 = 1;
+                }
+            }
+        } else if (field_0x138[i] > 0) {
+            field_0x138[i]--;
+            if (field_0x215 == 1) {
+                if (gGameRoot_8053AAF8->field_0x4c != 10 && gGameRoot_8053AAF8->field_0x4c != 12) {
+                    gAudioMgr_8053AF80->fn_80458880(0x53, -1);
+                }
+                field_0x215 = 0;
+            }
+        }
+        field_0x12c[i] = 0;
+    }
+    field_0x216 = 0;
+    if (field_0x230 == -1 && field_0x22c != -1) {
+        u32 type = gGameRoot_8053AAF8->field_0x83 >> (field_0x22c * 2) & 3;
+        if (type == 1) {
+            field_0x138[field_0x22c] = 0;
+        }
+    }
+    if ((field_0x230 == -1 || field_0x138[field_0x230] <= 0) &&
+        (field_0x22c == -1 || field_0x138[field_0x22c] <= 0)) {
+        field_0x230 = field_0x22c;
+    }
+    field_0x22c = -1;
+    field_0x248 = 0;
+    field_0x214 = 0;
+
+    f32 scaleX[4];
+    f32 scaleY[4];
+    for (i = 0; i < 4; i++) {
+        f32 t = 0.05f * (field_0x138[i] - 20);
+        if (t <= 0.0f) {
+            t = 0.0f;
+        }
+        scaleX[i] = JMath::sincosTable_.sinDegree(90.0f * t);
+        field_0x148[i] = 0;
+        field_0x14c[i] = 0;
+        scaleY[i] = scaleX[i];
+        field_0x210[i] = 0;
+    }
+
+    if (gGameRoot_8053AAF8->field_0x7e) {
+        for (i = 0; i < 4; i++) {
+            if (field_0x138[i] > 0) {
+                if (field_0x230 == i) {
+                    s32 player = fn_8022EA0C(i);
+                    JGeometry::TVec3f pos;
+                    if (fn_8023E10C(player) < 8) {
+                        pos.set(*fn_8023E214(player));
+                    } else {
+                        pos.set(*fn_8023E32C(player));
+                    }
+                    Vec screen;
+                    gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+                    f32 offX = pos.x - 512.0f * (s32)(pos.x / 512.0f) < 256.0f ? -1.0f : 0.0f;
+                    f32 offY = pos.y - 384.0f * (s32)(pos.y * (1.0f / 384.0f)) < 192.0f ? -1.0f : 0.0f;
+
+                    f32 width = field_0xfc->field_0x70[field_0xfc->field_0xa4];
+                    f32 height = field_0xfc->field_0x70[field_0xfc->field_0xa4 + 2];
+                    s32 w = width * scaleX[i];
+                    s32 h = height * scaleY[i];
+                    field_0x214 = 1;
+                    f32 x = lbl_8046F980[field_0x234] +
+                            ((((s32)width - w) >> 1) + field_0xfc->field_0x40[field_0xfc->field_0xa4].x);
+                    f32 y = lbl_8046F994[field_0x234] +
+                            ((((s32)height - h) >> 1) + field_0xfc->field_0x40[field_0xfc->field_0xa4].y);
+                    field_0x21c = (w * offX + screen.x) * (1.0f - scaleX[i]) + scaleX[i] * x;
+                    field_0x220 = (h * offY + screen.y) * (1.0f - scaleY[i]) + scaleY[i] * y;
+                    field_0x224 = w;
+                    field_0x228 = h;
+
+                    width = field_0xfc->field_0x80[field_0xfc->field_0xa4];
+                    height = field_0xfc->field_0x80[field_0xfc->field_0xa4 + 2];
+                    w = width * scaleX[i];
+                    h = height * scaleY[i];
+                    field_0x148[i] = 1;
+                    field_0x150[i].field_0x0 = 0;
+                    field_0x150[i].field_0x4 = 0;
+                    field_0x150[i].field_0x8 = 240.0f;
+                    field_0x150[i].field_0xc = 160.0f;
+                    x = lbl_8046F980[field_0x234] +
+                        ((((s32)width - w) >> 1) + field_0xfc->field_0x58[field_0xfc->field_0xa4].x);
+                    y = lbl_8046F994[field_0x234] +
+                        ((((s32)height - h) >> 1) + field_0xfc->field_0x58[field_0xfc->field_0xa4].y);
+                    field_0x190[i].field_0x0 = (w * offX + screen.x) * (1.0f - scaleX[i]) + scaleX[i] * x;
+                    field_0x190[i].field_0x4 = (h * offY + screen.y) * (1.0f - scaleY[i]) + scaleY[i] * y;
+                    field_0x190[i].field_0x8 = w;
+                    field_0x190[i].field_0xc = h;
+                    field_0x210[i] = 1;
+                } else if (!field_0x217[i]) {
+                    cls_804AA858Sub11CEntry* mark = &field_0x11c[i]->mEntries[lbl_80506DD8[i]];
+                    s32 markX = (mark->mXLow | mark->mXHigh << 8) - 24;
+                    s32 markY = mark->mY - 32;
+                    markX = markX < 0 ? 0 : markX;
+                    markY = markY < 0 ? 0 : markY;
+                    s32 right = markX + 48 > 240 ? 240 : markX + 48;
+                    s32 bottom = markY + 40 > 160 ? 160 : markY + 40;
+                    field_0x148[i] = 1;
+                    field_0x14c[i] = 1;
+                    field_0x150[i].field_0x0 = right - 48;
+                    field_0x150[i].field_0x4 = bottom - 40;
+                    field_0x150[i].field_0x8 = 48;
+                    field_0x150[i].field_0xc = 48;
+                    s32 w = field_0x1d0[i].field_0x8 * scaleX[i];
+                    s32 h = field_0x1d0[i].field_0xc * scaleY[i];
+                    field_0x190[i].field_0x0 = ((field_0x1d0[i].field_0x8 - w) >> 1) + field_0x1d0[i].field_0x0;
+                    field_0x190[i].field_0x4 = ((field_0x1d0[i].field_0xc - h) >> 1) + field_0x1d0[i].field_0x4;
+                    field_0x190[i].field_0x8 = w;
+                    field_0x190[i].field_0xc = h;
+                }
+            }
+            field_0x217[i] = 0;
+        }
+    } else if (field_0x138[0] > 0 && !fn_8022C8EC(0)) {
+        s32 player = fn_8022EA0C(0);
+        JGeometry::TVec3f pos;
+        if (fn_8023E10C(player) < 8) {
+            pos.set(*fn_8023E214(player));
+        } else {
+            pos.set(*fn_8023E32C(player));
+        }
+        Vec screen;
+        gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&pos, false, false, &screen);
+        f32 offX = pos.x - 512.0f * (s32)(pos.x / 512.0f) < 256.0f ? -1.0f : 0.0f;
+        f32 offY = pos.y - 384.0f * (s32)(pos.y * (1.0f / 384.0f)) < 192.0f ? -1.0f : 0.0f;
+        field_0xfc->fn_80433718();
+
+        f32 width = field_0xfc->field_0x70[field_0xfc->field_0xa4];
+        f32 height = field_0xfc->field_0x70[field_0xfc->field_0xa4 + 2];
+        s32 w = scaleX[0] * width;
+        s32 h = scaleY[0] * height;
+        field_0x214 = 1;
+        s32 dx = ((s32)width - w) >> 1;
+        s32 dy = ((s32)height - h) >> 1;
+        u16 frame = 0;
+        if (isGameModeSet()) {
+            frame = field_0xfc->field_0x9e;
+        }
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        if (!camera->field_0x7f4) {
+            camera->field_0x7f5 = 1;
+        }
+        f32 x = dx + field_0xfc->field_0x40[field_0xfc->field_0xa4].x +
+                lbl_8046F9A8[field_0xfc->field_0xa4][frame];
+        f32 y = dy + field_0xfc->field_0x40[field_0xfc->field_0xa4].y +
+                lbl_8046F9CC[field_0xfc->field_0xa4][frame];
+        field_0x21c = (1.0f - scaleX[0]) * (w * offX + screen.x) + scaleX[0] * x;
+        field_0x220 = (1.0f - scaleY[0]) * (h * offY + screen.y) + scaleY[0] * y;
+        field_0x224 = w;
+        field_0x228 = h;
+
+        width = field_0xfc->field_0x80[field_0xfc->field_0xa4];
+        height = field_0xfc->field_0x80[field_0xfc->field_0xa4 + 2];
+        w = scaleX[0] * width;
+        h = scaleY[0] * height;
+        field_0x148[0] = 1;
+        field_0x150[0].field_0x0 = 0;
+        field_0x150[0].field_0x4 = 0;
+        field_0x150[0].field_0x8 = 240.0f;
+        field_0x150[0].field_0xc = 160.0f;
+        dx = ((s32)width - w) >> 1;
+        dy = ((s32)height - h) >> 1;
+        x = dx + field_0xfc->field_0x58[field_0xfc->field_0xa4].x + lbl_8046F9A8[field_0xfc->field_0xa4][frame];
+        y = dy + field_0xfc->field_0x58[field_0xfc->field_0xa4].y + lbl_8046F9CC[field_0xfc->field_0xa4][frame];
+        field_0x190[0].field_0x0 = (1.0f - scaleX[0]) * (w * offX + screen.x) + scaleX[0] * x;
+        field_0x190[0].field_0x4 = (1.0f - scaleY[0]) * (h * offY + screen.y) + scaleY[0] * y;
+        field_0x190[0].field_0x8 = w;
+        field_0x190[0].field_0xc = h;
+        field_0x210[0] = 1;
+    }
+
+    if (field_0x214) {
+        field_0xfc->fn_80432AF8();
+    } else {
+        field_0xfc->field_0xa0 = 0xFFFF;
+        field_0xfc->field_0xa4 = 0;
+    }
+    field_0x2394++;
+    if (field_0x2394 >= 10) {
+        field_0x2394 = 0;
+        field_0x2390++;
+        if (field_0x2390 >= 4) {
+            field_0x2390 = 0;
+        }
+        u8* src = field_0x238c + field_0x2390 * 0x40;
+        u8* dst = field_0x4[1] + 0x200;
+        for (s32 j = 0; j < 0x40; j++) {
+            *dst++ = *src++;
         }
     }
 }
