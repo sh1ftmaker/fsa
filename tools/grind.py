@@ -10,6 +10,7 @@
   python3 tools/grind.py check [--full]            # inside a session: the verdict the judge would give now
   python3 tools/grind.py status                    # sessions, accept rate, tokens per tier
   python3 tools/grind.py watch --stop 0.10         # stop everything at this weekly utilization
+  python3 tools/grind.py publish [--every N]       # reviewed grind2 work -> matching: verify, site data, push
   touch ../fsa-wt/g2-logs/STOP                     # workers finish their session and exit
 
 What changed from the first grinder (branch `grind`), each from its logs:
@@ -50,7 +51,8 @@ against the original assembly and gives a verdict per change. It looks for what 
 steering, fakes, wrong facts, guesswork. A change without an explicit ACCEPT is dropped, its
 function moves up a tier and the reviewer's reason is given to the next attempt.
 
-Integration branch `grind2` (worktree ../fsa-wt/g2); `matching` is never touched. Logs:
+Integration branch `grind2` (worktree ../fsa-wt/g2). Workers never touch `matching`; `publish`
+fast-forwards it to grind2 after the full checks and pushes (owner's instruction 2026-11-12). Logs:
 ../fsa-wt/g2-logs/ledger.tsv (one row per session), sessions/<tag>.json, rejects/<tag>.patch.
 """
 
@@ -996,7 +998,7 @@ REJECT a change that contains any of these:
 4. Wrong facts: a field type or offset, constant, callee, branch condition, argument or class membership that contradicts the assembly; a real-looking name replacing a placeholder without evidence; a change to a shared header that the assembly does not prove.
 5. Guesswork: new code that does not follow the assembly, or a comment that misdescribes what differs.
 
-ACCEPT a change that is faithful and natural even when its function is still far from 100 %. Honest partial structure is the goal: a function at 60-80 % whose code follows the original is welcome. Do not reject for incompleteness, a low %, placeholder names (fn_, lbl_, cls_, field_0x), FIXME percentage lines (a script writes those) or style nits.
+ACCEPT a change that is faithful and natural even when its function is still far from 100 %. Honest partial structure is the goal: a function at 60-80 % whose code follows the original is welcome. Do not reject for incompleteness, a low %, placeholder names (fn_, lbl_, cls_, field_0x), FIXME percentage lines (a script writes those) or style nits. Project conventions that are not tricks: a static or table without name evidence carries its lbl_<address> name, also as a function-local static; a placeholder function is renamed in config/G4SE01/symbols.txt to the mangled name the source emits; header inline accessors (getGameView_802D6A9C() and the like) where the original inlined them.
 
 The task text has each change's diff and the original assembly or where to find it. Look further only to settle a suspicion; useful read-only commands: grep, sed -n, `python3 tools/fingerprint.py <unit> '<function>'`, `python3 tools/try.py <unit> '<function>'`. You cannot edit.
 
@@ -1289,6 +1291,103 @@ def cmd_rejudge(args):
         sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
+# ---------------------------------------------------------------- publishing to matching
+
+def progress_numbers(wt):
+    """(matched functions, matched code %, weighted %) from tools/progress.py's first lines."""
+    out = sh(["python3", "tools/progress.py"], wt).stdout
+    m = re.search(r"total: (\d+) / \d+ functions, \d+ / \d+ bytes of code \(([\d.]+) %\)", out)
+    w = re.search(r"weighted: ([\d.]+) % of code", out)
+    return (int(m.group(1)), float(m.group(2)), float(w.group(1))) if m and w else None
+
+
+def highlights(since, k=3):
+    """The biggest kept gains in the ledger after timestamp `since` (reviewed-out ones excluded)."""
+    rows = [dict(zip(COLS, r)) for r in ledger_rows() if len(r) >= len(COLS) and r[0] > since]
+    out_ = {(r["unit"], r["fn"]) for r in rows if r["verdict"] == "TRICK"}
+    num = lambda v: float(v) if re.match(r"^-?\d+(\.\d+)?$", v or "") else 0.0
+    best = []
+    for r in rows:
+        if r["verdict"] == "ACCEPT" and r["fn"] != "FILE" and (r["unit"], r["fn"]) not in out_:
+            gain = num(r["size"]) * (num(r["pct1"]) - num(r["pct0"])) / 100
+            best.append((gain, f"{r['why'].replace('rejudged: ', '')} ({int(num(r['size']))} B, {r['tier']})"))
+    kept = sum(1 for r in rows if r["verdict"] == "ACCEPT")
+    return kept, len(out_), [t for _, t in sorted(best, reverse=True)[:k]]
+
+
+def publish_once():
+    """Reviewed grind2 work -> matching: fast-forward, full build with SHA-1, no 100 % function lost,
+    no new unit out of address order, generator and gate clean, site data, commit, push; grind2 then
+    follows matching. Everything on grind2 passed the adversarial review before it was integrated."""
+    with open(LOGS / "merge.lock", "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if sh(["git", "rev-parse", "--abbrev-ref", "HEAD"], MAIN).stdout.strip() != "matching":
+            return "main checkout is not on matching"
+        old, new = head(MAIN), head(INTEG)
+        if sh(["git", "merge-base", "--is-ancestor", new, old], MAIN).returncode == 0:
+            return "nothing new"
+        if sh(["git", "status", "--porcelain", "--untracked-files=no"], MAIN).stdout.strip():
+            return "main checkout has local changes"
+        before = report_map(MAIN) or {}
+        n0 = progress_numbers(MAIN)
+        order0 = set(re.findall(r"game/\w+\.cpp", sh(["python3", "tools/order_check.py"], MAIN).stdout))
+        if sh(["git", "merge", "-q", "--ff-only", BRANCH], MAIN).returncode:
+            return "grind2 is not a fast-forward of matching"
+
+        def undo(why):
+            sh(["git", "reset", "-q", "--hard", old], MAIN)
+            sh("python3 configure.py >/dev/null && timeout 3000 ninja >/dev/null 2>&1", MAIN)
+            notify("FSA grind: publish failed", why)
+            return "FAILED: " + why
+        if sh("python3 configure.py >/dev/null && timeout 3000 ninja >/dev/null 2>&1", MAIN).returncode:
+            return undo("build or SHA-1")
+        after = report_map(MAIN) or {}
+        lost = [f for (u, f), p in before.items() if p >= 100 and after.get((u, f), 0) < 100]
+        if lost:
+            return undo(f"{len(lost)} matched function(s) lost: {', '.join(lost[:3])}")
+        order1 = set(re.findall(r"game/\w+\.cpp", sh(["python3", "tools/order_check.py"], MAIN).stdout))
+        if order1 - order0:
+            return undo("out of address order: " + ", ".join(sorted(order1 - order0)[:3]))
+        if "check: ok" not in sh(["python3", "tools/gen_game.py", "--check"], MAIN).stdout:
+            return undo("gen_game --check")
+        g = sh(["python3", "tools/gate.py", "--all-units", "--base", old], MAIN).stdout
+        if "gate: ok" not in g:
+            return undo("gate: " + (g.strip().splitlines() or ["failed"])[-1][:200])
+        last = (LOGS / "publish.tsv").read_text().splitlines()[-1].split("\t")[0] if (LOGS / "publish.tsv").exists() else ""
+        kept, tricks, top = highlights(last)
+        n1 = progress_numbers(MAIN)
+        subject = f"site: regenerate data (grind v2: {kept} reviewed changes" + (f", {n1[0] - n0[0]:+d} functions at 100 %" if n0 and n1 else "") + ")"
+        r = sh(["python3", "tools/site_data.py", "--subject", subject, "--stage"], MAIN)
+        if r.returncode:
+            return undo("site_data.py: " + (r.stdout + r.stderr).strip()[-200:])
+        sh(["git", "commit", "-qm", subject], MAIN, check=True)
+        pushed = sh(["git", "push", "-q", "origin", "matching"], MAIN, timeout=300).returncode == 0
+        sh(["git", "merge", "-q", "--ff-only", "matching"], INTEG)
+        with open(LOGS / "publish.tsv", "a") as f:
+            f.write("\t".join(str(x) for x in [now(), old[:9], head(MAIN)[:9], *(n1 or ()), kept, tricks, int(pushed)]) + "\n")
+        if n1:
+            d = f" ({n1[1] - n0[1]:+.2f})" if n0 else ""
+            dw = f" ({n1[2] - n0[2]:+.2f})" if n0 else ""
+            notify(f"FSA: {n1[1]:.2f} % matched{d}, {n1[2]:.2f} % weighted{dw}",
+                   f"{n1[0]} functions; {kept} reviewed changes merged, {tricks} sent back by review. " + "; ".join(top))
+        return f"published {head(MAIN)[:9]}: {n1}; kept {kept}, reviewed out {tricks}; pushed {pushed}; " + "; ".join(top)
+
+
+def cmd_publish(args):
+    while True:
+        try:
+            res = publish_once()
+        except Exception as e:
+            res = f"error: {e}"
+        print(now(), res, flush=True)
+        if not args.every:
+            return
+        alive = any(Path(f"/proc/{pf.read_text().strip()}").exists() for pf in (LOGS / "pids").glob("*.pid")) if (LOGS / "pids").exists() else False
+        if res == "nothing new" and not alive:
+            return
+        time.sleep(args.every)
+
+
 # ---------------------------------------------------------------- usage watchdog
 
 def cmd_watch(args):
@@ -1385,6 +1484,9 @@ def main():
     p.add_argument("--tier", choices=ORDER, required=True, help="the tier that wrote the patch")
     p.add_argument("--review-tier", choices=ORDER)
     p.set_defaults(fn=cmd_rejudge)
+    p = sub.add_parser("publish")
+    p.add_argument("--every", type=int, default=0, help="repeat every N seconds until the workers are gone and nothing is new")
+    p.set_defaults(fn=cmd_publish)
     p = sub.add_parser("watch")
     p.add_argument("--stop", type=float, required=True, help="weekly utilization (0..1) at which everything stops")
     p.add_argument("--every", type=int, default=150, help="seconds between checks")
