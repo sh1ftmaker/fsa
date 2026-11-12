@@ -458,7 +458,7 @@ bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer) {
     p.y = pos->y;
     bool found = false;
     for (s32 i = 0; i < 2; i++) {
-        u16 tile = fn_80226998(&p, layer);
+        s32 tile = fn_80226998(&p, layer);
         if (tile >= 0x19C && tile < 0x19E) {
             found = true;
         }
