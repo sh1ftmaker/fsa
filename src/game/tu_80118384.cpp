@@ -65,6 +65,7 @@ cls_80119E5C* fn_80119DD0() {
     return fadeObject();
 }
 
+// FIXME: 96.91 %, missing/extra; behaviour clean.
 // FIXME: 96.9. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
 // in r31; here the constructor result takes an extra move through r0.
 void cls_80119E5C::fn_80119D48() {
@@ -74,6 +75,7 @@ void cls_80119E5C::fn_80119D48() {
     }
 }
 
+// FIXME: 99.62 %, reloc-name; behaviour clean.
 void cls_80119E5C::fn_80119998(s32 a, s32 b, s32 c, s32 d, s32 e, s32 f, s32 g) {
     field_0x0 = 1;
     field_0x1 = 0;
@@ -147,6 +149,7 @@ void cls_80119E5C::fn_80119958() {
     field_0x10 = 0;
 }
 
+// FIXME: 99.88 %, reloc-name; behaviour clean.
 // FIXME: 99.88. reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
 // unwritten) and has 1.0f after the double; the original has a 1.0f made before
 // fn_801194C4's double (no function here explains it).
@@ -220,6 +223,7 @@ void cls_80119E5C::fn_80119628() {
     }
 }
 
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 // FIXME: 99.94. reloc-name only (the double of the u16 to float conversions; see
 // fn_80119628).
 // Draws the fade picture over the screen with alpha field_0x14: black, or white
@@ -262,20 +266,20 @@ inline cls_801192AC::cls_801192AC() {
     mExtend = JGadget::vector::extend_default;
 }
 
-// FIXME(shotgun): 20.6 %, missing/extra (stand-in: the original is the TVector member: erase(begin(), end()),
+// FIXME(shotgun): 20.62 %, missing/extra; behaviour drift. (stand-in: the original is the TVector member: erase(begin(), end()),
 // then the member dtor's null check, erase again and the delete)
 cls_801192AC::~cls_801192AC() {
     mEnd = mBegin;
     delete mBegin;
 }
 
-// FIXME(shotgun): 82.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.22 %, missing/extra + reloc-name; behaviour drift.
 extern "C" cls_801192AC* fn_8011921C() {
     static cls_801192AC instance;
     return &instance;
 }
 
-// FIXME(shotgun): 48.2 %, missing/extra (stand-in: the original is the TVector reserve(20) inline)
+// FIXME(shotgun): 48.18 %, missing/extra; behaviour drift. (stand-in: the original is the TVector reserve(20) inline)
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
         return;
@@ -294,7 +298,7 @@ void cls_801192AC::fn_801190E4() {
     operator delete(old);
 }
 
-// FIXME(shotgun): 73.7 %, missing/extra
+// FIXME(shotgun): 73.69 %, missing/extra; behaviour drift.
 // The per-frame pass: clears the four player bits of lbl_8053AED0's 0xDD; with field_0x2
 // raises the flag at field_0x30's 0x284 (0.05f at 0x28C); unless paused (field_0x1) runs each
 // listed actor's vfunc_0x54 and, when all their vfunc_0x5C say done and field_0x4 < 0xE,
@@ -333,7 +337,7 @@ void cls_801192AC::fn_80118E20() {
     field_0x8++;
 }
 
-// FIXME(shotgun): 79 %, missing/extra (stand-in: the original is std::find_if with a by-value
+// FIXME(shotgun): 79.07 %, missing/extra; behaviour drift. (stand-in: the original is std::find_if with a by-value
 // predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
@@ -351,10 +355,16 @@ void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME(shotgun): 37 %, missing/extra (the original is TVector size() == 0, then std::find_if with
+// FIXME(shotgun): 37.55 %, missing/extra; behaviour near. (the original is TVector size() == 0, then std::find_if with
 // a by-value predicate; same stand-in note as fn_80118798)
 ActorBase_804A5770** cls_801192AC::fn_8011871C(ActorBase_804A5770** from, u32 actorId) {
-    if (mBegin == NULL || mEnd == mBegin) {
+    u32 count;
+    if (mBegin == NULL) {
+        count = 0;
+    } else {
+        count = (mEnd - mBegin) >> 2;
+    }
+    if (count == 0) {
         return mEnd;
     }
     while (from != mEnd) {
@@ -378,7 +388,7 @@ bool cls_801192AC::fn_801186B0(u32 value) {
     return false;
 }
 
-// FIXME(shotgun): 60.7 %, missing/extra + reloc-name (the vector clear is a plain assignment; the
+// FIXME(shotgun): 60.79 %, missing/extra; behaviour drift. (the vector clear is a plain assignment; the
 // original is the TVector erase(begin(), end()) inline)
 bool cls_801192AC::fn_801184F0(bool flag) {
     getActorManager_801F856C()->fn_801F6884();
