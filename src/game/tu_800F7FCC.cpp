@@ -73,6 +73,12 @@ static inline void slotPos(cls_8049C718* parent, u32 idx, JGeometry::TVec3f& out
     out.z = (f32)(ring * 13) + (10.0f + parent->mPos.z);
 }
 
+static inline JGeometry::TVec3f slotPosOf(cls_8049C718* parent, u32 idx) {
+    JGeometry::TVec3f out;
+    slotPos(parent, idx, out);
+    return out;
+}
+
 // The camera and the boss's fade-in that the intro and the first rise share.
 static inline void focusCamera(cls_8049C718* p) {
     cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
@@ -449,7 +455,7 @@ void cls_8049C718::fn_800FC128() {
     fn_801F3D94(1);
 }
 
-// FIXME(shotgun): 89.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.07 %, missing/extra + reloc-name; behaviour near.
 void cls_8049C718::fn_800FBD90() {
     if (mCooldown != 0) {
         mCooldown--;
@@ -460,7 +466,8 @@ void cls_8049C718::fn_800FBD90() {
         field_0xb0 = 4;
     }
     fn_800FA1A4();
-    if (--mTimer >= 0) {
+    mTimer--;
+    if (mTimer >= 0) {
         f32 s = 1.4f * mScale;
         mBox.set(-26.0f * s, -50.0f * s, 26.0f * s, 0.0f);
         return;
@@ -512,13 +519,11 @@ void cls_8049C718::fn_800FBD90() {
             startSound_801F0E34(0x4002B, 0);
         }
     } else {
-        mPos.x += field_0x3c.x;
-        mPos.y += field_0x3c.y;
-        mPos.z += field_0x3c.z;
+        mPos.add(field_0x3c);
         startSound_801F0E34(0x4002E, 0);
         JGeometry::TVec3f n;
         if (fn_801F2618(&n, false)) {
-            f32 k = 2.0f * field_0x3c.dot(n);
+            f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
             field_0x3c.x -= k * n.x;
             field_0x3c.y -= k * n.y;
             field_0x3c.z -= k * n.z;
@@ -581,7 +586,7 @@ void cls_8049C718::fn_800FBA14() {
     }
 }
 
-// FIXME(shotgun): 95.90 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.96 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB6E0(bool first) {
     u16 angle = 0;
     f32 dist = 0.0f;
@@ -597,13 +602,13 @@ void cls_8049C718::fn_800FB6E0(bool first) {
             ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[0]);
             ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
             JGeometry::TVec3f da = mPos;
-            da.sub(a->mPos);
             JGeometry::TVec3f db = mPos;
+            da.sub(a->mPos);
             db.sub(b->mPos);
             if (PSVECMag((Vec*)&da) < PSVECMag((Vec*)&db)) {
-                angle = (s32)(JMath::atanTable_.atan2_(-da.x, -da.y) * 10430.378f);
+                angle = (s32)(10430.378f * JMath::atanTable_.atan2_(-da.x, -da.y));
             } else {
-                angle = (s32)(JMath::atanTable_.atan2_(-db.x, -db.y) * 10430.378f);
+                angle = (s32)(10430.378f * JMath::atanTable_.atan2_(-db.x, -db.y));
             }
         }
         if (dist < 70.0f) {
@@ -632,7 +637,7 @@ void cls_8049C718::fn_800FB6E0(bool first) {
     field_0x264 = 0;
 }
 
-// FIXME(shotgun): 86.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.70 %, regalloc-only + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FB32C() {
     fn_800FA1A4();
     if (mCooldown != 0) {
@@ -656,9 +661,7 @@ void cls_8049C718::fn_800FB32C() {
         }
     }
     field_0x3c.z -= 0.25f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos.add(field_0x3c);
     if (mPos.z <= 0.0f) {
         if (field_0x257 == 0) {
             fn_800FB6E0(false);
@@ -682,7 +685,7 @@ void cls_8049C718::fn_800FB32C() {
     }
     JGeometry::TVec3f n;
     if (fn_801F2618(&n, false)) {
-        f32 k = 2.0f * field_0x3c.dot(n);
+        f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
         field_0x3c.x -= k * n.x;
         field_0x3c.y -= k * n.y;
         field_0x3c.z -= k * n.z;
@@ -754,7 +757,7 @@ void cls_8049C718::fn_800FB070() {
     }
 }
 
-// FIXME(shotgun): 99.79 %, operands + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.80 %, reloc-name; behaviour drift.
 void cls_8049C718::update() {
     mBox2.set(-21.0f, -35.0f + mPos.z, 22.0f, -2.0f + mPos.z);
     if (vfunc_0x2C(0.0f, -20.0f, 50.0f)) {
@@ -772,8 +775,8 @@ void cls_8049C718::update() {
         fn_800FCCCC();
         break;
     case 1:
-        mAngleB = 0;
-        mAngle += mAngleB;
+        mAngleSpeed = 0;
+        mAngle += mAngleSpeed;
         mRadius = 1.0f;
         field_0x260 += 0x200;
         mPos.z = 5.0f * JMath::sincosTable_.sinShort((s16)field_0x260) + mZBase;
@@ -1004,7 +1007,7 @@ void cls_8049C718::fn_800FA6B0() {
     mAnimTime++;
 }
 
-// FIXME: 70.42 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 82.61 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
 // 
@@ -1016,12 +1019,14 @@ void cls_8049C718::fn_800FA1A4() {
     ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
     JGeometry::TVec3f posA = a->mPos;
     JGeometry::TVec3f posB = b->mPos;
-    JGeometry::TVec3f d = posA - posB;
+    JGeometry::TVec3f d = posA;
+    d.sub(posB);
     if (PSVECMag((Vec*)&d) < 20.0f) {
         JGeometry::TVec3f t = a->field_0x3c;
         a->field_0x3c = b->field_0x3c;
         b->field_0x3c = t;
-        JGeometry::TVec3f mid = posA + posB;
+        JGeometry::TVec3f mid = posA;
+        mid += posB;
         mid.scale(0.5f);
         d.normalize();
         JGeometry::TVec3f off = d;
@@ -1033,13 +1038,15 @@ void cls_8049C718::fn_800FA1A4() {
     }
     if (mSlot == 0) {
         JGeometry::TVec3f c(mPos.x, mPos.y - 20.0f, mPos.z);
-        JGeometry::TVec3f v = c - posA;
+        JGeometry::TVec3f v = c;
+        v.sub(posA);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
             a->field_0x3c = v;
         }
-        v = c - posB;
+        v = c;
+        v.sub(posB);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
@@ -1182,12 +1189,11 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     }
 }
 
-// FIXME(shotgun): 67.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.15 %, different + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     mFlag249 = 1;
     cls_8049C718* parent = mParent;
-    JGeometry::TVec3f target;
-    slotPos(parent, mIndex, target);
+    JGeometry::TVec3f target = slotPosOf(parent, parent->mSlot);
     s32 serial = field_0xa0;
     if (serial != -1) {
         ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -1225,7 +1231,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     }
 }
 
-// FIXME(shotgun): 68.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 70.46 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
     cls_8049C718* parent = mParent;
     if (parent->mSlotUsed[mIndex] != 0) {
@@ -1263,7 +1269,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
         }
         JGeometry::TVec3f n;
         if (fn_801F2618(&n, false)) {
-            f32 k = 2.0f * field_0x3c.dot(n);
+            f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
             field_0x3c.x -= k * n.x;
             field_0x3c.y -= k * n.y;
             field_0x3c.z -= k * n.z;
