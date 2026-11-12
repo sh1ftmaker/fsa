@@ -601,6 +601,24 @@ bool fn_803049F0(s32 layer, s32 index) {
     return true;
 }
 
+// 0x80303870
+void fn_80303870(s32 player) {
+    char name[32];
+    char name2[32];
+    const char* str = getGameView_802D6A9C()->fn_802D9C4C();
+    if (str[0] != 'c') {
+        sprintf(name, "bg_%s_sch.szs", str);
+        fn_80304C10(player, name, 0x6000000, 1, 0);
+    } else {
+        fn_80304C10(player, "bg_c2_sch.szs", 0x6000000, 1, 0);
+    }
+    sprintf(name2, "bg_%s_gb_scl.szs", str);
+    fn_80304C10(player, name2, 0x5000001, 1, 0);
+    sprintf(name, "gb_ch_obj_tr_sch%s.szs", getGameView_802D6A9C()->fn_802D9C1C());
+    fn_80304C10(player, name, 0x6017000, 1, 0);
+    lbl_8053ACE4[player] = 1;
+}
+
 // 0x8030381C
 u8 fn_8030381C(s32 layer) {
     s32 player = fn_8022F340(layer);
