@@ -520,7 +520,6 @@ void cls_804AF72C::do_reset() {
 // other way round), so its minutes fallback copies r7 where ours loads li r8, 1.
 // Lays the message out once with field_0x38 (counting lines and pages), then
 // starts the window's page state.
-#ifdef NONMATCHING
 void cls_804AF72C::do_begin(const void* entry, const char* text) {
     field_0x2d8->resetFields0x3ab();
     *field_0x2c0 = 0;
@@ -566,7 +565,6 @@ void cls_804AF72C::do_begin(const void* entry, const char* text) {
         }
     }
 }
-#endif
 
 void cls_804AF72C::do_end() {
     if (field_0x2d8->field_0x1aa == 0) {
