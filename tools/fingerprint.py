@@ -18,7 +18,8 @@ multisets of:
 
 score = 3 * hard differences + soft differences
 grade = clean   score 0: same behaviour, only codegen differs
-        near    no hard difference, soft <= max(2, 3 %)
+        near    no hard difference and soft <= max(2, 3 %), or at least 95 % matched
+                with a score <= max(3, 1.5 %): what is left may be a codegen artifact
         drift   anything else (the to-do list says what)
 
 It reads the unit's compiled object, so build it first (tools/try.py <unit>).
@@ -174,7 +175,7 @@ LABEL = {
 }
 
 
-def compare(ft, fo):
+def compare(ft, fo, pct=0.0):
     """(score, grade, to-do lines) of a target and our fingerprint."""
     hard = soft = total = 0
     todo = []
@@ -192,8 +193,8 @@ def compare(ft, fo):
     score = 3 * hard + soft
     if score == 0:
         grade = "clean"
-    elif hard == 0 and soft <= max(2, 0.03 * total):
-        grade = "near"
+    elif (hard == 0 and soft <= max(2, 0.03 * total)) or (pct >= 95 and score <= max(3, 0.015 * total)):
+        grade = "near"  # what is left is small enough to be a codegen artifact (extsh. for cmpwi 0, a strength-reduced counter)
     else:
         grade = "drift"
     return score, grade, todo
@@ -236,7 +237,7 @@ def unit_eval(arg, root="."):
             r = right["symbols"][ti]
             t, o = T.insn_list(left, s), T.insn_list(right, r)
             cls, _ = T.classify(t, o, T.reloc_pairs(s, r, left, right))
-            score, grade, todo = compare(fingerprint(t, tsyms, dol, root), fingerprint(o, osyms, dol, root))
+            score, grade, todo = compare(fingerprint(t, tsyms, dol, root), fingerprint(o, osyms, dol, root), pct)
             e.update(cls=cls, score=score, grade=grade, todo=todo, insns=(len(t), len(o)))
         fns[s["name"]] = e
     src = (unit.get("metadata") or {}).get("source_path") or ""

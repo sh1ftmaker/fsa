@@ -369,13 +369,14 @@ def stamp_fixmes(wt, unit, ev):
             lines.insert(start, f"// FIXME: {stats}.")
             continue
         m = FIXME.match(lines[at])
-        if m:  # keep the author's note, replace the numbers and the class
+        if m:  # the numbers and the class go on the FIXME line, the author's note on the line below it
             note = OLD_STATS.sub("", m.group(2), count=1).lstrip(" .:;,")
-            dup = next((i for i in range(at + 1, start) if FIXME.match(lines[i])), None)
-            if dup is not None and not note:  # an older stamp sits above the author's own FIXME line: fold them
-                note = OLD_STATS.sub("", FIXME.match(lines[dup]).group(2), count=1).lstrip(" .:;,")
-                del lines[dup]
-            lines[at] = f"{m.group(1)}{stats}." + (f" {note}" if note else "")
+            pad = re.match(r"\s*", lines[at]).group()
+            for i in range(at + 1, start):  # an author's own "FIXME: 96.9. ..." below a stamp: keep its text only
+                d = FIXME.match(lines[i])
+                if d:
+                    lines[i] = pad + "// " + OLD_STATS.sub("", d.group(2), count=1).lstrip(" .:;,")
+            lines[at:at + 1] = [f"{m.group(1)}{stats}."] + ([pad + "// " + note] if note else [])
         else:
             lines.insert(at, f"// FIXME: {stats}.")
     new = "\n".join(lines)
@@ -492,6 +493,10 @@ def build_packet(wt, unit, fn, ev, note=None):
     text = LANE_TEXT[lane].format(unit=unit, place=place, cls=e["cls"])
     if lane == "match" and e["cls"] == "reloc-name":
         text = RELOC_TEXT
+    elif lane == "match" and e["todo"]:
+        text = ("Its behaviour is all but equal to the original; the few differences listed below may be real (fix "
+                "those) or artifacts of codegen (an extsh. where the original has cmpwi 0, a strength-reduced "
+                "counter). " + text.split("Don't change behaviour. ", 1)[-1])
     if lane == "write":
         text += " " + WRITE_HINT
     out = [f"TASK ({lane}): `{fn}` = `{e['demangled']}`, {size} bytes, unit `{unit}` (src/{unit}).",
@@ -1089,12 +1094,6 @@ def attempt(wt, owner, tier, unit, base, fn, names, args, notes, seq):
         revert(wt)
         log(row + ["REJECT", why] + stats_of(s))
         return base, None
-    if stamp_fixmes(wt, unit, ev):
-        sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
-        ev2 = evaluate(wt, unit)
-        if ev2 is None or totals(ev2) != totals(ev):  # a stamp must not change code
-            raise RuntimeError(f"FIXME stamp changed the build of {unit}")
-        ev = ev2
     desc = describe(base, ev, addr)
     sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
         "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
@@ -1108,6 +1107,21 @@ def attempt(wt, owner, tier, unit, base, fn, names, args, notes, seq):
         fns.insert(0, f1["name"])
     return ev, {"id": f"c{seq}", "sha": head(wt), "tier": tier, "lane": lane, "fn": fn or "FILE", "fns": fns,
                 "size": size, "desc": desc}
+
+
+def stamp_commit(wt, unit):
+    """Refresh the unit's FIXME lines from the measurement, as the script's own commit (kept out
+    of the authors' commits so the reviewer reads only what a model wrote)."""
+    sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+    ev = evaluate(wt, unit)
+    if ev is None or not stamp_fixmes(wt, unit, ev):
+        return
+    sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+    ev2 = evaluate(wt, unit)
+    if ev2 is None or totals(ev2) != totals(ev):  # a stamp must not change code
+        sh(["git", "checkout", "-q", "--", f"src/{unit}"], wt)
+        return
+    sh(["git", "commit", "-qam", f"{unit[:-4]}: FIXME lines from the measurement (tools/grind.py)"], wt, check=True)
 
 
 def cmd_worker(args):
@@ -1177,6 +1191,8 @@ def cmd_worker(args):
                         changes.append(ch)
             if changes and not args.no_review:
                 changes = run_review(wt, owner, unit, base_head, first, changes, args)
+            if changes:
+                stamp_commit(wt, unit)
             result = integrate(wt, branch, unit) if changes else "nothing kept"
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "UNIT", result] + [""] * 7)
         except Exception as ex:  # keep the worker alive
