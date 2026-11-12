@@ -69,7 +69,7 @@ extern const s16* lbl_80539EF8[2];
 // The scenario keys of the demo (rodata 0x80464550).
 extern const s32 lbl_80464550[];
 
-// FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 82.09 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::init() {
     cls_8049D140::init();
     field_0x234 = field_0x90 & 0xFF;
@@ -166,7 +166,7 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
-// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -408,7 +408,7 @@ void PrincessZeldaDemo_8049D208::fn_80110454() {
 }
 
 // The camera for the demo states 0x26-0x3C (the second set of scenes).
-// FIXME(shotgun): 91.59 %, scheduling+regalloc + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.52 %, regalloc-only + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_80110210() {
     switch (field_0x238) {
     case 0x26:
@@ -656,7 +656,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
 // (docs/INLINING.md, pragma rule 1); fn_8010F4DC calls fn_8010F668 out of line twice.
 #pragma auto_inline off
 // Draws the maiden's sprite (frame `arg` of the current animation): bobbing in z while state 0x2F.
-// FIXME(shotgun): 71.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.64 %, scheduling+regalloc + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -707,7 +707,7 @@ void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
 }
 
 // Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
-// FIXME(shotgun): 85.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.53 %, scheduling + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
     field_0x268[0] += 0.01f;
     Mtx mtx;
@@ -764,7 +764,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
-// FIXME(shotgun): 92.37 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.11 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     switch (arg) {
     case 0x26:
