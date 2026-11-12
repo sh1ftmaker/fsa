@@ -346,18 +346,19 @@ bool fn_802DEABC(void) {
     return false;
 }
 
-// FIXME: 93.53 %, missing/extra; behaviour near.
-// FIXME: 93.5. Same family as fn_802DEABC: the target reloads the view (lwz 0xc) before the second
-// pair and reuses it for the third; ours loads it once. An || of the last two blocks is 87 %.
+// FIXME: 96.44 %, missing/extra; behaviour near.
+// FIXME: the target reloads the view (lwz 0xc) before the second pair and reuses it for the third;
+// ours keeps the first block's view and loads it once. Same family as fn_802DEABC.
 bool fn_802DEA34(void) {
     if (gGameRoot_8053AAF8->field_0x7f != 0) {
         if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 0) {
             return true;
         }
-        if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 1) {
+        GameView_804A9950* view = getGameView_802D6A9C();
+        if (view->field_0x4 == 6 && view->field_0x8 == 1) {
             return true;
         }
-        if (getGameView_802D6A9C()->field_0x4 == 6 && getGameView_802D6A9C()->field_0x8 == 3) {
+        if (view->field_0x4 == 6 && view->field_0x8 == 3) {
             return true;
         }
         return false;
