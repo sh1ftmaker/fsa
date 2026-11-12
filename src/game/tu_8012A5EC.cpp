@@ -457,7 +457,8 @@ void cls_8049E770::fn_8012B0D8() {
     bool done = fn_8012A5EC();
     if (field_0x238.y == field_0x3f4 + 260.0f && field_0x248 == 85.0f && done == true) {
         const _GXRenderModeObj* rm = JUTVideo::getManager()->getRenderMode();
-        JGeometry::TVec3f msgPos((s32)rm->fbWidth * 0.5f, (s32)rm->efbHeight * 0.5f + -16.0f, 0.0f);
+        f32 msgY = (s32)rm->efbHeight * 0.5f;
+        JGeometry::TVec3f msgPos((s32)rm->fbWidth * 0.5f, msgY + -16.0f, 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, lbl_804650C8[field_0x254], field_0x4, msgPos, 0x22)) {
             field_0x254++;
