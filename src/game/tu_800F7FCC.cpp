@@ -455,7 +455,7 @@ void cls_8049C718::fn_800FC128() {
     fn_801F3D94(1);
 }
 
-// FIXME(shotgun): 89.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.07 %, missing/extra + reloc-name; behaviour near.
 void cls_8049C718::fn_800FBD90() {
     if (mCooldown != 0) {
         mCooldown--;
@@ -586,7 +586,7 @@ void cls_8049C718::fn_800FBA14() {
     }
 }
 
-// FIXME(shotgun): 95.90 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.96 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB6E0(bool first) {
     u16 angle = 0;
     f32 dist = 0.0f;
@@ -637,7 +637,7 @@ void cls_8049C718::fn_800FB6E0(bool first) {
     field_0x264 = 0;
 }
 
-// FIXME(shotgun): 86.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.70 %, regalloc-only + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FB32C() {
     fn_800FA1A4();
     if (mCooldown != 0) {
@@ -757,7 +757,7 @@ void cls_8049C718::fn_800FB070() {
     }
 }
 
-// FIXME(shotgun): 99.79 %, operands + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.80 %, reloc-name; behaviour drift.
 void cls_8049C718::update() {
     mBox2.set(-21.0f, -35.0f + mPos.z, 22.0f, -2.0f + mPos.z);
     if (vfunc_0x2C(0.0f, -20.0f, 50.0f)) {
@@ -1007,7 +1007,7 @@ void cls_8049C718::fn_800FA6B0() {
     mAnimTime++;
 }
 
-// FIXME: 70.42 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 82.61 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
 // 
@@ -1189,7 +1189,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     }
 }
 
-// FIXME(shotgun): 67.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.15 %, different + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     mFlag249 = 1;
     cls_8049C718* parent = mParent;
@@ -1231,7 +1231,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     }
 }
 
-// FIXME(shotgun): 68.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 70.46 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
     cls_8049C718* parent = mParent;
     if (parent->mSlotUsed[mIndex] != 0) {
