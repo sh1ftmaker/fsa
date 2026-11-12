@@ -77,6 +77,10 @@ public:
     void fn_803B42C0();
     void fn_803B5378();
     void fn_803B236C();
+    // Inlined into fn_803B236C (six copies): effect `id` in the first free
+    // field_0x1c8 slot, 25 units off field_0x244, kept alive.
+    void spawnEffect(u16 id, f32 scale);
+    s32 findFreeEffect(); // first NULL field_0x1c8 slot, or -1
     // The 4P result states (field_0x4c1, fn_803AA8F8's switch).
     void fn_803AB494();
     void fn_803ABCEC();

@@ -46,6 +46,9 @@ static const u64 lbl_804762D0[4][2] = {
 static const u64 lbl_80476310[8] = {
     'Ndatar01', 'Ndatar21', 'Ndatar12', 'Ndatar22', 'Ndatar13', 'Ndatar23', 'Ndatar14', 'Ndatar24',
 };
+// fn_803B236C: the effects' x / y per corner (field_0x45e).
+static const f32 lbl_80476368[4] = {200.0f, 100.0f, 400.0f, 500.0f};
+static const f32 lbl_80476378[4] = {225.0f, 75.0f, 225.0f, 75.0f};
 
 // .data: the winners' sprite animation (animateWinners): frame k shows sprite
 // frame 0xDB + lbl_804AF888[k] (-1: frame 62) until the step counter
@@ -767,8 +770,89 @@ void ResultScreen_804AF9A0::fn_803B2FB0() {
     }
 }
 
-// FIXME(shotgun): 74.63 %, missing/extra + reloc-name; behaviour drift.
-// ResultScreen_804AF9A0
+inline s32 ResultScreen_804AF9A0::findFreeEffect() {
+    for (s32 i = 0; i < 30; i++) {
+        if (field_0x1c8[i] == NULL) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+inline void ResultScreen_804AF9A0::spawnEffect(u16 id, f32 scale) {
+    s32 slot = findFreeEffect();
+    if (slot != -1) {
+        JGeometry::TVec3f pos(25.0f + field_0x244.x, 25.0f + field_0x244.y, 0.0f);
+        field_0x1c8[slot] = spawnEmitter_8013CC50(0, &pos, id, 0, 0, NULL, NULL, true, scale);
+        field_0x1c8[slot]->setStatus(JPAEMIT_Immortal);
+    }
+}
+
+void ResultScreen_804AF9A0::fn_803B236C() {
+    if (field_0x458 <= 0) {
+        s32 list[4];
+        s32 n = 0;
+    if (field_0x4c8 != 0) {
+        for (s32 i = 0; i < field_0x4c8 + 1; i++) {
+            if (i != field_0x45c) {
+                list[n] = i;
+                n++;
+            }
+        }
+        field_0x45c = field_0x4ac[list[(s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1())]];
+    } else {
+        field_0x45c = field_0x4ac[0];
+    }
+    s32 count = 0;
+    for (s32 i = 0; i < 4; i++) {
+        if (i != field_0x45e) {
+            list[count] = i;
+            count++;
+        }
+    }
+    field_0x45e = list[(s32)((f32)count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
+    field_0x244.x = -50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + lbl_80476368[field_0x45e];
+    field_0x244.y = -50.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + lbl_80476378[field_0x45e];
+    f32 scale = 0.5f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.75f;
+    spawnEffect(0x56C, scale);
+    switch (field_0x45c) {
+    case 0:
+        spawnEffect(0x56E, scale);
+        break;
+    case 1:
+        spawnEffect(0x570, scale);
+        break;
+    case 2:
+        spawnEffect(0x56D, scale);
+        break;
+    case 3:
+        spawnEffect(0x56F, scale);
+        break;
+    default:
+        spawnEffect(0x571, scale);
+        break;
+    }
+    field_0x184->startSound(0x30029);
+    for (s32 i = 0; i < 10; i++) {
+        if (field_0x2c8[i] == -1) {
+            field_0x250[i].set(field_0x244);
+            field_0x2c8[i] = 0x3A;
+            break;
+        }
+    }
+    if (field_0x45a <= 0) {
+        field_0x458 = lbl_8050DB0C.field_0x4c[(0x50 - 0x4C) / 2];
+        field_0x45a = (s32)((f32)lbl_8050DB0C.field_0x4c[(0x52 - 0x4C) / 2] * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    } else {
+        field_0x458 = 20;
+        field_0x45a--;
+    }
+    } else {
+        field_0x458--;
+    }
+}
+
+// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B1B60() {
     if (field_0x440 > 0) {
         field_0x440--;
