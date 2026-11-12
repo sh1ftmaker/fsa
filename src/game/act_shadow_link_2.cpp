@@ -20,11 +20,47 @@ const u32 lbl_80469450[4] = {
 // FIXME(shotgun): not written; it is the implicit inline destructor of the base classes.
 
 // 0x801C573C.
-// FIXME(shotgun): 32.43 %, missing/extra + reloc-name; the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
-// (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors.
+// FIXME(shotgun): 92.93 %, missing/extra; the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
+// (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors, and the
+// member constructors run before the body, so the 0x358 call comes after them.
 ShadowLink2_804A43E8::ShadowLink2_804A43E8() {
     field_0x358.fn_802142A8();
     field_0x550.fn_80217484();
+    field_0x55c[0] = 0;
+    field_0x55c[1] = 0;
+    field_0x55c[2] = 0;
+    field_0x560 = 4;
+    field_0x564 = 0;
+    field_0x568 = lbl_8046A748[0][0];
+    field_0x56c = 0;
+    field_0x570.x = 0.0f;
+    field_0x570.y = 0.0f;
+    field_0x570.z = 0.0f;
+    field_0x57c = 0;
+    field_0x580.x = 0.0f;
+    field_0x580.y = 0.0f;
+    field_0x580.z = 0.0f;
+    field_0x58c = 0;
+    field_0x590 = -1;
+    field_0x594 = 0;
+    field_0x595 = 0;
+    field_0x596 = 0;
+    field_0x597 = 0;
+    field_0x598 = 0;
+    field_0x599 = 0;
+    field_0x59a = 0;
+    field_0x59b = 0;
+    field_0x59c = 0;
+    field_0x59e = 0;
+    field_0x5a0 = 0;
+    field_0x5a2 = 0;
+    field_0x5a4 = 0.0f;
+    field_0x5a8 = 0.0f;
+    field_0x5ac = 0.0f;
+    field_0x5b0 = 0.0f;
+    field_0x4ec.mOwner = this;
+    mHitBox.mOwner = this;
+    mHelper540.mOwner = this;
 }
 
 // 0x801C5680.

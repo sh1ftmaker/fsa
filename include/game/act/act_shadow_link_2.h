@@ -172,7 +172,9 @@ public:
     /* 0x59C */ u8 field_0x59c; // vfunc_0x9C counts it down to 0
     /* 0x59D */ u8 field_0x59d;
     /* 0x59E */ u16 field_0x59e;
-    /* 0x5A0 */ u8 field_0x5a0[0x5A8 - 0x5A0];
+    /* 0x5A0 */ u16 field_0x5a0;
+    /* 0x5A2 */ u16 field_0x5a2;
+    /* 0x5A4 */ f32 field_0x5a4;
     /* 0x5A8 */ f32 field_0x5a8;
     /* 0x5AC */ f32 field_0x5ac; // the range fn_801C5B08 gives fn_801D05F8
     /* 0x5B0 */ f32 field_0x5b0; // squared against the distance to the player
