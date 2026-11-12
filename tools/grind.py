@@ -269,7 +269,7 @@ def _build_queue(cache, force):
     if not force and cache.exists():
         try:
             d = json.loads(cache.read_text())
-            if d.get("head") == h:
+            if d.get("head") == h and d.get("v") == 2:
                 return d["units"]
         except ValueError:
             pass
@@ -280,20 +280,25 @@ def _build_queue(cache, force):
             ev = evaluate(INTEG, u[0])
         except Exception:
             return u[1], {}
-        return u[1], {n: {k: e[k] for k in ("pct", "size", "cls", "grade", "score", "addr")}
+        return u[1], {n: {k: e[k] for k in ("pct", "size", "cls", "grade", "score", "addr", "demangled")}
                       for n, e in (ev or {"functions": {}})["functions"].items() if e["pct"] < 100}
     with ThreadPoolExecutor(12) as ex:
         res = {src: fns for src, fns in ex.map(one, units) if fns}
     tmp = cache.with_suffix(f".{os.getpid()}.tmp")
-    tmp.write_text(json.dumps({"head": h, "units": res}))
+    tmp.write_text(json.dumps({"head": h, "v": 2, "units": res}))
     tmp.rename(cache)
     return res
+
+
+LIBRARY = re.compile(r"^(JAS|JKR|JGeometry|JUtility|JMath|JGadget|J2D|J3D|JPA|JAI|JSU|JUT|JMessage|std)\w*(::|<)")
 
 
 def eligible(fns, unit, tier, lanes, lo, hi, hist):
     out = []
     for n, e in fns.items():
         lane = lane_of(e)
+        if lane == "write" and LIBRARY.match(e.get("demangled", "")):
+            continue
         if lane in lanes and lo <= e["size"] <= hi and tier_index(e["size"], hist.get((unit, n), [])) == ORDER.index(tier):
             out.append((LANES.index(lane), e["size"], n))
     return [n for _, _, n in sorted(out)]
@@ -695,8 +700,13 @@ def judge(wt, unit, base, focus_addr, full=None, dry=False):
     if lost:
         return f"lost matched function(s): {', '.join(lost[:3])}", ev, notes
     worse = [e["name"] for a, e in new.items() if a in old and e["score"] > old[a]["score"]]
-    if worse:
-        return f"behaviour moved away from the original in: {', '.join(worse[:3])} (tools/fingerprint.py)", ev, notes
+    if worse:  # weigh the unit as a whole: an unwritten function counts as two per instruction
+        dist = lambda e: 2 * (e["size"] // 4) if e["cls"] == "missing" else e["score"]
+        d0, d1 = sum(dist(e) for e in old.values()), sum(dist(e) for e in new.values())
+        if not d1 < d0:
+            return f"behaviour moved away from the original in: {', '.join(worse[:3])} (tools/fingerprint.py)", ev, notes
+        notes.append(f"side effect: behaviour moved away in {', '.join(worse[:3])}; kept because the unit as a whole is "
+                     f"closer to the original ({d0} -> {d1}). If your change caused it, fix it.")
     secs = [k for k, p in base["sections"].items() if not k.startswith("extab") and ev["sections"].get(k, 0) < p - EPS]
     low = [e["name"] for a, e in new.items() if e["cls"] != "missing" and e["pct"] < FLOOR
            and old.get(a, {}).get("cls") == "missing"]
@@ -1223,6 +1233,59 @@ def cmd_worker(args):
             sh(["python3", "tools/claim.py", "release", unit], MAIN)
 
 
+def cmd_rejudge(args):
+    """Judge a saved rejects/<tag>.patch again under the current rules (after a rule change); when it
+    passes, review and integrate it like a session's change. Its cost is already in the ledger."""
+    owner, tier, unit = f"g2-w{args.n}", args.tier, args.unit
+    wt, branch = WT / owner, f"{BRANCH}-w{args.n}"
+    if not claim(unit, owner, wt):
+        sys.exit(f"{unit} is claimed")
+    try:
+        reset_to_integration(wt)
+        base_head = head(wt)
+        sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+        base = evaluate(wt, unit)
+        fn = args.function
+        e = base["functions"][fn]
+        patch = "".join(Path(args.patch).read_text().splitlines(keepends=True)[1:])
+        r = subprocess.run(["git", "apply", "--3way", "--whitespace=nowarn", "-"], cwd=wt, input=patch, capture_output=True, text=True)
+        if r.returncode:
+            revert(wt)
+            sys.exit("patch no longer applies: " + r.stderr.strip()[-300:])
+        sh(["git", "reset", "-q"], wt)
+        why, ev, notes = judge(wt, unit, base, e["addr"])
+        print("\n".join("note: " + n for n in notes))
+        if why:
+            revert(wt)
+            sys.exit("still rejected: " + why)
+        desc = describe(base, ev, e["addr"])
+        sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
+            "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
+        sh(["git", "commit", "-qm", f"{unit[:-4]}: {desc} ({lane_of(e)} lane, grind)\n\n"
+            f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+        old, new = by_addr(base), by_addr(ev)
+        fns = [x["name"] for a, x in new.items() if a not in old or abs(x["pct"] - old[a]["pct"]) > EPS or x["score"] != old[a]["score"]]
+        changes = [{"id": "c1", "sha": head(wt), "tier": tier, "lane": lane_of(e), "fn": fn, "fns": fns, "size": e["size"], "desc": desc}]
+        changes = run_review(wt, owner, unit, base_head, base, changes, args)
+        if changes:
+            stamp_commit(wt, unit)
+        result = integrate(wt, branch, unit) if changes else "rejected in review"
+        print(desc, "->", result)
+        if result.startswith("merged"):
+            with open(LOGS / "ledger.tsv", "r+") as f:  # the old verdict no longer holds the function back
+                fcntl.flock(f, fcntl.LOCK_EX)
+                rows = f.read().splitlines(keepends=True)
+                for i, row in enumerate(rows):
+                    c = row.rstrip("\n").split("\t")
+                    if len(c) > 11 and c[4] == unit and c[5] == fn and c[2] == tier and c[11] == "REJECT":
+                        c[11] = "REJUDGED"
+                        rows[i] = "\t".join(c) + "\n"
+                f.seek(0); f.truncate(); f.write("".join(rows))
+            log([owner, tier, lane_of(e), unit, fn, e["size"], f"{e['pct']:.2f}", "-", "-", "-", "ACCEPT", "rejudged: " + desc] + [0, 0, 0, 0, 0, "0", 0])
+    finally:
+        sh(["python3", "tools/claim.py", "release", unit], MAIN)
+
+
 # ---------------------------------------------------------------- usage watchdog
 
 def cmd_watch(args):
@@ -1314,6 +1377,11 @@ def main():
     p = sub.add_parser("packet"); p.add_argument("unit"); p.add_argument("function"); p.set_defaults(fn=cmd_packet)
     p = sub.add_parser("check"); p.add_argument("--full", action="store_true"); p.set_defaults(fn=cmd_check)
     p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
+    p = sub.add_parser("rejudge")
+    p.add_argument("n", type=int); p.add_argument("unit"); p.add_argument("function"); p.add_argument("patch")
+    p.add_argument("--tier", choices=ORDER, required=True, help="the tier that wrote the patch")
+    p.add_argument("--review-tier", choices=ORDER)
+    p.set_defaults(fn=cmd_rejudge)
     p = sub.add_parser("watch")
     p.add_argument("--stop", type=float, required=True, help="weekly utilization (0..1) at which everything stops")
     p.add_argument("--every", type=int, default=150, help="seconds between checks")
