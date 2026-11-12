@@ -121,6 +121,23 @@ public:
         return 0;
     }
 
+    // Inlined by do_tag: sets bit `index` (0..63) of the two mask words.
+    void setMasked(int index) {
+        if (index < 32) {
+            field_0x3c |= 1 << index;
+        } else if (index < 64) {
+            field_0x40 |= 1 << (index - 32);
+        }
+    }
+    // Inlined by do_tag: clears it (the upper word without the 32 offset, as the original).
+    void clearMasked(int index) {
+        if (index < 32) {
+            field_0x3c = (u64)(u32)field_0x3c & ~(u64)(s64)(1 << index);
+        } else if (index < 64) {
+            field_0x40 = (u64)(u32)field_0x40 & ~(u64)(s64)(1 << index);
+        }
+    }
+
     // The font do_character measures with (getCellWidth, getWidthEntry).
     /* 0x038 */ JUTFont* field_0x38;
     /* 0x03C */ s32 field_0x3c;

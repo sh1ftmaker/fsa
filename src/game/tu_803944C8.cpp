@@ -1010,6 +1010,199 @@ void cls_804AF6E4::do_character(int c) {
     }
 }
 
+bool cls_804AF6E4::do_tag(u32 tag, const void* data, u32) {
+    f32 ratio = field_0x48 / field_0x38->getCellWidth();
+    switch (tag) {
+    case 0:
+        if (field_0x202[field_0x281] != field_0x22c) {
+            field_0x281++;
+            field_0x202[field_0x281] = field_0x22c;
+            field_0x257[field_0x281] = 0;
+        }
+        return true;
+    case 0x10000:
+    case 0x10001:
+    case 0x10002:
+    case 0x10003:
+    case 0x10007:
+    case 0x10008:
+    case 0x10009:
+    case 0x1000A: {
+        field_0x19c[field_0x1fd + 3] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x1fd + 3] = field_0x201;
+        field_0x1fd++;
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 2.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201] += 2;
+        return true;
+    }
+    case 0x10004:
+    case 0x10005:
+    case 0x10006: {
+        field_0x19c[field_0x1fd + 3] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x1fd + 3] = field_0x201;
+        field_0x1fd++;
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 2.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        return true;
+    }
+    case 0x1000B:
+    case 0x1000C:
+        field_0x22d[field_0x201]++;
+        return true;
+    case 0x10010:
+        addCharWidth(ratio, 0xA7);
+        return true;
+    case 0x10011:
+        addCharWidth(ratio, 0xA8);
+        return true;
+    case 0x10012:
+        addCharWidth(ratio, 0xA6);
+        return true;
+    case 0x10013:
+        addCharWidth(ratio, 0xA5);
+        return true;
+    case 0x20000:
+    case 0x20001:
+    case 0x20002:
+    case 0x20003:
+    case 0x20011:
+    case 0x20012:
+    case 0x20013:
+    case 0x20014: {
+        setMasked(field_0x201);
+        field_0x19c[field_0x282] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x282] = field_0x201;
+        field_0x1fe[field_0x282] = field_0x22d[field_0x201];
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += 5.0f * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        field_0x282++;
+        return true;
+    }
+    case 0x20009:
+    case 0x2000A:
+    case 0x2000B:
+    case 0x2000C:
+    case 0x20019:
+    case 0x2001A:
+    case 0x2001B:
+    case 0x2001C: {
+        clearMasked(field_0x201);
+        field_0x19c[field_0x282] = field_0x4c[field_0x201];
+        field_0x1ee[field_0x282] = field_0x201;
+        field_0x1fe[field_0x282] = field_0x22d[field_0x201];
+        JUTFont::TWidth width;
+        field_0x38->getWidthEntry(' ', &width);
+        field_0x4c[field_0x201] += lbl_8050DB0C.field_0x4c[0x151] * (ratio * (field_0x44 * (s32)width.w1));
+        field_0xf4[field_0x201] += 3.0f;
+        field_0x22d[field_0x201]++;
+        field_0x282++;
+        return true;
+    }
+    case 0x20004:
+    case 0x20005:
+    case 0x20006:
+    case 0x20007:
+    case 0x20008:
+    case 0x2000D:
+    case 0x2000E:
+    case 0x2000F:
+    case 0x20010:
+    case 0x20016:
+    case 0x20017:
+    case 0x20018:
+    case 0x2001D:
+    case 0x2001E:
+    case 0x2001F:
+    case 0x20020:
+    case 0x20021:
+    case 0x20022:
+    case 0x20023:
+    case 0x20024:
+        return true;
+    case 0x20015:
+        if (&static_cast<const u32*>(data)[1] != NULL) {
+            return true;
+        }
+    case 0x20025:
+        if (field_0x1e8 != 0) {
+            field_0x257[field_0x281 - 1] = 1;
+        } else {
+            field_0x257[field_0x281] = 1;
+        }
+        return true;
+    case 0x20026:
+    case 0x20027:
+    case 0x20028:
+        return true;
+    case 0x20029:
+        fn_8039934C(field_0x1d8, field_0x1dc);
+        return true;
+    case 0x2002A:
+    case 0x2002B:
+        return true;
+    case 0x2002C:
+        return true;
+    case 0x2002D:
+        return true;
+    case 0x2002E:
+        return true;
+    case 0x2002F:
+        return true;
+    case 0x20030:
+        return true;
+    case 0x20031:
+        return true;
+    case 0x20032:
+        return true;
+    case 0x20033:
+        return true;
+    case 0x30000:
+        fn_80398A34(field_0x1ea);
+        fn_80398700(*(const u8*)data, field_0x1ea);
+        return true;
+    case 0x30001:
+        return true;
+    case 0x30002:
+        fn_80398A34(field_0x1ec);
+        fn_80398700(*(const u8*)data, field_0x1ec);
+        return true;
+    case 0x30003:
+        fn_80398A34(field_0x1e0);
+        fn_80398700(*(const u8*)data, field_0x1e0);
+        return true;
+    case 0x30004:
+        fn_80398A34(field_0x1e4);
+        fn_80398700(*(const u8*)data, field_0x1e4);
+        return true;
+    // The original reads the save file through a 0xC8-stride row at lbl_8050EC80 (no addi 0x20).
+    case 0x30005:
+        fn_80398EF4(lbl_8050EC80.getCurrentFile().field_0x59, lbl_8050EC80.getCurrentFile().field_0x58);
+        return true;
+    case 0x30006:
+        fn_80398A34(lbl_8050EC80.getCurrentFile().field_0x14);
+        fn_80398700(4, lbl_8050EC80.getCurrentFile().field_0x14);
+        return true;
+    case 0x30007:
+        fn_80398A34(lbl_8050EC80.getCurrentFile().field_0x16);
+        fn_80398700(4, lbl_8050EC80.getCurrentFile().field_0x16);
+        return true;
+    case 0x30008:
+        fn_80398A34(lbl_8053AD78->field_0x10c);
+        fn_80398700(6, lbl_8053AD78->field_0x10c);
+        return true;
+    }
+    return false;
+}
+
 // FIXME(shotgun): 99.75 %, reloc-name
 void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
