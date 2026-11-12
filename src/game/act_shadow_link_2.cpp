@@ -1192,7 +1192,9 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
     case 0x19:
     case 0x1A:
     case 0x2F:
-        field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+        field_0x3c.x = 0.0f;
+        field_0x3c.y = 0.0f;
+        field_0x3c.z = 0.0f;
         return;
     }
     u32 flags = mFlags;
@@ -1206,7 +1208,7 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
     if ((field_0x524 & 1) && !fn_801CD2F8(field_0x4) && mPos.z <= 0.0f) {
         switch (mState) {
         case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
-        case 0xF: case 0x10: case 0x11: case 0x12: case 0x13: case 0x14: case 0x15: case 0x16:
+        case 0xB: case 0xC: case 0xD: case 0xE:
         case 0x17: case 0x18: case 0x19: case 0x1A:
         case 0x29:
             break;
