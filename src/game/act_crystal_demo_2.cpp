@@ -88,6 +88,7 @@ static const s16 sEmitterAngles[5] = {-5461, 5461, 16384, 27307, -27307};
 static const u16 sEmitterIds[5] = {0x105, 0x106, 0x107, 0x108, 0x109};
 static const s32 sEmitterDepths[5] = {2, 0, 0, 0, 0};
 
+// FIXME: 90.98 %, different + reloc-name; behaviour drift.
 void cls_804AE088::init() {
     cls_8049D140::init();
     field_0x23c = field_0x90 & 0x1F;
@@ -237,6 +238,7 @@ s32 cls_804AE088::vfunc_0x5C() {
 }
 
 // differs: register allocation and the group test (original tests 0x1C, 0x1D-0x1E, 0x21-0x22, 0x23 separately).
+// FIXME: 59.15 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE088::fn_8036AC58(s32 arg) {
     if (field_0x270 == 1 && field_0x274 < 0x80)
         return;
@@ -368,6 +370,7 @@ void cls_804AE088::fn_8036A894() {
 }
 #pragma auto_inline reset
 
+// FIXME: 82.37 %, missing/extra; behaviour drift.
 void cls_804AE088::fn_8036A65C() {
     if (field_0x350 != NULL) {
         getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x350);
@@ -429,6 +432,7 @@ void cls_804AE088::fn_8036A65C() {
     }
 }
 
+// FIXME: 84.13 %, missing/extra + reloc-name; behaviour drift.
 // FIXME: original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
 void cls_804AE088::fn_80368660() {
     SpriteParams_801F5AE0 params;
@@ -546,6 +550,7 @@ void cls_804AE088::fn_80368660() {
     }
 }
 
+// FIXME: 76.65 %, different + reloc-name; behaviour drift.
 void cls_804AE088::fn_803683AC() {
     SpriteParams_801F5AE0 params;
     JGeometry::TVec3f savedPos = mPos;
@@ -581,6 +586,7 @@ void cls_804AE088::fn_803683AC() {
     mPos = savedPos;
 }
 
+// FIXME: 97.74 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE088::fn_80368198() {
     if (field_0x270 != 0) {
         if (field_0x274 < 0x80) {
