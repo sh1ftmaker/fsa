@@ -703,7 +703,7 @@ void cls_804AE4B0::fn_803705A0() {
         if (field_0x324.y <= 1680.0f) {
             field_0x324.y = 1680.0f;
             u8 count = (field_0x23c <= 0xB4) + 2;
-            JGeometry::TVec3f pos(field_0x324.x, field_0x324.y - 32.0f, field_0x324.z);
+            JGeometry::TVec3f pos = field_0x324 - JGeometry::TVec3f(0.0f, 32.0f, 0.0f);
             getActorManager_801F856C()->spawnActor_801F9484(ACTOR_RUPY, field_0x4, &pos, count | 0x30000, -1, -1);
             field_0x240 = 0x1E;
             mState = 10;
