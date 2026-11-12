@@ -61,7 +61,7 @@ cls_804A7AE0::~cls_804A7AE0() {
     }
 }
 
-// FIXME(shotgun): 95.67 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME(shotgun): 95.65 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804A7AE0::init() {
     mBox.i.x = -48.0f;
     mBox.i.y = -48.0f;
@@ -128,7 +128,7 @@ void cls_804A7AE0::init() {
     field_0x238.set(mPos.x, mPos.y, mPos.z);
 }
 
-// FIXME(shotgun): 77.30 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.39 %, missing/extra + reloc-name; behaviour near.
 // initial position/box arithmetic is scheduled differently, 5 instructions
 void cls_804A7AE0::vfunc_0x10() {
     JGeometry::TVec3f origin = mPos;
@@ -669,7 +669,7 @@ void cls_804A7AE0::fn_80299AD0() {
     }
 }
 
-// FIXME(shotgun): 94.02 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.88 %, missing/extra + reloc-name; behaviour drift.
 // layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80299720() {
     if (field_0x250.y < 0.0f) {
@@ -745,7 +745,7 @@ void cls_804A7AE0::fn_80299720() {
     }
 }
 
-// FIXME(shotgun): 88.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.68 %, missing/extra + reloc-name; behaviour drift.
 // layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80299374() {
     if (field_0x250.y > 0.0f) {
@@ -823,7 +823,7 @@ void cls_804A7AE0::fn_80299374() {
     }
 }
 
-// FIXME(shotgun): 94.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.89 %, missing/extra + reloc-name; behaviour drift.
 // layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80298FC4() {
     if (field_0x250.x < 0.0f) {
@@ -900,7 +900,7 @@ void cls_804A7AE0::fn_80298FC4() {
     }
 }
 
-// FIXME(shotgun): 93.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.89 %, missing/extra + reloc-name; behaviour drift.
 // layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80298C18() {
     if (field_0x250.x > 0.0f) {
@@ -1090,7 +1090,7 @@ void cls_804A7AE0::fn_802984B0() {
     }
 }
 
-// FIXME(shotgun): 70.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 72.51 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A7AE0::update() {
     mPos.set(field_0x238.x, field_0x238.y, field_0x238.z);
     for (s32 i = 0; i < 4; i++) {
@@ -1586,7 +1586,7 @@ inline void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpritePara
     }
 }
 
-// FIXME: 94.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 98.96 %, different + reloc-name; behaviour clean.
 void cls_804A7AE0::draw() {
     if (field_0x24c == 0 && field_0x2ac == 0) {
         return;
@@ -1646,7 +1646,7 @@ void cls_804A7AE0::draw() {
     }
 }
 
-// FIXME(shotgun): 82.08 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.68 %, missing/extra + reloc-name; behaviour drift.
 // early-out branch layout, 10 instructions fewer
 void cls_804A7AE0::fn_802961AC() {
     s32 serial = fn_801F2718('SLR3');
@@ -1696,7 +1696,7 @@ void cls_804A7AE0::fn_802961AC() {
     field_0x2ba = 1;
 }
 
-// FIXME(shotgun): 95.69 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.48 %, scheduling+regalloc + reloc-name; behaviour clean.
 // 4 opcodes differ
 void cls_804A7AE0::fn_80295EE8() {
     if (mTimer <= 0) {
@@ -1739,7 +1739,7 @@ void cls_804A7AE0::fn_80295EE8() {
     mTimer--;
 }
 
-// FIXME(shotgun): 91.29 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.44 %, missing/extra + reloc-name; behaviour clean.
 // loop register assignment (this/index swapped) and 2 instructions
 void cls_804A7AE0::vfunc_0x24() {
     for (s32 i = 0; i < 4; i++) {
@@ -1782,7 +1782,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 58.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 65.46 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
