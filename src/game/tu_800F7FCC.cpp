@@ -517,7 +517,7 @@ void cls_8049C718::fn_800FBD90() {
         startSound_801F0E34(0x4002E, 0);
         JGeometry::TVec3f n;
         if (fn_801F2618(&n, false)) {
-            f32 k = 2.0f * field_0x3c.dot(n);
+            f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
             field_0x3c.x -= k * n.x;
             field_0x3c.y -= k * n.y;
             field_0x3c.z -= k * n.z;
@@ -655,9 +655,7 @@ void cls_8049C718::fn_800FB32C() {
         }
     }
     field_0x3c.z -= 0.25f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos.add(field_0x3c);
     if (mPos.z <= 0.0f) {
         if (field_0x257 == 0) {
             fn_800FB6E0(false);
@@ -681,7 +679,7 @@ void cls_8049C718::fn_800FB32C() {
     }
     JGeometry::TVec3f n;
     if (fn_801F2618(&n, false)) {
-        f32 k = 2.0f * field_0x3c.dot(n);
+        f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
         field_0x3c.x -= k * n.x;
         field_0x3c.y -= k * n.y;
         field_0x3c.z -= k * n.z;
@@ -1262,7 +1260,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
         }
         JGeometry::TVec3f n;
         if (fn_801F2618(&n, false)) {
-            f32 k = 2.0f * field_0x3c.dot(n);
+            f32 k = 2.0f * (field_0x3c.x * n.x + field_0x3c.y * n.y + field_0x3c.z * n.z);
             field_0x3c.x -= k * n.x;
             field_0x3c.y -= k * n.y;
             field_0x3c.z -= k * n.z;
