@@ -275,7 +275,8 @@ void cls_804AF774::fn_803A2F74() {
 
 // Adds the number of characters `value` prints as (a sign, then its digits
 // without leading zeros, at most five) to the column count.
-// FIXME: 93.87. scheduling+regalloc: in the ten-thousands step the original
+// FIXME: 93.87 %, scheduling+regalloc; behaviour clean.
+// scheduling+regalloc: in the ten-thousands step the original
 // computes value % 10000 before the digit test (the later steps match).
 void cls_804AF774::fn_803A2E48(s32 value) {
     bool started = false;
@@ -310,6 +311,7 @@ void cls_804AF774::fn_803A2E48(s32 value) {
 // Adds the length of the counted noun that follows a number (singular when
 // count is 1): the unit's " Force Gem" / " Force Gems" ... " Force Fairy" /
 // " Force Fairies" strings (lbl_80475DC8), plus one.
+// FIXME: 99.85 %, reloc-name; behaviour drift.
 void cls_804AF774::fn_803A2CB0(u8 noun, s32 count) {
     switch (noun) {
     case 1:
@@ -574,7 +576,8 @@ void cls_804AF72C::do_end() {
     field_0x2c0[field_0x2d0++] = -2;
 }
 
-// FIXME(shotgun): 99.03 %, different (the text pointer is formed before the clearing store)
+// FIXME(shotgun): 99.03 %, different + reloc-name; behaviour near.
+// (the text pointer is formed before the clearing store)
 void cls_804AF72C::fn_8039F540(int c) {
     char* text = field_0x2d8->field_0x3ab;
     field_0x2d8->field_0x3ab[0] = 0;
@@ -660,6 +663,7 @@ void cls_804AF72C::fn_8039F540(int c) {
 
 // Builds the window text of a message tag: in the text-image windows (window field_0x1aa) as glyph
 // codes in the first line buffer, otherwise as text in both buffers.
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 bool cls_804AF72C::do_tag(u32 tag, const void* data, u32) {
     if (field_0x2d8->field_0x1aa == 0) {
         switch (tag) {
@@ -1181,7 +1185,8 @@ bool cls_804AF72C::do_tag(u32 tag, const void* data, u32) {
     return false;
 }
 
-// FIXME(shotgun): 96.37 %, missing/extra (the u8 line count is subtracted as an int in the original)
+// FIXME(shotgun): 96.37 %, missing/extra; behaviour drift.
+// (the u8 line count is subtracted as an int in the original)
 void cls_804AF72C::fn_8039D30C(u8 value) {
     s32 index = field_0x2cc;
     s32 offset = 0;
@@ -1242,7 +1247,8 @@ void cls_804AF72C::fn_8039D30C(u8 value) {
     field_0x2d4++;
 }
 
-// FIXME(shotgun): 82.41 %, different (schedule of the window load / int conversion)
+// FIXME(shotgun): 82.41 %, different + reloc-name; behaviour near.
+// (schedule of the window load / int conversion)
 void cls_804AF72C::fn_8039D0DC(u8 value) {
     s32 offset = 0;
     s32 index = field_0x2cc;
@@ -1266,7 +1272,7 @@ void cls_804AF72C::fn_8039D0DC(u8 value) {
     field_0x2d4++;
 }
 
-// FIXME(shotgun): 98.29 %, scheduling+regalloc
+// FIXME(shotgun): 98.29 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039CDF8(u8 value) {
     if (field_0x2cc > (s8)field_0x38.field_0x202[field_0x2d8->field_0x15c]) {
         strcat(field_0x2c0, "  ");
@@ -1305,7 +1311,7 @@ void cls_804AF72C::fn_8039CDF8(u8 value) {
     field_0x2d5++;
 }
 
-// FIXME(shotgun): 99.55 %, regalloc-only
+// FIXME(shotgun): 99.55 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039C9A0(s32 number) {
     bool started = false;
     bool negative = false;
@@ -1376,7 +1382,7 @@ void cls_804AF72C::fn_8039C9A0(s32 number) {
     appendText(ch);
 }
 
-// FIXME(shotgun): 99.11 %, reloc-name
+// FIXME(shotgun): 99.18 %, reloc-name; behaviour drift.
 void cls_804AF72C::fn_8039C630(u8 noun, s32 count) {
     switch (noun) {
     case 1:
@@ -1445,7 +1451,7 @@ void cls_804AF72C::fn_8039C630(u8 noun, s32 count) {
     }
 }
 
-// FIXME(shotgun): 97.05 %, scheduling+regalloc
+// FIXME(shotgun): 97.05 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF72C::fn_8039C258(s32 number) {
     bool started = false;
     if (number < 0) {
@@ -1602,7 +1608,8 @@ void cls_804AF72C::fn_8039B3EC(u8 noun, s32 count) {
     }
 }
 
-// FIXME: 93.34. scheduling (+ the unsplit 0.0f literal): the original
+// FIXME: 93.34 %, scheduling + reloc-name; behaviour clean.
+// scheduling (+ the unsplit 0.0f literal): the original
 // interleaves the field_0x1fe stores and field_0x1fd with the first three
 // iterations of the unrolled 15-entry loop.
 void cls_804AF6E4::do_begin(const void*, const char*) {
@@ -1634,6 +1641,7 @@ void cls_804AF6E4::do_end() {
     field_0x257[field_0x281] = 0;
 }
 
+// FIXME: 99.82 %, reloc-name; behaviour clean.
 void cls_804AF6E4::do_character(int c) {
     if (c == '\n') {
         field_0x201++;
@@ -1658,6 +1666,7 @@ void cls_804AF6E4::do_character(int c) {
     }
 }
 
+// FIXME: 99.63 %, missing/extra + reloc-name; behaviour near.
 bool cls_804AF6E4::do_tag(u32 tag, const void* data, u32) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
     switch (tag) {
@@ -1851,7 +1860,7 @@ bool cls_804AF6E4::do_tag(u32 tag, const void* data, u32) {
     return false;
 }
 
-// FIXME(shotgun): 99.75 %, reloc-name
+// FIXME(shotgun): 99.75 %, reloc-name; behaviour clean.
 void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
     if (minutes > 0) {
@@ -1879,7 +1888,7 @@ void cls_804AF6E4::fn_8039934C(s32 minutes, s32 seconds) {
     addSecondsMarkWidth(ratio);
 }
 
-// FIXME(shotgun): 98.68 %, scheduling+regalloc
+// FIXME(shotgun): 98.72 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804AF6E4::fn_80398EF4(s32 minutes, s32 seconds) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
     if (minutes > 99) {
@@ -1900,7 +1909,7 @@ void cls_804AF6E4::fn_80398EF4(s32 minutes, s32 seconds) {
     addSecondsMarkWidth(ratio);
 }
 
-// FIXME(shotgun): 99.79 %, reloc-name
+// FIXME(shotgun): 99.79 %, reloc-name; behaviour clean.
 void cls_804AF6E4::fn_80398A34(s32 number) {
     bool started = false;
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
@@ -1934,7 +1943,8 @@ void cls_804AF6E4::fn_80398A34(s32 number) {
     addCharWidth(ratio, number + '0');
 }
 
-// FIXME: 98.15. Scheduling only: the original increments and compares the
+// FIXME: 98.15 %, scheduling + reloc-name; behaviour drift.
+// Scheduling only: the original increments and compares the
 // loop index right after getWidthEntry, ours at the end of the body.
 void cls_804AF6E4::fn_80398700(u8 noun, s32 count) {
     f32 ratio = field_0x48 / field_0x38->getCellWidth();
@@ -2018,7 +2028,8 @@ void cls_804AF6E4::fn_80398700(u8 noun, s32 count) {
 
 cls_804AF6E4::~cls_804AF6E4() {}
 
-// FIXME: 99.79. Regalloc + stack slots + reloc-name: the message font goes
+// FIXME: 99.79 %, operands + reloc-name; behaviour clean.
+// Regalloc + stack slots + reloc-name: the message font goes
 // through r27 instead of r28 (the eight setFont calls); the random draw's
 // and the two parse_next pointers' stack slots differ (0x8 / 0x10 / 0xC);
 // the string offsets are relative to the section base (lbl_80475768+0x670..)
@@ -2263,6 +2274,7 @@ void cls_804AF5A0::fn_80396F94() {
 // pulses the pane alphas over lbl_8050DB0C's period, while the window waits (99999)
 // it pops the frame in; otherwise all frames are hidden. Bit 0x40 uses the op_zelda
 // screen (0x2C) and only players 1 and 5.
+// FIXME: 98.43 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF5A0::fn_80395BE8() {
     s32 player = field_0x160;
     if ((field_0x3c0->field_0x3b8->field_0x28 & 0x100) && gGameRoot_8053AAF8->field_0x7e) {
@@ -2427,7 +2439,8 @@ void cls_804AF5A0::fn_80395BE8() {
 // Pops a window pane in: its alpha rises over 10 frames; once it is full, its size
 // follows a five-point curve per axis over the frame counts of the layout constants, then
 // the pane is moved so that it stays centred on the box.
-// FIXME(shotgun): 93.00 %, missing/extra (setAlpha argument masking, window load order)
+// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour drift.
+// (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
     s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
@@ -2485,7 +2498,8 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
-// FIXME(shotgun): 93.03 %, missing/extra (setAlpha argument masking, window load order)
+// FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
+// (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
     s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
@@ -2543,6 +2557,7 @@ void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
+// FIXME: 99.69 %, reloc-name; behaviour clean.
 void cls_804AF5A0::fn_8039499C(bool flag) {
     if (field_0x1aa == 0) {
         f32 x = field_0xc0;
@@ -2673,7 +2688,8 @@ void cls_804AF5A0::fn_8039499C(bool flag) {
     }
 }
 
-// FIXME: 98.31. Missing 2 instructions around the clamp: the original copies
+// FIXME: 98.31 %, missing/extra + reloc-name; behaviour clean.
+// Missing 2 instructions around the clamp: the original copies
 // the processor's frame count (mr r4,r6) and clamps the copy to 0; ours clamps
 // in place (separate-variable, ternary and if/else forms tried: same or worse).
 void cls_804AF5A0::fn_80394690() {
@@ -2713,6 +2729,7 @@ void cls_804AF5A0::fn_80394690() {
     }
 }
 
+// FIXME: 99.81 %, reloc-name; behaviour clean.
 void cls_804AF5A0::fn_803944EC(f32 scale) {
     field_0xb4 = scale;
     J2DTextBox::TFontSize size;
