@@ -173,7 +173,7 @@ public:
     void fn_80304FB0();
     void fn_80307B58(s32 player, bool flag);
     void fn_8030801C(s32 player);
-    void fn_803085A4(s32 player); // game/tu_80301CD0.cpp, not written yet
+    void fn_803085A4(s32 player);
 };
 class cls_804B0FC0;
 class J2DTextBox;

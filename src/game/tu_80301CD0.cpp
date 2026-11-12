@@ -8,6 +8,8 @@
 #include "JSystem/JKernel/JKRArchive.h"
 #include "game/GbaClient.h"
 #include "game/Message.h"
+#include "game/PlayerBit.h"
+#include "game/tu_80379F84.h"
 #include <string.h>
 
 // The GBA link of each player: a queue of files sent to the GBA (names such as
@@ -126,7 +128,7 @@ static inline bool isQueueBusy(s32 player) {
 //
 // Not written yet: fn_80301D54, fn_803020C8, fn_803022C4, fn_8030275C, fn_80302C34, fn_80302F9C,
 // fn_80303870, fn_80303CE4, fn_80304FB0, fn_803064A8, fn_803066F0, fn_803068D0, fn_80306A94,
-// fn_80307B58, fn_8030801C, fn_803085A4 and the constructor fn_8030905C (cls_804AA8B8).
+// fn_80307B58, fn_8030801C and the constructor fn_8030905C (cls_804AA8B8).
 
 // Forward declarations.
 bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e, s32 f, u8 g);
@@ -224,6 +226,146 @@ void fn_80308D0C() {
             lbl_80505438[player][j].resetAll();
         }
     }
+}
+
+// Fills the header of the player's record: player, size, layer, mode and
+// link flags, then the mode's status bits in bytes 4-7.
+// 0x803085A4
+void cls_804AA8B8::fn_803085A4(s32 player) {
+    s32 layer = fn_8022EA0C(player);
+    cls_804AA858Sub11C* record = &lbl_80506DE8[player];
+    record->field_0x3_0 = lbl_8053AD08;
+    record->mPlayer = layer;
+    if (getPlayerLayer_8023DE58(layer) < 8) {
+        record->mValid = 0;
+    } else {
+        record->mValid = getPlayerLayer_8023DE58(layer) - 7;
+    }
+    record->mMode = lbl_80506D48[player];
+    if (lbl_8053ACD0 && isPlayerBitSet(gGameRoot_8053AAF8, player)) {
+        if (gGameRoot_8053AAF8->field_0x4c == 9 || gGameRoot_8053AAF8->field_0x80 != 0
+            || (lbl_8053ACD8[player] && (fn_8037F1E4(player) < 1 || fn_8037F1E4(player) > 5))) {
+            record->field_0x2_5 = 1;
+        } else {
+            record->field_0x2_5 = 0;
+        }
+        record->field_0x3_2 = lbl_8053ACEC[player] > 1 ? lbl_8053ACE8[player] : 0;
+    } else {
+        record->field_0x2_5 = 1;
+        record->field_0x3_2 = 0;
+    }
+    record->mMask = 0;
+    record->field_0x1_0 = 0;
+    record->field_0x1_0 |= lbl_8053ACF8[0];
+    record->field_0x1_0 |= lbl_8053ACF8[1] << 1;
+    record->field_0x1_0 |= lbl_8053ACF8[2] << 2;
+    record->field_0x1_0 |= lbl_8053ACF8[3] << 3;
+    record->field_0x4.mWord = 0;
+    if (lbl_80506D48[player] == 1) {
+        record->field_0x4.mMode1.field_0x5_4 = 15;
+    }
+    if (lbl_8053AAF0->mState >= 4 && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player))) {
+        record->field_0x4.mOdd.field_0x4_0 = lbl_80506D38[player];
+        lbl_80506D38[player] = 0;
+        if (lbl_8053ACD0 || lbl_8053AD68->fn_80379F84()) {
+            s32 mode = lbl_80506D48[player];
+            if ((mode & 1) == 0) {
+                record->field_0x4.mEven.field_0x5_0 = lbl_80529DEC.field_0xd8[player];
+                record->field_0x4.mEven.field_0x4_5 = (u8)(lbl_80529DEC.field_0xc8[player] / 4 - 1);
+                record->field_0x4.mEven.field_0x6_0 = fn_8037EE8C(player);
+                s32 v = lbl_80529DEC.field_0xe8[player] + 5000;
+                if (v > 14999) {
+                    v = 14999;
+                } else if (v < 0) {
+                    v = 0;
+                }
+                lbl_80506DE8[player].field_0x4.mEven.field_0x7 = (v >> 6) & 0xFF;
+                record->field_0x4.mEven.field_0x6_2 = v & 0x3F;
+            } else if (mode == 1) {
+                bool timed = gGameRoot_8053AAF8->field_0x4c == 11;
+                u8 count = gGameRoot_8053AAF8->field_0x88;
+                bool busy;
+                if (lbl_8053AEC8 != NULL) {
+                    u8 state = lbl_8053AEC8->field_0x40;
+                    if (state == 1 || (u8)(state - 3) <= 1 || state == 6) {
+                        busy = true;
+                    } else {
+                        busy = false;
+                    }
+                } else {
+                    busy = false;
+                }
+                record->field_0x4.mMode1.field_0x4_5 = count | (busy << 1) | timed;
+                record->field_0x4.mMode1.field_0x5_4 = lbl_80529DEC.field_0xf8[player];
+            }
+        }
+        if (lbl_8053ACD0) {
+            s32 mode = lbl_80506D48[player];
+            if (mode == 2) {
+                record->field_0x4.mEven.field_0x5_7 = getGameView_802D6A9C()->fn_802D7804(getPlayerLayer_8023DE58(layer), 1);
+            } else if ((mode & 1) == 1) {
+                if (getPlayerLayer_8023DE58(layer) >= 8) {
+                    u8 skip;
+                    if (gGameRoot_8053AAF8->field_0x4c == 11) {
+                        skip = 1;
+                    } else {
+                        skip = gGameRoot_8053AAF8->field_0x88 == 2;
+                    }
+                    if (!skip) {
+                        s32 t;
+                        if (fn_8023BC38(layer) > 0) {
+                            t = (fn_8023BC38(layer) + 59) / 60;
+                            if (t > 11) {
+                                t = 11;
+                            }
+                            t += 20;
+                        } else {
+                            if (fn_80236768(layer) > 0) {
+                                t = (fn_80236768(layer) + 59) / 60;
+                            } else if (fn_80236630(layer) > 0) {
+                                t = (fn_80236630(layer) + 59) / 60;
+                            } else if (fn_802366CC(layer) > 0) {
+                                t = (fn_802366CC(layer) + 59) / 60;
+                            } else {
+                                t = (getGameView_802D6A9C()->field_0xc4 + 59) / 60;
+                                if (!getGameView_802D6A9C()->field_0x131f0 || t > 5) {
+                                    t = 0;
+                                }
+                            }
+                            if (t > 20) {
+                                t = 20;
+                            }
+                        }
+                        record->field_0x4.mOdd.field_0x4_7 = t;
+                        record->field_0x4.mOdd.field_0x5_0 = (u8)(t >> 1);
+                    }
+                }
+                if (lbl_80506D48[player] == 3) {
+                    if (getGameView_802D6A9C()->fn_802D7804(getPlayerLayer_8023DE58(layer), 12)) {
+                        record->field_0x4.mOdd.mOffsetMode =
+                            (getGameView_802D6A9C()->field_0x131b8[getPlayerLayer_8023DE58(layer)] & 0xC) >> 2;
+                    } else {
+                        record->field_0x4.mOdd.mOffsetMode = fn_802351D8(layer) != 0;
+                    }
+                    record->field_0x4.mOdd.field_0x4_5 =
+                        (getGameView_802D6A9C()->field_0x131b8[getPlayerLayer_8023DE58(layer)] & 0x3000) >> 12;
+                    record->field_0x4.mOdd.field_0x5_6 = (u8)(fn_80237060(player) - 1);
+                    if (!fn_802DEBF8() && !fn_802DEBA0()) {
+                        record->field_0x4.mOdd.field_0x5_7 = 1;
+                    }
+                }
+            }
+        }
+        if (lbl_8053AD68->fn_80379F84()) {
+            s32 mode = lbl_80506D48[player];
+            if (mode == 0) {
+                record->field_0x4.mEven.field_0x5_7 = 1;
+            } else if (mode == 3) {
+                record->field_0x4.mOdd.field_0x5_7 = 1;
+            }
+        }
+    }
+    lbl_8053ACDC[player] = 0;
 }
 
 // Builds the player's first GBA record: the kind, the four marks and the hidden sprites,
@@ -543,7 +685,7 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
     GbaSprite_80506F88* sprites = lbl_80506F88[fn_8022F340(record->mPlayer)][0];
     GbaSprite_80506F88* dst = sprites + half * 19;
     s32 i;
-    for (i = 0; i < lbl_80541618[record->field_0x3_0 & 3] - 7; i++) {
+    for (i = 0; i < lbl_80541618[record->field_0x3_0] - 7; i++) {
         dst[i].mWord = record->field_0x18[i].mWord;
     }
     for (; i < 19; i++) {

@@ -130,17 +130,42 @@ struct cls_804AA858Sub11C {
     u32 mValid : 3;                // nonzero for a valid record
     u32 mPlayer : 2;               // fn_803068D0 (clrlwi 30)
     /* 0x03 */ u32 mKind : 4;      // 5 or 14 for the records fn_802F53F4 keeps
-    u32 field_0x3_0 : 4;
-    /* 0x04 */ u32 field_0x4_7 : 1;
-    u32 field_0x4_5 : 2;
-    u32 field_0x4_0 : 5;
-    /* 0x05 */ u32 field_0x5_7 : 1;
-    u32 field_0x5_6 : 1;
-    u32 mOffsetMode : 2;           // fn_802FB69C: cls_804AA8D8::fn_8030B1E8's mode in mode 3
-    u32 field_0x5_0 : 4;
-    /* 0x06 */ u32 field_0x6 : 8;  // four 2-bit values
-    /* 0x07 */ u32 field_0x7_4 : 4; // four 1-bit values
-    u32 field_0x7_0 : 4;           // four 1-bit values
+    u32 field_0x3_2 : 2;
+    u32 field_0x3_0 : 2;           // fn_803085A4: lbl_8053AD08
+    // Bytes 4-7 depend on the mode (lbl_80506D48[player], mMode): fn_803085A4
+    // clears the word, then fills the mode's layout.
+    /* 0x04 */ union {
+        u32 mWord;
+        struct {
+            /* 0x04 */ u32 field_0x4_7 : 1;
+            u32 field_0x4_5 : 2;
+            u32 field_0x4_0 : 5;
+            /* 0x05 */ u32 field_0x5_7 : 1;
+            u32 field_0x5_6 : 1;
+            u32 mOffsetMode : 2;           // fn_802FB69C: cls_804AA8D8::fn_8030B1E8's mode in mode 3
+            u32 field_0x5_0 : 4;
+            /* 0x06 */ u32 field_0x6 : 8;  // four 2-bit values
+            /* 0x07 */ u32 field_0x7_4 : 4; // four 1-bit values
+            u32 field_0x7_0 : 4;           // four 1-bit values
+        } mOdd; // modes 1 and 3
+        struct {
+            /* 0x04 */ u32 field_0x4_7 : 1;
+            u32 field_0x4_5 : 2;
+            u32 field_0x4_0 : 5;
+            /* 0x05 */ u32 field_0x5_4 : 4;
+            u32 field_0x5_0 : 4;
+            /* 0x06 */ u32 field_0x6 : 16;
+        } mMode1;
+        struct {
+            /* 0x04 */ u32 field_0x4_5 : 3;
+            u32 field_0x4_0 : 5;
+            /* 0x05 */ u32 field_0x5_7 : 1;
+            u32 field_0x5_0 : 7;
+            /* 0x06 */ u32 field_0x6_2 : 6; // low 6 bits of a 14-bit value
+            u32 field_0x6_0 : 2;
+            /* 0x07 */ u32 field_0x7 : 8;   // its high 8 bits
+        } mEven; // modes 0 and 2
+    } field_0x4;
     // Four player marks (fn_802FCE74 places a 48 x 48 view around mEntries[
     // lbl_80506DD8[player]]: x = mXLow | mXHigh << 8, y = mY); the high bits
     // of their last bytes hold the panel's 9-bit scroll (fn_802FB69C): x =

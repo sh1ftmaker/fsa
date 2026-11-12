@@ -733,7 +733,7 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
                 if (record->mValid <= 1 || field_0x134[player] != 0) {
                     mode = 5;
                 } else if (record->mMode == 3) {
-                    mode = record->mOffsetMode;
+                    mode = record->field_0x4.mOdd.mOffsetMode;
                 }
                 if (shifts != NULL) {
                     offsets = shifts->fn_8030B1E8(record->mValid, mode, scrollY);
@@ -2469,15 +2469,15 @@ void TileMap_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
     if (record->mKind == 5 || record->mKind == 14) {
         *field_0x11c[slot] = *record;
         if (record->mMode == 2) {
-            field_0x134[slot] = record->field_0x5_7;
+            field_0x134[slot] = record->field_0x4.mOdd.field_0x5_7;
         } else if (record->mMode == 3) {
-            field_0x130[slot] = record->field_0x4_5;
+            field_0x130[slot] = record->field_0x4.mOdd.field_0x4_5;
         }
         if (record->mMode & 1) {
             for (s32 i = 0; i < 4; i++) {
-                lbl_80506DA8[slot][i] = (record->field_0x6 >> (i * 2)) & 3;
-                lbl_80506DB8[slot][i] = (record->field_0x7_4 >> i) & 1;
-                lbl_80506DC8[slot][i] = (record->field_0x7_0 >> i) & 1;
+                lbl_80506DA8[slot][i] = (record->field_0x4.mOdd.field_0x6 >> (i * 2)) & 3;
+                lbl_80506DB8[slot][i] = (record->field_0x4.mOdd.field_0x7_4 >> i) & 1;
+                lbl_80506DC8[slot][i] = (record->field_0x4.mOdd.field_0x7_0 >> i) & 1;
                 lbl_80506DD8[slot] = fn_8022EA0C(slot);
             }
         }
