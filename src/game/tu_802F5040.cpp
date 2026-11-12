@@ -35,7 +35,7 @@ static const GXTlut lbl_8046F940[16] = {
 // after the floats of fn_802F5040), and the two white ones are separate.
 static const GXColor lbl_805414E8 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802FC80C, TEVREG2
 static const GXColor lbl_805414EC = {0x00, 0x00, 0x00, 0xFF}; // fn_802FB69C, TEVREG0
-static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10 (not written yet), TEVREG0
+static const GXColor lbl_805414F0 = {0x00, 0x00, 0x00, 0x7E}; // fn_802FAC10, TEVREG0
 static const GXColor lbl_805414F4 = {0xFF, 0xFF, 0xFF, 0xFF}; // fn_802F8F0C, TEVREG0
 
 // The draw offset of a sprite with params at pos: field_0x1c / field_0x1d
@@ -144,7 +144,8 @@ cls_803003A8::cls_803003A8() {}
 
 cls_8030029C::cls_8030029C() {}
 
-// FIXME: 99.9. Instructions identical; the two file names are @NNN strings, not
+// FIXME: 99.92 %, reloc-name; behaviour clean.
+// Instructions identical; the two file names are @NNN strings, not
 // lbl_804711D4 / lbl_804711E4, until the unit's .rodata is emitted in order.
 TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
     heap->getTotalFreeSize();
@@ -232,7 +233,8 @@ TileMap_804AA858::~TileMap_804AA858() {
     delete field_0x238c;
 }
 
-// FIXME: 99.4. Register allocation in the per-player loop (r4-r8 one off); the
+// FIXME: 99.50 %, regalloc-only + reloc-name; behaviour clean.
+// Register allocation in the per-player loop (r4-r8 one off); the
 // grid's .sdata2 literals (lbl_80541528 ... lbl_80541614) are @NNN because the
 // unwritten functions between fn_802F9DA8 and it use earlier pool entries first.
 void TileMap_804AA858::fn_802FF798() {
@@ -341,7 +343,8 @@ void TileMap_804AA858::fn_802FF548() {
     fn_802FF798();
 }
 
-// FIXME: 88.7. The original copies the rectangles two words at a time (lwz, lwz,
+// FIXME: 88.72 %, missing/extra; behaviour clean.
+// The original copies the rectangles two words at a time (lwz, lwz,
 // stw, stw) and builds the full-screen one on the stack while storing it; ours copies
 // word by word and drops the stack copy. The loop registers swap as in fn_802FF2D8.
 void TileMap_804AA858::fn_802FF3F0() {
@@ -375,7 +378,8 @@ void TileMap_804AA858::fn_802FF3B0() {
     }
 }
 
-// FIXME: 95.6. The loop index and the element pointer swap r29/r30 (and the
+// FIXME: 95.56 %, scheduling+regalloc; behaviour clean.
+// The loop index and the element pointer swap r29/r30 (and the
 // stw r29 save moves up one slot). Literals match.
 void TileMap_804AA858::fn_802FF2D8() {
     for (s32 i = 0; i < field_0xe424; i++) {
@@ -392,7 +396,8 @@ void TileMap_804AA858::fn_802FF2D8() {
     fn_802FEE68();
 }
 
-// FIXME: 92.1. Scheduling and registers only: the original keeps i, the flag,
+// FIXME: 92.07 %, different + reloc-name; behaviour clean.
+// Scheduling and registers only: the original keeps i, the flag,
 // the lbl_8053ACF0 pointer and the three per-player pointers in r22-r29 (ours
 // r24-r31, one pointer induction fewer) and loads field_0x210[i] before
 // field_0x11c[i] for the fn_802FB69C call.
@@ -436,6 +441,7 @@ void TileMap_804AA858::fn_802FF0EC() {
 // Draws the field_0x2398 effects, last first: params' alphas fade with the
 // time left, and an effect with a scale shrinks from it to 1 (its matrix is
 // a scaled copy for the draw).
+// FIXME: 99.97 %, reloc-name; behaviour clean.
 void TileMap_804AA858::fn_802FEE68() {
     for (int i = 0xFF; i >= 0; i--) {
         cls_803003AC* effect = &field_0x2398[i];
@@ -574,7 +580,8 @@ void TileMap_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 87.0. Structurally close (2 instructions more): the original builds
+// FIXME: 87.01 %, missing/extra + reloc-name; behaviour drift.
+// Structurally close (2 instructions more): the original builds
 // the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
 // -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
 // block counters in different stack slots / registers (one more spilled), and
@@ -682,7 +689,8 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
     }
 }
 
-// FIXME: 87.9. Structurally close (6 instructions more): in the mosaic the
+// FIXME: 87.94 %, missing/extra + reloc-name; behaviour near.
+// Structurally close (6 instructions more): in the mosaic the
 // original multiplies h * py and w * px per pixel, ours strength-reduces them
 // (four more registers, so flag / alpha live on the stack: lbz 0x8 / 0x9);
 // read from rect2 inside the loops instead it is 89.1 with 6 fewer (reloads).
@@ -836,7 +844,205 @@ void TileMap_804AA858::fn_802FB69C(s32 player, cls_804AA858Sub11C* record, cls_8
     gGameRoot2_8053AB10->field_0x24->fn_8030DFE8(true);
 }
 
-// FIXME: 98.1. Register allocation, stack slots and data offsets only (try.py
+// Draws the panel tile grid field_0x48[layer] (2 x 2 blocks of 16 x 16) scrolled
+// by (x, y): only the 8-unit rows on screen (and, without offsets, the columns),
+// one palette at a time of field_0x18[1] (layers 0 / 8 or flag) or
+// field_0x18[2], tinted grey / alpha unless both are 0xFF. With offsets, each
+// 8-line row is shifted by the average of its screen lines' offsets, wrapped by
+// 512 when the whole row is off one side.
+// Still differs: ours hoists 8.0f + py out of the corner loops (one more FPR, f29),
+// the shift loop's line index is not one induction variable, count-loop scheduling.
+// FIXME: 92.80 %, missing/extra + reloc-name; behaviour drift.
+void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u8 alpha, const s32* offsets) {
+    static const GXTlut lbl_8046FA30[16] = {
+        GX_TLUT0, GX_TLUT1, GX_TLUT2,  GX_TLUT3,  GX_TLUT4,  GX_TLUT5,  GX_TLUT6,  GX_TLUT7,
+        GX_TLUT8, GX_TLUT9, GX_TLUT10, GX_TLUT11, GX_TLUT12, GX_TLUT13, GX_TLUT14, GX_TLUT15,
+    };
+    if (x > 0x180) {
+        x -= 0x200;
+    }
+    if (y > 0x180) {
+        y -= 0x200;
+    }
+    f32 originX = -x;
+    f32 originY = -y;
+    gGameRoot2_8053AB10->fn_8013B1E8();
+    GXClearVtxDesc();
+    GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
+    GXSetVtxDesc(GX_VA_TEX0, GX_INDEX16);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
+    GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
+    GXSetArray(GX_VA_TEX0, field_0x110, sizeof(JGeometry::TVec2f));
+    if (grey == 0xFF && alpha == 0xFF) {
+        GXSetTevColor(GX_TEVREG0, lbl_805414F0);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_TEXC);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_TEXA, GX_CA_A0, GX_CA_KONST, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_COMP_A8_GT, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+    } else {
+        GXColor color = {grey, grey, grey, alpha};
+        GXSetTevColor(GX_TEVREG0, color);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_TEXC, GX_CC_TEXA, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD_NULL, GX_TEXMAP_NULL, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_CPREV, GX_CC_C0, GX_CC_ZERO);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_A0);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
+        GXSetTevDirect(GX_TEVSTAGE1);
+        GXSetNumTevStages(2);
+        GXSetBlendMode(GX_BM_BLEND, GX_BL_ONE, GX_BL_SRCALPHA, GX_LO_NOOP);
+    }
+    GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+    GXSetCullMode(GX_CULL_NONE);
+    u16* grid = field_0x48[layer];
+    s32 set;
+    if ((layer & 7) == 0 || flag != 0) {
+        set = 1;
+    } else {
+        set = 2;
+    }
+    GXTlutObj tluts[16];
+    for (int i = 0; i < 16; i++) {
+        GXInitTlutObj(&tluts[i], field_0x18[set] + i * 0x20, GX_TL_RGB5A3, 16);
+        GXLoadTlut(&tluts[i], lbl_8046FA30[i]);
+    }
+    s32 counts[16];
+    for (int i = 0; i < 16; i++) {
+        counts[i] = 0;
+    }
+    for (int by = 0; by < 2; by++) {
+        for (int bx = 0; bx < 2; bx++) {
+            s32 block = by * 2 + bx;
+            for (int ty = 0; ty < 16; ty++) {
+                s32 dy = (by * 32 + ty * 2) * 8 - y;
+                if (dy <= -16 || dy >= 0xA0) {
+                    continue;
+                }
+                for (int tx = 0; tx < 16; tx++) {
+                    s32 dx = (bx * 32 + tx * 2) * 8 - x;
+                    if (offsets == NULL && (dx <= -16 || dx >= 0xF0)) {
+                        continue;
+                    }
+                    u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                    if (tile != 0) {
+                        for (int k = 0; k < 4; k++) {
+                            counts[(field_0x24[tile * 4 + k] >> 12) & 0xF]++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    GXTexObj tex;
+    for (int palette = 0; palette < 16; palette++) {
+        if (counts[palette] <= 0) {
+            continue;
+        }
+        GXInitTexObjCI(&tex, field_0x4[1], 0x80, 0x200, GX_TF_C4, GX_CLAMP, GX_CLAMP, GX_FALSE,
+                       lbl_8046FA30[palette]);
+        GXLoadTexObj(&tex, GX_TEXMAP0);
+        GXBegin(GX_QUADS, GX_VTXFMT0, counts[palette] * 4);
+        for (int by = 0; by < 2; by++) {
+            for (int bx = 0; bx < 2; bx++) {
+                s32 block = by * 2 + bx;
+                for (int ty = 0; ty < 16; ty++) {
+                    s32 dy = (by * 32 + ty * 2) * 8 - y;
+                    if (dy <= -16 || dy >= 0xA0) {
+                        continue;
+                    }
+                    if (offsets != NULL) {
+                        f32 shifts[3];
+                        for (int j = 0; j < 3; j++) {
+                            shifts[j] = 0.0f;
+                            for (int k = 0; k < 8; k++) {
+                                s32 line = dy + j * 8 + k;
+                                s32 clamped;
+                                if (line < 0) {
+                                    clamped = 0;
+                                } else if (line > 0x9F) {
+                                    clamped = 0x9F;
+                                } else {
+                                    clamped = line;
+                                }
+                                shifts[j] -= offsets[clamped];
+                            }
+                            shifts[j] *= 0.125f;
+                        }
+                        for (int tx = 0; tx < 16; tx++) {
+                            u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            f32 px = originX + (bx * 32 + tx * 2) * 8;
+                            if (px + shifts[0] < -16.0f && px + shifts[1] < -16.0f && px + shifts[2] < -16.0f) {
+                                px += 512.0f;
+                            } else if (px + shifts[0] > 240.0f && px + shifts[1] > 240.0f &&
+                                       px + shifts[2] > 240.0f) {
+                                px -= 512.0f;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                f32 py = originY + (by * 32 + ty * 2 + j) * 8;
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    u16 corner = entry & 0xFFF;
+                                    f32 left = px + i * 8;
+                                    GXPosition3f32(left + shifts[j], py, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + left + shifts[j], py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + left + shifts[j + 1], 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(left + shifts[j + 1], 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
+                            }
+                        }
+                    } else {
+                        for (int tx = 0; tx < 16; tx++) {
+                            s32 dx = (bx * 32 + tx * 2) * 8 - x;
+                            if (dx <= -16 || dx >= 0xF0) {
+                                continue;
+                            }
+                            u16 tile = grid[(block * 16 + ty) * 16 + tx];
+                            if (tile == 0) {
+                                continue;
+                            }
+                            for (int j = 0; j < 2; j++) {
+                                f32 py = originY + (by * 32 + ty * 2 + j) * 8;
+                                for (int i = 0; i < 2; i++) {
+                                    u16 entry = field_0x24[tile * 4 + j * 2 + i];
+                                    if (((entry >> 12) & 0xF) != palette) {
+                                        continue;
+                                    }
+                                    u16 corner = entry & 0xFFF;
+                                    f32 left = originX + (bx * 32 + tx * 2 + i) * 8;
+                                    GXPosition3f32(left, py, 0.0f);
+                                    GXTexCoord1x16(corner);
+                                    GXPosition3f32(8.0f + left, py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x400);
+                                    GXPosition3f32(8.0f + left, 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0xC00);
+                                    GXPosition3f32(left, 8.0f + py, 0.0f);
+                                    GXTexCoord1x16(corner ^ 0x800);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        GXEnd();
+    }
+}
+
+// FIXME: 98.06 %, operands + reloc-name; behaviour drift.
+// Register allocation, stack slots and data offsets only (try.py
 // "operands + reloc-name"): the tables and "circle.bti" sit 0x70 / 0x1D8 too
 // early in our .rodata (fn_802FCE74's tables and fn_802F6800's five are not
 // written), the GXColor temporaries' stack slots differ, and registers
@@ -1182,7 +1388,8 @@ void TileMap_804AA858::fn_802FA3FC() {
     }
 }
 
-// FIXME: 88.1. As in fn_802F9714: the original loads the next source bytes of the
+// FIXME: 88.05 %, scheduling+regalloc; behaviour clean.
+// As in fn_802F9714: the original loads the next source bytes of the
 // unrolled nibble-swap loop before storing the previous ones; registers differ.
 // fn_802F9714 for the 'SCH ' tile images of field_0x4[slot]; for slot 1 it
 // also keeps bytes 0x200-0x2FF of that buffer in field_0x238c.
@@ -1225,7 +1432,8 @@ void TileMap_804AA858::fn_802FA160(void* res, u32 srcOffset, s32 slot, u32 dstOf
     }
 }
 
-// FIXME: 93.7. One instruction short: the original stores the high byte of colour
+// FIXME: 93.74 %, missing/extra; behaviour near.
+// One instruction short: the original stores the high byte of colour
 // 0xD8 as clrlwi + srawi 8 (extrwi for 0xD9 / 0xDA; ours extrwi for all three).
 // Also moved: the original adds src + srcOffset (add r9, r26, r7) after copying
 // len to r4 (mr r4, r24) before the first loop; ours adds it right after the
@@ -1305,7 +1513,8 @@ void TileMap_804AA858::fn_802F9DA8(void* res, u32 srcOffset, s32 slot, u32 dstOf
     DCFlushRange(out, len);
 }
 
-// FIXME: 90.7. As in fn_802F99DC: one mr fewer in the 4x-unrolled copy loop (the
+// FIXME: 90.71 %, missing/extra; behaviour clean.
+// As in fn_802F99DC: one mr fewer in the 4x-unrolled copy loop (the
 // original loads the next low byte before the store); registers differ.
 // Loads the u16 grid field_0x24 from res like fn_802F99DC (little-endian,
 // `size` bytes, else the resource's size), from byte `start` on.
@@ -1340,7 +1549,8 @@ void TileMap_804AA858::fn_802F9BE8(void* res, u32 srcOffset, u32 start, u32 size
     }
 }
 
-// FIXME: 89.4. In the 4x-unrolled copy loop the original loads the second
+// FIXME: 89.43 %, missing/extra; behaviour clean.
+// In the 4x-unrolled copy loop the original loads the second
 // element's low byte before storing the first (one mr more); registers differ.
 // Loads the 'SCN ' tile grid of `layer` from res (decoded first when
 // compressed; `size` bytes from srcOffset, else the resource's size):
@@ -1407,7 +1617,8 @@ u16 TileMap_804AA858::fn_802F9908(s32 layer, s32 index) {
     return tile;
 }
 
-// FIXME: 84.4. In the unrolled nibble-swap loop the original loads the next
+// FIXME: 84.44 %, scheduling+regalloc; behaviour clean.
+// In the unrolled nibble-swap loop the original loads the next
 // source byte before storing the previous one (ours stores, then loads), and the
 // computed length lives in r26 (ours r31; the parameters move up one register).
 void TileMap_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOffset, u32 size) {
@@ -1442,7 +1653,8 @@ void TileMap_804AA858::fn_802F9714(void* res, u32 srcOffset, s32 slot, u32 dstOf
     DCFlushRange(dst, len);
 }
 
-// FIXME: 94.9. Register allocation (res / srcOffset / dstOffset / len one register
+// FIXME: 94.90 %, scheduling+regalloc; behaviour clean.
+// Register allocation (res / srcOffset / dstOffset / len one register
 // off) and the original copies len to r4 before the first loop for the second
 // loop and DCFlushRange (ours after it); its src + srcOffset is added later.
 // Converts the 'SCL ' palette resource res (little-endian BGR555, decoded
@@ -1562,6 +1774,7 @@ void TileMap_804AA858::fn_802F91AC(const JGeometry::TVec3f* pos, SpriteParams_80
 // TEV colours, blend mode, z mode and alpha update of params, else white /
 // zero, the plain blend and the default z mode. fn_802F86CC calls it after
 // fn_802F91AC.
+// FIXME: 98.81 %, scheduling; behaviour clean.
 void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXClearVtxDesc();
     GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
@@ -1611,7 +1824,8 @@ void TileMap_804AA858::fn_802F8F0C(SpriteParams_801F5AE0* params) {
     GXSetCullMode(GX_CULL_NONE);
 }
 
-// FIXME: 88.9. The original keeps obj in memory as if its address were taken:
+// FIXME: 88.93 %, missing/extra + reloc-name; behaviour drift.
+// The original keeps obj in memory as if its address were taken:
 // every bit-field store is kept (byte 0x11 stored after each field, the
 // unused mAffineParam = 0 too) and the draw re-reads the fields; ours keeps
 // them in registers and drops the dead stores. The three tables are at
@@ -1757,7 +1971,8 @@ void TileMap_804AA858::fn_802F86CC(const JGeometry::TVec3f* pos, void* res, s32 
     }
 }
 
-// FIXME: 89.8. The quad loop: the original converts the tile's pixel x / y
+// FIXME: 89.83 %, missing/extra + reloc-name; behaviour drift.
+// The quad loop: the original converts the tile's pixel x / y
 // ((x * 2 + i) * 8, (y * 2 + j) * 8) to float twice each inside the innermost
 // loop and computes the second texture coordinates as px * (1 / 128) + 0.0f
 // (fmadds with the pool's 0.0f); ours hoists the y conversion out of the i loop,
@@ -2123,7 +2338,8 @@ f32 fn_802F5FF4(f32 z) {
     return 192.0f / (192.0f - h);
 }
 
-// FIXME: 98.7. Register allocation only: the 8.0f literal and field_0x2368.y swap
+// FIXME: 98.66 %, regalloc-only; behaviour clean.
+// Register allocation only: the 8.0f literal and field_0x2368.y swap
 // f5/f6 (and 0.125f is in f6, not f7); the ix * 0xC / iy * 0x30C products swap r0/r3.
 f32 TileMap_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
     f32 z = pos->z;
@@ -2145,7 +2361,8 @@ f32 TileMap_804AA858::fn_802F5E9C(const JGeometry::TVec3f* pos) {
     return z;
 }
 
-// FIXME: 88.2. Register allocation (the grid test uses f7-f11 for the original's
+// FIXME: 88.51 %, missing/extra; behaviour near.
+// Register allocation (the grid test uses f7-f11 for the original's
 // f3-f9, the result flag r5 for r6) and the first interpolation step: the original
 // scales v before loading p[1] and stores top's z before its x/y. Literals @NNN.
 bool TileMap_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
@@ -2208,7 +2425,8 @@ bool TileMap_804AA858::fn_802F58A8(const JGeometry::TVec3f* pos, Mtx mtx) {
     return result;
 }
 
-// FIXME: 99.2. Register allocation only, as in fn_802F5E9C (inlined here):
+// FIXME: 99.20 %, regalloc-only; behaviour clean.
+// Register allocation only, as in fn_802F5E9C (inlined here):
 // 8.0f and pos->x swap f5/f6.
 // The position (out) and parameters (*outParams) a sprite at pos is drawn
 // with: on the height grid's tilt (fn_802F58A8, params' matrix concatenated
@@ -2240,7 +2458,8 @@ void TileMap_804AA858::fn_802F5570(const JGeometry::TVec3f* pos, SpriteParams_80
     }
 }
 
-// FIXME: 76.5. The original copies the 0x68-byte record into field_0x11c[slot]
+// FIXME: 76.52 %, missing/extra + reloc-name; behaviour drift.
+// The original copies the 0x68-byte record into field_0x11c[slot]
 // with a 13-iteration double-word loop; ours unrolls a word copy. Registers also
 // differ (record and slot in r24 / r23, original r23 / r26).
 void TileMap_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
@@ -2267,12 +2486,6 @@ void TileMap_804AA858::fn_802F53F4(s32 slot, const cls_804AA858Sub11C* record) {
     fn_803068D0(field_0x11c[slot]);
 }
 
-// FIXME: 99.6. The z > 0.0f flag is extracted to r0 and moved to r3 (one mr more;
-// the original extracts straight into r3). Literals match.
-// Sets up the GX state of a sprite at pos: the view matrix (params' matrix,
-// scaled for the height like fn_802F5FF4, moved to pos) or the plain camera,
-// the blend mode, the TEV colours and the z mode. out is where the sprite is
-// drawn relative to the matrix.
 void fn_802F5040(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params, JGeometry::TVec3f* out) {
     f32 offset;
     if (params != NULL) {
