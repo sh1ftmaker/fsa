@@ -1237,14 +1237,14 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0xa4.z = 0.0f;
     field_0x3bc = new cls_804B20F8(index, &field_0xa4, NULL, 8);
 
-    field_0x20 = new J2DScreen;
-    field_0x20->setPriority("hukidashi.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x24 = new J2DScreen;
-    field_0x24->setPriority("hukidashi_wood.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x28 = new J2DScreen;
-    field_0x28->setPriority("hukidashi_stone.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    field_0x2c = new J2DScreen;
-    field_0x2c->setPriority("op_zelda.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[0] = new J2DScreen;
+    field_0x20[0]->setPriority("hukidashi.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[1] = new J2DScreen;
+    field_0x20[1]->setPriority("hukidashi_wood.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[2] = new J2DScreen;
+    field_0x20[2]->setPriority("hukidashi_stone.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    field_0x20[3] = new J2DScreen;
+    field_0x20[3]->setPriority("op_zelda.blo", 0x1100000, lbl_80529DEC.field_0x20);
 
     timg = (const ResTIMG*)fn_804030C4('TIMG', "kk_linkGr_01.bti");
     field_0x30[0] = new J2DPicture(timg);
@@ -1269,65 +1269,65 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     timg = (const ResTIMG*)fn_804030C4('TIMG', "heart_03.bti");
     field_0x30[10] = new J2DPicture(timg);
 
-    field_0xb8 = field_0x20->search('Pm00')->getWidth();
-    field_0xbc = field_0x20->search('Pm00')->getHeight();
-    field_0xc0 = field_0x20->search('Nmdata01')->getBounds()->i.x;
-    field_0xc4 = field_0x20->search('Nmdata01')->getBounds()->i.y;
-    field_0xc8 = field_0x20->search('Tm01')->getBounds()->i.x;
-    field_0xcc = field_0x20->search('Tm01')->getBounds()->i.y;
-    field_0xd0 = field_0x20->search('Tm02')->getBounds()->i.x - field_0x20->search('Tm01')->getBounds()->i.x;
-    field_0xd4 = field_0x20->search('Tm02')->getBounds()->i.y - field_0x20->search('Tm01')->getBounds()->i.y;
-    field_0xe8 = field_0x20->search('Tm01')->getWidth();
-    field_0xec = field_0x20->search('Tm01')->getHeight();
-    field_0x11c = field_0x20->search('ROOT')->getBounds()->i.x;
-    field_0x120 = field_0x20->search('ROOT')->getBounds()->i.y;
-    field_0xf8 = field_0x20->search('P1ar')->getBounds()->i.x;
-    field_0xfc = field_0x20->search('P1ar')->getBounds()->i.y;
-    field_0x100 = field_0x20->search('P1ar')->getWidth();
-    field_0x104 = field_0x20->search('P1ar')->getHeight();
-    field_0x1a3 = field_0x20->search('P1ar')->getAlpha();
-    field_0x1a5 = field_0x20->search('P1b01')->getAlpha();
-    field_0x1a6 = field_0x20->search('P1b01')->getAlpha();
-    field_0x1a7 = field_0x20->search('P1n02')->getAlpha();
-    field_0x1a8 = field_0x20->search('P1n01')->getAlpha();
-    field_0xd8 = field_0x2c->search('Tm01')->getBounds()->i.x;
-    field_0xdc = field_0x2c->search('Tm01')->getBounds()->i.y;
-    field_0xf0 = field_0x2c->search('Tm01')->getWidth();
-    field_0xf4 = field_0x2c->search('Tm01')->getHeight();
-    field_0xe0 = field_0x2c->search('Tm02')->getBounds()->i.x - field_0x2c->search('Tm01')->getBounds()->i.x;
-    field_0xe4 = field_0x2c->search('Tm02')->getBounds()->i.y - field_0x2c->search('Tm01')->getBounds()->i.y;
-    field_0x108 = field_0x2c->search('P1ar')->getBounds()->i.x;
-    field_0x10c = field_0x2c->search('P1ar')->getBounds()->i.y;
-    field_0x110 = field_0x2c->search('P1ar')->getWidth();
-    field_0x114 = field_0x2c->search('P1ar')->getHeight();
-    field_0x1a3 = field_0x2c->search('P1ar')->getAlpha();
+    field_0xb8 = field_0x20[0]->search('Pm00')->getWidth();
+    field_0xbc = field_0x20[0]->search('Pm00')->getHeight();
+    field_0xc0 = field_0x20[0]->search('Nmdata01')->getBounds()->i.x;
+    field_0xc4 = field_0x20[0]->search('Nmdata01')->getBounds()->i.y;
+    field_0xc8 = field_0x20[0]->search('Tm01')->getBounds()->i.x;
+    field_0xcc = field_0x20[0]->search('Tm01')->getBounds()->i.y;
+    field_0xd0 = field_0x20[0]->search('Tm02')->getBounds()->i.x - field_0x20[0]->search('Tm01')->getBounds()->i.x;
+    field_0xd4 = field_0x20[0]->search('Tm02')->getBounds()->i.y - field_0x20[0]->search('Tm01')->getBounds()->i.y;
+    field_0xe8 = field_0x20[0]->search('Tm01')->getWidth();
+    field_0xec = field_0x20[0]->search('Tm01')->getHeight();
+    field_0x11c = field_0x20[0]->search('ROOT')->getBounds()->i.x;
+    field_0x120 = field_0x20[0]->search('ROOT')->getBounds()->i.y;
+    field_0xf8 = field_0x20[0]->search('P1ar')->getBounds()->i.x;
+    field_0xfc = field_0x20[0]->search('P1ar')->getBounds()->i.y;
+    field_0x100 = field_0x20[0]->search('P1ar')->getWidth();
+    field_0x104 = field_0x20[0]->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x20[0]->search('P1ar')->getAlpha();
+    field_0x1a5 = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a6 = field_0x20[0]->search('P1b01')->getAlpha();
+    field_0x1a7 = field_0x20[0]->search('P1n02')->getAlpha();
+    field_0x1a8 = field_0x20[0]->search('P1n01')->getAlpha();
+    field_0xd8 = field_0x20[3]->search('Tm01')->getBounds()->i.x;
+    field_0xdc = field_0x20[3]->search('Tm01')->getBounds()->i.y;
+    field_0xf0 = field_0x20[3]->search('Tm01')->getWidth();
+    field_0xf4 = field_0x20[3]->search('Tm01')->getHeight();
+    field_0xe0 = field_0x20[3]->search('Tm02')->getBounds()->i.x - field_0x20[3]->search('Tm01')->getBounds()->i.x;
+    field_0xe4 = field_0x20[3]->search('Tm02')->getBounds()->i.y - field_0x20[3]->search('Tm01')->getBounds()->i.y;
+    field_0x108 = field_0x20[3]->search('P1ar')->getBounds()->i.x;
+    field_0x10c = field_0x20[3]->search('P1ar')->getBounds()->i.y;
+    field_0x110 = field_0x20[3]->search('P1ar')->getWidth();
+    field_0x114 = field_0x20[3]->search('P1ar')->getHeight();
+    field_0x1a3 = field_0x20[3]->search('P1ar')->getAlpha();
 
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x24->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[1]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x28->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[2]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x24->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[1]->search('Tm02'))->setFont(font);
     font = lbl_8053AD78->mFont;
-    static_cast<J2DTextBox*>(field_0x28->search('Tm02'))->setFont(font);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setBlackWhite(
+    static_cast<J2DTextBox*>(field_0x20[2]->search('Tm02'))->setFont(font);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setBlackWhite(
         JUtility::TColor(lbl_8050DB0C.field_0x304[3], lbl_8050DB0C.field_0x304[4], lbl_8050DB0C.field_0x304[5], 0),
         JUtility::TColor(lbl_8050DB0C.field_0x304[0], lbl_8050DB0C.field_0x304[1], lbl_8050DB0C.field_0x304[2], 0xFF));
-    field_0x2c->search('Ndata05')->hide();
-    field_0x2c->search('Ndata01')->hide();
+    field_0x20[3]->search('Ndata05')->hide();
+    field_0x20[3]->search('Ndata01')->hide();
 
     timg = (const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "kk_yazirushi_01.bti");
     field_0x5c = new J2DPicture(timg);
     field_0x5c->setBlackWhite(JUtility::TColor(0xFF, 0xFF, 0x8C, 0), JUtility::TColor(0xFF, 0xFF, 0x8C, 0xFF));
-    field_0x5c->rotate(9.6f, 14.4f, J2DROTATE_Z, -96.0f);
+    field_0x5c->rotate(9.6f, 9.6f * 1.5f, J2DROTATE_Z, -96.0f);
     field_0x118 = 0.0f;
     field_0x198 = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x19a = -0x60;
@@ -1344,7 +1344,7 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x10->field_0x60 = field_0x3c0;
     field_0x14 = NULL;
     field_0x14 = new cls_804AF72C(field_0xc);
-    field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getFont();
+    field_0x14->field_0x2bc = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->getFont();
     // Local only to match: the original loads field_0x14 once for the two buffer stores.
     cls_804AF72C* layout = field_0x14;
     layout->field_0x2c0 = field_0x1ab;
@@ -1352,10 +1352,10 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x14->field_0x2d8 = field_0x3c0;
 
     // One 'Tm01' search serves both font-size loads (two searches: 99.12 %).
-    J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20->search('Tm01'));
+    J2DTextBox* text = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'));
     field_0x60 = text->mFontSize.x;
     field_0x64 = text->mFontSize.y;
-    field_0xb0 = static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->getLineSpace();
+    field_0xb0 = static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->getLineSpace();
     fn_803944EC(1.0f);
 
     field_0xc->setResourceContainer(field_0x4);
@@ -1384,14 +1384,14 @@ cls_804AF5A0::~cls_804AF5A0() {
     }
     delete field_0x3bc;
     field_0x3bc = NULL;
-    delete field_0x20;
-    field_0x20 = NULL;
-    delete field_0x24;
-    field_0x24 = NULL;
-    delete field_0x28;
-    field_0x28 = NULL;
-    delete field_0x2c;
-    field_0x2c = NULL;
+    delete field_0x20[0];
+    field_0x20[0] = NULL;
+    delete field_0x20[1];
+    field_0x20[1] = NULL;
+    delete field_0x20[2];
+    field_0x20[2] = NULL;
+    delete field_0x20[3];
+    field_0x20[3] = NULL;
     for (int i = 0; i < 11; i++) {
         delete field_0x30[i];
         field_0x30[i] = NULL;
@@ -1537,6 +1537,136 @@ void cls_804AF5A0::fn_80395480(J2DPane* pane) {
     pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
 }
 
+void cls_804AF5A0::fn_8039499C(bool flag) {
+    if (field_0x1aa == 0) {
+        f32 x = field_0xc0;
+        f32 y = field_0xc4;
+        f32 line;
+        J2DScreen* screen = field_0x20[field_0x1a2];
+        J2DTextBox* tm01 = static_cast<J2DTextBox*>(screen->search('Tm01'));
+        J2DTextBox* tm02 = static_cast<J2DTextBox*>(screen->search('Tm02'));
+        J2DPane* nmdata = screen->search('Nmdata01');
+        if (field_0x3b0 != 0) {
+            field_0x8->render();
+            field_0x3b0 = 0;
+        }
+        if (flag) {
+            screen->search('ROOT')->move(field_0x11c + field_0x98, lbl_8050DB0C.field_0x30[3] + (field_0x120 + field_0x9c));
+        } else {
+            field_0x98 = 0.0f;
+            field_0x9c = 0.0f;
+            field_0xa0 = 0.0f;
+            screen->search('ROOT')->move(field_0x11c, field_0x120);
+        }
+        f32 offset = 0.5f * ((3.0f - field_0x164) * tm01->getLineSpace());
+        if (screen == field_0x20[0] && !field_0x20[0]->search('Pm00')->isVisible()) {
+            field_0x20[0]->search('Pm00')->show();
+            field_0x20[0]->search('P5b02')->show();
+            field_0x20[0]->search('P5ar')->show();
+            field_0x20[0]->search('P4b02')->show();
+            field_0x20[0]->search('P4ar')->show();
+            field_0x20[0]->search('P3b02')->show();
+            field_0x20[0]->search('P3ar')->show();
+            field_0x20[0]->search('P2b02')->show();
+            field_0x20[0]->search('P2ar')->show();
+            field_0x20[0]->search('P1b02')->show();
+            field_0x20[0]->search('P1ar')->show();
+        }
+        strcpy(tm01->getStringPtr(), field_0x1ab);
+        strcpy(tm02->getStringPtr(), field_0x2ab);
+        nmdata->move(x, y);
+        tm01->move(field_0xc8, field_0xcc + offset);
+        tm01->resize(100.0f + field_0xe8, field_0xec);
+        tm02->move(field_0xc8 + field_0xd0, field_0xd4 + (field_0xcc + offset));
+        tm02->resize(100.0f + field_0xe8, field_0xec);
+        gGameRoot2_8053AB10->fn_8013B490();
+        screen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+
+        // The pictures placed in the text (cls_804AF72C::fn_8039CDF8).
+        for (int i = 0; i < 12; i++) {
+            if (field_0x68[i]->field_0x8 != 0xFF) {
+                f32 px = field_0x68[i]->field_0x0 + ((field_0x98 + x) + tm01->getBounds()->i.x);
+                f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x68[i]->field_0x4 * tm01->getLineSpace();
+                if (field_0x164 == 1) {
+                    py -= 26.0f;
+                } else if (field_0x164 == 2) {
+                    py -= 13.0f;
+                }
+                field_0x30[field_0x68[i]->field_0x8]->draw(px, py, 29.0f, 29.0f, false, false, false);
+            }
+        }
+
+        // The arrow (0x5C): it bobs over 10 frames when 0x19C is set and flips its angle at random intervals.
+        if (field_0x1a0 != 0) {
+            f32 ox = 0.0f; // a zero base the original still adds (a literal 0.0f + x folds away)
+            f32 dx = 0.0f;
+            s16 t = field_0x19c;
+            int v;
+            if (t < 0) {
+                if (t > -5) {
+                    v = -t;
+                } else {
+                    v = t + 10;
+                    if (t == -10) {
+                        field_0x19c = 0;
+                    }
+                }
+                dx = -5.0f * (v * v) / 25.0f;
+                if (field_0x19c != 0) {
+                    field_0x19c--;
+                }
+            } else if (t > 0) {
+                if (t < 5) {
+                    v = t;
+                } else {
+                    v = 10 - t;
+                    if (t == 10) {
+                        field_0x19c = 0;
+                    }
+                }
+                dx = 5.0f * (v * v) / 25.0f;
+                if (field_0x19c != 0) {
+                    field_0x19c++;
+                }
+            }
+            if (field_0x1a1 == 0) {
+                if (field_0x164 == 2) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (field_0x164 == 3) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                }
+            } else {
+                line = field_0x130[field_0x168];
+                if (line == 0.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 30.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (line == 1.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                } else if (line == 2.0f) {
+                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                }
+            }
+            field_0x198--;
+            if (field_0x198 <= 0) {
+                if (field_0x19a == -0x60) {
+                    field_0x19a = -0x54;
+                } else {
+                    field_0x19a = -0x60;
+                }
+                field_0x5c->rotate(9.6f, 9.6f * 1.5f, J2DROTATE_Z, field_0x19a);
+                field_0x198 = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+            }
+        }
+    } else if (field_0x3b0 != 0) {
+        field_0x8->render();
+        field_0x3b0 = 0;
+    }
+}
+
 // FIXME: 98.31. Missing 2 instructions around the clamp: the original copies
 // the processor's frame count (mr r4,r6) and clamps the copy to 0; ours clamps
 // in place (separate-variable, ternary and if/else forms tried: same or worse).
@@ -1545,7 +1675,7 @@ void cls_804AF5A0::fn_80394690() {
         field_0x8->render();
         field_0x3b0 = 0;
     }
-    f32 offset = 60.0f + 0.5f * ((3.0f - field_0x164) * static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getLineSpace());
+    f32 offset = 60.0f + 0.5f * ((3.0f - field_0x164) * static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->getLineSpace());
     if (field_0x1aa == 0) {
         char line1[0x100];
         char line2[0x100];
@@ -1568,12 +1698,12 @@ void cls_804AF5A0::fn_80394690() {
             strcat(line2, color);
             strcat(line2, field_0x3ab);
         }
-        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm01'))->getStringPtr(), line1);
-        strcpy(static_cast<J2DTextBox*>(field_0x2c->search('Tm02'))->getStringPtr(), line2);
-        field_0x2c->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
-        field_0x2c->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
+        strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->getStringPtr(), line1);
+        strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->getStringPtr(), line2);
+        field_0x20[3]->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
+        field_0x20[3]->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
         gGameRoot2_8053AB10->fn_8013B490();
-        field_0x2c->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+        field_0x20[3]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }
 }
 
@@ -1582,10 +1712,10 @@ void cls_804AF5A0::fn_803944EC(f32 scale) {
     J2DTextBox::TFontSize size;
     size.x = field_0x60 * scale;
     size.y = field_0x64 * scale;
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setFontSize(size);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm01'))->setLineSpace(field_0xb0 * scale);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setFontSize(size);
-    static_cast<J2DTextBox*>(field_0x20->search('Tm02'))->setLineSpace(field_0xb0 * scale);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setLineSpace(field_0xb0 * scale);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setFontSize(size);
+    static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setLineSpace(field_0xb0 * scale);
     field_0x14->setScale(scale, field_0x60);
 }
 
