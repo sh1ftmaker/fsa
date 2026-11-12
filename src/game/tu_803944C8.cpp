@@ -515,7 +515,8 @@ void cls_804AF72C::do_reset() {
     *field_0x2c4 = 0;
 }
 
-// FIXME: 99.34, kept out of the build (merge rule: the rows differ in opcode,
+// FIXME: 99.34 %, different; behaviour clean.
+// kept out of the build (merge rule: the rows differ in opcode,
 // `mr r8,r7` vs `li r8,1`). The original keeps -1 in r0 and 1 in r7 (ours the
 // other way round), so its minutes fallback copies r7 where ours loads li r8, 1.
 // Lays the message out once with field_0x38 (counting lines and pages), then
