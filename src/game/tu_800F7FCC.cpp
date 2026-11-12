@@ -73,6 +73,12 @@ static inline void slotPos(cls_8049C718* parent, u32 idx, JGeometry::TVec3f& out
     out.z = (f32)(ring * 13) + (10.0f + parent->mPos.z);
 }
 
+static inline JGeometry::TVec3f slotPosOf(cls_8049C718* parent, u32 idx) {
+    JGeometry::TVec3f out;
+    slotPos(parent, idx, out);
+    return out;
+}
+
 // The camera and the boss's fade-in that the intro and the first rise share.
 static inline void focusCamera(cls_8049C718* p) {
     cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
@@ -1183,8 +1189,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
 void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     mFlag249 = 1;
     cls_8049C718* parent = mParent;
-    JGeometry::TVec3f target;
-    slotPos(parent, mIndex, target);
+    JGeometry::TVec3f target = slotPosOf(parent, parent->mSlot);
     s32 serial = field_0xa0;
     if (serial != -1) {
         ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
