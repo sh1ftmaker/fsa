@@ -72,6 +72,7 @@ static inline bool isCardStatusValid(CARDFileInfo* file) {
            CARDGetIconSpeed(&stat, 7) == CARD_STAT_SPEED_END;
 }
 
+// FIXME: 40.10 %, missing/extra; behaviour drift.
 s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 bodySize) {
     snprintf((char*)(lbl_805222C0 + 0x1C00), 0x20, "Four Swords Adventures");
     OSCalendarTime cal;
@@ -423,7 +424,8 @@ s32 fn_803BAE68(CARDFileInfo* file) {
 }
 
 // True when the checksum words of the save file match its first 0xC0 bytes.
-// FIXME(shotgun): 43.6 %, missing/extra (our unrolled checksum loop needs more registers)
+// FIXME(shotgun): 43.57 %, missing/extra; behaviour drift.
+// (our unrolled checksum loop needs more registers)
 bool fn_803BADAC(SaveFile_803B950C* file) {
     u32 sum = 0;
     u32 inverse = 0;
@@ -436,7 +438,8 @@ bool fn_803BADAC(SaveFile_803B950C* file) {
 }
 
 // Writes the checksum words of files[file].
-// FIXME(shotgun): 53.8 %, missing/extra (as fn_803BADAC)
+// FIXME(shotgun): 53.84 %, missing/extra; behaviour near.
+// (as fn_803BADAC)
 void fn_803BACF8(SaveFile_803B950C* files, u8 file) {
     SaveFile_803B950C* f = &files[file];
     u32 sum = 0;
