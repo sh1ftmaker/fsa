@@ -11,7 +11,7 @@ inline cls_80204638::cls_80204638() : field_0x0(0), mCount(0) {
     fn_80204ABC(true);
 }
 
-// FIXME(shotgun): 87.80 %, missing/extra.
+// FIXME(shotgun): 87.80 %, missing/extra; behaviour drift.
 void cls_80204638::fn_80204ABC(bool reset) {
     if (reset) {
         field_0x0 = 0;
@@ -22,7 +22,7 @@ void cls_80204638::fn_80204ABC(bool reset) {
     }
 }
 
-// FIXME(shotgun): 92.82 %, missing/extra.
+// FIXME(shotgun): 92.82 %, missing/extra; behaviour near.
 void cls_80204638::fn_80204A20(ActorBase_804A5770* actor) {
     ActorBase_804A5770** slot = mSlots[static_cast<Thief_804A5A30*>(actor)->field_0x34a];
     if (slot[0] == NULL) {
@@ -38,7 +38,7 @@ void cls_80204638::fn_80204A20(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME(shotgun): 96.25 %, different.
+// FIXME(shotgun): 96.25 %, different; behaviour near.
 void cls_80204638::fn_802049E0(ActorBase_804A5770* actor) {
     ActorBase_804A5770** slot = mSlots[static_cast<Thief_804A5A30*>(actor)->field_0x34a];
     if (slot[0] == actor) {
@@ -48,7 +48,7 @@ void cls_80204638::fn_802049E0(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME(shotgun): 98.14 %, regalloc-only.
+// FIXME(shotgun): 98.14 %, regalloc-only; behaviour clean.
 void cls_80204638::fn_802048F4() {
     GameView_804A9950* view = getGameView_802D6A9C();
     for (s32 i = 0; i < 10; i++) {
@@ -78,7 +78,7 @@ void cls_80204638::fn_80204834() {
     }
 }
 
-// FIXME(shotgun): 63.44 %, missing/extra.
+// FIXME(shotgun): 72.96 %, missing/extra; behaviour drift.
 bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     if (mCount >= 10) {
         return false;
@@ -107,14 +107,16 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
             pos->y = p.y;
         }
     }
-    mPositions[mCount].x = pos->x;
-    mPositions[mCount].y = pos->y;
-    mPositions[mCount].z = pos->z;
+    JGeometry::TVec3f* slot = &mPositions[mCount];
+    slot->x = pos->x;
+    slot->y = pos->y;
+    slot->z = pos->z;
     mCount++;
     return moved;
 }
 
-// FIXME(shotgun): 92.45 %, missing/extra. The guarded static, constructed on first use.
+// FIXME(shotgun): 92.45 %, missing/extra; behaviour drift.
+// The guarded static, constructed on first use.
 extern "C" cls_80204638* fn_80204638() {
     static cls_80204638 sInstance;
     return &sInstance;
