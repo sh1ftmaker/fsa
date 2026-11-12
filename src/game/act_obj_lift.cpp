@@ -43,7 +43,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
-// FIXME(shotgun): 89.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.18 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::init() {
     field_0x258 = (field_0x90 & 0xF) + ((field_0x90 >> 12) & 0xF0);
     field_0x260 = (field_0x90 >> 4) & 0xF;
@@ -252,7 +252,6 @@ void OBJLift_804ACA00::init() {
     }
 }
 
-// FIXME(shotgun): 99.71 %, reloc-name
 void OBJLift_804ACA00::fn_803513C0() {
     s32 layer = field_0x4;
     if (layer >= 8) {
@@ -271,7 +270,7 @@ void OBJLift_804ACA00::fn_803513C0() {
 }
 
 // 0x803511F0.
-// FIXME(shotgun): 99.09 %, regalloc-only + reloc-name
+// FIXME(shotgun): 99.44 %, regalloc-only; behaviour clean.
 void OBJLift_804ACA00::fn_803511F0() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x97, 0, -3, NULL, NULL, true, 1.0f);
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x98, 0, -3, NULL, NULL, true, 1.0f);
@@ -305,7 +304,7 @@ void OBJLift_804ACA00::fn_803511F0() {
 // 0x80351020.
 // Not auto-inlined: fn_80350974 calls fn_80351020 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 83.88 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.97 %, missing/extra + reloc-name; behaviour drift.
 bool OBJLift_804ACA00::fn_80351020(s32 player) {
     s32 layer = field_0x4;
     if (getPlayerLayer_8023DE58(player) != layer) {
@@ -332,7 +331,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME(shotgun): 70.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 72.72 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
     field_0x283[1] = 0;
@@ -472,7 +471,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
     return count;
 }
 
-// FIXME(shotgun): 92.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.87 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_803506E0() {
     static JGeometry::TVec2f lbl_8050AED8[4] = {
         JGeometry::TVec2f(32.0f, 0.0f),
@@ -536,7 +535,7 @@ s32 OBJLift_804ACA00::fn_803506E0() {
 // 0x80350530.
 // Not auto-inlined: update calls fn_80350530 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 89.98 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.17 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350530() {
     s32 prev = field_0x270;
     field_0x270 = 0;
@@ -575,7 +574,7 @@ s32 OBJLift_804ACA00::fn_80350530() {
 #pragma auto_inline reset
 
 // 0x803502CC.
-// FIXME(shotgun): 64.78 %, missing/extra + reloc-name
+// FIXME(shotgun): 64.84 %, missing/extra; behaviour drift.
 bool OBJLift_804ACA00::fn_803502CC() {
     f32 savedIX = field_0x80.i.x;
     f32 savedIY = field_0x80.i.y;
@@ -639,7 +638,7 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x8035001C.
-// FIXME(shotgun): 62.83 %, missing/extra + reloc-name
+// FIXME(shotgun): 63.53 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
@@ -692,6 +691,7 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
 
 // 0x8034F43C.
 // Still differs: the dir = -1 of the failed push tests is not merged with the default case.
+// FIXME: 99.36 %, missing/extra; behaviour drift.
 void OBJLift_804ACA00::update() {
     if (field_0x230 == 4) {
         if (vfunc_0x34() == 1) {
@@ -981,7 +981,7 @@ void OBJLift_804ACA00::update() {
     field_0x294 = field_0x3c;
 }
 
-// FIXME(shotgun): 91.96 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.96 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::draw() {
     s32 alpha = 0xFF;
     if (field_0x230 == 4) {
