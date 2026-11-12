@@ -49,7 +49,7 @@ static JGeometry::TVec3f lbl_8050C028[8];
 static JGeometry::TVec3f lbl_8050C088[4];
 
 // Destructor at 0x80366D44.
-// FIXME(shotgun): 97.82 %, regalloc-only
+// FIXME(shotgun): 97.82 %, regalloc-only; behaviour clean.
 cls_804ADF28::~cls_804ADF28() {
     if (field_0x234 == 3) {
         deleteEmitter(&field_0x300);
@@ -85,7 +85,8 @@ void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
 
-// FIXME(shotgun): 52.9 %, missing/extra (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
+// FIXME(shotgun): 52.86 %, missing/extra + reloc-name; behaviour drift.
+// (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -161,7 +162,7 @@ void cls_804ADF28::fn_803653EC() {
     }
 }
 
-// FIXME(shotgun): 82.82 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.69 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80365274() {
     mPos.add(field_0x3c);
     switch (field_0x238) {
@@ -208,7 +209,8 @@ void cls_804ADF28::fn_80365274() {
     }
 }
 
-// FIXME: 99.5. Instructions identical; only the relocation of the 0.03f literal is @NNN here
+// FIXME: 99.52 %, reloc-name; behaviour clean.
+// Instructions identical; only the relocation of the 0.03f literal is @NNN here
 // against lbl_80542BD4 (the unit's sdata2 is not complete yet).
 void cls_804ADF28::fn_80365220() {
     if (field_0x248 == 0) {
@@ -222,7 +224,7 @@ void cls_804ADF28::fn_80365220() {
     }
 }
 
-// FIXME(shotgun): 99.90 %, reloc-name
+// FIXME(shotgun): 99.90 %, reloc-name; behaviour clean.
 void cls_804ADF28::fn_8036509C() {
     if (field_0x248 != 0) {
         if (field_0x248 <= 14) {
@@ -260,7 +262,7 @@ void cls_804ADF28::fn_8036509C() {
     }
 }
 
-// FIXME(shotgun): 99.43 %, regalloc-only + reloc-name
+// FIXME(shotgun): 99.43 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80364F60() {
     if (field_0x238 != 5) {
         s32 oldAnim = field_0x264;
@@ -302,7 +304,7 @@ void cls_804ADF28::fn_80364F00() {
     }
 }
 
-// FIXME(shotgun): 95.74 %, different + reloc-name
+// FIXME(shotgun): 95.74 %, different + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80364D0C() {
     s32 slot = field_0x24c;
     if (slot < 0) {
@@ -347,7 +349,7 @@ void cls_804ADF28::fn_80364D0C() {
     }
 }
 
-// FIXME(shotgun): 98.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.18 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80364A88() {
     if (field_0x248 == 0) {
         f32 speed = PSVECMag(&field_0x3c);
@@ -410,7 +412,7 @@ void cls_804ADF28::fn_80364A88() {
     }
 }
 
-// FIXME(shotgun): 98.57 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.57 %, missing/extra + reloc-name; behaviour near.
 void cls_804ADF28::fn_80364900() {
     if (field_0x238 == 0) {
         mPos.add(field_0x3c);
@@ -458,7 +460,7 @@ void cls_804ADF28::fn_80364900() {
     }
 }
 
-// FIXME(shotgun): 97.27 %, different + reloc-name
+// FIXME(shotgun): 97.27 %, different + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803645B4() {
     if (field_0x248 == 0 || field_0x238 != 0) {
         if (field_0x238 == 0) {
@@ -533,7 +535,7 @@ void cls_804ADF28::fn_803645B4() {
     }
 }
 
-// FIXME(shotgun): 94.07 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.07 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80364340() {
     if (field_0x248 == 0) {
         JGeometry::TVec3f oldPos = mPos;
@@ -572,7 +574,7 @@ void cls_804ADF28::fn_80364340() {
     }
 }
 
-// FIXME(shotgun): 92.87 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.87 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80363FFC() {
     s32 tileX;
     s32 tileY;
@@ -656,7 +658,7 @@ void cls_804ADF28::fn_80363F7C() {
     mPos.add(field_0x3c);
 }
 
-// FIXME(shotgun): 94 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.00 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80363880() {
     const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     s32 slot = field_0x24c;
@@ -782,7 +784,7 @@ void cls_804ADF28::fn_80363880() {
     }
 }
 
-// FIXME(shotgun): 95.59 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.59 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80363664() {
     if (field_0x248 == 0) {
         if (!(field_0x3c.squared() <= 32.0f * FLT_EPSILON)) {
@@ -822,7 +824,7 @@ void cls_804ADF28::fn_80363664() {
     }
 }
 
-// FIXME(shotgun): 99.15 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.15 %, missing/extra + reloc-name; behaviour near.
 void cls_804ADF28::fn_80363360() {
     if (field_0x248 == 0) {
         s32 r = fn_801CD664(3);
@@ -878,7 +880,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 84.35 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.35 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     bool skip = false;
     JGeometry::TVec3f pos = mPos;
@@ -1033,7 +1035,7 @@ void cls_804ADF28::fn_80362C44() {
     }
 }
 
-// FIXME(shotgun): 99.33 %, reloc-name
+// FIXME(shotgun): 99.33 %, reloc-name; behaviour clean.
 void cls_804ADF28::fn_80362B74() {
     drawSprite_801F06F0("enemy_both2_sob.bin", field_0x26c + field_0x264, NULL, 7, 1.0f, 1.0f);
     JGeometry::TVec3f savedPos = mPos;
@@ -1044,7 +1046,8 @@ void cls_804ADF28::fn_80362B74() {
     mPos = savedPos;
 }
 
-// FIXME: 99.6. Instructions identical; only the relocation of the "fune.bti" string is @NNN here
+// FIXME: 99.58 %, reloc-name; behaviour clean.
+// Instructions identical; only the relocation of the "fune.bti" string is @NNN here
 // against lbl_80474C10 (the unit's rodata is not complete yet).
 void cls_804ADF28::fn_80362B14() {
     void* res = fn_804032E8('TIMG', "fune.bti");
@@ -1053,7 +1056,7 @@ void cls_804ADF28::fn_80362B14() {
     }
 }
 
-// FIXME(shotgun): 91.51 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803628D4() {
     JGeometry::TVec3f savedPos = mPos;
     SpriteParams_801F5AE0 params;
@@ -1096,7 +1099,7 @@ void cls_804ADF28::fn_803628D4() {
     }
 }
 
-// FIXME(shotgun): 99.19 %, operands + reloc-name
+// FIXME(shotgun): 99.19 %, operands + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362680() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
