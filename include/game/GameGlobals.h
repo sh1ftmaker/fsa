@@ -1317,6 +1317,9 @@ struct cls_801192AC {
     void fn_80118798(ActorBase_804A5770* actor);
 }; // Size: 0x20
 
+// game/tu_80118384.cpp (not written yet): TVector push_back on the list at cls_801192AC+0xC.
+extern "C" void fn_801188B8(JGadget::TAllocator<ActorBase_804A5770*>* vec, ActorBase_804A5770** value);
+
 // game/tu_80118384.cpp (not written yet). Returns the static cls_801192AC.
 extern "C" cls_801192AC* fn_8011921C();
 

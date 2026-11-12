@@ -339,6 +339,10 @@ void cls_801192AC::fn_80118E20() {
     field_0x8++;
 }
 
+void cls_801192AC::fn_8011888C(ActorBase_804A5770* actor) {
+    fn_801188B8(&mAllocator, &actor);
+}
+
 // FIXME(shotgun): 82.62 %, missing/extra; behaviour drift.
 // (stand-in: the original is std::find_if with a by-value
 // predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
