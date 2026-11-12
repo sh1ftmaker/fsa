@@ -298,17 +298,15 @@ bool fn_802DEBF8(void) {
     return false;
 }
 
-// FIXME: 92.73 %, different; behaviour near. The target reloads the view (lwz 0xc off the kept
-// gGameRoot_8053AAF8->0x4) and the stage for the >= 13 test; ours keeps the stage in r4.
+// FIXME: 89.77 %, different; behaviour near.
+// Same as fn_802DE9A0: the target reloads the view (lwz 0xc off the kept gGameRoot_8053AAF8->0x4)
+// for the stage >= 13 test; ours loads it once.
 // Stage (9, 3), or stage 13 and up, with gGameRoot_8053AAF8->0x7F set (vfunc_0x10 inlines it).
 bool fn_802DEBA0(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
         return false;
     }
-    if (getGameView_802D6A9C()->field_0x4 == 9 && getGameView_802D6A9C()->field_0x8 == 3) {
-        return true;
-    }
-    if (gGameRoot_8053AAF8->field_0x4->mView->field_0x4 >= 13) {
+    if ((getGameView_802D6A9C()->field_0x4 == 9 && getGameView_802D6A9C()->field_0x8 == 3) || getGameView_802D6A9C()->field_0x4 >= 13) {
         return true;
     }
     return false;

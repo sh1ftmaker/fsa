@@ -360,8 +360,8 @@ void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME: 54.97 %, missing/extra; behaviour clean.
-// FIXME(shotgun): missing/extra; behaviour clean. The original is TVector size() == 0, then std::find_if with a
+// FIXME(shotgun): 54.97 %, missing/extra; behaviour clean.
+// The original is TVector size() == 0, then std::find_if with a
 // by-value predicate (its actorId is spilled to the stack); same stand-in note as fn_80118798.
 ActorBase_804A5770** cls_801192AC::fn_8011871C(ActorBase_804A5770** from, u32 actorId) {
     u32 count;
