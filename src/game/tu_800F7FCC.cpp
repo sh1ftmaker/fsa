@@ -942,7 +942,7 @@ void cls_8049C718::vfunc_0x44() {
 
 // FIXME(shotgun): 99.42 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FA6B0() {
-    if (mAnimPrev != mAnimState) {
+    if (mAnimState != mAnimPrev) {
         mAnimPrev = mAnimState;
         mAnimTime = 0;
         mAnimStep = 0;
