@@ -7,13 +7,6 @@
 #include <string.h>
 #include "JSystem/JUtility/JUTVideo.h"
 
-// The screen pixel (px, py) as a position inside the box.
-static inline void screenToWorld(const JGeometry::TBox2f& box, f32 px, f32 py, JGeometry::TVec3f* out) {
-    out->x = box.i.x + px * (box.f.x - box.i.x) / (f32)(s32)JUTVideo::sManager->getFbWidth();
-    out->y = box.i.y + py * (box.f.y - box.i.y) / (f32)(s32)JUTVideo::sManager->getEfbHeight();
-    out->z = 0.0f;
-}
-
 static inline bool contains(const JGeometry::TBox2f& b, const JGeometry::TVec2f& p) {
     return p.x >= b.i.x && p.y >= b.i.y && p.x < b.f.x && p.y < b.f.y;
 }
@@ -32,8 +25,8 @@ Camera_804AA9E4::Camera_804AA9E4() {}
 
 Camera_804AA9E4::~Camera_804AA9E4() {}
 
-// FIXME(shotgun): 93.62 %, scheduling+regalloc + reloc-name; behaviour clean.
-// Remaining diff: float literal pool order and register scheduling.
+// The depth 1024 is passed from a float constant in the original (lfs, not lfd).
+// FIXME: 98.52 %, different + reloc-name; behaviour drift.
 void Camera_804AA9E4::fn_8030E5BC() {
     field_0x154.i.x = 0.0f;
     field_0x154.i.y = 0.0f;
@@ -58,8 +51,7 @@ void Camera_804AA9E4::fn_8030E5BC() {
     box.i.y = 0.0f;
     box.f.x = 256.0f;
     box.f.y = 192.0f;
-    f32 depth = 1024.0f;
-    fn_8030CB10(&box, depth);
+    fn_8030CB10(&box, 1024.0f);
     field_0x7f0 = 0;
     field_0x7f4 = 0;
     field_0x7f5 = 0;
@@ -67,11 +59,12 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x7f6 = 0;
     field_0x83c = -1;
     field_0x840 = 0;
-    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
+    u16 width, height;
+    JUTVideo::sManager->getBounds(width, height);
     field_0x144.x0 = 0;
     field_0x144.y0 = 0;
-    field_0x144.x1 = renderMode->fbWidth;
-    field_0x144.y1 = renderMode->efbHeight;
+    field_0x144.x1 = width;
+    field_0x144.y1 = height;
     field_0x858 = 1.0f;
     field_0x174 = 0;
     field_0x178 = 0;
@@ -853,17 +846,22 @@ void Camera_804AA9E4::fn_8030C7C4(const JGeometry::TVec2f* center, f32 size) {
     cam->field_0x17e = 1;
 }
 
+// One row of a homogeneous (w) projection.
+static inline f32 projectRow(const f32* row, const Vec& v, f32 w) {
+    return v.x * row[0] + v.y * row[1] + v.z * row[2] + w * row[3];
+}
+
 // Not inlined into its caller fn_8030C2A8 in the original (bl fn_8030C5F0).
 #pragma auto_inline off
 // A world position's screen position: normalised (0..1) when normalised is set, else in the
 // screen rect (inRect) or the whole screen. z is cleared.
-// FIXME(shotgun): 75.10 %, missing/extra + reloc-name; behaviour drift.
-// (constant 1.0 folding)
+// FIXME(shotgun): 99.16 %, scheduling+regalloc + reloc-name; behaviour clean.
+// (projection rows loaded in the other order)
 void Camera_804AA9E4::fn_8030C5F0(const Vec* pos, bool inRect, bool normalised, Vec* out) {
     Vec v;
     PSMTXMultVec(field_0x74, pos, &v);
-    f32 x = v.x * field_0xa4[0][0] + v.y * field_0xa4[0][1] + v.z * field_0xa4[0][2] + 1.0f * field_0xa4[0][3];
-    f32 y = v.x * field_0xa4[1][0] + v.y * field_0xa4[1][1] + v.z * field_0xa4[1][2] + 1.0f * field_0xa4[1][3];
+    f32 x = projectRow(field_0xa4[0], v, 1.0f);
+    f32 y = projectRow(field_0xa4[1], v, 1.0f);
     if (normalised) {
         out->x = 0.5f * (1.0f + x);
         out->y = 0.5f * (1.0f - y);
@@ -878,36 +876,29 @@ void Camera_804AA9E4::fn_8030C5F0(const Vec* pos, bool inRect, bool normalised, 
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 46.87 %, scheduling+regalloc; behaviour clean.
-// (instruction order of the conversions)
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeometry::TVec3f* out) {
     if (flag) {
-        out->x = field_0x164.i.x +
-                 (in->x - (f32)field_0x144.x0) * (field_0x164.f.x - field_0x164.i.x) /
-                     (f32)(field_0x144.x1 - field_0x144.x0);
-        out->y = field_0x164.i.y +
-                 (in->y - (f32)field_0x144.y0) * (field_0x164.f.y - field_0x164.i.y) /
-                     (f32)(field_0x144.y1 - field_0x144.y0);
-        out->z = 0.0f;
+        out->set(field_0x164.i.x + (in->x - (f32)field_0x144.x0) * (field_0x164.f.x - field_0x164.i.x) /
+                                       (f32)(field_0x144.x1 - field_0x144.x0),
+                 field_0x164.i.y + (in->y - (f32)field_0x144.y0) * (field_0x164.f.y - field_0x164.i.y) /
+                                       (f32)(field_0x144.y1 - field_0x144.y0),
+                 0.0f);
     } else {
-        u16 width;
-        u16 height;
-        JUTVideo::sManager->getBounds(width, height);
-        out->x = field_0x164.i.x + in->x * (field_0x164.f.x - field_0x164.i.x) /
-                                       (f32)(s32)width;
-        out->y = field_0x164.i.y + in->y * (field_0x164.f.y - field_0x164.i.y) /
-                                       (f32)(s32)height;
-        out->z = 0.0f;
+        out->set(field_0x164.i.x + in->x * (field_0x164.f.x - field_0x164.i.x) / (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                 field_0x164.i.y + in->y * (field_0x164.f.y - field_0x164.i.y) / (f32)(s32)JUTVideo::sManager->getEfbHeight(),
+                 0.0f);
     }
 }
 
 // The camera box's world positions of the screen's top-left and bottom-right corners.
-// FIXME(shotgun): 34.96 %, missing/extra; behaviour drift.
-// (the target converts the screen size more often)
+// FIXME: 99.93 %, reloc-name; behaviour clean.
 void Camera_804AA9E4::fn_8030C380(JGeometry::TVec3f* out) {
-    screenToWorld(field_0x164, 0.0f, 0.0f, &out[0]);
-    screenToWorld(field_0x164, (f32)(s32)JUTVideo::sManager->getFbWidth(),
-                  (f32)(s32)JUTVideo::sManager->getEfbHeight(), &out[1]);
+    JGeometry::TVec2f topLeft(0.0f, 0.0f);
+    fn_8030C4A0(&topLeft, false, &out[0]);
+    JGeometry::TVec2f bottomRight((f32)(s32)JUTVideo::sManager->getFbWidth(),
+                                  (f32)(s32)JUTVideo::sManager->getEfbHeight());
+    fn_8030C4A0(&bottomRight, false, &out[1]);
 }
 
 // Whether the point's screen position lies inside the screen rect shrunk by 14 on every side.
@@ -943,28 +934,15 @@ u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
 
 // Adds the box's two corners as focus points when both lie inside the camera box and there is
 // room for two.
-// FIXME(shotgun): 90.43 %, missing/extra; behaviour drift.
-// (operand load order)
-bool Camera_804AA9E4::fn_8030C058(const JGeometry::TBox2f* box) {
-    s32 count = field_0x7f0;
-    bool result = false;
-    if (count + 1 < 0x80) {
+// FIXME: 99.35 %, different; behaviour near.
+u8 Camera_804AA9E4::fn_8030C058(const JGeometry::TBox2f* box) {
+    u8 result = false;
+    if (field_0x7f0 + 1 < 0x80) {
         if (contains(field_0x154, box->i) && contains(field_0x154, box->f)) {
-            if (count < 0x80 && contains(field_0x154, box->i)) {
-                JGeometry::TVec3f* dst = &field_0x1f0[count];
-                dst->x = box->i.x;
-                dst->y = box->i.y;
-                dst->z = 0.0f;
-                field_0x7f0++;
-            }
-            count = field_0x7f0;
-            if (count < 0x80 && contains(field_0x154, box->f)) {
-                JGeometry::TVec3f* dst = &field_0x1f0[count];
-                dst->x = box->f.x;
-                dst->y = box->f.y;
-                dst->z = 0.0f;
-                field_0x7f0++;
-            }
+            JGeometry::TVec3f topLeft(box->i.x, box->i.y, 0.0f);
+            addFocusPoint_8030C210(&topLeft);
+            JGeometry::TVec3f bottomRight(box->f.x, box->f.y, 0.0f);
+            addFocusPoint_8030C210(&bottomRight);
             result = true;
         }
     }

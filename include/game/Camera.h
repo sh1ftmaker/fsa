@@ -74,7 +74,7 @@ public:
     // 3 units. The same for both corners of box (reads 0x0-0xC); it queues
     // them only when both lie in field_0x154. TBox2f is a guess: two
     // TVec2f would read the same.
-    bool fn_8030C058(const JGeometry::TBox2f* box);
+    u8 fn_8030C058(const JGeometry::TBox2f* box);
     // 9 units / 24 calls. Projects pos with fn_8030C5F0(pos, true, false,
     // &tmp) and tests tmp (x, y) against the screen rectangle field_0x144
     // shrunk by 0xE on each side; returns 0 or 1. pos goes straight on to
