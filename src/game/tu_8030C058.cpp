@@ -946,8 +946,8 @@ u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
 // FIXME(shotgun): 90.15 %, missing/extra; behaviour drift.
 // (operand load order)
 bool Camera_804AA9E4::fn_8030C058(const JGeometry::TBox2f* box) {
-    bool result = false;
     s32 count = field_0x7f0;
+    bool result = false;
     if (count + 1 < 0x80) {
         if (contains(field_0x154, box->i) && contains(field_0x154, box->f)) {
             if (count < 0x80 && contains(field_0x154, box->i)) {
