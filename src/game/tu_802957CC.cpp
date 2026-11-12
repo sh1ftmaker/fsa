@@ -61,7 +61,7 @@ cls_804A7AE0::~cls_804A7AE0() {
     }
 }
 
-// FIXME(shotgun): 95.7 %, scheduling+regalloc
+// FIXME(shotgun): 95.67 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804A7AE0::init() {
     mBox.i.x = -48.0f;
     mBox.i.y = -48.0f;
@@ -128,7 +128,7 @@ void cls_804A7AE0::init() {
     field_0x238.set(mPos.x, mPos.y, mPos.z);
 }
 
-// FIXME(shotgun): 77.3 %, missing/extra: initial position/box arithmetic is scheduled differently, 5 instructions
+// FIXME(shotgun): 77.30 %, missing/extra + reloc-name; behaviour drift. initial position/box arithmetic is scheduled differently, 5 instructions
 void cls_804A7AE0::vfunc_0x10() {
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
@@ -247,7 +247,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 78 %, missing/extra: same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
+// FIXME(shotgun): 77.94 %, missing/extra + reloc-name; behaviour drift. same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
     if (!still) {
@@ -350,7 +350,7 @@ void cls_804A7AE0::fn_8029A974() {
     }
 }
 
-// FIXME(shotgun): 78 %, missing/extra: same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
+// FIXME(shotgun): 78.63 %, missing/extra + reloc-name; behaviour drift. same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A494() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
     if (!still) {
@@ -453,7 +453,7 @@ void cls_804A7AE0::fn_8029A494() {
     }
 }
 
-// FIXME(shotgun): 78 %, missing/extra: same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
+// FIXME(shotgun): 77.97 %, missing/extra + reloc-name; behaviour drift. same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
     if (!still) {
@@ -556,7 +556,7 @@ void cls_804A7AE0::fn_80299FB0() {
     }
 }
 
-// FIXME(shotgun): 78.6 %, missing/extra: 15 instructions (the 32 * epsilon constant is folded twice, direction/serial selection scheduled differently)
+// FIXME(shotgun): 78.63 %, missing/extra + reloc-name; behaviour drift. 15 instructions (the 32 * epsilon constant is folded twice, direction/serial selection scheduled differently)
 void cls_804A7AE0::fn_80299AD0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
     if (!still) {
@@ -659,7 +659,7 @@ void cls_804A7AE0::fn_80299AD0() {
     }
 }
 
-// FIXME(shotgun): 85.7 %, missing/extra: layer expression compiles branch-free (cntlzw) in the original, 4 instructions
+// FIXME(shotgun): 88.83 %, missing/extra + reloc-name; behaviour drift. layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80299720() {
     if (field_0x250.y < 0.0f) {
         field_0x248++;
@@ -736,7 +736,7 @@ void cls_804A7AE0::fn_80299720() {
     }
 }
 
-// FIXME(shotgun): 85.7 %, missing/extra: layer expression compiles branch-free (cntlzw) in the original, 4 instructions
+// FIXME(shotgun): 88.81 %, missing/extra + reloc-name; behaviour drift. layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80299374() {
     if (field_0x250.y > 0.0f) {
         field_0x248++;
@@ -813,7 +813,7 @@ void cls_804A7AE0::fn_80299374() {
     }
 }
 
-// FIXME(shotgun): 85.7 %, missing/extra: layer expression compiles branch-free (cntlzw) in the original, 4 instructions
+// FIXME(shotgun): 88.83 %, missing/extra + reloc-name; behaviour drift. layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80298FC4() {
     if (field_0x250.x < 0.0f) {
         field_0x248++;
@@ -890,7 +890,7 @@ void cls_804A7AE0::fn_80298FC4() {
     }
 }
 
-// FIXME(shotgun): 85.7 %, missing/extra: layer expression compiles branch-free (cntlzw) in the original, 4 instructions
+// FIXME(shotgun): 88.81 %, missing/extra + reloc-name; behaviour drift. layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80298C18() {
     if (field_0x250.x > 0.0f) {
         field_0x248++;
@@ -967,47 +967,41 @@ void cls_804A7AE0::fn_80298C18() {
     }
 }
 
-// FIXME(shotgun): 63.5 %, missing/extra: the still-vector test compiles to a cror/mfcr bool in the original; 4 instructions
+// FIXME(shotgun): 76.50 %, missing/extra + reloc-name; behaviour drift. the still-vector test compiles to a cror/mfcr bool in the original; 4 instructions
 void cls_804A7AE0::fn_80298978() {
     for (s32 i = 0; i < mSerialCountA; i++) {
         Warp_804A6DC8* warp = (Warp_804A6DC8*)getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsA[i]);
-        bool blocked = false;
+        s32 blocked = 0;
         if (warp == NULL) {
             continue;
         }
         bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
         if (!still) {
-            blocked = true;
+            blocked = 1;
         } else {
             for (s32 k = 0; k < 4; k++) {
                 JGeometry::TVec3f pos = warp->field_0x238;
                 pos.x += 8.0f * (f32)((k & 1) != 0) - 4.0f;
                 pos.y += 8.0f * (f32)((k & 2) != 0) - 4.0f;
-                switch (warp->field_0x90 & 0x7F) {
-                case 0:
-                case 3:
+                s32 kind = warp->field_0x90 & 0x7F;
+                if (kind == 0 || kind == 3) {
                     pos.y += -16.0f;
-                    break;
-                case 1:
-                case 2:
+                } else if (kind == 1 || kind == 2) {
                     pos.y += 16.0f;
-                    break;
-                case 0x17:
+                } else if (kind == 0x17) {
                     pos.x += 16.0f;
-                    break;
-                case 0x18:
+                } else if (kind == 0x18) {
                     pos.x += -16.0f;
-                    break;
                 }
                 s32 w = (warp->field_0x90 >> 24) & 7;
                 s32 warpLayer = w != 0 ? w + 7 : 0;
                 if (vfunc_0x4C(warpLayer, &pos) == 1) {
-                    blocked = true;
+                    blocked = 1;
                     break;
                 }
             }
         }
-        if (blocked) {
+        if (blocked == 1) {
             JGeometry::TBox2f box;
             box.i.x = -10.0f;
             box.i.y = -10.0f;
@@ -1038,7 +1032,7 @@ inline void registerBox_802984B0(cls_804A7AE0* actor, f32 x0, f32 y0, f32 x1, f3
     fn_80239914(&box, actor->field_0x4, actor->mSerial);
 }
 
-// FIXME(shotgun): 98 %, different
+// FIXME(shotgun): 98.47 %, different + reloc-name; behaviour clean.
 void cls_804A7AE0::fn_802984B0() {
     switch (field_0x2b0) {
     case 0: {
@@ -1085,7 +1079,7 @@ void cls_804A7AE0::fn_802984B0() {
     }
 }
 
-// FIXME(shotgun): 70.93 %, missing/extra + reloc-name
+// FIXME(shotgun): 70.93 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A7AE0::update() {
     mPos.set(field_0x238.x, field_0x238.y, field_0x238.z);
     for (s32 i = 0; i < 4; i++) {
@@ -1581,6 +1575,7 @@ inline void drawSmp_802965BC(s32 layer, const JGeometry::TVec3f* pos, SpritePara
     }
 }
 
+// FIXME: 94.99 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A7AE0::draw() {
     if ((field_0x24c == 0 && field_0x2ac == 0) || field_0x2bb == 1) {
         return;
@@ -1623,7 +1618,7 @@ void cls_804A7AE0::draw() {
     }
 }
 
-// FIXME(shotgun): 82.1 %, missing/extra: early-out branch layout, 10 instructions fewer
+// FIXME(shotgun): 82.08 %, missing/extra + reloc-name; behaviour drift. early-out branch layout, 10 instructions fewer
 void cls_804A7AE0::fn_802961AC() {
     s32 serial = fn_801F2718('SLR3');
     if (serial < 0) {
@@ -1672,7 +1667,7 @@ void cls_804A7AE0::fn_802961AC() {
     field_0x2ba = 1;
 }
 
-// FIXME(shotgun): 95.7 %, different: 4 opcodes differ
+// FIXME(shotgun): 95.69 %, different + reloc-name; behaviour drift. 4 opcodes differ
 void cls_804A7AE0::fn_80295EE8() {
     if (mTimer <= 0) {
         vfunc_0x24();
@@ -1714,7 +1709,7 @@ void cls_804A7AE0::fn_80295EE8() {
     mTimer--;
 }
 
-// FIXME(shotgun): 91.3 %, missing/extra: loop register assignment (this/index swapped) and 2 instructions
+// FIXME(shotgun): 91.29 %, missing/extra + reloc-name; behaviour drift. loop register assignment (this/index swapped) and 2 instructions
 void cls_804A7AE0::vfunc_0x24() {
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i) && !fn_8022F514(i)) {
@@ -1756,7 +1751,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 58.4 %, missing/extra: the view-box copy (GameView 0xCC/0xDC, grown by 32) the original leaves dead on the stack is not written
+// FIXME(shotgun): 58.46 %, missing/extra + reloc-name; behaviour drift. the view-box copy (GameView 0xCC/0xDC, grown by 32) the original leaves dead on the stack is not written
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
