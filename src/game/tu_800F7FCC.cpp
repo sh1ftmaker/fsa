@@ -160,8 +160,8 @@ void cls_8049C718::init() {
 // FIXME(shotgun): 98.74 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FCCCC() {
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     mTimer++;
     switch (field_0x254) {
@@ -170,7 +170,7 @@ void cls_8049C718::fn_800FCCCC() {
         mZBase = 0.0f;
         fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
         if (player >= 0) {
-            if (getPlayerPos_8023E724(player)->y - mPos.y < 200.0f) {
+            if (getPlayerPos_8023E724(player)->y - mPos.y < 140.0f) {
                 field_0x254++;
                 mTimer = 0;
             }
