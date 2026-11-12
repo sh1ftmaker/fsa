@@ -107,9 +107,10 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
             pos->y = p.y;
         }
     }
-    mPositions[mCount].x = pos->x;
-    mPositions[mCount].y = pos->y;
-    mPositions[mCount].z = pos->z;
+    JGeometry::TVec3f* slot = &mPositions[mCount];
+    slot->x = pos->x;
+    slot->y = pos->y;
+    slot->z = pos->z;
     mCount++;
     return moved;
 }
