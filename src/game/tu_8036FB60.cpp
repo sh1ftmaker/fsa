@@ -49,7 +49,7 @@ void cls_804AE4B0::init() {
     for (s32 i = 0; i < 4; i++) {
         field_0x2c4[i] = mPos + offsets[i];
         field_0x294[i] = field_0x2c4[i];
-        field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+        field_0x2f4[i].zero();
         field_0x350[i] = 0x38B;
         field_0x330[i] = 0;
         field_0x340[i] = 1;
@@ -208,7 +208,7 @@ void cls_804AE4B0::fn_803721F4() {
         if (mTimer == 0x76) {
             for (s32 i = 0; i < 4; i++) {
                 field_0x294[i] = field_0x2c4[i];
-                field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+                field_0x2f4[i].zero();
                 gAudioMgr_8053AF80->fn_80458880(0x37, -1);
             }
         } else if (mTimer < 0x76) {
@@ -550,7 +550,7 @@ void cls_804AE4B0::fn_80370C84() {
             JGeometry::TVec3f off((f32)i * 16.0f, 0.0f, 0.0f);
             field_0x294[i] = JGeometry::TVec3f(mPos.x, mPos.y, 0.0f) + off;
             field_0x294[i].z = pos.z;
-            field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+            field_0x2f4[i].zero();
             field_0x350[i] = 0x38E;
             field_0x330[i] = 0;
             field_0x340[i] = 2;
@@ -956,7 +956,7 @@ void cls_804AE4B0::fn_8036FB60() {
         if (mTimer == 0x76) {
             for (s32 i = 0; i < 4; i++) {
                 field_0x294[i] = field_0x2c4[i];
-                field_0x2f4[i].set(0.0f, 0.0f, 0.0f);
+                field_0x2f4[i].zero();
                 gAudioMgr_8053AF80->fn_80458880(0x37, -1);
             }
         } else if (mTimer < 0x76) {
