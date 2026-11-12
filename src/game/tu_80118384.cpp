@@ -339,6 +339,29 @@ void cls_801192AC::fn_80118E20() {
     field_0x8++;
 }
 
+// The JGadget TVector of actors at cls_801192AC+0xC.
+struct ActorVector {
+    JGadget::TAllocator<ActorBase_804A5770*> mAllocator;
+    ActorBase_804A5770** mBegin;
+    ActorBase_804A5770** mEnd;
+    ActorBase_804A5770** Insert_raw(ActorBase_804A5770** pos, u32 count);
+    void fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value);
+};
+
+// fill-insert: opens a gap with Insert_raw and constructs count copies of *value in it
+void ActorVector::fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value) {
+    if (count != 0) {
+        ActorBase_804A5770** p = Insert_raw(pos, count);
+        if (p != mEnd) {
+            for (u32 i = count; i != 0; i--, p++) {
+                if (p != NULL) {
+                    *p = *value;
+                }
+            }
+        }
+    }
+}
+
 void cls_801192AC::fn_8011888C(ActorBase_804A5770* actor) {
     fn_801188B8(&mAllocator, &actor);
 }
