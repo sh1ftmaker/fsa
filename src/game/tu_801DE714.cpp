@@ -214,16 +214,18 @@ void cls_804A51E4::fn_801E1E08() {
     }
     field_0x4 = 0;
     field_0x98 = 0;
+    s32 state = field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
-    JGeometry::TBox2f* box = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    JGeometry::TBox2f* box = state < 8 ? &view->mVisibleBox : &view->field_0xdc;
     mPos.x = box->i.x - 30.0f;
+    state = field_0x4;
     view = getGameView_802D6A9C();
-    box = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    box = state < 8 ? &view->mVisibleBox : &view->field_0xdc;
     mPos.y = 100.0f + box->i.y;
     mPos.z = 30.0f;
     field_0x54.set(1.0f, 1.0f, 1.0f);
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0xb0 = 0;
     mFlags &= 0xFF841FFF;
     field_0x2a8 = -1;
