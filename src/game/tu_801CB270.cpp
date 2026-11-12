@@ -72,7 +72,8 @@ s32 fn_801CD9F0(f32* value, f32 target, f32 step) {
     return result;
 }
 
-// FIXME: 90.6 %. Same instructions modulo registers: the target extends target and step
+// FIXME: 90.62 %, scheduling+regalloc; behaviour clean.
+// Same instructions modulo registers: the target extends target and step
 // once up front (extsh r7, r4; extsh. r0, r5) and keeps them in r7 / r5; ours keeps the
 // extended target in r6 and the step in r7. With (s16, s16) parameters this is 100 %, but
 // then fn_801CD930's callers (it forwards r4 / r5 unextended) would need extsh.
@@ -135,7 +136,7 @@ bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold) {
 
 // Moves *cur toward *target by `factor` of the way, the step clamped between minStep and
 // maxStep; true once the point is on the target.
-// FIXME(shotgun): 85.76 %, missing/extra
+// FIXME(shotgun): 85.76 %, missing/extra; behaviour drift.
 bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep) {
     if (factor > 1.0f) {
         factor = 1.0f;
@@ -212,7 +213,7 @@ s32 fn_801CD580(s32 except) {
 }
 
 // A random integer in [0, 4) other than a and b.
-// FIXME(shotgun): 69.26 %, missing/extra
+// FIXME(shotgun): 69.26 %, missing/extra; behaviour drift.
 s32 fn_801CD398(s32 a, s32 b) {
     s32 choices[4];
     s32 count = 0;
@@ -313,7 +314,8 @@ bool fn_801CD1D0(s32 player) {
     return result;
 }
 
-// FIXME: 79.1 %. As fn_801CD0D0 (scheduling of the x / y loads and subtracts).
+// FIXME: 79.09 %, scheduling+regalloc; behaviour clean.
+// As fn_801CD0D0 (scheduling of the x / y loads and subtracts).
 // The other way round: from the 0xCC/0xD0 box space to the 0xDC/0xE0 one.
 void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
     GameView_804A9950* view = getGameView_802D6A9C();
@@ -323,7 +325,8 @@ void fn_801CD150(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
     out->z = in->z;
 }
 
-// FIXME: 79.1 %. Same instructions; the target loads and subtracts both
+// FIXME: 79.09 %, scheduling+regalloc; behaviour clean.
+// Same instructions; the target loads and subtracts both
 // coordinates first, then adds the box corner and loads z last (ours interleaves x and y).
 // Converts `in` from the view's 0xDC/0xE0 box space to the 0xCC/0xD0 one:
 // out = (in.x, in.y) - (0xDC, 0xE0) + (0xCC, 0xD0); z is copied.
@@ -335,7 +338,7 @@ void fn_801CD0D0(const JGeometry::TVec3f* in, JGeometry::TVec3f* out) {
     out->z = in->z;
 }
 
-// FIXME(shotgun): 98.14 %, missing/extra
+// FIXME(shotgun): 98.14 %, missing/extra; behaviour clean.
 bool fn_801CCFE4(s32 player) {
     bool result = false;
     if (fn_8023F264(player)) {
@@ -375,6 +378,7 @@ s32 fn_801CCF34(s32 player) {
     return fn_80236228(target);
 }
 
+// FIXME: 96.94 %, missing/extra; behaviour near.
 // FIXME(shotgun): the original does not contract dx*dx + dy*dy into fmadds.
 s32 fn_801CCE3C(const JGeometry::TVec3f* pos, s32 layer) {
     s32 best = -1;
@@ -451,7 +455,7 @@ bool fn_801CCC78(const JGeometry::TVec3f* pos, s32 layer) {
     return result;
 }
 
-// FIXME(shotgun): 94.31 %, missing/extra
+// FIXME(shotgun): 97.12 %, missing/extra; behaviour clean.
 bool fn_801CCBD0(const JGeometry::TVec3f* pos, s32 layer) {
     JGeometry::TVec3f p;
     p.x = pos->x;
@@ -559,7 +563,7 @@ f32 tileCenter(f32 v) {
     return 8.0f + (u32)((s32)v & ~0xF);
 }
 
-// FIXME(shotgun): 95.47 %, scheduling+regalloc
+// FIXME(shotgun): 95.47 %, scheduling+regalloc; behaviour clean.
 bool fn_801CC820(s32 player, JGeometry::TVec3f* out) {
     bool found = false;
     if (out != NULL) {
@@ -581,7 +585,7 @@ bool fn_801CC820(s32 player, JGeometry::TVec3f* out) {
     return found;
 }
 
-// FIXME(shotgun): 96.22 %, scheduling+regalloc
+// FIXME(shotgun): 96.22 %, scheduling+regalloc; behaviour clean.
 bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
     bool found = false;
     if (outPlayer != NULL) {
@@ -609,7 +613,7 @@ bool fn_801CC730(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
     return found;
 }
 
-// FIXME(shotgun): 96.22 %, scheduling+regalloc
+// FIXME(shotgun): 96.22 %, scheduling+regalloc; behaviour clean.
 bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
     bool found = false;
     if (outPlayer != NULL) {
@@ -637,7 +641,7 @@ bool fn_801CC640(s32 player, s32* outPlayer, JGeometry::TVec3f* outVel) {
     return found;
 }
 
-// FIXME(shotgun): 77.73 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.73 %, missing/extra + reloc-name; behaviour clean.
 bool fn_801CC538(s32 player, const JGeometry::TVec2f* pos, JGeometry::TVec3f* out, s32* outPlayer) {
     bool found = false;
     if (outPlayer != NULL) {
@@ -693,7 +697,7 @@ static inline f32 angleDistance(s16 a, s16 b) {
 }
 
 // How far box a sticks out of box b, as the move that puts it back (out); true if it does.
-// FIXME(shotgun): 99.11 %, regalloc-only
+// FIXME(shotgun): 99.11 %, regalloc-only; behaviour clean.
 bool fn_801CC29C(const JGeometry::TBox2f* a, const JGeometry::TBox2f* b, JGeometry::TVec2f* out) {
     bool outside = false;
     f32 d = a->i.x - b->i.x;
@@ -738,7 +742,7 @@ static inline u16 cornerAngle(f32 dx, f32 dy) {
 // Pushes a point inside box along `angle` out through the box edge the ray leaves by, then
 // `speed` further along that direction. Writes the result to out; leaves the point alone (out
 // = point) when it is outside the box.
-// FIXME(shotgun): 64.79 %, missing/extra + reloc-name
+// FIXME(shotgun): 64.79 %, missing/extra + reloc-name; behaviour drift.
 void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 angleArg, f32 speed, JGeometry::TVec2f* out) {
     s16 angle = angleArg;
     out->x = p->x;
@@ -819,7 +823,8 @@ void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 a
     }
 }
 
-// FIXME: 96.55. Scheduling + regalloc: in both 45-degree turns the original computes the new y
+// FIXME: 96.55 %, scheduling+regalloc; behaviour clean.
+// Scheduling + regalloc: in both 45-degree turns the original computes the new y
 // (fmadds) before the new x (fmsubs); ours the other way round, so the float registers differ.
 // Steps pos (xy) away from center by speed when it is within radius: straight out, but turned to
 // the nearer side of dir (a quarter turn off it) when that direction is more than a quarter turn
@@ -908,7 +913,8 @@ void fn_801CB71C(JPABaseEmitter** emitter, const JGeometry::TVec3f* pos, s32 hei
     }
 }
 
-// FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
+// FIXME: 86.49 %, scheduling+regalloc; behaviour clean.
+// As fn_801CB4A4: saved registers are assigned in a different order.
 // Two effects (spawnEmitter_8013CC50 0x24A and 0x24B) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
 void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
@@ -916,14 +922,15 @@ void fn_801CB688(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
     spawnEmitter_8013CC50(layer, pos, 0x24B, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 88.94 %, scheduling+regalloc
+// FIXME(shotgun): 88.94 %, scheduling+regalloc; behaviour clean.
 void fn_801CB5CC(s32 layer, const JGeometry::TVec3f* pos, s32 arg5, s32 arg6) {
     spawnEmitter_8013CC50(layer, pos, 0xFF, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
     spawnEmitter_8013CC50(layer, pos, 0x100, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
     spawnEmitter_8013CC50(layer, pos, 0x101, arg5, arg6 + 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 86.5 %. As fn_801CB4A4: saved registers are assigned in a different order.
+// FIXME: 86.49 %, scheduling+regalloc; behaviour clean.
+// As fn_801CB4A4: saved registers are assigned in a different order.
 // Two effects (spawnEmitter_8013CC50 0x117 and 0x118) at pos on `layer`; arg3 is passed
 // on and arg4 is passed on plus 1 (as the depth).
 void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
@@ -931,7 +938,8 @@ void fn_801CB538(s32 layer, const JGeometry::TVec3f* pos, s32 arg3, s32 arg4) {
     spawnEmitter_8013CC50(layer, pos, 0x118, arg3, arg4 + 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME: 86.5 %. Same instructions; the target keeps layer, depth, height and pos in
+// FIXME: 86.49 %, scheduling+regalloc; behaviour clean.
+// Same instructions; the target keeps layer, depth, height and pos in
 // r31, r30, r29, r28 (ours: the reverse of the parameter order).
 // Two effects (spawnEmitter_8013CC50 0x473 and 0x474) at pos on `layer`; arg3 and arg4 + 1
 // are the height and depth of both.
@@ -949,7 +957,8 @@ s32 fn_801CB434(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
 // Looks up the TIMG resource `name` in the game archive and initialises
 // texObj (and tlutObj for a palette texture, if given) from it. Returns the
 // image's height / width.
-// FIXME: 89.7 %. Same instructions apart from scheduling: the target computes
+// FIXME: 89.71 %, missing/extra + reloc-name; behaviour clean.
+// Same instructions apart from scheduling: the target computes
 // the mipmap flag straight into r10 and orders the GXInitTexObjLOD argument
 // loads differently. JUTTexture::initTexObj's forms (? GX_TRUE : GX_FALSE,
 // image +=) and isMIPmapEnabled() were worse.
