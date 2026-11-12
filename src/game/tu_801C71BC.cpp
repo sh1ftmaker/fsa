@@ -263,6 +263,8 @@ void ShadowLink2_804A43E8::fn_801C8BC4(u8 flag) {
     }
 }
 
+// Not auto-inlined: fn_801C71BC calls fn_801C8B50 out of line in the original.
+#pragma auto_inline off
 // FIXME(shotgun): 99 %, scheduling
 void ShadowLink2_804A43E8::fn_801C8B50() {
     mPathCount = 0;
@@ -272,6 +274,7 @@ void ShadowLink2_804A43E8::fn_801C8B50() {
     field_0x33c = fn_801D02E0(&field_0x32c);
     mFlags &= ~0x20000;
 }
+#pragma auto_inline reset
 
 // FIXME(shotgun): 71 %, missing/extra
 void ShadowLink2_804A43E8::fn_801C887C() {
@@ -795,13 +798,15 @@ void ShadowLink2_804A43E8::fn_801C71BC() {
         u8 start = field_0x358.fn_80214244()->field_0x3;
         field_0x358.fn_80214244()->fn_800FD818(1);
         u8 next = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        cls_800FE3EC* buf = field_0x358.fn_80214244();
+        if (start < buf->field_0x2) {
+            buf->field_0x3 = start;
         }
         field_0x358.fn_80214244()->fn_800FD818(-1);
         u8 prev = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        buf = field_0x358.fn_80214244();
+        if (start < buf->field_0x2) {
+            buf->field_0x3 = start;
         }
         u8 opt[3];
         opt[0] = prev;
