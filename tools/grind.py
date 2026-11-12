@@ -4,8 +4,9 @@
   python3 tools/grind.py setup [--workers N]      # worker worktrees ../fsa-wt/g2-wN (branch grind2-wN)
   python3 tools/grind.py queue                     # what is left, by lane and tier
   python3 tools/grind.py packet <unit> <function>  # the task text a worker would get
-  python3 tools/grind.py worker N --tier haiku|sonnet|opus [--lanes write,structure,match]
-                                  [--max-size B] [--min-size B] [--per-unit K] [--sessions M]
+  python3 tools/grind.py worker N --tier haiku|sonnet|opus [--mode function|file]
+                                  [--lanes write,structure,match] [--max-size B] [--min-size B]
+                                  [--per-unit K] [--sessions M] [--unit game/X.cpp]
   python3 tools/grind.py check [--full]            # inside a session: the verdict the judge would give now
   python3 tools/grind.py status                    # sessions, accept rate, tokens per tier
   touch ../fsa-wt/g2-logs/STOP                     # workers finish their session and exit
@@ -27,9 +28,26 @@ What changed from the first grinder (branch `grind`), each from its logs:
     project (full build, SHA-1, no function anywhere worse, gate).
 
 Lanes (tools/fingerprint.py): write = not in our object; structure = behaviour differs from
-the original; match = behaviour equal, only codegen differs. Tiers start by size (<= 512 B
-haiku, <= 2 KB sonnet, above that opus) and a function moves up one tier after a session
-that kept nothing, or after three kept sessions that still left it unfinished.
+the original; match = behaviour equal, only codegen differs. Workers take write and structure
+by default (structure first); the match lane is opt-in. Tiers start by size (<= 512 B haiku,
+<= 2 KB sonnet, above that opus). A function moves up one tier after a session that kept
+nothing or whose change the reviewer threw out, and after 3 (6 above 2 KB, 10 above 8 KB) kept
+sessions that still left it open: big functions are done in passes, each from a fresh context.
+
+Sizes: the task text grows with the difference, not the function. A written function gets
+objdiff's rows around each difference and its behaviour to-do list; the full assembly is inlined
+only for small or unwritten functions (else its line range in the .s file).
+
+Whole files (--mode file): one session gets a unit's open small functions (state, to-do, where
+each sits; assembly inlined for the tiny ones) and is judged on the unit as a whole; while a
+session is kept the next one starts fresh on what is left (--relay). For units with several
+small open functions this shares the class and header reading between them.
+
+Adversarial review: before a unit's kept changes are integrated, a reviewer one tier above the
+author (opus reviews opus) reads each diff against the original assembly and gives a verdict
+per change. It looks for what scripts can't see: statements that only move a metric, codegen
+steering, fakes, wrong facts, guesswork. A change without an explicit ACCEPT is dropped, its
+function moves up a tier and the reviewer's reason is given to the next attempt.
 
 Integration branch `grind2` (worktree ../fsa-wt/g2); `matching` is never touched. Logs:
 ../fsa-wt/g2-logs/ledger.tsv (one row per session), sessions/<tag>.json, rejects/<tag>.patch.
@@ -86,7 +104,9 @@ How to work
 3. One idea per try. Put independent tool calls in one turn. Keep going while tries improve; stop after 3 tries in a row without progress, or when try.py prints STOP.
 4. Before you finish run `python3 tools/grind.py check`. It prints the verdict the judging script will give and what to fix; fix that and run it again. Finish when it says ACCEPT, or when you cannot improve further (leave the best state you reached; revert experiments that made things worse).
 
-What is kept: any improvement of the task's function (behaviour closer to the original, or equal behaviour and a higher %), provided nothing else got worse. Partial progress counts. What is thrown away: a change that lowers another function, breaks the build or breaks a rule.
+What is kept: any improvement of the task's function (behaviour closer to the original, or equal behaviour and a higher %), provided nothing else got worse. Partial progress counts: the project wants faithful structure first, so a function at 60-80 % whose code does what the original does is a good result. What is thrown away: a change that lowers another function, breaks the build or breaks a rule.
+
+After the scripts, an adversarial reviewer (a stronger model) reads every kept change against the original assembly and throws out trickery: a statement that exists only to move a number (a dead load, store, call or compare, duplicated code), a temporary, cast or reordering that only steers the compiler, logic the assembly does not have, a guessed type or an invented name. A higher % reached that way is worth nothing; an honest lower one is kept.
 
 Rules (checked by script)
 - Natural C++ as the original programmers wrote it: real types, real members. No asm, no goto, no volatile, no #pragma except an evidenced `#pragma auto_inline off/reset` region (docs/RULES_CARD.md), no casts, temporaries or reordered statements whose only purpose is to steer codegen, no dummy functions, no byte-offset access (reinterpret_cast, (u8*)p + N): declare the field in its class.
@@ -193,14 +213,21 @@ def start_tier(size):
     return 0 if size <= 512 else 1 if size <= 2048 else 2
 
 
+def max_kept(size):
+    """Kept sessions a tier may spend on one function before it moves up: big functions are done in passes."""
+    return 3 if size <= 2048 else 6 if size <= 8192 else 10
+
+
 def tier_index(size, hist):
-    """Which tier a function is at now (len(ORDER) = parked), from its ledger rows (tier, verdict)."""
+    """Which tier a function is at now (len(ORDER) = parked), from its ledger rows (tier, verdict):
+    up one tier after a session that kept nothing or whose change the reviewer threw out, and
+    after max_kept() kept sessions that still left it open."""
     t = start_tier(size)
     for tier, verdict in hist:
         i = ORDER.index(tier)
         if i >= t and verdict != "ACCEPT":
             t = i + 1
-    while t < len(ORDER) and sum(1 for tier, v in hist if tier == ORDER[t] and v == "ACCEPT") >= 3:
+    while t < len(ORDER) and sum(1 for tier, v in hist if tier == ORDER[t] and v == "ACCEPT") >= max_kept(size):
         t += 1
     return t
 
@@ -209,7 +236,7 @@ def history():
     h = {}
     for r in ledger_rows():
         d = dict(zip(COLS, r))
-        if d.get("verdict") in ("ACCEPT", "REJECT") and d.get("tier") in TIERS:
+        if d.get("verdict") in ("ACCEPT", "REJECT", "TRICK") and d.get("tier") in TIERS:
             h.setdefault((d["unit"], d["fn"]), []).append((d["tier"], d["verdict"]))
     return h
 
@@ -360,23 +387,30 @@ def stamp_fixmes(wt, unit, ev):
 
 # ---------------------------------------------------------------- task text
 
+WRITE_HINT = ("If try.py says a function you wrote is `missing` and prints `ours, not in the target: <mangled name>`, the "
+              "original still carries the placeholder name: rename it in config/G4SE01/symbols.txt to the mangled name "
+              "your definition emits (change only the name before ` = `) and update every other use "
+              "(`grep -rnw <old name> src include`).")
+
+
 def asm_block(wt, unit, fn):
+    """(the function's original assembly without the address/bytes prefix, its first line number in the .s file)."""
     asm = wt / "build/G4SE01/asm/game" / (Path(unit).stem + ".s")
-    out, on = [], False
+    out, on, first = [], False, 0
     if not asm.exists():
-        return out
-    for line in asm.read_text(errors="replace").splitlines():
-        if line.startswith(f".fn {fn},"):
-            on = True
+        return out, first
+    for i, line in enumerate(asm.read_text(errors="replace").splitlines(), 1):
+        if line.startswith(f".fn {fn},") or line.startswith(f'.fn "{fn}",'):
+            on, first = True, i + 1
             continue
         if on:
-            if line.startswith(f".endfn {fn}"):
+            if line.startswith(".endfn"):
                 break
             out.append(re.sub(r"^/\* \w+ \w+  [0-9A-F ]+\*/\s*", "  ", line))
-    return out
+    return out, first
 
 
-def declarations(wt, unit, fn, asm):
+def declarations(wt, fn, asm):
     calls = sorted({m.group(2) or m.group(1) for l in asm for m in [re.search(r"\bbl\s+(\"([^\"]+)\"|\S+)", l)] if m})
     out = []
     cls = ST.class_of(fn)
@@ -394,9 +428,62 @@ def declarations(wt, unit, fn, asm):
     return out
 
 
-def build_packet(wt, unit, fn, ev):
+def diff_hunks(wt, unit, fn, limit):
+    """(lines, differing rows, all rows): objdiff's aligned rows `original | ours` around every
+    difference, unchanged stretches skipped, so the text grows with the difference, not the function."""
+    units = json.loads((wt / "objdiff.json").read_text())["units"]
+    u = FP.T.find_unit(units, unit)
+    out = subprocess.run([str(wt / FP.T.OBJDIFF), "diff", "-p", ".", "-u", u["name"], "-o", "-", "-c", FP.T.CONFIG],
+                         capture_output=True, text=True, cwd=wt)
+    if out.returncode:
+        return [], 0, 0
+    d = json.loads(out.stdout)
+    s = next((x for x in d["left"]["symbols"] if x["name"] == fn), None)
+    if s is None or s.get("target_symbol") is None:
+        return [], 0, 0
+    r = d["right"]["symbols"][s["target_symbol"]]
+    rows = list(zip(s.get("instructions", []), r.get("instructions", [])))
+    start = int(s.get("address", 0))
+    diffs = [k for k, (a, b) in enumerate(rows) if a.get("diff_kind") or b.get("diff_kind")]
+    keep = set()
+    for k in diffs:
+        keep.update(range(max(0, k - 2), min(len(rows), k + 3)))
+    lines, last = [], None
+    for k in sorted(keep):
+        if len(lines) >= limit:
+            lines.append(f"   ... {sum(1 for i in diffs if i >= k)} more differing rows (python3 tools/fdiff.py {unit} '{fn}' prints all)")
+            break
+        if last is not None and k != last + 1:
+            lines.append("   ...")
+        a, b = rows[k]
+        fa = (a.get("instruction") or {}).get("formatted", "").strip()
+        fb = (b.get("instruction") or {}).get("formatted", "").strip()
+        kind = (a.get("diff_kind") or b.get("diff_kind") or "").replace("DIFF_", "").lower()
+        addr = (a.get("instruction") or {}).get("address")
+        off = f"{int(addr) - start:5X}" if addr is not None else "     "
+        lines.append(f"{'>' if kind else ' '}{off}  {fa[:36]:36} | {fb[:36]:36} {kind}".rstrip())
+        last = k
+    return lines, len(diffs), len(rows)
+
+
+def source_of(wt, unit, e):
+    """(lines, first, last line number) of our definition with the comment block above it, or None."""
+    src = wt / "src" / unit
+    if not src.exists():
+        return None
+    lines = src.read_text(errors="replace").split("\n")
+    d = find_def(lines, e["demangled"])
+    if d is None:
+        return None
+    top = d[0]
+    while top > 0 and lines[top - 1].lstrip().startswith("//"):
+        top -= 1
+    return lines[top:d[1] + 1], top + 1, d[1] + 1
+
+
+def build_packet(wt, unit, fn, ev, note=None):
     e = ev["functions"][fn]
-    lane = lane_of(e)
+    lane, size, stem = lane_of(e), e["size"], Path(unit).stem
     fns = sorted(ev["functions"].items(), key=lambda kv: kv[1]["addr"])
     idx = next(i for i, (n, _) in enumerate(fns) if n == fn)
     hi = fns[idx + 1][0].split("__")[0] if idx + 1 < len(fns) else None
@@ -405,36 +492,89 @@ def build_packet(wt, unit, fn, ev):
     text = LANE_TEXT[lane].format(unit=unit, place=place, cls=e["cls"])
     if lane == "match" and e["cls"] == "reloc-name":
         text = RELOC_TEXT
-    out = [f"TASK ({lane}): `{fn}` = `{e['demangled']}`, {e['size']} bytes, unit `{unit}` (src/{unit}).",
+    if lane == "write":
+        text += " " + WRITE_HINT
+    out = [f"TASK ({lane}): `{fn}` = `{e['demangled']}`, {size} bytes, unit `{unit}` (src/{unit}).",
            f"Now: {e['pct']:.2f} %, {e['cls']}; behaviour {e['grade']}.", text,
            f"Commands: `python3 tools/try.py {unit} '{fn}'`   `python3 tools/grind.py check`", ""]
+    if note:
+        out += [f"A reviewer rejected an earlier change to this function: {note} Don't repeat that.", ""]
+    asm, first = asm_block(wt, unit, fn)
     if lane != "write":
         if e["todo"]:
             out += ["== Behaviour differences (tools/fingerprint.py) =="] + e["todo"][:30]
             if len(e["todo"]) > 30:
-                out.append(f"... and {len(e['todo']) - 30} more (run tools/fingerprint.py)")
+                out.append(f"... and {len(e['todo']) - 30} more (python3 tools/fingerprint.py {unit} '{fn}')")
             out.append("")
         t = sh(["python3", "tools/try.py", unit, fn], wt).stdout.strip().splitlines()
-        out += ["== tools/try.py now (target | ours) =="] + t[-18:] + [""]
-    src = wt / "src" / unit
-    if src.exists():
-        lines = src.read_text(errors="replace").split("\n")
-        d = find_def(lines, e["demangled"])
-        if d:
-            top = d[0]
-            while top > 0 and lines[top - 1].lstrip().startswith("//"):
-                top -= 1
-            state = " (not compiled: inside #ifdef NONMATCHING or failing)" if lane == "write" else ""
-            out += [f"== Our source{state}: src/{unit} lines {top + 1}-{d[1] + 1} =="] + lines[top:d[1] + 1] + [""]
-    asm = asm_block(wt, unit, fn)
-    out += [f"== Original assembly ({len(asm)} lines; build/G4SE01/asm/game/{Path(unit).stem}.s) =="] + asm + [""]
-    out += ["== Where its callees and class are declared =="] + declarations(wt, unit, fn, asm)
+        hunks, nd, nr = diff_hunks(wt, unit, fn, 60 if size <= 512 else 140 if size <= 2048 else 240)
+        out += [f"== Diff, original | ours: {nd} of {nr} rows differ (equal stretches skipped; offsets are hex from the function start) =="]
+        out += [l for l in t[1:2] if l.strip()] + hunks + [""]
+    src = source_of(wt, unit, e)
+    if src:
+        state = " (not compiled: inside #ifdef NONMATCHING, or it fails to compile)" if lane == "write" else ""
+        if len(src[0]) <= 260:
+            out += [f"== Our source{state}: src/{unit} lines {src[1]}-{src[2]} =="] + src[0] + [""]
+        else:
+            out += [f"Our source{state}: src/{unit} lines {src[1]}-{src[2]} ({len(src[0])} lines; read the parts the diff points at).", ""]
+    where = f"build/G4SE01/asm/game/{stem}.s"
+    if lane == "write" or len(asm) <= 160:
+        cap = 900
+        out += [f"== Original assembly ({len(asm)} lines; {where} from line {first}) =="] + asm[:cap]
+        if len(asm) > cap:
+            out.append(f"... {len(asm) - cap} more lines: sed -n '{first + cap},{first + len(asm)}p' {where}")
+        out.append("")
+    else:
+        out += [f"Original assembly: {where} lines {first}-{first + len(asm)} ({len(asm)} lines; the diff above shows where ours differs).", ""]
+    out += ["== Where its callees and class are declared =="] + declarations(wt, fn, asm)
     return "\n".join(out) + "\n"
+
+
+def build_file_packet(wt, unit, ev, names, notes):
+    fns, t, stem = ev["functions"], totals(ev), Path(unit).stem
+    secs = ", ".join(f"{k} {p:.0f} %" for k, p in ev["sections"].items() if p < 100 and not k.startswith(("extab", ".text")))
+    out = [f"TASK (file): unit `{unit}` (src/{unit}). {len(fns)} functions: {t['n100']} at 100 %, {t['missing']} not "
+           f"written, the rest below 100 %." + (f" Data sections below 100 %: {secs}." if secs else ""),
+           "Goal: faithful structural progress on the functions listed below, in this order: make each one do what the "
+           "original does (behaviour `clean` in tools/fingerprint.py), then go to the next. Don't polish percentages: a "
+           "function at 60-80 % with the right behaviour is a good result. The unit is judged as a whole: every "
+           "improvement is kept as long as no function got worse, so run the check after each function you finish.",
+           f"Commands: `python3 tools/try.py {unit}` (all functions)   `python3 tools/try.py {unit} '<function>'`   "
+           f"`python3 tools/fingerprint.py {unit} '<function>'`   `python3 tools/grind.py check`", WRITE_HINT, "",
+           "== Functions to work on =="]
+    budget, all_asm = 320, []
+    for n in names:
+        e = fns[n]
+        asm, first = asm_block(wt, unit, n)
+        all_asm += asm
+        src = source_of(wt, unit, e)
+        state = "not written" if e["cls"] == "missing" else f"{e['pct']:.1f} %, {e['cls']}, behaviour {e['grade']}"
+        where = f"src lines {src[1]}-{src[2]}" if src else "not in the source yet"
+        out.append(f"- `{n}` = `{e['demangled']}`, {e['size']} B: {state}; {where}; asm lines {first}-{first + len(asm)}")
+        if notes.get(f"{unit}\t{n}"):
+            out.append(f"    a reviewer rejected an earlier change here: {notes[unit + chr(9) + n]}")
+        if e["cls"] != "missing":
+            out += ["    " + x for x in e["todo"][:5]]
+        if len(asm) <= 40 and budget >= len(asm):
+            out += ["    |" + l for l in asm]
+            budget -= len(asm)
+    out += ["", f"The unit's original assembly: build/G4SE01/asm/game/{stem}.s (each function between `.fn <name>` and `.endfn`).",
+            "", "== Where callees and classes are declared =="]
+    seen = []
+    for n in names:
+        for line in declarations(wt, n, all_asm if n == names[0] else []):
+            if line not in seen:
+                seen.append(line)
+    return "\n".join(out + seen[:40]) + "\n"
 
 
 def cmd_packet(args):
     sh(["python3", "tools/try.py", args.unit], REPO)
     ev = evaluate(REPO, args.unit)
+    if args.function == "FILE":
+        names = [n for _, n in sorted((e["size"], n) for n, e in ev["functions"].items() if e["pct"] < 100)][:12]
+        sys.stdout.write(build_file_packet(REPO, args.unit, ev, names, {}))
+        return
     fn = args.function if args.function in ev["functions"] else next(
         (n for n in ev["functions"] if n.split("__")[0] == args.function), None)
     if fn is None:
@@ -601,6 +741,10 @@ def wide_problem(wt, unit):
 
 
 def describe(base, ev, focus_addr):
+    if focus_addr is None:
+        t0, t1 = totals(base), totals(ev)
+        return (f"at 100 %: {t0['n100']} -> {t1['n100']}, unwritten: {t0['missing']} -> {t1['missing']}, "
+                f"behaviour score: {t0['score']} -> {t1['score']}, matched bytes: {t0['credit']:.0f} -> {t1['credit']:.0f}")
     f0, f1 = by_addr(base).get(focus_addr), by_addr(ev).get(focus_addr)
     if not f0 or not f1:
         return ""
@@ -614,6 +758,11 @@ def cmd_check(args):
     task = json.loads((wt / "build/grind/task.json").read_text())
     why, ev, notes = judge(wt, task["unit"], task["base"], task["addr"], full=True if args.full else None, dry=True)
     line = describe(task["base"], ev, task["addr"]) if ev else ""
+    if ev and task["addr"] is None:
+        for a, e in sorted(by_addr(ev).items()):
+            o = by_addr(task["base"]).get(a)
+            if o and (abs(e["pct"] - o["pct"]) > EPS or e["score"] != o["score"]):
+                print(f"  {e['name'].split('__')[0]}: {o['pct']:.1f} % {o['grade']} -> {e['pct']:.1f} % {e['grade']}")
     print(f"check: {'REJECT: ' + why if why else 'ACCEPT'}" + (f"  ({line})" if line else ""))
     for n in notes:
         print("note: " + n)
@@ -633,17 +782,18 @@ def limits(size):
         return 22, 1200
     if size <= 2048:
         return 34, 2400
-    return 48, 3600
+    if size <= 8192:
+        return 50, 3600
+    return 64, 5400
 
 
-def run_session(wt, tier, packet, size, tag, effort=None):
-    turns, timeout = limits(size)
+def run_session(wt, tier, system, packet, turns, timeout, tag, tools="Bash,Read,Edit,Write", effort=None):
     settings = LOGS / "sandbox.json"
     settings.write_text(json.dumps(SANDBOX))
     cmd = ["claude", "-p", "--model", TIERS[tier][0], "--output-format", "stream-json", "--verbose",
            "--no-session-persistence", "--safe-mode", "--strict-mcp-config", "--disable-slash-commands",
-           "--tools", "Bash,Read,Edit,Write", "--system-prompt", SYSTEM, "--settings", str(settings),
-           "--permission-mode", "acceptEdits", "--allowedTools", "Bash,Read,Edit,Write",
+           "--tools", tools, "--system-prompt", system, "--settings", str(settings),
+           "--permission-mode", "acceptEdits", "--allowedTools", tools,
            "--disallowedTools", "Bash(git *)", "--max-turns", str(turns)]
     if effort:
         cmd += ["--effort", effort]
@@ -661,7 +811,7 @@ def run_session(wt, tier, packet, size, tag, effort=None):
     finally:
         stop.set()
         broker.join(timeout=1600)
-    result, usage, seen, nturn, denials = {}, {}, set(), 0, 0
+    result, usage_, seen, nturn = {}, {}, set(), 0
     for line in out.splitlines():
         try:
             ev = json.loads(line)
@@ -677,18 +827,21 @@ def run_session(wt, tier, packet, size, tag, effort=None):
             nturn += 1
             for k, v in (msg.get("usage") or {}).items():
                 if isinstance(v, int):
-                    usage[k] = usage.get(k, 0) + v
-    u = result.get("usage") or usage
-    denials = len(result.get("permission_denials") or [])
+                    usage_[k] = usage_.get(k, 0) + v
+    u = result.get("usage") or usage_
     d = LOGS / "sessions"
     d.mkdir(parents=True, exist_ok=True)
-    (d / f"{tag}.json").write_text(json.dumps({"result": result or None, "timed_out": timed_out, "packet_chars": len(packet)}))
+    (d / f"{tag}.packet.txt").write_text(packet)
     (d / f"{tag}.stream.jsonl").write_text(out)
     return {"turns": result.get("num_turns", nturn), "in": u.get("input_tokens", 0),
             "cache_write": u.get("cache_creation_input_tokens", 0), "cache_read": u.get("cache_read_input_tokens", 0),
             "out": u.get("output_tokens", 0), "cost": result.get("total_cost_usd") or 0.0,
-            "secs": int(time.time() - t0), "timed_out": timed_out, "denials": denials,
-            "last": (result.get("result") or "").strip().splitlines()[-1:] or [""]}
+            "secs": int(time.time() - t0), "timed_out": timed_out,
+            "denials": len(result.get("permission_denials") or []), "text": result.get("result") or ""}
+
+
+def stats_of(s):
+    return [s["turns"], s["in"], s["cache_write"], s["cache_read"], s["out"], f"{s['cost']:.4f}", s["secs"]]
 
 
 def usage():
@@ -796,7 +949,164 @@ def integrate(wt, branch, unit):
             signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
 
 
+# ---------------------------------------------------------------- adversarial review
+
+REVIEW_TIER = {"haiku": "sonnet", "sonnet": "opus", "opus": "opus"}
+REVIEW_SYSTEM = """You are the adversarial reviewer of a decompilation project: The Legend of Zelda: Four Swords Adventures (GameCube), C++ that Metrowerks GC/2.6 must compile back to the original code. The repository in your working directory is a private read-only copy with the changes applied.
+
+The authors are other models. Scripts reward them for two numbers: objdiff's match % and a behaviour fingerprint that counts a function's calls, constants, compares, field accesses, immediates and operations against the original. The scripts already proved that every change builds, that no function got worse and that some regex style rules hold. They cannot see intent. Assume each author may have gamed the numbers. You never saw the author's reasoning: judge only the diff against the original assembly.
+
+REJECT a change that contains any of these:
+1. Metric gaming: a statement whose only effect is to add a call, constant, compare, load, store or operation so the counts line up (dead stores, results never used, duplicated statements, conditions that cannot matter), or logic the original assembly does not have.
+2. Codegen steering: a temporary, cast, volatile, reordered or split statement, or an odd type, whose only purpose is register allocation, scheduling or a sign/zero extension. The test is whether a programmer would plausibly have written it. A local that names a value, or statements in the order the original evidently had, are fine.
+3. Fakes: extern "C" stand-ins for member functions, a struct redefined or overlaid, byte-offset pointer access, a float or string literal behind an lbl_ name, a hand-typed table standing in for real initializers, a body copied from another function, a dangling pointer or other undefined behaviour, #ifdef tricks, any #pragma other than an evidenced auto_inline region, asm, goto.
+4. Wrong facts: a field type or offset, constant, callee, branch condition, argument or class membership that contradicts the assembly; a real-looking name replacing a placeholder without evidence; a change to a shared header that the assembly does not prove.
+5. Guesswork: new code that does not follow the assembly, or a comment that misdescribes what differs.
+
+ACCEPT a change that is faithful and natural even when its function is still far from 100 %. Honest partial structure is the goal: a function at 60-80 % whose code follows the original is welcome. Do not reject for incompleteness, a low %, placeholder names (fn_, lbl_, cls_, field_0x), FIXME percentage lines (a script writes those) or style nits.
+
+The task text has each change's diff and the original assembly or where to find it. Look further only to settle a suspicion; useful read-only commands: grep, sed -n, `python3 tools/fingerprint.py <unit> '<function>'`, `python3 tools/try.py <unit> '<function>'`. You cannot edit.
+
+Finish with exactly one line per change and nothing after them:
+VERDICT <id> ACCEPT
+VERDICT <id> REJECT: <the trick or wrong fact, naming the line>"""
+
+
+def review_packet(wt, unit, changes):
+    stem = Path(unit).stem
+    out = [f"Review {len(changes)} change(s) to unit `{unit}` (src/{unit}). Original assembly of the unit: "
+           f"build/G4SE01/asm/game/{stem}.s (each function between `.fn <name>` and `.endfn`).", ""]
+    for c in changes:
+        out.append(f"=== Change {c['id']} ({c['lane']} lane, written by {c['tier']}): {c['desc']} ===")
+        diff = sh(["git", "show", "--format=", c["sha"], "--", "src", "include", "libs", "config"], wt).stdout.splitlines()
+        diff = [l for l in diff if not l.startswith(("index ", "diff --git"))]
+        out += diff[:240]
+        if len(diff) > 240:
+            out.append(f"... {len(diff) - 240} more diff lines: git is not available to you; read the file instead")
+        for fn in c["fns"][:6]:
+            asm, first = asm_block(wt, unit, fn)
+            if not asm:
+                continue
+            if len(asm) <= 180:
+                out += [f"--- original assembly of `{fn}` ({len(asm)} lines) ---"] + asm
+            else:
+                out.append(f"--- original assembly of `{fn}`: build/G4SE01/asm/game/{stem}.s lines {first}-{first + len(asm)} ---")
+        out.append("")
+    return "\n".join(out) + "\n"
+
+
+def review_notes():
+    try:
+        return json.loads((LOGS / "review_notes.json").read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def run_review(wt, owner, unit, base_head, first, changes, args):
+    """Ask a reviewer one tier above the strongest author for a verdict per kept change, rebuild
+    the worker branch from the accepted ones and return those. A change without an explicit
+    ACCEPT is out."""
+    tier = REVIEW_TIER[max((c["tier"] for c in changes), key=ORDER.index)]
+    if args.review_tier:
+        tier = args.review_tier
+    tag = f"{datetime.datetime.now():%m%d-%H%M%S}_review-{tier}_{Path(unit).stem}"
+    s = run_session(wt, tier, REVIEW_SYSTEM, review_packet(wt, unit, changes), 6 + 4 * len(changes), 1800, tag,
+                    tools="Bash,Read")
+    revert(wt)  # a reviewer cannot edit; make sure nothing is left behind
+    verdicts = {m.group(1): (m.group(2), m.group(3).strip()) for m in
+                re.finditer(r"^VERDICT\s+(c\d+)\s+(ACCEPT|REJECT)\b:?\s*(.*)$", s["text"], re.M)}
+    good = [c for c in changes if verdicts.get(c["id"], ("", ""))[0] == "ACCEPT"]
+    bad = [c for c in changes if c not in good]
+    notes = review_notes()
+    for c in bad:
+        why = verdicts.get(c["id"], ("", "no verdict from the reviewer"))[1] or "rejected in review"
+        for fn in c["fns"] or [c["fn"]]:
+            notes[f"{unit}\t{fn}"] = why[:400]
+        log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "TRICK", why] + [""] * 7)
+    if bad:
+        (LOGS / "review_notes.json").write_text(json.dumps(notes, indent=1))
+        sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
+        kept = []
+        for c in good:
+            if sh(["git", "cherry-pick", "--allow-empty", c["sha"]], wt).returncode:
+                sh(["git", "cherry-pick", "--abort"], wt)
+                log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "TRICK",
+                     "built on a change the reviewer rejected"] + [""] * 7)
+                continue
+            kept.append(dict(c, sha=head(wt)))
+        good = kept
+        if good:  # the surviving changes must still stand on their own
+            sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+            ev = evaluate(wt, unit)
+            old, new = by_addr(first), by_addr(ev) if ev else {}
+            if not ev or any(old[a]["pct"] >= 100 > new.get(a, {"pct": 0})["pct"] or new.get(a, {"score": MISSING * 2})["score"] > old[a]["score"]
+                             for a in old):
+                sh(["git", "reset", "-q", "--hard", base_head], wt, check=True)
+                good = []
+    log([owner, tier, "review", unit, "-", "-", "-", "-", "-", "-", "REVIEW",
+         f"{len(good)} accepted, {len(changes) - len(good)} rejected"] + stats_of(s))
+    return good
+
+
 # ---------------------------------------------------------------- worker
+
+def attempt(wt, owner, tier, unit, base, fn, names, args, notes, seq):
+    """One session on a function (`fn`) or on the unit (`fn` None, `names` its listed functions).
+    Returns (the evaluation to go on from, a change record or None)."""
+    sc = lambda x: x["score"] if x["score"] < MISSING else "-"
+    if fn:
+        e = base["functions"][fn]
+        lane, addr, size = lane_of(e), e["addr"], e["size"]
+        packet = build_packet(wt, unit, fn, base, notes.get(f"{unit}\t{fn}"))
+        turns, timeout = limits(size)
+    else:
+        lane, addr, size = "file", None, sum(base["functions"][n]["size"] for n in names)
+        packet = build_file_packet(wt, unit, base, names, notes)
+        turns, timeout = min(64, 16 + 5 * len(names)), 3600
+    (wt / "build/grind").mkdir(parents=True, exist_ok=True)
+    (wt / "build/grind/task.json").write_text(json.dumps({"unit": unit, "fn": fn, "addr": addr, "base": base}))
+    (wt / "build/try" / ("__".join(unit[:-4].split("/")) + ".json")).unlink(missing_ok=True)  # try.py's attempt log
+    tag = (f"{datetime.datetime.now():%m%d-%H%M%S}_{tier}_{Path(unit).stem}__"
+           + re.sub(r"[^A-Za-z0-9_]", "_", fn or "FILE")[:60])
+    s = run_session(wt, tier, SYSTEM, packet, turns, timeout, tag, effort=args.effort)
+    why, ev, _ = judge(wt, unit, base, addr)
+    t0, t1 = totals(base), (totals(ev) if ev else None)
+    if fn:
+        f1 = by_addr(ev).get(addr) if ev else None
+        row = [owner, tier, lane, unit, fn, size, f"{e['pct']:.2f}", sc(e),
+               f"{f1['pct']:.2f}" if f1 else "-", sc(f1) if f1 else "-"]
+    else:
+        f1 = None
+        row = [owner, tier, lane, unit, "FILE", size, t0["n100"], t0["score"],
+               t1["n100"] if t1 else "-", t1["score"] if t1 else "-"]
+    if why:
+        diff = sh(["git", "diff", "--", "src", "include", "libs", "config"], wt).stdout
+        if diff.strip() and why != "no change":
+            (LOGS / "rejects").mkdir(exist_ok=True)
+            (LOGS / "rejects" / f"{tag}.patch").write_text(f"# {why}\n{diff}")
+        revert(wt)
+        log(row + ["REJECT", why] + stats_of(s))
+        return base, None
+    if stamp_fixmes(wt, unit, ev):
+        sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
+        ev2 = evaluate(wt, unit)
+        if ev2 is None or totals(ev2) != totals(ev):  # a stamp must not change code
+            raise RuntimeError(f"FIXME stamp changed the build of {unit}")
+        ev = ev2
+    desc = describe(base, ev, addr)
+    sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
+        "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
+    sh(["git", "commit", "-qm", f"{unit[:-4]}: {desc} ({lane} lane, grind)\n\n"
+        f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+    log(row + ["ACCEPT", desc] + stats_of(s))
+    old, new = by_addr(base), by_addr(ev)
+    fns = [x["name"] for a, x in new.items()
+           if a not in old or abs(x["pct"] - old[a]["pct"]) > EPS or x["score"] != old[a]["score"]]
+    if f1 and f1["name"] not in fns:
+        fns.insert(0, f1["name"])
+    return ev, {"id": f"c{seq}", "sha": head(wt), "tier": tier, "lane": lane, "fn": fn or "FILE", "fns": fns,
+                "size": size, "desc": desc}
+
 
 def cmd_worker(args):
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(1))
@@ -805,10 +1115,10 @@ def cmd_worker(args):
     lanes = args.lanes.split(",")
     if not wt.exists():
         sys.exit(f"{wt} missing: run `python3 tools/grind.py setup --workers {args.n}`")
-    done_sessions = 0
-    skip = set()
-    while not (LOGS / "STOP").exists() and (not args.sessions or done_sessions < args.sessions):
-        if args.usage_stop and done_sessions and done_sessions % 10 == 0:
+    done, skip = 0, set()
+    more = lambda: not (LOGS / "STOP").exists() and (not args.sessions or done < args.sessions)
+    while more():
+        if args.usage_stop and done and done % 10 == 0:
             u = usage()
             if u is not None and u >= args.usage_stop:
                 (LOGS / "STOP").touch()
@@ -819,63 +1129,53 @@ def cmd_worker(args):
         for unit, fns in q.items():
             if unit in skip or (args.unit and unit != args.unit):
                 continue
-            el = eligible(fns, unit, tier, lanes, args.min_size, args.max_size, hist)
+            if args.mode == "file":
+                el = eligible(fns, unit, tier, lanes, 0, args.file_fn_max, hist)
+                fh = hist.get((unit, "FILE"), [])
+                if (len(el) < args.file_min or any(t == tier and v != "ACCEPT" for t, v in fh)
+                        or sum(t == tier for t, _ in fh) >= 3):
+                    continue
+            else:
+                el = eligible(fns, unit, tier, lanes, args.min_size, args.max_size, hist)
             if el:
                 pool.append((-len(el), unit))
         unit = next((u for _, u in sorted(pool) if claim(u, owner, wt)), None)
         if unit is None:
-            notify("FSA grind", f"{owner} ({tier}): nothing left in its lanes")
+            notify("FSA grind", f"{owner} ({tier}, {args.mode}): nothing left in its lanes")
             return
         skip.add(unit)
-        kept = 0
+        changes = []
         try:
             reset_to_integration(wt)
+            base_head = head(wt)
             sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
-            base = evaluate(wt, unit)
-            todo = eligible({n: e for n, e in base["functions"].items() if e["pct"] < 100}, unit, tier, lanes,
-                            args.min_size, args.max_size, hist)
-            for fn in todo[:args.per_unit]:
-                if (LOGS / "STOP").exists() or (args.sessions and done_sessions >= args.sessions):
-                    break
-                e = base["functions"].get(fn)
-                if e is None or e["pct"] >= 100:
-                    continue
-                lane, addr = lane_of(e), e["addr"]
-                packet = build_packet(wt, unit, fn, base)
-                (wt / "build/grind/task.json").write_text(json.dumps({"unit": unit, "fn": fn, "addr": addr, "base": base}))
-                (wt / "build/try" / (Path(unit).stem + ".json")).unlink(missing_ok=True)
-                slug = "__".join(unit[:-4].split("/"))
-                (wt / "build/try" / f"{slug}.json").unlink(missing_ok=True)
-                tag = f"{datetime.datetime.now():%m%d-%H%M%S}_{tier}_{Path(unit).stem}__{re.sub(r'[^A-Za-z0-9_]', '_', fn)[:60]}"
-                s = run_session(wt, tier, packet, e["size"], tag, args.effort)
-                done_sessions += 1
-                why, ev, notes = judge(wt, unit, base, addr)
-                f1 = by_addr(ev).get(addr) if ev else None
-                row = [owner, tier, lane, unit, fn, e["size"], f"{e['pct']:.2f}", e["score"] if e["score"] < MISSING else "-",
-                       f"{f1['pct']:.2f}" if f1 else "-", (f1["score"] if f1 and f1["score"] < MISSING else "-")]
-                stats = [s["turns"], s["in"], s["cache_write"], s["cache_read"], s["out"], f"{s['cost']:.4f}", s["secs"]]
-                if why:
-                    diff = sh(["git", "diff", "--", "src", "include", "libs", "config"], wt).stdout
-                    if diff.strip() and why != "no change":
-                        (LOGS / "rejects").mkdir(exist_ok=True)
-                        (LOGS / "rejects" / f"{tag}.patch").write_text(f"# {why}\n{diff}")
-                    revert(wt)
-                    log(row + ["REJECT", why] + stats)
-                    continue
-                if stamp_fixmes(wt, unit, ev):
-                    sh(["timeout", "900", "python3", "tools/try.py", unit], wt)
-                    ev2 = evaluate(wt, unit)
-                    if ev2 is None or totals(ev2) != totals(ev):  # a stamp must not change code
-                        raise RuntimeError(f"FIXME stamp changed the build of {unit}")
-                    ev = ev2
-                sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
-                    "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
-                msg = f"{unit[:-4]}: {describe(base, ev, addr)} ({lane} lane, grind)\n\nCo-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"
-                sh(["git", "commit", "-qm", msg], wt, check=True)
-                kept += 1
-                log(row + ["ACCEPT", describe(base, ev, addr)] + stats)
-                base = ev
-            result = integrate(wt, branch, unit) if kept else "nothing kept"
+            base = first = evaluate(wt, unit)
+            notes = review_notes()
+            still = lambda ev, lo, hi: eligible({n: e for n, e in ev["functions"].items() if e["pct"] < 100},
+                                                unit, tier, lanes, lo, hi, hist)
+            if args.mode == "file":
+                for _ in range(args.relay):
+                    names = still(base, 0, args.file_fn_max)[:12]
+                    if not names or not more():
+                        break
+                    base, ch = attempt(wt, owner, tier, unit, base, None, names, args, notes, len(changes) + 1)
+                    done += 1
+                    if ch is None:
+                        break
+                    changes.append(ch)
+            else:
+                for fn in still(base, args.min_size, args.max_size)[:args.per_unit]:
+                    if not more():
+                        break
+                    if fn not in base["functions"] or base["functions"][fn]["pct"] >= 100:
+                        continue
+                    base, ch = attempt(wt, owner, tier, unit, base, fn, [], args, notes, len(changes) + 1)
+                    done += 1
+                    if ch:
+                        changes.append(ch)
+            if changes and not args.no_review:
+                changes = run_review(wt, owner, unit, base_head, first, changes, args)
+            result = integrate(wt, branch, unit) if changes else "nothing kept"
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "UNIT", result] + [""] * 7)
         except Exception as ex:  # keep the worker alive
             log([owner, tier, "-", unit, "-", "-", "-", "-", "-", "-", "ERROR", str(ex)[:300]] + [""] * 7)
@@ -888,35 +1188,47 @@ def cmd_worker(args):
 
 def cmd_status(_):
     rows = [dict(zip(COLS, r)) for r in ledger_rows() if len(r) >= len(COLS)]
+    num = lambda r, k: float(r[k]) if re.match(r"^-?\d+(\.\d+)?$", r[k] or "") else 0.0
     sess = [r for r in rows if r["verdict"] in ("ACCEPT", "REJECT")]
-    num = lambda r, k: float(r[k] or 0) if r[k] not in ("-", "") else 0.0
+    tricked = {(r["unit"], r["fn"], r["tier"]) for r in rows if r["verdict"] == "TRICK"}
     print(f"{'tier':7} {'lane':10} {'sessions':>8} {'kept':>5} {'to 100%':>7} {'turns':>6} {'ctx/turn':>8} {'out':>7} {'cost':>8} {'$/kept':>7}")
-    keys = sorted({(r["tier"], r["lane"]) for r in sess}, key=lambda k: (ORDER.index(k[0]), LANES.index(k[1])))
+    order = LANES + ["file"]
+    keys = sorted({(r["tier"], r["lane"]) for r in sess}, key=lambda k: (ORDER.index(k[0]), order.index(k[1])))
     for k in keys + [None]:
         rs = [r for r in sess if k is None or (r["tier"], r["lane"]) == k]
         if not rs:
             continue
         kept = [r for r in rs if r["verdict"] == "ACCEPT"]
-        full = sum(1 for r in kept if num(r, "pct1") >= 100)
+        full = sum((num(r, "pct1") - num(r, "pct0")) if r["fn"] == "FILE" else (num(r, "pct1") >= 100) for r in kept)
         turns = sum(num(r, "turns") for r in rs)
         ctx = sum(num(r, "cache_read") + num(r, "cache_write") + num(r, "in") for r in rs) / max(1, turns)
         cost = sum(num(r, "cost") for r in rs)
         name = k or ("all", "")
-        print(f"{name[0]:7} {name[1]:10} {len(rs):8} {len(kept):5} {full:7} {turns / len(rs):6.1f} {ctx / 1000:7.1f}k "
+        print(f"{name[0]:7} {name[1]:10} {len(rs):8} {len(kept):5} {int(full):7} {turns / len(rs):6.1f} {ctx / 1000:7.1f}k "
               f"{sum(num(r, 'out') for r in rs) / len(rs) / 1000:6.1f}k {cost:8.2f} {cost / max(1, len(kept)):7.3f}")
+    rev = [r for r in rows if r["verdict"] == "REVIEW"]
+    if rev:
+        acc = sum(int(re.match(r"(\d+) accepted", r["why"]).group(1)) for r in rev)
+        rej = sum(int(re.search(r"(\d+) rejected", r["why"]).group(1)) for r in rev)
+        print(f"review: {len(rev)} sessions, {acc} changes accepted, {rej} rejected ({len(tricked)} functions sent back), "
+              f"cost {sum(num(r, 'cost') for r in rev):.2f}")
+        for r in rows:
+            if r["verdict"] == "TRICK":
+                print(f"  reviewer rejected {r['unit']} {r['fn'].split('__')[0]}: {r['why'][:150]}")
     why = {}
     for r in sess:
         if r["verdict"] == "REJECT":
             w = re.sub(r"[\d.]+", "N", r["why"])[:60]
             why[w] = why.get(w, 0) + 1
     for w, n in sorted(why.items(), key=lambda x: -x[1])[:8]:
-        print(f"  rejected {n:3}x: {w}")
-    units = [r for r in rows if r["verdict"] == "UNIT"]
+        print(f"  judge rejected {n:3}x: {w}")
+    units = {}
+    for r in rows:
+        if r["verdict"] in ("UNIT", "ERROR"):
+            k = r["why"] if r["verdict"] == "UNIT" else "ERROR: " + r["why"][:60]
+            units[k] = units.get(k, 0) + 1
     if units:
-        res = {}
-        for r in units:
-            res[r["why"]] = res.get(r["why"], 0) + 1
-        print("units:", ", ".join(f"{k} {v}" for k, v in res.items()))
+        print("units:", ", ".join(f"{k} {v}" for k, v in units.items()))
 
 
 def main():
@@ -930,13 +1242,19 @@ def main():
     p = sub.add_parser("worker")
     p.add_argument("n", type=int)
     p.add_argument("--tier", choices=ORDER, required=True)
-    p.add_argument("--lanes", default=",".join(LANES))
+    p.add_argument("--mode", choices=["function", "file"], default="function")
+    p.add_argument("--lanes", default="write,structure", help="write,structure (default: structure first) and/or match")
     p.add_argument("--min-size", type=int, default=0)
     p.add_argument("--max-size", type=int, default=10 ** 9)
-    p.add_argument("--per-unit", type=int, default=8)
+    p.add_argument("--per-unit", type=int, default=8, help="function mode: sessions per claimed unit")
+    p.add_argument("--file-min", type=int, default=3, help="file mode: a unit needs this many open functions")
+    p.add_argument("--file-fn-max", type=int, default=512, help="file mode: functions up to this size are listed")
+    p.add_argument("--relay", type=int, default=3, help="file mode: fresh sessions per unit while each one is kept")
     p.add_argument("--sessions", type=int, default=0, help="stop after this many sessions (0 = until the queue is empty)")
     p.add_argument("--unit", help="only this unit (game/X.cpp)")
     p.add_argument("--effort", choices=["low", "medium", "high"])
+    p.add_argument("--no-review", action="store_true", help="skip the adversarial review (never for work that will be merged)")
+    p.add_argument("--review-tier", choices=ORDER, help="reviewer model (default: one tier above the author)")
     p.add_argument("--usage-stop", type=float, default=0.85, help="stop all workers at this weekly utilization (0 = off)")
     p.set_defaults(fn=cmd_worker)
     args = ap.parse_args()
