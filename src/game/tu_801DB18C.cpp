@@ -252,7 +252,7 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
-// FIXME(shotgun): 78.75 %, missing/extra
+// FIXME(shotgun): scheduling+regalloc only: the state-0 stores load field_0x2b8 before field_0x2b4.
 void cls_804A4EE8::vfunc_0x88() {
     if (field_0x2b4 != 0.0f) {
         if (mState == 0) {
@@ -260,7 +260,7 @@ void cls_804A4EE8::vfunc_0x88() {
         } else {
             field_0x2b4 *= 0.5f;
         }
-        if (__fabs(field_0x2b4) < 0.001f) {
+        if (__fabsf(field_0x2b4) < 0.001f) {
             field_0x2b4 = 0.0f;
         }
     }
@@ -270,7 +270,7 @@ void cls_804A4EE8::vfunc_0x88() {
         } else {
             field_0x2b8 *= 0.5f;
         }
-        if (__fabs(field_0x2b8) < 0.001f) {
+        if (__fabsf(field_0x2b8) < 0.001f) {
             field_0x2b8 = 0.0f;
         }
     }
@@ -278,9 +278,12 @@ void cls_804A4EE8::vfunc_0x88() {
         field_0x3c.x = field_0x2b4;
         field_0x3c.y = field_0x2b8;
         field_0x3c.z = 0.0f;
+        return;
     }
-    f32 tx = mSearchPos.x + JMath::sincosTable_.sinShort(mAngle) * mRadius;
-    f32 ty = mSearchPos.y + JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 dx = JMath::sincosTable_.sinShort(mAngle) * mRadius;
+    f32 dy = JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 tx = mSearchPos.x + dx;
+    f32 ty = mSearchPos.y + dy;
     field_0x3c.x = tx - mPos.x;
     field_0x3c.y = ty - mPos.y;
     field_0x3c.z = 0.0f;
