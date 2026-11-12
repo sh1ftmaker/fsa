@@ -213,7 +213,8 @@ void cls_8049E770::fn_8012C170() {
         fn_8012A5EC();
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         const _GXRenderModeObj* rm = JUTVideo::getManager()->getRenderMode();
-        JGeometry::TVec3f msgPos(rm->fbWidth * 0.5f, rm->efbHeight * 0.5f + -16.0f, 0.0f);
+        f32 msgY = (s32)rm->efbHeight * 0.5f;
+        JGeometry::TVec3f msgPos((s32)rm->fbWidth * 0.5f, msgY + -16.0f, 0.0f);
         if (fn_8038BD08(0, lbl_804650C8[field_0x254], field_0x4, msgPos, 0x22)) {
             field_0x254++;
             fn_8011921C()->fn_80118454();
