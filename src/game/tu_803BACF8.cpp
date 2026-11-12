@@ -12,29 +12,41 @@
 // CARDRead, fn_803BBF08 builds and writes them with CARDWrite (0x2000-byte
 // card sectors; card DMA buffers are 32-byte aligned).
 
+struct SaveSector_803BACF8 {
+    /* 0x0000 */ u16 mHeader;
+    /* 0x0002 */ u8 field_0x2;
+    /* 0x0003 */ u8 field_0x3;
+    /* 0x0004 */ u8 field_0x4;
+    /* 0x0005 */ u8 pad_0x5[5];
+    /* 0x000A */ u8 mData[0x258];
+    /* 0x0262 */ u8 mBodies[0x1D4C];
+    /* 0x1FAE */ u8 pad_0x1FAE[0x4E];
+    /* 0x1FFC */ u32 mChecksum;
+
+    u32 calcChecksum() const {
+        const u16* halfwords = (const u16*)this;
+        u32 sum = 0;
+        u16 inv = 0;
+        for (int i = 0; i < 0xFFE; i++) {
+            u16 val = *halfwords++;
+            sum += val;
+            inv += ~val;
+        }
+        return (sum << 16) | inv;
+    }
+};
+
 // The two save images (card offsets 0x2000 and 0x4000; fn_803BAE68 reads the second
 // when the first fails). fn_803BBF08 copies the save data to +0xA and the bodies
 // (lbl_805242C0 / lbl_80526020) to +0x262 of each.
-u8 lbl_8051E2C0[0x2000] ATTRIBUTE_ALIGN(32);
-u8 lbl_805202C0[0x2000] ATTRIBUTE_ALIGN(32);
+SaveSector_803BACF8 lbl_8051E2C0 ATTRIBUTE_ALIGN(32);
+SaveSector_803BACF8 lbl_805202C0 ATTRIBUTE_ALIGN(32);
 // The card file's first sector (card offset 0): fn_803BBF08 copies two resources that
 // fn_804030C4 returns to +0x0 and +0xE00 and writes it.
 u8 lbl_805222C0[0x2000] ATTRIBUTE_ALIGN(32);
 // The three save-file bodies of each image (memset / memcpy of 0x1D4C = 3 * 0x9C4).
 SaveFileBody_803B950C lbl_805242C0[3] ATTRIBUTE_ALIGN(32);
 SaveFileBody_803B950C lbl_80526020[3] ATTRIBUTE_ALIGN(32);
-
-struct SaveSectorHeader_803BACF8 {
-    /* 0x00 */ u16 field_0x0;
-    /* 0x02 */ u8 field_0x2;
-    /* 0x03 */ u8 field_0x3;
-    /* 0x04 */ u8 field_0x4;
-};
-
-struct SaveSector_803BACF8 {
-    /* 0x0000 */ u16 mHalfwords[0xFFE];
-    /* 0x1FFC */ u32 mChecksum;
-};
 
 static inline bool isCardStatusValid(CARDFileInfo* file) {
     CARDStat stat;
@@ -60,20 +72,6 @@ static inline bool isCardStatusValid(CARDFileInfo* file) {
            CARDGetIconSpeed(&stat, 7) == CARD_STAT_SPEED_END;
 }
 
-static inline u32 calcSectorChecksum(const u8* buf) {
-    const SaveSector_803BACF8* sec = (const SaveSector_803BACF8*)buf;
-    u16 sum = 0;
-    u16 inv = 0;
-    for (int i = 0; i < 0xFFE; i++) {
-        u16 val = sec->mHalfwords[i];
-        sum += val;
-        inv += ~val;
-    }
-    return ((u32)sum << 16) | inv;
-}
-
-// FIXME(shotgun): 40.6 %, not verified against the asm; reviewer moved under NONMATCHING (casts into the save buffers)
-#ifdef NONMATCHING
 s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 bodySize) {
     snprintf((char*)(lbl_805222C0 + 0x1C00), 0x20, "Four Swords Adventures");
     OSCalendarTime cal;
@@ -91,12 +89,12 @@ s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 body
     }
 
     if (!isCardStatusValid(file)) {
-        memset(lbl_8051E2C0, 0, 0x2000);
-        res = CARDWrite(file, lbl_8051E2C0, 0x2000, 0x2000);
+        memset(&lbl_8051E2C0, 0, 0x2000);
+        res = CARDWrite(file, &lbl_8051E2C0, 0x2000, 0x2000);
         if (res != 0) {
             return res;
         }
-        res = CARDWrite(file, lbl_8051E2C0, 0x2000, 0x4000);
+        res = CARDWrite(file, &lbl_8051E2C0, 0x2000, 0x4000);
         if (res != 0) {
             return res;
         }
@@ -104,47 +102,47 @@ s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 body
         memset(lbl_80526020, 0, 0x1D4C);
     }
 
-    u8* img1 = lbl_8051E2C0;
-    u8* img2 = lbl_805202C0;
-    ((SaveSectorHeader_803BACF8*)img1)->field_0x0 = 0;
-    ((SaveSectorHeader_803BACF8*)img2)->field_0x0 = 0;
-    memcpy(img1 + 0xA, src, size);
-    memcpy(img2 + 0xA, src, size);
-    memcpy(img1 + 0x262, lbl_805242C0, 0x1D4C);
-    memcpy(img2 + 0x262, lbl_80526020, 0x1D4C);
-    img2[2] = lbl_80529DEC.field_0x245;
-    img1[2] = lbl_80529DEC.field_0x245;
-    img2[3] = lbl_80529DEC.field_0x244;
-    img1[3] = lbl_80529DEC.field_0x244;
-    img2[4] = lbl_80529DEC.field_0x246;
-    img1[4] = lbl_80529DEC.field_0x246;
+    SaveSector_803BACF8* img1 = &lbl_8051E2C0;
+    SaveSector_803BACF8* img2 = &lbl_805202C0;
+    img1->mHeader = 0;
+    img2->mHeader = 0;
+    memcpy(img1->mData, src, size);
+    memcpy(img2->mData, src, size);
+    memcpy(img1->mBodies, lbl_805242C0, 0x1D4C);
+    memcpy(img2->mBodies, lbl_80526020, 0x1D4C);
+    img2->field_0x2 = lbl_80529DEC.field_0x245;
+    img1->field_0x2 = lbl_80529DEC.field_0x245;
+    img2->field_0x3 = lbl_80529DEC.field_0x244;
+    img1->field_0x3 = lbl_80529DEC.field_0x244;
+    img2->field_0x4 = lbl_80529DEC.field_0x246;
+    img1->field_0x4 = lbl_80529DEC.field_0x246;
 
-    u32 chk1 = calcSectorChecksum(img1);
-    ((SaveSector_803BACF8*)img1)->mChecksum = chk1;
-    u32 chk2 = calcSectorChecksum(img2);
-    ((SaveSector_803BACF8*)img2)->mChecksum = chk2;
+    u32 chk1 = img1->calcChecksum();
+    img1->mChecksum = chk1;
+    u32 chk2 = img2->calcChecksum();
+    img2->mChecksum = chk2;
 
-    res = CARDWrite(file, lbl_8051E2C0, 0x2000, 0x2000);
+    res = CARDWrite(file, &lbl_8051E2C0, 0x2000, 0x2000);
     if (res != 0) {
         return res;
     }
-    res = CARDRead(file, lbl_8051E2C0, 0x2000, 0x2000);
+    res = CARDRead(file, &lbl_8051E2C0, 0x2000, 0x2000);
     if (res != 0) {
         return res;
     }
-    if (chk1 != calcSectorChecksum(lbl_8051E2C0)) {
+    if (chk1 != lbl_8051E2C0.calcChecksum()) {
         return res;
     }
 
-    res = CARDWrite(file, lbl_805202C0, 0x2000, 0x4000);
+    res = CARDWrite(file, &lbl_805202C0, 0x2000, 0x4000);
     if (res != 0) {
         return res;
     }
-    res = CARDRead(file, lbl_805202C0, 0x2000, 0x4000);
+    res = CARDRead(file, &lbl_805202C0, 0x2000, 0x4000);
     if (res != 0) {
         return res;
     }
-    if (chk2 != calcSectorChecksum(lbl_805202C0)) {
+    if (chk2 != lbl_805202C0.calcChecksum()) {
         return res;
     }
 
@@ -174,7 +172,6 @@ s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 body
     return res;
 }
 
-#endif
 
 // FIXME(shotgun): 62.5 %, halfword clamp loop and sector-header store not written; reviewer moved under NONMATCHING (empty filler loop, casts)
 #ifdef NONMATCHING
@@ -413,15 +410,15 @@ s32 fn_803BAEF4(CARDFileInfo* file, void* dst, void* bodyDst, u32 size, u32 body
 // Reads the save image at card offset 0x2000, or at 0x4000 when that fails, into
 // lbl_8051E2C0; on success keeps its bytes 3 and 4 in the game state. Returns the card result.
 s32 fn_803BAE68(CARDFileInfo* file) {
-    u8* image = lbl_8051E2C0;
+    SaveSector_803BACF8* image = &lbl_8051E2C0;
     if (CARDRead(file, image, 0x2000, 0x2000) != 0) {
         s32 result = CARDRead(file, image, 0x2000, 0x4000);
         if (result != 0) {
             return result;
         }
     }
-    lbl_80529DEC.field_0x244 = image[3];
-    lbl_80529DEC.field_0x246 = image[4];
+    lbl_80529DEC.field_0x244 = image->field_0x3;
+    lbl_80529DEC.field_0x246 = image->field_0x4;
     return 0;
 }
 
