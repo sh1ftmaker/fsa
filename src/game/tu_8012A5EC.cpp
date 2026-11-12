@@ -146,15 +146,16 @@ void cls_8049E770::draw() {
     mPos = savedPos;
 }
 
-// FIXME(shotgun): 38.9 %, missing/extra
+// FIXME(shotgun): 38.9 %, missing/extra (the original's 0xF4 |= 0x100 store on each emitter is not declared yet)
 cls_8049E770::~cls_8049E770() {
-    for (s32 i = 0; i < 4; i++) {
-        releaseEmitter_801EE434(field_0x388[0][i]);
-        field_0x388[0][i] = NULL;
-        releaseEmitter_801EE434(field_0x388[1][i]);
-        field_0x388[1][i] = NULL;
-        releaseEmitter_801EE434(field_0x388[2][i]);
-        field_0x388[2][i] = NULL;
+    for (s32 i = 0; i < 2; i++) {
+        for (s32 j = 0; j < 2; j++) {
+            for (s32 k = 0; k < 3; k++) {
+                if (field_0x388[k][i * 2 + j] != NULL) {
+                    field_0x388[k][i * 2 + j] = NULL;
+                }
+            }
+        }
     }
 }
 
