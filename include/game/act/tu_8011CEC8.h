@@ -26,9 +26,7 @@ public:
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ f32 field_0x238;
     /* 0x23C */ f32 field_0x23c;
-    /* 0x240 */ f32 field_0x240; // camera centre x (init copies mPos)
-    /* 0x244 */ f32 field_0x244; // camera centre y
-    /* 0x248 */ f32 field_0x248;
+    /* 0x240 */ JGeometry::TVec3f field_0x240; // camera centre (x, y, z; init copies mPos)
     /* 0x24C */ u8 field_0x24c[0xC];
     /* 0x258 */ f32 field_0x258; // camera zoom size
     /* 0x25C */ u8 field_0x25c[0x18];
