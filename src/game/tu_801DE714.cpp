@@ -107,7 +107,8 @@ static inline void findTargets(cls_804A51E4* a) {
 
 
 // tu_801DE714 (0x801E22A4): the constructor, after EnemyBase's (a plain bl).
-// FIXME: 99.8 %. Only the literal label of 0.0f (@NNN vs lbl_; data split).
+// FIXME: 99.83 %, reloc-name; behaviour clean.
+// Only the literal label of 0.0f (@NNN vs lbl_; data split).
 cls_804A51E4::cls_804A51E4() {
     field_0x2a8 = -1;
     field_0x2ac = -1;
@@ -148,7 +149,7 @@ cls_804A51E4::~cls_804A51E4() {
     }
 }
 
-// FIXME(shotgun): 80.67 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.77 %, reloc-name; behaviour clean.
 void cls_804A51E4::init() {
     EnemyBase_804A4808::init();
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
@@ -176,7 +177,8 @@ void cls_804A51E4::init() {
 
 // tu_801DE714 (0x801E2004, vtable slot 0x54, EnemyBase's start hook): see the
 // declaration in act/tu_801DE714.h.
-// FIXME: 99.8 %. Only the literal label (30.0f is @NNN, not lbl_8053F4A4:
+// FIXME: 99.84 %, reloc-name; behaviour clean.
+// Only the literal label (30.0f is @NNN, not lbl_8053F4A4:
 // the unit's earlier .sdata2 users are not written yet).
 void cls_804A51E4::vfunc_0x54() {
     getActorManager_801F856C()->fn_801F7AB8(mActorId, mSerial);
@@ -187,7 +189,7 @@ void cls_804A51E4::vfunc_0x54() {
     field_0x2c4.set(mPos.x, mPos.y);
 }
 
-// FIXME(shotgun): 90.20 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.86 %, missing/extra + reloc-name; behaviour near.
 void cls_804A51E4::fn_801E1E08() {
     if (mTargetSerial >= 0) {
         if (!(mFlags & 0x80000)) {
@@ -247,7 +249,7 @@ bool cls_804A51E4::fn_801E1DE8() {
     return fn_801CCF7C();
 }
 
-// FIXME(shotgun): 59.00 %, missing/extra
+// FIXME(shotgun): 59.00 %, missing/extra; behaviour near.
 bool cls_804A51E4::fn_801E1DB4() const {
     bool result = false;
     s32 anim = mAnim.mAnim;
@@ -285,7 +287,7 @@ bool cls_804A51E4::fn_801E1D7C() {
     return result;
 }
 
-// FIXME(shotgun): 77.61 %, missing/extra
+// FIXME(shotgun): 77.61 %, missing/extra; behaviour drift.
 bool cls_804A51E4::fn_801E1CF8() const {
     bool result = false;
     if ((mState < 0xF && mState != 0) || (mState >= 0xF && mState >= 0x13)) {
@@ -298,7 +300,7 @@ bool cls_804A51E4::fn_801E1CF8() const {
     return result;
 }
 
-// FIXME(shotgun): 88.71 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.71 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A51E4::fn_801E1AB4(bool arg) {
     bool found = false;
     u32 kind;
@@ -364,7 +366,7 @@ void cls_804A51E4::fn_801E1AB4(bool arg) {
     }
 }
 
-// FIXME(shotgun): 97.79 %, different + reloc-name
+// FIXME(shotgun): 97.79 %, different + reloc-name; behaviour drift.
 void cls_804A51E4::fn_801E1594(s32 newState) {
     switch (newState) {
     case 0:
@@ -526,7 +528,7 @@ void cls_804A51E4::fn_801E1594(s32 newState) {
     mState = newState;
 }
 
-// FIXME(shotgun): 92.39 %, missing/extra
+// FIXME(shotgun): 92.39 %, missing/extra; behaviour drift.
 void cls_804A51E4::fn_801E1300() {
     bool lost = false;
     ActorBase_804A5770* actor;
@@ -577,7 +579,7 @@ void cls_804A51E4::fn_801E1300() {
     }
 }
 
-// FIXME(shotgun): 89.89 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.89 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A51E4::fn_801E0CF4() {
     if (mState == 0) {
         field_0x2a8 = -1;
@@ -705,7 +707,7 @@ void cls_804A51E4::fn_801E0CF4() {
     }
 }
 
-// FIXME(shotgun): 95.70 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.70 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A51E4::fn_801E002C(ActorBase_804A5770* target) {
     if (target != NULL && field_0x2ac >= 0) {
         if (mStateTimer >= mAnim.mLength * 2) {
@@ -800,7 +802,7 @@ void cls_804A51E4::fn_801E002C(ActorBase_804A5770* target) {
     }
 }
 
-// FIXME(shotgun): 96.58 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.58 %, missing/extra + reloc-name; behaviour near.
 void cls_804A51E4::fn_801DF9D8(ActorBase_804A5770* target) {
     if (mStateTimer < field_0x250) {
         return;
@@ -834,7 +836,7 @@ void cls_804A51E4::fn_801DF9D8(ActorBase_804A5770* target) {
     }
 }
 
-// FIXME(shotgun): 95.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.65 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A51E4::vfunc_0x90(u8 mapHit) {
     if (field_0x2cc == 0) {
         fn_801E0CF4();
@@ -1098,7 +1100,7 @@ void cls_804A51E4::vfunc_0x90(u8 mapHit) {
     fn_801E2D88();
 }
 
-// FIXME(shotgun): 88.71 %, missing/extra
+// FIXME(shotgun): 96.45 %, missing/extra; behaviour clean.
 void cls_804A51E4::vfunc_0x94() {
     if (field_0x2ce != 0) {
         field_0x2ce--;
@@ -1120,7 +1122,7 @@ void cls_804A51E4::vfunc_0x9C(u8 mapHit) {
     fn_8021835C();
 }
 
-// FIXME(shotgun): 96.02 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.02 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A51E4::vfunc_0x88() {
     bool blocked = fn_801CCF7C();
     field_0x3c.x = 0.0f;
@@ -1194,7 +1196,7 @@ void cls_804A51E4::vfunc_0x88() {
     }
 }
 
-// FIXME(shotgun): 87.41 %, missing/extra
+// FIXME(shotgun): 87.41 %, missing/extra; behaviour clean.
 void cls_804A51E4::vfunc_0x8C() {
     if (fn_801E1D7C()) {
         if (!fn_801CD2F8(field_0x4)) {
