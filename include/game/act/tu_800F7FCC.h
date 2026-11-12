@@ -106,8 +106,8 @@ public:
     /* 0x278 */ u8 mFrame;
     /* 0x279 */ u8 mAnimStep;
     /* 0x27A */ u8 mAnimTime;
-    /* 0x27C */ u32 mAnimState;
-    /* 0x280 */ u32 mAnimPrev;
+    /* 0x27C */ s32 mAnimState;
+    /* 0x280 */ s32 mAnimPrev;
     /* 0x284 */ s16 mSlotUsed[2];
     /* 0x288 */ s32 mPartner[2];
     /* 0x290 */ cls_800F802C mRing;

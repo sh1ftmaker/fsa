@@ -157,11 +157,11 @@ void cls_8049C718::init() {
     }
 }
 
-// FIXME(shotgun): 98.74 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.91 %, reloc-name; behaviour clean.
 void cls_8049C718::fn_800FCCCC() {
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     mTimer++;
     switch (field_0x254) {
@@ -170,7 +170,7 @@ void cls_8049C718::fn_800FCCCC() {
         mZBase = 0.0f;
         fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
         if (player >= 0) {
-            if (getPlayerPos_8023E724(player)->y - mPos.y < 200.0f) {
+            if (getPlayerPos_8023E724(player)->y - mPos.y < 140.0f) {
                 field_0x254++;
                 mTimer = 0;
             }
@@ -211,18 +211,35 @@ void cls_8049C718::fn_800FCCCC() {
 }
 
 // FIXME(shotgun): 90.02 %, missing/extra + reloc-name; behaviour drift.
-void cls_8049C718::fn_800FC984() {
-    bool swapped = false;
-    if (mSlot == 0) {
-        field_0xb0 = 4;
-        mAnimState = 1;
-        mTimer = 0;
-        mState = 8;
-        startSound_801F0E34(0x40005, 0);
-        mSignal = 1;
-        swapped = true;
+// Ends the state early when the slot counter is 0 (the boss swaps to state 8).
+static inline bool trySwap(cls_8049C718* p) {
+    if (p->mSlot == 0) {
+        p->field_0xb0 = 4;
+        p->mAnimState = 1;
+        p->mTimer = 0;
+        p->mState = 8;
+        p->startSound_801F0E34(0x40005, 0);
+        p->mSignal = 1;
+        return true;
     }
-    if (swapped) {
+    return false;
+}
+
+// Advances the wobble; true while it is running.
+static inline bool stepWobble(cls_8049C718* p) {
+    if (p->mWobble != 0) {
+        p->mWobble += 0x2000;
+        if (p->mWobble > 0x20000) {
+            p->mWobble = 0;
+        }
+        return true;
+    }
+    return false;
+}
+
+// FIXME: 93.98 %, missing/extra + reloc-name; behaviour clean.
+void cls_8049C718::fn_800FC984() {
+    if (trySwap(this)) {
         return;
     }
     if (mCooldown != 0) {
@@ -234,15 +251,7 @@ void cls_8049C718::fn_800FC984() {
         field_0xb0 = 4;
     }
     fn_800FA1A4();
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
@@ -276,7 +285,7 @@ void cls_8049C718::fn_800FC984() {
     fn_801F3D94(1);
 }
 
-// FIXME(shotgun): 97.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.59 %, different + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FC4A8() {
     bool swapped = false;
     if (mSlot == 0) {
@@ -299,15 +308,7 @@ void cls_8049C718::fn_800FC4A8() {
     } else {
         field_0xb0 = 4;
     }
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
@@ -378,7 +379,7 @@ void cls_8049C718::fn_800FC4A8() {
     }
 }
 
-// FIXME(shotgun): 96.25 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.10 %, different + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FC128() {
     bool swapped = false;
     if (mSlot == 0) {
@@ -408,15 +409,7 @@ void cls_8049C718::fn_800FC128() {
     } else {
         field_0xb0 = 4;
     }
-    bool wobbling = false;
-    if (mWobble != 0) {
-        mWobble += 0x2000;
-        if (mWobble > 0x20000) {
-            mWobble = 0;
-        }
-        wobbling = true;
-    }
-    if (wobbling) {
+    if (stepWobble(this) == 1) {
         fn_801F3D94(1);
         return;
     }
@@ -534,7 +527,7 @@ void cls_8049C718::fn_800FBD90() {
     }
 }
 
-// FIXME(shotgun): 88.30 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.48 %, missing/extra + reloc-name; behaviour near.
 void cls_8049C718::fn_800FBA14() {
     if (fn_801F3D94(1) == 1) {
         field_0x3c.set(0.0f, 0.0f, 10.0f);
@@ -550,8 +543,8 @@ void cls_8049C718::fn_800FBA14() {
         }
     }
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
     if (field_0x3c.z > -0.5f) {
@@ -564,17 +557,14 @@ void cls_8049C718::fn_800FBA14() {
         mFlags |= 0x10;
     }
     field_0x3c.z -= 0.1f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos += field_0x3c;
     if (mPos.z <= 0.0f) {
         if (mFlags & 8) {
             field_0x257 = 0;
             fn_800FB6E0(false);
         } else {
-            f32 v = (f32)field_0x257;
-            field_0x3c.x = v;
-            field_0x3c.y = -1.0f * v;
+            field_0x3c.x = field_0x257;
+            field_0x3c.y = -1.0f * field_0x257;
             field_0x3c.z = 0.0f;
             mPos.z = 0.0f;
             mState = 5;
@@ -591,11 +581,11 @@ void cls_8049C718::fn_800FBA14() {
     }
 }
 
-// FIXME(shotgun): 86.57 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.90 %, different + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FB6E0(bool first) {
     u16 angle = 0;
-    s32 dir = 0;
     f32 dist = 0.0f;
+    s32 dir = 0;
     s32 player = 0;
     fn_801EEC98(mSerial, &angle, &dir, &dist, &player, 0, 0);
     if (player != -1 && dist < 50.0f) {
@@ -606,8 +596,10 @@ void cls_8049C718::fn_800FB6E0(bool first) {
         } else {
             ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[0]);
             ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
-            JGeometry::TVec3f da = mPos - a->mPos;
-            JGeometry::TVec3f db = mPos - b->mPos;
+            JGeometry::TVec3f da = mPos;
+            da.sub(a->mPos);
+            JGeometry::TVec3f db = mPos;
+            db.sub(b->mPos);
             if (PSVECMag((Vec*)&da) < PSVECMag((Vec*)&db)) {
                 angle = (s32)(JMath::atanTable_.atan2_(-da.x, -da.y) * 10430.378f);
             } else {
@@ -703,12 +695,10 @@ void cls_8049C718::fn_800FB32C() {
     }
 }
 
-// FIXME(shotgun): 85.51 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.60 %, regalloc-only + reloc-name; behaviour clean.
 void cls_8049C718::fn_800FB070() {
     field_0x3c.z -= 0.3f;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos.add(field_0x3c);
     if (mPos.z <= 0.0f) {
         mPos.z = 0.0f;
         field_0x3c.z = 0.0f;
@@ -721,8 +711,9 @@ void cls_8049C718::fn_800FB070() {
     } else {
         field_0xb0 = 4;
     }
-    mBox.set(-26.0f * mScale, -50.0f * mScale, 26.0f * mScale, 0.0f);
-    field_0x80.set(-26.0f * mScale, -50.0f * mScale, 26.0f * mScale, 0.0f);
+    f32 scale = mScale;
+    mBox.set(-26.0f * scale, -50.0f * scale, 26.0f * scale, 0.0f);
+    field_0x80.set(-26.0f * scale, -50.0f * scale, 26.0f * scale, 0.0f);
     if (mWobble != 0) {
         mWobble += 0x2000;
         if (mWobble > 0x10000) {
@@ -940,9 +931,9 @@ void cls_8049C718::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 99.42 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.87 %, scheduling+regalloc + reloc-name; behaviour drift.
 void cls_8049C718::fn_800FA6B0() {
-    if (mAnimPrev != mAnimState) {
+    if (mAnimState != mAnimPrev) {
         mAnimPrev = mAnimState;
         mAnimTime = 0;
         mAnimStep = 0;
@@ -1016,7 +1007,7 @@ void cls_8049C718::fn_800FA6B0() {
 // FIXME: 70.42 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
-// FIXME(shotgun): 70.42 %, missing/extra + reloc-name
+// 
 void cls_8049C718::fn_800FA1A4() {
     if (!(mFlags & 8)) {
         return;
@@ -1090,7 +1081,7 @@ void cls_8049C718::draw() {
     fn_801EFD34(res, &params, 5, 0.0f, -22.0f * (mScale + b), 0.0f);
 }
 
-// FIXME(shotgun): 96.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.66 %, regalloc-only + reloc-name; behaviour clean.
 void StoneArrghusChildPuff_8049C678::init() {
     mBox2.set(-13.0f, -14.0f, 13.0f, 8.0f);
     mLife = 4;
@@ -1106,7 +1097,7 @@ void StoneArrghusChildPuff_8049C678::init() {
         mBox.set(-13.0f, -14.0f, 13.0f, 8.0f);
         mPos.x += (f32)lbl_804638C0[mIndex * 2];
         mPos.y += (f32)lbl_804638C0[mIndex * 2 + 1];
-        field_0xb0 = 0x80004;
+        field_0xb0 = 0x40004;
     } else {
         if (mIndex < 0x30) {
             mPos.x += (f32)lbl_80463800[mIndex * 2];
@@ -1118,14 +1109,14 @@ void StoneArrghusChildPuff_8049C678::init() {
         mPos.z = 0.0f;
         mDelay = 0;
         for (s32 i = 0; i < mIndex; i++) {
-            mDelay += (i < 30) ? 40 - i : 10;
+            mDelay += (mIndex < 30) ? 40 - mIndex : 10;
         }
-        s32 n = gGameRoot_8053AAF8->fn_80138A30();
-        if (1.0f == (f32)n) {
+        f32 n = gGameRoot_8053AAF8->fn_80138A30();
+        if (1.0f == n) {
             mVariant = -1;
             field_0x94 = 0;
         } else {
-            mVariant = (s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+            mVariant = (s32)(n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             field_0x94 = mVariant + 1;
             if ((s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) < 1) {
                 mVariant = -1;
@@ -1392,12 +1383,12 @@ void StoneArrghusChildPuff_8049C678::vfunc_0x24() {
     ActorBase_804A5770::vfunc_0x24();
 }
 
-// FIXME(shotgun): 95.83 %, different; behaviour drift.
+// FIXME(shotgun): 96.46 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::draw() {
     f32 a = 0.0f;
     f32 b = 0.0f;
     if (mState == 2) {
-        f32 s = __fabs(JMath::sincosTable_.sinShort((s16)(mAngle + 0x4000)));
+        f32 s = __fabsf(JMath::sincosTable_.sinShort((s16)(mAngle + 0x4000)));
         a = 0.1f * s;
         b = -0.1f * s;
     }
