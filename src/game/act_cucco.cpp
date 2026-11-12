@@ -292,8 +292,8 @@ void Cucco_804AB8C0::fn_80332A60() {
 
 // FIXME(shotgun): 91.77 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_803324A8() {
-    s32 outDir = -1;
     f32 outDist = 0.0f;
+    s32 outDir = -1;
     u16 outAngle = 0;
     if (field_0x290 == 6 && field_0x230 == 0 && mPos.z < 8.0f && field_0x284 <= 0) {
         fn_801EEC98(mSerial, NULL, &outDir, &outDist, NULL, 0, 0);
