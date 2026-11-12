@@ -788,6 +788,7 @@ inline void ResultScreen_804AF9A0::spawnEffect(u16 id, f32 scale) {
     }
 }
 
+// FIXME: 99.85 %, scheduling + reloc-name; behaviour clean.
 void ResultScreen_804AF9A0::fn_803B236C() {
     if (field_0x458 <= 0) {
         s32 list[4];
@@ -852,7 +853,8 @@ void ResultScreen_804AF9A0::fn_803B236C() {
     }
 }
 
-// FIXME(shotgun): 95.0 %, ResultScreen_804AF9A0
+// FIXME(shotgun): 74.63 %, missing/extra + reloc-name; behaviour drift.
+// ResultScreen_804AF9A0
 void ResultScreen_804AF9A0::fn_803B1B60() {
     if (field_0x440 > 0) {
         field_0x440--;
