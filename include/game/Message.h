@@ -147,7 +147,7 @@ public:
     /* 0x130 */ f32 field_0x130[3];
     // fn_803A30FC stores into it by index (the constructor leaves it).
     /* 0x13C */ s32 field_0x13c[3];
-    /* 0x148 */ s32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
+    /* 0x148 */ u32 field_0x148; // fn_80390C38 returns it (-1 when the window is in neither state).
     /* 0x14C */ s32 field_0x14c;
     // fn_80390BDC counts it down to 0 and returns it.
     /* 0x150 */ u32 field_0x150;
@@ -231,6 +231,10 @@ public:
     void fn_80395834(J2DPane* pane);
     void fn_80395480(J2DPane* pane);
     void fn_80396884();
+    // Inlined by fn_80396884: reloads field_0x148 from the current slot, then plays the move sound.
+    void reloadSlot();
+    void playMoveSound();
+    void selectNext();
     s32 fn_803A3050();
     s32 fn_803A3058();
     s16 fn_803A3060();

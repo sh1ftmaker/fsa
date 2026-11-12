@@ -92,6 +92,7 @@ static const SjisGlyph_80475830 lbl_80475830[317] = {
 // The buffers fn_8039F540 / fn_8039C9A0 format the colour code "\033CR[%d]" into.
 static char lbl_8050E518[16];
 static char lbl_8050E528[16];
+static char lbl_8050E538[16];
 
 // The glyph of a character in the text-image font (the space's when it has none).
 static inline u16 findGlyph(u16 code) {
@@ -1607,6 +1608,98 @@ void cls_804AF72C::fn_8039B3EC(u8 noun, s32 count) {
     }
 }
 
+// The play time (minutes, seconds) of the message manager as text (mode 0) or glyph codes.
+// FIXME: 94.26 %, missing/extra + reloc-name; behaviour clean.
+void cls_804AF72C::fn_8039ACD0(s16 mode) {
+    char ch[3];
+    ch[2] = 0;
+    ch[1] = 0;
+    ch[0] = 0;
+    s32 frames = lbl_8053AD78->field_0x44;
+    s32 minutes = frames / 3600;
+    s32 seconds = frames / 60 % 60;
+    if (seconds == 0) {
+        seconds = 1;
+    }
+    if (mode == 0) {
+        if (field_0x2d6 != 0) {
+            s32 index = field_0x2cc;
+            if (!field_0x38.isMasked(index)) {
+                if (!(field_0x2d8->field_0x16c != 0 && field_0x38.isMasked(index))) {
+                    f32 base;
+                    f32 pos;
+                    if (!(field_0x2d8->field_0x3b8->field_0x28 & 0x40)) {
+                        base = field_0x2d8->field_0xe8;
+                        pos = field_0x38.field_0x4c[index];
+                    } else {
+                        base = field_0x2d8->field_0xf0;
+                        pos = field_0x38.field_0x4c[index] + (field_0x38.field_0xf4[index] - 3.0f);
+                    }
+                    s32 offset = (s32)((base - pos) * 0.5f + 0.5f);
+                    if (offset > 0) {
+                        snprintf(lbl_8050E538, 15, "\033CR[%d]", offset);
+                        strcat(field_0x2c0, lbl_8050E538);
+                        strcat(field_0x2c4, lbl_8050E538);
+                        field_0x2d0 += strlen(lbl_8050E538);
+                    }
+                }
+                field_0x2d6 = 0;
+            }
+        }
+        if (minutes > 0) {
+            if (minutes > 99) {
+                minutes = 99;
+                seconds = 59;
+            }
+            s32 ones = minutes % 10;
+            s32 digit = minutes / 10;
+            if (digit > 0) {
+                ch[0] = digit + '0';
+                appendText(ch);
+            }
+            ch[0] = ones + '0';
+            appendText(ch);
+            appendText("'");
+        }
+        if (seconds > 59) {
+            seconds = 59;
+        }
+        s32 ones = seconds % 10;
+        s32 digit = seconds / 10;
+        if (digit > 0 || minutes > 0) {
+            ch[0] = digit + '0';
+            appendText(ch);
+        }
+        ch[0] = ones + '0';
+        appendText(ch);
+        appendText("\"", 2);
+    } else {
+        if (minutes > 99) {
+            minutes = 99;
+            seconds = 59;
+        }
+        s32 ones = minutes % 10;
+        s32 digit = minutes / 10;
+        if (minutes > 0) {
+            if (digit > 0) {
+                appendGlyph(findGlyph(digit + '0'));
+            }
+            appendGlyph(findGlyph(ones + '0'));
+            appendGlyph(0x39E0);
+        }
+        if (seconds > 59) {
+            seconds = 59;
+        }
+        ones = seconds % 10;
+        digit = seconds / 10;
+        if (digit > 0) {
+            appendGlyph(findGlyph(digit + '0'));
+        }
+        appendGlyph(findGlyph(ones + '0'));
+        appendGlyph(0x3CA0);
+    }
+}
+
 // FIXME: 93.34 %, scheduling + reloc-name; behaviour clean.
 // scheduling (+ the unsplit 0.0f literal): the original
 // interleaves the field_0x1fe stores and field_0x1fd with the first three
@@ -2269,6 +2362,94 @@ void cls_804AF5A0::fn_80396F94() {
     field_0x3b0 = 1;
 }
 
+inline void cls_804AF5A0::reloadSlot() {
+    if (field_0x148 != -1) {
+        field_0x148 = field_0x13c[field_0x168];
+    }
+}
+
+inline void cls_804AF5A0::playMoveSound() {
+    if (field_0x1aa) {
+        fn_803037D4(field_0x160, 9);
+    } else {
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+    }
+}
+
+inline void cls_804AF5A0::selectNext() {
+    if (field_0x1a0 == 2) {
+        if (field_0x168 < 1) {
+            field_0x168++;
+            field_0x19c = 1;
+            reloadSlot();
+            playMoveSound();
+        }
+    } else if (field_0x1a0 == 3) {
+        if (field_0x168 < 2) {
+            field_0x168++;
+            field_0x19c = 1;
+            reloadSlot();
+            playMoveSound();
+        }
+    }
+}
+
+void cls_804AF5A0::fn_80396884() {
+    if (field_0x1a0) {
+        if (field_0x3b8->field_0x28 & 0x100) {
+            if (field_0x1a1 == 0) {
+                if (lbl_8053AD30->fn_80309A9C(4, -1)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309A9C(8, -1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = 1;
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            } else {
+                if (lbl_8053AD30->fn_80309A9C(2, -1)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309A9C(1, -1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = -1;
+                        reloadSlot();
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            }
+        } else {
+            if (field_0x1a1 == 0) {
+                if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 4)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 8)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = 1;
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            } else {
+                if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 2)) {
+                    selectNext();
+                } else if (lbl_8053AD30->fn_80309D48(getPlayerInputSlot_8030AAF4(field_0x160), 1)) {
+                    if (field_0x168 > 0) {
+                        field_0x168--;
+                        field_0x19c = -1;
+                        reloadSlot();
+                        reloadSlot();
+                        playMoveSound();
+                    }
+                }
+            }
+        }
+    }
+}
+
 // Shows the current player's window frame ('PNar') and pane set: while the text runs it
 // pulses the pane alphas over lbl_8050DB0C's period, while the window waits (99999)
 // it pops the frame in; otherwise all frames are hidden. Bit 0x40 uses the op_zelda
@@ -2438,21 +2619,21 @@ void cls_804AF5A0::fn_80395BE8() {
 // Pops a window pane in: its alpha rises over 10 frames; once it is full, its size
 // follows a five-point curve per axis over the frame counts of the layout constants, then
 // the pane is moved so that it stays centred on the box.
-// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.95 %, regalloc-only + reloc-name; behaviour clean.
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
-    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
-    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
-    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
-    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    s32 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s32 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s32 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s32 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
     field_0x194++;
     if (pane->getAlpha() < field_0x1a3) {
         if (field_0x194 == 10) {
             field_0x194 = 0;
             pane->setAlpha(field_0x1a3);
         } else {
-            pane->setAlpha((s32)(field_0x1a3 * ((f32)field_0x194 / 10.0f)));
+            pane->setAlpha(field_0x1a3 * ((f32)field_0x194 / 10.0f));
         }
         return;
     }
@@ -2460,8 +2641,8 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
     f32 height;
     s16 frame = field_0x194;
     if (frame <= t0) {
-        width = 1.0f;
-        height = width;
+        height = 1.0f;
+        width = height;
     } else if (frame <= t1) {
         f32 dt = (f32)(t1 - t0);
         f32 df = (f32)(frame - t0);
@@ -2487,31 +2668,31 @@ void cls_804AF5A0::fn_80395834(J2DPane* pane) {
         width = lbl_80475D78[3] + r * (lbl_80475D78[4] - lbl_80475D78[3]);
         height = lbl_80475D8C[3] + r * (lbl_80475D8C[4] - lbl_80475D8C[3]);
     } else {
-        width = 1.0f;
+        height = 1.0f;
         field_0x194 = 0;
-        height = width;
+        width = height;
     }
-    f32 w = width * field_0x110;
-    f32 h = height * field_0x114;
+    f32 w = width * field_0x100;
+    f32 h = height * field_0x104;
     pane->resize(w, h);
-    pane->move(field_0x108 + field_0x110 * 0.5f - w * 0.5f, (field_0x10c + field_0x114) - h);
+    pane->move(field_0xf8 + field_0x100 * 0.5f - w * 0.5f, (field_0xfc + field_0x104) - h);
 }
 
-// FIXME(shotgun): 93.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.83 %, regalloc-only + reloc-name; behaviour clean.
 // (setAlpha argument masking, window load order)
 void cls_804AF5A0::fn_80395480(J2DPane* pane) {
-    s16 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
-    s16 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
-    s16 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
-    s16 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
-    s16 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
+    s32 t0 = lbl_8050DB0C.field_0x4c[(0x286 - 0x4C) / 2];
+    s32 t1 = t0 + lbl_8050DB0C.field_0x4c[(0x288 - 0x4C) / 2];
+    s32 t2 = t1 + lbl_8050DB0C.field_0x4c[(0x28A - 0x4C) / 2];
+    s32 t3 = t2 + lbl_8050DB0C.field_0x4c[(0x28C - 0x4C) / 2];
+    s32 t4 = t3 + lbl_8050DB0C.field_0x4c[(0x28E - 0x4C) / 2];
     field_0x194++;
     if (pane->getAlpha() < field_0x1a4) {
         if (field_0x194 == 10) {
             field_0x194 = 0;
             pane->setAlpha(field_0x1a4);
         } else {
-            pane->setAlpha((s32)(field_0x1a4 * ((f32)field_0x194 / 10.0f)));
+            pane->setAlpha(field_0x1a4 * ((f32)field_0x194 / 10.0f));
         }
         return;
     }
