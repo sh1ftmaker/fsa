@@ -134,7 +134,8 @@ bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8
 // 0x80309014
 cls_804AA8B8::~cls_804AA8B8() {}
 
-// FIXME: 95.36. Regalloc only: the same code as fn_80308D0C, but the original keeps the
+// FIXME: 95.36 %, regalloc-only; behaviour clean.
+// Regalloc only: the same code as fn_80308D0C, but the original keeps the
 // player counter in r4, the list bases in r6 / r7 and the element in r5 (ours r7, r5 / r6, r4).
 // 0x80308E90
 void cls_804AA8B8::fn_80308E90() {
@@ -178,6 +179,7 @@ static inline u32 swapBytes(u32 v) {
 // and its checksum. Still differs: the original has the checksum loop twice (branch on the
 // queue head entry's mUsed) and different register allocation.
 // 0x80307B58
+// FIXME: 71.04 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AA8B8::fn_80307B58(s32 player, bool flag) {
     if (flag) {
         lbl_80506DE8[player].mKind = 10;
@@ -394,7 +396,8 @@ s32 fn_803074A4(s32 kind, s32 id) {
 // Copies a record's sprite words into the half of the player's sprite table
 // its mode selects, hides the rest of that half and the kind-2 sprites below
 // 0x45 of the other half.
-// FIXME(shotgun): 92.6 %, different (the loop bound is loaded inside the loop in ours)
+// FIXME(shotgun): 92.58 %, different; behaviour drift.
+// (the loop bound is loaded inside the loop in ours)
 void fn_803068D0(cls_804AA858Sub11C* record) {
     if (record->mValid == 0) {
         return;
@@ -423,7 +426,8 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
-// FIXME(shotgun): 77.5 %, missing/extra (the original tests mode 11 as a bool, cntlzw)
+// FIXME(shotgun): 77.53 %, missing/extra; behaviour drift.
+// (the original tests mode 11 as a bool, cntlzw)
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     s32 count = 0;
     s32 big = 0;
@@ -477,7 +481,7 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
 // Appends the player's long-list sprites (lbl_80505438), timer 5 down to 1
 // (or any timer for the player's own), to the record's sprite words after
 // fn_803066F0's `start` ones, until `max`; ids above 0x3FF are kind 2.
-// FIXME(shotgun): 88.1 %, missing/extra
+// FIXME(shotgun): 88.05 %, missing/extra; behaviour drift.
 void fn_803064A8(s32 unused, s32 player, s32 max, s32 start) {
     s32 count = start;
     if (max == 0) {
@@ -539,7 +543,8 @@ void fn_803064A8(s32 unused, s32 player, s32 max, s32 start) {
     }
 }
 
-// FIXME: 98.47. Regalloc only: the original keeps the list bases in r6 / r7 and the element in
+// FIXME: 98.47 %, regalloc-only; behaviour clean.
+// Regalloc only: the original keeps the list bases in r6 / r7 and the element in
 // r8 (ours r7 / r8 and r6).
 // 0x80304D64
 void fn_80304D64() {
@@ -659,6 +664,7 @@ bool fn_803049F0(s32 layer, s32 index) {
 }
 
 // 0x80303870
+// FIXME: 98.89 %, operands; behaviour drift.
 void fn_80303870(s32 player) {
     char name[32];
     char name2[32];
@@ -693,7 +699,8 @@ void fn_803037D4(s32 layer, u32 value) {
     }
 }
 
-// FIXME: 99.39. Regalloc only: the busy flag is built in r0 and copied to r3 by the clrlwi.
+// FIXME: 99.39 %, regalloc-only; behaviour clean.
+// Regalloc only: the busy flag is built in r0 and copied to r3 by the clrlwi.
 // the original builds it in r3 and tests it into r0.
 // 0x80303750
 u8 fn_80303750(s32 layer) {
@@ -746,7 +753,8 @@ void fn_8030361C() {
 // Draws one GBA sprite word on the map: the "SOB " frame of its 10-bit id at
 // its (sign-extended 9 / 8-bit) x, y, tinted per player and scaled by the
 // player's lbl_8053ACFC count (or lbl_80506DB8's flag).
-// FIXME(shotgun): 88.0 %, missing/extra (control flow of the early return, the 16 tint stores)
+// FIXME(shotgun): 87.98 %, missing/extra + reloc-name; behaviour drift.
+// (control flow of the early return, the 16 tint stores)
 void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 mask, u8 flag) {
     SpriteParams_801F5AE0 params;
     s32 x = sprite->f.field_0x2 | sprite->f.field_0x3_0 << 8;
@@ -818,6 +826,7 @@ static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
+// FIXME: 79.92 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     for (s32 i = 0; i < 4; i++) {
@@ -896,6 +905,7 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
 // Draws a record's marks and the player's two sprite lists (the last visible sprite of each
 // first) in order of their kinds (fn_803074A4), each list from its end towards its start.
 // 0x803022C4
+// FIXME: 68.41 %, missing/extra; behaviour drift.
 void fn_803022C4(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     for (s32 i = 0; i < 4; i++) {
@@ -965,7 +975,6 @@ void fn_803022C4(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
 // Works out the link state lbl_8053ACE8[slot] (1-3, 0 for none) of a
 // connected player from the two layers a and b (8 counts as set, above 8
 // asks the view's fn_802D7804), stores them and the timer of `mode`.
-// FIXME(shotgun): 100 %
 void fn_803020C8(s32 player, s32 a, s32 b, u8 mode) {
     s32 slot = fn_8022F340(player);
     if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << slot)) == 0) {
@@ -1017,7 +1026,6 @@ void fn_803020C8(s32 player, s32 a, s32 b, u8 mode) {
 // Resets the player's link state (or marks it 0xFF while lbl_8053ACF0 is
 // set), then does the same for the player fn_8023ECF0 names, while there is
 // one that is its own fn_8022EA0C.
-// FIXME(shotgun): 100 %
 void fn_80301D54(s32 player) {
     s32 slot = fn_8022F340(player);
     if (lbl_8053ACF0[slot] == 0) {
