@@ -109,7 +109,7 @@ How to work
 
 What is kept: any improvement of the task's function (behaviour closer to the original, or equal behaviour and a higher %), provided nothing else got worse. Partial progress counts: the project wants faithful structure first, so a function at 60-80 % whose code does what the original does is a good result. What is thrown away: a change that lowers another function, breaks the build or breaks a rule.
 
-After the scripts, an adversarial reviewer (a stronger model) reads every kept change against the original assembly and throws out trickery: a statement that exists only to move a number (a dead load, store, call or compare, duplicated code), a temporary, cast or reordering that only steers the compiler, logic the assembly does not have, a guessed type or an invented name. A higher % reached that way is worth nothing; an honest lower one is kept.
+After the scripts, an adversarial reviewer (a stronger model) reads every kept change against the original assembly and throws out trickery: a statement that exists only to move a number (a dead load, store, call or compare, duplicated code), a temporary, cast or reordering that only steers the compiler, logic the assembly does not have, a guessed type or an invented name. A higher % reached that way is worth nothing; an honest lower one is kept. What the reviewer has thrown out so far, so don't write it: a cast that changes nothing ((s32) on a u16 getter, `3u`) and `== true` / `== false`; a chained assignment or spelled-out stores where the class has set() or zero(); an assignment or comma expression inside a condition; a callee's body pasted in place of the call; identical if/else branches or a condition that cannot matter; a local added only to pin a register or to stop constant folding; a loop turned around or rewritten (for/while, counting down) without the assembly showing that order; a union or second struct that reads the same bytes another way; code that leans on an existing FAKEMATCH helper.
 
 Rules (checked by script)
 - Natural C++ as the original programmers wrote it: real types, real members. No asm, no goto, no volatile, no #pragma except an evidenced `#pragma auto_inline off/reset` region (docs/RULES_CARD.md), no casts, temporaries or reordered statements whose only purpose is to steer codegen, no dummy functions, no byte-offset access (reinterpret_cast, (u8*)p + N): declare the field in its class.
@@ -1294,11 +1294,14 @@ def cmd_rejudge(args):
 # ---------------------------------------------------------------- publishing to matching
 
 def progress_numbers(wt):
-    """(matched functions, matched code %, weighted %) from tools/progress.py's first lines."""
-    out = sh(["python3", "tools/progress.py"], wt).stdout
-    m = re.search(r"total: (\d+) / \d+ functions, \d+ / \d+ bytes of code \(([\d.]+) %\)", out)
-    w = re.search(r"weighted: ([\d.]+) % of code", out)
-    return (int(m.group(1)), float(m.group(2)), float(w.group(1))) if m and w else None
+    """(matched functions, matched code %, weighted %, average match %) from the honest report and structural.json."""
+    try:
+        m = json.loads((wt / "build/G4SE01/report_honest.json").read_text())["measures"]
+        w = json.loads((wt / "build/G4SE01/structural.json").read_text())["weighted"]["percent"]
+    except (OSError, ValueError, KeyError):
+        return None
+    return (int(m["matched_functions"]), round(float(m["matched_code_percent"]), 3), round(float(w), 3),
+            round(float(m["fuzzy_match_percent"]), 2))
 
 
 def highlights(since, k=3):
