@@ -305,15 +305,16 @@ s32 IronBallHoming_804AB9C0::vfunc_0x54() {
         if ((param & 0xFF) != 7) {
             continue;
         }
-        s32 layer = (param >> 3) & 7;
+        s32 layer = (param >> 24) & 7;
         f32 baseX;
         f32 baseY;
         if (layer == 0) {
-            baseX = getGameView_802D6A9C()->mVisibleBox.i.x;
-            baseY = getGameView_802D6A9C()->mVisibleBox.i.y;
+            GameView_804A9950* view = getGameView_802D6A9C();
+            baseX = view->mVisibleBox.i.x;
+            baseY = view->mVisibleBox.i.y;
         } else {
-            baseX = 0.0f;
             baseY = 0.0f;
+            baseX = 0.0f;
             layer += 7;
         }
         JGeometry::TVec3f dest(8.0f + ((f32)((param >> 13) & 0x1F8) + baseX), 8.0f + ((f32)((param >> 5) & 0x1F8) + baseY), 0.0f);
