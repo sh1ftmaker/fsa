@@ -8,7 +8,7 @@
 
 static const u32 lbl_8053EF18[2] = {'FLME', 'NULL'};
 
-// FIXME(shotgun): 90 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.00 %, missing/extra + reloc-name; behaviour clean.
 bool ShadowLink2_804A43E8::fn_801CAEF4(const JGeometry::TVec3f* pos, s32 layer) {
     bool hit = false;
     if (ActorBase_804A5770::vfunc_0x4C(layer, pos)) {
@@ -37,7 +37,6 @@ bool ShadowLink2_804A43E8::fn_801CAEF4(const JGeometry::TVec3f* pos, s32 layer) 
     return hit;
 }
 
-// FIXME(shotgun): 100 %, matches
 bool ShadowLink2_804A43E8::fn_801CAED4(int player) {
     bool ok = false;
     if (field_0x560 != 4 && field_0x560 != player) {
@@ -52,7 +51,7 @@ void fn_801CB4A4(s32 layer, const JGeometry::TVec3f* pos, s32 a, s32 b);
 // The contact checks of the shadow's body: a player touching the hit box (or a side box in the
 // wall states) knocks the player back and starts the matching reaction state; a player touching
 // the body box when the actor is not locked starts state 0x21.
-// FIXME(shotgun): 87 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.00 %, missing/extra + reloc-name; behaviour drift.
 bool ShadowLink2_804A43E8::fn_801CA564() {
     // fn_80237948 takes the position as a TVec2f; the original hands it mPos itself.
     JGeometry::TVec2f mPos2;
@@ -280,7 +279,7 @@ bool ShadowLink2_804A43E8::fn_801CA564() {
 }
 
 // Whether something hurts the actor through its hit box: the hit box of player attacks.
-// FIXME(shotgun): 78 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.03 %, missing/extra + reloc-name; behaviour drift.
 u8 ShadowLink2_804A43E8::fn_801CA274() {
     if (field_0x564 == 3) {
         return 0;
@@ -359,7 +358,7 @@ u8 ShadowLink2_804A43E8::fn_801CA274() {
     return result;
 }
 
-// FIXME(shotgun): 86 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.89 %, regalloc-only + reloc-name; behaviour clean.
 bool ShadowLink2_804A43E8::fn_801CA0F8() {
     if (mBox.f.x - mBox.i.x <= 0.0f || mBox.f.y - mBox.i.y <= 0.0f || fn_801C53C4()) {
         return false;
@@ -392,7 +391,7 @@ bool ShadowLink2_804A43E8::fn_801CA0F8() {
 }
 
 // Whether something hit by the actor's second box counts as a hit on the player/arrow/bomb.
-// FIXME(shotgun): 93 %, missing/extra
+// FIXME(shotgun): 93.52 %, missing/extra; behaviour clean.
 bool ShadowLink2_804A43E8::fn_801C9EB8() {
     if (mBox2.f.x - mBox2.i.x <= 0.0f || mBox2.f.y - mBox2.i.y <= 0.0f || fn_801C53C4()) {
         return false;
@@ -453,7 +452,7 @@ bool ShadowLink2_804A43E8::fn_801C9EB8() {
 
 // Moves the actor along the map; lifts the z-offset into the ground plane for the sweep when the
 // actor is in the air (state 0x1C) and lands it when it touches ground.
-// FIXME(shotgun): 83 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.98 %, missing/extra + reloc-name; behaviour drift.
 bool ShadowLink2_804A43E8::fn_801C9CB0() {
     bool hit = false;
     if (!(mFlags & ENEMY_FLAG_NO_MAP_HIT) && field_0x80.f.x - field_0x80.i.x > 0.0f && field_0x80.f.y - field_0x80.i.y > 0.0f) {
@@ -488,7 +487,7 @@ bool ShadowLink2_804A43E8::fn_801C9CB0() {
     return hit;
 }
 
-// FIXME(shotgun): 86 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.82 %, different; behaviour drift.
 bool ShadowLink2_804A43E8::fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos) {
     JGeometry::TVec3f p = *pos;
     if (viewLayerFlag(layer)) {
