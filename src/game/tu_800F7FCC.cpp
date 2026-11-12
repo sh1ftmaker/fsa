@@ -597,13 +597,13 @@ void cls_8049C718::fn_800FB6E0(bool first) {
             ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[0]);
             ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(mPartner[1]);
             JGeometry::TVec3f da = mPos;
-            da.sub(a->mPos);
             JGeometry::TVec3f db = mPos;
+            da.sub(a->mPos);
             db.sub(b->mPos);
             if (PSVECMag((Vec*)&da) < PSVECMag((Vec*)&db)) {
-                angle = (s32)(JMath::atanTable_.atan2_(-da.x, -da.y) * 10430.378f);
+                angle = (s32)(10430.378f * JMath::atanTable_.atan2_(-da.x, -da.y));
             } else {
-                angle = (s32)(JMath::atanTable_.atan2_(-db.x, -db.y) * 10430.378f);
+                angle = (s32)(10430.378f * JMath::atanTable_.atan2_(-db.x, -db.y));
             }
         }
         if (dist < 70.0f) {
