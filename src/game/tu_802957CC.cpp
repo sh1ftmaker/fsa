@@ -18,15 +18,15 @@
 inline void cls_804A7AE0::bakeTiles() {
     if (!field_0x24c) {
         field_0x24c = 1;
-        JGeometry::TVec3f p = mPos;
-        p.x += mBox.i.x;
-        p.y += mBox.i.y;
-        p.x += 8.0f;
-        p.y += 8.0f;
-        p.z = 0.0f;
-        f32 baseY = p.y;
+        JGeometry::TVec3f origin = mPos;
+        origin.x += mBox.i.x;
+        origin.y += mBox.i.y;
+        origin.x += 8.0f;
+        origin.y += 8.0f;
+        origin.z = 0.0f;
+        JGeometry::TVec3f p = origin;
         for (s32 row = 0; row < 6; row++) {
-            p.y = baseY;
+            p.y = origin.y;
             for (s32 col = 0; col < 6; col++) {
                 gBgRewrite_8053AC98->fn_802A381C(&p, 0, mTiles[row][col]);
                 gBgRewrite_8053AC98->fn_802A381C(&p, 1, 0);
@@ -253,7 +253,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 77.94 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.81 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -357,7 +357,7 @@ void cls_804A7AE0::fn_8029A974() {
     }
 }
 
-// FIXME(shotgun): 78.63 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.92 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A494() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -461,7 +461,7 @@ void cls_804A7AE0::fn_8029A494() {
     }
 }
 
-// FIXME(shotgun): 77.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.83 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -565,7 +565,7 @@ void cls_804A7AE0::fn_80299FB0() {
     }
 }
 
-// FIXME(shotgun): 78.63 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.92 %, missing/extra + reloc-name; behaviour drift.
 // 15 instructions (the 32 * epsilon constant is folded twice, direction/serial selection scheduled differently)
 void cls_804A7AE0::fn_80299AD0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -745,7 +745,7 @@ void cls_804A7AE0::fn_80299720() {
     }
 }
 
-// FIXME(shotgun): 91.68 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.25 %, different + reloc-name; behaviour drift.
 // layer expression compiles branch-free (cntlzw) in the original, 4 instructions
 void cls_804A7AE0::fn_80299374() {
     if (field_0x250.y > 0.0f) {
@@ -776,25 +776,21 @@ void cls_804A7AE0::fn_80299374() {
         if (mSerialCountC > 0 && field_0x2cc == -1) {
             idx ^= 1;
         }
-        focus.x += lbl_8046C238[idx][0];
-        focus.y += lbl_8046C238[idx][1];
-        focus.z += lbl_8046C238[idx][2];
+        JGeometry::TVec3f offset(lbl_8046C238[idx][0], lbl_8046C238[idx][1], lbl_8046C238[idx][2]);
+        focus.add(offset);
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
-        bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
-        if (still) {
+        if (field_0x250.squared() <= JGeometry::TUtil<f32>::epsilon()) {
             JGeometry::TVec3f push(0.0f, 16.0f, 0.0f);
             for (s32 i = 0; i < mSerialCountD; i++) {
                 Door_804A8D88* door = (Door_804A8D88*)getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsD[i]);
                 if (door != NULL) {
-                    JGeometry::TVec3f q = door->mPos;
-                    q.add(push);
-                    door->mPos = q;
+                    door->mPos = door->mPos + push;
                     door->fn_802C59B0(&push);
                 }
             }
             field_0x248 = 0;
             field_0x2b8 = 0;
-            field_0x3c.set(0.0f, 0.0f, 0.0f);
+            field_0x3c.zero();
             field_0x250.zero();
             if (field_0x2cc == 1) {
                 s32 n = (field_0x90 >> 22) & 0x1F;
@@ -977,8 +973,8 @@ void cls_804A7AE0::fn_80298C18() {
     }
 }
 
-// FIXME(shotgun): 76.50 %, missing/extra + reloc-name; behaviour drift.
-// the still-vector test compiles to a cror/mfcr bool in the original; 4 instructions
+// FIXME(shotgun): 78.73 %, missing/extra + reloc-name; behaviour drift.
+// still differs: the still-vector bool (cror/mfcr), the (k & bit) conversions and the warp-layer branch
 void cls_804A7AE0::fn_80298978() {
     for (s32 i = 0; i < mSerialCountA; i++) {
         Warp_804A6DC8* warp = (Warp_804A6DC8*)getActorManager_801F856C()->findActorBySerial_801F666C(mSerialsA[i]);
@@ -1005,7 +1001,10 @@ void cls_804A7AE0::fn_80298978() {
                     pos.x += -16.0f;
                 }
                 s32 w = (warp->field_0x90 >> 24) & 7;
-                s32 warpLayer = w != 0 ? w + 7 : 0;
+                s32 warpLayer = w;
+                if (w != 0) {
+                    warpLayer = w + 7;
+                }
                 if (vfunc_0x4C(warpLayer, &pos) == 1) {
                     blocked = 1;
                     break;
@@ -1023,7 +1022,7 @@ void cls_804A7AE0::fn_80298978() {
             box.i.y += field_0x2dc[i].y;
             box.f.y += field_0x2dc[i].y;
             s32 v = (field_0x90 >> 7) & 0x1F;
-            fn_80239914(&box, v != 0 ? v + 7 : 0, mSerial);
+            fn_80239914(&box, v == 0 ? 0 : v + 7, mSerial);
         }
     }
 }
@@ -1090,7 +1089,7 @@ void cls_804A7AE0::fn_802984B0() {
     }
 }
 
-// FIXME(shotgun): 72.51 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 74.02 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A7AE0::update() {
     mPos.set(field_0x238.x, field_0x238.y, field_0x238.z);
     for (s32 i = 0; i < 4; i++) {
@@ -1646,20 +1645,23 @@ void cls_804A7AE0::draw() {
     }
 }
 
-// FIXME(shotgun): 84.68 %, missing/extra + reloc-name; behaviour drift.
-// early-out branch layout, 10 instructions fewer
+// FIXME(shotgun): 93.38 %, missing/extra + reloc-name; behaviour near.
+// float register allocation in the normalize and serial-loop counter registers differ
 void cls_804A7AE0::fn_802961AC() {
     s32 serial = fn_801F2718('SLR3');
     if (serial < 0) {
         return;
     }
     ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-    if (other == NULL || other->field_0x94 != 5) {
+    if (other == NULL) {
         return;
     }
-    field_0x2d0.sub(mPos, other->mPos);
+    if (other->field_0x94 != 5) {
+        return;
+    }
+    field_0x2d0 = mPos - other->mPos;
     f32 sq = field_0x2d0.squared();
-    if (sq > 32.0f * JGeometry::TUtil<f32>::epsilon()) {
+    if (!(sq <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         field_0x2d0.scale(JGeometry::TUtil<f32>::inv_sqrt(sq));
     }
     field_0x3c = field_0x2d0;
