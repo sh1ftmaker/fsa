@@ -39,7 +39,8 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}
 
-// FIXME(shotgun): 80.8 %, missing/extra (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
+// FIXME(shotgun): 92.05 %, different; behaviour drift.
+// (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
 GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     for (int i = 0; i < 4; i++) {
         if (field_0x140.mEntries[i].field_0x0 != NULL) {
@@ -70,14 +71,30 @@ GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     if (field_0x12c != NULL) {
         getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x12c);
     }
-    delete field_0x120;
-    delete field_0x11c;
-    delete field_0x118;
-    delete field_0x114;
-    delete field_0x110;
-    delete field_0x10c;
-    delete field_0x108;
-    delete field_0x104;
+    if (field_0x120 != NULL) {
+        delete field_0x120;
+    }
+    if (field_0x11c != NULL) {
+        delete field_0x11c;
+    }
+    if (field_0x118 != NULL) {
+        delete field_0x118;
+    }
+    if (field_0x114 != NULL) {
+        delete field_0x114;
+    }
+    if (field_0x110 != NULL) {
+        delete field_0x110;
+    }
+    if (field_0x10c != NULL) {
+        delete field_0x10c;
+    }
+    if (field_0x108 != NULL) {
+        delete field_0x108;
+    }
+    if (field_0x104 != NULL) {
+        delete field_0x104;
+    }
     delete field_0x100;
     delete field_0xfc;
     delete field_0xf8;
@@ -224,7 +241,6 @@ void GameRootSub24_8016A3AC::fn_8016DCEC() {
     }
 }
 
-// FIXME(shotgun): 100 %
 void GameRootSub24_8016A3AC::fn_8016DB60() {
     if (isGameModeSet()) {
         fn_8016D33C();
@@ -283,75 +299,105 @@ void GameRootSub24_8016A3AC::fn_8016D284() {
     }
 }
 
-#ifdef NONMATCHING
-// FIXME(shotgun): missing/extra
+// FIXME: 80.49 %, missing/extra + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016CB14() {
-    if (field_0x1c7 && field_0xf8 != NULL && field_0xfc != NULL) {
+    if (field_0x1c7) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
         f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
-        f32 scroll = 0.00048828125f * (f32)(field_0x1c0 & 0x7FF);
+        f32 scrollB = 0.00024414063f * (f32)(field_0x1c0 & 0xFFF);
+        f32 scrollC = 0.0009765625f * (f32)(field_0x1c0 & 0x3FF);
         JGeometry::TVec3f center;
         JGeometry::TVec3f half;
         getMapTexView(center, half);
+        JGeometry::TVec3f centerB(center);
+        JGeometry::TVec3f centerC(center);
+        JGeometry::TVec3f halfB(half);
+        JGeometry::TVec3f halfC(half);
+        centerB.scale(0.5f);
+        centerB.x -= scrollB;
+        centerB.y -= scrollB;
+        halfB.scale(2.0f);
+        centerC.mul(JGeometry::TVec3f(2.0f, 1.5f, 1.0f));
+        centerC.x -= scrollC;
+        halfC.mul(JGeometry::TVec3f(2.0f, 1.5f, 1.0f));
+        center.mul(JGeometry::TVec3f(4.0f, 3.0f, 1.0f));
+        half.mul(JGeometry::TVec3f(4.0f, 3.0f, 1.0f));
         gGameRoot2_8053AB10->fn_8013B460();
         gGameRoot2_8053AB10->fn_8013B1E8();
-        field_0xf8->load(GX_TEXMAP0);
-        field_0xfc->load(GX_TEXMAP1);
         GXClearVtxDesc();
         GXSetVtxDesc(GX_VA_POS, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX0, GX_DIRECT);
         GXSetVtxDesc(GX_VA_TEX1, GX_DIRECT);
+        GXSetVtxDesc(GX_VA_TEX2, GX_DIRECT);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_POS, GX_POS_XYZ, GX_F32, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX0, GX_TEX_ST, GX_F32, 0);
         GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX1, GX_TEX_ST, GX_F32, 0);
-        GXSetNumChans(0);
-        GXSetNumTexGens(2);
+        GXSetVtxAttrFmt(GX_VTXFMT0, GX_VA_TEX2, GX_TEX_ST, GX_F32, 0);
         GXSetTexCoordGen2(GX_TEXCOORD0, GX_TG_MTX2x4, GX_TG_TEX0, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
         GXSetTexCoordGen2(GX_TEXCOORD1, GX_TG_MTX2x4, GX_TG_TEX1, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetTexCoordGen2(GX_TEXCOORD2, GX_TG_MTX2x4, GX_TG_TEX2, GX_IDENTITY, GX_FALSE, GX_PTIDENTITY);
+        GXSetNumTexGens(3);
+        field_0xfc->load(GX_TEXMAP0);
+        field_0xf4->load(GX_TEXMAP1);
+        field_0x100->load(GX_TEXMAP2);
+        GXSetNumIndStages(2);
+        GXSetIndTexOrder(GX_INDTEXSTAGE0, GX_TEXCOORD2, GX_TEXMAP2);
+        GXSetIndTexOrder(GX_INDTEXSTAGE1, GX_TEXCOORD2, GX_TEXMAP2);
+        GXSetTevIndWarp(GX_TEVSTAGE0, GX_INDTEXSTAGE0, GX_TRUE, GX_FALSE, GX_ITM_0);
+        GXSetTevIndWarp(GX_TEVSTAGE1, GX_INDTEXSTAGE1, GX_TRUE, GX_FALSE, GX_ITM_0);
+        f32 indMtx[2][3];
+        indMtx[0][0] = 0.02f;
+        indMtx[0][1] = 0.0f;
+        indMtx[0][2] = 0.0f;
+        indMtx[1][0] = 0.0f;
+        indMtx[1][1] = 0.02f;
+        indMtx[1][2] = 0.0f;
+        GXSetIndTexMtx(GX_ITM_0, indMtx, 0);
+        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_C0, GX_CC_C1, GX_CC_TEXC, GX_CC_ZERO);
+        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO);
+        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
+        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_ZERO, GX_CC_A0, GX_CC_TEXC, GX_CC_CPREV);
+        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_KONST);
+        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
+        GXSetTevSwapMode(GX_TEVSTAGE1, GX_TEV_SWAP0, GX_TEV_SWAP0);
         GXSetNumTevStages(2);
         GXColor color1 = lbl_8053D910;
+        u8 alpha = field_0x1ec * 120 / 47;
+        if (alpha > 120) {
+            alpha = 120;
+        }
+        color1.a = alpha;
         GXSetTevColor(GX_TEVREG0, color1);
         GXColor color2 = lbl_8053D914;
         GXSetTevColor(GX_TEVREG1, color2);
-        GXSetTevOrder(GX_TEVSTAGE0, GX_TEXCOORD0, GX_TEXMAP0, GX_COLOR_NULL);
-        GXSetTevColorIn(GX_TEVSTAGE0, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO, GX_CC_ZERO);
-        GXSetTevColorOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetTevAlphaIn(GX_TEVSTAGE0, GX_CA_ZERO, GX_CA_ZERO, GX_CA_ZERO, GX_CA_TEXA);
-        GXSetTevAlphaOp(GX_TEVSTAGE0, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetTevOrder(GX_TEVSTAGE1, GX_TEXCOORD1, GX_TEXMAP1, GX_COLOR_NULL);
-        GXSetTevColorIn(GX_TEVSTAGE1, GX_CC_C0, GX_CC_C1, GX_CC_APREV, GX_CC_ZERO);
-        GXSetTevColorOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetTevAlphaIn(GX_TEVSTAGE1, GX_CA_ZERO, GX_CA_TEXA, GX_CA_APREV, GX_CA_ZERO);
-        GXSetTevAlphaOp(GX_TEVSTAGE1, GX_TEV_ADD, GX_TB_ZERO, GX_CS_SCALE_1, GX_TRUE, GX_TEVPREV);
-        GXSetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_NOOP);
-        GXSetAlphaCompare(GX_GREATER, 0, GX_AOP_OR, GX_GREATER, 0);
         GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
         GXSetZCompLoc(GX_FALSE);
-        GXSetCullMode(GX_CULL_NONE);
-        JGeometry::TVec3f center2(center);
-        JGeometry::TVec3f half2(half);
-        center.x -= scroll;
-        center.y -= scroll;
-        center2.x += scroll;
-        center2.y += scroll;
-        center2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
-        half2.mul(JGeometry::TVec3f(2.0f, 2.0f, 1.0f));
         GXBegin(GX_QUADS, GX_VTXFMT0, 4);
         GXPosition3f32(0.0f, 0.0f, 0.0f);
         GXTexCoord2f32(center.x - half.x, center.y - half.y);
-        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXTexCoord2f32(centerB.x - halfB.x, centerB.y - halfB.y);
+        GXTexCoord2f32(centerC.x - halfC.x, centerC.y - halfC.y);
         GXPosition3f32(width, 0.0f, 0.0f);
         GXTexCoord2f32(center.x + half.x, center.y - half.y);
-        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXTexCoord2f32(centerB.x + halfB.x, centerB.y - halfB.y);
+        GXTexCoord2f32(centerC.x + halfC.x, centerC.y - halfC.y);
         GXPosition3f32(width, height, 0.0f);
         GXTexCoord2f32(center.x + half.x, center.y + half.y);
-        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXTexCoord2f32(centerB.x + halfB.x, centerB.y + halfB.y);
+        GXTexCoord2f32(centerC.x + halfC.x, centerC.y + halfC.y);
         GXPosition3f32(0.0f, height, 0.0f);
         GXTexCoord2f32(center.x - half.x, center.y + half.y);
-        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXTexCoord2f32(centerB.x - halfB.x, centerB.y + halfB.y);
+        GXTexCoord2f32(centerC.x - halfC.x, centerC.y + halfC.y);
         GXEnd();
     }
 }
+
+#ifdef NONMATCHING
 
 // FIXME(shotgun): missing/extra
 void GameRootSub24_8016A3AC::fn_8016C2FC() {
@@ -545,81 +591,62 @@ void GameRootSub24_8016A3AC::fn_8016B8AC() {
     }
 }
 
-#ifdef NONMATCHING
-// FIXME(shotgun): missing/extra
+// FIXME: 77.99 %, missing/extra + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016B4D4() {
-    bool cond1 = false;
-    bool cond2 = false;
-    if (field_0x110 != NULL && field_0x114 != NULL && field_0x1cb[1]) {
-        cond1 = true;
-    }
-    if (field_0x118 != NULL && field_0x11c != NULL && field_0x1cb[2]) {
-        cond2 = true;
-    }
-    if (cond1 || cond2) {
+    if ((field_0x1cb[1] && field_0x110 != NULL) || (field_0x1cb[2] && field_0x118 != NULL)) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
         f32 height = (s32)JUTVideo::getManager()->getEfbHeight();
-        JGeometry::TVec3f center;
-        JGeometry::TVec3f half;
-        getMapTexView(center, half);
-        center.x -= 1.5f;
-        center.y -= 1.0f;
-        center.mul(JGeometry::TVec3f(0.5f, 0.5f, 1.0f));
-        center.x += 0.5f;
-        center.y += 1.0f;
-        half.mul(JGeometry::TVec3f(1.0f, 1.0f, 1.0f));
+        f32 scroll = 0.000244140625f * (f32)(field_0x1c0 & 0xFFF);
+        JGeometry::TVec3f center1;
+        JGeometry::TVec3f half1;
+        getMapTexView(center1, half1);
+        JGeometry::TVec3f center2 = center1;
+        JGeometry::TVec3f half2 = half1;
+        center1.mul(JGeometry::TVec3f(1.0f, 3.0f, 1.0f));
+        center1.x -= scroll;
+        half1.mul(JGeometry::TVec3f(1.0f, 3.0f, 1.0f));
+        center2.mul(JGeometry::TVec3f(1.0f, 0.75f, 1.0f));
+        half2.mul(JGeometry::TVec3f(1.0f, 1.5f, 1.0f));
         gGameRoot2_8053AB10->fn_8013B460();
         gGameRoot2_8053AB10->fn_8013B1E8();
-        f32 midX = width * (0.5f - center.x) / (2.0f * half.x) + 0.5f * width;
-        if (midX > 0.0f) {
-            if (midX > width) {
-                midX = width;
-            }
-            if (cond1) {
-                field_0x114->load(GX_TEXMAP0);
-            } else {
-                field_0x11c->load(GX_TEXMAP0);
-            }
-            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(0.0f, 0.0f, 0.0f);
-            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y - half.y);
-            GXPosition3f32(midX, 0.0f, 0.0f);
-            GXTexCoord2f32(1.0f, center.y - half.y);
-            GXPosition3f32(midX, height, 0.0f);
-            GXTexCoord2f32(1.0f, center.y + half.y);
-            GXPosition3f32(0.0f, height, 0.0f);
-            GXTexCoord2f32((center.x - half.x) * 2.0f, center.y + half.y);
-            GXEnd();
+        GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
+        if (field_0x1cb[1]) {
+            field_0x114->load(GX_TEXMAP0);
+        } else {
+            field_0x11c->load(GX_TEXMAP0);
         }
-        if (midX < width) {
-            if (midX < 0.0f) {
-                midX = 0.0f;
-            }
-            if (cond1) {
-                field_0x110->load(GX_TEXMAP0);
-            } else {
-                field_0x118->load(GX_TEXMAP0);
-            }
-            GXSetZMode(GX_FALSE, GX_LEQUAL, GX_FALSE);
-            GXBegin(GX_QUADS, GX_VTXFMT0, 4);
-            GXPosition3f32(midX, 0.0f, 0.0f);
-            GXTexCoord2f32(0.0f, center.y - half.y);
-            GXPosition3f32(width, 0.0f, 0.0f);
-            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y - half.y);
-            GXPosition3f32(width, height, 0.0f);
-            GXTexCoord2f32((center.x + half.x - 0.5f) * 2.0f, center.y + half.y);
-            GXPosition3f32(midX, height, 0.0f);
-            GXTexCoord2f32(0.0f, center.y + half.y);
-            GXEnd();
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center1.x - half1.x, center1.y - half1.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center1.x + half1.x, center1.y - half1.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center1.x + half1.x, center1.y + half1.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center1.x - half1.x, center1.y + half1.y);
+        GXEnd();
+        if (field_0x1cb[1]) {
+            field_0x110->load(GX_TEXMAP0);
+        } else {
+            field_0x118->load(GX_TEXMAP0);
         }
+        GXBegin(GX_QUADS, GX_VTXFMT0, 4);
+        GXPosition3f32(0.0f, 0.0f, 0.0f);
+        GXTexCoord2f32(center2.x - half2.x, center2.y - half2.y);
+        GXPosition3f32(width, 0.0f, 0.0f);
+        GXTexCoord2f32(center2.x + half2.x, center2.y - half2.y);
+        GXPosition3f32(width, height, 0.0f);
+        GXTexCoord2f32(center2.x + half2.x, center2.y + half2.y);
+        GXPosition3f32(0.0f, height, 0.0f);
+        GXTexCoord2f32(center2.x - half2.x, center2.y + half2.y);
+        GXEnd();
     }
 }
-#endif
 
 #pragma auto_inline reset
 
-// FIXME: 73.96. scheduling + regalloc only (same instructions): the original
+// FIXME: 73.96 %, scheduling+regalloc + reloc-name; behaviour clean.
+// scheduling + regalloc only (same instructions): the original
 // interleaves the loads of getMapTexView differently (camera before the
 // second map count) and stores the zero z components earlier.
 // Draws field_0x120 over the screen, its view shifted and halved in x and y.
@@ -703,7 +730,8 @@ void GameRootSub24_8016A3AC::fn_8016B054() {
 }
 #pragma auto_inline reset
 
-// FIXME: 99.97. The colour's stack slots are swapped: the original builds it at
+// FIXME: 99.97 %, operands; behaviour clean.
+// The colour's stack slots are swapped: the original builds it at
 // sp+0x8 and passes the copy at sp+0xC (ours the other way round).
 // Draws field_0xf4 over the whole screen, scrolled with the map view and
 // field_0x1c0, at alpha field_0x1ec.
@@ -818,7 +846,8 @@ void GameRootSub24_8016A3AC::fn_8016A9EC() {
 }
 #pragma auto_inline reset
 
-// FIXME: 98.3. regalloc only: the original keeps the camera in r4 and the 0x4330
+// FIXME: 98.60 %, regalloc-only; behaviour clean.
+// regalloc only: the original keeps the camera in r4 and the 0x4330
 // conversion constant in r3 (ours swaps them) and the float temporaries in f3/f5.
 void GameRootSub24_8016A3AC::fn_8016A7DC(J3DModel* model, const JGeometry::TVec3f& pos, s32 dir, bool followX, bool followY, f32 parallax, f32 scale) {
     if (dir == 1) {
@@ -887,7 +916,8 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half) {
     center.z = 0.0f;
 }
 
-// FIXME: 99.79. regalloc only: the original keeps heap in r29 and btk1Out in r30
+// FIXME: 99.79 %, regalloc-only; behaviour clean.
+// regalloc only: the original keeps heap in r29 and btk1Out in r30
 // (ours swaps them).
 void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const char* btk2,
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
