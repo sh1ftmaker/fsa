@@ -1107,7 +1107,7 @@ void StoneArrghusChildPuff_8049C678::init() {
         mBox.set(-13.0f, -14.0f, 13.0f, 8.0f);
         mPos.x += (f32)lbl_804638C0[mIndex * 2];
         mPos.y += (f32)lbl_804638C0[mIndex * 2 + 1];
-        field_0xb0 = 0x80004;
+        field_0xb0 = 0x40004;
     } else {
         if (mIndex < 0x30) {
             mPos.x += (f32)lbl_80463800[mIndex * 2];
@@ -1119,14 +1119,14 @@ void StoneArrghusChildPuff_8049C678::init() {
         mPos.z = 0.0f;
         mDelay = 0;
         for (s32 i = 0; i < mIndex; i++) {
-            mDelay += (i < 30) ? 40 - i : 10;
+            mDelay += (mIndex < 30) ? 40 - mIndex : 10;
         }
-        s32 n = gGameRoot_8053AAF8->fn_80138A30();
-        if (1.0f == (f32)n) {
+        f32 n = gGameRoot_8053AAF8->fn_80138A30();
+        if (1.0f == n) {
             mVariant = -1;
             field_0x94 = 0;
         } else {
-            mVariant = (s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+            mVariant = (s32)(n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
             field_0x94 = mVariant + 1;
             if ((s32)(3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) < 1) {
                 mVariant = -1;
