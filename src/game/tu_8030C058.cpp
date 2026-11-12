@@ -32,8 +32,8 @@ Camera_804AA9E4::Camera_804AA9E4() {}
 
 Camera_804AA9E4::~Camera_804AA9E4() {}
 
-// FIXME(shotgun): 89.90 %, different + reloc-name; behaviour drift.
-// (stores order, the box built in a different order)
+// FIXME(shotgun): 93.62 %, scheduling+regalloc + reloc-name; behaviour clean.
+// Remaining diff: float literal pool order and register scheduling.
 void Camera_804AA9E4::fn_8030E5BC() {
     field_0x154.i.x = 0.0f;
     field_0x154.i.y = 0.0f;
@@ -58,7 +58,8 @@ void Camera_804AA9E4::fn_8030E5BC() {
     box.i.y = 0.0f;
     box.f.x = 256.0f;
     box.f.y = 192.0f;
-    fn_8030CB10(&box, 1024.0f);
+    f32 depth = 1024.0f;
+    fn_8030CB10(&box, depth);
     field_0x7f0 = 0;
     field_0x7f4 = 0;
     field_0x7f5 = 0;
@@ -66,9 +67,9 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x7f6 = 0;
     field_0x83c = -1;
     field_0x840 = 0;
+    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     field_0x144.x0 = 0;
     field_0x144.y0 = 0;
-    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     field_0x144.x1 = renderMode->fbWidth;
     field_0x144.y1 = renderMode->efbHeight;
     field_0x858 = 1.0f;
@@ -877,7 +878,7 @@ void Camera_804AA9E4::fn_8030C5F0(const Vec* pos, bool inRect, bool normalised, 
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 32.30 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 46.87 %, scheduling+regalloc; behaviour clean.
 // (instruction order of the conversions)
 void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeometry::TVec3f* out) {
     if (flag) {
@@ -889,10 +890,13 @@ void Camera_804AA9E4::fn_8030C4A0(const JGeometry::TVec2f* in, bool flag, JGeome
                      (f32)(field_0x144.y1 - field_0x144.y0);
         out->z = 0.0f;
     } else {
+        u16 width;
+        u16 height;
+        JUTVideo::sManager->getBounds(width, height);
         out->x = field_0x164.i.x + in->x * (field_0x164.f.x - field_0x164.i.x) /
-                                       (f32)(s32)JUTVideo::sManager->getFbWidth();
+                                       (f32)(s32)width;
         out->y = field_0x164.i.y + in->y * (field_0x164.f.y - field_0x164.i.y) /
-                                       (f32)(s32)JUTVideo::sManager->getEfbHeight();
+                                       (f32)(s32)height;
         out->z = 0.0f;
     }
 }
@@ -939,11 +943,11 @@ u8 Camera_804AA9E4::addFocusPoint_8030C210(const JGeometry::TVec3f* pos) {
 
 // Adds the box's two corners as focus points when both lie inside the camera box and there is
 // room for two.
-// FIXME(shotgun): 90.15 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 90.43 %, missing/extra; behaviour drift.
 // (operand load order)
 bool Camera_804AA9E4::fn_8030C058(const JGeometry::TBox2f* box) {
-    bool result = false;
     s32 count = field_0x7f0;
+    bool result = false;
     if (count + 1 < 0x80) {
         if (contains(field_0x154, box->i) && contains(field_0x154, box->f)) {
             if (count < 0x80 && contains(field_0x154, box->i)) {
