@@ -65,7 +65,8 @@ cls_80119E5C* fn_80119DD0() {
     return fadeObject();
 }
 
-// FIXME: 96.91 %, missing/extra; behaviour clean. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
+// FIXME: 96.91 %, missing/extra; behaviour clean.
+// Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
 // in r31; here the constructor result takes an extra move through r0.
 void cls_80119E5C::fn_80119D48() {
     if (field_0x2c == NULL) {
@@ -148,7 +149,8 @@ void cls_80119E5C::fn_80119958() {
     field_0x10 = 0;
 }
 
-// FIXME: 99.88 %, reloc-name; behaviour clean. reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
+// FIXME: 99.88 %, reloc-name; behaviour clean.
+// reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
 // unwritten) and has 1.0f after the double; the original has a 1.0f made before
 // fn_801194C4's double (no function here explains it).
 // The fade step: field_0x4 counts the frames up to field_0x8 while field_0x14 moves
@@ -221,7 +223,8 @@ void cls_80119E5C::fn_80119628() {
     }
 }
 
-// FIXME: 99.94 %, reloc-name; behaviour clean. reloc-name only (the double of the u16 to float conversions; see
+// FIXME: 99.94 %, reloc-name; behaviour clean.
+// reloc-name only (the double of the u16 to float conversions; see
 // fn_80119628).
 // Draws the fade picture over the screen with alpha field_0x14: black, or white
 // for field_0x24 == 1 (not for field_0x24 == 2).
@@ -263,7 +266,8 @@ inline cls_801192AC::cls_801192AC() {
     mExtend = JGadget::vector::extend_default;
 }
 
-// FIXME(shotgun): 20.62 %, missing/extra; behaviour drift. (stand-in: the original is the TVector member: erase(begin(), end()),
+// FIXME(shotgun): 20.62 %, missing/extra; behaviour drift.
+// (stand-in: the original is the TVector member: erase(begin(), end()),
 // then the member dtor's null check, erase again and the delete)
 cls_801192AC::~cls_801192AC() {
     mEnd = mBegin;
@@ -276,7 +280,8 @@ extern "C" cls_801192AC* fn_8011921C() {
     return &lbl_804BC540;
 }
 
-// FIXME(shotgun): 48.18 %, missing/extra; behaviour drift. (stand-in: the original is the TVector reserve(20) inline)
+// FIXME(shotgun): 48.18 %, missing/extra; behaviour drift.
+// (stand-in: the original is the TVector reserve(20) inline)
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
         return;
@@ -295,7 +300,7 @@ void cls_801192AC::fn_801190E4() {
     operator delete(old);
 }
 
-// FIXME(shotgun): 73.69 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.68 %, different; behaviour drift.
 // The per-frame pass: clears the four player bits of lbl_8053AED0's 0xDD; with field_0x2
 // raises the flag at field_0x30's 0x284 (0.05f at 0x28C); unless paused (field_0x1) runs each
 // listed actor's vfunc_0x54 and, when all their vfunc_0x5C say done and field_0x4 < 0xE,
@@ -334,14 +339,16 @@ void cls_801192AC::fn_80118E20() {
     field_0x8++;
 }
 
-// FIXME(shotgun): 82.26 %, missing/extra; behaviour drift. (stand-in: the original is std::find_if with a by-value
+// FIXME(shotgun): 82.62 %, missing/extra; behaviour drift.
+// (stand-in: the original is std::find_if with a by-value
 // predicate, then the JGadget TVector erase(it, it + 1) inline: std::copy, the empty DestroyElement_
 // loop, mEnd = new end. Needs the TVector member at 0xC.)
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     s32 serial = actor->mSerial;
-    ActorBase_804A5770** it = mBegin;
+    ActorBase_804A5770** it;
     ActorBase_804A5770** end = mEnd;
-    while (it != end && (*it)->mSerial != serial) {
+    it = mBegin;
+    while (it != end && serial != (*it)->mSerial) {
         it++;
     }
     if (it != end) {
@@ -390,15 +397,23 @@ bool cls_801192AC::fn_801186B0(u32 value) {
     return false;
 }
 
-// FIXME(shotgun): 60.79 %, missing/extra; behaviour drift. (the vector clear is a plain assignment; the
-// original is the TVector erase(begin(), end()) inline)
+// FIXME(shotgun): 97.59 %, different; behaviour drift.
+// (the vector clear is a plain assignment; the
+// erase(begin(), end()) inline: the copy and empty destroy loops; the extra copy of the source pointer differs)
 bool cls_801192AC::fn_801184F0(bool flag) {
     getActorManager_801F856C()->fn_801F6884();
     field_0x0 = 0;
     if (flag) {
         fadeObject()->fn_80119958();
     }
-    mEnd = mBegin;
+    ActorBase_804A5770** first = mBegin;
+    ActorBase_804A5770** end = mEnd;
+    for (ActorBase_804A5770** last = end; last < end; last++) {
+        *first++ = *last;
+    }
+    for (ActorBase_804A5770** it = first; it != end; it++) {
+    }
+    mEnd = first;
     field_0x0 = 0;
     field_0x1 = 0;
     field_0x2 = 0;
