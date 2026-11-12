@@ -13,7 +13,8 @@ s32 lbl_80539FD8[2] = {8, 14};
 s32 lbl_80539FE0[2] = {3, 5};
 
 
-// FIXME(shotgun): 88.04 %, missing/extra + reloc-name: the 0x2d0 loop unrolls by 5 (the original by 10, ctr 2)
+// FIXME(shotgun): 88.04 %, missing/extra + reloc-name; behaviour drift.
+// the 0x2d0 loop unrolls by 5 (the original by 10, ctr 2)
 // and the random/sin part allocates f-registers differently.
 void cls_804A1FA0::init() {
     field_0x80.i.x = -6.0f;
@@ -98,7 +99,8 @@ void cls_804A1FA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 84.32 %, missing/extra + reloc-name: the body of `if (field_0x230 == 0)` is laid out
+// FIXME(shotgun): 84.32 %, missing/extra + reloc-name; behaviour drift.
+// the body of `if (field_0x230 == 0)` is laid out
 // with beq/b in the original, ours skips it with bne; register and literal differences in the rest.
 void cls_804A1FA0::update() {
     JGeometry::TVec3f savedPos = mPos;
@@ -206,7 +208,7 @@ void cls_804A1FA0::update() {
     }
 }
 
-// FIXME(shotgun): 97.60 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.60 %, missing/extra + reloc-name; behaviour near.
 void cls_804A1FA0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
