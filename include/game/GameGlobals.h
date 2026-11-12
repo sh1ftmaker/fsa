@@ -169,13 +169,17 @@ public:
     cls_804AA8B8();
     /* 0x00 */ virtual ~cls_804AA8B8();
     void fn_80308E90();
-    // game/tu_80301CD0.cpp (0x80304FB0, not written yet): the per-frame update; called by GameRoot's fn_80137300.
+    // game/tu_80301CD0.cpp (0x80304FB0): the per-frame GBA link update; called by GameRoot's fn_80137300.
     void fn_80304FB0();
     void fn_80306A94(s32 player);
     void fn_80307B58(s32 player, bool flag);
     void fn_8030801C(s32 player);
     void fn_803085A4(s32 player);
 };
+// game/tu_80301CD0.cpp: fn_80304FB0 ages and frees the sprite lists' entries (0x80304D64) and resets a
+// player's GBA link state and transfer queue (0x80303CE4).
+void fn_80304D64();
+void fn_80303CE4(s32 player);
 class cls_804B0FC0;
 class J2DTextBox;
 class MessageManager_804AF070;
