@@ -313,8 +313,8 @@ s32 IronBallHoming_804AB9C0::vfunc_0x54() {
             baseX = view->mVisibleBox.i.x;
             baseY = view->mVisibleBox.i.y;
         } else {
-            baseY = 0.0f;
             baseX = 0.0f;
+            baseY = 0.0f;
             layer += 7;
         }
         JGeometry::TVec3f dest(8.0f + ((f32)((param >> 13) & 0x1F8) + baseX), 8.0f + ((f32)((param >> 5) & 0x1F8) + baseY), 0.0f);
