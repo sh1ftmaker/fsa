@@ -85,7 +85,8 @@ def find_unit(units, arg):
         name = u["name"].split("/", 1)[-1]
         if u["name"] == arg or src == arg or src.endswith("/" + arg) or name == want:
             return u
-    return None
+    bare = [u for u in units if u["name"].rsplit("/", 1)[-1] == want.rsplit("/", 1)[-1]]
+    return bare[0] if len(bare) == 1 else None
 
 
 def slug_of(unit_name):

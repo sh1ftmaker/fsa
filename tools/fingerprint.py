@@ -14,7 +14,7 @@ multisets of:
         every lfs/lfd, read from the objects or from orig/sys/main.dol),
         compare immediates, named globals
   soft  non-stack memory accesses (kind + displacement), integer immediates,
-        branch-condition classes
+        branch-condition classes, arithmetic/logic operations (by mnemonic)
 
 score = 3 * hard differences + soft differences
 grade = clean   score 0: same behaviour, only codegen differs
@@ -56,6 +56,11 @@ IMM = {"li", "lis", "addi", "addis", "ori", "oris", "andi.", "andis.", "xori", "
 BR = {"beq": "eq/ne", "bne": "eq/ne", "blt": "lt/ge", "bge": "lt/ge", "bgt": "gt/le", "ble": "gt/le",
       "bdnz": "ctr", "bdz": "ctr"}
 PLACEHOLDER = re.compile(r"^(@\d+|lbl_[0-9A-Fa-f]{8}|\.\.\.|\.L)")
+SAVEREST = re.compile(r"^_(save|rest)(gpr|fpr)_\d+")  # register save helpers: which one is regalloc, not behaviour
+# Not behaviour: moves, frame and link-register handling, plain jumps (everything else that is
+# not a call, load/store, compare or immediate counts as an operation).
+NOT_OPS = {"mr", "fmr", "nop", "mflr", "mtlr", "blr", "b", "bctr", "mtctr", "stmw", "lmw", "crclr", "crset", "mfcr",
+           "psq_st", "psq_l"}
 KIND = {"w": "word", "b": "byte", "h": "halfword", "fs": "float", "fd": "double"}
 
 
@@ -104,22 +109,26 @@ def sym_addr(root, name):
 
 def fingerprint(insns, syms, dol, root):
     """Seven Counters for one function's instruction list (tools/try.py insn_list)."""
-    calls, lit, cmps, glob, mem, imm, br = (Counter() for _ in range(7))
+    calls, lit, cmps, glob, mem, imm, br, ops = (Counter() for _ in range(8))
     for mn, args, rel, _ in insns:
         base = mn.rstrip("+-")
         if mn == "bl" and rel:
-            calls[rel] += 1
+            if not SAVEREST.match(rel):
+                calls[rel] += 1
         elif mn in ("bctrl", "blrl"):
             calls["<indirect call>"] += 1
-        elif mn in LS and len(args) == 3 and args[2] != "r1" and args[1] != "RELOC":
-            mem[(("store " if mn.startswith("st") else "load ") + KIND[LS[mn]], args[1])] += 1
+        elif mn in LS:
+            if len(args) == 3 and args[2] != "r1" and args[1] != "RELOC":
+                mem[(("store " if mn.startswith("st") else "load ") + KIND[LS[mn]], args[1])] += 1
         elif mn in CMP and len(args) >= 2:
             cmps[(mn, args[-1])] += 1
-        elif mn in IMM and "RELOC" not in args and "r1" not in args[1:]:
-            if not (mn == "li" and args[-1] in ("0", "1")):
+        elif mn in IMM:
+            if "RELOC" not in args and "r1" not in args[1:] and not (mn == "li" and args[-1] in ("0", "1")):
                 imm[args[-1]] += 1
-        if base in BR:
+        elif base in BR:
             br[BR[base]] += 1
+        elif base not in NOT_OPS and not base.startswith("b"):
+            ops[mn.rstrip(".")] += 1
         if rel and mn != "bl":
             name = rel.split("+")[0]
             if mn in ("lfs", "lfd"):
@@ -133,10 +142,10 @@ def fingerprint(insns, syms, dol, root):
                     continue
             if not PLACEHOLDER.match(name):
                 glob[rel] += 1
-    return {"calls": calls, "lit": lit, "cmp": cmps, "glob": glob, "mem": mem, "imm": imm, "br": br}
+    return {"calls": calls, "lit": lit, "cmp": cmps, "glob": glob, "mem": mem, "imm": imm, "br": br, "ops": ops}
 
 
-HARD, SOFT = ("calls", "lit", "cmp", "glob"), ("mem", "imm", "br")
+HARD, SOFT = ("calls", "lit", "cmp", "glob"), ("mem", "imm", "br", "ops")
 
 
 def _num(h):
@@ -161,6 +170,7 @@ LABEL = {
     "mem": lambda k: f"{k[0]} at offset {_hexv(k[1])}",
     "imm": lambda k: f"immediate {_hexv(k)}",
     "br": lambda k: f"{k} branch",
+    "ops": lambda k: f"operation {k}",
 }
 
 

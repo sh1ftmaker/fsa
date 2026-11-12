@@ -65,8 +65,7 @@ cls_80119E5C* fn_80119DD0() {
     return fadeObject();
 }
 
-// FIXME: 96.91 %, missing/extra; behaviour clean.
-// FIXME: 96.9. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
+// FIXME: 96.91 %, missing/extra; behaviour clean. Regalloc: the original keeps `this` in r30 and the picture in r29, the texture
 // in r31; here the constructor result takes an extra move through r0.
 void cls_80119E5C::fn_80119D48() {
     if (field_0x2c == NULL) {
@@ -149,8 +148,7 @@ void cls_80119E5C::fn_80119958() {
     field_0x10 = 0;
 }
 
-// FIXME: 99.88 %, reloc-name; behaviour clean.
-// FIXME: 99.88. reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
+// FIXME: 99.88 %, reloc-name; behaviour clean. reloc-name only: the unit's .sdata2 pool still lacks 0.05f (fn_80118E20,
 // unwritten) and has 1.0f after the double; the original has a 1.0f made before
 // fn_801194C4's double (no function here explains it).
 // The fade step: field_0x4 counts the frames up to field_0x8 while field_0x14 moves
@@ -223,8 +221,7 @@ void cls_80119E5C::fn_80119628() {
     }
 }
 
-// FIXME: 99.94 %, reloc-name; behaviour clean.
-// FIXME: 99.94. reloc-name only (the double of the u16 to float conversions; see
+// FIXME: 99.94 %, reloc-name; behaviour clean. reloc-name only (the double of the u16 to float conversions; see
 // fn_80119628).
 // Draws the fade picture over the screen with alpha field_0x14: black, or white
 // for field_0x24 == 1 (not for field_0x24 == 2).
@@ -356,7 +353,7 @@ void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     }
 }
 
-// FIXME(shotgun): 37.55 %, missing/extra; behaviour near. (the original is TVector size() == 0, then std::find_if with
+// FIXME(shotgun): 37.55 %, missing/extra; behaviour drift. (the original is TVector size() == 0, then std::find_if with
 // a by-value predicate; same stand-in note as fn_80118798)
 ActorBase_804A5770** cls_801192AC::fn_8011871C(ActorBase_804A5770** from, u32 actorId) {
     u32 count;

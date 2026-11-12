@@ -109,14 +109,19 @@ End with one line: DONE <final %> or STUCK <why>."""
 
 LANE_TEXT = {
     "write": "It is not in our object yet. Write it in src/{unit}, at its place in the file's descending address "
-             "order ({place}). Get the behaviour right first; the % follows.",
+             "order ({place}). Get the behaviour right first; the % follows. If try.py then says `missing` and "
+             "`ours, not in the target: <mangled name>`, the original still carries the placeholder name: rename it "
+             "in config/G4SE01/symbols.txt to the mangled name your definition emits (change only the name before "
+             "` = `) and update every other use (`grep -rnw <old name> src include`).",
     "structure": "Our code does not do what the original does. The list below names each behaviour difference "
                  "(original vs ours): fix those first, then look at the %.",
     "match": "Its behaviour already equals the original (same calls, constants, compares and fields); only codegen "
-             "differs ({cls}). Don't change behaviour. Honest levers that move MWCC codegen: the order of local "
-             "declarations, a value in its own local vs used directly, operand order of commutative expressions, "
-             "signedness and width of locals and counters, if/else vs early return, loop form, a header inline vs "
-             "the spelled-out expression, const on locals and parameters. Cheap ones first.",
+             "differs ({cls}). Don't change behaviour. Things that move MWCC codegen and still read as code a programmer "
+             "wrote: the order of local declarations, naming a value in a local vs using the expression directly, "
+             "operand order of commutative expressions, signedness and width of locals and counters, if/else vs "
+             "early return, loop form, a header inline vs the spelled-out expression, const on locals and "
+             "parameters. Cheap ones first. A temporary or reordering that only exists to move a register is a "
+             "trick: don't leave one in.",
 }
 RELOC_TEXT = ("Its instructions are identical to the original; only a relocation names a different symbol (the pairs "
               "are in try.py's output). `lbl_... vs @NNN` means this unit's literals are pooled in a different order "
@@ -305,7 +310,7 @@ def find_def(lines, demangled):
 
 CLS = (r"(?:missing/extra|missing|regalloc-only|scheduling\+regalloc|scheduling/regalloc|scheduling|different|operands"
        r"|same-text|reloc-name-unverified|reloc-name|reloc-data|matches)")
-FIXME = re.compile(r"^(\s*//\s*FIXME(?:\([^)]*\))?:\s*)[\d.]+\s*%(.*)$")
+FIXME = re.compile(r"^(\s*//\s*FIXME(?:\([^)]*\))?:\s*)\d+(?:\.\d+)?\s*%?(.*)$")
 OLD_STATS = re.compile(rf"^,?\s*(?:{CLS}(?:\s*\+\s*{CLS})*)?(?:;\s*behaviour \w+)?")
 
 
@@ -339,6 +344,10 @@ def stamp_fixmes(wt, unit, ev):
         m = FIXME.match(lines[at])
         if m:  # keep the author's note, replace the numbers and the class
             note = OLD_STATS.sub("", m.group(2), count=1).lstrip(" .:;,")
+            dup = next((i for i in range(at + 1, start) if FIXME.match(lines[i])), None)
+            if dup is not None and not note:  # an older stamp sits above the author's own FIXME line: fold them
+                note = OLD_STATS.sub("", FIXME.match(lines[dup]).group(2), count=1).lstrip(" .:;,")
+                del lines[dup]
             lines[at] = f"{m.group(1)}{stats}." + (f" {note}" if note else "")
         else:
             lines.insert(at, f"// FIXME: {stats}.")
@@ -397,7 +406,8 @@ def build_packet(wt, unit, fn, ev):
     if lane == "match" and e["cls"] == "reloc-name":
         text = RELOC_TEXT
     out = [f"TASK ({lane}): `{fn}` = `{e['demangled']}`, {e['size']} bytes, unit `{unit}` (src/{unit}).",
-           f"Now: {e['pct']:.2f} %, {e['cls']}; behaviour {e['grade']}.", text, ""]
+           f"Now: {e['pct']:.2f} %, {e['cls']}; behaviour {e['grade']}.", text,
+           f"Commands: `python3 tools/try.py {unit} '{fn}'`   `python3 tools/grind.py check`", ""]
     if lane != "write":
         if e["todo"]:
             out += ["== Behaviour differences (tools/fingerprint.py) =="] + e["todo"][:30]
