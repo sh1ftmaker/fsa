@@ -39,7 +39,8 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}
 
-// FIXME(shotgun): 80.8 %, missing/extra (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
+// FIXME(shotgun): 92.05 %, different; behaviour drift.
+// (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
 GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     for (int i = 0; i < 4; i++) {
         if (field_0x140.mEntries[i].field_0x0 != NULL) {
@@ -240,7 +241,6 @@ void GameRootSub24_8016A3AC::fn_8016DCEC() {
     }
 }
 
-// FIXME(shotgun): 100 %
 void GameRootSub24_8016A3AC::fn_8016DB60() {
     if (isGameModeSet()) {
         fn_8016D33C();
@@ -299,6 +299,7 @@ void GameRootSub24_8016A3AC::fn_8016D284() {
     }
 }
 
+// FIXME: 80.49 %, missing/extra + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016CB14() {
     if (field_0x1c7) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
@@ -590,6 +591,7 @@ void GameRootSub24_8016A3AC::fn_8016B8AC() {
     }
 }
 
+// FIXME: 77.99 %, missing/extra + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016B4D4() {
     if ((field_0x1cb[1] && field_0x110 != NULL) || (field_0x1cb[2] && field_0x118 != NULL)) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
@@ -643,7 +645,8 @@ void GameRootSub24_8016A3AC::fn_8016B4D4() {
 
 #pragma auto_inline reset
 
-// FIXME: 73.96. scheduling + regalloc only (same instructions): the original
+// FIXME: 73.96 %, scheduling+regalloc + reloc-name; behaviour clean.
+// scheduling + regalloc only (same instructions): the original
 // interleaves the loads of getMapTexView differently (camera before the
 // second map count) and stores the zero z components earlier.
 // Draws field_0x120 over the screen, its view shifted and halved in x and y.
@@ -727,7 +730,8 @@ void GameRootSub24_8016A3AC::fn_8016B054() {
 }
 #pragma auto_inline reset
 
-// FIXME: 99.97. The colour's stack slots are swapped: the original builds it at
+// FIXME: 99.97 %, operands; behaviour clean.
+// The colour's stack slots are swapped: the original builds it at
 // sp+0x8 and passes the copy at sp+0xC (ours the other way round).
 // Draws field_0xf4 over the whole screen, scrolled with the map view and
 // field_0x1c0, at alpha field_0x1ec.
@@ -842,7 +846,8 @@ void GameRootSub24_8016A3AC::fn_8016A9EC() {
 }
 #pragma auto_inline reset
 
-// FIXME: 98.3. regalloc only: the original keeps the camera in r4 and the 0x4330
+// FIXME: 98.60 %, regalloc-only; behaviour clean.
+// regalloc only: the original keeps the camera in r4 and the 0x4330
 // conversion constant in r3 (ours swaps them) and the float temporaries in f3/f5.
 void GameRootSub24_8016A3AC::fn_8016A7DC(J3DModel* model, const JGeometry::TVec3f& pos, s32 dir, bool followX, bool followY, f32 parallax, f32 scale) {
     if (dir == 1) {
@@ -911,7 +916,8 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half) {
     center.z = 0.0f;
 }
 
-// FIXME: 99.79. regalloc only: the original keeps heap in r29 and btk1Out in r30
+// FIXME: 99.79 %, regalloc-only; behaviour clean.
+// regalloc only: the original keeps heap in r29 and btk1Out in r30
 // (ours swaps them).
 void fn_8016A3BC(JKRArchive* archive, const char* bmd, const char* btk1, const char* btk2,
                  const char* brk1, const char* brk2, u32 flags, JKRHeap* heap, J3DModel** model,
