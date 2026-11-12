@@ -132,6 +132,70 @@ static inline bool isQueueBusy(s32 player) {
 bool fn_80307830(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, bool e, s32 f, u8 g);
 bool fn_803075AC(s32 serial, s32 layer, const JGeometry::TVec3f* pos, s32 id, u8 d, s32 e, s32 player, bool g, u8 h, u8 i);
 
+// 0x8030905C
+// FIXME: 84.65 %, missing/extra + reloc-name; behaviour drift.
+cls_804AA8B8::cls_804AA8B8() {
+    for (s32 p = 0; p < 4; p++) {
+        lbl_80504A18[p] = 0;
+        lbl_80504A28[p] = 0;
+        for (s32 i = 0; i < 32; i++) {
+            Transfer_8030361C& t = lbl_804FBC18[p][i];
+            t.mUsed = 0;
+            t.field_0x119 = 0;
+            t.field_0x104 = 0;
+            t.mWords = 0;
+            t.mAddress = 0;
+            t.mIndex = i;
+            t.field_0x10c = 0;
+            t.mName[0] = 0;
+        }
+        for (s32 i = 0; i < 0x2000; i++) {
+            lbl_804DBC18[p][i] = 0xCDCDCDCD;
+        }
+        lbl_80506D48[p] = 0;
+        lbl_8053AD00[p] = 0;
+        lbl_80506D48[p + 4] = 5;
+        fn_8030801C(p);
+        lbl_8053ACD4[p] = 1;
+        lbl_80506D38[p] = 0;
+        lbl_8053ACD8[p] = 0;
+        lbl_8053ACDC[p] = 0;
+        lbl_8053ACE0[p] = 0;
+        lbl_8053ACE4[p] = 0;
+        lbl_80506D48[p + 8] = 0;
+        for (s32 i = 0; i < 19; i++) {
+            lbl_80506F88[p][0][i].f.field_0x3_0 = 1;
+            lbl_80506F88[p][0][i].f.field_0x2 = 0x80;
+            lbl_80506F88[p][1][i].f.field_0x3_0 = 1;
+            lbl_80506F88[p][1][i].f.field_0x2 = 0x80;
+        }
+        for (s32 k = 0; k < 4; k++) {
+            lbl_80506DA8[p][k] = 0;
+            lbl_80506DB8[p][k] = 0;
+            lbl_80506DC8[p][k] = 0;
+        }
+        lbl_80506D88[p] = 0;
+        lbl_80506D98[p] = 0;
+        lbl_8053ACE8[p] = 0;
+        lbl_8053ACEC[p] = 0;
+        lbl_8053ACF0[p] = 0;
+        lbl_8053ACF8[p] = 0;
+        lbl_8053ACFC[p] = 0;
+        lbl_80506DD8[p] = 0;
+        for (s32 i = 0; i < 0x80; i++) {
+            lbl_805071E8[p][i] = 0;
+        }
+        lbl_8053AD0C[p] = 0;
+        lbl_8053AD04[p] = 0;
+        lbl_8053AD14[p] = 0;
+        lbl_8053AD1C[p] = 0;
+        lbl_8053AD20[p] = 0;
+        lbl_8053AD24[p] = 0;
+        lbl_8053AD28[p] = 0;
+    }
+    lbl_8053AD08 = 0;
+}
+
 // 0x80309014
 cls_804AA8B8::~cls_804AA8B8() {}
 
@@ -902,56 +966,55 @@ void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set)
 // Draws one GBA sprite word on the map: the "SOB " frame of its 10-bit id at
 // its (sign-extended 9 / 8-bit) x, y, tinted per player and scaled by the
 // player's lbl_8053ACFC count (or lbl_80506DB8's flag).
-// FIXME(shotgun): 87.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.59 %, regalloc-only + reloc-name; behaviour clean.
 // (control flow of the early return, the 16 tint stores)
 void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 mask, u8 flag) {
     SpriteParams_801F5AE0 params;
     s32 x = sprite->f.field_0x2 | sprite->f.field_0x3_0 << 8;
     s32 y = sprite->f.field_0x1;
-    if (x == 0x180 || y == 0xE0 || lbl_8053ACFC[player] >= 0x11) {
-        return;
-    }
-    if (x >= 0x180) {
-        x |= -0x100;
-    }
-    if (y >= 0xE0) {
-        y |= -0x100;
-    }
-    s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
-    if (lbl_80506DC8[record][player] != 0) {
-        params.field_0x10.a = 0xA0;
-    }
-    if ((mask >> player) & 1) {
-        for (u8 i = 0; i < 16; i++) {
-            params.field_0x0[i] = 7;
+    if (x != 0x180 && y != 0xE0 && lbl_8053ACFC[player] < 0x11) {
+        if (x >= 0x180) {
+            x |= -0x100;
         }
-    } else {
-        params.field_0x0[7] = player + 0xC;
+        if (y >= 0xE0) {
+            y |= -0x100;
+        }
+        s32 id = sprite->f.field_0x0 | sprite->f.field_0x3_1 << 8;
+        if (lbl_80506DC8[record][player] != 0) {
+            params.field_0x10.a = 0xA0;
+        }
+        if ((mask >> player) & 1) {
+            for (int i = 0; i < 16; i++) {
+                params.field_0x0[i] = 7;
+            }
+        } else {
+            params.field_0x0[7] = player + 0xC;
+        }
+        if (fn_80237060(player) >= 2) {
+            params.field_0x0[10] = 6;
+        }
+        JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
+        Mtx scale;
+        if (lbl_8053ACFC[player] != 0) {
+            PSMTXScale(scale, 1.0f - 0.75f * lbl_8053ACFC[player] * 0.0625f, 1.0f,
+                       lbl_8053ACFC[player] * 0.0625f + 1.0f);
+        } else if (lbl_80506DB8[record][player] == 1) {
+            PSMTXScale(scale, 1.0f, 1.0f, 0.5f);
+        } else {
+            PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
+        }
+        params.field_0x2c = 0;
+        params.field_0x26 = 0;
+        params.field_0x2d = 0;
+        if (!flag) {
+            params.field_0x34 = 2;
+        }
+        params.field_0x1f = 0;
+        params.field_0x38 = 0;
+        params.mMtx = scale;
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
     }
-    if (fn_80237060(player) >= 2) {
-        params.field_0x0[10] = 6;
-    }
-    JGeometry::TVec3f pos((f32)x, (f32)y, 0.0f);
-    Mtx scale;
-    if (lbl_8053ACFC[player] != 0) {
-        PSMTXScale(scale, 1.0f - 0.75f * lbl_8053ACFC[player] * 0.0625f, 1.0f,
-                   lbl_8053ACFC[player] * 0.0625f + 1.0f);
-    } else if (lbl_80506DB8[record][player] == 1) {
-        PSMTXScale(scale, 1.0f, 1.0f, 0.5f);
-    } else {
-        PSMTXScale(scale, 1.0f, 1.0f, 1.0f);
-    }
-    params.field_0x2c = 0;
-    params.field_0x26 = 0;
-    params.field_0x2d = 0;
-    if (!flag) {
-        params.field_0x34 = 2;
-    }
-    params.field_0x1f = 0;
-    params.field_0x38 = 0;
-    params.mMtx = scale;
-    void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "player_sob.bin");
-    gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, id, &params, 1.0f, 1.0f);
 }
 
 // The draw order key of mark `i` of a record: its slot's sprite kind when it is set like the
@@ -959,6 +1022,13 @@ void fn_80302C34(const GbaSprite_80506F88* sprite, s32 record, s32 player, u8 ma
 static inline s32 markKey(const cls_804AA858Sub11C* record, s32 player, s32 i) {
     s32 own = lbl_80506DD8[player];
     if ((record->mMask >> i & 1) != (record->mMask >> own & 1)) {
+        return -1;
+    }
+    return lbl_80506DA8[player][i];
+}
+
+static inline s32 markKey2(s32 mask, s32 player, s32 i) {
+    if ((mask >> i & 1) != (mask >> lbl_80506DD8[player] & 1)) {
         return -1;
     }
     return lbl_80506DA8[player][i];
@@ -975,9 +1045,10 @@ static inline s32 spriteId(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 79.92 %, missing/extra; behaviour drift.
+// FIXME: 81.15 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
+    s32 mask = record->mMask;
     for (s32 i = 0; i < 4; i++) {
         order[i] = i;
     }
@@ -985,8 +1056,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
         for (s32 j = 0; j < i; j++) {
             s32 a = order[j];
             s32 b = order[j + 1];
-            if (markKey(record, player, a) < markKey(record, player, b) ||
-                (markKey(record, player, a) == markKey(record, player, b) &&
+            if (markKey2(mask, player, a) < markKey2(mask, player, b) ||
+                (markKey2(mask, player, a) == markKey2(mask, player, b) &&
                  record->mEntries[a].mY < record->mEntries[b].mY))
             {
                 order[j] = b;
