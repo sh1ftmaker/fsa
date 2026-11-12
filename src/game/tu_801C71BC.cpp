@@ -8,7 +8,7 @@
 #include "JSystem/JGeometry.h"
 #include "JSystem/JMath/JMath.h"
 
-// FIXME(shotgun): 73.31 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 79.47 %, missing/extra; behaviour drift.
 u8 ShadowLink2_804A43E8::fn_801C976C() {
     u8 start = field_0x358.fn_80214244()->field_0x3;
     field_0x358.fn_80214244()->fn_800FD818(1);
@@ -29,14 +29,12 @@ u8 ShadowLink2_804A43E8::fn_801C976C() {
     u8 pick;
     if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
         pick = opt[0];
-        s32 layer = field_0x4;
-        if (layer != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
+        if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
             pick = opt[1];
         }
     } else {
         pick = opt[1];
-        s32 layer = field_0x4;
-        if (layer != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
+        if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
             pick = opt[0];
         }
     }
