@@ -1397,7 +1397,7 @@ void StoneArrghusChildPuff_8049C678::draw() {
     f32 a = 0.0f;
     f32 b = 0.0f;
     if (mState == 2) {
-        f32 s = __fabs(JMath::sincosTable_.sinShort((s16)(mAngle + 0x4000)));
+        f32 s = __fabsf(JMath::sincosTable_.sinShort((s16)(mAngle + 0x4000)));
         a = 0.1f * s;
         b = -0.1f * s;
     }
