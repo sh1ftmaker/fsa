@@ -17,7 +17,8 @@
 
 void fn_802B7CD8(ActorBase_804A5770* actor);
 
-// FIXME(shotgun): 99.9 %, operands (string literal pooling)
+// FIXME(shotgun): 99.88 %, operands; behaviour drift.
+// (string literal pooling)
 // 0x80439C78
 cls_804B17A0::cls_804B17A0() {
     lbl_8053AEC8 = this;
@@ -61,7 +62,7 @@ cls_804B17A0::cls_804B17A0() {
     field_0x5f = 0;
 }
 
-// FIXME(shotgun): 95.2 %, different
+// FIXME(shotgun): 95.20 %, different; behaviour drift.
 // 0x80439B28
 cls_804B17A0::~cls_804B17A0() {
     delete field_0x4;
@@ -87,7 +88,6 @@ cls_804B17A0::~cls_804B17A0() {
     lbl_8053AEC8 = NULL;
 }
 
-// FIXME(shotgun): 86.1 %, missing/extra
 // 0x80439AB0
 void cls_804B17A0::fn_80439AB0() {
     field_0x40 = 0;
@@ -103,18 +103,23 @@ void cls_804B17A0::fn_80439AB0() {
     field_0x54 = 0;
     field_0x56 = 0;
     field_0x3c = 0;
-    for (s32 i = 0; i < 10; i++) {
-        field_0xc[i] = NULL;
-    }
+    field_0xc[0] = NULL;
+    field_0xc[1] = NULL;
+    field_0xc[2] = NULL;
+    field_0xc[3] = NULL;
+    field_0xc[4] = NULL;
+    field_0xc[5] = NULL;
+    field_0xc[6] = NULL;
+    field_0xc[7] = NULL;
+    field_0xc[8] = NULL;
+    field_0xc[9] = NULL;
     field_0x5f = 0;
 }
 
-// FIXME(shotgun): 99.7 %, reloc-name
-// 0x804399A0
 void cls_804B17A0::fn_804399A0() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x34->setAlpha((u8)field_0x50);
-    field_0x34->draw(0.0f, 0.0f, 640.0f, 480.0f, false, false, false);
+    field_0x34->draw(-1.0f, -1.0f, 611.0f, 451.0f, false, false, false);
     field_0x8->mCurrentFrame = field_0x3c;
     field_0x4->search('Ndata01')->animationTransform();
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
@@ -137,7 +142,8 @@ static inline void sparkEmitter(JPABaseEmitter*& slot, JGeometry::TVec3f& pos, f
     gAudioMgr_8053AF80->fn_80458880(0xD, -1);
 }
 
-// FIXME(shotgun): 97.4 %, missing/extra (we keep one more saved register: the target reuses r28-r30 for the cleanup loops)
+// FIXME(shotgun): 97.57 %, missing/extra + reloc-name; behaviour drift.
+// (we keep one more saved register: the target reuses r28-r30 for the cleanup loops)
 // 0x80438E94
 u8 cls_804B17A0::fn_80438E94() {
     s32 serial = field_0x44;
@@ -324,8 +330,6 @@ u8 cls_804B17A0::fn_80438E94() {
     return field_0x40;
 }
 
-// FIXME(shotgun): 90.8 %, missing/extra
-// 0x80438E10
 void cls_804B17A0::fn_80438E10(u8 flag) {
     field_0x40 = flag;
     if (flag) {
@@ -334,7 +338,7 @@ void cls_804B17A0::fn_80438E10(u8 flag) {
     fn_80439AB0();
 }
 
-// FIXME(shotgun): 89.3 %, missing/extra
+// FIXME(shotgun): 89.29 %, missing/extra; behaviour drift.
 // 0x80438C68
 void cls_804B17A0::fn_80438C68() {
     switch (field_0x58) {
