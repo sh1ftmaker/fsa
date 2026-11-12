@@ -652,21 +652,22 @@ void Cucco_804AB8C0::fn_803319B8() {
 bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL)) {
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, NULL) == 1) {
         return true;
     }
     if (fn_801F6758(pos, layer, -8.0f)) {
         return true;
     }
-    u16 tile = fn_80226850(pos, layer);
+    s32 tile = fn_80226850(pos, layer);
     if (tile == 0x19C || tile == 0x19D) {
         return true;
     }
-    u16 code = fn_8022461C(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
     if (code == 0x20 && mPos.z > 8.0f) {
         return false;
     }
-    if ((code >= 0x10 && code <= 0x16) || code == 0x17) {
+    if (code == 0x10 || code == 0x11 || code == 0x12 || code == 0x13 || code == 0x14 || code == 0x15 ||
+        code == 0x16 || code == 0x17) {
         if (mPos.z > 8.0f) {
             field_0x270 = 300;
             return false;
@@ -701,7 +702,7 @@ bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         blocked = true;
     }
     if (field_0x270 > 0) {
-        if (blocked) {
+        if (blocked == 1) {
             field_0x270--;
         }
         return false;
