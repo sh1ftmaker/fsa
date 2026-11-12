@@ -15,6 +15,7 @@
 #include "game/SpriteAnim.h"
 #include "game/Unk_8045A080.h"
 #include "JSystem/J2D/J2DPicture.h"
+#include "JSystem/JUtility/JUTVideo.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JMath/JMath.h"
 
@@ -74,8 +75,80 @@ cls_804AE088::~cls_804AE088() {
     fn_8036A65C();
 }
 
-// Table lbl_804AE070 is filled by this file's static initializer; its definition is not written yet.
-extern void (cls_804AE088::*lbl_804AE070[2])();
+void (cls_804AE088::*lbl_804AE058[2])() = {&cls_804AE088::fn_80369DDC, &cls_804AE088::fn_80368CD8};
+void (cls_804AE088::*lbl_804AE070[2])() = {lbl_804AE058[0], lbl_804AE058[1]};
+
+static const s16 lbl_80542C48[2] = {9, -1};
+static const s16 lbl_80542C50[2] = {9, -1};
+static const s16* lbl_8053A1C0[2] = {lbl_80542C48, lbl_80542C50};
+
+const char* lbl_8053A1C8 = "kk_black.bti";
+
+static const s16 sEmitterAngles[5] = {-5461, 5461, 16384, 27307, -27307};
+static const u16 sEmitterIds[5] = {0x105, 0x106, 0x107, 0x108, 0x109};
+static const s32 sEmitterDepths[5] = {2, 0, 0, 0, 0};
+
+// FIXME: 90.98 %, different + reloc-name; behaviour drift.
+void cls_804AE088::init() {
+    cls_8049D140::init();
+    field_0x23c = field_0x90 & 0x1F;
+    field_0x248 = (field_0x90 >> 22) & 0x1F;
+    if (field_0x23c != 4 && field_0x23c != 5) {
+        fn_801F3668();
+        return;
+    }
+    if (field_0x23c == 5) {
+        field_0x240 = 0x13;
+        field_0x268 = 5;
+    } else {
+        field_0x268 = 0;
+    }
+    field_0x310 = gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_8053A1C8);
+    field_0x318.fn_801D2608(lbl_8053A1C0, 2);
+    switch (field_0x23c) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        field_0x318.startAnim_801D22DC(0, 2, false);
+        break;
+    case 6:
+    default:
+        field_0x318.startAnim_801D22DC(1, 2, false);
+        break;
+    }
+    field_0x318.fn_801D1F14(0.0f);
+    mPos.y -= 32.0f;
+    JGeometry::TVec3f pts[5] = {
+        mPos,
+        JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y - 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y - 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x - 80.0f, mSpawnPos.y + 48.0f, 0.0f),
+        JGeometry::TVec3f(mSpawnPos.x + 80.0f, mSpawnPos.y + 48.0f, 0.0f),
+    };
+    for (s32 i = 0; i < 5; i++) {
+        field_0x384[i] = spawnEmitter_8013CC50(field_0x4, &pts[i], sEmitterIds[i], 0, sEmitterDepths[i], NULL,
+                                               NULL, true, 1.0f);
+    }
+    getGameView_802D6A9C()->fn_802D7440(0);
+    for (s32 i = 0; i < 5; i++) {
+        s16 angle = sEmitterAngles[i];
+        field_0x2a8[i].x = 55.0f * JMath::sincosTable_.cosShort(angle) + mPos.x;
+        field_0x2a8[i].y = 32.0f + (35.0f * JMath::sincosTable_.sinShort(angle) + mPos.y);
+        field_0x2a8[i].z = 0.0f;
+    }
+    field_0x2a8[5] = mPos;
+    s32 count = getActorManager_801F856C()->mActorEnd;
+    for (s32 i = 0; i < count; i++) {
+        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+        if (actor != NULL && actor->mActorId == ACTOR_GOL2) {
+            field_0x2f4 = (cls_804A9C20*)actor;
+            break;
+        }
+    }
+}
 
 void cls_804AE088::update() {
     if (field_0x2f0 != 0) {
@@ -164,6 +237,56 @@ s32 cls_804AE088::vfunc_0x5C() {
     return 0;
 }
 
+// differs: register allocation and the group test (original tests 0x1C, 0x1D-0x1E, 0x21-0x22, 0x23 separately).
+// FIXME: 59.15 %, missing/extra + reloc-name; behaviour drift.
+void cls_804AE088::fn_8036AC58(s32 arg) {
+    if (field_0x270 == 1 && field_0x274 < 0x80)
+        return;
+    SpriteParams_801F5AE0 params;
+    s32 frame;
+    if (field_0x23c == 5 && field_0x240 >= 0x1E && field_0x240 < 0x21) {
+        if (field_0x24c < 0xC0) {
+            frame = arg + field_0x318.mCel;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        }
+        params.field_0x10.r = 0xFF;
+        params.field_0x10.g = 0xFF;
+        params.field_0x10.b = 0xFF;
+        params.field_0x10.a = 0xFF - field_0x24c;
+    } else {
+        s32 k = field_0x240;
+        if (k == 0x1C || k == 0x1D || k == 0x1E || k == 0x21 || k == 0x22 || k == 0x23) {
+            frame = field_0x264 + 0x1B3;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        } else {
+            frame = arg + field_0x318.mCel;
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
+            }
+        }
+    }
+    s32 k = field_0x240;
+    if (k == 0x1C || k == 0x1D || k == 0x1E || k == 0x21 || k == 0x22 || k == 0x23) {
+        if (field_0x4 < 8) {
+            frame = field_0x264 + 0x1B3;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x1B3, 0, 1, -1, false, 0, 0);
+    } else {
+        if (field_0x4 < 8) {
+            frame = arg + field_0x318.mCel;
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        }
+        fn_803075AC(mSerial, field_0x4, &mPos, arg + field_0x318.mCel, 0, 1, -1, false, 0, 0);
+    }
+}
+
 // Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
 extern const s32 lbl_80474C68[120];
 
@@ -246,3 +369,254 @@ void cls_804AE088::fn_8036A894() {
     }
 }
 #pragma auto_inline reset
+
+// FIXME: 82.37 %, missing/extra; behaviour drift.
+void cls_804AE088::fn_8036A65C() {
+    if (field_0x350 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x350);
+        field_0x350 = NULL;
+    }
+    if (field_0x354 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x354);
+        field_0x354 = NULL;
+    }
+    if (field_0x358 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x358);
+        field_0x358 = NULL;
+    }
+    if (field_0x398 != NULL) {
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x398);
+        field_0x398 = NULL;
+    }
+    for (s32 i = 0; i < 7; i++) {
+        if (field_0x35c[i] != NULL) {
+            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x35c[i]);
+            field_0x35c[i] = NULL;
+        }
+        if (i < 2 && field_0x3b4[i] != NULL) {
+            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3b4[i]);
+            field_0x3b4[i] = NULL;
+        }
+        if (i < 3 && field_0x378[i] != NULL) {
+            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x378[i]);
+            field_0x378[i] = NULL;
+        }
+        if (i < 5) {
+            if (field_0x384[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x384[i]);
+                field_0x384[i] = NULL;
+            }
+            if (field_0x3ec[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3ec[i]);
+                field_0x3ec[i] = NULL;
+            }
+            if (field_0x400[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x400[i]);
+                field_0x400[i] = NULL;
+            }
+        }
+        if (i < 6) {
+            if (field_0x3bc[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3bc[i]);
+                field_0x3bc[i] = NULL;
+            }
+            if (field_0x3d4[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3d4[i]);
+                field_0x3d4[i] = NULL;
+            }
+            if (field_0x39c[i] != NULL) {
+                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x39c[i]);
+                field_0x39c[i] = NULL;
+            }
+        }
+    }
+}
+
+// FIXME: 84.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
+void cls_804AE088::fn_80368660() {
+    SpriteParams_801F5AE0 params;
+    if (field_0x23c == 5 && (field_0x270 != 1 || field_0x274 >= 0x80) && field_0x25c >= 0) {
+        if (field_0x260 != 0) {
+            field_0x260--;
+        }
+        s32 state = field_0x240;
+        if (state < 0x1c) {
+            if (field_0x260 == 0) {
+                field_0x260 = 1;
+                field_0x264++;
+                if (field_0x264 >= 6) {
+                    field_0x264 = 0;
+                }
+            }
+        } else if (state == 0x1c || state == 0x1d || state == 0x1e) {
+            if (state == 0x1c) {
+                field_0x264 = 8;
+            } else if (state == 0x1d) {
+                field_0x264 = 8;
+                field_0x260 = 30;
+            } else if (state == 0x1e) {
+                if (field_0x260 == 0) {
+                    if (field_0x264 == 8) {
+                        field_0x264 = 10;
+                        field_0x260 = 30;
+                    } else if (field_0x264 == 10) {
+                        field_0x264 = 11;
+                        field_0x260 = 10;
+                    } else {
+                        field_0x260 = 9;
+                        field_0x264++;
+                        if (field_0x264 >= 6) {
+                            field_0x264 = 0;
+                        }
+                    }
+                }
+            } else {
+                if (field_0x260 == 0) {
+                    field_0x260 = 9;
+                    field_0x264++;
+                    if (field_0x264 >= 6) {
+                        field_0x264 = 0;
+                    }
+                }
+            }
+        } else if (state == 0x22 || state == 0x21) {
+            if (field_0x260 == 0) {
+                field_0x260 = 9;
+                field_0x264++;
+                if (field_0x264 >= 6) {
+                    field_0x264 = 0;
+                }
+            }
+        } else if (state == 0x23) {
+            if (field_0x258 >= 0x50) {
+                if (field_0x260 == 0) {
+                    field_0x260 = 9;
+                    field_0x264++;
+                    if (field_0x264 >= 6) {
+                        field_0x264 = 0;
+                    }
+                }
+            } else if (field_0x258 >= 0x46) {
+                field_0x264 = 11;
+            } else if (field_0x258 >= 0x28) {
+                field_0x264 = 10;
+            } else {
+                field_0x264 = 8;
+            }
+        }
+        JGeometry::TVec3f savedPos = mPos;
+        for (s32 i = 0; i < 5; i++) {
+            if (field_0x240 < 0x1c) {
+                if (field_0x294[i] == 0) {
+                    mPos = field_0x2a8[i];
+                    mPos.z = 20.0f;
+                    drawSprite_801F06F0("enemy_gc_sob.bin", field_0x264 + lbl_80474C68[92 + i], &params, 7, 1.0f, 1.0f);
+                    if (field_0x3bc[i] != NULL) {
+                        JGeometry::TVec3f p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        setEmitterPos_8013CB44(field_0x3bc[i], &p, 0, -1, true);
+                    }
+                    if (field_0x3d4[i] != NULL) {
+                        JGeometry::TVec3f p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        setEmitterPos_8013CB44(field_0x3d4[i], &p, 0, -1, true);
+                    }
+                }
+            } else if (field_0x240 < 0x21) {
+                mPos = field_0x2a8[i];
+                if (field_0x240 >= 0x1e && field_0x240 < 0x21) {
+                    if (field_0x24c < 0xc0 && mSpriteParams.mMtx == NULL) {
+                        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], NULL);
+                    }
+                    params.field_0x10.r = 255;
+                    params.field_0x10.g = 255;
+                    params.field_0x10.b = 255;
+                    params.field_0x10.a = 255 - field_0x24c;
+                    if (field_0x4 < 8) {
+                        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+                        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x264 + lbl_80474C68[87 + i], &params, 1.0f, 1.0f);
+                    }
+                    fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + lbl_80474C68[87 + i], 0, 1, -1, false, 0, 0);
+                } else {
+                    drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], &params, 7, 1.0f, 1.0f);
+                }
+            } else {
+                mPos.x = field_0x2a8[i].x;
+                mPos.y = field_0x2a8[i].y;
+                mPos.z = field_0x2a8[i].z;
+                drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[87 + i], &params, 7, 1.0f, 1.0f);
+            }
+        }
+        mPos = savedPos;
+    }
+}
+
+// FIXME: 76.65 %, different + reloc-name; behaviour drift.
+void cls_804AE088::fn_803683AC() {
+    SpriteParams_801F5AE0 params;
+    JGeometry::TVec3f savedPos = mPos;
+    if (field_0x260 != 0) {
+        field_0x260--;
+    }
+    if (field_0x260 == 0) {
+        field_0x264++;
+        if (field_0x264 >= 6) {
+            field_0x264 = 0;
+        }
+        field_0x260 = 1;
+    }
+    for (s32 i = 0; i < 6; i++) {
+        if (field_0x2f8[i] == 0) {
+            mPos = field_0x2a8[i];
+            params.field_0x10.a = 255;
+            drawSprite_801F06F0("enemy_gc_sob.bin", lbl_80474C68[97 + i] + 8, &params, 7, 1.0f, 1.0f);
+        } else if (field_0x2f8[i] != 1 && field_0x2f8[i] != 4) {
+            mPos = field_0x2a8[i];
+            params.field_0x10.a = 255;
+            drawSprite_801F06F0("enemy_both2_sob.bin", field_0x264 + lbl_80474C68[103 + i], &params, -1, 1.0f, 1.0f);
+            if (field_0x2a8[i].z < 255.0f) {
+                params.field_0x10.a = 255 - (s32)field_0x2a8[i].z;
+            } else {
+                params.field_0x10.a = 0;
+            }
+            if (mSpriteParams.mMtx == NULL) {
+                fn_801EF830(field_0x4, &mPos, &params, 0x407, "enemy_both2_sob.bin", field_0x264 + lbl_80474C68[103 + i], NULL);
+            }
+        }
+    }
+    mPos = savedPos;
+}
+
+// FIXME: 97.74 %, missing/extra + reloc-name; behaviour drift.
+void cls_804AE088::fn_80368198() {
+    if (field_0x270 != 0) {
+        if (field_0x274 < 0x80) {
+            field_0x290 -= 8.0f;
+        } else {
+            field_0x290 += 8.0f;
+        }
+        if (field_0x290 >= 255.0f) {
+            field_0x290 = 255.0f;
+        } else if (field_0x290 < 0.0f) {
+            field_0x290 = 0.0f;
+        }
+        if (field_0x314 == NULL) {
+            const ResTIMG* tex = (const ResTIMG*)gGameRoot_8053AAF8->field_0xa4->getResource('?\?\?\?', lbl_8053A1C8);
+            field_0x314 = new J2DPicture(tex);
+        }
+        gGameRoot2_8053AB10->fn_8013B490();
+        field_0x314->setBlackWhite(JUtility::TColor(0), JUtility::TColor(0xFFFFFFFF));
+        field_0x314->setAlpha((s32)field_0x290);
+        field_0x314->draw(0.0f, 0.0f, (s32)JUTVideo::getManager()->getRenderMode()->fbWidth,
+                          (s32)JUTVideo::getManager()->getRenderMode()->efbHeight, false, false, false);
+        if (field_0x274 == 0x80) {
+            field_0x234 = 0;
+            field_0x236 = 1;
+            field_0x24c = 1;
+            fn_8036A65C();
+        } else if (field_0x274 == 0) {
+            field_0x270 = 0;
+            vfunc_0x60(0x26);
+            fn_8011921C()->fn_801183BC();
+        }
+    }
+}
