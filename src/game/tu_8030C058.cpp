@@ -33,7 +33,7 @@ Camera_804AA9E4::Camera_804AA9E4() {}
 Camera_804AA9E4::~Camera_804AA9E4() {}
 
 // FIXME(shotgun): 89.90 %, different + reloc-name; behaviour drift.
-// (stores order, the box built in a different order)
+// Remaining diff: float literal pool order and register scheduling.
 void Camera_804AA9E4::fn_8030E5BC() {
     field_0x154.i.x = 0.0f;
     field_0x154.i.y = 0.0f;
@@ -58,7 +58,8 @@ void Camera_804AA9E4::fn_8030E5BC() {
     box.i.y = 0.0f;
     box.f.x = 256.0f;
     box.f.y = 192.0f;
-    fn_8030CB10(&box, 1024.0f);
+    f32 depth = 1024.0f;
+    fn_8030CB10(&box, depth);
     field_0x7f0 = 0;
     field_0x7f4 = 0;
     field_0x7f5 = 0;
@@ -66,9 +67,9 @@ void Camera_804AA9E4::fn_8030E5BC() {
     field_0x7f6 = 0;
     field_0x83c = -1;
     field_0x840 = 0;
+    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     field_0x144.x0 = 0;
     field_0x144.y0 = 0;
-    GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
     field_0x144.x1 = renderMode->fbWidth;
     field_0x144.y1 = renderMode->efbHeight;
     field_0x858 = 1.0f;
