@@ -1788,7 +1788,7 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
                     strcat(out, two);
                 }
                 pos += 2;
-                code |= (u8)p[0];
+                code |= (u8)p[1];
             } else {
                 two[0] = c;
                 two[1] = 0;
