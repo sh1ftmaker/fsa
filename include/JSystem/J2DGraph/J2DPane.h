@@ -87,7 +87,7 @@ public:
 
     const JGeometry::TBox2<f32>& getBounds() { return mBounds; }
     const JGeometry::TBox2<f32>& getGlbBounds() { return mGlobalBounds; }
-    f32 getRotate() const { return mRotation; }
+    f32 getRotate() const;
     void place(const JGeometry::TBox2<f32>&) {}
     void rotate(f32 angle) {
         mRotation = angle;
