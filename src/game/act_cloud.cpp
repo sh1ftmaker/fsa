@@ -69,8 +69,8 @@ void Cloud_8049CBE0::init() {
         mBox.f.y = 22.0f;
         break;
     }
-    mBox2 = mBox;
-    field_0x80 = mBox;
+    mBox2.set(mBox);
+    field_0x80.set(mBox);
     mSprite.fn_801D2608(lbl_80539EC0, 1);
     mSprite.startAnim_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
