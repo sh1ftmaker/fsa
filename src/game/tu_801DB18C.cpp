@@ -38,7 +38,7 @@ cls_804A4EE8::~cls_804A4EE8() {
     }
 }
 
-// FIXME(shotgun): 92.11 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.81 %, missing/extra + reloc-name; behaviour clean.
 void cls_804A4EE8::init() {
     EnemyBase_804A4808::init();
     mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
@@ -56,10 +56,9 @@ void cls_804A4EE8::init() {
         f32 n = (f32)(fn_801CD664(0x3C) + 1);
         field_0x2b4 = 0.0f;
         field_0x2b8 = 0.1f * n;
-        f32 s = JMath::sincosTable_.sinShort(-a);
-        f32 c = JMath::sincosTable_.cosShort(-a);
-        field_0x2b4 = field_0x2b4 * c - field_0x2b8 * s;
-        field_0x2b8 = field_0x2b8 * c + field_0x2b4 * s;
+        f32 x = field_0x2b4;
+        field_0x2b4 = x * JMath::sincosTable_.cosShort(-a) - field_0x2b8 * JMath::sincosTable_.sinShort(-a);
+        field_0x2b8 = x * JMath::sincosTable_.sinShort(-a) + field_0x2b8 * JMath::sincosTable_.cosShort(-a);
     }
     mState = 0;
     mStateTimer = 0;
@@ -165,7 +164,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 84.62 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.97 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
@@ -183,10 +182,12 @@ void cls_804A4EE8::fn_801DB6C8() {
         ty = field_0x2c8 + field_0x2b8;
     } else {
         JGeometry::TVec3f* player = &field_0x1ac[mTargetPlayer];
-        JGeometry::TVec2f away(mSearchPos.x - player->x, mSearchPos.y - player->y);
+        f32 px = player->x;
+        f32 py = player->y;
+        JGeometry::TVec2f away(mSearchPos.x - px, mSearchPos.y - py);
         away.normalize();
-        tx = player->x + away.x * mRadius + field_0x2b4;
-        ty = player->y + away.y * mRadius + field_0x2b8;
+        tx = px + away.x * mRadius + field_0x2b4;
+        ty = py + away.y * mRadius + field_0x2b8;
     }
     JGeometry::TVec2f d(tx - mSearchPos.x, ty - mSearchPos.y);
     f32 len = d.length();
@@ -251,7 +252,8 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
-// FIXME(shotgun): 84.37 %, missing/extra; behaviour drift.
+// FIXME: 87.43 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): remaining diff is instruction scheduling and registers only.
 void cls_804A4EE8::vfunc_0x88() {
     if (field_0x2b4 != 0.0f) {
         if (mState == 0) {
@@ -279,8 +281,10 @@ void cls_804A4EE8::vfunc_0x88() {
         field_0x3c.z = 0.0f;
         return;
     }
-    f32 tx = mSearchPos.x + JMath::sincosTable_.sinShort(mAngle) * mRadius;
-    f32 ty = mSearchPos.y + JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 sinv = JMath::sincosTable_.sinShort(mAngle) * mRadius;
+    f32 cosv = JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 tx = mSearchPos.x + sinv;
+    f32 ty = mSearchPos.y + cosv;
     field_0x3c.x = tx - mPos.x;
     field_0x3c.y = ty - mPos.y;
     field_0x3c.z = 0.0f;
