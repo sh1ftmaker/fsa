@@ -274,14 +274,7 @@ bool fn_80224E88(const JGeometry::TVec3f* pos, s32 layer) {
 
 // FIXME(shotgun): 90.4 %, missing/extra
 bool fn_80224D0C(const JGeometry::TVec3f* pos, s32 layer) {
-    u16 code = rawTileAt(pos, layer);
-    if (code == lbl_8053FF4C[0]) {
-        return true;
-    }
-    if (code == lbl_8053FF4C[1]) {
-        return true;
-    }
-    return false;
+    return inList(rawTileAt(pos, layer), lbl_8053FF4C, 2);
 }
 
 // On the upper layers, whether the tile is 0x1B0 / 0x1BB while GameView byte 0x131F1 is set.
