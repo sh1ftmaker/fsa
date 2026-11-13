@@ -804,7 +804,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
     }
 }
 
-// FIXME(shotgun): 86.57 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.96 %, missing/extra; behaviour near.
 void ShadowLink2_804A43E8::fn_801C71BC() {
     mFlags &= ~0x100000;
     if (!(mFlags & 0x2000000)) {
