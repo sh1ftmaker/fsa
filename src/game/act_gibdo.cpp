@@ -73,7 +73,8 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     case 2: {
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
-        s32 kind;
+        s32 kind = 0;
+        s32 dir = field_0x98;
         switch (mAnim.mAnim) {
         case 0:
         case 4:
@@ -93,11 +94,13 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         case 10:
             kind = 2;
             break;
-        default:
+        case 3:
+        case 7:
+        case 9:
+        case 11:
             kind = 3;
             break;
         }
-        s32 dir = field_0x98;
         s32 anim = 8;
         switch (kind) {
         case 0:
@@ -126,21 +129,29 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
             }
             break;
         case 2:
-            if (dir == 1) {
+            switch (dir) {
+            case 1:
                 anim = 13;
-            } else if (dir == 0) {
+                break;
+            case 0:
                 anim = 12;
-            } else {
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 12 : 13;
+                break;
             }
             break;
         case 3:
-            if (dir == 1) {
+            switch (dir) {
+            case 1:
                 anim = 15;
-            } else if (dir == 0) {
+                break;
+            case 0:
                 anim = 14;
-            } else {
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 14 : 15;
+                break;
             }
             break;
         }
@@ -159,19 +170,16 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         mFlags |= 0x300;
         mLife = 1;
         JUtility::TColor color = gGameRoot2_8053AB10->field_0x2c->field_0x4;
+        JPABaseEmitter* emitters[3];
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x329, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter1 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter2 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
+        emitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
+        emitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
+        emitters[2] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x54F, 0, 0, NULL, NULL, true, 1.0f);
-        if (emitter0 != NULL) {
-            emitter0->setColorRGB(color.r, color.g, color.b);
-        }
-        if (emitter1 != NULL) {
-            emitter1->setColorRGB(color.r, color.g, color.b);
-        }
-        if (emitter2 != NULL) {
-            emitter2->setColorRGB(color.r, color.g, color.b);
+        for (s32 i = 0; i < 3; i++) {
+            if (emitters[i] != NULL) {
+                emitters[i]->setColorRGB(color.r, color.g, color.b);
+            }
         }
         startSound_801F0E34(0x5007E, 0);
         startSound_801F0E34(0x40003, 0);
