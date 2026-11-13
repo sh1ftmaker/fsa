@@ -129,7 +129,6 @@ void cls_8049E770::update() {
     (this->*lbl_8049E6EC[field_0x230])();
 }
 
-// FIXME(shotgun): 99.77 %, reloc-name; behaviour clean.
 void cls_8049E770::draw() {
     JGeometry::TVec3f savedPos(mPos);
     for (s32 i = 0; i < 6; i++) {
@@ -630,7 +629,7 @@ void cls_8049E770::fn_8012A8C0() {
     }
 }
 
-// FIXME(shotgun): 91.57 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.95 %, missing/extra + reloc-name; behaviour drift.
 bool cls_8049E770::fn_8012A5EC() {
     switch (field_0x230) {
     case 0:
