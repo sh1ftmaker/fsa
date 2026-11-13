@@ -455,7 +455,7 @@ void FireRodFire_804A89F0::update() {
     }
 }
 
-// FIXME: 93.58%. missing/extra + reloc-name. (field_0x268 == 2) is kept as extrwi 8,19 here, the original has srwi 5 (cntlzw result used whole).
+// FIXME: (field_0x268 == 2) is built as extrwi 8,19 here; the original keeps cntlzw + srwi 5 for it.
 void FireRodFire_804A89F0::draw() {
     if (field_0x264 != 5 && field_0x264 != 6) {
         JGeometry::TVec3f pos = mPos;
@@ -466,7 +466,10 @@ void FireRodFire_804A89F0::draw() {
                 return;
             }
             if (field_0x264 == 1) {
-                if (fn_8022CCAC(field_0x260) || fn_80230188(field_0x260)) {
+                if (fn_8022CCAC(field_0x260)) {
+                    return;
+                }
+                if (fn_80230188(field_0x260)) {
                     return;
                 }
             }
