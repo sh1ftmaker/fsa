@@ -163,7 +163,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 94.29 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.27 %, missing/extra; behaviour near.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
