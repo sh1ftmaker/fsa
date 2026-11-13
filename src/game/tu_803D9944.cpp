@@ -227,7 +227,7 @@ void cls_804B0478::update() {
         field_0x240 = 0;
         mState = 7;
         // fall through
-    case 7: {
+    case 7:
         field_0x244++;
         if (field_0x234 == 0) {
             field_0x24c = lbl_804B03E8.a[field_0x240];
@@ -280,7 +280,6 @@ void cls_804B0478::update() {
             }
         }
         break;
-    }
     }
     if (field_0x234 > 0) {
         field_0x234--;
