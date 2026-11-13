@@ -308,7 +308,9 @@ void cls_804A51E4::fn_801E1AB4(bool arg) {
     if (arg) {
         kind = 2;
         found = true;
-        pos = mPos;
+        pos.x = mPos.x;
+        pos.y = mPos.y;
+        pos.z = mPos.z;
     } else {
         ActorBase_804A5770* target = NULL;
         s32 serial = field_0x2ac;
@@ -327,7 +329,9 @@ void cls_804A51E4::fn_801E1AB4(bool arg) {
                 target = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             }
         }
-        pos = target->mPos;
+        pos.x = target->mPos.x;
+        pos.y = target->mPos.y;
+        pos.z = target->mPos.z;
         s32 state = ((ForceGem_804AB6D8*)target)->field_0x230;
         kind = target->field_0x90;
         if (state == 0 || (u32)(state - 0xF) <= 1 || (u32)(state - 1) <= 1 || state == 9 || state == 0xD) {
