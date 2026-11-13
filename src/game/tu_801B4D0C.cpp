@@ -47,7 +47,7 @@ void cls_804A38D4::init() {
     for (s32 i = 0; i < 3; i++) {
         mEmitters294[i] = NULL;
     }
-    for (s32 i = 0; i < 20; i++) {
+    for (int i = 0; i < 20; i++) {
         mEmitters2A0[i] = NULL;
     }
     lbl_8053ABF8 = 0;
@@ -55,7 +55,8 @@ void cls_804A38D4::init() {
     field_0x250 = (field_0x90 >> 4) & 0xF;
     field_0x254 = field_0x90 & 0xF;
     if (field_0x250 == 0 && field_0x254 == 0) {
-        JGeometry::TBox2f box = getGameView_802D6A9C()->mVisibleBox;
+        JGeometry::TBox2f box;
+        box = getGameView_802D6A9C()->mVisibleBox;
         JGeometry::TVec3f pos = mPos;
         pos.x = box.i.x + 0.5f * (box.f.x - box.i.x);
         pos.y = box.i.y + 0.5f * (box.f.y - box.i.y);
