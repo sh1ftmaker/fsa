@@ -187,7 +187,7 @@ public:
     /* 0x002C */ PaneCtrl_804AF86C* field_0x2c[8];
     /* 0x004C */ PaneCtrl_804AF86C* field_0x4c;
     /* 0x0050 */ u32 field_0x50;
-    /* 0x0054 */ s32 field_0x54; // the message the screen shows
+    /* 0x0054 */ u32 field_0x54; // the message the screen shows
     /* 0x0058 */ f32 field_0x58; // the two message boxes' x / y positions and widths (ctor)
     /* 0x005C */ f32 field_0x5c;
     /* 0x0060 */ f32 field_0x60;

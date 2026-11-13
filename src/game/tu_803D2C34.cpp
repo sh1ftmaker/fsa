@@ -16,7 +16,14 @@
 #include "game/act/tu_80440BF4.h"
 
 typedef void (cls_804B0288::*StateFunc_804B0288)();
-extern StateFunc_804B0288 lbl_804B0168[24];
+StateFunc_804B0288 lbl_804B0168[24] = {
+    &cls_804B0288::fn_803D4770, &cls_804B0288::fn_803D4484, &cls_804B0288::fn_803D4298, &cls_804B0288::fn_803D4068,
+    &cls_804B0288::fn_803D3EC8, &cls_804B0288::fn_803D3D50, &cls_804B0288::fn_803D3C90, &cls_804B0288::fn_803D3B38,
+    &cls_804B0288::fn_803D39C8, &cls_804B0288::fn_803D3928, &cls_804B0288::fn_803D3898, &cls_804B0288::fn_803D373C,
+    &cls_804B0288::fn_803D35F0, &cls_804B0288::fn_803D35C4, &cls_804B0288::fn_803D3460, &cls_804B0288::fn_803D335C,
+    &cls_804B0288::fn_803D3214, &cls_804B0288::fn_803D3180, &cls_804B0288::fn_803D3108, &cls_804B0288::fn_803D3060,
+    &cls_804B0288::fn_803D2FFC, &cls_804B0288::fn_803D2E10, &cls_804B0288::fn_803D2C9C, &cls_804B0288::fn_803D2C34,
+};
 
 // The three load/save results all stamp the current save file the same way.
 static inline void touchCurrentFile() {
@@ -34,7 +41,7 @@ static inline void touchCurrentFile() {
 // The tags of the eight border panes.
 static const u64 lbl_80476F20[8] = {'Psl01', 'Psl02', 'Psl03', 'Psl04', 'Psl05', 'Psl06', 'Psl07', 'Psl08'};
 
-// FIXME(shotgun): 97.1 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.11 %, missing/extra; behaviour drift.
 cls_804B0288::cls_804B0288(JKRArchive* archive, bool flag) {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053ADB8 = this;
@@ -108,7 +115,6 @@ cls_804B0288::cls_804B0288(JKRArchive* archive, bool flag) {
     field_0x86 = 0;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name (the vtable symbol)
 cls_804B0288::~cls_804B0288() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     delete mScreen;
@@ -134,7 +140,6 @@ cls_804B0288::~cls_804B0288() {
     lbl_8053ADB8 = NULL;
 }
 
-// FIXME(shotgun): 99.86 %, reloc-name
 void cls_804B0288::fn_803D5554() {
     lbl_8053AEC0->fn_804310CC();
     field_0x54 = 0;
@@ -180,7 +185,8 @@ void cls_804B0288::fn_803D5554() {
     lbl_80529DEC.field_0x243[0] = 0;
 }
 
-// FIXME(shotgun): 92.28 %, missing/extra (one more saved register: the bounce step)
+// FIXME(shotgun): 92.50 %, missing/extra; behaviour near.
+// (one more saved register: the bounce step)
 void cls_804B0288::fn_803D521C() {
     gGameRoot2_8053AB10->fn_8013B490();
     if (field_0x216f == 3) {
@@ -234,7 +240,7 @@ void cls_804B0288::fn_803D521C() {
     }
 }
 
-// FIXME(shotgun): 99.95 %, scheduling
+// FIXME(shotgun): 99.95 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D5090() {
     if (field_0x2174 == 1) {
         lbl_8053AEC0->fn_80431174(field_0x2170);
@@ -277,70 +283,74 @@ void cls_804B0288::fn_803D5090() {
     }
 }
 
-// FIXME(shotgun): 90.1 %, missing/extra + reloc-name
+// FIXME: 99.99 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): stack slots of the f32 locals b/c are swapped vs. original
 void cls_804B0288::fn_803D4DB0() {
-    if (field_0x54 == field_0x50 || field_0x54 == 0) {
+    if (field_0x54 == field_0x50) {
         return;
     }
-    if (field_0x2174 != 0) {
-        if (field_0x2174 == 1) {
-            field_0x2174 = 3;
-        }
+    if (field_0x54 == 0) {
         return;
     }
-    field_0x50 = field_0x54;
-    u32 msg = field_0x50;
-    if (msg == 0x6B || (msg >= 0x6C && msg <= 0x6E) || (msg >= 0x70 && msg <= 0x71) || msg == 0x77 || msg == 0x7C) {
-        lbl_8053AEC0->fn_80431A9C(msg, 0, NULL);
-        field_0x2173 = 0;
-        field_0x2174 = 2;
-        if (field_0x216f != 0) {
-            field_0x1c[0]->field_0x22 = 0;
-            field_0x1c[1]->field_0x22 = 0;
-            field_0x216f = 2;
-        }
-        strcpy(field_0x10->getStringPtr(), "");
-    } else {
-        char* yes = static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->getStringPtr();
-        char* no = static_cast<J2DTextBox*>(mScreen->search('Tno01'))->getStringPtr();
-        fn_80382B48(field_0x88, field_0x50, 0, yes, no);
-        msg = field_0x50;
-        if (msg == 0x6F || msg == 0x72 || msg == 0x76 || msg == 0x7B || msg == 0x7D || msg == 0x82 || msg == 0x86 ||
-            msg == 0x87) {
-            f32 a, b, c, d;
-            fn_8037EB0C(&a, &b, &c, &d, &field_0x2170);
-            if (field_0x216f != 3) {
-                field_0x1c[0]->field_0x22 = 0;
-                field_0x1c[1]->field_0x22 = 0;
-                field_0x216f = 1;
-            }
-            for (s32 i = 0; (s8)yes[i] != 0; i++) {
-                if ((u8)yes[i] == 0x81 && (u8)yes[i + 1] == 0x40) {
-                    yes[i] = 0;
-                    break;
-                }
-            }
-            strcpy(field_0x10->getStringPtr(), field_0x88);
-        } else {
+    if (field_0x2174 == 0) {
+        field_0x50 = field_0x54;
+        u32 msg = field_0x50;
+        if (msg == 0x6B || msg - 0x6C <= 2 || msg - 0x70 <= 1 || msg == 0x77 || msg == 0x7C) {
+            lbl_8053AEC0->fn_80431A9C(msg, 0, NULL);
+            field_0x2173 = 0;
+            field_0x2174 = 2;
             if (field_0x216f != 0) {
                 field_0x1c[0]->field_0x22 = 0;
                 field_0x1c[1]->field_0x22 = 0;
                 field_0x216f = 2;
             }
-            strcpy(field_0x10->getStringPtr(), field_0x88);
+            strcpy(field_0x10->getStringPtr(), "");
+        } else {
+            char* yes = static_cast<J2DTextBox*>(mScreen->search('Tyes01'))->getStringPtr();
+            char* no = static_cast<J2DTextBox*>(mScreen->search('Tno01'))->getStringPtr();
+            fn_80382B48(field_0x88, field_0x50, 0, yes, no);
+            msg = field_0x50;
+            if (msg == 0x6F || msg == 0x72 || msg == 0x76 || msg == 0x7B || msg == 0x7D || msg == 0x82 || msg == 0x86 ||
+                msg == 0x87) {
+                f32 a, b, c, d;
+                fn_8037EB0C(&a, &b, &c, &d, &field_0x2170);
+                if (field_0x216f != 3) {
+                    field_0x1c[0]->field_0x22 = 0;
+                    field_0x1c[1]->field_0x22 = 0;
+                    field_0x216f = 1;
+                }
+                for (s32 i = 0; (s8)yes[i] != 0; i++) {
+                    if ((u8)yes[i] == 0x81 && (u8)yes[i + 1] == 0x40) {
+                        yes[i] = 0;
+                        break;
+                    }
+                }
+                strcpy(field_0x10->getStringPtr(), field_0x88);
+            } else {
+                if (field_0x216f != 0) {
+                    field_0x1c[0]->field_0x22 = 0;
+                    field_0x1c[1]->field_0x22 = 0;
+                    field_0x216f = 2;
+                }
+                strcpy(field_0x10->getStringPtr(), field_0x88);
+            }
+        }
+        if (field_0x2177 != 0) {
+            field_0x84 = 0;
+            strcpy(field_0xc->getStringPtr(), field_0x88);
+            field_0x216c = 0;
+        } else {
+            field_0x54 = field_0x50;
+            field_0x86 = 0;
+            field_0x216c = 1;
+        }
+        field_0xc->setAlpha(0xFF);
+        field_0x10->setAlpha(0);
+    } else {
+        if (field_0x2174 == 1) {
+            field_0x2174 = 3;
         }
     }
-    if (field_0x2177 != 0) {
-        field_0x84 = 0;
-        strcpy(field_0xc->getStringPtr(), field_0x88);
-        field_0x216c = 0;
-    } else {
-        field_0x54 = field_0x50;
-        field_0x86 = 0;
-        field_0x216c = 1;
-    }
-    field_0xc->setAlpha(0xFF);
-    field_0x10->setAlpha(0);
 }
 
 // The pane's box size (its global bounds), against the size the PaneCtrl stored when it was set.
@@ -351,47 +361,43 @@ static inline f32 paneH(PaneCtrl_804AF86C* c) {
     return c->mPane->getHeight();
 }
 
-// FIXME(shotgun): 73.8 %, missing/extra
+// FIXME(shotgun): 88.81 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D49A4() {
-    PaneCtrl_804AF86C* tl = field_0x2c[0];
-    PaneCtrl_804AF86C* tr = field_0x2c[1];
-    PaneCtrl_804AF86C* bl = field_0x2c[2];
-    PaneCtrl_804AF86C* br = field_0x2c[3];
-    f32 w0 = tl->field_0x18;
-    f32 wide = paneW(tl);
-    tl->moveFromCentre_80402E08(-(0.5f * (wide - w0)), -(0.5f * (paneH(tl) - tl->field_0x1c)));
-    tr->moveFromCentre_80402E08(0.5f * (paneW(tr) - tr->field_0x18), -(0.5f * (paneH(tr) - tr->field_0x1c)));
-    bl->moveFromCentre_80402E08(-(0.5f * (paneW(bl) - bl->field_0x18)), 0.5f * (paneH(bl) - bl->field_0x1c));
-    br->moveFromCentre_80402E08(0.5f * (paneW(br) - br->field_0x18), 0.5f * (paneH(br) - br->field_0x1c));
+    f32 w0 = field_0x2c[0]->field_0x18;
+    f32 wide = paneW(field_0x2c[0]);
+    field_0x2c[0]->moveFromCentre_80402E08(-(0.5f * (wide - w0)), -(0.5f * (paneH(field_0x2c[0]) - field_0x2c[0]->field_0x1c)));
+    field_0x2c[1]->moveFromCentre_80402E08(0.5f * (paneW(field_0x2c[1]) - field_0x2c[1]->field_0x18), -(0.5f * (paneH(field_0x2c[1]) - field_0x2c[1]->field_0x1c)));
+    field_0x2c[2]->moveFromCentre_80402E08(-(0.5f * (paneW(field_0x2c[2]) - field_0x2c[2]->field_0x18)), 0.5f * (paneH(field_0x2c[2]) - field_0x2c[2]->field_0x1c));
+    field_0x2c[3]->moveFromCentre_80402E08(0.5f * (paneW(field_0x2c[3]) - field_0x2c[3]->field_0x18), 0.5f * (paneH(field_0x2c[3]) - field_0x2c[3]->field_0x1c));
     if (wide / w0 < 1.0f) {
         PaneCtrl_804AF86C* top = field_0x2c[4];
-        top->fn_80402CE0((2.0f * (tl->field_0x18 - paneW(tl)) + top->field_0x18) / top->field_0x18, top->field_0x1c);
+        top->fn_80402CE0((2.0f * (field_0x2c[0]->field_0x18 - paneW(field_0x2c[0])) + top->field_0x18) / top->field_0x18, top->field_0x1c);
         top->moveFromCentre_80402E08(0.0f, 0.0f);
         PaneCtrl_804AF86C* bottom = field_0x2c[5];
-        bottom->fn_80402CE0((2.0f * (tr->field_0x18 - paneW(tr)) + bottom->field_0x18) / bottom->field_0x18,
+        bottom->fn_80402CE0((2.0f * (field_0x2c[1]->field_0x18 - paneW(field_0x2c[1])) + bottom->field_0x18) / bottom->field_0x18,
                             bottom->field_0x1c);
         bottom->moveFromCentre_80402E08(0.0f, 0.0f);
         PaneCtrl_804AF86C* left = field_0x2c[6];
-        left->fn_80402CE0((paneW(tl) + paneW(tr)) / left->field_0x18,
-                          (2.0f * (bl->field_0x1c - paneH(bl)) + left->field_0x1c) / left->field_0x1c);
+        left->fn_80402CE0((paneW(field_0x2c[0]) + paneW(field_0x2c[1])) / left->field_0x18,
+                          (2.0f * (field_0x2c[2]->field_0x1c - paneH(field_0x2c[2])) + left->field_0x1c) / left->field_0x1c);
         left->moveFromCentre_80402E08(0.0f, 0.0f);
         PaneCtrl_804AF86C* right = field_0x2c[7];
-        right->fn_80402CE0((paneW(bl) + paneW(br)) / right->field_0x18,
-                           (2.0f * (br->field_0x1c - paneH(br)) + right->field_0x1c) / right->field_0x1c);
+        right->fn_80402CE0((paneW(field_0x2c[2]) + paneW(field_0x2c[3])) / right->field_0x18,
+                           (2.0f * (field_0x2c[3]->field_0x1c - paneH(field_0x2c[3])) + right->field_0x1c) / right->field_0x1c);
         right->moveFromCentre_80402E08(0.0f, 0.0f);
     } else {
         PaneCtrl_804AF86C* top = field_0x2c[4];
-        top->moveFromCentre_80402E08(-(0.5f * (paneW(top) - top->field_0x18) + (paneW(tl) - tl->field_0x18)), 0.0f);
+        top->moveFromCentre_80402E08(-(0.5f * (paneW(top) - top->field_0x18) + (paneW(field_0x2c[0]) - field_0x2c[0]->field_0x18)), 0.0f);
         PaneCtrl_804AF86C* bottom = field_0x2c[5];
-        bottom->moveFromCentre_80402E08(0.5f * (paneW(bottom) - bottom->field_0x18) + (paneW(tr) - tr->field_0x18), 0.0f);
+        bottom->moveFromCentre_80402E08(0.5f * (paneW(bottom) - bottom->field_0x18) + (paneW(field_0x2c[1]) - field_0x2c[1]->field_0x18), 0.0f);
         PaneCtrl_804AF86C* left = field_0x2c[6];
-        left->moveFromCentre_80402E08(0.0f, -(0.5f * (paneH(left) - left->field_0x1c) + (paneH(bl) - bl->field_0x1c)));
+        left->moveFromCentre_80402E08(0.0f, -(0.5f * (paneH(left) - left->field_0x1c) + (paneH(field_0x2c[2]) - field_0x2c[2]->field_0x1c)));
         PaneCtrl_804AF86C* right = field_0x2c[7];
-        right->moveFromCentre_80402E08(0.0f, 0.5f * (paneH(right) - right->field_0x1c) + (paneH(br) - br->field_0x1c));
+        right->moveFromCentre_80402E08(0.0f, 0.5f * (paneH(right) - right->field_0x1c) + (paneH(field_0x2c[3]) - field_0x2c[3]->field_0x1c));
     }
 }
 
-// FIXME(shotgun): 98.44 %, regalloc-only
+// FIXME(shotgun): 98.58 %, regalloc-only; behaviour clean.
 void cls_804B0288::fn_803D4770() {
     bool done1 = false;
     u8 done2 = 0;
@@ -445,7 +451,8 @@ void cls_804B0288::fn_803D4770() {
     }
 }
 
-// FIXME(shotgun): 91.71 %, missing/extra (register allocation of the loop counters)
+// FIXME(shotgun): 92.03 %, missing/extra; behaviour drift.
+// (register allocation of the loop counters)
 void cls_804B0288::fn_803D4484() {
     s16 fadeStart = lbl_8050DB0C.field_0x4c[(0xE4 - 0x4C) / 2];
     s16 fadeLength = lbl_8050DB0C.field_0x4c[(0xE6 - 0x4C) / 2];
@@ -506,7 +513,7 @@ void cls_804B0288::fn_803D4484() {
     }
 }
 
-// FIXME(shotgun): 94.63 %, scheduling+regalloc
+// FIXME(shotgun): 94.63 %, scheduling+regalloc; behaviour clean.
 void cls_804B0288::fn_803D4298() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -560,7 +567,7 @@ void cls_804B0288::fn_803D4298() {
     }
 }
 
-// FIXME(shotgun): 99.96 %, scheduling
+// FIXME(shotgun): 99.96 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D4068() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -609,7 +616,7 @@ void cls_804B0288::fn_803D4068() {
     }
 }
 
-// FIXME(shotgun): 98.56 %, scheduling+regalloc
+// FIXME(shotgun): 98.56 %, scheduling+regalloc; behaviour clean.
 void cls_804B0288::fn_803D3EC8() {
     u8 done1 = 0;
     u8 done2 = 0;
@@ -647,7 +654,6 @@ void cls_804B0288::fn_803D3EC8() {
     }
 }
 
-// FIXME(shotgun): 99.84 %, reloc-name (the jump table)
 void cls_804B0288::fn_803D3D50() {
     switch (lbl_8051C1A0.fn_803B9940(0)) {
     case 0:
@@ -930,7 +936,8 @@ void cls_804B0288::fn_803D3460() {
     }
 }
 
-// FIXME(shotgun): 93.54 %, missing/extra (the three save-file index setups)
+// FIXME(shotgun): 93.54 %, missing/extra; behaviour near.
+// (the three save-file index setups)
 void cls_804B0288::fn_803D335C() {
     lbl_8050EC80.fn_803B93E8(field_0x1c0, field_0x420, 0);
     fn_803BACF8(field_0x1c0, 0);
@@ -947,7 +954,7 @@ void cls_804B0288::fn_803D335C() {
     field_0x216c = 0x10;
 }
 
-// FIXME(shotgun): 78.1 %, missing/extra
+// FIXME(shotgun): 78.13 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D3214() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 1) {
@@ -1011,7 +1018,7 @@ void cls_804B0288::fn_803D3060() {
     }
 }
 
-// FIXME(shotgun): 99.80 %, scheduling
+// FIXME(shotgun): 99.80 %, scheduling; behaviour clean.
 void cls_804B0288::fn_803D2FFC() {
     if (field_0x7c > 0) {
         field_0x7c--;
@@ -1029,7 +1036,7 @@ void cls_804B0288::fn_803D2FFC() {
     }
 }
 
-// FIXME(shotgun): 90.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.23 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0288::fn_803D2E10() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
@@ -1067,7 +1074,8 @@ void cls_804B0288::fn_803D2E10() {
     }
 }
 
-// FIXME(shotgun): 89.2 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.70 %, missing/extra; behaviour drift.
+// the flag bytes are reached through an extra addi 0x20 (the row view of the save file)
 void cls_804B0288::fn_803D2C9C() {
     s32 result = lbl_8051C1A0.fn_803B9A94(field_0x1c0, 0x258, field_0x420, 0x1D4C, 0);
     if (result == 0) {
@@ -1076,7 +1084,14 @@ void cls_804B0288::fn_803D2C9C() {
     if (result == 1) {
         if (lbl_8050EC80.field_0x8 == lbl_8051C1A0.field_0x1ff8) {
             fn_803BADAC(&field_0x1c0[lbl_8050EC80.mCurrentFile]);
-            touchCurrentFile();
+            OSTime time = OSGetTime();
+            lbl_8050EC80.getCurrentFile().field_0x0 = time;
+            if ((lbl_8050EC80.getCurrentFile().field_0x65 & 1) == 0) {
+                lbl_8050EC80.getCurrentFile().field_0x65 |= 1;
+            }
+            if (lbl_8050EC80.getCurrentFile().mFlags & 1) {
+                lbl_8050EC80.getCurrentFile().field_0x65 |= 2;
+            }
             field_0x54 = 0x7E;
             field_0x2177 = 0;
             field_0x216d = 0x12;
