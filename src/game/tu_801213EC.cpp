@@ -367,8 +367,8 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
     }
     u16 angle = 0;
     s32 dir = 0;
-    f32 dist = 0.0f;
     s32 who = 0;
+    f32 dist = 0.0f;
     vfunc_0xA0(&angle, &dir, &dist, &who, player);
     if (gGameRoot_8053AAF8->fn_80138A30() == 1 && fn_8022CAF8(player) == 5) {
         arg6 = 2.0f * arg6;
@@ -399,7 +399,6 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
         if (index >= 0x30) {
             index = 0x30;
         }
-        bool above = false;
         if (fn_8023EA28(player) && fn_802265FC(&mPos, 0)) {
             s32 pslot = player;
             for (s32 i = 0; i < 4; i++) {
@@ -408,18 +407,14 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
                     break;
                 }
             }
-            if (!(fn_80234E30(pslot) || fn_80235448(player))) {
-                above = true;
+            if (fn_80234E30(pslot) || fn_80235448(player)) {
+                mPos = *fn_8023E4E4(player, index);
+            } else {
+                mPos.x = fn_8023E4E4(player, index)->x;
+                mPos.y += 5.0f;
             }
-        }
-        if (above) {
-            mPos.x = fn_8023E4E4(player, index)->x;
-            mPos.y += 5.0f;
         } else {
-            JGeometry::TVec3f* target = fn_8023E4E4(player, index);
-            mPos.x = target->x;
-            mPos.y = target->y;
-            mPos.z = target->z;
+            mPos = *fn_8023E4E4(player, index);
         }
         f32 dx = mPos.x - getPlayerPos_8023E724(player)->x;
         f32 dy = mPos.y - getPlayerPos_8023E724(player)->y;
