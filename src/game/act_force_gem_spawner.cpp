@@ -89,12 +89,14 @@ void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
         f32 vx = 2.0f * JMASSin(angle);
         f32 vy = 2.0f * JMASCos(angle);
         f32 vz = 3.0f + 3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-        gem->field_0x3c.set(vx, vy, vz);
+        JGeometry::TVec3f vel(vx, vy, vz);
+        gem->field_0x3c = vel;
     } else {
         f32 vz = 3.0f + 3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         f32 vy = 2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         f32 vx = 2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-        gem->field_0x3c.set(vx, vy, vz);
+        JGeometry::TVec3f vel(vx, vy, vz);
+        gem->field_0x3c = vel;
     }
 }
 
