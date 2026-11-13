@@ -24,7 +24,7 @@ GreatFairy_804AF338::~GreatFairy_804AF338() {
     }
 }
 
-// FIXME(shotgun): 92.15 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.49 %, scheduling+regalloc + reloc-name; behaviour drift.
 void GreatFairy_804AF338::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
