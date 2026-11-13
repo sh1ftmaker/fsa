@@ -369,7 +369,7 @@ s32 GameRoot_8049EF20::fn_80138A30() {
 // The per-frame update (the counterpart of fn_80136828): polls the pads, then runs the screen of the current
 // mode (field_0x4c) and, once it asks for another one (field_0x50), the fade and load sequence of field_0x58.
 //
-// FIXME(shotgun): 95.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.60 %, missing/extra + reloc-name; behaviour drift.
 // (one fn_802DEBF8 call folded; the saved-register set differs;
 // the target loads field_0x4 into r3 before each fn_80139D70 call).
 void GameRoot_8049EF20::fn_80137300() {
@@ -950,7 +950,6 @@ void GameRoot_8049EF20::fn_80137300() {
 
 // main calls it each frame between beginRender and endRender: draws the screen
 // of the current mode (field_0x4c), then the fade objects.
-// FIXME: 99.98 %, reloc-name; behaviour drift.
 void GameRoot_8049EF20::fn_80136828() {
     j3dSys.drawInit();
     if (field_0x58 != 8 && field_0xfd != 2) {
@@ -1346,7 +1345,7 @@ bool GameRoot_8049EF20::fn_80136320() {
 
 // Switches to game mode `mode`: deletes the other modes' screens, reports the
 // heap and starts loading the mode's archives (fn_80401E10) or screen.
-// FIXME: 99.78 %, reloc-name; behaviour drift.
+// FIXME: 99.80 %, same-text; behaviour drift.
 // Code identical; jump table @NNN vs jumptable_8049EF94 (as fn_80135020).
 void GameRoot_8049EF20::fn_80135A04(s32 mode) {
     if (field_0x84 != 0) {
@@ -1614,8 +1613,6 @@ void GameRoot_8049EF20::fn_80135494(s32 mode) {
 }
 
 // Deletes the screen object of game mode `mode` (see fn_80135020).
-// FIXME: 99.86 %, reloc-name; behaviour drift.
-// Code identical; jump table @NNN vs jumptable_8049EF60 (as fn_80135020).
 void GameRoot_8049EF20::fn_801352F4(s32 mode) {
     switch (mode) {
     case 7:
@@ -1667,10 +1664,6 @@ void GameRoot_8049EF20::fn_801352F4(s32 mode) {
 
 // Creates the screen object of game mode `mode` unless it exists; the menu
 // screens are made in field_0x98 under heap group ID 1.
-// FIXME: 99.92 %, reloc-name; behaviour drift.
-// Code identical; the switch's jump table is @NNN, not
-// jumptable_8049EF2C (the .data order puts it after the vtable, project-wide
-// jump-table order issue, docs/GAME_PLAN.md).
 void GameRoot_8049EF20::fn_80135020(s32 mode) {
     switch (mode) {
     case 7:
@@ -1766,7 +1759,8 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
-// FIXME: 99.79 %, arg_mismatch on the rumble pattern offsets (0xD0, 0x158..0x188); behaviour clean.
+// FIXME: 96.40 %, different; behaviour clean.
+// arg_mismatch on the rumble pattern offsets (0xD0, 0x158..0x188); behaviour clean.
 // 0x80134DE4
 void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     cls_8049ED88* table = &lbl_8049ED88;
