@@ -293,10 +293,10 @@ void cls_804A1318::draw() {
     mtx[2][3] = 0.0f;
     params.field_0x1f = 0;
     params.field_0x2d = 1;
+    f32 scaleX = 0.0f;
+    f32 scaleY = 0.0f;
     if (field_0x90 == 0 || field_0x90 == 1) {
         mPos.z = 0.0f;
-        f32 scaleX = 0.0f;
-        f32 scaleY = 0.0f;
         void* res;
         switch (field_0x27c) {
         case 0:
