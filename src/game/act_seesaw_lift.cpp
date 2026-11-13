@@ -25,10 +25,10 @@ static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 static const u16 lbl_80542868[2] = {864, 12};
 
 // Writes tile `tile` over the lift's 6 x 6 tile area.
-static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
+static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile, s32 state) {
     JGeometry::TVec3f p = lift->mPos + JGeometry::TVec3f(lift->mBox.i.x, lift->mBox.i.y, 0.0f);
     f32 baseY = p.y;
-    lift->field_0x258 = 0;
+    lift->field_0x258 = state;
     for (s32 row = 0; row < 6; row++) {
         for (s32 col = 0; col < 6; col++) {
             gBgRewrite_8053AC98->fn_802A381C(&p, lift->field_0x4, tile);
@@ -76,7 +76,7 @@ void SeesawLift_804AD348::init() {
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    fillTiles(this, 864);
+    fillTiles(this, 864, 0);
 }
 
 // FIXME: 90.92 %, scheduling+regalloc + reloc-name; behaviour clean.
@@ -345,8 +345,7 @@ void SeesawLift_804AD348::fn_8035A210() {
         field_0x23a = (field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f;
     }
     if (field_0x238 == 0 && field_0x23a != 0) {
-        fillTiles(this, lbl_80542868[1]);
-        field_0x258 = 1;
+        fillTiles(this, lbl_80542868[1], 1);
     }
     field_0x238 += field_0x23a;
     s16 oldAngle = field_0x230;
@@ -480,8 +479,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     if (mask != 0) {
         if (field_0x238 == 0 && field_0x240 != 0.0f) {
             field_0x254 = 30;
-            fillTiles(this, lbl_80542868[1]);
-            field_0x258 = 1;
+            fillTiles(this, lbl_80542868[1], 1);
             if (field_0x240 > 0.0f) {
                 field_0x238 = 0x200;
             } else if (field_0x240 < 0.0f) {
@@ -529,7 +527,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
     if (field_0x230 == 0 || field_0x230 == -0x8000) {
         if (field_0x238 != 0) {
-            fillTiles(this, lbl_80542868[0]);
+            fillTiles(this, lbl_80542868[0], 0);
             field_0x238 = 0;
         }
     }
@@ -639,7 +637,7 @@ void SeesawLift_804AD348::fn_80358F98() {
             field_0x238 = 0;
             field_0x23a = 0;
             field_0x245 = 0;
-            fillTiles(this, 864);
+            fillTiles(this, 864, 0);
         }
     } else {
         if (field_0x230 >= 0x3E00) {
@@ -651,7 +649,7 @@ void SeesawLift_804AD348::fn_80358F98() {
             field_0x238 = 0;
             field_0x23a = 0;
             field_0x245 = 0;
-            fillTiles(this, 864);
+            fillTiles(this, 864, 0);
         }
     }
     if (oldAngle == 0 && field_0x230 != 0) {
@@ -660,8 +658,7 @@ void SeesawLift_804AD348::fn_80358F98() {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E0, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E1, 0, 0, NULL, NULL, true, 1.0f);
         field_0x245 = 1;
-        fillTiles(this, 12);
-        field_0x258 = 1;
+        fillTiles(this, 12, 1);
     }
 }
 
@@ -818,7 +815,7 @@ void SeesawLift_804AD348::fn_803584C0() {
         field_0x238 = 0;
         field_0x23a = 0;
         field_0x245 = 0;
-        fillTiles(this, 864);
+        fillTiles(this, 864, 0);
         if (field_0x250 == 0) {
             field_0x250 = -1;
         }
@@ -829,7 +826,7 @@ void SeesawLift_804AD348::fn_803584C0() {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E0, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E1, 0, 0, NULL, NULL, true, 1.0f);
         field_0x245 = 1;
-        fillTiles(this, 12);
+        fillTiles(this, 12, 0);
         field_0x258 = 1;
     }
     if (field_0x230 != 0) {
