@@ -473,7 +473,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
     return count;
 }
 
-// FIXME(shotgun): 92.87 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.59 %, scheduling+regalloc; behaviour drift.
 s32 OBJLift_804ACA00::fn_803506E0() {
     static JGeometry::TVec2f lbl_8050AED8[4] = {
         JGeometry::TVec2f(32.0f, 0.0f),
@@ -578,6 +578,7 @@ s32 OBJLift_804ACA00::fn_80350530() {
 
 // 0x803502CC.
 // Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
+// FIXME: 95.24 %, missing/extra; behaviour near.
 u8 OBJLift_804ACA00::fn_803502CC() {
     JGeometry::TBox2f saved = field_0x80;
     if (field_0x258 == 4) {
@@ -625,7 +626,8 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x8035001C.
-// FIXME(shotgun): 77.16 %, missing/extra; behaviour drift. Cases 5-6 reload field_0x260 and the switch has no jump table.
+// FIXME(shotgun): 77.16 %, missing/extra; behaviour drift.
+// Cases 5-6 reload field_0x260 and the switch has no jump table.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
