@@ -289,7 +289,7 @@ void Cucco_804AB8C0::fn_80332A60() {
     field_0xb0 = 0x1000;
 }
 
-// FIXME(shotgun): 92.11 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.14 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::fn_803324A8() {
     f32 outDist = 0.0f;
     s32 outDir = -1;
