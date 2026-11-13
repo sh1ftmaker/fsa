@@ -128,7 +128,7 @@ void cls_804A8578::fn_802B1610(s32 port, void* arg) {
         }
         lbl_80529DEC.mSaveRegion.f.field_0xb = 1;
         lbl_8053ACA8->field_0x6 = 1;
-        if ((u8)port <= 3) {
+        if (port >= 0 && port <= 3) {
             lbl_80529DEC.mSaveRegion.f.field_0xc = port;
             lbl_8053ACA8->field_0x7 = port;
         } else {
