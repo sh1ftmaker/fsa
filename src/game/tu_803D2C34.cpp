@@ -464,14 +464,12 @@ void cls_804B0288::fn_803D4484() {
     flags[2] = 0;
     flags[1] = 0;
     flags[0] = 0;
-    s32 offset = 0;
     field_0x86++;
     if (field_0x216f == 1) {
         for (s32 i = 0; i < 2; i++) {
-            if (field_0x86 > start + offset) {
+            if (field_0x86 > start + i * stagger) {
                 flags[i] = field_0x1c[i]->fn_80402940(length, 0, 200.0f, 0.0f);
             }
-            offset += stagger;
         }
         if (flags[0] && flags[1]) {
             field_0x216f = 3;
@@ -480,16 +478,15 @@ void cls_804B0288::fn_803D4484() {
         }
     } else if (field_0x216f == 2) {
         for (s32 i = 0; i < 2; i++) {
-            if (field_0x86 > start + offset) {
+            if (field_0x86 > start + i * stagger) {
                 flags[i] = field_0x1c[i]->fn_80402940(length, 0, 0.0f, 200.0f);
             }
-            offset += stagger;
         }
         if (field_0x86 > start + 1) {
             field_0x28->mPane->hide();
-            if (flags[0] && flags[1]) {
-                field_0x216f = 0;
-            }
+        }
+        if (flags[0] && flags[1]) {
+            field_0x216f = 0;
         }
     } else {
         flags[1] = 1;
