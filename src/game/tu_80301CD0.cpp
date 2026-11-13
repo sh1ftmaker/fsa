@@ -1,4 +1,5 @@
 #include "game/GameAudio.h"
+#include "game/GameMode.h"
 #include "game/GameGlobals.h"
 #include "game/Map.h"
 #include "game/RotMatrix.h"
@@ -864,7 +865,7 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
 // Remaining: register order in the record stores (scheduling+regalloc).
-// FIXME: 89.62 %, missing/extra; behaviour drift.
+// FIXME: 94.10 %, missing/extra; behaviour near.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 count = 0;
@@ -875,7 +876,7 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
         for (s32 i = 0; i < 16; i++) {
             if (sprite->mActive == 1 && sprite->mTimer == timer) {
                 if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
-                    ((gGameRoot_8053AAF8->field_0x4c == 11 || gGameRoot_8053AAF8->field_0x88 != 0) &&
+                    ((isGameMode(11) || gGameRoot_8053AAF8->field_0x88 != 0) &&
                      sprite->field_0x23 == 0)) {
                     sprite->mRemove = 1;
                     sprite++;
@@ -897,11 +898,11 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
                     big++;
                 }
                 count++;
+                sprite->mRemove = 1;
                 dst->f.field_0x3_0 = x >> 8;
                 s32 id = sprite->mId;
                 dst->f.field_0x2 = x;
                 dst->f.field_0x1 = y;
-                sprite->mRemove = 1;
                 dst->f.field_0x3_1 = id >> 8;
                 dst->f.field_0x0 = id;
                 dst->f.mKind = sprite->field_0x20;
