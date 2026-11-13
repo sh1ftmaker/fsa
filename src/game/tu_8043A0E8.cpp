@@ -49,12 +49,11 @@ static inline f32 bottomOffset(cls_804B1920* m) {
 }
 
 static inline bool outsideBox(f32 x, f32 y, f32 px, f32 py, f32 margin) {
-    JGeometry::TBox2f box(x - 94.0f, y - 61.5f, 94.0f + x, 61.5f + y);
-    box.i.x -= margin;
-    box.i.y -= margin;
-    box.f.x = margin + box.f.x;
-    box.f.y = margin + box.f.y;
-    if (px >= box.i.x && px <= box.f.x && py >= box.i.y && py <= box.f.y) {
+    f32 left = x - 94.0f - margin;
+    f32 top = y - 61.5f - margin;
+    f32 right = margin + (94.0f + x);
+    f32 bottom = margin + (61.5f + y);
+    if (px >= left && px <= right && py >= top && py <= bottom) {
         return false;
     }
     return true;
@@ -336,8 +335,8 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     Vec screenB;
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(a, false, false, &screenA);
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(b, false, false, &screenB);
-    f32 dy = fabs(screenB.y - screenA.y);
     f32 margin = fabs(screenB.x - screenA.x);
+    f32 dy = fabs(screenB.y - screenA.y);
     margin = (margin >= dy) ? margin : dy;
     f32 cx = (screenA.x + screenB.x) * 0.5f;
     f32 cy = (screenA.y + screenB.y) * 0.5f;
