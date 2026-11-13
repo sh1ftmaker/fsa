@@ -629,6 +629,7 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 // Not auto-inlined: update calls fn_8035001C out of line in the original (docs/INLINING.md, pragma rule 1).
 // Remaining difference: the jump table's symbol name (jumptable_804ACAC8).
 #pragma auto_inline off
+// FIXME: 99.19 %, scheduling+regalloc; behaviour drift.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
