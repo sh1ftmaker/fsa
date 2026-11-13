@@ -15,7 +15,7 @@ extern const f32 lbl_8046C924[7];
 extern const f32 lbl_8046C940[7];
 extern const f32 lbl_8046C95C[7];
 
-// FIXME(shotgun): 78.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.81 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor_804A83A0::init() {
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = (field_0x90 >> 7) & 0x1F;
@@ -23,6 +23,14 @@ void TrickFloor_804A83A0::init() {
     field_0x23c = (field_0x90 >> 24) & 3;
     field_0x248 = 0.0f;
     switch (field_0x234) {
+    case 6:
+    default:
+        if (field_0x23c == 1) {
+            mBox.set(-20.0f, -20.0f, 20.0f, 20.0f);
+        } else {
+            mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);
+        }
+        break;
     case 2:
         mBox.i.x = -40.0f;
         mBox.i.y = -32.0f;
@@ -42,19 +50,6 @@ void TrickFloor_804A83A0::init() {
         mBox.f.x = 24.0f;
         mBox.f.y = 50.0f;
         field_0x248 = -0.06f;
-        break;
-    default:
-        if (field_0x23c == 1) {
-            mBox.i.x = -20.0f;
-            mBox.i.y = -20.0f;
-            mBox.f.x = 20.0f;
-            mBox.f.y = 20.0f;
-        } else {
-            mBox.i.x = -32.0f;
-            mBox.i.y = -32.0f;
-            mBox.f.x = 32.0f;
-            mBox.f.y = 32.0f;
-        }
         break;
     }
     field_0x244 = 20;
