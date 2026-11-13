@@ -1515,17 +1515,8 @@ static inline void playStageMusic(GameRoot_8049EF20* self) {
 // 0x80135494
 void GameRoot_8049EF20::fn_80135494(s32 mode) {
     bool changed = false;
-    bool ready = false;
-    if (mode == 2 && field_0x4c != 2 && field_0x4c != 5) {
-        ready = true;
-    } else if (mode == 5 && field_0x4c != 2 && field_0x4c != 5) {
-        ready = true;
-    } else if (mode == 3 || mode == 4 || mode == 6) {
-        ready = true;
-    } else if (mode == 7 && field_0x4 == 0) {
-        ready = true;
-    }
-    if (ready) {
+    if ((mode == 2 && field_0x4c != 2 && field_0x4c != 5) || (mode == 5 && field_0x4c != 2 && field_0x4c != 5) ||
+        mode == 3 || mode == 4 || mode == 6 || (mode == 7 && field_0x4 == 0)) {
         if (field_0xac->field_0x4 != 1) {
             return;
         }
@@ -1589,9 +1580,10 @@ void GameRoot_8049EF20::fn_80135494(s32 mode) {
         return;
     }
     if (changed) {
-        gGameRoot_8053AAF8->field_0xfe = 1;
-        gGameRoot_8053AAF8->field_0xfc = 0;
-        gGameRoot_8053AAF8->field_0xf8 = 0;
+        GameRoot_8049EF20* root = gGameRoot_8053AAF8;
+        root->field_0xfe = 1;
+        root->field_0xfc = 0;
+        root->field_0xf8 = 0;
         if (getGameView_802D6A9C()->field_0x3c != 0) {
             field_0x60 = 0;
             return;
