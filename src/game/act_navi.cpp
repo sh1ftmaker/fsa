@@ -79,7 +79,8 @@ cls_804A6708::~cls_804A6708() {
     }
 }
 
-// FIXME: 96.8%. Only branch shapes differ: the original has bge; b over the stage >= 1 test (0x8021EA3C) and
+// FIXME: 96.80 %, missing/extra + reloc-name; behaviour clean.
+// Only branch shapes differ: the original has bge; b over the stage >= 1 test (0x8021EA3C) and
 // beq; b over li 1 for the two spawnEmitter_8013CC50 flag arguments, ours blt/bne; the .sdata2 literals are not split.
 void cls_804A6708::init() {
     EnemyBase_804A4808::init();
@@ -183,32 +184,35 @@ void cls_804A6708::init() {
 }
 
 
-// FIXME(shotgun): 35.9 %, missing/extra + reloc-name (structure and constants are the asm's; the original passes the TVec2f at 0x2c0 to
-// fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies; sqrt is written with std::sqrtf)
+// FIXME: 82.11 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): missing/extra + reloc-name (the original passes the TVec2f at 0x2c0 to
+// fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies)
 void cls_804A6708::fn_8021E4F8() {
-    if (mState == 4) {
+    switch (mState) {
+    case 4: {
         f32 d = (f32)(0x78 - mStateTimer);
         if (d < FLT_EPSILON) {
             field_0x2bc = 18.0f;
         } else {
             field_0x2bc += (1.0f / d) * (18.0f - field_0x2bc);
         }
-    } else if (mState == 7) {
+        break;
+    }
+    case 7: {
         f32 d = (f32)(0x78 - mStateTimer);
         if (d < FLT_EPSILON) {
             field_0x2bc = 1.0f;
         } else {
             field_0x2bc += (1.0f / d) * (1.0f - field_0x2bc);
         }
+        break;
+    }
     }
     f32 dy = field_0x2c0.y - field_0x2cc;
     f32 dx = field_0x2c0.x - field_0x2c0.z;
     f32 len2 = dx * dx + dy * dy;
     if (len2 > 32.0f * FLT_EPSILON) {
-        f32 inv = len2;
-        if (len2 > 0.0f) {
-            inv = 1.0f / std::sqrtf(len2);
-        }
+        f32 inv = JGeometry::TUtilf::inv_sqrt(len2);
         dx = dx * inv;
         dy = dy * inv;
     }
@@ -248,10 +252,7 @@ void cls_804A6708::fn_8021E4F8() {
     }
     dx = field_0x2c0.x - field_0x2c0.z;
     dy = field_0x2c0.y - field_0x2cc;
-    f32 len = dx * dx + dy * dy;
-    if (len > 0.0f) {
-        len = len * (1.0f / std::sqrtf(len));
-    }
+    f32 len = JGeometry::TVec2f(dx, dy).length();
     s16 angle = 0x622;
     if (len > 0.001f) {
         s16 v = (s16)(s32)(1.0f / len * (1570.0f * field_0x2bc));
@@ -273,7 +274,7 @@ void cls_804A6708::fn_8021E4F8() {
     field_0x2c0.y = field_0x2cc + (dx * s + dy * co);
 }
 
-// FIXME(shotgun): 86.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 86.34 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6708::fn_8021DFAC(s32 newState) {
     switch (newState) {
     case 1:
@@ -397,7 +398,8 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
     mState = newState;
 }
 
-// FIXME: 98.88% (missing/extra: ours has 2 fewer instrs (216 vs 218)). In case 3, the compiler merges
+// FIXME: 98.88 %, missing/extra + reloc-name; behaviour drift.
+// (missing/extra: ours has 2 fewer instrs (216 vs 218)). In case 3, the compiler merges
 // the two "flag = true" assignments into a single branch.
 void cls_804A6708::vfunc_0x90(u8 mapHit) {
     switch (mState) {
@@ -507,7 +509,8 @@ void cls_804A6708::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 96.5%. Only the two setEmitterPos_8013CB44 flag arguments differ in branch shape (ours bne over li 1,
+// FIXME: 96.53 %, missing/extra + reloc-name; behaviour clean.
+// Only the two setEmitterPos_8013CB44 flag arguments differ in branch shape (ours bne over li 1,
 // the original beq; b over li 1), and the .sdata2 literals are not split.
 void cls_804A6708::vfunc_0x9C(u8 mapHit) {
     EnemyBase_804A4808::vfunc_0x9C(mapHit);
@@ -542,7 +545,7 @@ void cls_804A6708::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
+// FIXME(shotgun): 99.92 %, reloc-name; behaviour drift.
 void cls_804A6708::vfunc_0x88() {
     field_0x3c.x = 0.0f;
     field_0x3c.y = 0.0f;
@@ -601,12 +604,17 @@ void cls_804A6708::vfunc_0xA0() {
     }
 }
 
-// FIXME(shotgun): 73.1 %, missing/extra
+// FIXME: 91.05 %, different; behaviour clean.
+// FIXME(shotgun): params block register allocation differs
 void cls_804A6708::draw() {
     if (mState != 3 && field_0x2b8 > 0.0f) {
         SpriteParams_801F5AE0 params;
         params.field_0x10.a = (s32)field_0x2b8;
-        params.field_0x20 = mState == 9;
+        u8 flag = 0;
+        if (mState == 9) {
+            flag = 1;
+        }
+        params.field_0x20 = flag;
         fn_801F02BC("enemy_both2_sob.bin", lbl_8046A7C0[field_0x2ac] + mAnim.mCel, &params, 0x407, 0, false, 1.0f, 1.0f);
     }
 }
