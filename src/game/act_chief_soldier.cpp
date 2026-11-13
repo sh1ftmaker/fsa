@@ -86,7 +86,7 @@ void ChiefSoldier_804A0B90::fn_801752D8() {
     }
 }
 
-// FIXME(shotgun): 86.05 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 86.13 %, missing/extra + reloc-name; behaviour drift.
 void ChiefSoldier_804A0B90::fn_80175024() {
     if (getType() == 6) {
         return;
