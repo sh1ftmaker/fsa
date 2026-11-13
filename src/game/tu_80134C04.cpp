@@ -31,22 +31,56 @@
 void fn_80139958();
 void fn_80139D70(); // game/tu_80139BE8.cpp
 
-// The boss archives by stage and level (lbl_80529DEC's field_0x118 /
-// field_0x11c; fn_80135A04).
-static const char* lbl_8049ED88[13][4] = {
-    "boss010.arc", "boss011.arc", "boss200.arc", "boss013.arc",
-    "boss020.arc", "boss021.arc", "boss201.arc", "boss023.arc",
-    "boss030.arc", "boss031.arc", "boss202.arc", "boss033.arc",
-    "boss040.arc", "boss041.arc", "boss203.arc", "boss043.arc",
-    "boss050.arc", "boss051.arc", "boss204.arc", "boss053.arc",
-    "boss060.arc", "boss061.arc", "boss205.arc", "boss063.arc",
-    "boss070.arc", "boss071.arc", "boss206.arc", "boss073.arc",
-    "boss080.arc", "boss207.arc", "boss081.arc", "boss083.arc",
-    "boss002.arc", "boss001.arc", "boss000.arc", "boss990.arc",
-    "boss004.arc", "boss005.arc", "boss006.arc", "boss991.arc",
-    "boss007.arc", "boss008.arc", "boss009.arc", "boss992.arc",
-    "boss090.arc", "boss091.arc", "boss092.arc", "boss093.arc",
-    "boss094.arc", "boss095.arc", "boss096.arc", "boss097.arc",
+// The boss archive names (by lbl_80529DEC's field_0x118 / field_0x11c;
+// fn_80135A04) and the pad rumble patterns, one .data object.
+struct cls_8049ED88 {
+    const char* boss[13][4];
+    u8 lbl_8049EE58[0x88];
+    u8 lbl_8049EEE0[0x10];
+    u8 lbl_8049EEF0[0x10];
+    u8 lbl_8049EF00[0x10];
+    u8 lbl_8049EF10[0x10];
+};
+
+static cls_8049ED88 lbl_8049ED88 = {
+    {
+    {"boss010.arc", "boss011.arc", "boss200.arc", "boss013.arc"},
+    {"boss020.arc", "boss021.arc", "boss201.arc", "boss023.arc"},
+    {"boss030.arc", "boss031.arc", "boss202.arc", "boss033.arc"},
+    {"boss040.arc", "boss041.arc", "boss203.arc", "boss043.arc"},
+    {"boss050.arc", "boss051.arc", "boss204.arc", "boss053.arc"},
+    {"boss060.arc", "boss061.arc", "boss205.arc", "boss063.arc"},
+    {"boss070.arc", "boss071.arc", "boss206.arc", "boss073.arc"},
+    {"boss080.arc", "boss207.arc", "boss081.arc", "boss083.arc"},
+    {"boss002.arc", "boss001.arc", "boss000.arc", "boss990.arc"},
+    {"boss004.arc", "boss005.arc", "boss006.arc", "boss991.arc"},
+    {"boss007.arc", "boss008.arc", "boss009.arc", "boss992.arc"},
+    {"boss090.arc", "boss091.arc", "boss092.arc", "boss093.arc"},
+    {"boss094.arc", "boss095.arc", "boss096.arc", "boss097.arc"},
+    },
+    {
+    0x04, 0x1A, 0x00, 0x00, 0x02, 0x02, 0x08, 0x21, 0x10, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
+    0x88, 0x88, 0x42, 0x04, 0x02, 0x00, 0x20, 0x10, 0x08, 0x22, 0x25, 0x2A, 0xAA, 0xAA, 0xAB, 0x55,
+    0x6A, 0xB5, 0x55, 0x55, 0x55, 0x55, 0x52, 0xAA, 0xB7, 0x77, 0xBD, 0xEF, 0xBF, 0x7F, 0xBF, 0xFD,
+    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xDF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+    0xFF, 0xFF, 0xFF, 0xFD, 0xFF, 0xBF, 0x7B, 0xDD, 0xB6, 0xAA, 0xA5, 0x52, 0xAA, 0xAA, 0xAA, 0xAA,
+    0xB5, 0xB5, 0xB6, 0xDA, 0xDD, 0xB6, 0xDB, 0x6D, 0xB5, 0xAA, 0xA5, 0x24, 0x92, 0x25, 0x29, 0x56,
+    0xAD, 0xAD, 0x6D, 0x55, 0x52, 0x89, 0x24, 0x94, 0x92, 0x94, 0xAB, 0x55, 0x54, 0x92, 0x49, 0x29,
+    0x25, 0x29, 0x25, 0x24, 0x89, 0x24, 0x48, 0x88, 0x88, 0x88, 0x89, 0x25, 0x25, 0x24, 0x92, 0x48,
+    0x84, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
+    {
+    0x00, 0x5B, 0x00, 0x00, 0x81, 0x02, 0x04, 0x10, 0x20, 0x10, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
+    },
+    {
+    0x00, 0x5B, 0x00, 0x08, 0x89, 0x12, 0x44, 0x91, 0x10, 0x84, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00,
+    },
+    {
+    0x00, 0x5B, 0x00, 0x22, 0x4A, 0x52, 0x94, 0xA4, 0x92, 0x22, 0x10, 0x20, 0x02, 0x00, 0x00, 0x00,
+    },
+    {
+    0x00, 0x5B, 0x00, 0x10, 0x92, 0x4A, 0x52, 0x94, 0xA4, 0x88, 0x84, 0x10, 0x00, 0x40, 0x00, 0x00,
+    },
 };
 
 // The stage music (sequence IDs) by GameView_804A9950::field_0x34
@@ -60,13 +94,6 @@ static const u32 lbl_804652F0[39] = {
     0x01000001, 0x01000029, 0x01000009, 0x01000026, 0x01000018, 0x0100000A,
     0x0100002A, 0x0100002E, 0x01000030,
 };
-
-// The pad rumble patterns (.data of this unit; not written as source yet).
-extern u8 lbl_8049EE58[];
-extern u8 lbl_8049EEE0[];
-extern u8 lbl_8049EEF0[];
-extern u8 lbl_8049EF00[];
-extern u8 lbl_8049EF10[];
 
 // Forward declarations.
 void fn_80134C04(OSError error, OSContext* context, u32 dsisr, u32 dar);
@@ -1344,7 +1371,7 @@ void GameRoot_8049EF20::fn_80135A04(s32 mode) {
                 } else if (fn_80021840() == 0 || fn_80021840() == 1) {
                     strcpy(path, "/GC4Sword_usa/Boss/");
                 }
-                strcat(path, lbl_8049ED88[lbl_80529DEC.field_0x118][lbl_80529DEC.field_0x11c]);
+                strcat(path, lbl_8049ED88.boss[lbl_80529DEC.field_0x118][lbl_80529DEC.field_0x11c]);
                 field_0xac = fn_80401E10(path, 0, lbl_80529DEC.mHeap);
             } else if (fn_80021840() == 2) {
                 field_0xac = fn_80401E10("/GC4Sword/Boss/boss500.arc", 0, lbl_80529DEC.mHeap);
@@ -1739,10 +1766,10 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
-// FIXME: 84.99 %, missing/extra + reloc-name; behaviour drift.
-// FIXME(shotgun): rumble pattern addresses are separate symbols here; the original takes them as offsets from lbl_8049ED88
+// FIXME: 99.79 %, arg_mismatch on the rumble pattern offsets (0xD0, 0x158..0x188); behaviour clean.
 // 0x80134DE4
 void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
+    cls_8049ED88* table = &lbl_8049ED88;
     if (lbl_80529DEC.field_0x246 == 0) {
         return;
     }
@@ -1757,27 +1784,31 @@ void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     } else if (kind == 4) {
         field_0x108 = 0x78;
     } else if (kind == 5) {
-        pad->mRumble.startPatternedRumble(lbl_8049EE58, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        pad->mRumble.startPatternedRumble(table->lbl_8049EE58, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x41A;
     } else if (kind == 6) {
-        pad->mRumble.startPatternedRumble(lbl_8049EEE0, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        pad->mRumble.startPatternedRumble(table->lbl_8049EEE0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
     } else if (kind == 7) {
-        pad->mRumble.startPatternedRumble(lbl_8049EEF0, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        pad->mRumble.startPatternedRumble(table->lbl_8049EEF0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
     } else if (kind == 8) {
-        pad->mRumble.startPatternedRumble(lbl_8049EF00, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        pad->mRumble.startPatternedRumble(table->lbl_8049EF00, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
     } else if (kind == 9) {
-        pad->mRumble.startPatternedRumble(lbl_8049EF10, JUTGamePad::CRumble::ERumble(0), 0x3C);
+        pad->mRumble.startPatternedRumble(table->lbl_8049EF10, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
     } else if (kind == 10) {
-        field_0x108 = frames != 0 ? frames : 0x78;
+        s32 value = frames;
+        if (value == 0) {
+            value = 0x78;
+        }
+        field_0x108 = value;
     } else {
         field_0x108 = kind;
     }
