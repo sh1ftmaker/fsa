@@ -184,7 +184,7 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
 }
 
 // The animation steps of the box-shrinking state machine; vfunc_0x90 is its per-frame step.
-// FIXME(shotgun): 92.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.30 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5D60::vfunc_0x90(u8 mapHit) {
     if (mFlags & 0x2000) {
         switch (mState) {
