@@ -177,7 +177,7 @@ void cls_804A1FA0::update() {
             fn_801EEC98(mSerial, &outAngle, NULL, NULL, NULL, 0, 0);
             f32 a = (f32)outAngle;
             s32 idx = 0;
-            for (u8 i = 0; i < 15; i++) {
+            for (s32 i = 0; i < 15; i++) {
                 a -= 4000.0f;
                 if (a < 0.0f) {
                     break;
