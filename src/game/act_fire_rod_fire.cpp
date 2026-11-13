@@ -736,7 +736,7 @@ s32 FireRodFire_804A89F0::fn_802BA9F0() {
     return field_0x260;
 }
 
-// FIXME(shotgun): 83.38 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.93 %, missing/extra + reloc-name; behaviour drift.
 bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 ignoreIds[5] = {'TOMI', 'IPOT', 'WDRY', 'ICEB', 'NULL'};
     if (field_0x264 != 1) {
@@ -801,7 +801,8 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         u16 tile = field_0x288;
-        if (tile == 0x3A || (tile >= 0x8B && tile <= 0x8E) || tile == 0x3D) {
+        u16 tileOffset = tile - 0x8B;
+        if (tile == 0x3A || tileOffset <= 3 || tile == 0x3D) {
             return false;
         }
         if (field_0x27c == 0x25) {
