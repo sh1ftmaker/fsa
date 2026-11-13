@@ -1133,7 +1133,7 @@ void StoneArrghusChildPuff_8049C678::init() {
     }
 }
 
-// FIXME(shotgun): 66.11 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 69.29 %, missing/extra + reloc-name; behaviour near.
 void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     field_0xb0 = 0x80004;
     field_0x1a8 = true;
