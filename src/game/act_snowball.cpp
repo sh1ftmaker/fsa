@@ -360,6 +360,13 @@ void cls_8049D020::draw() {
     }
 }
 
+// -v by value, as a unary TVec3 operator- would give it.
+static inline JGeometry::TVec3f negated(const JGeometry::TVec3f& v) {
+    JGeometry::TVec3f result;
+    result.negate(v);
+    return result;
+}
+
 // FIXME: 90.80 %, missing/extra + reloc-name; behaviour drift.
 // missing/extra + reloc-name: ours has 2 fewer instrs (274 vs 276): the original keeps the table, the actor manager tag and the serial in r27-r29 (stmw/lmw r27) and negates case 5 through two stack TVec3f copies; the single-case switch in case 13 has an extra bge in the original.
 bool cls_8049D020::fn_8010C294(s32 state) {
@@ -392,7 +399,7 @@ bool cls_8049D020::fn_8010C294(s32 state) {
         }
         break;
     case 5:
-        field_0x3c.negate();
+        field_0x3c = negated(field_0x3c);
         field_0x3c.z = 1.0f;
         getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
         if (field_0x374 != NULL) {
