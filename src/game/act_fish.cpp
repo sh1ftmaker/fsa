@@ -12,7 +12,7 @@
 #include "game/SpriteParams.h"
 #include "game/act/act_fish.h"
 
-// FIXME(shotgun): 91.2 %, missing/extra + reloc-name
+// FIXME(shotgun): different + reloc-name (register order and literal placement in the spawn loop)
 void Fish_804AC658::init() {
     u32 param = field_0x90;
     field_0x90 = param & 0xFFF;
@@ -39,28 +39,30 @@ void Fish_804AC658::init() {
     field_0x270 = -1;
     fn_801F6758(&mPos, field_0x4, 0.0f);
     s32 count = field_0x90;
-    if (count != 0) {
-        s16 tiles[0x2C9];
-        const JGeometry::TBox2f* box = field_0x4 < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+    if (field_0x90 != 0) {
+        u16 tiles[0x2C9];
+        s32 layer = field_0x4;
+        GameView_804A9950* view = getGameView_802D6A9C();
+        const JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         f32 x0 = box->i.x;
         f32 y0 = box->i.y;
         s32 width = (s32)(box->f.x - x0);
         s32 height = (s32)(box->f.y - y0);
         s32 n = 0;
         s32 xi = 1;
-        bool full = false;
-        for (s32 x = 16; x < width && !full; x += 16) {
+        for (s32 x = 16; x < width; x += 16) {
             s32 packed = xi + 0x20;
-            for (s32 y = 16; y < height && !full; y += 16) {
-                JGeometry::TVec3f p(x + x0, y + y0, 0.0f);
-                u16 tile = fn_802265FC(&p, field_0x4);
+            for (s32 y = 16; y < height; y += 16) {
+                JGeometry::TVec3f p;
+                p.x = x + x0;
+                p.y = y + y0;
+                s32 tile = fn_802265FC(&p, field_0x4);
                 if (tile == 0xD || tile == 0x3A) {
                     if (n >= 0x2C9) {
-                        full = true;
-                    } else {
-                        tiles[n] = packed;
-                        n++;
+                        return;
                     }
+                    tiles[n] = packed;
+                    n++;
                 }
                 packed += 0x20;
             }
@@ -86,17 +88,17 @@ void Fish_804AC658::init() {
                     spawned++;
                 }
             }
+            field_0x250 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+            field_0x252 = field_0x250 + 0x4000;
+            field_0x24c = 0;
+            field_0x250 = 0;
+            field_0x25c = 0.0f;
+            field_0x258 = 0.0f;
+            field_0x254 = 0.0f;
+            field_0x260 = 0.3f;
+            field_0x230 = 0;
         }
     }
-    field_0x250 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    field_0x252 = field_0x250 + 0x4000;
-    field_0x24c = 0;
-    field_0x250 = 0;
-    field_0x25c = 0.0f;
-    field_0x258 = 0.0f;
-    field_0x254 = 0.0f;
-    field_0x260 = 0.3f;
-    field_0x230 = 0;
 }
 
 bool Fish_804AC658::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
