@@ -182,10 +182,12 @@ void cls_804A4EE8::fn_801DB6C8() {
         ty = field_0x2c8 + field_0x2b8;
     } else {
         JGeometry::TVec3f* player = &field_0x1ac[mTargetPlayer];
-        JGeometry::TVec2f away(mSearchPos.x - player->x, mSearchPos.y - player->y);
+        f32 px = player->x;
+        f32 py = player->y;
+        JGeometry::TVec2f away(mSearchPos.x - px, mSearchPos.y - py);
         away.normalize();
-        tx = player->x + away.x * mRadius + field_0x2b4;
-        ty = player->y + away.y * mRadius + field_0x2b8;
+        tx = px + away.x * mRadius + field_0x2b4;
+        ty = py + away.y * mRadius + field_0x2b8;
     }
     JGeometry::TVec2f d(tx - mSearchPos.x, ty - mSearchPos.y);
     f32 len = d.length();
