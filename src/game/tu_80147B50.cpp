@@ -235,7 +235,7 @@ bool cls_8049F6C8::fn_80149FDC() {
     s32 tries = 0;
     while (field_0x27c == field_0x278 && tries < 100) {
         tries++;
-        field_0x278 = (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x278 = (s32)(4.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
         field_0x278 &= 3;
     }
     field_0x27c = field_0x278;
