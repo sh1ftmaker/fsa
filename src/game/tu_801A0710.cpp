@@ -29,7 +29,7 @@ const char* lbl_804A2BE4[4] = {"obachan_1.bti", "obachan_2.bti", "obachan_3.bti"
 const s32 lbl_804A2BD0[5] = {1, 5, 20, 50, 100};
 const s32 lbl_804A2B90[16] = {0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0};
 
-// FIXME(shotgun): 93.8 %, missing/extra + reloc-name
+// Remaining difference: register allocation of the lbl_804A2B90 index.
 void TennisShop_804A2BF4::init() {
     field_0x248 = 0;
     for (s32 i = 0; i < 6; i++) {
@@ -38,9 +38,26 @@ void TennisShop_804A2BF4::init() {
     for (s32 i = 0; i < 4; i++) {
         field_0x238[i] = 0;
     }
-    for (s32 i = 0; i < 20; i++) {
-        field_0x2c8[i] = 0;
-    }
+    field_0x2c8[0] = 0;
+    field_0x2c8[1] = 0;
+    field_0x2c8[2] = 0;
+    field_0x2c8[3] = 0;
+    field_0x2c8[4] = 0;
+    field_0x2c8[5] = 0;
+    field_0x2c8[6] = 0;
+    field_0x2c8[7] = 0;
+    field_0x2c8[8] = 0;
+    field_0x2c8[9] = 0;
+    field_0x2c8[10] = 0;
+    field_0x2c8[11] = 0;
+    field_0x2c8[12] = 0;
+    field_0x2c8[13] = 0;
+    field_0x2c8[14] = 0;
+    field_0x2c8[15] = 0;
+    field_0x2c8[16] = 0;
+    field_0x2c8[17] = 0;
+    field_0x2c8[18] = 0;
+    field_0x2c8[19] = 0;
     for (s32 i = 0; i < 4; i++) {
         field_0x28c[i] = 0;
         field_0x27c[i] = -1;
@@ -69,10 +86,10 @@ void TennisShop_804A2BF4::init() {
     case 0:
         if (field_0x238[0] == 0) {
             field_0x264 = lbl_804A2B90[field_0x98 * 4 + field_0x248];
-            if (field_0x248 & 1) {
-                field_0x238[0] = 10;
-            } else {
+            if ((field_0x248 & 1) == 0) {
                 field_0x238[0] = 12;
+            } else {
+                field_0x238[0] = 10;
             }
             field_0x248++;
             field_0x248 &= 3;
