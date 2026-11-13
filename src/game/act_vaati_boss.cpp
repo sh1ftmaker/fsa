@@ -956,7 +956,9 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         if (cam->field_0x7f5 == 0) {
             cam->field_0x7f4 = 1;
             cam->field_0x7f8 = 4;
-            cam->field_0x7fc = focus;
+            cam->field_0x7fc.x = focus.x;
+            cam->field_0x7fc.y = focus.y;
+            cam->field_0x7fc.z = focus.z;
             cam->field_0x7f6 = 0;
         }
         break;
@@ -965,11 +967,11 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
         if (cam->field_0x840 == 0) {
             cam->field_0x840 = 1;
-            cam->field_0x854 = 1.0f;
             cam->field_0x844.f.x = focus.x;
             cam->field_0x844.i.x = focus.x;
             cam->field_0x844.f.y = focus.y;
             cam->field_0x844.i.y = focus.y;
+            cam->field_0x854 = 1.0f;
             cam->field_0x1d4 = -1.0f;
             cam->field_0x1d8 = -1.0f;
         }
@@ -987,10 +989,9 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         break;
     }
     default: {
-        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
-        cam->addFocusPoint_8030C210(&focus);
-        if (cam->field_0x179 == 0) {
-            cam->field_0x178 = 1;
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+        if (gGameRoot2_8053AB10->field_0x24->field_0x179 == 0) {
+            gGameRoot2_8053AB10->field_0x24->field_0x178 = 1;
         }
         break;
     }
