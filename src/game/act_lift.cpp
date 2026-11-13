@@ -73,9 +73,7 @@ bool Lift_804A6F6C::fn_802565BC(s32 index) {
     for (s32 i = 0; i < 8; i++) {
         JGeometry::TVec3f p;
         fn_8022E088(index, i, &p);
-        p.x -= mPos.x;
-        p.y -= mPos.y;
-        p.z -= mPos.z;
+        p -= mPos;
         p.z = 0.0f;
         s32 angle = JMath::atanTable_.atan2_(p.y, p.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         angle -= field_0x238;
