@@ -11,7 +11,7 @@
 #include "game/act/act_zora_fish_herder.h"
 #include "JSystem/JMath/JMath.h"
 
-// FIXME(shotgun): 99.74 %, scheduling + reloc-name
+// FIXME(shotgun): 99.88 %, scheduling + reloc-name; behaviour clean.
 void ZoraFishHerding_804A2E30::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     mBox2.set(-10.0f, -10.0f, 10.0f, 10.0f);
@@ -68,7 +68,8 @@ void ZoraFishHerding_804A2E30::init() {
 
 // Advances the fish animation: picks the sprite frame (field_0x254) of the
 // current mode and steps to the next mode when its loop ends.
-// FIXME(shotgun): 87.88 %, missing/extra (the original has a dead cmpwi 4 / beqlr after the mode 5 test)
+// The original has a dead cmpwi 4 / beqlr after the mode 5 test; not reproduced.
+// FIXME: 97.98 %, missing/extra; behaviour near.
 void ZoraFishHerding_804A2E30::fn_801A7C48() {
     if (field_0x234 != 0) {
         return;
@@ -78,22 +79,27 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 5:
         field_0x254 = field_0x240 + 2;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 7;
-        if (field_0x240 >= 4 && field_0x250 == 5) {
-            field_0x250 = 4;
-            field_0x234 = 0;
-            field_0x240 = 0;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 7;
+        if (field_0x240 >= 4) {
+            if (field_0x250 == 5) {
+                field_0x250 = 4;
+                field_0x234 = 0;
+                field_0x240 = 0;
+            }
         }
         break;
     case 1:
         field_0x254 = field_0x240 + 12;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         break;
     case 2:
         field_0x254 = 13 - field_0x240;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         if (field_0x240 == 0) {
             field_0x250 = 0;
         }
@@ -101,7 +107,8 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 3:
         field_0x254 = field_0x240 + 10;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         if (field_0x240 == 0) {
             field_0x250 = 1;
         }
@@ -109,7 +116,8 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 4:
         field_0x254 = field_0x240;
         field_0x234 = 15;
-        field_0x240 = (field_0x240 + 1) & 1;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 1;
         break;
     }
 }
@@ -126,7 +134,7 @@ ZoraFishHerding_804A2E30::~ZoraFishHerding_804A2E30() {
     }
 }
 
-// FIXME(shotgun): 81.69 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.69 %, missing/extra + reloc-name; behaviour drift.
 void ZoraFishHerding_804A2E30::fn_801A68DC() {
     JGeometry::TVec3f msgPos = mPos;
     s32 nearPlayer = -1;
@@ -567,7 +575,7 @@ void ZoraFishHerding_804A2E30::update() {
     }
 }
 
-// FIXME(shotgun): 90.56 %, missing/extra
+// FIXME(shotgun): 92.47 %, scheduling+regalloc; behaviour clean.
 void ZoraFishHerding_804A2E30::draw() {
     switch (mKind) {
     case 0:
@@ -579,8 +587,9 @@ void ZoraFishHerding_804A2E30::draw() {
         if (field_0x258 >= 0) {
             lbl_8053AF20->field_0x10 = field_0x25c;
             lbl_8053AF20->field_0x13 |= 1;
-            lbl_8053AF20->field_0x11 = field_0x258 / 60;
-            lbl_8053AF20->field_0x12 = (f32)(field_0x258 % 60) * 100.0f / 60.0f;
+            s32 frames = field_0x258;
+            lbl_8053AF20->field_0x11 = frames / 60;
+            lbl_8053AF20->field_0x12 = (f32)(frames % 60) * 100.0f / 60.0f;
             lbl_8053AF20->field_0x13 |= 2;
         }
         break;
