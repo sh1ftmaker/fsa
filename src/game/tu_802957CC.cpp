@@ -253,7 +253,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 81.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 81.57 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
@@ -308,7 +308,7 @@ void cls_804A7AE0::fn_8029A974() {
         return;
     }
     s32 layer = field_0x4;
-    JGeometry::TBox2f view = *layerBox(layer);
+    const JGeometry::TBox2f* view = layerBox(layer);
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
     p.x += 8.0f;
@@ -316,10 +316,10 @@ void cls_804A7AE0::fn_8029A974() {
     p.y -= 8.0f;
     p.z = 0.0f;
     const f32 inset = -32.0f;
-    f32 minX = view.i.x - inset;
-    f32 minY = view.i.y - inset;
-    f32 maxX = view.f.x + inset;
-    f32 maxY = view.f.y + inset;
+    f32 minX = view->i.x - inset;
+    f32 minY = view->i.y - inset;
+    f32 maxX = view->f.x + inset;
+    f32 maxY = view->f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
