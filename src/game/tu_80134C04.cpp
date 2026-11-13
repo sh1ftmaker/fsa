@@ -1733,7 +1733,7 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
-// FIXME(shotgun): 71.4 %, missing/extra + reloc-name
+// FIXME(shotgun): rumble pattern addresses are separate symbols here; the original takes them as offsets from lbl_8049ED88
 // 0x80134DE4
 void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     if (lbl_80529DEC.field_0x246 == 0) {
@@ -1741,50 +1741,38 @@ void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     }
     JUTGamePad* pad = JUTGamePad::getGamePad(0);
     field_0x10c = 0;
-    switch (kind) {
-    case 1:
+    if (kind == 1) {
         field_0x108 = 0x1E;
-        break;
-    case 2:
+    } else if (kind == 2) {
         field_0x108 = 0x3C;
-        break;
-    case 3:
+    } else if (kind == 3) {
         field_0x108 = 0x5A;
-        break;
-    case 4:
+    } else if (kind == 4) {
         field_0x108 = 0x78;
-        break;
-    case 5:
+    } else if (kind == 5) {
         pad->mRumble.startPatternedRumble(lbl_8049EE58, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x41A;
-        break;
-    case 6:
+    } else if (kind == 6) {
         pad->mRumble.startPatternedRumble(lbl_8049EEE0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 7:
+    } else if (kind == 7) {
         pad->mRumble.startPatternedRumble(lbl_8049EEF0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 8:
+    } else if (kind == 8) {
         pad->mRumble.startPatternedRumble(lbl_8049EF00, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 9:
+    } else if (kind == 9) {
         pad->mRumble.startPatternedRumble(lbl_8049EF10, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 10:
+    } else if (kind == 10) {
         field_0x108 = frames != 0 ? frames : 0x78;
-        break;
-    default:
+    } else {
         field_0x108 = kind;
-        break;
     }
 }
 
