@@ -29,7 +29,8 @@ u8 fn_8037AA28(void) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 99.87 %, operands (vtable symbol name)
+// FIXME(shotgun): 99.99 %, operands; behaviour drift.
+// (vtable symbol name)
 cls_804AE9A0::cls_804AE9A0() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053AD68 = this;
@@ -97,7 +98,8 @@ void cls_804AE9A0::fn_8037A708() {
     field_0x1c = 0;
 }
 
-// FIXME: 95.12 %. Same as fn_80379F84 and fn_8037A580: the original truncates
+// FIXME: 95.12 %, missing/extra; behaviour near.
+// Same as fn_80379F84 and fn_8037A580: the original truncates
 // the mode byte again (clrlwi r0, r0, 24) after its first compare with 5, in
 // both blocks. Tried: nested ifs and a function-scope mode (same code); a u32
 // mode (same code); a negated || chain (MWCC turns it into a range check, 84.59 %).
@@ -119,7 +121,8 @@ void cls_804AE9A0::fn_8037A664() {
     }
 }
 
-// FIXME: 94.74 %. Same mode-byte clrlwi as fn_80379F84 and fn_8037A664.
+// FIXME: 94.74 %, missing/extra; behaviour drift.
+// Same mode-byte clrlwi as fn_80379F84 and fn_8037A664.
 void cls_804AE9A0::fn_8037A580() {
     if (field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
@@ -146,7 +149,8 @@ void cls_804AE9A0::fn_8037A580() {
     }
 }
 
-// FIXME(shotgun): 98.84 %, missing/extra (the clrlwi after the first mode compare)
+// FIXME(shotgun): 98.84 %, missing/extra; behaviour clean.
+// (the clrlwi after the first mode compare)
 void cls_804AE9A0::fn_8037A174() {
     if (field_0x4 != NULL) {
         u8 mode = lbl_8053ADA0->field_0x4c0;
@@ -229,13 +233,10 @@ u8 fn_8037A120(void) {
     return 0;
 }
 
-// FIXME: 94.29 %. The original's first block tests stage < 8, sub < 4, stage >= 0,
-// stage <= 7, sub >= 0, sub <= 3, in that order (six separate compares); ours
-// tests stage >= 0, stage < 8, sub >= 0, sub < 4 and has no stage <= 7 / sub <= 3.
 void fn_80379FF4(void) {
     s32 stage = lbl_80529DEC.field_0x118;
     s32 sub = lbl_80529DEC.field_0x11c;
-    if (stage >= 0 && stage < 8 && sub >= 0 && sub < 4) {
+    if (stage < 8 && sub < 4 && stage >= 0 && stage <= 7 && sub >= 0 && sub <= 3) {
         lbl_8050EC80.getCurrentFile().mFlags |= 1 << (stage * 4 + sub);
     }
     if (stage >= 8) {
@@ -257,7 +258,8 @@ void fn_80379FF4(void) {
     lbl_80529DEC.field_0x11c = next;
 }
 
-// FIXME: 96.43 %. The original truncates the mode byte again (clrlwi r0, r0, 24)
+// FIXME: 96.43 %, missing/extra; behaviour near.
+// The original truncates the mode byte again (clrlwi r0, r0, 24)
 // after its first compare with 5; ours has no such instruction. Tried: an s32
 // mode (cmpwi throughout, 87.86 %) and a u32 mode with (u8) casts on the later
 // compares (same 96.43 %: the byte load already fits, so no clrlwi is emitted).
