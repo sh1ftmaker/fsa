@@ -766,7 +766,8 @@ void Camera_804AA9E4::fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraE
 // Not inlined into its caller fn_8030E5BC in the original.
 #pragma auto_inline off
 // FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
-// (the target keeps the box corners in float registers)
+// (the target keeps the box corners in float registers; it also pre-zeroes
+// the translation column and negates the two centres as one ps_neg pair)
 void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     f32 halfW = 0.5f * (box->f.x - box->i.x);
     f32 halfH = 0.5f * (box->f.y - box->i.y);
@@ -785,7 +786,7 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     field_0x4[2][1] = 1.0f;
     field_0x4[2][2] = 0.0f;
     field_0x4[2][3] = -(f32)depth;
-    C_MTXOrtho(field_0x34, -halfH, halfH, -halfW, halfW, 0.0f, 1024.0f);
+    C_MTXOrtho(field_0x34, -halfH, halfH, -halfW, halfW, 0.0f, 5120.0f);
     PSMTXCopy(field_0x4, field_0xe4.mCamMtx);
     C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
     JMath::gekko_ps_copy12(field_0x74, field_0x4);
