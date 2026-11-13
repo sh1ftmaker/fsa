@@ -121,8 +121,10 @@ void cls_801E9B54::fn_801EA594() {
                         field_0x0[i].actor->mDrawEnabled = false;
                     }
                     Slot_801E9B54* dst = &field_0x0[i];
-                    for (; i < field_0x60 - 1; i++) {
-                        *dst = field_0x0[i + 1];
+                    while (i < field_0x60 - 1) {
+                        Slot_801E9B54* src = &field_0x0[i + 1];
+                        i++;
+                        *dst = *src;
                         dst++;
                     }
                     field_0x60 = field_0x60 - 1;
