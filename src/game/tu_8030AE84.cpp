@@ -116,6 +116,7 @@ void cls_804AA8D8::fn_8030B97C() {
 }
 
 // Remaining difference: instruction scheduling of the d.set() operands only.
+// FIXME: 96.12 %, scheduling+regalloc; behaviour clean.
 void cls_804AA8D8::fn_8030B774() {
     if (!fn_8023F264(field_0x288)) {
         return;
@@ -218,7 +219,8 @@ s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
     return player;
 }
 
-// FIXME(shotgun): 91.5 %, regalloc/scheduling (227 vs 226 instrs)
+// FIXME(shotgun): 91.48 %, missing/extra; behaviour near.
+// regalloc/scheduling (227 vs 226 instrs)
 s32* cls_804AA8D8::fn_8030B1E8(u8 layer, u8 mode, u16 scroll) {
     if (layer != field_0x2bc) {
         if (mode == 0 || mode == 6) {
