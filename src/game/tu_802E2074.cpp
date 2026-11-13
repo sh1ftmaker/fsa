@@ -11,7 +11,8 @@ s32 lbl_804D4768[0x90];
 // Frame counter of the update; 0 after init.
 s32 lbl_8053ACB0;
 
-// FIXME: 96.17. Structurally close: the target reads field_0x234 before the getGameView
+// FIXME: 96.17 %, missing/extra + reloc-name; behaviour clean.
+// Structurally close: the target reads field_0x234 before the getGameView
 // call of the tile lookup (field_0x238 after it, as if the column came through an inlined
 // accessor) and copies the tile byte from r0 to r9 after the 0xFF test; the format string
 // waits for the unit's .rodata split (lbl_8046E9F8). The archive type is 'B   ' plus the
@@ -47,6 +48,7 @@ void cls_804A9BC8::init() {
 // The enemy map's rows: u16 offsets per direction (0x28.., 6/4/2/0, ...), in units of 8.
 extern const u16 lbl_8046E9D8[4][4]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
+// FIXME: 90.00 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): one instr short; float literals not split into this unit (lbl_805411B8/BC), loop index in r29 not r30
 void cls_804A9BC8::update() {
     s32 layer = field_0x4;
