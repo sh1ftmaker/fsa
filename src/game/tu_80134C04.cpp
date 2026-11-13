@@ -93,7 +93,8 @@ void fn_80139958() {
 }
 #pragma auto_inline reset
 
-// FIXME: 99.65. Instructions identical; the string offsets off lbl_804652F0
+// FIXME: 99.86 %, reloc-name; behaviour clean.
+// Instructions identical; the string offsets off lbl_804652F0
 // differ (0x324 vs 0x5E8: the strings of the unwritten fn_80135494 - fn_80137300
 // come first in the original .rodata) and the .sdata2 floats / "" are @NNN.
 GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
@@ -168,7 +169,8 @@ GameRoot_8049EF20::GameRoot_8049EF20() : mRandom(0) {
 
 // Stops the rumble, deletes the screens and objects the constructor and
 // fn_80135020 made, unmounts the archives and destroys both heaps.
-// FIXME: 99.31. Only the null test before deleting field_0x104 is missing
+// FIXME: 99.31 %, missing/extra; behaviour drift.
+// Only the null test before deleting field_0x104 is missing
 // (cmplwi / beq): the original's type for it is a class with a non-virtual
 // destructor, unknown yet (nothing but the constructor's NULL stores it).
 GameRoot_8049EF20::~GameRoot_8049EF20() {
@@ -244,9 +246,6 @@ GameRoot_8049EF20::~GameRoot_8049EF20() {
 
 // Called once by main after the constructor: resets the per-game state and
 // picks the first game mode (the title after power-on, see SaveRegion 0x4/0x5).
-// FIXME: 99.9. Code identical; its .sdata2 floats (0.0f, 1.0f, 50.0f) are @NNN
-// until the unit's earlier float users are written and .sdata2 is split, and
-// ours numbers 50.0f before get_ufloat_1's 1.0f (the original pools 1.0f first).
 void GameRoot_8049EF20::fn_80138C9C() {
     field_0xa0->field_0x5 = 4;
     gGameRoot2_8053AB10->fn_8013BE04();
@@ -343,7 +342,8 @@ s32 GameRoot_8049EF20::fn_80138A30() {
 // The per-frame update (the counterpart of fn_80136828): polls the pads, then runs the screen of the current
 // mode (field_0x4c) and, once it asks for another one (field_0x50), the fade and load sequence of field_0x58.
 //
-// FIXME(shotgun): 95.6 %, missing/extra (one fn_802DEBF8 call folded; the saved-register set differs;
+// FIXME(shotgun): 95.59 %, missing/extra + reloc-name; behaviour drift.
+// (one fn_802DEBF8 call folded; the saved-register set differs;
 // the target loads field_0x4 into r3 before each fn_80139D70 call).
 void GameRoot_8049EF20::fn_80137300() {
     field_0x5c++;
@@ -923,6 +923,7 @@ void GameRoot_8049EF20::fn_80137300() {
 
 // main calls it each frame between beginRender and endRender: draws the screen
 // of the current mode (field_0x4c), then the fade objects.
+// FIXME: 99.98 %, reloc-name; behaviour drift.
 void GameRoot_8049EF20::fn_80136828() {
     j3dSys.drawInit();
     if (field_0x58 != 8 && field_0xfd != 2) {
@@ -1260,7 +1261,7 @@ void GameRoot_8049EF20::fn_80136500() {
     }
 }
 
-// FIXME(shotgun): 97.7 %, missing/extra
+// FIXME(shotgun): 97.67 %, missing/extra; behaviour clean.
 // 0x80136364
 void GameRoot_8049EF20::fn_80136364() {
     if (field_0xfe != 1 || getGameView_802D6A9C()->fn_802DCD0C() || gGameRoot_8053AAF8->field_0x4c == GAME_MODE_B) {
@@ -1303,7 +1304,8 @@ void GameRoot_8049EF20::fn_80136364() {
 }
 
 // Whether the game mode (field_0x4c) is one of 0 - 6, 9 or 12.
-// FIXME: 85.9. The target tests mode == 0 separately and then folds 1-6 into one
+// FIXME: 85.88 %, missing/extra; behaviour drift.
+// The target tests mode == 0 separately and then folds 1-6 into one
 // range (subi; cmplwi 5), reusing r3 for the mode; ours folds 0-6 into one range.
 bool GameRoot_8049EF20::fn_80136320() {
     if (gGameRoot_8053AAF8 != NULL) {
@@ -1317,7 +1319,8 @@ bool GameRoot_8049EF20::fn_80136320() {
 
 // Switches to game mode `mode`: deletes the other modes' screens, reports the
 // heap and starts loading the mode's archives (fn_80401E10) or screen.
-// FIXME: 99.8. Code identical; jump table @NNN vs jumptable_8049EF94 (as fn_80135020).
+// FIXME: 99.78 %, reloc-name; behaviour drift.
+// Code identical; jump table @NNN vs jumptable_8049EF94 (as fn_80135020).
 void GameRoot_8049EF20::fn_80135A04(s32 mode) {
     if (field_0x84 != 0) {
         fn_801352F4(field_0x4c);
@@ -1482,7 +1485,7 @@ static inline void playStageMusic(GameRoot_8049EF20* self) {
     }
 }
 
-// FIXME(shotgun): 93.7 %, missing/extra
+// FIXME(shotgun): 93.69 %, missing/extra; behaviour drift.
 // 0x80135494
 void GameRoot_8049EF20::fn_80135494(s32 mode) {
     bool changed = false;
@@ -1584,7 +1587,8 @@ void GameRoot_8049EF20::fn_80135494(s32 mode) {
 }
 
 // Deletes the screen object of game mode `mode` (see fn_80135020).
-// FIXME: 99.9. Code identical; jump table @NNN vs jumptable_8049EF60 (as fn_80135020).
+// FIXME: 99.86 %, reloc-name; behaviour drift.
+// Code identical; jump table @NNN vs jumptable_8049EF60 (as fn_80135020).
 void GameRoot_8049EF20::fn_801352F4(s32 mode) {
     switch (mode) {
     case 7:
@@ -1636,7 +1640,8 @@ void GameRoot_8049EF20::fn_801352F4(s32 mode) {
 
 // Creates the screen object of game mode `mode` unless it exists; the menu
 // screens are made in field_0x98 under heap group ID 1.
-// FIXME: 99.9. Code identical; the switch's jump table is @NNN, not
+// FIXME: 99.92 %, reloc-name; behaviour drift.
+// Code identical; the switch's jump table is @NNN, not
 // jumptable_8049EF2C (the .data order puts it after the vtable, project-wide
 // jump-table order issue, docs/GAME_PLAN.md).
 void GameRoot_8049EF20::fn_80135020(s32 mode) {
@@ -1710,7 +1715,8 @@ void GameRoot_8049EF20::fn_80135020(s32 mode) {
     }
 }
 
-// FIXME: 93.1. The target reloads field_0x94 into r4 and passes it on unconverted
+// FIXME: 93.12 %, missing/extra; behaviour clean.
+// The target reloads field_0x94 into r4 and passes it on unconverted
 // (no li r4, 1); ours loads it into r0 and materialises the true.
 void GameRoot_8049EF20::fn_80134FE0(u8 value) {
     field_0x94 = value;
@@ -1733,7 +1739,8 @@ void GameRoot_8049EF20::fn_80134FBC(u8 value) {
     field_0x96 = value;
 }
 
-// FIXME(shotgun): 71.4 %, missing/extra + reloc-name
+// FIXME: 84.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): rumble pattern addresses are separate symbols here; the original takes them as offsets from lbl_8049ED88
 // 0x80134DE4
 void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     if (lbl_80529DEC.field_0x246 == 0) {
@@ -1741,50 +1748,38 @@ void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
     }
     JUTGamePad* pad = JUTGamePad::getGamePad(0);
     field_0x10c = 0;
-    switch (kind) {
-    case 1:
+    if (kind == 1) {
         field_0x108 = 0x1E;
-        break;
-    case 2:
+    } else if (kind == 2) {
         field_0x108 = 0x3C;
-        break;
-    case 3:
+    } else if (kind == 3) {
         field_0x108 = 0x5A;
-        break;
-    case 4:
+    } else if (kind == 4) {
         field_0x108 = 0x78;
-        break;
-    case 5:
+    } else if (kind == 5) {
         pad->mRumble.startPatternedRumble(lbl_8049EE58, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x41A;
-        break;
-    case 6:
+    } else if (kind == 6) {
         pad->mRumble.startPatternedRumble(lbl_8049EEE0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 7:
+    } else if (kind == 7) {
         pad->mRumble.startPatternedRumble(lbl_8049EEF0, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 8:
+    } else if (kind == 8) {
         pad->mRumble.startPatternedRumble(lbl_8049EF00, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 9:
+    } else if (kind == 9) {
         pad->mRumble.startPatternedRumble(lbl_8049EF10, JUTGamePad::CRumble::ERumble(0), 0x3C);
         field_0x10c = 1;
         field_0x108 = 0x5B;
-        break;
-    case 10:
+    } else if (kind == 10) {
         field_0x108 = frames != 0 ? frames : 0x78;
-        break;
-    default:
+    } else {
         field_0x108 = kind;
-        break;
     }
 }
 
