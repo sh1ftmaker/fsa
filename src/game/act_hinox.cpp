@@ -22,7 +22,7 @@ struct HinoxTables {
 // FIXME(shotgun): data table lbl_8049F840 not split into individual arrays
 extern HinoxTables lbl_8049F840;
 
-// FIXME(shotgun): 98.16 %, missing/extra + reloc-name.
+// FIXME(shotgun): 98.48 %, missing/extra; behaviour near.
 void Hinox_8049F9B4::init() {
     mBox.i.x = -14.0f;
     mBox.i.y = -14.0f;
@@ -69,7 +69,7 @@ void Hinox_8049F9B4::init() {
     mState = 0;
 }
 
-// FIXME(shotgun): 90.05 %, different + reloc-name.
+// FIXME(shotgun): 98.20 %, different; behaviour near.
 Hinox_8049F9B4::~Hinox_8049F9B4() {
     JGeometry::TVec3f dir(0.0f, 0.0f, 0.0f);
     if (field_0x98 == 2) {
@@ -81,9 +81,10 @@ Hinox_8049F9B4::~Hinox_8049F9B4() {
         f32 x = mPos.x;
         f32 y = mPos.y;
         f32 z = mPos.z;
-        mPos.x = getPlayerPos_8023E724(field_0x254)->x;
-        mPos.y = getPlayerPos_8023E724(field_0x254)->y;
-        mPos.z = getPlayerPos_8023E724(field_0x254)->z;
+        JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(field_0x254);
+        mPos.x = playerPos->x;
+        mPos.y = playerPos->y;
+        mPos.z = playerPos->z;
         if (fn_801F2618(NULL, false)) {
             f32 angle = JMath::atanTable_.atan2_(x - mPos.x, y - mPos.y) * 10430.378f;
             dir.x = 3.0f * JMath::sincosTable_.sinShort((s16)(s32)angle);
@@ -98,14 +99,15 @@ Hinox_8049F9B4::~Hinox_8049F9B4() {
     if (serial >= 0) {
         ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (held != NULL) {
-            held->field_0x3c.set(0.0f, 0.0f, 3.0f);
+            held->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
+            held->field_0x3c.z = 3.0f;
             field_0x250 = -1;
             startSound_801F0E34(0x40008, 0);
         }
     }
 }
 
-// FIXME(shotgun): 88.19 %, missing/extra + reloc-name.
+// FIXME(shotgun): 88.33 %, missing/extra; behaviour near.
 void Hinox_8049F9B4::fn_8014F76C() {
     s32 serial = field_0x250;
     if (serial >= 0) {
@@ -118,7 +120,7 @@ void Hinox_8049F9B4::fn_8014F76C() {
     }
 }
 
-// FIXME(shotgun): 82.97 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.97 %, missing/extra + reloc-name; behaviour drift.
 void Hinox_8049F9B4::update() {
     JGeometry::TVec3f pos = mPos;
     s32 playerDir = 0;
