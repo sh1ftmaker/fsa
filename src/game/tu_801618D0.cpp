@@ -36,7 +36,7 @@ cls_804A0440::~cls_804A0440() {
 }
 
 // 0x80163E80.
-// FIXME(shotgun): 74.67 %, missing/extra + reloc-name
+// FIXME(shotgun): 80.68 %, missing/extra + reloc-name; behaviour near.
 void cls_804A0440::init() {
     field_0x94 = 0;
     mBox.set(-60.0f, -60.0f, 60.0f, 60.0f);
@@ -119,7 +119,7 @@ void cls_804A0440::init() {
 }
 
 // 0x80162628.
-// FIXME(shotgun): 85.87 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.44 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0440::update() {
     mLife = 10000;
     f32 x0 = -30.0f;
@@ -556,7 +556,7 @@ void cls_804A0440::update() {
 }
 
 // 0x80162208.
-// FIXME(shotgun): 96.91 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.91 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0440::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -618,7 +618,7 @@ void cls_804A0440::draw() {
 // Not auto-inlined: update calls fn_80161F98 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // 0x80161F98.
-// FIXME(shotgun): 67.72 %, missing/extra
+// FIXME(shotgun): 72.26 %, missing/extra; behaviour drift.
 void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
     if (field_0x2ec != set) {
         if (field_0x2ec < 0) {
@@ -657,7 +657,8 @@ void cls_804A0440::vfunc_0x24() {
 }
 
 // 0x801618D0.
-// FIXME(shotgun): 99.99 %, operands (the texture names sit after the extern colour table: +0x20 here, +0x60 in the original)
+// FIXME(shotgun): 99.96 %, operands; behaviour drift.
+// (the texture names sit after the extern colour table: +0x20 here, +0x60 in the original)
 void cls_804A0440::fn_801618D0(const JGeometry::TVec3f* pos, SpriteParams_801F5AE0* params) {
     JUTTexture tex0(static_cast<const ResTIMG*>(fn_804032E8('BPOH', "obake_sirokuro.bti")), 0);
     JUTTexture tex1(static_cast<const ResTIMG*>(fn_804032E8('BPOH', "obake_ci.bti")), 0);
