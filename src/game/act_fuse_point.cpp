@@ -19,14 +19,14 @@ void FusePoint_804A54C0::init() {
         s32 dir = (field_0x90 >> 21) & 3;
         mSpawnPos.x += fn_80210B34(dir);
         mSpawnPos.y += fn_80210AF8(dir);
-        mPos.set(mSpawnPos);
-        mPrevPos.set(mSpawnPos);
+        mPos = mSpawnPos;
+        mPrevPos = mSpawnPos;
     }
     mBox.i.x = 1.0f;
     mBox.i.y = 1.0f;
     mBox.f.x = -1.0f;
     mBox.f.y = -1.0f;
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0x80.i.x = 1.0f;
     field_0x80.i.y = 1.0f;
     field_0x80.f.x = -1.0f;
