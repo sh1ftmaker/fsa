@@ -127,13 +127,8 @@ extern "C" cls_80204638* fn_80204638() {
     return &sInstance;
 }
 
-// Pool statics instantiated in this unit (their registration is the unit's static initializer).
+// Pool statics this unit's static initializer registers. The others come in through the headers.
+// FIXME: JASTrack, JASChannel, JAIStream, JAISoundChild, JAISeq and JAISe pools still differ.
 template class JASPoolAllocObject_MultiThreaded<JASTrack::TChannelMgr>;
-template class JASPoolAllocObject_MultiThreaded<JASTrack>;
-template class JASPoolAllocObject_MultiThreaded<JASChannel>;
 template class JASPoolAllocObject<JAUDopplerAudible<4> >;
 template class JASPoolAllocObject<JAUAudible<4> >;
-template class JASPoolAllocObject<JAIStream>;
-template class JASPoolAllocObject<JAISoundChild>;
-template class JASPoolAllocObject<JAISeq>;
-template class JASPoolAllocObject<JAISe>;
