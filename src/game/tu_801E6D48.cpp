@@ -15,22 +15,22 @@ cls_804A5418::cls_804A5418() {
     field_0x2b4 = 0;
 }
 
-// FIXME(shotgun): 92.02 %, different + reloc-name
+// FIXME(shotgun): literal pool order differs (lbl_8053F5DC/F5C4 vs @938/@939)
 void cls_804A5418::init() {
     EnemyBase_804A4808::init();
     field_0x98 = field_0x90 & 3;
     field_0x2b4 = (field_0x90 >> 2) & 0x1F;
-    if (field_0x90 & 0x200000) {
+    if ((field_0x90 >> 21) & 1) {
         mFlags |= 0x8000;
-    } else if (field_0x90 & 0x800000) {
+    } else if ((field_0x90 >> 23) & 1) {
         mFlags |= 0x2000;
-    } else if (field_0x90 & 0x400000) {
+    } else if ((field_0x90 >> 22) & 1) {
         mFlags |= 0x4000;
     }
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     if (mFlags & 0x8000) {
         mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         field_0xb0 = 0;
     } else {
         fn_80210990(field_0x98, &mBox);
