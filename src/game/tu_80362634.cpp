@@ -914,9 +914,10 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 91.16 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.41 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     s32 skip = 0;
+    s32 i;
     JGeometry::TVec3f pos = mPos;
     switch (field_0x238) {
     case 0:
@@ -1003,7 +1004,7 @@ void cls_804ADF28::fn_80362C44() {
                 effectPos.x = (f32)(s32)(mPos.x * 0.001953125f) * 512.0f + 256.0f;
                 effectPos.z = 0.0f;
                 static const u16 lbl_80542AF0[4] = {0x4A4, 0x4A5, 0x4A6, 0x4A7};
-                for (int i = 0; i < 4; i++) {
+                for (i = 0; i < 4; i++) {
                     spawnEmitter_8013CC50(0, &effectPos, lbl_80542AF0[i], 0, 0, NULL, NULL, true, 1.0f);
                     deleteEmitter(&field_0x30c[i]);
                 }
@@ -1045,7 +1046,7 @@ void cls_804ADF28::fn_80362C44() {
         if (field_0x248 == 0) {
             skip = 1;
             u32 found = 0;
-            for (int i = 0; i < 4; i++) {
+            for (i = 0; i < 4; i++) {
                 found = lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(i), 0x100);
                 if (found != 0) {
                     break;
