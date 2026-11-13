@@ -9,10 +9,10 @@ void* fn_804030C4(u32 type, const char* name);
 #include "JSystem/JFramework/JFWDisplay.h"
 
 // Rotates a pane of the screen about its centre.
-static inline void rotateArrow(J2DScreen* screen, u64 tag, f32 angle) {
-    f32 h = screen->search(tag)->getHeight();
-    J2DPane* pane = screen->search(tag);
-    screen->search(tag)->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, angle);
+inline void cls_804AF860::rotateArrow(u64 tag, s16 base) {
+    f32 h = field_0x4->search(tag)->getHeight();
+    J2DPane* pane = field_0x4->search(tag);
+    field_0x4->search(tag)->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, (f32)(base + field_0x74));
 }
 
 // Fonts, texts and the arrows' base angles of the options screen: the constructor of the
@@ -79,8 +79,8 @@ cls_804AF860::cls_804AF860() {
     } else {
         getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x39, 0, NULL, NULL);
     }
-    rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-    rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+    rotateArrow('Par01', field_0x70);
+    rotateArrow('Par02', field_0x72);
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
@@ -148,8 +148,8 @@ void cls_804AF860::fn_803A7280() {
     } else {
         getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x39, 0, NULL, NULL);
     }
-    rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-    rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+    rotateArrow('Par01', field_0x70);
+    rotateArrow('Par02', field_0x72);
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
@@ -293,14 +293,14 @@ void cls_804AF860::fn_803A60E4() {
         } else {
             field_0x74 = -6;
         }
-        rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-        rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+        rotateArrow('Par01', field_0x70);
+        rotateArrow('Par02', field_0x72);
         return;
     }
     if (field_0x6e == 1 || field_0x6e == -1) {
         field_0x74 = 0;
-        rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-        rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+        rotateArrow('Par01', field_0x70);
+        rotateArrow('Par02', field_0x72);
     }
     if (field_0x6e < 0) {
         s32 t;
