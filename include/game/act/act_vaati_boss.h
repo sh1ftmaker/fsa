@@ -271,10 +271,8 @@ public:
     /* 0x5E8 */ u8 field_0x5e8;
     /* 0x5E9 */ u8 field_0x5e9;
     /* 0x5EA */ u8 field_0x5ea[0x5EC - 0x5EA];
-    /* 0x5EC */ f32 field_0x5ec;
-    /* 0x5F0 */ f32 field_0x5f0;
-    /* 0x5F4 */ f32 field_0x5f4;
-    /* 0x5F8 */ f32 field_0x5f8;
+    /* 0x5EC */ JGeometry::TVec2f field_0x5ec;
+    /* 0x5F4 */ JGeometry::TVec2f field_0x5f4;
     /* 0x5FC */ s32 field_0x5fc; // effect layer (spawnEmitter_8013CC50's first argument)
     /* 0x600 */ JGeometry::TVec3f field_0x600;
     /* 0x60C */ JGeometry::TVec3f field_0x60c;
