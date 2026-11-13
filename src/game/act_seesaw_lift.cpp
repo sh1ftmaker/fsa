@@ -11,9 +11,14 @@
 #include <float.h>
 #include "game/ActorManager.h"
 
-// The state table in the unit's .data (0x804AD30C). It is zeros in the DOL and
-// filled at runtime, so it is declared here and not defined.
-extern void (SeesawLift_804AD348::*lbl_804AD30C[5])();
+// The state table. Not const, so its initialiser is copied into it by __sinit_act_seesaw_lift_cpp.
+static void (SeesawLift_804AD348::*lbl_804AD30C[5])() = {
+    &SeesawLift_804AD348::fn_8035A210,
+    &SeesawLift_804AD348::fn_803597EC,
+    &SeesawLift_804AD348::fn_80358F98,
+    &SeesawLift_804AD348::fn_80358F98,
+    &SeesawLift_804AD348::fn_803584C0,
+};
 
 static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
