@@ -862,12 +862,12 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
-// FIXME(shotgun): 77.53 %, missing/extra; behaviour drift.
-// (the original tests mode 11 as a bool, cntlzw)
+// FIXME(shotgun): 87.74 %, missing/extra; the original repeats the sprite step before each
+// early `continue` (shared i++ block), and compares x unsigned (cmplwi) but shifts it signed.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
+    GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 count = 0;
     s32 big = 0;
-    GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 slot = fn_8022EA0C(player);
     for (s32 timer = 5; timer >= 0; timer--) {
         cls_803099FC* sprite = lbl_80504A38[player];
@@ -876,7 +876,7 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
                 continue;
             }
             if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
-                ((gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 != 0) &&
+                (((gGameRoot_8053AAF8->field_0x4c == 11 ? true : false) || gGameRoot_8053AAF8->field_0x88 != 0) &&
                  sprite->field_0x23 == 0)) {
                 sprite->mRemove = 1;
                 continue;
