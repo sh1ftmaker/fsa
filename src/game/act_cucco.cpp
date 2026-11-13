@@ -27,7 +27,7 @@ Cucco_804AB8C0::~Cucco_804AB8C0() {
     releaseEmitter_801EE434(mEmitter300);
 }
 
-// FIXME(shotgun): 90.90 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.08 %, missing/extra + reloc-name; behaviour near.
 void Cucco_804AB8C0::init() {
     u16 angle = 0;
     mBox.i.x = -7.0f;
@@ -93,13 +93,14 @@ void Cucco_804AB8C0::init() {
         field_0x28c = 4;
         s32 players = gGameRoot_8053AAF8->fn_80138A30();
         for (s32 i = 0; i < players; i++) {
-            if (((gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3) == 2) {
+            u32 bits = (gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3;
+            if (bits == 2) {
                 field_0x2a0 = 0;
                 break;
             }
         }
     }
-    field_0x2a8 = 0;
+    field_0x2a4[2] = 0;
     field_0x2b8.x = 0.0f;
     field_0x2b8.y = 0.0f;
     field_0x2b8.z = 0.0f;
@@ -128,7 +129,7 @@ void Cucco_804AB8C0::init() {
         } else {
             field_0x98 = 1;
         }
-        field_0x2a8 = 1;
+        field_0x2a4[2] = 1;
         field_0x230 = 7;
         break;
     }
@@ -203,7 +204,7 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 87.05 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.07 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {
         return;
@@ -225,8 +226,7 @@ void Cucco_804AB8C0::fn_80332A60() {
                 if (other->mActorId == ACTOR_FLME) {
                     JGeometry::TVec2f center2d(0.0f, 0.0f);
                     other->fn_801F3128(&center2d);
-                    JGeometry::TVec3f from(center2d.x - other->field_0x3c.x, center2d.y - other->field_0x3c.y,
-                                           0.0f - other->field_0x3c.z);
+                    JGeometry::TVec3f from = JGeometry::TVec3f(center2d.x, center2d.y, 0.0f) - other->field_0x3c;
                     hit = fn_801F37AC(other->field_0x118, &from, 0, other->field_0x168, other->field_0x110);
                 }
                 if (hit) {
@@ -289,7 +289,7 @@ void Cucco_804AB8C0::fn_80332A60() {
     field_0xb0 = 0x1000;
 }
 
-// FIXME(shotgun): 91.77 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.11 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::fn_803324A8() {
     s32 outDir = -1;
     f32 outDist = 0.0f;
@@ -326,7 +326,7 @@ void Cucco_804AB8C0::fn_803324A8() {
             f32 dy = mPos.y - field_0x2c4[2].y;
             field_0x294 = field_0x4;
             setVec(field_0x2c4[2], mPos);
-            f32 distSq = dx * dx + dy * dy;
+            f32 distSq = dy * dy + dx * dx;
             if (field_0x294 != field_0x4 || !(distSq < 5.0f)) {
                 field_0x280 = 0;
                 return;
@@ -402,7 +402,7 @@ u8 Cucco_804AB8C0::fn_80332378() {
     return r;
 }
 
-// FIXME(shotgun): 82.38 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.24 %, missing/extra + reloc-name; behaviour near.
 void Cucco_804AB8C0::fn_80331E6C() {
     if (field_0x2a4[0] == 1) {
     s32 warpSerial = -1;
@@ -442,7 +442,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
         if (warp == NULL) {
             return;
         }
-        target.set(warp->field_0x238);
+        target = warp->field_0x238;
         if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
             target.z = mPos.z;
         }
@@ -455,7 +455,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
         if (circle == NULL) {
             return;
         }
-        target.set(circle->field_0x268);
+        target = circle->field_0x268;
         if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
             target.z = mPos.z;
         }
@@ -487,7 +487,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
             return;
         }
     }
-    mPos.set(target);
+    mPos = target;
     field_0x4 = newLayer;
     field_0x284 = 0x14;
     setVec(field_0x2c4[3], target);
