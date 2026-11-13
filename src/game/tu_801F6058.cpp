@@ -483,6 +483,7 @@ void ActorManager_804A5800::fn_801F7CAC() {
 
 // FIXME(shotgun): 94.1 %, missing/extra
 void ActorManager_804A5800::fn_801F7B18() {
+    getGameView_802D6A9C();
     for (s32 i = 0; i < 4; i++) {
         getGameView_802D6A9C()->fn_802D39B8(i, -1);
         if (fn_8023EBB8(i)) {
