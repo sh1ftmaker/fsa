@@ -206,87 +206,82 @@ void Cucco_804AB8C0::vfunc_0x10() {
 
 // FIXME(shotgun): 87.07 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::fn_80332A60() {
-    if (fn_801F3D94(true) != 0 || field_0x284 > 0 || field_0xc4) {
-        return;
+    if (fn_801F3D94(true) == 0 && field_0x284 <= 0 && !field_0xc4) {
+        field_0xb0 = 0x41302;
+        if (field_0x268 > 0) {
+            JGeometry::TBox2f box = mBox;
+            JGeometry::TVec2f center(mPos.x, mPos.y);
+            box.addPos(center);
+            s32 result = 0;
+            bool hit = false;
+            s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
+            if (serial >= 0 && serial != mSerial) {
+                ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (other != NULL) {
+                    if (other->mActorId == ACTOR_FLME) {
+                        JGeometry::TVec2f center2d(0.0f, 0.0f);
+                        other->fn_801F3128(&center2d);
+                        JGeometry::TVec3f from = JGeometry::TVec3f(center2d.x, center2d.y, 0.0f) - other->field_0x3c;
+                        hit = fn_801F37AC(other->field_0x118, &from, 0, other->field_0x168, other->field_0x110);
+                    }
+                    if (hit) {
+                        other->field_0x164 = 1;
+                    }
+                }
+            }
+            if (hit) {
+                result = 2;
+            } else if (fn_801F2DB4('NULL', ACTOR_FLME, NULL) || fn_801F2FAC() ||
+                       fn_801A4D1C(mSerial, &box, &center) || fn_801A6108(mSerial, &box, &center) ||
+                       fn_801A4F5C(mSerial, &box, &center) || fn_801A46FC(mSerial, &box, &center))
+            {
+                result = 1;
+            }
+            if (result > 0) {
+                if (field_0x2a2 == 1) {
+                    field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
+                } else {
+                    field_0x240 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x64;
+                }
+                if (!(getGameView_802D6A9C()->field_0x4 == 1 && getGameView_802D6A9C()->field_0x8 == 2)) {
+                    field_0x268--;
+                }
+                if (field_0x2a1 == 0) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x348, 0, 0, NULL, NULL, true, 1.0f);
+                } else {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0xD2, 0, 0, NULL, NULL, true, 1.0f);
+                }
+                startSound_801F0E34(0x40001, 0);
+                if (field_0x268 == 0) {
+                    field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
+                }
+                if (result == 1 || field_0x268 == 0) {
+                    field_0x238 = 0;
+                    field_0x258 = 0;
+                    mPos.z = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    if (PSVECMag(&field_0x3c) > 4.0f) {
+                        field_0x3c.normalize();
+                        field_0x3c.scale(4.0f);
+                    }
+                } else {
+                    field_0x238 = field_0x240;
+                    field_0x258 = 0;
+                    mPos.z = 0.0f;
+                    field_0x3c.z = 0.0f;
+                    field_0x2b8 = field_0x3c;
+                    field_0x2b8.normalize();
+                    f32 speed = 2.0f;
+                    if (field_0x2a3 == 1) {
+                        speed = 4.0f;
+                    }
+                    field_0x2b8.scale(speed);
+                }
+                field_0x230 = 1;
+            }
+        }
+        field_0xb0 = 0x1000;
     }
-    field_0xb0 = 0x41302;
-    if (field_0x268 > 0) {
-        JGeometry::TBox2f box = mBox;
-        JGeometry::TVec2f center(mPos.x, mPos.y);
-        box.i.x += center.x;
-        box.i.y += center.y;
-        box.f.x += center.x;
-        box.f.y += center.y;
-        s32 result = 0;
-        bool hit = false;
-        s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
-        if (serial >= 0 && serial != mSerial) {
-            ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-            if (other != NULL) {
-                if (other->mActorId == ACTOR_FLME) {
-                    JGeometry::TVec2f center2d(0.0f, 0.0f);
-                    other->fn_801F3128(&center2d);
-                    JGeometry::TVec3f from = JGeometry::TVec3f(center2d.x, center2d.y, 0.0f) - other->field_0x3c;
-                    hit = fn_801F37AC(other->field_0x118, &from, 0, other->field_0x168, other->field_0x110);
-                }
-                if (hit) {
-                    other->field_0x164 = 1;
-                }
-            }
-        }
-        if (hit) {
-            result = 2;
-        } else if (fn_801F2DB4('NULL', ACTOR_FLME, NULL) || fn_801F2FAC() ||
-                   fn_801A4D1C(mSerial, &box, &center) || fn_801A6108(mSerial, &box, &center) ||
-                   fn_801A4F5C(mSerial, &box, &center) || fn_801A46FC(mSerial, &box, &center))
-        {
-            result = 1;
-        }
-        if (result > 0) {
-            if (field_0x2a2 == 1) {
-                field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
-            } else {
-                field_0x240 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x64;
-            }
-            if (!(getGameView_802D6A9C()->field_0x4 == 1 && getGameView_802D6A9C()->field_0x8 == 2)) {
-                field_0x268--;
-            }
-            if (field_0x2a1 == 0) {
-                spawnEmitter_8013CC50(field_0x4, &mPos, 0x348, 0, 0, NULL, NULL, true, 1.0f);
-            } else {
-                spawnEmitter_8013CC50(field_0x4, &mPos, 0xD2, 0, 0, NULL, NULL, true, 1.0f);
-            }
-            startSound_801F0E34(0x40001, 0);
-            if (field_0x268 == 0) {
-                field_0x240 = (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0xC8;
-            }
-            if (result == 1 || field_0x268 == 0) {
-                field_0x238 = 0;
-                field_0x258 = 0;
-                mPos.z = 0.0f;
-                field_0x3c.z = 0.0f;
-                if (PSVECMag(&field_0x3c) > 4.0f) {
-                    field_0x3c.normalize();
-                    field_0x3c.scale(4.0f);
-                }
-            } else {
-                field_0x238 = field_0x240;
-                field_0x258 = 0;
-                mPos.z = 0.0f;
-                field_0x3c.z = 0.0f;
-                JGeometry::TVec3f dir(field_0x3c.x, field_0x3c.y, field_0x3c.z);
-                dir.normalize();
-                f32 speed = 2.0f;
-                if (field_0x2a3 == 1) {
-                    speed = 4.0f;
-                }
-                dir.scale(speed);
-                setVec(field_0x2b8, dir);
-            }
-            field_0x230 = 1;
-        }
-    }
-    field_0xb0 = 0x1000;
 }
 
 // FIXME(shotgun): 92.14 %, missing/extra + reloc-name; behaviour drift.

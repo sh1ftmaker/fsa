@@ -73,7 +73,7 @@ public:
     /* 0x2B4 */ f32 field_0x2b4;
     // Plain Vec (not TVec3f): a class-typed member would add constructor calls to the inline
     // constructor tu_801F9484 runs, and its unit would no longer link byte-identical.
-    /* 0x2B8 */ Vec field_0x2b8;
+    /* 0x2B8 */ JGeometry::TVec3f field_0x2b8;
     /* 0x2C4 */ Vec field_0x2c4[4];
     /* 0x2F4 */ JPABaseEmitter* mEmitter2f4; // released by the destructor
     /* 0x2F8 */ JPABaseEmitter* mEmitter2f8; // released by the destructor
