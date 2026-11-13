@@ -452,7 +452,7 @@ void cls_804B0288::fn_803D4770() {
     }
 }
 
-// FIXME(shotgun): 92.03 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 98.88 %, missing/extra; behaviour near.
 // (register allocation of the loop counters)
 void cls_804B0288::fn_803D4484() {
     s16 fadeStart = lbl_8050DB0C.field_0x4c[(0xE4 - 0x4C) / 2];
