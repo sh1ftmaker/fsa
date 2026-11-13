@@ -794,7 +794,7 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     fn_801E4A18(&field_0x52c.field_0x28);
 }
 
-// FIXME(shotgun): 78.45 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.18 %, missing/extra + reloc-name; behaviour drift.
 // (the follow flag and target selection are shaped differently; the 0x5EC/0x5F4 pairs are copied into a TVec3f temp because the original passes the field address itself)
 void VaatiBoss_804A4958::fn_801D4C70() {
     switch (mState) {
