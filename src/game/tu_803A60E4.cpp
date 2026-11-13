@@ -288,23 +288,31 @@ s32 fn_803A65EC() {
 // FIXME(shotgun): 50.3 %, missing/extra + reloc-name
 void cls_804AF860::fn_803A60E4() {
     if (field_0x6e == 0) {
-        field_0x6c--;
-        if (field_0x6c <= 0) {
-            field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
-            if (field_0x74 == -6) {
-                field_0x74 = 6;
-            } else {
-                field_0x74 = -6;
-            }
-            rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-            rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+        if (--field_0x6c > 0) {
+            return;
         }
+        field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+        if (field_0x74 == -6) {
+            field_0x74 = 6;
+        } else {
+            field_0x74 = -6;
+        }
+        f32 h = field_0x4->search('Par01')->getHeight();
+        J2DPane* pane = field_0x4->search('Par01');
+        field_0x4->search('Par01')->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, (f32)(field_0x70 + field_0x74));
+        h = field_0x4->search('Par02')->getHeight();
+        pane = field_0x4->search('Par02');
+        field_0x4->search('Par02')->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, (f32)(field_0x72 + field_0x74));
         return;
     }
     if (field_0x6e == 1 || field_0x6e == -1) {
         field_0x74 = 0;
-        rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-        rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+        f32 h = field_0x4->search('Par01')->getHeight();
+        J2DPane* pane = field_0x4->search('Par01');
+        field_0x4->search('Par01')->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, (f32)(field_0x70 + field_0x74));
+        h = field_0x4->search('Par02')->getHeight();
+        pane = field_0x4->search('Par02');
+        field_0x4->search('Par02')->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, (f32)(field_0x72 + field_0x74));
     }
     if (field_0x6e < 0) {
         s32 t;
