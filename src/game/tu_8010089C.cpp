@@ -406,7 +406,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x245 = 0;
     field_0x240 = 0;
     s32 roll = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    u8 players = gGameRoot_8053AAF8->fn_80138A30();
+    s32 players = (u8)gGameRoot_8053AAF8->fn_80138A30();
     if (field_0x290->field_0x23c > 720) {
         if (roll < 10) {
             field_0x244 = 1;
@@ -423,10 +423,10 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
         }
     } else {
         s32 base = 0;
-        s32 w1 = 0;
         s32 w2 = 0;
-        s32 w3 = 0;
+        s32 w1 = 0;
         s32 w4 = 0;
+        s32 w3;
         switch (players) {
         case 1:
             w1 = 90;
