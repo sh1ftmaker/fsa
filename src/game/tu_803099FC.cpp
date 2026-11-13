@@ -57,8 +57,8 @@ void cls_804AA8C8::fn_8030AB38() {
         field_0xe0[i] = 0;
         field_0xb4[i] = 0;
     }
-    field_0xe4[0] = 0;
-    field_0xe4[1] = 0;
+    field_0xe4 = 0;
+    field_0xe5 = 0;
 }
 
 // 0x8030AAF4
@@ -189,20 +189,36 @@ void cls_804AA8C8::fn_8030A43C() {
             if (pad->getButton() & 0x800) {
                 field_0x4[i] |= 0x40;
             }
-            if (field_0xe4[1] != 0) {
-                field_0xe4[1] = pad->getAnalogRf() > 0.6f;
+            if (field_0xe5 != 0) {
+                if (pad->getAnalogRf() > 0.6f) {
+                    field_0xe5 = 1;
+                } else {
+                    field_0xe5 = 0;
+                }
             } else {
-                field_0xe4[1] = pad->getAnalogRf() > 0.7f;
+                if (pad->getAnalogRf() > 0.7f) {
+                    field_0xe5 = 1;
+                } else {
+                    field_0xe5 = 0;
+                }
             }
-            if (field_0xe4[1] != 0) {
+            if (field_0xe5 != 0) {
                 field_0x4[i] |= 0x20;
             }
-            if (field_0xe4[0] != 0) {
-                field_0xe4[0] = pad->getAnalogLf() > 0.6f;
+            if (field_0xe4 != 0) {
+                if (pad->getAnalogLf() > 0.6f) {
+                    field_0xe4 = 1;
+                } else {
+                    field_0xe4 = 0;
+                }
             } else {
-                field_0xe4[0] = pad->getAnalogLf() > 0.7f;
+                if (pad->getAnalogLf() > 0.7f) {
+                    field_0xe4 = 1;
+                } else {
+                    field_0xe4 = 0;
+                }
             }
-            if (field_0xe4[0] != 0) {
+            if (field_0xe4 != 0) {
                 field_0x4[i] |= 0x40;
             }
             if (pad->getButton() & 0x100) {
