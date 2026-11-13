@@ -269,7 +269,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 93.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.10 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
