@@ -20,6 +20,9 @@ public:
     JAISeMgr& getSeMgr() {
         return mSeMgr;
     }
+    JAISeqMgr& getSeqMgr() {
+        return mSeqMgr;
+    }
     // } FABRICATED
 
 private:

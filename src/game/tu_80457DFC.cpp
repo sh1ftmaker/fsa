@@ -221,10 +221,12 @@ static const JASDsp::FxlineConfig_ lbl_80491600[4] = {
 };
 
 // 0x8045A0E4
-// FIXME(shotgun): 100 %
+// Not auto-inlined: fn_80459AE4 calls fn_8045A0E4 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void fn_8045A0E4(int count) {
     JASPoolAllocObject<JAUDopplerAudible<4> >::newMemPool(count);
 }
+#pragma auto_inline reset
 
 // 0x8045A0D8
 u8 fn_8045A0D8() {
@@ -250,7 +252,7 @@ AudioMgr_8045A080::AudioMgr_8045A080() {
 }
 
 // 0x80459AE4
-// FIXME(shotgun): 80.02 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.78 %, missing/extra + reloc-name; behaviour drift.
 void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* initData, void* seqData) {
     JAU_JASInitializer jasInit;
     jasInit.mChannelPoolCount = lbl_8053A228;
@@ -266,7 +268,7 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
     field_0x2c = new (heap, 0) JASAudioReseter();
     field_0x30 = new (heap, 0) JAUSoundMgr();
     field_0x34 = &field_0x30->getSeMgr();
-    // FIXME(shotgun): field_0x38 = &field_0x30->mSeqMgr not written (mSeqMgr is private in libs/sdk/include/JSystem/JAudio/JAUSoundMgr.h)
+    field_0x38 = &field_0x30->getSeqMgr();
     field_0x3c = new (heap, 0) cls_804B2074();
     field_0x3c->setting_._04 = lbl_8053A22C;
     field_0x3c->setting_._08 = lbl_8053A230;
@@ -318,8 +320,8 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
         field_0x18[i] = new ActorSoundObj_804578F4(NULL, heap, 4);
     }
     field_0x28 = new ActorSoundObj_804578F4(NULL, heap, 1);
+    field_0x40 = new (heap, 0) GameAudio::CustomSoundTable();
 
-    // FIXME(shotgun): field_0x40 = new (heap, 0) GameAudio::CustomSoundTable() not written (ctor / mSoundTable private in libs/sdk/include/Inagaki/GameSoundTable.h)
     JKRArchive* seqArc = (JKRArchive*)seqData;
     if (seqArc == NULL) {
         seqArc = JKRArchive::mount(lbl_8053A24C, JKRArchive::MOUNT_ARAM, heap, JKRArchive::MOUNT_DIRECTION_HEAD);
@@ -338,8 +340,8 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
         loader.load(lbl_8053A244);
     }
     field_0x34->setSeqDataMgr(field_0x44->sectionHeapData_.seSeqDataMgr_);
+    field_0x40->mSoundTable = field_0x44->getSoundTable();
     // FIXME(shotgun): field_0x38->setSeqDataMgr(field_0x44) not written (JAISeqDataMgr is a private base of JAUSectionHeap in libs/sdk/include/JSystem/JAudio/JAUSectionHeap.h)
-    // FIXME(shotgun): field_0x40->mSoundTable = &field_0x44->getSoundTable() not written (mSoundTable is private in GameSoundTable.h)
     field_0x4c = 1.0f;
     field_0x50 = 1.0f;
     field_0x54 = 1.0f;
@@ -364,7 +366,7 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
 }
 
 // 0x80459674
-// FIXME(shotgun): 98.19 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.19 %, missing/extra + reloc-name; behaviour drift.
 void AudioMgr_8045A080::fn_80459674() {
     if (field_0x6b != 0) {
         field_0x6b--;
@@ -470,7 +472,8 @@ void AudioMgr_8045A080::fn_80459674() {
 }
 
 // 0x80459624
-// FIXME: 79.35. The original loads and stores the three coordinates one at a time
+// FIXME: 79.35 %, scheduling+regalloc; behaviour clean.
+// The original loads and stores the three coordinates one at a time
 // (lfs/stfs through f0, the mtx pointer moved in between); ours loads x and z
 // (f0, f1) before the first store and the register assignment follows.
 void AudioMgr_8045A080::fn_80459624(const JGeometry::TVec3f* pos, Mtx mtx, s32 index) {
@@ -523,7 +526,6 @@ void AudioMgr_8045A080::fn_804594E4(u32 mode) {
     JASDriver::setOutputMode(mode);
 }
 
-// FIXME(shotgun): 100 %
 void AudioMgr_8045A080::fn_804593D4() {
     field_0x8e = 1;
     fn_80458744(1);
@@ -541,7 +543,6 @@ void AudioMgr_8045A080::fn_804593D4() {
     field_0x34->getCategory(6)->getParams()->moveVolume(0.0f, 3);
 }
 
-// FIXME(shotgun): 100 %
 void AudioMgr_8045A080::fn_80459274() {
     field_0x8e = 0;
     if (field_0x8c != 0) {
@@ -569,8 +570,6 @@ void AudioMgr_8045A080::fn_80459274() {
 }
 
 // 0x80458FF0
-// FIXME: 99.91, reloc-name only: jumptable_804B1FB4, as fn_80458744's.
-// Inlines fn_80458408 (case 0x100001A).
 void AudioMgr_8045A080::fn_80458FF0(s32 id, bool restart, u8 flag) {
     if (field_0x4 != 0) {
         return;
@@ -649,7 +648,8 @@ void AudioMgr_8045A080::fn_80458F04(u32 id) {
 }
 
 // 0x80458880
-// FIXME: 99.66. One instruction short in the inlined getPlayerPan: for 1 or
+// FIXME: 99.66 %, missing/extra + reloc-name; behaviour near.
+// One instruction short in the inlined getPlayerPan: for 1 or
 // 5+ players the original reloads 0.5f (lfs) before the movePan call; ours
 // keeps the 0.5f already in f1 (b only). Returns, an uninitialised pan and a
 // shared case 1 / default were tried (97.4-99.2 %). Also reloc-name: the
@@ -840,7 +840,8 @@ void AudioMgr_8045A080::fn_8045873C(u8 value) {
 }
 
 // 0x80458658
-// FIXME: 99.65, regalloc only: the original keeps this in r30 and pause in
+// FIXME: 99.65 %, regalloc-only; behaviour clean.
+// regalloc only: the original keeps this in r30 and pause in
 // r31 (mr r30, r3 first); ours copies pause first.
 void AudioMgr_8045A080::fn_80458658(bool pause) {
     field_0x8a = pause;
@@ -859,7 +860,8 @@ void AudioMgr_8045A080::fn_80458658(bool pause) {
 }
 
 // 0x80458508
-// FIXME: 98.55. The switch tree (in moveMusicTempo_80458508) differs: the
+// FIXME: 98.55 %, missing/extra; behaviour drift.
+// The switch tree (in moveMusicTempo_80458508) differs: the
 // original tests kind == 1 first (cmpwi 1; beq; bge; b default; cmpwi 3; bge
 // default), ours tests 2 first; two branches more here.
 void AudioMgr_8045A080::fn_80458508(u8 kind) {
@@ -898,7 +900,8 @@ void AudioMgr_8045A080::fn_80458408(s32 id, bool flag) {
 }
 
 // 0x8045815C
-// FIXME: 99.97, reloc-name only: 0.5f (movePitch) is lbl_80543EC4, pooled after
+// FIXME: 99.97 %, reloc-name; behaviour clean.
+// only: 0.5f (movePitch) is lbl_80543EC4, pooled after
 // 0.7f, which only the unwritten fn_80459674 uses.
 void AudioMgr_8045A080::fn_8045815C(bool flag) {
     field_0x8b = flag;

@@ -11,6 +11,8 @@ namespace GameAudio
     class CustomSoundTable : public JAISoundInfo, public JAUSoundInfo, public JAIStreamDataMgr
     {
     public:
+        CustomSoundTable() : JAISoundInfo(true), JAUSoundInfo(true) { mSoundTable = NULL; }
+
         virtual u32 getSoundType(JAISoundID soundID) const;
         virtual int getCategory(JAISoundID soundID) const;
 
@@ -36,6 +38,7 @@ namespace GameAudio
     private:
         void getSoundInfo_(JAISoundID soundID, JAISound *sound) const;
 
+    public:
         JAUSoundTable *mSoundTable; // 0C (FSA holds the table instead of using the global instance)
     };
 }
