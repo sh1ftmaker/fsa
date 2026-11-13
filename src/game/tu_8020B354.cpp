@@ -163,7 +163,7 @@ void cls_804A5E98::vfunc_0xA0() {
         JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z, 0.0f);
         f32 top = 0.001f + box->i.y;
-        pos.y = top - pos.y >= 0.0f ? top : pos.y;
+        pos.y = __fsel(top - pos.y, top, pos.y);
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
