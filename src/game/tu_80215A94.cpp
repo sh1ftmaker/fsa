@@ -85,13 +85,13 @@ void cls_80216238::fn_80216238() {
 
 // FIXME(shotgun): 54.96 %, missing/extra + reloc-name; behaviour drift.
 // the original builds the entries with __construct_array(fn_80216238), which
-// needs a constructor on cls_80216238 (not added: it would make the horse-race man's inline
-// constructor build its table member).
+// needs a constructor on cls_80216238 (not added: it would rename the symbols).
 cls_80215E48* fn_80216178(cls_80215E48* table) {
     table->mCount = gGameRoot_8053AAF8->fn_80138A30();
     for (s32 i = 0; i < 4; i++) {
         table->mEntries[i].fn_80216238();
     }
+    table->field_0x94.fn_8021C078();
     table->fn_802160F4();
     return table;
 }
