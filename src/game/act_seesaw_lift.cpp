@@ -269,7 +269,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 93.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.10 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -336,16 +336,16 @@ void SeesawLift_804AD348::fn_8035A210() {
         }
     }
     if (field_0x244 == 0) {
-        field_0x23a = (s16)((field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)field_0x230) / 15.0f);
+        field_0x23a = (field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)field_0x230) / 15.0f;
     } else if (field_0x230 > 0) {
-        s16 mirrored = field_0x230 - 0x8000;
-        field_0x23a = (s16)((field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f);
+        s32 mirrored = field_0x230 - 0x8000;
+        field_0x23a = (field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f;
     } else {
-        s16 mirrored = field_0x230 + 0x8000;
-        field_0x23a = (s16)((field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f);
+        s32 mirrored = field_0x230 + 0x8000;
+        field_0x23a = (field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f;
     }
     if (field_0x238 == 0 && field_0x23a != 0) {
-        fillTiles(this, 12);
+        fillTiles(this, lbl_80542868[1]);
         field_0x258 = 1;
     }
     field_0x238 += field_0x23a;
