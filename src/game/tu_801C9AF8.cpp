@@ -454,13 +454,13 @@ bool ShadowLink2_804A43E8::fn_801C9EB8() {
 // actor is in the air (state 0x1C) and lands it when it touches ground.
 // FIXME(shotgun): 83.98 %, missing/extra + reloc-name; behaviour drift.
 bool ShadowLink2_804A43E8::fn_801C9CB0() {
-    bool hit = false;
+    u8 hit = false;
     if (!(mFlags & ENEMY_FLAG_NO_MAP_HIT) && field_0x80.f.x - field_0x80.i.x > 0.0f && field_0x80.f.y - field_0x80.i.y > 0.0f) {
         JGeometry::TVec3f savedPrev = mPrevPos;
         JGeometry::TVec3f savedPos = mPos;
         u8 floorLayer = viewLayerFlag(field_0x4);
         bool lifted = false;
-        if (mState == 0x1C && !(mPos.z <= 0.0f) && floorLayer != 0) {
+        if (mState == 0x1C && mPos.z > 0.0f && floorLayer != 0) {
             lifted = true;
             mPrevPos.y = mPrevPos.y - mPrevPos.z;
             mPrevPos.z = 0.0f;
@@ -477,8 +477,8 @@ bool ShadowLink2_804A43E8::fn_801C9CB0() {
                 mPos.y = savedPos.y;
                 fn_801CE800();
             }
-        } else if (hit && floorLayer != 0 && !(mFlags & ENEMY_FLAG_LANDED) && !(mPos.z <= 0.0f) &&
-                   fabs(mMapHitDir.y - -1.0f) < 0.001f && fabs(mPos.y - mPrevPos.y) < 0.001f) {
+        } else if (hit && floorLayer != 0 && !(mFlags & ENEMY_FLAG_LANDED) && mPos.z > 0.0f &&
+                   FABS(mMapHitDir.y - -1.0f) < 0.001f && FABS(mPos.y - mPrevPos.y) < 0.001f) {
             mPos.z = 0.0f;
             field_0x3c.z = 0.0f;
             mFlags |= 0x10;
