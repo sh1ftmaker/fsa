@@ -83,7 +83,7 @@ void cls_80216238::fn_80216238() {
     mWatch.fn_801ED7F0();
 }
 
-// FIXME(shotgun): 54.96 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 50.79 %, missing/extra + reloc-name; behaviour drift.
 // the original builds the entries with __construct_array(fn_80216238), which
 // needs a constructor on cls_80216238 (not added: it would rename the symbols).
 cls_80215E48* fn_80216178(cls_80215E48* table) {
