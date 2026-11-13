@@ -114,12 +114,13 @@ void OctorokRock_8049F5D8::update() {
         if (!blocked && !fn_801F2B7C(field_0x114, -1, true)) {
             break;
         }
-        if (!blocked) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x24A, 0, 1, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x24B, 0, 1, NULL, NULL, true, 1.0f);
-            mAlive = false;
-        } else if (field_0x90 != 1 && field_0x90 != 5) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
+        if ((field_0x90 != 1 && field_0x90 != 5) || !blocked) {
+            if (!blocked) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x24A, 0, 1, NULL, NULL, true, 1.0f);
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x24B, 0, 1, NULL, NULL, true, 1.0f);
+            } else {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x339, 0, 1, NULL, NULL, true, 1.0f);
+            }
             mAlive = false;
         } else {
             startSound_801F0E34(0x30000, 0);
