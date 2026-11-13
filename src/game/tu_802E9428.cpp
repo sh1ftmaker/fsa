@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/GameView.h"
 #include "game/Camera.h"
 #include "game/ActorManager.h"
@@ -53,7 +54,7 @@ extern u8* lbl_804AA0B8[17];
 extern JGeometry::TVec2f lbl_804D56A8[17];
 extern JGeometry::TVec2f lbl_804D5730[18];
 
-// FIXME(shotgun): 99.7 %, operands + reloc-name
+// FIXME(shotgun): 99.75 %, operands + reloc-name; behaviour near.
 void UnknownENDM_804AA0FC::init() {
     field_0x284 = getGameView_802D6A9C()->field_0x4;
     field_0x280 = getGameView_802D6A9C()->field_0x8;
@@ -74,7 +75,7 @@ void UnknownENDM_804AA0FC::init() {
     field_0x29a = lbl_8053AF30->fn_8044B80C(field_0x294);
 }
 
-// FIXME(shotgun): 60.17 %, missing/extra + reloc-name
+// FIXME(shotgun): 60.20 %, missing/extra + reloc-name; behaviour drift.
 void UnknownENDM_804AA0FC::update() {
     field_0x234++;
     switch (field_0x23c) {
@@ -370,7 +371,7 @@ void UnknownENDM_804AA0FC::update() {
 // Whether the focus `pos` has reached the edge of the 512 x 384 tile (the walk direction in
 // field_0x290: 0 up, 1 down, 2 left, 3 right); in the settling state (field_0x297 set) it
 // clears the flag once the edge is passed.
-// FIXME(shotgun): 98 %, scheduling+regalloc
+// FIXME(shotgun): 98.02 %, scheduling+regalloc; behaviour clean.
 bool UnknownENDM_804AA0FC::fn_802E9884(const JGeometry::TVec2f* pos) {
     s32 ry = (s32)pos->y % 384 - 30;
     s32 rx = (s32)pos->x % 512;
@@ -442,7 +443,7 @@ bool UnknownENDM_804AA0FC::fn_802E9884(const JGeometry::TVec2f* pos) {
 
 // Follows the target focus: closes in on (field_0x244, field_0x248) by easing, keeps the camera box
 // inside the limits, eases the zoom to its target and hands both to the camera.
-// FIXME(shotgun): 84 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.70 %, missing/extra + reloc-name; behaviour drift.
 void UnknownENDM_804AA0FC::fn_802E94F4() {
     f32 tx = field_0x244.x;
     f32 ty = field_0x244.y;
@@ -453,7 +454,7 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
         JGeometry::TVec3f vel = field_0x240->field_0x3c;
         f32 dx = field_0x250 - tx;
         f32 dy = field_0x254 - ty;
-        f32 sq = dx * dx + dy * dy;
+        f32 sq = square(dx) + square(dy);
         f32 dist = sq;
         if (!(sq <= 0.0f)) {
             dist = sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
@@ -504,12 +505,13 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
     gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&focus, (f32)(s32)field_0x270);
 }
 
-// FIXME(shotgun): 93.7 %, missing/extra
+// FIXME: 99.81 %, reloc-name; behaviour clean.
+// only: the 2^52 float-conversion constant is @954 in ours, lbl_805412F0 in the original
 bool UnknownENDM_804AA0FC::fn_802E948C(f32 target, s32 frames) {
     if (field_0x270 == target) {
         return false;
     }
-    f32 step = fabs(field_0x270 - target) / (f32)frames;
+    f32 step = __fabsf(field_0x270 - target) / (f32)frames;
     if (field_0x270 < target) {
         field_0x278 = step;
     } else {
