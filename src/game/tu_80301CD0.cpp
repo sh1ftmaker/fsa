@@ -1807,10 +1807,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][1][i27], lbl_80506D78[player], flag, set);
             }
             i27--;
-            for (; i27 >= 0; i27--) {
-                if (!isHiddenSprite(lbl_80506F88[player][1][i27])) {
-                    break;
-                }
+            while (i27 >= 0 && isHiddenSprite(lbl_80506F88[player][1][i27])) {
+                i27--;
             }
         } else if (i28 >= 0 && (n < 0 || keyA < keyMark ||
                                 (keyA == keyMark && record->mEntries[order[n]].mY >= lbl_80506F88[player][0][i28].f.field_0x1)))
@@ -1821,10 +1819,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][0][i28], lbl_80506D78[player], flag, set);
             }
             i28--;
-            for (; i28 >= 0; i28--) {
-                if (!isHiddenSprite(lbl_80506F88[player][0][i28])) {
-                    break;
-                }
+            while (i28 >= 0 && isHiddenSprite(lbl_80506F88[player][0][i28])) {
+                i28--;
             }
         } else {
             if (markKey(record, player, order[n]) >= 2) {
