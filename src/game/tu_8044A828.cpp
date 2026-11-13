@@ -84,7 +84,8 @@ void cls_804B1D00::fn_8044AF90() {
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME: 90.50 %. Register allocation in the digit blocks: the original's
+// FIXME: 88.11 %, missing/extra + reloc-name; behaviour drift.
+// Register allocation in the digit blocks: the original's
 // hundreds index comes from the same mulhw result (r7) as the tens, and it
 // saves r27-r31 where ours saves r26-r31 (our hundreds lives in r29 across
 // the first fn_804030C4 call). The tens of field_0x13 and units of field_0x12
@@ -106,17 +107,15 @@ void cls_804B1D00::fn_8044A828() {
         if (field_0x10 >= 1000) {
             field_0x10 = 999;
         }
-        s32 value = field_0x10;
-        s32 hundreds = value / 100;
-        s32 tens = (value - hundreds * 100) / 10;
-        s32 units = value - (value / 10) * 10;
+        s32 tens = (field_0x10 - (field_0x10 / 100) * 100) / 10;
+        s32 hundreds = field_0x10 / 100;
         const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[hundreds]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[2]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[3]))->changeTexture(res, 0);
         res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[tens]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[4]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[5]))->changeTexture(res, 0);
-        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[value - (value / 10) * 10]));
+        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[field_0x10 - (field_0x10 / 10) * 10]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[6]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490DB8[7]))->changeTexture(res, 0);
     }
@@ -137,22 +136,16 @@ void cls_804B1D00::fn_8044A828() {
         if (field_0x13 >= 100) {
             field_0x13 = 99;
         }
-        s32 value12 = field_0x12;
-        s32 value13 = field_0x13;
-        s32 tens12 = value12 / 10;
-        s32 units12 = value12 - tens12 * 10;
-        s32 tens13 = value13 / 10;
-        s32 units13 = value13 - tens13 * 10;
-        const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[tens12]));
+        const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[field_0x12 / 10]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[4]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[5]))->changeTexture(res, 0);
-        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[units12]));
+        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[field_0x12 - (field_0x12 / 10) * 10]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[6]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[7]))->changeTexture(res, 0);
-        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[tens13]));
+        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[field_0x13 / 10]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[8]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[9]))->changeTexture(res, 0);
-        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[units13]));
+        res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B1CD8[field_0x13 - (field_0x13 / 10) * 10]));
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[10]))->changeTexture(res, 0);
         static_cast<J2DPicture*>(mScreen->search(lbl_80490E00[11]))->changeTexture(res, 0);
     }
