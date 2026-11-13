@@ -379,7 +379,7 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     mState = state;
 }
 
-// FIXME(shotgun): 91.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.38 %, missing/extra + reloc-name; behaviour near.
 void VaatiBoss_804A4958::fn_801D5B70() {
     if (mStateTimer >= field_0x250) {
         if (fn_801CD2F8(field_0x4)) {
@@ -397,10 +397,12 @@ void VaatiBoss_804A4958::fn_801D5B70() {
                             d.set(1.0f, 0.0f);
                         }
                         d.normalize();
+                        d.x *= 10000.0f;
+                        d.y *= 10000.0f;
                         field_0x5c4 = mPos.x;
                         field_0x5c8 = mPos.y;
-                        field_0x5c4 += d.x * 10000.0f;
-                        field_0x5c8 += d.y * 10000.0f;
+                        field_0x5c4 += d.x;
+                        field_0x5c8 += d.y;
                     }
                     if (found) {
                         fn_801D5D84(0x11);
@@ -699,15 +701,16 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
 }
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
-// FIXME(shotgun): 92.28 %, missing/extra + reloc-name; behaviour drift.
+// Original reloads field_0x5bc/0x5c0 in each case body and interleaves the sin/cos stores; layout differs.
+// FIXME: 92.28 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
         field_0x5d1--;
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
-            field_0x3c.x = 1.4f * JMASSin(field_0x5d2);
-            field_0x3c.y = 1.4f * JMASCos(field_0x5d2);
+            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(field_0x5d2);
+            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(field_0x5d2);
         }
     }
     switch (mState) {
@@ -728,6 +731,25 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     case 7:
         mPos.z = 500.0f;
         break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 8:
+    case 9:
+    case 10:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+    case 18:
+    case 19:
+    case 20:
+    case 21:
+    case 22:
     default: {
         f32 oldX = field_0x5bc;
         f32 oldY = field_0x5c0;
