@@ -237,9 +237,7 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
         field_0xb0 = 3;
         JGeometry::TBox2f box;
         fn_801E4618(&box, fn_801CD2F8(field_0x4));
-        field_0x60c.x = 0.5f * (box.f.x - box.i.x) + box.i.x;
-        field_0x60c.y = 0.5f * (box.f.y - box.i.y) + box.i.y;
-        field_0x60c.z = 0.0f;
+        field_0x60c.set(0.5f * (box.f.x - box.i.x) + box.i.x, 0.5f * (box.f.y - box.i.y) + box.i.y, 0.0f);
         field_0x5bc = (box.f.x - box.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.x;
         field_0x5c0 = (box.f.y - box.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.y;
         field_0x5d0 = fn_801CD664(2) + 1;
