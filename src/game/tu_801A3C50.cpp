@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/ActorBase.h"
 #include "game/ActorManager.h"
+#include "game/act/tu_801688AC.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
@@ -216,7 +217,7 @@ s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 } // extern "C"
 
 // 0x801A4754.
-// FIXME(shotgun): 84.20 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 95.60 %, missing/extra; behaviour drift.
 // The actor fn_8023B22C(player) names (the player's field_0xb18, a
 // BOME actor) has an s32 at 0x254 that this function reads and writes (kind 6, cases 1/4 and 8);
 // that class is not declared yet, so those accesses are not written.
@@ -225,8 +226,9 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
     if (kind == 0) {
         return 0;
     }
-    s32 serial = field_0xa0;
-    if ((kind == 2 || kind == 7 || kind == 8) && serial >= 0) {
+    if (kind == 2 || kind == 7 || kind == 8) {
+        s32 serial = field_0xa0;
+        if (serial >= 0) {
         ActorBase_804A5770* holder = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (holder != NULL) {
             JGeometry::TVec3f p = holder->mPos;
@@ -259,6 +261,7 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
         }
         field_0xa0 = -1;
         return 0;
+        }
     }
     if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0 && mPos.z > 32.0f) {
         return 0;
@@ -281,7 +284,9 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
                                             10430.378f))) {
             turned = true;
         }
-        // FIXME(shotgun): the original also sets turned when other's s32 at 0x254 is nonzero.
+        if (static_cast<cls_804A0738*>(other)->field_0x254 != 0) {
+            turned = true;
+        }
         if (!turned) {
             kind = 1;
         }
@@ -300,7 +305,7 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
         }
         // fall through
     case 1:
-        // FIXME(shotgun): the original stores 1 in other's s32 at 0x254 here (other != NULL).
+        static_cast<cls_804A0738*>(other)->field_0x254 = 1;
         field_0xd8 = 0;
         field_0xdc = 0;
         // fall through
@@ -335,18 +340,25 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
         break;
     case 8:
         if (other != NULL) {
-            bool own = false;
-            s32 idx = field_0x94 - 1;
-            if (fn_8022F514(player)) {
-                if (idx == fn_8022F3DC(player)) {
-                    own = true;
-                }
-            } else if (idx == player) {
-                own = true;
+        s32 own = 0;
+        s32 idx = field_0x94 - 1;
+        if (fn_8022F514(player)) {
+            if (idx == fn_8022F3DC(player)) {
+                own = 1;
             }
-            // FIXME(shotgun): the original then, when (field_0x94 == 0 || own == 1) and other's s32
-            // at 0x254 is not 2, stores 2 there, sets field_0xa0 = fn_8023B22C(player), calls
-            // vfunc_0x40 and sets field_0xb4 = field_0xb0, field_0xb0 = 0x80000. Not written.
+        } else if (idx == player) {
+            own = 1;
+        }
+        if (field_0x94 == 0 || own == 1) {
+            cls_804A0738* bome = static_cast<cls_804A0738*>(other);
+            if (bome->field_0x254 != 2) {
+                bome->field_0x254 = 2;
+                field_0xa0 = fn_8023B22C(player);
+                vfunc_0x40();
+                field_0xb4 = field_0xb0;
+                field_0xb0 = 0x80000;
+            }
+        }
         }
         result = 0xFF;
         break;
