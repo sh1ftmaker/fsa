@@ -274,15 +274,14 @@ void Cucco_804AB8C0::fn_80332A60() {
                 field_0x258 = 0;
                 mPos.z = 0.0f;
                 field_0x3c.z = 0.0f;
-                setVec(field_0x2b8, field_0x3c);
-                // FIXME(shotgun): the asm has no PSVECNormalize/PSVECScale calls here; it inlines
-                // TVec3f::normalize() (epsilon check) and scale() on 0x2B8, which is a plain Vec.
-                PSVECNormalize(&field_0x2b8, &field_0x2b8);
+                JGeometry::TVec3f dir(field_0x3c.x, field_0x3c.y, field_0x3c.z);
+                dir.normalize();
                 f32 speed = 2.0f;
                 if (field_0x2a3 == 1) {
                     speed = 4.0f;
                 }
-                PSVECScale(&field_0x2b8, &field_0x2b8, speed);
+                dir.scale(speed);
+                setVec(field_0x2b8, dir);
             }
             field_0x230 = 1;
         }
