@@ -15,7 +15,7 @@ extern const f32 lbl_8046C924[7];
 extern const f32 lbl_8046C940[7];
 extern const f32 lbl_8046C95C[7];
 
-// FIXME(shotgun): 78.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.81 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor_804A83A0::init() {
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = (field_0x90 >> 7) & 0x1F;
