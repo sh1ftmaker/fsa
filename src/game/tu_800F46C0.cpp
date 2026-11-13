@@ -569,9 +569,7 @@ void Boulder_8049C4C0::draw() {
     }
     params.mMtx = mtx;
     JGeometry::TVec3f savedPos = mPos;
-    mPos.x += field_0x254.x;
-    mPos.y += field_0x254.y;
-    mPos.z += field_0x254.z;
+    mPos += field_0x254;
     if (field_0x4 <= 8) {
         drawSprite_801F06F0("enemy_gc_sob.bin", field_0x23c + 0xB1, &params, flags, 1.0f, 1.0f);
     } else {
