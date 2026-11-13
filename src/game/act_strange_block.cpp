@@ -85,11 +85,11 @@ void StrangeBlock_804AC2D8::init() {
 // message is open, then back to 0.
 // FIXME(shotgun): 83.02 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::update() {
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x;
-    box.i.y = mBox.i.y + mPos.y;
-    box.f.x = mBox.f.x + mPos.x;
-    box.f.y = mBox.f.y + mPos.y;
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
     fn_80239914(&box, field_0x4, mSerial);
     if (field_0x25c != 0 && field_0x25c != 2) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -142,11 +142,11 @@ void StrangeBlock_804AC2D8::update() {
                 field_0x248 = 30;
             }
         } else if (field_0x265) {
-            JGeometry::TBox2f talkBox;
-            talkBox.i.x = mBox.i.x + mPos.x;
-            talkBox.i.y = mBox.i.y + mPos.y;
-            talkBox.f.x = mBox.f.x + mPos.x;
-            talkBox.f.y = mBox.f.y + mPos.y;
+            JGeometry::TBox2f talkBox(mBox);
+            talkBox.i.x += mPos.x;
+            talkBox.i.y += mPos.y;
+            talkBox.f.x += mPos.x;
+            talkBox.f.y += mPos.y;
             if (field_0x25c == 0 || field_0x25c == 2) {
                 fn_8022FEB8(&talkBox, field_0x4, mSerial, true, false);
                 field_0x258 = fn_8022FD8C(mSerial);
@@ -165,30 +165,25 @@ void StrangeBlock_804AC2D8::update() {
             if (field_0x244 > 0) {
                 field_0x244--;
             } else if (field_0x244 == 0) {
-                f32 sq = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-                if (sq <= 32.0f * FLT_EPSILON) {
+                if (field_0x3c.isZero()) {
                     fn_8033D4CC();
                 } else {
                     JGeometry::TVec3f saved = field_0x3c;
-                    bool keep = true;
-                    if (field_0x260 == 2 && reach == 19.9f &&
-                        PSVECDistance(&mPos, (const Vec*)&field_0x238) >= 8.0f && field_0x26c != 0 &&
-                        !fn_8033D264(field_0x26c - 1)) {
-                        keep = false;
-                    } else {
+                    if (!(field_0x260 == 2 && reach == 19.9f &&
+                          PSVECDistance(&mPos, (const Vec*)&field_0x238) >= 8.0f && field_0x26c != 0 &&
+                          !fn_8033D264(field_0x26c - 1))) {
                         field_0x3c = saved;
-                    }
-                    if (keep == false) {
+                    } else {
                         field_0x244 = 8;
                         field_0x271 = 1;
                     }
                 }
             } else if (field_0x244 < 0) {
-                JGeometry::TBox2f talkBox;
-                talkBox.i.x = mBox.i.x + mPos.x;
-                talkBox.i.y = mBox.i.y + mPos.y;
-                talkBox.f.x = mBox.f.x + mPos.x;
-                talkBox.f.y = mBox.f.y + mPos.y;
+                JGeometry::TBox2f talkBox(mBox);
+                talkBox.i.x += mPos.x;
+                talkBox.i.y += mPos.y;
+                talkBox.f.x += mPos.x;
+                talkBox.f.y += mPos.y;
                 if (field_0x25c == 0 || field_0x25c == 2) {
                     fn_8022FEB8(&talkBox, field_0x4, mSerial, true, false);
                     field_0x258 = fn_8022FD8C(mSerial);
@@ -220,7 +215,8 @@ void StrangeBlock_804AC2D8::update() {
         if (field_0x25c == 0 || field_0x25c == 2) {
             field_0x24c--;
             if (field_0x24c <= 0) {
-                field_0x250 = (field_0x250 + 1) & 3;
+                field_0x250++;
+                field_0x250 &= 3;
                 field_0x24c = lbl_804ABC80[field_0x250];
             }
         }
