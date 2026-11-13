@@ -461,9 +461,9 @@ void cls_804B13D4::fn_8041F720() {
     }
     if (field_0x291 != 0) {
         f32 sx = lbl_8050DB0C.field_0x30[4] *
-                 ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
+                 ((f32)(s32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
         f32 sy = lbl_8050DB0C.field_0x30[4] *
-                 ((f32)JUTVideo::getManager()->getEfbHeight() / gGameRoot2_8053AB10->field_0x24->field_0x858);
+                 ((f32)(s32)JUTVideo::getManager()->getEfbHeight() / gGameRoot2_8053AB10->field_0x24->field_0x858);
         f32 w = 0.0f + sx;
         f32 h = 0.0f + sy;
         for (s32 i = 0; i < 4; i++) {
@@ -473,9 +473,9 @@ void cls_804B13D4::fn_8041F720() {
             if (field_0x21a[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x68 != 0) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / JUTVideo::getManager()->getFbWidth()) - JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 x = sx * (screen.x / (f32)(s32)JUTVideo::getManager()->getFbWidth()) - (f32)(s32)JUTVideo::getManager()->getFbWidth() * 0.5f;
                 f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / JUTVideo::getManager()->getEfbHeight()) - JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                        (sy * (screen.y / (f32)(s32)JUTVideo::getManager()->getEfbHeight()) - (f32)(s32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
                 JGeometry::TBox2f box(0.0f, 0.0f, w, h);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
@@ -484,9 +484,9 @@ void cls_804B13D4::fn_8041F720() {
             } else if (!isPaused() && fn_802366CC(fn_8022EA0C(i)) > 0 && fn_802366CC(fn_8022EA0C(i)) < 300) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / JUTVideo::getManager()->getFbWidth()) - JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 x = sx * (screen.x / (f32)(s32)JUTVideo::getManager()->getFbWidth()) - (f32)(s32)JUTVideo::getManager()->getFbWidth() * 0.5f;
                 f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / JUTVideo::getManager()->getEfbHeight()) - JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                        (sy * (screen.y / (f32)(s32)JUTVideo::getManager()->getEfbHeight()) - (f32)(s32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
                 JGeometry::TBox2f box(0.0f, 0.0f, w, h);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
