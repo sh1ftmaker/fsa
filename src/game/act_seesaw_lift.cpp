@@ -74,8 +74,6 @@ void SeesawLift_804AD348::init() {
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    field_0x274 = 0;
-    field_0x278 = 0;
     fillTiles(this, 864);
 }
 
