@@ -39,7 +39,7 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 70.87 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 78.53 %, missing/extra + reloc-name; behaviour drift.
 // the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
@@ -48,8 +48,8 @@ void SeesawLift_804AD348::init() {
     u16 height = res[2];
     mBox.i.x = (f32)(-(s32)width / 2);
     mBox.i.y = (f32)(-(s32)height / 2);
-    mBox.f.x = (f32)(width >> 1);
-    mBox.f.y = (f32)(height >> 1);
+    mBox.f.x = (f32)(width / 2);
+    mBox.f.y = (f32)(height / 2);
     mLife = 0;
     field_0x230 = 0;
     field_0x238 = 0;
@@ -75,9 +75,7 @@ void SeesawLift_804AD348::init() {
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    JGeometry::TVec3f p = mPos;
-    p.x += mBox.i.x;
-    p.y += mBox.i.y;
+    JGeometry::TVec3f p = mPos + JGeometry::TVec3f(mBox.i.x, mBox.i.y, 0.0f);
     f32 baseY = p.y;
     field_0x258 = 0;
     for (s32 row = 0; row < 6; row++) {
@@ -376,35 +374,35 @@ void SeesawLift_804AD348::update() {
 }
 
 // Euler tilt matrix: the x rotation is table angle 0, the z rotation is the given angle.
-static inline void setTiltMtx(Mtx mtx, s16 angle) {
+static inline void setTiltMtx(Mtx mtx, s16 angle, f32 scale) {
     f32 sa = JMath::sincosTable_.sinShort(angle);
     f32 ca = JMath::sincosTable_.cosShort(angle);
     f32 sx = JMath::sincosTable_.sinShort(0);
     f32 cx = JMath::sincosTable_.cosShort(0);
-    mtx[0][0] = (cx * cx);
-    mtx[0][1] = ((sa * sx) * cx - ca * sx);
-    mtx[0][2] = ((ca * cx) * sx + sa * sx);
-    mtx[1][0] = (cx * sx);
-    mtx[1][1] = ((sa * sx) * sx + ca * cx);
-    mtx[1][2] = ((ca * sx) * sx - sa * cx);
-    mtx[2][0] = -sx;
-    mtx[2][1] = (sa * cx);
-    mtx[2][2] = (ca * cx);
+    mtx[0][0] = scale * (cx * cx);
+    mtx[0][1] = scale * ((sa * sx) * cx - ca * sx);
+    mtx[0][2] = scale * ((ca * cx) * sx + sa * sx);
+    mtx[1][0] = scale * (cx * sx);
+    mtx[1][1] = scale * ((sa * sx) * sx + ca * cx);
+    mtx[1][2] = scale * ((ca * sx) * sx - sa * cx);
+    mtx[2][0] = scale * -sx;
+    mtx[2][1] = scale * (sa * cx);
+    mtx[2][2] = scale * (ca * cx);
 }
 
-// FIXME: 83.28 %, missing/extra + reloc-name; behaviour drift.
-// FIXME(shotgun): the original multiplies each element by a 1.0f in memory (lbl_80542878), which folds away here; the field_0x90 & 0x7F compare is unsigned here
+// FIXME: 90.69 %, different + reloc-name; behaviour drift.
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
+    f32 scale = 1.0f;
     mtx[0][3] = 0.0f;
     mtx[1][3] = 0.0f;
     mtx[2][3] = 0.0f;
     s32 type = (field_0x90 >> 7) & 0x1F;
     if (type == 4 && field_0x230 == 0) {
-        setTiltMtx(mtx, field_0x23c);
+        setTiltMtx(mtx, field_0x23c, scale);
     } else {
-        setTiltMtx(mtx, field_0x230);
+        setTiltMtx(mtx, field_0x230, scale);
     }
     params.mMtx = mtx;
     params.field_0x21 = 1;
