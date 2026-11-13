@@ -12,9 +12,9 @@
 
 // FIXME(shotgun): 99.83 %, reloc-name; behaviour clean.
 cls_804A5D60::cls_804A5D60() : mTargetSerial(-1), field_0x2ac(0), field_0x2b0(1), field_0x2b1(0) {
-    field_0x2b4 = 0.0f;
-    field_0x2b8 = 0.0f;
-    field_0x2bc = 0.0f;
+    mVel.x = 0.0f;
+    mVel.y = 0.0f;
+    mVel.z = 0.0f;
     field_0x2c0.set(0.0f, 0.0f);
     field_0x2c8.set(0.0f, 0.0f);
 }
@@ -62,12 +62,12 @@ void cls_804A5D60::init() {
         } else {
             angle = fn_801CD664(0x10000);
         }
-        field_0x2b4 = JMASSin(angle) * 1.5f;
-        field_0x2b8 = JMASCos(angle) * 1.5f;
-        field_0x2bc = 0.5f * (50.0f * (0.3f * -lbl_8053EFB8));
-        field_0x3c.x = field_0x2b4;
-        field_0x3c.y = field_0x2b8;
-        field_0x3c.z = field_0x2bc;
+        mVel.x = JMASSin(angle) * 1.5f;
+        mVel.y = JMASCos(angle) * 1.5f;
+        mVel.z = 0.5f * (50.0f * (0.3f * -lbl_8053EFB8));
+        field_0x3c.x = mVel.x;
+        field_0x3c.y = mVel.y;
+        field_0x3c.z = mVel.z;
         break;
     }
     }
@@ -82,7 +82,7 @@ void cls_804A5D60::vfunc_0x54() {
     field_0x2c0 = offset;
 }
 
-// FIXME(shotgun): 87.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.50 %, missing/extra + reloc-name; behaviour drift.
 // 0x8020AA78: enters `state`, starting its animation and
 // velocity. While bit 0x2000 is set only 8, 11 and 12 are taken.
 void cls_804A5D60::fn_8020AA78(s32 state) {
@@ -98,9 +98,9 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
     switch (state) {
     case 1:
         mAnim.startAnim_801D22DC(1, 0, false);
-        field_0x2b4 = 0.0f;
-        field_0x2b8 = 0.0f;
-        field_0x2bc = 0.0f;
+        mVel.x = 0.0f;
+        mVel.y = 0.0f;
+        mVel.z = 0.0f;
         break;
     case 2:
         mAnim.startAnim_801D22DC(4, 0, false);
@@ -110,9 +110,8 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         break;
     case 5:
         mAnim.startAnim_801D22DC(1, 0, false);
-        field_0x2b4 = 0.083333336f * field_0x2c0.x;
-        field_0x2b8 = 0.083333336f * field_0x2c0.y;
-        field_0x2bc = 0.5f * (12.0f * -lbl_8053EFB8);
+        mVel.set(0.083333336f * field_0x2c0.x, 0.083333336f * field_0x2c0.y,
+                 0.5f * (12.0f * -lbl_8053EFB8));
         break;
     case 6:
         mAnim.fn_801D22A0(5, 2);
@@ -121,27 +120,27 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         mFlags &= ~0x4000;
         field_0x98 = field_0x2ac;
         mAnim.startAnim_801D22DC(1, 0, false);
-        field_0x2b4 = 0.0f;
-        field_0x2b8 = 0.0f;
+        mVel.x = 0.0f;
+        mVel.y = 0.0f;
         switch (field_0x98) {
         case 0:
-            field_0x2b4 = 1.4f;
-            field_0x2b8 = 0.0f;
+            mVel.x = 1.4f;
+            mVel.y = 0.0f;
             break;
         case 1:
-            field_0x2b4 = -1.4f;
-            field_0x2b8 = 0.0f;
+            mVel.x = -1.4f;
+            mVel.y = 0.0f;
             break;
         case 2:
-            field_0x2b4 = 0.0f;
-            field_0x2b8 = 1.4f;
+            mVel.x = 0.0f;
+            mVel.y = 1.4f;
             break;
         case 3:
-            field_0x2b4 = 0.0f;
-            field_0x2b8 = -1.4f;
+            mVel.x = 0.0f;
+            mVel.y = -1.4f;
             break;
         }
-        field_0x2bc = 0.5f * (12.0f * -lbl_8053EFB8);
+        mVel.z = 0.5f * (12.0f * -lbl_8053EFB8);
         field_0x2b1 = field_0x2b0;
         if (field_0x2b1 < 1) {
             field_0x2b1 = 1;
@@ -157,18 +156,15 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         } else {
             angle = fn_801CD664(0x10000);
         }
-        field_0x2b4 = JMASSin(angle) * 4.0f;
-        field_0x2b8 = JMASCos(angle) * 4.0f;
-        field_0x2bc = 0.5f * (12.0f * -lbl_8053EFB8);
+        mVel.set(JMASSin(angle) * 4.0f, JMASCos(angle) * 4.0f, 0.5f * (12.0f * -lbl_8053EFB8));
         field_0x2b1 = 3;
         break;
     }
     case 9:
         mFlags &= ~0x8000;
         mAnim.startAnim_801D22DC(1, 0, false);
-        field_0x2b4 = 0.045454547f * (field_0x2c8.x - mPos.x);
-        field_0x2b8 = 0.045454547f * (field_0x2c8.y - mPos.y);
-        field_0x2bc = 0.5f * (22.0f * -lbl_8053EFB8);
+        mVel.set(0.045454547f * (field_0x2c8.x - mPos.x), 0.045454547f * (field_0x2c8.y - mPos.y),
+                 0.5f * (22.0f * -lbl_8053EFB8));
         break;
     case 10:
         mAnim.startAnim_801D22DC(4, 0, false);
@@ -392,8 +388,8 @@ void cls_804A5D60::vfunc_0x88() {
     case 8:
     case 9:
         if (mAnim.mAnim == 6 || mAnim.mAnim == 2) {
-            field_0x3c.x = field_0x2b4;
-            field_0x3c.y = field_0x2b8;
+            field_0x3c.x = mVel.x;
+            field_0x3c.y = mVel.y;
         } else {
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;

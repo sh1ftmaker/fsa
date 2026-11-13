@@ -37,9 +37,7 @@ public:
     /* 0x2AC */ s32 field_0x2ac; // fn_80209D20's dir (the constructor clears it)
     /* 0x2B0 */ u8 field_0x2b0; // fn_80209D20's steps (the constructor sets 1)
     /* 0x2B1 */ u8 field_0x2b1;
-    /* 0x2B4 */ f32 field_0x2b4;
-    /* 0x2B8 */ f32 field_0x2b8;
-    /* 0x2BC */ f32 field_0x2bc;
+    /* 0x2B4 */ JGeometry::TVec3f mVel;
     /* 0x2C0 */ JGeometry::TVec2f field_0x2c0; // vfunc_0x54: mSpawnPos - mPos (x, y)
     /* 0x2C8 */ JGeometry::TVec2f field_0x2c8; // fn_80209CF4's target
 }; // Size: 0x2D0
