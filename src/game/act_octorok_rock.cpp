@@ -86,6 +86,7 @@ bool OctorokRock_8049F5D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
+// FIXME: 94.95 %, missing/extra; behaviour drift.
 void OctorokRock_8049F5D8::update() {
     s32 facing;
     u8 blocked = 0;
@@ -262,6 +263,7 @@ void OctorokRock_8049F5D8::update() {
     }
 }
 
+// FIXME: 94.35 %, missing/extra; behaviour clean.
 void OctorokRock_8049F5D8::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x10.a = field_0x248;
