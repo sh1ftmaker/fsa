@@ -234,7 +234,7 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
         mFlags |= 0x2000;
         mFlags &= ~0x300;
         field_0x5b0 = -1;
-        field_0x98 = 3;
+        field_0xb0 = 3;
         JGeometry::TBox2f box;
         fn_801E4618(&box, fn_801CD2F8(field_0x4));
         field_0x60c.x = 0.5f * (box.f.x - box.i.x) + box.i.x;
@@ -324,10 +324,8 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
         fn_801E4618(&box, fn_801CD2F8(field_0x5fc));
         field_0x600.x = (box.f.x - box.i.x) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.x;
         field_0x600.y = (box.f.y - box.i.y) * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + box.i.y;
-        JGeometry::TVec2f spot(field_0x600.x, field_0x600.y);
-        fn_801E44CC(&box, &spot, NULL);
-        field_0x600.x = spot.x;
-        field_0x600.y = spot.y;
+        // The callee refines the xy pair in place: pass the TVec3f's xy prefix.
+        fn_801E44CC(&box, (JGeometry::TVec2f*)&field_0x600, NULL);
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
         field_0x3c.x = 0.0f;
