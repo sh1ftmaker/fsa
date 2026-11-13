@@ -648,8 +648,8 @@ void cls_804AE4B0::fn_80370764() {
         field_0x240 = 2;
     } else if (field_0x398 != 0 && field_0x240 == 0 && fn_8022CAF8(0) == lbl_80474F30[field_0x394] &&
                fn_802300EC(0)) {
-        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        JGeometry::TVec3f pos(0.5f * (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)(s32)JUTVideo::sManager->getEfbHeight(), 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         s32 msg;
         if (field_0x394 < 3) {
