@@ -831,8 +831,7 @@ void cls_804AA8B8::fn_80306A94(s32 player) {
 // Copies a record's sprite words into the half of the player's sprite table
 // its mode selects, hides the rest of that half and the kind-2 sprites below
 // 0x45 of the other half.
-// FIXME(shotgun): 92.58 %, different; behaviour drift.
-// (the loop bound is loaded inside the loop in ours)
+// FIXME(shotgun): 99.10 %, different; register allocation only.
 void fn_803068D0(cls_804AA858Sub11C* record) {
     if (record->mValid == 0) {
         return;
@@ -841,8 +840,10 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
     GbaSprite_80506F88* sprites = lbl_80506F88[fn_8022F340(record->mPlayer)][0];
     GbaSprite_80506F88* dst = sprites + half * 19;
     s32 i;
-    for (i = 0; i < lbl_80541618[record->field_0x3_0] - 7; i++) {
-        dst[i].mWord = record->field_0x18[i].mWord;
+    GbaSprite_80506F88* src = record->field_0x18;
+    u32 index = record->field_0x3_0;
+    for (i = 0; i < lbl_80541618[index] - 7; i++) {
+        dst[i].mWord = src[i].mWord;
     }
     for (; i < 19; i++) {
         dst[i].f.field_0x3_0 = 1;
