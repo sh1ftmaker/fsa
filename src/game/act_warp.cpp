@@ -669,7 +669,7 @@ void Warp_804A6DC8::fn_80226FC8(s32 player) {
     if (carried->field_0x3c.squared() <= 32.0f * FLT_EPSILON) {
         return;
     }
-    if (!(carried->mPos.z < 4.0f)) {
+    if (carried->mPos.z >= 4.0f) {
         return;
     }
     JGeometry::TVec3f rel = carried->mPos - mPos;
