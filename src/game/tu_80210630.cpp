@@ -56,12 +56,11 @@ void cls_804A61C8::fn_80210A30(JGeometry::TBox2f* out) {
     setBox(out, field_0x54);
 }
 
-// FIXME: 94%. The original computes 8 * y again in the two y cases (fnmsubs / fmadds); here the
-// 8 * y of the box's f.y is reused (fsubs / fadds).
+// FIXME: 98.00 %, regalloc-only; behaviour clean.
 void cls_804A61C8::fn_80210990(s32 dir, JGeometry::TBox2f* out) {
     f32 x = field_0x54.x;
     f32 y = field_0x54.y;
-    out->set(-16.0f * x, -24.0f * y, 16.0f * x, 8.0f * y);
+    setBox(out, field_0x54);
     switch (dir) {
     case 0:
         out->f.x -= 8.0f * x;
@@ -70,15 +69,16 @@ void cls_804A61C8::fn_80210990(s32 dir, JGeometry::TBox2f* out) {
         out->i.x += 8.0f * x;
         break;
     case 2:
-        out->f.y -= y * 8.0f;
+        out->f.y -= 8.0f * y;
         break;
     case 3:
-        out->i.y += y * 8.0f;
+        out->i.y += 8.0f * y;
         break;
     }
 }
 
-// FIXME: 95%. Same instructions; the original keeps this in r30 and the serial in r31 across
+// FIXME: 95.25 %, scheduling+regalloc; behaviour clean.
+// Same instructions; the original keeps this in r30 and the serial in r31 across
 // the getter call, here this is in r31 and the serial in r30.
 void cls_804A61C8::vfunc_0x9C(u8 mapHit) {
     EnemyBase_804A4808::vfunc_0x9C(mapHit);
@@ -97,7 +97,8 @@ u8 cls_804A61C8::vfunc_0x5C() {
     return 0;
 }
 
-// FIXME: 0%. Same operations, different allocation: the original keeps this, the three
+// FIXME: 0.00 %, missing/extra + reloc-name; behaviour clean.
+// Same operations, different allocation: the original keeps this, the three
 // arguments and the shared constants -1 and 0 in r26-r31 (stmw, 0xB0 frame), loads the three
 // field_0x54 scales right after the identity-table loop and the mPos copy as one psq pair;
 // this code needs only r28-r31 and schedules the loads and the stores of the sprite parameters
