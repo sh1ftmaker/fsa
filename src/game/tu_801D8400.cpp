@@ -43,7 +43,7 @@ cls_804A4C58::~cls_804A4C58() {
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 67.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 67.27 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -67,10 +67,10 @@ void cls_804A4C58::init() {
     field_0x196 = 1;
     GameView_804A9950* view = getGameView_802D6A9C();
     JGeometry::TBox2f* box;
-    if (field_0x4 >= 8) {
-        box = &view->field_0xdc;
-    } else {
+    if (field_0x4 < 8) {
         box = &view->mVisibleBox;
+    } else {
+        box = &view->field_0xdc;
     }
     JGeometry::TVec3f p;
     p.x = mPos.x;
@@ -252,7 +252,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 84.33 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.80 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -276,7 +276,7 @@ void cls_804A4C58::fn_801D9960() {
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;
             s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
             f32 diff = (s16)(angle - heading);
-            if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
+            if (0.000030517578f * __fabsf(diff) <= 0.3f) {
                 target = player;
             }
         }
