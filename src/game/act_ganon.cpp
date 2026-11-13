@@ -1638,6 +1638,12 @@ void Ganon_804A25F0::fn_80192BD8() {
     if (field_0x250 > 0) {
         field_0x250--;
     }
+    if (field_0x254 > 0) {
+        field_0x254--;
+    }
+    if (field_0x258 > 0) {
+        field_0x258--;
+    }
 }
 
 // FIXME(shotgun): 80.67 %, missing/extra + reloc-name.
