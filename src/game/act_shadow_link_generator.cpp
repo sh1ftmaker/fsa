@@ -69,7 +69,7 @@ void ShadowLinkGenerator_804A4310::init() {
     fn_801C0D70()->field_0x50 = mSerial;
 }
 
-// FIXME(shotgun): 93.49 %, missing/extra
+// FIXME(shotgun): 94.13 %, missing/extra; behaviour drift.
 void ShadowLinkGenerator_804A4310::update() {
     mPieces.fn_8021C2B4();
     mStateTimer++;
@@ -241,7 +241,8 @@ void ShadowLinkGenerator_804A4310::draw() {
 
 // Spawns four 'SLK2' actors, one after another, each on a random slot from
 // mSlotFirst to mSlotLast; a spawned one that is found is switched to state 0xD.
-// FIXME: 99.30 %. Register allocation only: the original keeps the range in r30 and
+// FIXME: 99.30 %, regalloc-only; behaviour clean.
+// Register allocation only: the original keeps the range in r30 and
 // the spawn serial (then the found actor) in r29; ours swaps them.
 void ShadowLinkGenerator_804A4310::fn_801C186C() const {
     for (s32 i = 0; i < 4; i++) {
