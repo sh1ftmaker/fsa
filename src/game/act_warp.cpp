@@ -454,26 +454,32 @@ void Warp_804A6DC8::draw() {
 
 // 0x802278A8. Per player: the player's reaction to standing in the warp's box (by warp kind, the
 // low 7 bits of the spawn parameter): marks it, hurts it, or sends it through (fn_802317F0).
-// FIXME(shotgun): 85.79 %, missing/extra; behaviour drift.
+// FIXME(shotgun): the kind range test (1..3 via subi) and the box copy's load order still differ.
 void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
+        box->i.x = mBox.i.x;
+        box->i.y = mBox.i.y;
+        box->f.x = mBox.f.x;
+        box->f.y = mBox.f.y;
         box->set(mBox.i.x + mPos.x, mBox.i.y + mPos.y, mBox.f.x + mPos.x, mBox.f.y + mPos.y);
         if (!fn_8022D75C(player) && fn_8022D534(player)) {
             field_0x234[player] = 1;
             continue;
         }
-        if ((field_0x90 & 0x7F) == 0x10) {
+        s32 kind = field_0x90 & 0x7F;
+        if (kind == 0x10) {
             return;
         }
         if (fn_8022F514(player)) {
-            u32 kind = field_0x90 & 0x7F;
+            kind = field_0x90 & 0x7F;
             if (kind <= 3 || kind == 0x17 || kind == 0x18) {
                 if (fn_8023B0F4(player, box, field_0x4, false, 8.0f)) {
                     fn_802381B8(player);
                 }
             }
         }
-        if ((field_0x90 & 0x7F) == 0x13) {
+        kind = field_0x90 & 0x7F;
+        if (kind == 0x13) {
             if (!fn_80234E30(player)) {
                 continue;
             }
@@ -484,23 +490,17 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
             }
         }
         if (fn_8023B0F4(player, box, field_0x4, false, 8.0f)) {
-            u32 kind = field_0x90 & 0x7F;
-            bool pass = false;
-            if (kind == 0x15 || kind == 0x23) {
-                s32 layer = field_0x4;
-                if (viewLayerFlag(layer)) {
-                    if (!fn_8022C5EC(player, 8) && !fn_8022C5EC(player, 4) && !fn_8022C46C(player, 8) &&
-                        !fn_8022C46C(player, 4))
-                    {
-                        continue;
-                    }
-                    if (fn_8022DBA0(player)) {
-                        continue;
-                    }
-                    pass = true;
+            kind = field_0x90 & 0x7F;
+            if ((kind == 0x15 || kind == 0x23) && viewLayerFlag(field_0x4)) {
+                if (!fn_8022C5EC(player, 8) && !fn_8022C5EC(player, 4) && !fn_8022C46C(player, 8) &&
+                    !fn_8022C46C(player, 4))
+                {
+                    continue;
                 }
-            }
-            if (!pass) {
+                if (fn_8022DBA0(player)) {
+                    continue;
+                }
+            } else {
                 if (field_0x234[player] == 1) {
                     continue;
                 }
