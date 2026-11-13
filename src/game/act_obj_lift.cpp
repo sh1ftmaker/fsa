@@ -627,6 +627,7 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 
 // 0x8035001C.
 // Remaining difference: the scheduling of the zero stores against the loads in some cases.
+// FIXME: 86.01 %, scheduling+regalloc + reloc-name; behaviour drift.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
