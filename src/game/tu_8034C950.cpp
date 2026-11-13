@@ -14,7 +14,6 @@
 static const f32 lbl_80472190[4][2] = {{16.0f, 0.0f}, {-16.0f, 0.0f}, {0.0f, 16.0f}, {0.0f, -16.0f}};
 
 
-// FIXME(shotgun): 99.49 %, different
 void cls_804AC950::init() {
     mBox.i.x = -14.0f;
     mBox.i.y = -14.0f;
@@ -62,10 +61,11 @@ void cls_804AC950::init() {
     field_0x380[2] = 0;
 }
 
-// FIXME(shotgun): 89.9 %, missing/extra
+// FIXME: 99.13 %, regalloc-only; behaviour clean.
+// FIXME(shotgun): float register assignment differs
 void cls_804AC950::vfunc_0x10() {
-    u16 tile = fn_80226850(&mPos, field_0x4);
-    if ((u16)(tile - 0x64) <= 3 || (u16)(tile - 0x2C2) <= 1 || tile == 0x2D2 || tile == 0x2D3) {
+    s32 tile = fn_80226850(&mPos, field_0x4);
+    if ((u32)(tile - 0x64) <= 3 || (u32)(tile - 0x2C2) <= 1 || tile == 0x2D2 || tile == 0x2D3) {
         field_0x380[0] = 1;
         field_0x380[5] = 1;
     }
@@ -99,9 +99,7 @@ void cls_804AC950::vfunc_0x10() {
             }
             field_0x380[4] = 1;
             field_0x260[field_0x374].field_0x0 = actor->mActorId;
-            field_0x260[field_0x374].field_0x4.x = actor->mSpawnPos.x;
-            field_0x260[field_0x374].field_0x4.y = actor->mSpawnPos.y;
-            field_0x260[field_0x374].field_0x4.z = actor->mSpawnPos.z;
+            field_0x260[field_0x374].field_0x4 = actor->mSpawnPos;
             field_0x260[field_0x374].field_0x10 = actor->field_0x90;
             field_0x260[field_0x374].field_0x14 = actor->field_0x16c;
             actor->mAlive = false;
@@ -110,7 +108,7 @@ void cls_804AC950::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 93.6 %, missing/extra
+// FIXME(shotgun): 93.77 %, missing/extra; behaviour drift.
 void cls_804AC950::update() {
     JGeometry::TBox2f box(field_0x80);
     f32 x0 = -16.0f + mPos.x;
@@ -366,7 +364,7 @@ void cls_804AC950::draw() {
     mPos = saved;
 }
 
-// FIXME(shotgun): 98.6 %, different
+// FIXME(shotgun): 98.64 %, different; behaviour drift.
 void cls_804AC950::vfunc_0x24() {
     u16 tile = fn_8022461C(&mPos, field_0x4);
     if (tile == 0xD || tile == 0x3B || tile == 0x39) {
