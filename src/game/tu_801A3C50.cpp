@@ -217,7 +217,7 @@ s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 } // extern "C"
 
 // 0x801A4754.
-// FIXME(shotgun): 84.20 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 95.60 %, missing/extra; behaviour drift.
 // The actor fn_8023B22C(player) names (the player's field_0xb18, a
 // BOME actor) has an s32 at 0x254 that this function reads and writes (kind 6, cases 1/4 and 8);
 // that class is not declared yet, so those accesses are not written.
