@@ -511,7 +511,7 @@ bool ShadowLink2_804A43E8::fn_801C9AF8(s32 layer, const JGeometry::TVec3f* pos) 
             }
             break;
         case 1: {
-            u16 tile = fn_80226850(&p, layer);
+            s32 tile = fn_80226850(&p, layer);
             if ((tile >= 0x9B && tile < 0x9D) || (tile >= 0x322 && tile < 0x324)) {
                 return false;
             }
