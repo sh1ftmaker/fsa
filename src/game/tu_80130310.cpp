@@ -174,6 +174,8 @@ void cls_8049EA88::update() {
         }
         break;
     }
+    case 5:
+        break;
     }
 }
 
