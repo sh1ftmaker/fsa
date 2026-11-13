@@ -621,8 +621,9 @@ void cls_8049D83C::fn_8011395C() {
         }
         break;
     }
+    s32 index = lbl_804648CC[field_0x238];
     s32 frame = field_0x24c;
-    GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[lbl_804648CC[field_0x238]];
+    GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[index];
     if (crystal.mModel != NULL && crystal.mActive == 0) {
         crystal.mActive = 1;
         crystal.mPos.x = 0.5f;
