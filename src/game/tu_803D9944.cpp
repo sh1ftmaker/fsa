@@ -8,7 +8,7 @@
 #include "game/ActorManager.h"
 #include "game/act/tu_803D9944.h"
 
-// FIXME(shotgun): 97.14 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.43 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0478::init() {
     mBox.i.x = -1280.0f;
     mBox.i.y = -1280.0f;
@@ -72,7 +72,7 @@ cls_804B0478::~cls_804B0478() {
 extern s32 lbl_804B03E8[];
 extern s32 lbl_8053A210[]; // .sdata, 2 entries: state 5
 
-// FIXME(shotgun): 90.68 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.10 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0478::update() {
     switch (mState) {
     case 0:
@@ -122,9 +122,7 @@ void cls_804B0478::update() {
             fn_8022FEB8(&box, field_0x4, mSerial, false, false);
             field_0x244 = fn_8022FD8C(mSerial);
             if (field_0x244 >= 0) {
-                // FIXME(shotgun): the original passes an uninitialised stack vector here; we zero it
-                // (passing an indeterminate float vector by value would be undefined behaviour).
-                JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+                JGeometry::TVec3f pos;
                 if (fn_8038BD08(field_0x244, 0x406, field_0x4, pos, 0x28)) {
                     mState = 2;
                 }
