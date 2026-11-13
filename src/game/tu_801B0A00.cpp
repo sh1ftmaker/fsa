@@ -150,8 +150,8 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 }
 
 // 0x801B2000.
-// FIXME: 82.28 %, missing/extra + reloc-name; behaviour drift.
-// FIXME(shotgun): operands differ: fn_802303FC's original call passes 0xFF for its bool flag; register choice for mPos.y differs.
+// FIXME: 84.33 %, missing/extra + reloc-name; behaviour near.
+// FIXME: operands differ: fn_802303FC's original call passes 0xFF for its bool flag (we pass true); loop pointer and layer registers differ.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
     for (s32 i = 0; i < 4; i++) {
@@ -170,7 +170,7 @@ void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
                     addCalc2_801F71A4(&field_0x288[i].y, y, 0.3f, 1.0f);
                     fn_80230BF4(i, 2);
                     fn_802303FC(i, &field_0x288[i], 0xFF);
-                    if (fabs(getPlayerPos_8023E724(i)->y - y) < 1.0f) {
+                    if (FABS(getPlayerPos_8023E724(i)->y - y) < 1.0f) {
                         field_0x258 = 1;
                     }
                 }
