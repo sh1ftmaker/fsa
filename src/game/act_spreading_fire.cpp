@@ -11,32 +11,22 @@
 #include "game/act/act_spreading_fire.h"
 
 // Offsets of the fire's spread steps, one table per axis (.rodata 0x8046D3B0 / 0x8046D3F0).
-static const f32 lbl_8046D3B0[16] = {
-    -16.0f, 0.0f, 16.0f, -16.0f, 16.0f, -16.0f, 0.0f, 16.0f,
-    -16.0f, 0.0f, 16.0f, -16.0f, 16.0f, -16.0f, 0.0f, 16.0f,
-};
 static const f32 lbl_8046D3F0[16] = {
     -16.0f, -16.0f, -16.0f, 0.0f, 0.0f, 16.0f, 16.0f, 16.0f,
     -16.0f, -16.0f, -16.0f, 0.0f, 0.0f, 16.0f, 16.0f, 16.0f,
 };
-
-// A tile coordinate of the view box (0..0x1FF).
-static inline s32 clampViewCoord(s32 v) {
-    if (v < 0) {
-        return 0;
-    }
-    if (v >= 0x200) {
-        return 0x1FF;
-    }
-    return v;
-}
+static const f32 lbl_8046D3B0[16] = {
+    -16.0f, 0.0f, 16.0f, -16.0f, 16.0f, -16.0f, 0.0f, 16.0f,
+    -16.0f, 0.0f, 16.0f, -16.0f, 16.0f, -16.0f, 0.0f, 16.0f,
+};
 
 // The GameView bit that marks a 16-cell block: x and y coordinates packed.
 static inline s32 viewBitOf(s32 x, s32 y) {
     return (x & 0x100) | ((y & 0x100) << 1) | (y & 0xF0) | ((x >> 4) & 0xF);
 }
 
-// FIXME: 95.43 %. The original tests field_0x250 twice on the same flags (a bne to the
+// FIXME: 95.68 %, missing/extra; behaviour near.
+// The original tests field_0x250 twice on the same flags (a bne to the
 // sprite-skip, then a second bne that is never taken before the view-bit test); no natural
 // form gives that dead branch, so the kill check is written as one condition.
 void SpreadingFire_804A8A50::init() {
@@ -147,7 +137,8 @@ SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
     getGameView_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
-// FIXME: 90 %. The original copies mPos to a stack TVec3f (psq_st 0x24(r1)) and never reads
+// FIXME: 94.63 %, missing/extra + reloc-name; behaviour drift.
+// The original copies mPos to a stack TVec3f (psq_st 0x24(r1)) and never reads
 // it, and it keeps one more register than we do (r29). Left out: the copy has no source use.
 void SpreadingFire_804A8A50::update() {
     s32 damage = field_0x114;
@@ -213,8 +204,18 @@ void SpreadingFire_804A8A50::update() {
                 u16 tile = fn_80226850(&tmp, field_0x4);
                 if (fn_801EE3C0(tile) == true) {
                     if (field_0x250 != 5 && field_0x250 != 6) {
-                        field_0x270 = clampViewCoord((s32)(tmp.x - field_0x25c.i.x));
-                        field_0x274 = clampViewCoord((s32)(tmp.y - field_0x25c.i.y));
+                        field_0x270 = (s32)(tmp.x - field_0x25c.i.x);
+                        field_0x274 = (s32)(tmp.y - field_0x25c.i.y);
+                        if (field_0x270 < 0) {
+                            field_0x270 = 0;
+                        } else if (field_0x270 >= 0x200) {
+                            field_0x270 = 0x1FF;
+                        }
+                        if (field_0x274 < 0) {
+                            field_0x274 = 0;
+                        } else if (field_0x274 >= 0x200) {
+                            field_0x274 = 0x1FF;
+                        }
                         GameView_804A9950* view = getGameView_802D6A9C();
                         if (!view->fn_802D7384(viewBitOf(field_0x270, field_0x274))) {
                             s32 owner = field_0x258;
