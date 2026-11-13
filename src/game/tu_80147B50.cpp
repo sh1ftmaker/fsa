@@ -27,7 +27,7 @@ extern s32 lbl_8053AB30;
 extern s32 lbl_8053AB34;
 extern s32 lbl_8053AB38;
 
-// FIXME(shotgun): 84.26 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.77 %, different + reloc-name; behaviour drift.
 void cls_8049F6C8::init() {
     field_0x80.i.x = -8.0f;
     field_0x80.i.y = -8.0f;
