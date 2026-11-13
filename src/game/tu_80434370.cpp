@@ -531,11 +531,8 @@ void cls_804B16A8::fn_80434370() {
             field_0x68 = 1;
             field_0x48 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta01'))->getStringPtr(), 0xFC, 0, NULL, NULL);
         }
-        f32 halfTextW = (field_0x48 * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta01')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta01')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
+        J2DPane* pane = mScreen->search('Ta01');
+        field_0x40 = (pane->getWidth() - field_0x48 * scale) * 0.5f;
     } else if (field_0x5a == 1) {
         if (field_0x6c == 0) {
             if (field_0x69 == 1) {
@@ -554,23 +551,17 @@ void cls_804B16A8::fn_80434370() {
                 field_0x4c = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta02'))->getStringPtr(), 0xFE, 0, NULL, NULL);
             }
         }
-        f32 halfTextW = (field_0x4c * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta02')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta02')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
+        J2DPane* pane = mScreen->search('Ta02');
+        field_0x40 = (pane->getWidth() - field_0x4c * scale) * 0.5f;
     } else if (field_0x5a == 2) {
-        if (field_0x6a == 1) {
-            field_0x6a = 0;
-            field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFD, 0, NULL, NULL);
-        } else {
-            field_0x6a = 1;
-            field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFC, 0, NULL, NULL);
+        if (field_0x6c == 1) {
+            if (field_0x6a == 1) {
+                field_0x6a = 0;
+                field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFD, 0, NULL, NULL);
+            } else {
+                field_0x6a = 1;
+                field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFC, 0, NULL, NULL);
+            }
         }
-        f32 halfTextW = (field_0x50 * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta03')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta03')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
     }
 }
