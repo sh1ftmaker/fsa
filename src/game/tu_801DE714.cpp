@@ -290,7 +290,7 @@ bool cls_804A51E4::fn_801E1D7C() {
 // FIXME(shotgun): 81.24 %, missing/extra; behaviour drift.
 bool cls_804A51E4::fn_801E1CF8() const {
     bool result = false;
-    if ((mState < 0xF && mState != 0) || (mState >= 0xF && mState >= 0x13)) {
+    if (mState != 0 && !(mState >= 0xF && mState < 0x13)) {
         if (!(mFlags & 0x80000) && field_0x2cc == 0) {
             if (fn_801E1DB4()) {
                 result = true;
