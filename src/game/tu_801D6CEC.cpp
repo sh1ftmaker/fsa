@@ -131,7 +131,7 @@ void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
 }
 
 // The ring's slot i is on a circle of radius field_0x5c around (field_0x48.x, field_0x48.y).
-// FIXME: 75.65 %, missing/extra; behaviour drift.
+// FIXME: 99.23 %, regalloc-only; behaviour clean.
 // FIXME(shotgun): the original stores d.x/d.y as one paired-single pair; ours uses separate stores.
 void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
@@ -146,12 +146,13 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
                 s16 ang = -(s16)(field_0x54 + i * 0xFFF);
                 f32 s = JMath::sincosTable_.sinShort(ang);
                 f32 c = JMath::sincosTable_.cosShort(ang);
-                JGeometry::TVec3f d(field_0x48.x + (0.0f * c - field_0x5c * s), field_0x48.y + (0.0f * s + field_0x5c * c),
+                JGeometry::TVec3f off(0.0f, field_0x5c, 0.0f);
+                JGeometry::TVec3f d(field_0x48.x + (off.x * c - off.y * s), field_0x48.y + (off.x * s + off.y * c),
                                     field_0x48.z);
-                d = d - field_0x48;
+                d.sub(field_0x48);
                 d.normalize();
                 d.scale(10.0f);
-                a->field_0x3c.set(d.x, d.y, 0.0f);
+                a->field_0x3c = JGeometry::TVec3f(d.x, d.y, 0.0f);
             }
         }
     }
