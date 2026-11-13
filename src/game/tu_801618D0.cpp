@@ -607,15 +607,16 @@ void cls_804A0440::draw() {
     fn_801618D0(&mPos, &params);
 }
 
+// Not auto-inlined: update calls fn_80161F98 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // 0x80161F98.
 // FIXME(shotgun): 67.72 %, missing/extra
 void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
     if (field_0x2ec != set) {
         if (field_0x2ec < 0) {
-            const JUtility::TColor* row = lbl_804661E0 + set * 3;
-            field_0x2f4[0] = row[0];
-            field_0x2f4[1] = row[1];
-            field_0x2f4[2] = row[2];
+            for (s32 i = 0; i < 3; i++) {
+                field_0x2f4[i] = lbl_804661E0[set * 3 + i];
+            }
         }
         field_0x2ec = set;
         if (field_0x2f0 < 0) {
@@ -627,15 +628,15 @@ void cls_804A0440::fn_80161F98(s32 set, s32 frames) {
         f32 weight = 1.0f / field_0x2f0;
         for (s32 i = 0; i < 3; i++) {
             JUtility::TColor& c = field_0x2f4[i];
-            const JUtility::TColor& target = lbl_804661E0[set * 3 + i];
-            c.r = (u8)((f32)c.r * (1.0f - weight) + weight * (f32)target.r);
-            c.g = (u8)((f32)c.g * (1.0f - weight) + weight * (f32)target.g);
-            c.b = (u8)((f32)c.b * (1.0f - weight) + weight * (f32)target.b);
-            c.a = (u8)((f32)c.a * (1.0f - weight) + weight * (f32)target.a);
+            c.r = (u8)((f32)c.r * (1.0f - weight) + weight * (f32)lbl_804661E0[field_0x2ec * 3 + i].r);
+            c.g = (u8)((f32)c.g * (1.0f - weight) + weight * (f32)lbl_804661E0[field_0x2ec * 3 + i].g);
+            c.b = (u8)((f32)c.b * (1.0f - weight) + weight * (f32)lbl_804661E0[field_0x2ec * 3 + i].b);
+            c.a = (u8)((f32)c.a * (1.0f - weight) + weight * (f32)lbl_804661E0[field_0x2ec * 3 + i].a);
         }
         field_0x2f0--;
     }
 }
+#pragma auto_inline reset
 
 // 0x80161F20.
 void cls_804A0440::vfunc_0x24() {
