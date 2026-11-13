@@ -398,15 +398,17 @@ void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s3
             sp = *params;
         }
         s32 total = field_0xdc;
-        if (field_0xd8 > total - 25 || total < 25) {
+        s32 excess = total - 25;
+        if (field_0xd8 > excess || total < 25) {
+            s32 delta;
             if (total < 25) {
-                sp.field_0x14.r += field_0xd8 * 150 / total;
+                delta = field_0xd8 * 150 / total;
             } else {
-                sp.field_0x14.r += (field_0xd8 - (total - 25)) * 150 / 25;
+                delta = (field_0xd8 - excess) * 150 / 25;
             }
+            sp.field_0x14.r += delta;
         }
-        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-        if (speed2 > 1.0f) {
+        if (field_0x3c.squared() > 1.0f) {
             sp.field_0x30 = 8;
         }
     } else if (field_0x238 > 0) {
@@ -414,8 +416,7 @@ void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s3
             sp = *params;
         }
         sp.field_0x14.r += field_0x238 * 150 / 15;
-        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-        if (speed2 > 1.0f) {
+        if (field_0x3c.squared() > 1.0f) {
             sp.field_0x30 = 8;
         }
     } else {
