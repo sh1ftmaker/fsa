@@ -255,49 +255,6 @@ void cls_804A7AE0::vfunc_0x10() {
 
 // FIXME(shotgun): 81.57 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
-inline s32 cls_804A7AE0::selectDirFromPlayer() {
-    if (fn_80239108(mSerial) >= 4) {
-        if (field_0x4 == getPlayerLayer_8023DE58(0)) {
-            s32 r = fn_80238BC4(mSerial);
-            if (r >= 0 && r < 4) {
-                field_0x2cc = 1;
-                return r;
-            }
-        }
-    }
-    return -1;
-}
-
-inline s32 cls_804A7AE0::selectDirFromBox() {
-    JGeometry::TBox2f box;
-    box.i.x = field_0x80.i.x;
-    box.i.y = field_0x80.i.y;
-    box.f.x = field_0x80.f.x;
-    box.f.y = field_0x80.f.y;
-    box.i.x += mPos.x;
-    box.f.x += mPos.x;
-    box.i.y += mPos.y;
-    box.f.y += mPos.y;
-    if (fn_80239470(&box, field_0x4, mSerial) >= 0 && fn_80238A68(mSerial) >= 4) {
-        s32 q = fn_8023885C(mSerial);
-        if (q >= 0 && q < 4) {
-            s32 d = -1;
-            if (q == 0) {
-                d = 1;
-            } else if (q == 1) {
-                d = 0;
-            } else if (q == 2) {
-                d = 3;
-            } else if (q == 3) {
-                d = 2;
-            }
-            field_0x2cc = -1;
-            return d;
-        }
-    }
-    return -1;
-}
-
 void cls_804A7AE0::fn_8029A974() {
     if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         return;
@@ -311,9 +268,40 @@ void cls_804A7AE0::fn_8029A974() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        dir = selectDirFromPlayer();
+        if (fn_80239108(mSerial) >= 4) {
+            if (getPlayerLayer_8023DE58(0) == field_0x4) {
+                s32 r = fn_80238BC4(mSerial);
+                if (r >= 0 && r < 4) {
+                    field_0x2cc = 1;
+                    dir = r;
+                }
+            }
+        }
         if (dir == -1) {
-            dir = selectDirFromBox();
+            JGeometry::TBox2f box;
+            box.i.x = field_0x80.i.x;
+            box.i.y = field_0x80.i.y;
+            box.f.x = field_0x80.f.x;
+            box.f.y = field_0x80.f.y;
+            box.i.x += mPos.x;
+            box.f.x += mPos.x;
+            box.i.y += mPos.y;
+            box.f.y += mPos.y;
+            if (fn_80239470(&box, field_0x4, mSerial) >= 0 && fn_80238A68(mSerial) >= 4) {
+                s32 q = fn_8023885C(mSerial);
+                if (q >= 0 && q < 4) {
+                    if (q == 0) {
+                        dir = 1;
+                    } else if (q == 1) {
+                        dir = 0;
+                    } else if (q == 2) {
+                        dir = 3;
+                    } else if (q == 3) {
+                        dir = 2;
+                    }
+                    field_0x2cc = -1;
+                }
+            }
         }
     }
     if (dir != 3) {
@@ -485,15 +473,15 @@ void cls_804A7AE0::fn_80299FB0() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        s32 r;
-        if (fn_80239108(mSerial) >= 4 && field_0x4 == getPlayerLayer_8023DE58(0) &&
-            (r = fn_80238BC4(mSerial), r >= 0 && r < 4)) {
-            field_0x2cc = 1;
-        } else {
-            r = -1;
+        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4) {
+            dir = fn_80238BC4(mSerial);
+            if (dir >= 0 && dir < 4) {
+                field_0x2cc = 1;
+            } else {
+                dir = -1;
+            }
         }
-        dir = r;
-    if (dir == -1) {
+        if (dir == -1) {
             JGeometry::TBox2f box;
             box.i.x = field_0x80.i.x;
             box.i.y = field_0x80.i.y;
