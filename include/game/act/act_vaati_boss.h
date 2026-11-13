@@ -159,9 +159,7 @@ public:
     /* 0x00 */ s32 field_0x0[0x10];
     /* 0x40 */ s32 field_0x40; // cleared by the constructor
     /* 0x44 */ s32 field_0x44; // cleared by the constructor
-    /* 0x48 */ f32 field_0x48; // cleared by the constructor
-    /* 0x4C */ f32 field_0x4c; // cleared by the constructor
-    /* 0x50 */ f32 field_0x50; // cleared by the constructor
+    /* 0x48 */ JGeometry::TVec3f field_0x48; // cleared by the constructor
     /* 0x54 */ s16 field_0x54; // cleared by the constructor
     /* 0x56 */ s16 field_0x56; // cleared by the constructor
     /* 0x58 */ u8 field_0x58; // cleared by the constructor
