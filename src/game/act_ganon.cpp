@@ -170,10 +170,10 @@ void Ganon_804A25F0::init() {
     field_0x2a8 = 0.0f;
     field_0x294 = -1;
     field_0x2f8 = -1;
-    field_0x2ac = 20.0f;
-    field_0x2b0 = 20.0f;
+    field_0x2ac = 255.0f;
+    field_0x2b0 = 255.0f;
     field_0x2a5 = 0;
-    field_0x2b6 = (s16)(65536.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
+    field_0x2b6 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     field_0x2dc.set(mPos);
     field_0x2e8.set(mPos);
     field_0x54.set(1.0f, 1.0f, 1.0f);
@@ -198,36 +198,36 @@ void Ganon_804A25F0::init() {
             }
         }
         lbl_8053AB90 = 0;
-        mBox.i.x = -16.0f;
-        mBox.i.y = -16.0f;
-        mBox.f.x = 16.0f;
-        mBox.f.y = 16.0f;
-        field_0x80.i.x = -16.0f;
-        field_0x80.i.y = -16.0f;
-        field_0x80.f.x = 16.0f;
-        field_0x80.f.y = 16.0f;
+        mBox.i.x = -48.0f;
+        mBox.i.y = -48.0f;
+        mBox.f.x = 48.0f;
+        mBox.f.y = 48.0f;
+        field_0x80.i.x = -48.0f;
+        field_0x80.i.y = -48.0f;
+        field_0x80.f.x = 48.0f;
+        field_0x80.f.y = 50.0f;
         mState = 0;
     }
     if (field_0x90 == 10 || (field_0x90 - 11) <= 1u || field_0x90 == 13) {
-        mBox.i.x = -24.0f;
-        mBox.i.y = -24.0f;
-        mBox.f.x = 24.0f;
-        mBox.f.y = 24.0f;
-        field_0x80.i.x = -24.0f;
-        field_0x80.i.y = -24.0f;
-        field_0x80.f.x = 24.0f;
-        field_0x80.f.y = 24.0f;
+        mBox.i.x = -12.0f;
+        mBox.i.y = -12.0f;
+        mBox.f.x = 12.0f;
+        mBox.f.y = 12.0f;
+        field_0x80.i.x = -12.0f;
+        field_0x80.i.y = -12.0f;
+        field_0x80.f.x = 12.0f;
+        field_0x80.f.y = 12.0f;
         mState = 0x1F;
     }
     if (field_0x90 == 20 || (field_0x90 - 21) <= 1u || field_0x90 == 23) {
-        mBox.i.x = -32.0f;
-        mBox.i.y = -32.0f;
-        mBox.f.x = 32.0f;
-        mBox.f.y = 32.0f;
-        field_0x80.i.x = -32.0f;
-        field_0x80.i.y = -32.0f;
-        field_0x80.f.x = 32.0f;
-        field_0x80.f.y = 32.0f;
+        mBox.i.x = -8.0f;
+        mBox.i.y = -8.0f;
+        mBox.f.x = 8.0f;
+        mBox.f.y = 8.0f;
+        field_0x80.i.x = -8.0f;
+        field_0x80.i.y = -8.0f;
+        field_0x80.f.x = 8.0f;
+        field_0x80.f.y = 8.0f;
         field_0x114 = 2;
         mState = 0x23;
     }
@@ -235,7 +235,7 @@ void Ganon_804A25F0::init() {
         field_0x25c = field_0x90 - 1;
         lbl_804C1BC0[field_0x25c] = field_0x4;
         lbl_804C1BD0[field_0x25c].set(mPos);
-        lbl_804C1C00[field_0x25c].y += 16.0f;
+        lbl_804C1BD0[field_0x25c].y += 48.0f;
         mState = 0x28;
     }
     if (field_0x90 == 31) {
@@ -245,10 +245,10 @@ void Ganon_804A25F0::init() {
     if (field_0x90 == 30) {
         field_0xb0 = 0xA040004;
         field_0x114 = 4;
-        mBox.i.x = -48.0f;
-        mBox.i.y = -48.0f;
-        mBox.f.x = 48.0f;
-        mBox.f.y = 48.0f;
+        mBox.i.x = -64.0f;
+        mBox.i.y = -64.0f;
+        mBox.f.x = 64.0f;
+        mBox.f.y = 64.0f;
         mState = 0x2A;
     }
 }
