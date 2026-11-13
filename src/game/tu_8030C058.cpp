@@ -79,7 +79,7 @@ void Camera_804AA9E4::fn_8030E5BC() {
 // The per-frame update: picks the table entry for the pending request (flags 0x178-0x17B), lets
 // fn_8030CD18 work out the target box and depth, blends towards it while a transition is armed,
 // sets the view (fn_8030CB10) and the zoom, and tells the audio manager where the camera is.
-// FIXME(shotgun): 90.19 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.70 %, operands + reloc-name; behaviour clean.
 // (audio center construction)
 void Camera_804AA9E4::fn_8030E154() {
     JGeometry::TBox2f box = field_0x154;
@@ -152,8 +152,11 @@ void Camera_804AA9E4::fn_8030E154() {
         }
         fn_8030CB10(&target, depth);
         field_0x858 = (f32)(s32)JUTVideo::sManager->getFbWidth() / (target.f.x - target.i.x);
+        JGeometry::TVec3f a(target.f.x, target.i.y, depth);
+        JGeometry::TVec3f b(target.i.x, target.i.y, depth);
         JGeometry::TVec3f center;
-        center.set(0.5f * (target.i.x + target.f.x), 0.5f * (target.i.y + target.f.y), 0.5f * (depth + depth));
+        center.add(a, b);
+        center.scale(0.5f);
         gAudioMgr_8053AF80->fn_80459624(&center, field_0x4, 0);
     }
     field_0x7f0 = 0;
