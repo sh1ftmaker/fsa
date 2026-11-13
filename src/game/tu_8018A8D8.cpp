@@ -352,7 +352,10 @@ void cls_804A1E50::fn_8018DFCC() {
 
 // FIXME(shotgun): 92.00 %, missing/extra + reloc-name.
 void cls_804A1E50::fn_8018DC70(s32 mode) {
-    if (field_0x26c == 1 || field_0x27a != 1) {
+    if (field_0x26c == 1) {
+        return;
+    }
+    if (field_0x27a != 1) {
         return;
     }
     JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
@@ -372,24 +375,28 @@ void cls_804A1E50::fn_8018DC70(s32 mode) {
         if (mode != 3 && !(getPlayerPos_8023E724(i)->y > mPos.y)) {
             continue;
         }
-        f32 py = mPos.y - 32.0f;
         f32 px = mPos.x;
+        f32 py = mPos.y - 32.0f;
         f32 dx = getPlayerPos_8023E724(i)->x - px;
         f32 dy = getPlayerPos_8023E724(i)->y - py;
-        s32 angle = (u16)(s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angle = JMath::atanTable_.atan2_(dx, dy) * 10430.378f;
         if (mode != 1 && angle >= 0x2000 && angle < 0xE000) {
             continue;
         }
-        if (mode == 3) {
+        switch (mode) {
+        case 3:
             angle += 0x8000;
             push.x = 3.5f;
             push.y = 3.5f;
-        } else if (mode == 1) {
+            break;
+        case 1:
             push.x = 2.0f;
             push.y = 2.0f;
-        } else {
+            break;
+        default:
             push.x = 3.0f;
             push.y = 3.0f;
+            break;
         }
         if (mode == 0 || mode == 1) {
             ActorBase_804A5770* fires[ACTOR_MANAGER_MAX_ACTORS];
