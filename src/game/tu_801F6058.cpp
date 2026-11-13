@@ -68,7 +68,8 @@ inline void ActorManager_804A5800::deleteSlot(s32 slot) {
 // Forward declarations.
 ActorManager_804A5800* getActorManager_801F856C(void);
 
-// FIXME: 98.1 %, scheduling+regalloc: the target keeps `small` in r4 and the
+// FIXME: 98.11 %, scheduling+regalloc; behaviour clean.
+// the target keeps `small` in r4 and the
 // mode word in r5 (ours swaps them, so lbl_80529DEC's address is formed one
 // slot later); the 0.0f literal is lbl_8053F828, the pool's last, until the
 // functions before it are written.
@@ -123,7 +124,8 @@ void ActorManager_804A5800::fn_801F8E4C() {
     field_0x3041 = 0;
 }
 
-// FIXME(shotgun): 96.6 %, missing/extra + reloc-name (fn_801A6160 named in C++)
+// FIXME(shotgun): 96.62 %, missing/extra + reloc-name; behaviour drift.
+// (fn_801A6160 named in C++)
 // The per-frame update pass. Clears the per-frame serial list (field_0x201c), steps the
 // collision box lists, then updates each live actor: with GameView's fn_802DCD0C only those
 // flagged for it (0x11E / 0xC4 / 0xCC); otherwise all of them unless paused (0x11F keeps them
@@ -285,7 +287,8 @@ void ActorManager_804A5800::fn_801F8658() {
     }
 }
 
-// FIXME: 91.9 %. The target walks the slots with a pointer advanced by 4
+// FIXME: 91.87 %, missing/extra; behaviour near.
+// The target walks the slots with a pointer advanced by 4
 // (lwz 0x8(r31)); this code recomputes this + 4 * i each pass (add r30), as
 // the original does where this function is inlined into fn_801F8E4C.
 void ActorManager_804A5800::fn_801F857C() {
@@ -303,7 +306,8 @@ s32 ActorManager_804A5800::fn_801F8544(u32 id, s32 arg_0x4, const JGeometry::TVe
     return spawnActor_801F9484(id, arg_0x4, pos, arg_0x90, -1, -1);
 }
 
-// FIXME: 93.8 %, scheduling: the target loads last->mListNext before
+// FIXME: 93.75 %, scheduling; behaviour clean.
+// the target loads last->mListNext before
 // comparing last with actor; this code loads it after the compare.
 s32 ActorManager_804A5800::fn_801F84C4(ActorBase_804A5770* actor) {
     u8 linked = false;
@@ -436,7 +440,7 @@ void ActorManager_804A5800::fn_801F7E88() {
     }
 }
 
-// FIXME(shotgun): 98.7 %, regalloc-only
+// FIXME(shotgun): 98.70 %, regalloc-only; behaviour clean.
 void ActorManager_804A5800::fn_801F7CAC() {
     GameView_804A9950* view = getGameView_802D6A9C();
     for (s32 i = 0; i < 4; i++) {
@@ -481,7 +485,7 @@ void ActorManager_804A5800::fn_801F7CAC() {
     fn_80204638()->fn_802048F4();
 }
 
-// FIXME(shotgun): 94.1 %, missing/extra
+// FIXME(shotgun): 97.13 %, scheduling+regalloc; behaviour clean.
 void ActorManager_804A5800::fn_801F7B18() {
     getGameView_802D6A9C();
     for (s32 i = 0; i < 4; i++) {
@@ -523,7 +527,8 @@ void ActorManager_804A5800::fn_801F7B18() {
     fn_80204638()->fn_802048F4();
 }
 
-// FIXME: 97.7 %, regalloc only: the target counts down mActorEnd in r0 and
+// FIXME: 97.71 %, regalloc-only; behaviour clean.
+// regalloc only: the target counts down mActorEnd in r0 and
 // keeps the stored 0 in r6; this code swaps them.
 s32 ActorManager_804A5800::fn_801F7AB8(u32 id, s32 excludeSerial) {
     s32 count = 0;
@@ -612,7 +617,8 @@ s32 ActorManager_804A5800::fn_801F7818(u32 id, s32 layer, ActorBase_804A5770** o
     return count;
 }
 
-// FIXME: 98.0 %, scheduling+regalloc: the target loads pos->x, actor x, pos->y,
+// FIXME: 98.17 %, scheduling+regalloc; behaviour clean.
+// the target loads pos->x, actor x, pos->y,
 // actor y and squares x first; this code loads and squares y first. The
 // 1000000.0f literal is lbl_8053F824 once the pool before it is complete.
 s32 ActorManager_804A5800::fn_801F778C(u32 id, const JGeometry::TVec3f* pos, f32* outDistSq) {
@@ -653,7 +659,8 @@ s32 ActorManager_804A5800::fn_801F76F0(u32 id, s32 layer, const JGeometry::TVec3
     return serial;
 }
 
-// FIXME: 98.0 %, scheduling+regalloc: the target loads pos->x, actor x, pos->y,
+// FIXME: 98.17 %, scheduling+regalloc; behaviour clean.
+// the target loads pos->x, actor x, pos->y,
 // actor y and squares x first; this code loads and squares y first. The
 // 1000000.0f literal is lbl_8053F824 once the pool before it is complete.
 s32 ActorManager_804A5800::fn_801F7664(const JGeometry::TVec3f* pos, f32* outDistSq) {
@@ -713,7 +720,8 @@ s32 ActorManager_804A5800::fn_801F7464(s32 layer, s32 excludeSerial) const {
     return serial;
 }
 
-// FIXME: 99.6 %, regalloc only: the two y/x differences sit in f3/f2 in the
+// FIXME: 99.62 %, regalloc-only; behaviour clean.
+// regalloc only: the two y/x differences sit in f3/f2 in the
 // target, f2/f3 here; the 16.0f literal is lbl_8053F820 once the pool before
 // it is complete.
 s32 ActorManager_804A5800::fn_801F732C(s32 layer, const JGeometry::TVec3f* center,
@@ -752,7 +760,8 @@ s32 ActorManager_804A5800::fn_801F7274(s32 layer, ActorBase_804A5770** out, s32 
     return count;
 }
 
-// FIXME: 99.3 %, regalloc only (register numbering of the slot pointer and
+// FIXME: 99.29 %, regalloc-only; behaviour clean.
+// regalloc only (register numbering of the slot pointer and
 // the loaded id).
 bool ActorManager_804A5800::fn_801F71E8(u32 group, ActorBase_804A5770** out, s32* count, s32 max) {
     s32 end = mActorEnd;
@@ -783,7 +792,8 @@ void addCalc2_801F71A4(f32* value, f32 target, f32 rate, f32 maxStep) {
     }
 }
 
-// FIXME: 95.2 %. In the last branch the target zero-extends delta (clrlwi 16)
+// FIXME: 95.23 %, missing/extra; behaviour near.
+// In the last branch the target zero-extends delta (clrlwi 16)
 // before adding it to *value; this code adds the s16 directly.
 void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     s16 diff = target - *value;
@@ -797,7 +807,7 @@ void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     }
 }
 
-// FIXME(shotgun): 67.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 67.29 %, missing/extra + reloc-name; behaviour drift.
 // The pairwise push pass over the actors fn_801F871C listed in field_0x201c: each pair on the
 // same layer whose boxes overlap (and the second's 0xBC is not lower) records the other's
 // serial in field_0x9c. Kind 2 (0xB8) only records it; the others are pushed out of the overlap
@@ -974,7 +984,8 @@ ActorSoundObj_804578F4* ActorManager_804A5800::fn_801F6644(s32 slot) {
     return field_0x200c;
 }
 
-// FIXME(shotgun): 96 %, missing/extra (one extra move of the resource pointer)
+// FIXME(shotgun): 96.02 %, missing/extra; behaviour clean.
+// (one extra move of the resource pointer)
 void ActorManager_804A5800::fn_801F62AC(JKRHeap* heap) {
     char* data = (char*)gGameRoot_8053AAF8->field_0xa4->getResource('ENM ', "EnemyParam.csv");
     s32 size = gGameRoot_8053AAF8->field_0xa4->getResSize(
@@ -1059,7 +1070,8 @@ void ActorManager_804A5800::fn_801F62AC(JKRHeap* heap) {
     }
 }
 
-// FIXME: 96.4 %, scheduling+regalloc: the target keeps the column count in r7,
+// FIXME: 96.40 %, scheduling+regalloc; behaviour clean.
+// the target keeps the column count in r7,
 // value in r8, col in r9 and the key pointer in r6 (ours: r6, r7, r8, r9),
 // so the two increments come out in the other order.
 s32 ActorManager_804A5800::fn_801F620C(u32 id, u32 column) {
@@ -1091,7 +1103,7 @@ void ActorManager_804A5800::fn_801F6204(u8 value) {
     field_0x305c = value;
 }
 
-// FIXME(shotgun): 99.2 %, regalloc-only
+// FIXME(shotgun): 99.17 %, regalloc-only; behaviour clean.
 void ActorManager_804A5800::fn_801F6068() {
     s32 count = 0;
     for (s32 i = 0; i < 4; i++) {
