@@ -401,6 +401,8 @@ void ChiefSoldier_804A0B90::fn_801746DC() {
             }
         }
         break;
+    case 9:
+        break;
     }
 }
 
