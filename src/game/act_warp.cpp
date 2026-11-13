@@ -554,18 +554,12 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
 
 // 0x80227530. Per player: runs fn_80226FC8, then marks the player on the warp and, for a player
 // that just stepped on and passes the checks, rewrites the four tiles around it and spawns the effect.
-// FIXME(shotgun): 80.78 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 82.26 %, missing/extra; behaviour near.
 void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
         fn_80226FC8(player);
-        box->i.x = mBox.i.x;
-        box->i.y = mBox.i.y;
-        box->f.x = mBox.f.x;
-        box->f.y = mBox.f.y;
-        box->i.x += mPos.x;
-        box->i.y += mPos.y;
-        box->f.x += mPos.x;
-        box->f.y += mPos.y;
+        box->set(mBox);
+        box->addPos(mPos.x, mPos.y);
         if (gGameRoot_8053AAF8->field_0x7e && !fn_8022C8EC(player)) {
             if (getPlayerLayer_8023DE58(player) != warpLayer(field_0x90)) {
                 continue;
@@ -651,7 +645,7 @@ s32 Warp_804A6DC8::fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial) {
 
 // 0x80226FC8. Per player: finds the 'YASI' actor the player carries and, once it is moving and
 // inside the warp's box, drops it onto the pad (four tiles around the warp are rewritten).
-// FIXME(shotgun): 90.26 %, different; behaviour drift.
+// FIXME(shotgun): 90.85 %, missing/extra; behaviour near.
 void Warp_804A6DC8::fn_80226FC8(s32 player) {
     if (field_0x255 == 1) {
         return;
@@ -670,7 +664,7 @@ void Warp_804A6DC8::fn_80226FC8(s32 player) {
     if (carried->field_0x3c.squared() <= 32.0f * FLT_EPSILON) {
         return;
     }
-    if (carried->mPos.z >= 4.0f) {
+    if (!(carried->mPos.z < 4.0f)) {
         return;
     }
     JGeometry::TVec3f rel = carried->mPos - mPos;
