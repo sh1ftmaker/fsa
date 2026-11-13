@@ -485,10 +485,10 @@ void cls_804B03D8::fn_803D75B0() {
 // cursor (field_0x44) over the pane of the selected row.
 // FIXME(shotgun): 88 %, missing/extra + reloc-name
 void cls_804B03D8::fn_803D7098() {
-    bool a = false;
-    bool b = false;
-    bool c = false;
-    bool d = false;
+    u8 a = false;
+    u8 b = false;
+    u8 c = false;
+    u8 d = false;
     field_0x60++;
     if (field_0x60 > 4) {
         a = field_0x30->fn_80402940(0x16, 0, -200.0f, 0.0f);
@@ -533,7 +533,7 @@ void cls_804B03D8::fn_803D7098() {
                 f32 y0 = field_0x4->search(lbl_80477408[0])->getBounds()->i.y +
                          field_0x4->search(lbl_80477180[0])->getBounds()->i.y;
                 f32 y1 = field_0x4->search(lbl_80477408[field_0x68])->getBounds()->i.y +
-                         field_0x4->search(lbl_80477180[k * 16 + j])->getBounds()->i.y;
+                         field_0x4->search(lbl_80477180[field_0x68 * 16 + field_0x6a])->getBounds()->i.y;
                 f32 y2 = field_0x8->search('P0kak00')->getBounds()->i.y;
                 f32 y3 = field_0x4->search('Ndata03')->getBounds()->i.y +
                          field_0x4->search(lbl_80477408[0])->getBounds()->i.y;
