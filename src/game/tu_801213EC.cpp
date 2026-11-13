@@ -975,7 +975,7 @@ s32 EscortBase_8049E0C8::fn_80121D68() {
     return 1;
 }
 
-// FIXME(shotgun): 91.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.41 %, missing/extra + reloc-name; behaviour near.
 bool EscortBase_8049E0C8::vfunc_0xC8(const JGeometry::TVec3f& vec, f32 speed) {
     if (field_0x35c <= 0) {
         return true;
@@ -984,11 +984,14 @@ bool EscortBase_8049E0C8::vfunc_0xC8(const JGeometry::TVec3f& vec, f32 speed) {
     JGeometry::TVec3f step;
     step.x = step.y = step.z = 0.0f;
     s32 layer = field_0x4;
-    JGeometry::TVec3f pos(mPos);
-    pos.x += vec.x;
-    pos.y += vec.y;
+    JGeometry::TVec3f tmp(mPos);
+    tmp.x += vec.x;
+    tmp.y += vec.y;
+    JGeometry::TVec3f pos(tmp);
     s32 result = mRail.fn_800FDEA0(&pos, speed, &step, &layer, &angle, 0x200);
-    field_0x3c = step;
+    field_0x3c.x = step.x;
+    field_0x3c.y = step.y;
+    field_0x3c.z = step.z;
     mPos.add(field_0x3c);
     s32 dir = fn_801F681C(angle);
     if (dir >= 0) {
