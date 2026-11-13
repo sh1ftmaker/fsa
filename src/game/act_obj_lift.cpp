@@ -496,8 +496,8 @@ s32 OBJLift_804ACA00::fn_803506E0() {
             if (held) {
                 limit = square(8.0f + field_0x260);
             }
-            if (square(px - getPlayerPos_8023E724(i)->x) + square(py - getPlayerPos_8023E724(i)->y) < limit &&
-                getPlayerPos_8023E724(i)->z == 0.0f) {
+            JGeometry::TVec3f* pl = getPlayerPos_8023E724(i);
+            if (square(px - pl->x) + square(py - pl->y) < limit && getPlayerPos_8023E724(i)->z == 0.0f) {
                 if (held == 0) {
                     startSound_801F0E34(0x30009, 0);
                 }
@@ -506,10 +506,10 @@ s32 OBJLift_804ACA00::fn_803506E0() {
         }
     }
     s32 mask = field_0x270;
-    if ((mask & 1) && (mask & 2)) {
+    if ((mask & 1) && ((mask >> 1) & 1)) {
         mask &= 0xC;
     }
-    if ((mask & 4) && (mask & 8)) {
+    if (((mask >> 2) & 1) && ((mask >> 3) & 1)) {
         mask &= 3;
     }
     if (mask == 1) {
