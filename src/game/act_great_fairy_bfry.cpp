@@ -243,24 +243,13 @@ void GreatFairy_804AF338::draw() {
 
 // FIXME(shotgun): 89.17 %, missing/extra
 void GreatFairy_804AF338::fn_8038DE74() {
-    bool done = false;
-    if (field_0x274[fn_8022F340(field_0x234)] != 0) {
-        s32 bit = field_0x274[fn_8022F340(field_0x234)];
-        if (getGameView_802D6A9C()->fn_802D800C(bit) == 1) {
-            field_0x29c = 0xC;
-            done = true;
-        }
-    }
-    if (!done) {
+    if (field_0x274[fn_8022F340(field_0x234)] != 0 &&
+        getGameView_802D6A9C()->fn_802D800C(field_0x274[fn_8022F340(field_0x234)]) == 1) {
+        field_0x29c = 0xC;
+    } else {
         switch (fn_802373EC(fn_8022F340(field_0x234))) {
-        case 0:
-            field_0x29c = 0xC;
-            break;
         case 1:
             field_0x29c = 7;
-            break;
-        case 2:
-            field_0x29c = 0xC;
             break;
         case 3:
             field_0x29c = 4;
@@ -286,6 +275,8 @@ void GreatFairy_804AF338::fn_8038DE74() {
         case 10:
             field_0x29c = 1;
             break;
+        case 0:
+        case 2:
         default:
             field_0x29c = 0xC;
             break;
@@ -304,7 +295,8 @@ void GreatFairy_804AF338::fn_8038DE74() {
         if (field_0x270 >= 0) {
             mState = 5;
             if (field_0x274[fn_8022F340(field_0x234)] != 0) {
-                getGameView_802D6A9C()->fn_802D8050(field_0x274[fn_8022F340(field_0x234)], true, 0xFF);
+                s32 bit = field_0x274[fn_8022F340(field_0x234)];
+                getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
             }
         } else {
             field_0x29c = 0;
