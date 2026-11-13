@@ -195,23 +195,27 @@ void cls_804A6340::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 88.45 %, missing/extra.
+// FIXME(shotgun): missing/extra: the cel branch is laid out as beq + b in the original.
 void cls_804A6340::vfunc_0x94() {
     if (mState == 4 && mAnim.mAnim == 1 && mAnim.fn_801D217C()) {
         startSound_801F0E34(0x50035, 0);
     }
     EnemyBase_804A4808::vfunc_0x94();
-    if (mState == 3 || mState == 6) {
+    switch (mState) {
+    case 3:
+    case 6:
         if (mAnim.mCel == 0) {
             mBox.i.x = 1.0f;
             mBox.i.y = 1.0f;
             mBox.f.x = -1.0f;
             mBox.f.y = -1.0f;
         } else {
-            mBox.i.x = -8.0f * field_0x54.x;
-            mBox.i.y = -8.0f * field_0x54.y;
-            mBox.f.x = 8.0f * field_0x54.x;
-            mBox.f.y = 8.0f * field_0x54.y;
+            f32 x = field_0x54.x;
+            f32 y = field_0x54.y;
+            mBox.i.x = -8.0f * x;
+            mBox.i.y = -8.0f * y;
+            mBox.f.x = 8.0f * x;
+            mBox.f.y = 8.0f * y;
         }
         if (mState == 0) {
             field_0xb0 = 0;
@@ -226,6 +230,7 @@ void cls_804A6340::vfunc_0x94() {
         } else {
             field_0xb0 = 0x1000;
         }
+        break;
     }
 }
 
