@@ -86,7 +86,7 @@ void cls_804ADF28::fn_80365AB8() {
 }
 
 // FIXME(shotgun): 92.85 %, missing/extra + reloc-name; behaviour drift.
-// (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; the 2c4 stores are not paired as in the original)
+// (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -134,8 +134,8 @@ void cls_804ADF28::fn_803653EC() {
             };
             for (int i = 0; i < 3; i++) {
                 field_0x2a0[i] = mPos + lbl_8050C0B8[i];
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2c4[i] = JGeometry::TVec3f((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = lbl_80474A5C[i];
             }
             break;
@@ -144,8 +144,8 @@ void cls_804ADF28::fn_803653EC() {
             field_0x26c = 0x388;
             for (int i = 0; i < 3; i++) {
                 field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2c4[i] = JGeometry::TVec3f((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = 0x388;
             }
             break;
@@ -154,8 +154,8 @@ void cls_804ADF28::fn_803653EC() {
             field_0x26c = 0x38E;
             for (int i = 0; i < 3; i++) {
                 field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2c4[i] = JGeometry::TVec3f((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = 0x38E;
             }
             break;
@@ -169,8 +169,8 @@ void cls_804ADF28::fn_803653EC() {
             };
             for (int i = 0; i < 3; i++) {
                 field_0x2a0[i] = mPos + lbl_8050C0DC[i];
-                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
-                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2c4[i] = JGeometry::TVec3f((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = 0x391;
             }
             break;
