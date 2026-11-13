@@ -824,17 +824,17 @@ void cls_804B13D4::fn_8041E58C() {
     }
 }
 
-// FIXME(shotgun): 94.11 %, missing/extra (bool tests of the masks are two instructions shorter)
+// register assignment of mask/bit is swapped vs the original
 void cls_804B13D4::fn_8041E3B4(s32 player) {
     s32 mask = 1 << player;
     u8 bit = mask;
-    bool takesPart = gGameRoot_8053AAF8->mPlayerMask & bit;
-    if (takesPart == false) {
+    bool takesPart = (gGameRoot_8053AAF8->mPlayerMask & bit) != 0 ? true : false;
+    if (!takesPart) {
         field_0x28f &= ~bit;
         return;
     }
-    bool flagged = lbl_8053AED0->field_0xdd & bit;
-    if (flagged == true && !(field_0x290 & bit)) {
+    bool flagged = (lbl_8053AED0->field_0xdd & bit) != 0 ? true : false;
+    if (flagged && !(field_0x290 & bit)) {
         field_0x290 |= bit;
         field_0x28f |= bit;
         return;
