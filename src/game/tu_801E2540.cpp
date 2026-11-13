@@ -105,6 +105,60 @@ void cls_804A51E4::fn_801E2D88() {
     }
 }
 
+// Whether a player-side object (arrow, bomb, sword, ...) hits the actor's box.
+bool cls_804A51E4::vfunc_0x58() {
+    bool arrow = false;
+    bool direct = false;
+    bool bomb = false;
+    bool other = false;
+    JGeometry::TVec3f arrowVel(0.0f, 0.0f, 0.0f);
+    JGeometry::TBox2f box;
+    fn_801F317C(&box);
+    JGeometry::TVec2f pos2;
+    JGeometry::TVec3f bombVel;
+    s32 player = fn_8023AE34(&box, field_0x4, &pos2);
+    if (player >= 0) {
+        arrow = fn_801CC820(player, &arrowVel);
+    } else {
+        player = fn_8023AA18(&box, field_0x4, &pos2);
+        if (player >= 0) {
+            direct = true;
+        } else {
+            player = fn_8023AC74(&box, field_0x4, &pos2);
+            if (player >= 0) {
+                bomb = fn_801CC538(player, &pos2, &bombVel, NULL);
+            } else {
+                player = fn_8023AD54(&box, field_0x4, &pos2);
+                if (player >= 0) {
+                    other = fn_801CC640(player, NULL, &arrowVel);
+                }
+            }
+        }
+    }
+    if (arrow || bomb || other) {
+        releaseTarget(this);
+    }
+    bool hit = false;
+    if (player >= 0) {
+        JGeometry::TVec3f from = *getPlayerPos_8023E724(player);
+        s32 type = 0;
+        if (direct) {
+            type = 4;
+        } else if (bomb) {
+            from = bombVel;
+        } else {
+            from = mPos - arrowVel;
+            if (arrow) {
+                type = 3;
+            }
+        }
+        if (mFlags & 0x10000) {
+            hit = fn_801F37AC(0, &from, 0, type, player);
+        }
+    }
+    return hit;
+}
+
 // FIXME(shotgun): 79.85 %, different; behaviour drift.
 u8 cls_804A51E4::vfunc_0x60() {
     u8 hit = 0;
@@ -182,60 +236,3 @@ u8 cls_804A51E4::vfunc_0x64() {
     }
     return hit;
 }
-
-// Whether a player-side object (arrow, bomb, sword, ...) hits the actor's box.
-// FIXME(shotgun): 90 %, missing/extra + reloc-name (wrapped: compiled, it moves the literal pool and fn_801E2D88 drops 0.12 %)
-#ifdef NONMATCHING
-bool cls_804A51E4::vfunc_0x58() {
-    bool arrow = false;
-    bool direct = false;
-    bool bomb = false;
-    bool other = false;
-    JGeometry::TVec3f arrowVel(0.0f, 0.0f, 0.0f);
-    JGeometry::TBox2f box;
-    fn_801F317C(&box);
-    JGeometry::TVec2f pos2;
-    JGeometry::TVec3f bombVel;
-    s32 player = fn_8023AE34(&box, field_0x4, &pos2);
-    if (player >= 0) {
-        arrow = fn_801CC820(player, &arrowVel);
-    } else {
-        player = fn_8023AA18(&box, field_0x4, &pos2);
-        if (player >= 0) {
-            direct = true;
-        } else {
-            player = fn_8023AC74(&box, field_0x4, &pos2);
-            if (player >= 0) {
-                bomb = fn_801CC538(player, &pos2, &bombVel, NULL);
-            } else {
-                player = fn_8023AD54(&box, field_0x4, &pos2);
-                if (player >= 0) {
-                    other = fn_801CC640(player, NULL, &arrowVel);
-                }
-            }
-        }
-    }
-    if (arrow || bomb || other) {
-        releaseTarget(this);
-    }
-    bool hit = false;
-    if (player >= 0) {
-        JGeometry::TVec3f from = *getPlayerPos_8023E724(player);
-        s32 type = 0;
-        if (direct) {
-            type = 4;
-        } else if (bomb) {
-            from = bombVel;
-        } else {
-            from = mPos - arrowVel;
-            if (arrow) {
-                type = 3;
-            }
-        }
-        if (mFlags & 0x10000) {
-            hit = fn_801F37AC(0, &from, 0, type, player);
-        }
-    }
-    return hit;
-}
-#endif
