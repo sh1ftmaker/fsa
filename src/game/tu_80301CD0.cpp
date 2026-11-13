@@ -831,7 +831,8 @@ void cls_804AA8B8::fn_80306A94(s32 player) {
 // Copies a record's sprite words into the half of the player's sprite table
 // its mode selects, hides the rest of that half and the kind-2 sprites below
 // 0x45 of the other half.
-// FIXME(shotgun): 99.10 %, different; register allocation only.
+// FIXME(shotgun): 99.10 %, scheduling+regalloc; behaviour clean.
+// register allocation only.
 void fn_803068D0(cls_804AA858Sub11C* record) {
     if (record->mValid == 0) {
         return;
@@ -862,7 +863,8 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
-// FIXME(shotgun): 87.74 %, missing/extra; the original repeats the sprite step before each
+// FIXME(shotgun): 85.53 %, missing/extra; behaviour drift.
+// the original repeats the sprite step before each
 // early `continue` (shared i++ block), and compares x unsigned (cmplwi) but shifts it signed.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
