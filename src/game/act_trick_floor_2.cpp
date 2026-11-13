@@ -74,7 +74,8 @@ static inline s32 tileIndex(s32 tx, s32 ty) {
 static inline void fillTiles(TrickFloor2_804AA628* self, f32 x, u16 tile) {
     s32 layer = self->field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
-    JGeometry::TBox2f box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
+    const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    JGeometry::TBox2f box = *src;
     for (s32 i = 0; i < lbl_8046F788[self->mType]; i++) {
         s32 tx = (s32)(x - box.i.x);
         f32 y = self->mPos.y;
@@ -107,16 +108,15 @@ static inline void spawnDust(TrickFloor2_804AA628* self, s32 a) {
     }
 }
 
-// FIXME(shotgun): 89.66 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.85 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor2_804AA628::init() {
     mType = field_0x90 & 0xF;
     field_0x238 = (field_0x90 >> 4) & 0xF;
     field_0x240 = (field_0x90 >> 12) & 0xFFF;
     field_0x248 = 0.0f;
     switch (mType) {
-    case 0:
-    case 1:
     case 6:
+    default:
         mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);
         break;
     case 2:
