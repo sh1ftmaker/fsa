@@ -82,7 +82,7 @@ inline void cls_8049E350::enterState() {
 }
 
 // 0x80125EFC.
-// FIXME: 89.31 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 92.77 %, missing/extra + reloc-name; behaviour near.
 void cls_8049E350::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
