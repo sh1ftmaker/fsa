@@ -91,7 +91,7 @@ static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* out
 }
 
 // Moves the chain's head along its curve by the speed (0.5 per frame).
-// FIXME(shotgun): 81.23 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 85.74 %, different; behaviour drift.
 void cls_804A5568::fn_801E9224() {
     if (!(mFlags & 0x4000)) {
         f32 budget = 0.5f;
@@ -317,7 +317,7 @@ void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 spa
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 75.52 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.39 %, missing/extra + reloc-name; behaviour drift.
 // cls_804A5568
 void cls_804A5568::fn_801E8080() {
     f32 len = 0.0f;
