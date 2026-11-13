@@ -18,7 +18,6 @@ inline cls_80204638::cls_80204638() : field_0x0(0), mCount(0) {
     fn_80204ABC(true);
 }
 
-// FIXME(shotgun): 87.80 %, missing/extra; behaviour drift.
 void cls_80204638::fn_80204ABC(bool reset) {
     if (reset) {
         field_0x0 = 0;
@@ -123,8 +122,6 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     return moved;
 }
 
-// FIXME(shotgun): 92.45 %, missing/extra; behaviour drift.
-// The guarded static, constructed on first use.
 extern "C" cls_80204638* fn_80204638() {
     static cls_80204638 sInstance;
     return &sInstance;
