@@ -493,7 +493,7 @@ void SeesawLift_804AD348::fn_803597EC() {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
             f32 push = 1.8f * (sinVal * __fabsf(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
@@ -587,7 +587,7 @@ void SeesawLift_804AD348::fn_80358F98() {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
             f32 push = 1.8f * (sinVal * __fabsf(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
