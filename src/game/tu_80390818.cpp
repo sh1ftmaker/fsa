@@ -26,7 +26,6 @@ MessageWindow_804AF490::~MessageWindow_804AF490() {
     field_0x4c = NULL;
 }
 
-// FIXME(shotgun): 99.97 %, reloc-name
 void MessageWindow_804AF490::fn_80391678() {
     field_0x8 = 0;
     field_0x20 = 0;
@@ -110,7 +109,8 @@ void MessageWindow_804AF490::fn_803913E0() {
     }
 }
 
-// FIXME(shotgun): 89.11 %, missing/extra (the two position copies and their stack slots)
+// FIXME(shotgun): 89.34 %, missing/extra; behaviour drift.
+// (the two position copies and their stack slots)
 void MessageWindow_804AF490::fn_80390EBC() {
     switch (field_0x24) {
     case 0:
@@ -274,7 +274,7 @@ bool MessageWindow_804AF490::fn_80390E40(s32 value, bool flag) {
     return false;
 }
 
-// FIXME(shotgun): 99.54 %, scheduling+regalloc
+// FIXME(shotgun): 99.54 %, scheduling+regalloc; behaviour clean.
 u16 MessageWindow_804AF490::fn_80390C6C() {
     if (field_0x24 == 3) {
         switch (field_0x41) {
