@@ -23,7 +23,7 @@ public:
     void fn_8033D4CC();
     /* 0x230 */ JPABaseEmitter* field_0x230; // 0 from init; the emitter of a kind-4 push (fn_8033D4CC)
     /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ f32 field_0x238[3]; // copy of mPos made by init
+    /* 0x238 */ JGeometry::TVec3f field_0x238; // copy of mPos made by init
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;

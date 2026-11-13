@@ -22,7 +22,7 @@ extern const f32 lbl_804AC2A8[12]; // push velocity per direction
 extern const s32 lbl_804ABCA0[16]; // sprite frame offsets by animation step (and, 4 per row, by phase)
 
 // 0x8033E188.
-// FIXME(shotgun): 94.71 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.63 %, scheduling + reloc-name; behaviour clean.
 void StrangeBlock_804AC2D8::init() {
     field_0x25c = (field_0x90 >> 12) & 0xF;
     switch (field_0x25c) {
@@ -71,9 +71,7 @@ void StrangeBlock_804AC2D8::init() {
             vfunc_0x30(0xFF, true);
         }
     }
-    field_0x238[0] = mPos.x;
-    field_0x238[1] = mPos.y;
-    field_0x238[2] = mPos.z;
+    field_0x238 = mPos;
     field_0x270 = 1;
     if (field_0x25c == 0 || field_0x25c == 2) {
         field_0x270 = 0;
@@ -85,7 +83,7 @@ void StrangeBlock_804AC2D8::init() {
 
 // 0x8033DA78. States of field_0x234: 0 the block waits to be pushed or slides, 1 a player's
 // message is open, then back to 0.
-// FIXME(shotgun): 81.62 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.02 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::update() {
     JGeometry::TBox2f box;
     box.i.x = mBox.i.x + mPos.x;
@@ -111,21 +109,19 @@ void StrangeBlock_804AC2D8::update() {
         if (PSVECDistance(&mPos, (const Vec*)&field_0x238) >= reach) {
             if (mPos.x <= mSpawnPos.x + 11.5f && mPos.x >= mSpawnPos.x - 11.5f) {
                 mPos.x = mSpawnPos.x;
-            } else if (mPos.x < field_0x238[0]) {
-                mPos.x = field_0x238[0] - (reach + 0.1f);
+            } else if (mPos.x < field_0x238.x) {
+                mPos.x = field_0x238.x - (reach + 0.1f);
             } else {
-                mPos.x = field_0x238[0] + (reach + 0.1f);
+                mPos.x = field_0x238.x + (reach + 0.1f);
             }
             if (mPos.y <= mSpawnPos.y + 11.5f && mPos.y >= mSpawnPos.y - 11.5f) {
                 mPos.y = mSpawnPos.y;
-            } else if (mPos.y < field_0x238[1]) {
-                mPos.y = field_0x238[1] - (reach + 0.1f);
+            } else if (mPos.y < field_0x238.y) {
+                mPos.y = field_0x238.y - (reach + 0.1f);
             } else {
-                mPos.y = field_0x238[1] + (reach + 0.1f);
+                mPos.y = field_0x238.y + (reach + 0.1f);
             }
-            field_0x238[0] = mPos.x;
-            field_0x238[1] = mPos.y;
-            field_0x238[2] = mPos.z;
+            field_0x238 = mPos;
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
@@ -233,7 +229,7 @@ void StrangeBlock_804AC2D8::update() {
 
 // 0x8033D4CC. Called when the block is idle: pushes it one step when a player has been
 // shoving it long enough, or lets it slide back to its spawn position.
-// FIXME(shotgun): 76.67 %, missing/extra + reloc-name
+// FIXME(shotgun): 76.67 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::fn_8033D4CC() {
     s32 pushers = fn_80239108(mSerial);
     if (pushers >= field_0x260) {
@@ -285,9 +281,9 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 if (field_0x271 == 1) {
                     field_0x271 = 0;
                 } else {
-                    field_0x238[0] = mPos.x;
-                    field_0x238[1] = mPos.y;
-                    field_0x238[2] = mPos.z;
+                    field_0x238.x = mPos.x;
+                    field_0x238.y = mPos.y;
+                    field_0x238.z = mPos.z;
                 }
                 startSound_801F0E34(0x30004, 0);
                 field_0x272 = 1;
@@ -332,9 +328,9 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             } else if (mPos.y < mSpawnPos.y) {
                 field_0x3c.y = speed;
             }
-            field_0x238[0] = mPos.x;
-            field_0x238[1] = mPos.y;
-            field_0x238[2] = mPos.z;
+            field_0x238.x = mPos.x;
+            field_0x238.y = mPos.y;
+            field_0x238.z = mPos.z;
             startSound_801F0E34(0x30004, 0);
         } else {
             field_0x248--;
@@ -361,7 +357,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
 }
 
 // 0x8033D4AC.
-// FIXME(shotgun): 98.12 %, regalloc-only + reloc-name
+// FIXME(shotgun): 98.75 %, regalloc-only; behaviour clean.
 f32 fn_8033D4AC(f32 value, f32 center, f32 margin) {
     f32 offset = 0.1f + margin;
     if (value < center) {
@@ -371,7 +367,7 @@ f32 fn_8033D4AC(f32 value, f32 center, f32 margin) {
 }
 
 // 0x8033D264.
-// FIXME(shotgun): 82.31 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.51 %, missing/extra; behaviour near.
 bool StrangeBlock_804AC2D8::fn_8033D264(u8 dir) {
     bool movable = false;
     JGeometry::TVec3f savedPos = mPos;
@@ -426,7 +422,7 @@ bool StrangeBlock_804AC2D8::fn_8033D264(u8 dir) {
 }
 
 // 0x8033CD44.
-// FIXME(shotgun): 97.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.00 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::draw() {
     switch (field_0x25c) {
     case 0:
