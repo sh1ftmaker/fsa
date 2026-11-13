@@ -414,13 +414,13 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     if (field_0x290->field_0x23c > 720) {
         if (roll < 10) {
             field_0x244 = 1;
-        } else if (players >= 1 && roll < 15) {
+        } else if ((s32)players >= 1 && roll < 15) {
             field_0x244 = 2;
-        } else if (players >= 2 && roll < 20) {
+        } else if ((s32)players >= 2 && roll < 20) {
             field_0x244 = 3;
-        } else if (players >= 3 && roll < 25) {
+        } else if ((s32)players >= 3 && roll < 25) {
             field_0x244 = 4;
-        } else if (players == 4 && roll < 30) {
+        } else if ((s32)players == 4 && roll < 30) {
             field_0x244 = 5;
         } else {
             field_0x244 = 0;
@@ -431,7 +431,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
         s32 w2 = 0;
         s32 w3 = 0;
         s32 w4 = 0;
-        switch (players) {
+        switch ((s32)players) {
         case 1:
             w1 = 90;
             base = 10;
