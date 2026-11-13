@@ -180,9 +180,12 @@ void Camera_804AA9E4::fn_8030DFE8(bool copy) {
 
 // The 2D view of the box: the view matrix straight into the GX one, the projection from the box's
 // size, and (when light is set) the light matrices; then the GX state of fn_8030DFE8.
-// FIXME(shotgun): 74.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.01 %, missing/extra + reloc-name; behaviour drift.
 void Camera_804AA9E4::fn_8030DD8C(const JGeometry::TBox2f* box, bool light) {
-    field_0x164 = *box;
+    field_0x164.i.x = box->i.x;
+    field_0x164.i.y = box->i.y;
+    field_0x164.f.x = box->f.x;
+    field_0x164.f.y = box->f.y;
     f32 halfW = 0.5f * (box->f.x - box->i.x);
     f32 halfH = 0.5f * (box->f.y - box->i.y);
     f32 centerX = 0.5f * (box->i.x + box->f.x);
@@ -762,7 +765,7 @@ void Camera_804AA9E4::fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraE
 
 // Not inlined into its caller fn_8030E5BC in the original.
 #pragma auto_inline off
-// FIXME(shotgun): 70.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
 // (the target keeps the box corners in float registers)
 void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     f32 halfW = 0.5f * (box->f.x - box->i.x);
@@ -787,7 +790,10 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
     JMath::gekko_ps_copy12(field_0x74, field_0x4);
     JMath::gekko_ps_copy16(field_0xa4, field_0x34);
-    field_0x164 = *box;
+    field_0x164.i.x = box->i.x;
+    field_0x164.i.y = box->i.y;
+    field_0x164.f.x = box->f.x;
+    field_0x164.f.y = box->f.y;
 }
 #pragma auto_inline reset
 
