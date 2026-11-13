@@ -729,27 +729,32 @@ void cls_804A4C58::vfunc_0x80() {
     EnemyBase_804A4808::vfunc_0x80();
 }
 
-#ifdef NONMATCHING
-// FIXME(shotgun): 81.04 %, missing/extra + reloc-name.
 void cls_804A4C58::vfunc_0x88() {
-    if (mState >= 0xB && mState < 0xF) {
-        f32 dx = field_0x2d4[field_0x334].x - mPos.x;
-        f32 dy = field_0x2d4[field_0x334].y - mPos.y;
-        JGeometry::TVec2f dir(dx, dy);
+    switch (mState) {
+    case 0xB: case 0xC: case 0xD: case 0xE: {
+        JGeometry::TVec2f dir(field_0x2d4[field_0x334].x - mPos.x, field_0x2d4[field_0x334].y - mPos.y);
         dir.normalize();
-        addCalc2_801F71A4(&field_0x3c.x, dir.x * mSpeed, 0.3f, 1.0f);
-        addCalc2_801F71A4(&field_0x3c.y, dir.y * mSpeed, 0.3f, 1.0f);
-    } else {
+        dir.scale(mSpeed);
+        addCalc2_801F71A4(&field_0x3c.x, dir.x, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, dir.y, 0.3f, 1.0f);
+        break;
+    }
+    default:
+    {
         field_0x3c.x = 0.0f;
-        if (mState == 0x10 || mState == 8) {
-            field_0x3c.y += std::fabsf(lbl_8053EFB8);
-        } else {
+        switch (mState) {
+        case 0x10:
+        case 8:
+            field_0x3c.y += __fabsf(lbl_8053EFB8);
+            break;
+        default:
             field_0x3c.y = 0.0f;
+            break;
         }
+    }
     }
     field_0x3c.z = 0.0f;
 }
-#endif
 
 
 // FIXME: 77.38 %, missing/extra; behaviour drift.
