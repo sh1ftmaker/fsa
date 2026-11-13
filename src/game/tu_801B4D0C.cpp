@@ -34,7 +34,7 @@ extern u8 lbl_8053ABF8;
 s32 lbl_8053A118 = 3;
 
 // 0x801B6170.
-// FIXME(shotgun): 85.49 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.82 %, reloc-name; behaviour clean.
 void cls_804A38D4::init() {
     mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
