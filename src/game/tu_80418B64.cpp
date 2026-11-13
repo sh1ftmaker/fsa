@@ -450,7 +450,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 79.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.98 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041F720() {
     s32 mode = lbl_80529DEC.field_0x118;
     if ((mode == 9 && lbl_80529DEC.field_0x11c == 3) || (mode == 0 && lbl_80529DEC.field_0x11c == 2) ||
@@ -464,8 +464,10 @@ void cls_804B13D4::fn_8041F720() {
                  ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
         f32 sy = lbl_8050DB0C.field_0x30[4] *
                  ((f32)JUTVideo::getManager()->getEfbHeight() / gGameRoot2_8053AB10->field_0x24->field_0x858);
-        f32 w = 0.0f + sx;
-        f32 h = 0.0f + sy;
+        JGeometry::TVec2f origin(0.0f, 0.0f);
+        JGeometry::TVec2f size(sx, sy);
+        JGeometry::TVec2f corner(origin);
+        corner.add(size);
         for (s32 i = 0; i < 4; i++) {
             if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) || getPlayerLayer_8023DE58(fn_8022EA0C(i)) >= 8) {
                 continue;
@@ -473,10 +475,11 @@ void cls_804B13D4::fn_8041F720() {
             if (field_0x21a[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x68 != 0) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth()) - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
-                f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight()) - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
-                JGeometry::TBox2f box(0.0f, 0.0f, w, h);
+                f32 px = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth());
+                f32 py = sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight());
+                f32 x = px - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 y = lbl_8050DB0C.field_0x4c[1] + (py - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                JGeometry::TBox2f box(origin, corner);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
                 field_0x8[i]->draw(x, y, field_0x4c);
@@ -484,10 +487,11 @@ void cls_804B13D4::fn_8041F720() {
             } else if (!isPaused() && fn_802366CC(fn_8022EA0C(i)) > 0 && fn_802366CC(fn_8022EA0C(i)) < 300) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth()) - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
-                f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight()) - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
-                JGeometry::TBox2f box(0.0f, 0.0f, w, h);
+                f32 px = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth());
+                f32 py = sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight());
+                f32 x = px - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 y = lbl_8050DB0C.field_0x4c[1] + (py - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                JGeometry::TBox2f box(origin, corner);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
                 field_0x2c[i]->draw(x, y, field_0x4c);
