@@ -865,7 +865,7 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
 // Remaining: register order in the record stores (scheduling+regalloc).
-// FIXME: 89.62 %, missing/extra; behaviour drift.
+// FIXME: 94.10 %, missing/extra; behaviour near.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 count = 0;
