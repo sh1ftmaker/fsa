@@ -173,7 +173,7 @@ void cls_804A7EB0::update() {
 }
 
 // 0x802A4780.
-// FIXME(shotgun): 92.04 %, different; behaviour drift.
+// FIXME(shotgun): 92.16 %, different; behaviour drift.
 void cls_804A7EB0::draw() {
     if (field_0x230 >= 2 && field_0x230 < 9) {
         SpriteParams_801F5AE0 params;
