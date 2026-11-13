@@ -884,7 +884,9 @@ void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     out->set(mPos.x, mPos.y - mPos.z, 0.0f);
     f32 top = 1.0f + box->i.y;
-    out->y = top - out->y >= 0.0f ? top : out->y;
+    if (top - out->y >= 0.0f) {
+        out->y = top;
+    }
 }
 
 void EnemyBase_804A4808::vfunc_0xA0() {}
