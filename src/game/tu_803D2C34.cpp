@@ -27,7 +27,8 @@ StateFunc_804B0288 lbl_804B0168[24] = {
 
 // The three load/save results all stamp the current save file the same way.
 static inline void touchCurrentFile() {
-    lbl_8050EC80.getCurrentFile().field_0x0 = OSGetTime();
+    OSTime now = OSGetTime();
+    lbl_8050EC80.getCurrentFile().field_0x0 = now;
     SaveFile_803B950C& file = lbl_8050EC80.getCurrentFile();
     if ((file.field_0x65 & 1) == 0) {
         file.field_0x65 |= 1;
@@ -954,7 +955,7 @@ void cls_804B0288::fn_803D335C() {
     field_0x216c = 0x10;
 }
 
-// FIXME(shotgun): 78.13 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.39 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D3214() {
     s32 result = lbl_8051C1A0.fn_803B9BDC();
     if (result == 1) {
@@ -1036,7 +1037,7 @@ void cls_804B0288::fn_803D2FFC() {
     }
 }
 
-// FIXME(shotgun): 90.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.26 %, missing/extra; behaviour drift.
 void cls_804B0288::fn_803D2E10() {
     if (lbl_8053AD30->fn_80309C4C(1, -1)) {
         if (field_0x2170 != 0) {
