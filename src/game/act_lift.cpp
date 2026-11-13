@@ -169,15 +169,11 @@ void Lift_804A6F6C::fn_80256410() {
     mPos.y = mSpawnPos.y + 64.0f * JMath::sincosTable_.sinShort(field_0x23a);
 }
 
-// FIXME: 78.61 %, missing/extra; behaviour drift.
+// FIXME: 88.98 %, missing/extra; behaviour drift.
 // The frame is 0xA4 (original 0x80): the diff/d/push
 // temporaries and the operator- results take more stack than the original;
 // this sits in r31 and i in r30 (original: r30 and r31).
 void Lift_804A6F6C::update() {
-    // Declared in this order: the frame lays later locals lower.
-    JGeometry::TVec3f push;
-    JGeometry::TVec3f diff;
-    JGeometry::TVec3f d;
     if (field_0x90 >> 27 == 0 || vfunc_0x34() == true) {
         fn_80256410();
     }
@@ -188,16 +184,16 @@ void Lift_804A6F6C::update() {
         if (field_0x90 >> 27 != 0 && vfunc_0x34() != true) {
             continue;
         }
-        diff.set(mPos - mPrevPos);
+        JGeometry::TVec3f diff(mPos - mPrevPos);
         fn_8023DF68(i, &diff);
         if (getMode() >= 6) {
             continue;
         }
-        d.set(mPos - *getPlayerPos_8023E724(i));
+        JGeometry::TVec3f d = mPos - *getPlayerPos_8023E724(i);
         s32 angle = JMath::atanTable_.atan2_(d.x, d.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         f32 len = JGeometry::TVec2f(d.x, d.y).length();
         s16 a = angle - 0x40;
-        push.set(JGeometry::TVec3f(len * JMath::sincosTable_.cosShort(a), len * JMath::sincosTable_.sinShort(a), 0.0f) - d);
+        JGeometry::TVec3f push = JGeometry::TVec3f(len * JMath::sincosTable_.cosShort(a), len * JMath::sincosTable_.sinShort(a), 0.0f) - d;
         fn_8023DFF4(i, &push);
     }
 }
