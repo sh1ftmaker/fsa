@@ -117,7 +117,7 @@ void Cloud_8049CBE0::update() {
             field_0x3c.y = step.y;
             field_0x3c.z = step.z;
             mPos.add(field_0x3c);
-            if (result != 0 && mRail.fn_800FE21C(0xFF)) {
+            if (result != 0 && mRail.fn_800FE21C(0xFF) != 0) {
                 field_0x360 = 0;
                 field_0x3c.set(0.0f, 0.0f, 0.0f);
                 field_0x370 = 2;
@@ -133,7 +133,7 @@ void Cloud_8049CBE0::update() {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && getPlayerPos_8023E724(i)->z <= 0.0f) {
+        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && !(getPlayerPos_8023E724(i)->z > 0.0f)) {
             JGeometry::TVec3f d = mPos - mPrevPos;
             fn_8023DF68(i, &d);
         }
