@@ -86,7 +86,7 @@ static const s32 kShoulderLeft[2][6] = {{3, 0, 1, 2, 4, 5}, {1, 0, 2, 3, 4, 5}};
 static const s32 kShoulderRight[2][6] = {{1, 2, 3, 0, 4, 5}, {1, 0, 2, 3, 4, 5}};
 static const s32 kSpriteId[2][6] = {{0x3A, 0x3B, 0x3C, 0x39, 0x3E, 0x3E}, {0x41, 0x42, 0x39, 0x39, 0x39, 0x40}};
 
-// FIXME(shotgun): 65.77 %, missing/extra
+// FIXME(shotgun): missing/extra; the tables are separate arrays here, one rodata block in the original
 void UnknownFORM_804A7BE8::update() {
     if (field_0x254 != NULL && field_0x254->mState >= 1 && field_0x254->mState <= 10) {
         field_0x254->fn_803703C8();
@@ -133,9 +133,9 @@ void UnknownFORM_804A7BE8::update() {
             } else if (viewLayerFlag(field_0x4)) {
                 field_0x23c = 5;
             } else {
-                bool viaDir = false;
+                bool changed = false;
+                s32 dir = -1;
                 if (fn_8022C52C(field_0x90 & 3, 0x40)) {
-                    viaDir = true;
                     if (fn_8022C9AC(field_0x90 & 3)) {
                         if (fn_8022C5EC(field_0x90 & 3, 8)) {
                             dir = 0;
@@ -149,7 +149,6 @@ void UnknownFORM_804A7BE8::update() {
                     }
                 } else if (pad != NULL && field_0x244 == true && fn_8022C9AC(field_0x90 & 3) &&
                            pad->mSubStick.mValue > 0.0f) {
-                    viaDir = true;
                     s32 angle = pad->mSubStick.mAngle;
                     if (angle < -0x7000 || angle >= 0x7000) {
                         dir = 0;
@@ -160,37 +159,55 @@ void UnknownFORM_804A7BE8::update() {
                     } else if (angle >= 0x3000 && angle < 0x5000) {
                         dir = 3;
                     }
+                } else if (fn_8022C5EC(field_0x90 & 3, 1)) {
+                    fn_801F0D20(0x46);
+                    if (field_0x24c) {
+                        field_0x23c = kShoulderLeft[0][field_0x23c];
+                    } else {
+                        field_0x23c = kShoulderLeft[1][field_0x23c];
+                    }
+                } else if (fn_8022C5EC(field_0x90 & 3, 2)) {
+                    fn_801F0D20(0x46);
+                    if (field_0x24c) {
+                        field_0x23c = kShoulderRight[0][field_0x23c];
+                    } else {
+                        field_0x23c = kShoulderRight[1][field_0x23c];
+                    }
                 }
-                if (viaDir) {
-                    if (dir >= 0) {
-                        if (dir == 0) {
-                            field_0x23c = field_0x24c ? 2 : 1;
-                        } else if (dir == 1) {
+                if (dir >= 0) {
+                    if (dir == 0) {
+                        if (field_0x24c) {
+                            field_0x23c = 2;
+                        } else {
                             field_0x23c = 1;
-                        } else if (dir == 2) {
-                            field_0x23c = field_0x24c ? 3 : 0;
+                        }
+                    } else if (dir == 1) {
+                        field_0x23c = 1;
+                    } else if (dir == 2) {
+                        if (field_0x24c) {
+                            field_0x23c = 3;
                         } else {
                             field_0x23c = 0;
                         }
-                        changed = true;
+                    } else {
+                        field_0x23c = 0;
                     }
-                    if (changed == true) {
-                        field_0x244 = false;
-                        if (field_0x240 == field_0x23c) {
-                            fn_80230EB8(field_0x90 & 3, 0x58);
-                        }
-                        field_0x250 = 6;
-                        field_0x238 = 0;
+                    changed = true;
+                }
+                if (changed == true) {
+                    field_0x244 = false;
+                    if (field_0x240 == field_0x23c) {
+                        fn_80230EB8(field_0x90 & 3, 0x58);
                     }
-                } else if (fn_8022C5EC(field_0x90 & 3, 1)) {
-                    fn_801F0D20(0x46);
-                    field_0x23c = kShoulderLeft[field_0x24c ? 0 : 1][field_0x23c];
-                } else if (fn_8022C5EC(field_0x90 & 3, 2)) {
-                    fn_801F0D20(0x46);
-                    field_0x23c = kShoulderRight[field_0x24c ? 0 : 1][field_0x23c];
+                    field_0x250 = 6;
+                    field_0x238 = 0;
                 }
             }
-            field_0x230 = kSpriteId[field_0x24c ? 0 : 1][field_0x23c];
+            if (field_0x24c) {
+                field_0x230 = kSpriteId[0][field_0x23c];
+            } else {
+                field_0x230 = kSpriteId[1][field_0x23c];
+            }
         }
     }
     field_0x238++;
