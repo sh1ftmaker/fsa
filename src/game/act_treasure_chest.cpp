@@ -13,9 +13,8 @@
 #include "game/tu_803B8C74.h"
 #include "game/act/act_liftable_item.h"
 #include "game/act/act_treasure_chest.h"
+#include "game/StageFlag.h"
 
-// FIXME: 99.63 %. Only the literal relocations differ (lbl_805413B8 vs @474,
-// lbl_805413C0 vs @476 and the other sdata2 floats): the data split, not code.
 void TreasureChest_804AA178::init() {
     field_0x234 = field_0x90 & 0xFF;
     field_0x238 = (field_0x90 >> 8) & 0xF;
@@ -64,7 +63,8 @@ void TreasureChest_804AA178::init() {
     field_0x24c[3] = -1;
 }
 
-// FIXME: 96.10 %. In state 2 the spawn code is built in other registers (the
+// FIXME: 96.27 %, different; behaviour clean.
+// In state 2 the spawn code is built in other registers (the
 // original compares field_0x244 with i as `cmpw r29, r0` and reloads
 // field_0x234 off r28), and the literals are @NNN, not lbl_805413C0 onwards.
 void TreasureChest_804AA178::update() {
@@ -180,11 +180,8 @@ void TreasureChest_804AA178::update() {
 
 void TreasureChest_804AA178::draw() {}
 
-// FIXME: 94.63 %. Two instructions too many. The stage-table lookup puts the
-// row address and the bit in other registers than the original (slwi/addi
-// order, lwz 0x10 base), the table flag is tested as a bool (clrlwi.) where the
-// original tests a 0/1 word (cmpwi 0), and the flags live in r30/r31 where
-// the original uses r26/r27 (stmw r27 vs stmw r26).
+// Differs only in register numbers.
+// FIXME: 95.09 %, missing/extra; behaviour clean.
 bool TreasureChest_804AA178::vfunc_0x54() {
     bool ok = false;
     bool result = false;
@@ -198,18 +195,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     }
     if (ok == true) {
         if (gGameRoot_8053AAF8->field_0x7e == 1) {
-            // Stage bit: the current save file (lbl_8050EC80.mCurrentFile), stage 0x118
-            // (0-7) and 0x11C (0-3) the bit.
-            bool open = false;
-            s32 stage = lbl_80529DEC.field_0x118;
-            s32 sub = lbl_80529DEC.field_0x11c;
-            if (stage < 0 || stage > 7) {
-                open = false;
-            } else if (sub < 0 || sub > 3) {
-                open = false;
-            } else {
-                open = (lbl_8050EC80.getCurrentFile().mFlags & (1 << (sub + stage * 4))) != 0;
-            }
+            BOOL open = isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c);
             if (open && (field_0x234 <= 2 || field_0x234 == 0x2F)) {
                 s32 count = gGameRoot_8053AAF8->fn_80138A30();
                 if (getActorManager_801F856C()->fn_801F6058(count - 1) == field_0x240) {
@@ -298,6 +284,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     return result;
 }
 
+// FIXME: 97.11 %, missing/extra; behaviour clean.
 bool TreasureChest_804AA178::fn_802EB27C() {
     // FIXME: 97.11 %. The original copies findActorBySerial_801F666C's result through r0
     // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
