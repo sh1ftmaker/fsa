@@ -641,7 +641,7 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x8035001C.
-// FIXME(shotgun): 63.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 77.16 %, missing/extra; behaviour drift. Cases 5-6 reload field_0x260 and the switch has no jump table.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
@@ -665,8 +665,7 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
         field_0x3c.z = 0.0f;
         break;
     case 4:
-        field_0x3c.x = 0.5f * field_0x260;
-        field_0x3c.y = 0.5f * field_0x260;
+        field_0x3c.x = field_0x3c.y = 0.5f * field_0x260;
         field_0x3c.z = 0.0f;
         break;
     case 5:
@@ -680,14 +679,11 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
         field_0x3c.z = 0.0f;
         break;
     case 7:
-        field_0x3c.x = 0.5f * -(f32)field_0x260;
-        field_0x3c.y = 0.5f * -(f32)field_0x260;
+        field_0x3c.x = field_0x3c.y = 0.5f * -(f32)field_0x260;
         field_0x3c.z = 0.0f;
         break;
     default:
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
+        field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
         break;
     }
 }
