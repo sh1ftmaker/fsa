@@ -25,7 +25,8 @@ static inline s32 viewBitOf(s32 x, s32 y) {
     return (x & 0x100) | ((y & 0x100) << 1) | (y & 0xF0) | ((x >> 4) & 0xF);
 }
 
-// FIXME: 95.43 %. The original tests field_0x250 twice on the same flags (a bne to the
+// FIXME: 95.68 %, missing/extra; behaviour near.
+// The original tests field_0x250 twice on the same flags (a bne to the
 // sprite-skip, then a second bne that is never taken before the view-bit test); no natural
 // form gives that dead branch, so the kill check is written as one condition.
 void SpreadingFire_804A8A50::init() {
@@ -136,7 +137,8 @@ SpreadingFire_804A8A50::~SpreadingFire_804A8A50() {
     getGameView_802D6A9C()->fn_802D73CC(mViewBit, false);
 }
 
-// FIXME: 90 %. The original copies mPos to a stack TVec3f (psq_st 0x24(r1)) and never reads
+// FIXME: 94.63 %, missing/extra + reloc-name; behaviour drift.
+// The original copies mPos to a stack TVec3f (psq_st 0x24(r1)) and never reads
 // it, and it keeps one more register than we do (r29). Left out: the copy has no source use.
 void SpreadingFire_804A8A50::update() {
     s32 damage = field_0x114;
