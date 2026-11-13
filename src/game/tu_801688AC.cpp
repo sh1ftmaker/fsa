@@ -354,7 +354,7 @@ void cls_804A0738::draw() {
 
 // 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
 // player is then pushed along.
-// FIXME(shotgun): 77.54 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 83.29 %, missing/extra; behaviour drift.
 bool cls_804A0738::fn_80168C38() {
     s32 found = -1;
     const JGeometry::TVec3f* first = getPlayerPos_8023E724(field_0x90);
