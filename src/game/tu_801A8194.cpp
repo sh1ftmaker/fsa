@@ -74,7 +74,8 @@ void cls_804A2EC0::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 86.0 %, missing/extra: sqrtf expansion and trail-collision loop
+// FIXME(shotgun): 85.97 %, missing/extra; behaviour drift.
+// sqrtf expansion and trail-collision loop
 void cls_804A2EC0::update() {
     s32 player = -1;
     if (field_0x258 == 0 && (field_0x90 >> 27) != 0) {
@@ -210,6 +211,7 @@ void cls_804A2EC0::update() {
     }
 }
 
+// FIXME: 98.52 %, missing/extra; behaviour clean.
 // FIXME(shotgun): missing/extra: the original keeps the saved position in f28-f30 and reloads it after the trail loop's stores; the instruction schedule differs
 void cls_804A2EC0::draw() {
     SpriteParams_801F5AE0 params;
