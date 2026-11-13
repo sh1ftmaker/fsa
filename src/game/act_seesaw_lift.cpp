@@ -185,7 +185,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 92.54 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.07 %, missing/extra + reloc-name; behaviour drift.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
@@ -247,7 +247,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME: 76.71 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 81.39 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
     rel.sub(mPos);
@@ -392,6 +392,7 @@ static inline void setTiltMtx(Mtx mtx, s16 angle) {
     mtx[2][2] = (ca * cx);
 }
 
+// FIXME: 83.28 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original multiplies each element by a 1.0f in memory (lbl_80542878), which folds away here; the field_0x90 & 0x7F compare is unsigned here
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
