@@ -173,7 +173,7 @@ void Ganon_804A25F0::init() {
     field_0x2ac = 255.0f;
     field_0x2b0 = 255.0f;
     field_0x2a5 = 0;
-    field_0x2b6 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x2b6 = (s16)(65536.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
     field_0x2dc.set(mPos);
     field_0x2e8.set(mPos);
     field_0x54.set(1.0f, 1.0f, 1.0f);
