@@ -312,11 +312,8 @@ void SeesawLift_804AD348::fn_8035A210() {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
             f32 push = 1.8f * (sinVal * __fabsf(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0) {
-                s32 anim = (field_0x90 >> 7) & 0x1F;
-                if (anim >= 2) {
-                    push *= 5.5f;
-                }
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
+                push *= 5.5f;
             }
             if (field_0x244 == 0) {
                 if (field_0x258 == 1) {
@@ -348,7 +345,6 @@ void SeesawLift_804AD348::fn_8035A210() {
         field_0x23a = (field_0x240 - 0.15f * (f32)field_0x238 - 0.008f * (f32)mirrored) / 15.0f;
     }
     if (field_0x238 == 0 && field_0x23a != 0) {
-        // fillTiles also zeroes field_0x258 here; the original does not.
         fillTiles(this, lbl_80542868[1]);
         field_0x258 = 1;
     }
