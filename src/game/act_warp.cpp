@@ -557,8 +557,14 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
 void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
         fn_80226FC8(player);
-        *box = mBox;
-        box->addPos(JGeometry::TVec2<f32>(mPos.x, mPos.y));
+        box->i.x = mBox.i.x;
+        box->i.y = mBox.i.y;
+        box->f.x = mBox.f.x;
+        box->f.y = mBox.f.y;
+        box->i.x += mPos.x;
+        box->i.y += mPos.y;
+        box->f.x += mPos.x;
+        box->f.y += mPos.y;
         if (gGameRoot_8053AAF8->field_0x7e && !fn_8022C8EC(player)) {
             if (getPlayerLayer_8023DE58(player) != warpLayer(field_0x90)) {
                 continue;
