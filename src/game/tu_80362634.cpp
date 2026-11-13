@@ -127,13 +127,13 @@ void cls_804ADF28::fn_803653EC() {
         switch (field_0x238 & 3) {
         case 0: {
             field_0x26c = 0x391;
-            static JGeometry::TVec3f offsets[3] = {
+            static JGeometry::TVec3f lbl_8050C0B8[3] = {
                 JGeometry::TVec3f(-16.0f, 16.0f, 0.0f),
                 JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
                 JGeometry::TVec3f(0.0f, 32.0f, 0.0f),
             };
             for (int i = 0; i < 3; i++) {
-                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2a0[i] = mPos + lbl_8050C0B8[i];
                 field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
                                    (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = lbl_80474A5C[i];
@@ -162,13 +162,13 @@ void cls_804ADF28::fn_803653EC() {
         }
         case 3: {
             field_0x26c = 0x391;
-            static JGeometry::TVec3f offsets[3] = {
+            static JGeometry::TVec3f lbl_8050C0DC[3] = {
                 JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
                 JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
                 JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
             };
             for (int i = 0; i < 3; i++) {
-                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2a0[i] = mPos + lbl_8050C0DC[i];
                 field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
                                    (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = 0x391;
