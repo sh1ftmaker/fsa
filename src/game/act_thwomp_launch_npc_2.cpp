@@ -314,15 +314,15 @@ void NPCLaunchedByThwomp2_804AD1C8::launch() {
 
 // FIXME(shotgun): 66.71 %, missing/extra
 void NPCLaunchedByThwomp2_804AD1C8::draw() {
+    const char* name = lbl_80472390.enemyGcSob;
     if (field_0x230 == 2) {
         return;
     }
-    const char* name = lbl_80472390.enemyGcSob;
     if (lbl_80472390.spriteInfo[field_0x250].sobType == 1) {
         name = lbl_80472390.enemyBothSob;
     }
     s32 frame;
-    if (field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
+    if (field_0x230 == 0 || (field_0x230 >= 3 && field_0x230 <= 4) || field_0x230 == 1) {
         frame = lbl_80472390.spriteInfo[field_0x250].baseSpriteId + lbl_80472390.animInfo[field_0x250].spriteFrames0[field_0x248][field_0x238];
     } else {
         frame = lbl_80472390.spriteInfo[field_0x250].baseSpriteId + lbl_80472390.animInfo[field_0x250].spriteFrames1[field_0x248][field_0x238];
