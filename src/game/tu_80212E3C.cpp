@@ -24,7 +24,7 @@ static inline void spawnDust(cls_804A6340* self) {
 
 cls_804A6340::cls_804A6340() {}
 
-// FIXME(shotgun): 96.48 %, missing/extra + reloc-name.
+// FIXME(shotgun): 96.48 %, missing/extra + reloc-name; behaviour near.
 void cls_804A6340::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -55,7 +55,7 @@ void cls_804A6340::init() {
     mAnim.startAnim_801D22DC(1, 2, false);
 }
 
-// FIXME(shotgun): 85.98 %, missing/extra.
+// FIXME(shotgun): 85.98 %, missing/extra; behaviour drift.
 void cls_804A6340::fn_80213774(int mode) {
     switch (mode) {
     case 0:
@@ -135,7 +135,7 @@ void cls_804A6340::fn_80213774(int mode) {
     }
 }
 
-// FIXME(shotgun): 95.18 %, missing/extra.
+// FIXME(shotgun): 95.18 %, missing/extra; behaviour drift.
 void cls_804A6340::vfunc_0x90(u8 mapHit) {
     if (mState >= 3 || mState < 0) {
         fn_801F2B20(0);
@@ -201,6 +201,7 @@ void cls_804A6340::vfunc_0x90(u8 mapHit) {
     }
 }
 
+// FIXME: 90.73 %, missing/extra; behaviour near.
 // FIXME(shotgun): missing/extra: the cel branch is laid out as beq + b in the original.
 void cls_804A6340::vfunc_0x94() {
     if (mState == 4 && mAnim.mAnim == 1 && mAnim.fn_801D217C()) {
@@ -238,7 +239,7 @@ void cls_804A6340::vfunc_0x94() {
     }
 }
 
-// FIXME(shotgun): 95.16 %, missing/extra + reloc-name.
+// FIXME(shotgun): 95.16 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6340::draw() {
     if (field_0x54.squared() > JGeometry::TUtilf::epsilon() && (mState >= 3 || mState < 0)) {
         s32 frame = mAnim.mCel + 0x13D;
