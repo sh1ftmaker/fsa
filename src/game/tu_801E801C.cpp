@@ -51,13 +51,16 @@ void cls_804A5568::init() {
 // The point on the chain's curve at control point `idx`, sixteenth `seg` (0 and 16 are the control
 // points themselves): inlined twice by fn_801E9224.
 static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* outX, f32* outY) {
-    if (seg == 0) {
-        *outX = self->field_0x2b0[idx].x;
-        *outY = self->field_0x2b0[idx].y;
-    } else if (seg == 16) {
+    switch (seg) {
+    case 16:
         *outX = self->field_0x2b0[idx + 1].x;
         *outY = self->field_0x2b0[idx + 1].y;
-    } else {
+        break;
+    case 0:
+        *outX = self->field_0x2b0[idx].x;
+        *outY = self->field_0x2b0[idx].y;
+        break;
+    default: {
         f32 prevX;
         f32 prevY;
         if (idx == 0) {
@@ -83,6 +86,7 @@ static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* out
         f32 t = 0.0625f * (f32)seg;
         *outY = fn_801CD6D8(prevY, p1y, p2y, p3y, t);
         *outX = fn_801CD6D8(prevX, p1x, p2x, p3x, t);
+    }
     }
 }
 
