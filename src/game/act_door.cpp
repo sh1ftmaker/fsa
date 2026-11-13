@@ -12,7 +12,7 @@
 #include "game/act/act_small_key.h"
 #include "game/act/act_warp.h"
 
-// FIXME(shotgun): 86.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.84 %, missing/extra + reloc-name; behaviour drift.
 void Door_804A8D88::init() {
     field_0x258 = mPos;
     field_0x234 = field_0x90 & 0x7F;
@@ -198,7 +198,8 @@ struct DoorTiles_8046D598 {
 };
 extern const DoorTiles_8046D598 lbl_8046D598;
 
-// FIXME(shotgun): 82.59 %, missing/extra + reloc-name. The TVec3f temporaries make MWCC emit the weak
+// FIXME(shotgun): 82.59 %, missing/extra + reloc-name; behaviour drift.
+// The TVec3f temporaries make MWCC emit the weak
 // template ctor __ct<f>__Q29JGeometry8TVec3<f>Ffff right after update: that is the original's
 // fn_802C7CB8 (16 bytes at 0x802C7CB8). Follow-up: drop the free fn_802C7CB8 below and rename its
 // symbols.txt entry to the ctor (measured: update 82.71 %, ctor matches).
