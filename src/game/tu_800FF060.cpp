@@ -399,7 +399,7 @@ void HammerShopMinigame_8049C858::draw() {
             s32 score = field_0x250[i];
             s32 minutes = score / 60;
             lbl_8053AF00->field_0x2c[i] = minutes;
-            lbl_8053AF00->field_0x28[i] = (f32)(score - minutes * 60) / 0.6f;
+            lbl_8053AF00->field_0x28[i] = (f32)(score % 60) / 0.6f;
         }
         lbl_8053AF00->field_0x30 |= (u8)(1 << (field_0x240 + 4));
         if (field_0x230 == 4) {
