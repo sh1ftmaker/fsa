@@ -3467,7 +3467,7 @@ game/tu_801D7AFC.cpp:
 	.data       start:0x804A4BB0 end:0x804A4C58
 	.bss        start:0x804C8FD0 end:0x804C90D0
 	.sdata      start:0x8053A140 end:0x8053A148
-	.sdata2     start:0x8053F1A0 end:0x8053F1C8
+	.sdata2     start:0x8053F1A0 end:0x8053F1CC
 
 game/tu_801D8400.cpp:
 	extab       start:0x8000872C end:0x800087C8
@@ -3476,7 +3476,7 @@ game/tu_801D8400.cpp:
 	.ctors      start:0x8045C07C end:0x8045C080
 	.data       start:0x804A4C58 end:0x804A4DA8
 	.bss        start:0x804C90D0 end:0x804C91D0
-	.sdata2     start:0x8053F1C8 end:0x8053F238
+	.sdata2     start:0x8053F1CC end:0x8053F238
 
 game/tu_801DA7C0.cpp:
 	extab       start:0x800087C8 end:0x800087D0

@@ -856,8 +856,6 @@ void cls_804A4C58::vfunc_0xA0() {
 
 void cls_804A4C58::vfunc_0x24() {}
 
-#ifdef NONMATCHING
-// FIXME(shotgun): 94.55 %, scheduling+regalloc + reloc-name.
 void cls_804A4C58::update() {
     if (vfunc_0x2C(0.0f, -16.0f, 50.0f)) {
         Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
@@ -873,7 +871,6 @@ void cls_804A4C58::update() {
         EnemyBase_804A4808::update();
     }
 }
-#endif
 
 void cls_804A4C58::fn_801D8400() {
     if (mState < 8) {
