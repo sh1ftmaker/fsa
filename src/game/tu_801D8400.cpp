@@ -329,7 +329,7 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 74.71 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.68 %, missing/extra + reloc-name; behaviour clean.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
