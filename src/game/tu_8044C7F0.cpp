@@ -1290,15 +1290,17 @@ void cls_804B1D58::fn_8044D298(int arg) {
         mScreen->search(lbl_80491230[field_0x138])->setAlpha(0);
         mScreen->search(lbl_80491250[field_0x138])->setAlpha(0);
         if (field_0xb0[field_0x138] == NULL) {
-            f32 h = mScreen->search(lbl_80491230[field_0x138])->mBounds.f.y -
-                    mScreen->search(lbl_80491230[field_0x138])->mBounds.i.y;
+            J2DPane* box = mScreen->search(lbl_80491230[field_0x138]);
+            f32 h = box->mBounds.f.y - box->mBounds.i.y;
             f32 y0 = mScreen->search(lbl_80491210[field_0x138])->getBounds()->i.y;
             f32 y1 = mScreen->search('Ndataj01')->getBounds()->i.y;
-            f32 w = mScreen->search(lbl_80491230[field_0x138])->mBounds.f.x -
-                    mScreen->search(lbl_80491230[field_0x138])->mBounds.i.x;
+            f32 y = 0.5f * h + (mScreen->search(lbl_80491230[field_0x138])->getBounds()->i.y + (y1 + y0));
+            box = mScreen->search(lbl_80491230[field_0x138]);
+            f32 w = box->mBounds.f.x - box->mBounds.i.x;
             f32 x0 = mScreen->search(lbl_80491210[field_0x138])->getBounds()->i.x;
             f32 x1 = mScreen->search('Ndataj01')->getBounds()->i.x;
-            JGeometry::TVec3f pos(0.5f * w + (x1 + x0), 0.5f * h + (y1 + y0), 0.0f);
+            f32 x = 0.5f * w + (mScreen->search(lbl_80491230[field_0x138])->getBounds()->i.x + (x1 + x0));
+            JGeometry::TVec3f pos(x, y, 0.0f);
             field_0xb0[field_0x138] = spawnEmitter_8013CC50(0, &pos, lbl_80543DD8[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0xb0[field_0x138]->setStatus(1);
