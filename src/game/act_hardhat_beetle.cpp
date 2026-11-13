@@ -10,7 +10,6 @@
 #include "std/math.h"
 #include "game/act/act_hardhat_beetle.h"
 
-// FIXME(shotgun): 89.88 %, missing/extra + reloc-name
 void HardhatBeetle_804A06C0::init() {
     mBox.set(-6.0f, -6.0f, 6.0f, 6.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -29,7 +28,9 @@ void HardhatBeetle_804A06C0::init() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     field_0x25c = 0;
     mScale = 1.0f;
-    mHome = mPos;
+    mHome.x = mPos.x;
+    mHome.y = mPos.y;
+    mHome.z = mPos.z;
     field_0xb0 = 0x11101;
     field_0xb8 = 1;
     mState = 0;
