@@ -34,12 +34,12 @@ static JGeometry::TBox2f lbl_8050ADF8[4] = {
     JGeometry::TBox2f(-31.0f, -31.0f, -17.0f, 31.0f),
     JGeometry::TBox2f(17.0f, -31.0f, 31.0f, 31.0f),
 };
-static JGeometry::TBox2f lbl_8050AE38[10] = {
-    JGeometry::TBox2f(-14.0f, -6.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 6.0f),
-    JGeometry::TBox2f(-14.0f, -22.0f, 0.0f, -8.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 22.0f),
-    JGeometry::TBox2f(-22.0f, -14.0f, 6.0f, 0.0f), JGeometry::TBox2f(-6.0f, 0.0f, 22.0f, 14.0f),
-    JGeometry::TBox2f(-14.0f, 8.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 22.0f),
-    JGeometry::TBox2f(-14.0f, -22.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, -8.0f),
+static JGeometry::TBox2f lbl_8050AE38[5][2] = {
+    {JGeometry::TBox2f(-14.0f, -6.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 6.0f)},
+    {JGeometry::TBox2f(-14.0f, -22.0f, 0.0f, -8.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 22.0f)},
+    {JGeometry::TBox2f(-22.0f, -14.0f, 6.0f, 0.0f), JGeometry::TBox2f(-6.0f, 0.0f, 22.0f, 14.0f)},
+    {JGeometry::TBox2f(-14.0f, 8.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, 22.0f)},
+    {JGeometry::TBox2f(-14.0f, -22.0f, 0.0f, 22.0f), JGeometry::TBox2f(0.0f, -22.0f, 14.0f, -8.0f)},
 };
 
 // 0x803513C0.
@@ -354,7 +354,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
             JGeometry::TBox2f saved;
             saved.set(field_0x80);
             for (s32 j = 0; j < 2; j++) {
-                field_0x80.set(lbl_8050AE38[(field_0x258 - 0x10) * 2 + j]);
+                field_0x80.set(lbl_8050AE38[field_0x258 - 0x10][j]);
                 bool hit = fn_80351020(i);
                 field_0x283[i] = hit;
                 if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
@@ -436,7 +436,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
 
     for (s32 i = 0; i < 4; i++) {
         if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f && field_0x288 == 0) {
-            if (push.x * push.x + push.y * push.y + push.z * push.z > 32.0f * FLT_EPSILON) {
+            if (!isTiny(push)) {
                 if (!fn_8022F478(i) ||
                     (field_0x283[fn_8022F3DC(i)] == 1 && (fn_8022CAF8(i) == 5 || fn_8022CAF8(i) == 4)) ||
                     fn_80235580(i)) {
@@ -581,7 +581,7 @@ u8 OBJLift_804ACA00::fn_803502CC() {
         }
     } else if (field_0x258 >= 16 && field_0x258 <= 20) {
         for (s32 j = 0; j < 2; j++) {
-            field_0x80.set(lbl_8050AE38[(field_0x258 - 16) * 2 + j]);
+            field_0x80.set(lbl_8050AE38[field_0x258 - 16][j]);
             if (field_0x268 == 0 || field_0x268 == 1) {
                 field_0x80.f.y -= 3.0f;
             } else {
