@@ -106,6 +106,7 @@ void cls_804A51E4::fn_801E2D88() {
 }
 
 // Whether a player-side object (arrow, bomb, sword, ...) hits the actor's box.
+// FIXME: 90.86 %, missing/extra; behaviour near.
 bool cls_804A51E4::vfunc_0x58() {
     bool arrow = false;
     bool direct = false;
