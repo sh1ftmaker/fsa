@@ -372,26 +372,26 @@ bool cls_804A0738::fn_80168C38() {
             }
         }
     }
-    if (found < 0) {
-        return false;
-    }
-    if (fn_8022CAF8(found) != 4) {
-        for (s32 i = 0; i < 4; i++) {
-            if (fn_8022E438(i, found) == 1) {
-                field_0x261 = 1;
-                fn_8022E23C(i, mSerial);
-                fn_8022CC20(i);
-                if (fn_8022F514(i) == 1) {
-                    JGeometry::TVec3f d = mPos;
-                    d -= *getPlayerPos_8023E724(i);
-                    fn_8023DFF4(i, &d);
+    if (found >= 0) {
+        if (fn_8022CAF8(found) != 4) {
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8022E438(i, found) == 1) {
+                    field_0x261 = 1;
+                    fn_8022E23C(i, mSerial);
+                    fn_8022CC20(i);
+                    if (fn_8022F514(i) == 1) {
+                        JGeometry::TVec3f d = mPos;
+                        d -= *getPlayerPos_8023E724(i);
+                        fn_8023DFF4(i, &d);
+                    }
                 }
             }
+            return true;
         }
-        return true;
+        field_0x261 = 1;
+        return fn_8022E23C(found, mSerial);
     }
-    field_0x261 = 1;
-    return fn_8022E23C(found, mSerial);
+    return false;
 }
 
 // 0x8016890C.
