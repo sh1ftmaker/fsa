@@ -66,7 +66,7 @@ void Lift_804A6F6C::init() {
     }
 }
 
-// FIXME(shotgun): 79.20 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 79.37 %, missing/extra; behaviour drift.
 // the player-position vector arithmetic, the atan2 argument order and the tile-index math are scheduled differently
 bool Lift_804A6F6C::fn_802565BC(s32 index) {
     if (field_0x4 != getPlayerLayer_8023DE58(index)) {
