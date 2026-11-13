@@ -85,7 +85,16 @@ void PrincessZeldaDemo_8049D208::init() {
     mAnim1.fn_801D1F14(0.0f);
     if (field_0x234 == 2) {
         if (getGameView_802D6A9C()->fn_802D800C(field_0x250)) {
-            fn_8010F478(0x3d);
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(0x3d);
+                break;
+            case 2:
+                fn_8010E2D4(0x3d);
+                break;
+            }
+            field_0x238 = 0x3d;
         } else {
             mDrawEnabled = false;
         }
