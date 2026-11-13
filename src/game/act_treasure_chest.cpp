@@ -181,10 +181,10 @@ void TreasureChest_804AA178::update() {
 
 void TreasureChest_804AA178::draw() {}
 
-// Differs only in register numbers (result/limit/owner do not share r26).
+// Differs only in register numbers.
 bool TreasureChest_804AA178::vfunc_0x54() {
-    bool result = false;
     bool ok = false;
+    bool result = false;
     if (gGameRoot_8053AAF8->field_0x7e == 1) {
         if (fn_802308E0(field_0x240) == true) {
             ok = true;
@@ -218,8 +218,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
             at.x = pos.x + 1.0f;
             at.y = pos.y - 12.0f;
             at.z = pos.z;
-            s32 kind = field_0x234;
-            if (kind >= 0x30) {
+            if (field_0x234 >= 0x30) {
                 if (gGameRoot_8053AAF8->field_0x7e == 1) {
                     if (fn_8022F514(i) == true) {
                         if (field_0x248 == fn_8022F3DC(i)) {
@@ -245,10 +244,10 @@ bool TreasureChest_804AA178::vfunc_0x54() {
                         }
                     }
                 } else {
-                    s32 owner = field_0x240;
-                    if (i == owner) {
+                    if (field_0x240 == i) {
+                        u32 code = field_0x234 + (i << 24) + (field_0x240 << 26);
                         s32 layer = getPlayerLayer_8023DE58(i);
-                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, kind + (i << 24) + (owner << 26), -1, -1);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
                     } else {
                         u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x10000000;
                         s32 layer = getPlayerLayer_8023DE58(i);
