@@ -993,7 +993,7 @@ void TennisShop_804A2BF4::update() {
 
 // Not auto-inlined: draw calls fn_801A0910 / fn_801A0754 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 87.40 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 93.61 %, scheduling+regalloc; behaviour clean.
 void TennisShop_804A2BF4::fn_801A0910() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
