@@ -152,12 +152,10 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 // 0x801B2000.
 // FIXME: operands differ: fn_802303FC's original call passes 0xFF for its bool flag (we pass true); loop pointer and layer registers differ.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
-    f32 y = mPos.y;
-    y -= yOffset;
+    f32 y = mPos.y - yOffset;
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023F264(i)) {
-            s32 layer = field_0x4;
-            if (layer == getPlayerLayer_8023DE58(i)) {
+            if (field_0x4 == getPlayerLayer_8023DE58(i)) {
                 const JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
                 field_0x288[i].x = pos->x;
                 field_0x288[i].y = pos->y;
