@@ -826,48 +826,36 @@ void VaatiBoss_804A4958::fn_801D4C70() {
         field_0x3c.y = 4.0f * JMASCos(field_0x5d2);
         return;
     }
-    f32 dx = 0.0f;
-    f32 dy = 0.0f;
+    JGeometry::TVec2f d(0.0f, 0.0f);
     bool follow = true;
     f32 tx;
     f32 ty;
-    bool toPlayer = true;
-    if (mState >= 10) {
-        if (mState < 0x15 && mState >= 0x12) {
-            toPlayer = false;
-        }
-    } else if (mState != 5 && mState >= 4) {
-        follow = false;
-        toPlayer = false;
-    }
-    if (toPlayer) {
-        if (field_0x5b0 >= 0) {
-            const JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x5b0);
-            tx = p->x;
-            ty = p->y;
-        } else {
-            tx = field_0x5bc;
-            ty = field_0x5c0;
-        }
-    } else if (follow) {
+    if (mState >= 0x12 && mState < 0x15 && mState >= 10) {
         tx = field_0x5c4;
         ty = field_0x5c8;
+    } else if (mState != 5 && mState >= 4 && mState < 10) {
+        follow = false;
+    } else if (field_0x5b0 >= 0) {
+        const JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x5b0);
+        tx = p->x;
+        ty = p->y;
+    } else {
+        tx = field_0x5bc;
+        ty = field_0x5c0;
     }
     if (follow) {
-        JGeometry::TVec2f d(tx - mPos.x, ty - mPos.y);
+        d.set(tx - mPos.x, ty - mPos.y);
         d.normalize();
-        dx = d.x;
-        dy = d.y;
         if (mState == 0x12) {
-            dx *= -2.0f;
-            dy *= -2.0f;
+            d.x *= -2.0f;
+            d.y *= -2.0f;
         } else {
-            dx *= mSpeed;
-            dy *= mSpeed;
+            d.x *= mSpeed;
+            d.y *= mSpeed;
         }
     }
-    addCalc2_801F71A4(&field_0x3c.x, dx, 0.3f, 1.0f);
-    addCalc2_801F71A4(&field_0x3c.y, dy, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, d.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, d.y, 0.3f, 1.0f);
 }
 
 // FIXME(shotgun): 99.39 %, reloc-name; behaviour clean.
