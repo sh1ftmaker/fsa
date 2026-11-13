@@ -975,7 +975,7 @@ s32 EscortBase_8049E0C8::fn_80121D68() {
     return 1;
 }
 
-// FIXME(shotgun): 91.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.41 %, missing/extra + reloc-name; behaviour near.
 bool EscortBase_8049E0C8::vfunc_0xC8(const JGeometry::TVec3f& vec, f32 speed) {
     if (field_0x35c <= 0) {
         return true;
