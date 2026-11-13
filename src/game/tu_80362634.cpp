@@ -535,7 +535,7 @@ void cls_804ADF28::fn_803645B4() {
     }
 }
 
-// FIXME(shotgun): 94.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.87 %, missing/extra + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80364340() {
     if (field_0x248 == 0) {
         JGeometry::TVec3f oldPos = mPos;
@@ -554,18 +554,23 @@ void cls_804ADF28::fn_80364340() {
         } else if (mPos.x > 2984.0f && mPos.y < 120.0f) {
             blocked = true;
         } else {
-            JGeometry::TVec3f c1(2688.0f, 120.0f, 0.0f);
-            if (PSVECDistance(&mPos, &c1) < 78.0f) {
+            JGeometry::TVec3f c(2688.0f, 120.0f, 0.0f);
+            if (PSVECDistance(&mPos, &c) < 78.0f) {
                 blocked = true;
             } else {
-                JGeometry::TVec3f c2(2944.0f, 216.0f, 0.0f);
-                blocked = PSVECDistance(&mPos, &c2) < 78.0f;
+                c.set(2944.0f, 216.0f, 0.0f);
+                if (PSVECDistance(&mPos, &c) < 78.0f) {
+                    blocked = true;
+                } else {
+                    blocked = false;
+                }
             }
         }
         if (blocked) {
             mPos = oldPos;
         } else {
             field_0x248 = fn_801CD664(50) + 60;
+            off.z = 100.0f;
             mPos = oldPos;
             u32 param = fn_801CD664(8) | 0x250000;
             JGeometry::TVec3f spawnPos = mPos + off;
@@ -574,7 +579,8 @@ void cls_804ADF28::fn_80364340() {
     }
 }
 
-// FIXME(shotgun): 92.87 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 95.96 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): the original divides by (6.283184f * dist) with fres (estimate), we emit fdivs; literal names differ.
 void cls_804ADF28::fn_80363FFC() {
     s32 tileX;
     s32 tileY;
@@ -613,7 +619,7 @@ void cls_804ADF28::fn_80363FFC() {
     JGeometry::TVec3f center(1808.0f, 3296.0f, 0.0f);
     if (mPos.x >= center.x) {
         if (mPos.y < center.y) {
-            s16 angle = (s16)(JMath::atanTable_.atan2_(mPos.y - center.y, mPos.x - center.x) * 10430.378f);
+            s32 angle = (JMath::atanTable_.atan2_(mPos.y - center.y, mPos.x - center.x) * 10430.378f);
             f32 dist = PSVECDistance(&mPos, &center);
             s32 delta = 65536.0f * (1.3f / (6.283184f * dist));
             u16 a = angle + delta;
@@ -632,7 +638,7 @@ void cls_804ADF28::fn_80363FFC() {
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
         } else {
-            field_0x3c = lbl_8050C028[0];
+            field_0x3c.set(lbl_8050C028[0]);
         }
     }
     mPos.add(field_0x3c);
@@ -1056,11 +1062,11 @@ void cls_804ADF28::fn_80362B14() {
     }
 }
 
-// FIXME(shotgun): 91.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.01 %, operands + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803628D4() {
     JGeometry::TVec3f savedPos = mPos;
-    SpriteParams_801F5AE0 params;
     Mtx mtx;
+    SpriteParams_801F5AE0 params;
     if ((field_0x268 & 7) >= 5) {
         static const f32 lbl_80474BB8[3] = {6.0f, 8.0f, 6.0f};
         mtx[0][0] = 1.0f;
@@ -1084,18 +1090,16 @@ void cls_804ADF28::fn_803628D4() {
     identity[0][0] = 1.0f;
     identity[0][1] = 0.0f;
     identity[0][2] = 0.0f;
-    identity[0][3] = 0.0f;
     identity[1][0] = 0.0f;
     identity[1][1] = 1.0f;
     identity[1][2] = 0.0f;
-    identity[1][3] = 0.0f;
     identity[2][0] = 0.0f;
     identity[2][1] = 0.0f;
     identity[2][2] = 1.0f;
-    identity[2][3] = 0.0f;
     params.mMtx = identity;
+    s32 frame = field_0x26c + field_0x264;
     if (mSpriteParams.mMtx == NULL) {
-        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", field_0x26c + field_0x264, NULL);
+        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
     }
 }
 
