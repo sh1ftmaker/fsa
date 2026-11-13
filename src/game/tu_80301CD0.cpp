@@ -1756,7 +1756,7 @@ static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 81.53 %, different; behaviour drift.
+// FIXME: 82.72 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     s32 mask = record->mMask;
@@ -1794,8 +1794,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 n = 3;
     while (i28 >= 0 || i27 >= 0 || n >= 0) {
         s32 keyMark = n >= 0 ? markKey(record, player, order[n]) : 0xFF;
-        s32 keyA = i28 >= 0 ? fn_803074A4(lbl_80506F88[player][0][i28].f.mKind, spriteId(lbl_80506F88[player][0][i28])) : 0xFF;
-        s32 keyB = i27 >= 0 ? fn_803074A4(lbl_80506F88[player][1][i27].f.mKind, spriteId(lbl_80506F88[player][1][i27])) : 0xFF;
+        s32 keyA = i28 >= 0 ? spriteKind(lbl_80506F88[player][0][i28]) : 0xFF;
+        s32 keyB = i27 >= 0 ? spriteKind(lbl_80506F88[player][1][i27]) : 0xFF;
         if (i27 >= 0 && (n < 0 || keyB < keyMark ||
                          (keyB == keyMark && record->mEntries[order[n]].mY >= lbl_80506F88[player][1][i27].f.field_0x1)) &&
             (i28 < 0 || keyA > keyB ||
