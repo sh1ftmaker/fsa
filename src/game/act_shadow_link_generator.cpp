@@ -69,7 +69,7 @@ void ShadowLinkGenerator_804A4310::init() {
     fn_801C0D70()->field_0x50 = mSerial;
 }
 
-// FIXME(shotgun): 94.13 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 94.36 %, missing/extra; behaviour drift.
 void ShadowLinkGenerator_804A4310::update() {
     mPieces.fn_8021C2B4();
     mStateTimer++;
@@ -169,7 +169,7 @@ void ShadowLinkGenerator_804A4310::update() {
                     deleteEmitter(&mEmitters2[i]);
                 }
             } else {
-                u8 alpha = (s32)(0.008333334f * (f32)field_0x2ac * 255.0f);
+                s32 alpha = (s32)(0.008333334f * (f32)field_0x2ac * 255.0f);
                 for (s32 i = 0; i < 5; i++) {
                     if (mEmitters2[i] != NULL) {
                         mEmitters2[i]->setGlobalAlpha(alpha);
