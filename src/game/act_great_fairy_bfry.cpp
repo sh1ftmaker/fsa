@@ -24,7 +24,7 @@ GreatFairy_804AF338::~GreatFairy_804AF338() {
     }
 }
 
-// FIXME(shotgun): 92.11 %, different + reloc-name
+// FIXME(shotgun): 92.15 %, different + reloc-name; behaviour drift.
 void GreatFairy_804AF338::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -128,7 +128,8 @@ void GreatFairy_804AF338::init() {
     field_0x90 = field_0x90 & 0xF;
 }
 
-// FIXME(shotgun): 20.75 %, missing/extra + reloc-name (partial)
+// FIXME(shotgun): 20.75 %, missing/extra + reloc-name; behaviour drift.
+// (partial)
 // FIXME(shotgun): states 2-13 (0x8038E900 onward) and the tail of state 1 (0x8038E8D4 and the
 // end of the function at 0x8038F31C) are not written.
 void GreatFairy_804AF338::update() {
@@ -213,7 +214,7 @@ void GreatFairy_804AF338::update() {
     }
 }
 
-// FIXME(shotgun): 92.20 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.18 %, missing/extra + reloc-name; behaviour drift.
 void GreatFairy_804AF338::draw() {
     if (field_0x248 != 1 && (field_0x240 & 2) && field_0x90 != 3) {
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x61, NULL, 7, 1.0f, 1.0f);
@@ -243,7 +244,7 @@ void GreatFairy_804AF338::draw() {
     }
 }
 
-// FIXME(shotgun): 89.17 %, missing/extra
+// FIXME(shotgun): 98.75 %, missing/extra; behaviour drift.
 void GreatFairy_804AF338::fn_8038DE74() {
     if (field_0x274[fn_8022F340(field_0x234)] != 0 &&
         getGameView_802D6A9C()->fn_802D800C(field_0x274[fn_8022F340(field_0x234)]) == 1) {
