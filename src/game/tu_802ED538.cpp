@@ -400,40 +400,39 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
-// FIXME: 85.95 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 82.43 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): missing/extra + reloc-name (TUtilf::sqrt tests x > 0 in the original, not x <= 0; fn_802303FC's flag is passed as 0xFF there; field_0x4 is loaded late)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
     for (s32 p = 0; p < 4; p++) {
-        Elem_80200544& e = field_0x27c[p];
         if (fn_8023F264(p) && getPlayerLayer_8023DE58(p) == field_0x4) {
-            if (!fn_80236B50(p) && !fn_8023EA28(p) && !fn_80230188(p) && !fn_8022D534(p) && !e.mActive &&
-                fn_802300EC(p)) {
+            if (!fn_80236B50(p) && !fn_8023EA28(p) && !fn_80230188(p) && !fn_8022D534(p) &&
+                !field_0x27c[p].mActive && fn_802300EC(p)) {
                 JGeometry::TVec3f* pos = getPlayerPos_8023E724(p);
                 if (pos->z == 0.0f) {
                     f32 dx = mPos.x - pos->x;
                     f32 dy = (32.0f + mPos.y) - pos->y;
-                    e.mPos = *getPlayerPos_8023E724(p);
+                    field_0x27c[p].mPos = *getPlayerPos_8023E724(p);
                     f32 len = dx * dx + dy * dy;
-                    e.mDist = JGeometry::TUtilf::sqrt(len);
-                    e.mAngle = (s16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
-                    e.mActive = 1;
+                    field_0x27c[p].mDist = JGeometry::TUtilf::sqrt(len);
+                    field_0x27c[p].mAngle = (s16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
+                    field_0x27c[p].mActive = 1;
                     fn_80230AD4(p);
                     fn_8022CA6C(p, 5, false);
                 }
             }
         }
-        if (e.mActive && fn_80230188(p) && !fn_8022D75C(p)) {
-            if (e.mDist > 4.0f) {
-                e.mDist = e.mDist - 4.0f;
+        if (field_0x27c[p].mActive && fn_80230188(p) && !fn_8022D75C(p)) {
+            if (field_0x27c[p].mDist > 4.0f) {
+                field_0x27c[p].mDist = field_0x27c[p].mDist - 4.0f;
             } else {
-                e.mDist = 0.0f;
+                field_0x27c[p].mDist = 0.0f;
             }
             const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-            e.mPos.x = mPos.x + e.mDist * sincos.sinShort(e.mAngle);
-            e.mPos.y = (32.0f + mPos.y) + e.mDist * sincos.cosShort(e.mAngle);
-            fn_802303FC(p, &e.mPos, true);
-            if (e.mDist < 1.0f) {
+            field_0x27c[p].mPos.x = mPos.x + field_0x27c[p].mDist * sincos.sinShort(field_0x27c[p].mAngle);
+            field_0x27c[p].mPos.y = (32.0f + mPos.y) + field_0x27c[p].mDist * sincos.cosShort(field_0x27c[p].mAngle);
+            fn_802303FC(p, &field_0x27c[p].mPos, true);
+            if (field_0x27c[p].mDist < 1.0f) {
                 fn_80230224(p, 0);
             }
         }
