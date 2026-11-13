@@ -69,7 +69,7 @@ extern const s16* lbl_80539EF8[2];
 // The scenario keys of the demo (rodata 0x80464550).
 extern const s32 lbl_80464550[];
 
-// FIXME(shotgun): 82.09 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::init() {
     cls_8049D140::init();
     field_0x234 = field_0x90 & 0xFF;
@@ -697,6 +697,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
 }
 
 // The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
+// FIXME: 97.32 %, regalloc-only + reloc-name; behaviour clean.
 // FIXME(shotgun): register allocation and literal-pool names still differ.
 void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
     JGeometry::TVec3f n;
