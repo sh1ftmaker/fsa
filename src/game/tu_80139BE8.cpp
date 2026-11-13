@@ -24,12 +24,13 @@ extern const char lbl_80465960[];
 // 0x8013A884
 // auto_inline off: the original GameRootSub04 destructor (bl at 0x8013A2B8) calls it out of line.
 #pragma auto_inline off
+// FIXME: 33.09 %, missing/extra; behaviour drift.
 void fn_8013A884(u32* color) {
     gGameRoot2_8053AB10->field_0x2c->field_0x4.set(*color);
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 96.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.97 %, missing/extra + reloc-name; behaviour drift.
 // 0x8013A538
 GameRootSub04_801F856C::GameRootSub04_801F856C(JKRHeap* heap) {
     lbl_8053AB00 = heap;
@@ -157,7 +158,7 @@ static inline bool isFrozenRoom() {
     return false;
 }
 
-// FIXME(shotgun): 93.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.28 %, missing/extra + reloc-name; behaviour drift.
 // 0x80139D9C
 void GameRootSub04_801F856C::fn_80139D9C() {
     s32 mode = gGameRoot_8053AAF8->field_0x4c;
