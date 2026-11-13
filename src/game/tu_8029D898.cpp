@@ -31,7 +31,8 @@ void BgRewrite_804A7C98::fn_802A3D80() {
 
 extern const u16 lbl_8046C4A8[16]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 82.8 %, scheduling; rodata table/strings addressed per object (unit .rodata not defined in source)
+// FIXME(shotgun): 82.81 %, missing/extra + reloc-name; behaviour drift.
+// rodata table/strings addressed per object (unit .rodata not defined in source)
 void BgRewrite_804A7C98::fn_802A3A0C() {
     field_0x8--;
     if (field_0x8 == 0) {
@@ -86,7 +87,8 @@ void BgRewrite_804A7C98::fn_802A3A0C() {
     }
 }
 
-// FIXME: 98.8. Only the clrlwi r6, r30, 16 on tile before fn_802F9974 is missing
+// FIXME: 98.78 %, different; behaviour near.
+// Only the clrlwi r6, r30, 16 on tile before fn_802F9974 is missing
 // (ours passes the u16 parameter with mr); an s32 / s16 tile matches here but
 // drops the u16-passing callers (tu_8012DAC0, act_shutter, act_burning_block).
 void BgRewrite_804A7C98::fn_802A3948(const JGeometry::TVec3f* pos, s32 player, s32 layer, u16 tile) {
@@ -101,7 +103,8 @@ void BgRewrite_804A7C98::fn_802A3948(const JGeometry::TVec3f* pos, s32 player, s
     }
 }
 
-// FIXME: 98.8. As fn_802A3948: only the clrlwi r6, r30, 16 on tile is missing.
+// FIXME: 98.78 %, different; behaviour near.
+// As fn_802A3948: only the clrlwi r6, r30, 16 on tile is missing.
 void BgRewrite_804A7C98::fn_802A3884(const JGeometry::TVec3f* pos, s32 player, s32 layer, u16 tile) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer & 0xFE);
@@ -114,14 +117,15 @@ void BgRewrite_804A7C98::fn_802A3884(const JGeometry::TVec3f* pos, s32 player, s
     }
 }
 
-// FIXME: 97.7. As fn_802A3948: only the clrlwi r6, r31, 16 on tile is missing.
+// FIXME: 97.69 %, different; behaviour near.
+// As fn_802A3948: only the clrlwi r6, r31, 16 on tile is missing.
 void BgRewrite_804A7C98::fn_802A381C(const JGeometry::TVec3f* pos, s32 layer, u16 tile) {
     JGeometry::TVec2f p(pos->x, pos->y);
     s32 cell = fn_80226BC4(&p, layer & 0xFE);
     gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, tile);
 }
 
-// FIXME(shotgun): 99.1 %, scheduling+regalloc
+// FIXME(shotgun): 99.08 %, scheduling+regalloc; behaviour clean.
 bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -185,7 +189,7 @@ bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s
     return result;
 }
 
-// FIXME(shotgun): 99.8 %, regalloc-only
+// FIXME(shotgun): 99.81 %, regalloc-only; behaviour clean.
 bool BgRewrite_804A7C98::fn_802A1D44(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -212,7 +216,8 @@ bool BgRewrite_804A7C98::fn_802A1D44(const JGeometry::TVec3f* pos, s32 player, s
     return result;
 }
 
-// FIXME(shotgun): 99.4 %, 1 fewer insn (literal pool order)
+// FIXME(shotgun): 99.38 %, missing/extra + reloc-name; behaviour clean.
+// 1 fewer insn (literal pool order)
 s32 BgRewrite_804A7C98::fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -263,7 +268,7 @@ s32 BgRewrite_804A7C98::fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s3
     return 0;
 }
 
-// FIXME(shotgun): 99.5 %, regalloc-only
+// FIXME(shotgun): 99.50 %, regalloc-only + reloc-name; behaviour clean.
 bool BgRewrite_804A7C98::fn_802A1688(const JGeometry::TVec3f* pos, s32 layer, u32 tag) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -317,7 +322,8 @@ bool BgRewrite_804A7C98::fn_802A1490(const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME(shotgun): 99.0 %, 3 opcodes differ (literal pool order)
+// FIXME(shotgun): 99.04 %, different + reloc-name; behaviour drift.
+// 3 opcodes differ (literal pool order)
 void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, 0);
@@ -360,7 +366,8 @@ void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
     }
 }
 
-// FIXME(shotgun): 97.8 %, 2 more insns (register copies)
+// FIXME(shotgun): 97.83 %, missing/extra; behaviour drift.
+// 2 more insns (register copies)
 s32 BgRewrite_804A7C98::fn_802A02A8(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -506,7 +513,8 @@ bool BgRewrite_804A7C98::fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s
 
 extern const s32 lbl_8046C4C8[16]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 76.8 %, regalloc/scheduling (cell kept in its own register, index a copy)
+// FIXME(shotgun): 76.81 %, missing/extra; behaviour drift.
+// regalloc/scheduling (cell kept in its own register, index a copy)
 void BgRewrite_804A7C98::fn_8029EC84(s32 cell, s32 layer, s32 layerOffset, u16 tileA, u16 tileB) {
     s32 layerPlus = layer + layerOffset;
     s32 index = cell;
@@ -549,7 +557,8 @@ void BgRewrite_804A7C98::fn_8029EC84(s32 cell, s32 layer, s32 layerOffset, u16 t
 // Pos offsets of the four directions.
 extern const f32 lbl_8046C508[4][2]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 99.1 %, 2 opcodes differ
+// FIXME(shotgun): 99.07 %, different; behaviour near.
+// 2 opcodes differ
 void BgRewrite_804A7C98::fn_8029E9EC(const JGeometry::TVec3f* pos, s32 layer, u16 tile, s32 arg4, u8 dir) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -568,7 +577,8 @@ void BgRewrite_804A7C98::fn_8029E9EC(const JGeometry::TVec3f* pos, s32 layer, u1
     }
 }
 
-// FIXME: 99.1. Register allocation only: the original keeps gBgRewrite_8053AC98 in
+// FIXME: 99.08 %, regalloc-only; behaviour clean.
+// Register allocation only: the original keeps gBgRewrite_8053AC98 in
 // r31 and the cell / slot in r30 (ours swaps them).
 void BgRewrite_804A7C98::fn_8029E928(const JGeometry::TVec3f* pos, s32 layer, s32 tile) {
     gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, tile);
@@ -582,7 +592,8 @@ u8 BgRewrite_804A7C98::fn_8029E888(const JGeometry::TVec3f* pos, s32 player, s32
     return field_0x24 == 0x30;
 }
 
-// FIXME(shotgun): 92.8 %, missing/extra (the player-mask test: the original keeps the bool and compares it with 1)
+// FIXME(shotgun): 95.27 %, missing/extra; behaviour drift.
+// (the player-mask test: the original keeps the bool and compares it with 1)
 bool BgRewrite_804A7C98::fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -630,7 +641,8 @@ bool BgRewrite_804A7C98::fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s
     return false;
 }
 
-// FIXME(shotgun): 97.2 %, 2 fewer insns (register copies of layer)
+// FIXME(shotgun): 97.16 %, missing/extra; behaviour clean.
+// 2 fewer insns (register copies of layer)
 bool BgRewrite_804A7C98::fn_8029E248(const JGeometry::TVec3f* pos, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -652,7 +664,8 @@ bool BgRewrite_804A7C98::fn_8029E248(const JGeometry::TVec3f* pos, s32 layer) {
     return result;
 }
 
-// FIXME(shotgun): 96.7 %, 4 opcodes differ
+// FIXME(shotgun): 96.67 %, different; behaviour drift.
+// 4 opcodes differ
 void BgRewrite_804A7C98::fn_8029E050(const JGeometry::TVec3f* pos, s32 layer, u16 a, u16 b, u16 c, u16 d) {
     gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, a);
     s32 cell = field_0x20 + 1;
@@ -688,7 +701,8 @@ void BgRewrite_804A7C98::fn_8029E050(const JGeometry::TVec3f* pos, s32 layer, u1
     }
 }
 
-// FIXME: 93.4. The original copies cell into r31 before the first write and steps
+// FIXME: 93.42 %, missing/extra; behaviour clean.
+// The original copies cell into r31 before the first write and steps
 // that copy in place (addi r31, r31, 1); ours computes the right neighbour into
 // r5 after the call (2 instructions fewer, registers r26-r31 shifted).
 void BgRewrite_804A7C98::fn_8029DF80(s32 cell, s32 layer, s32 a, s32 b, s32 c, s32 d) {
@@ -711,7 +725,8 @@ void BgRewrite_804A7C98::fn_8029DF80(s32 cell, s32 layer, s32 a, s32 b, s32 c, s
     gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, next, d);
 }
 
-// FIXME: 92.4. Register allocation and placement only: the original saves b in
+// FIXME: 92.35 %, missing/extra; behaviour clean.
+// Register allocation and placement only: the original saves b in
 // r30 and cell in r29 up front and copies layer into r31 inside each branch
 // (mr r31, r4 twice); ours saves layer in r29 before the branch.
 void BgRewrite_804A7C98::fn_8029DEBC(s32 layer, s32 cell, s32 vertical, s32 a, s32 b) {
@@ -732,7 +747,8 @@ void BgRewrite_804A7C98::fn_8029DEBC(s32 layer, s32 cell, s32 vertical, s32 a, s
     }
 }
 
-// FIXME(shotgun): 90.3 %, missing/extra (register copies of layer / cell)
+// FIXME(shotgun): 90.27 %, missing/extra; behaviour drift.
+// (register copies of layer / cell)
 void BgRewrite_804A7C98::fn_8029DD50(s32 layer, s32 cell, s32 vertical, u16 a, u16 b, u16 c, u16 d) {
     if (vertical == 0) {
         gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, a);
@@ -774,7 +790,8 @@ void BgRewrite_804A7C98::fn_8029DD50(s32 layer, s32 cell, s32 vertical, u16 a, u
     }
 }
 
-// FIXME(shotgun): 92.3 %, missing/extra (register copies of layer / cell)
+// FIXME(shotgun): 92.26 %, missing/extra; behaviour drift.
+// (register copies of layer / cell)
 void BgRewrite_804A7C98::fn_8029DB2C(s32 layer, s32 cell, s32 vertical, u16 a, u16 b, u16 c, u16 d, u16 e, u16 f) {
     if (vertical == 0) {
         gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, a);
@@ -842,7 +859,8 @@ void BgRewrite_804A7C98::fn_8029DB2C(s32 layer, s32 cell, s32 vertical, u16 a, u
 extern const u16 lbl_8046C5A0[4][20]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 extern const u16 lbl_8046C528[3][20]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 91.9 %, regalloc (cell kept in other registers); pattern tables are externs
+// FIXME(shotgun): 91.90 %, missing/extra; behaviour clean.
+// regalloc (cell kept in other registers); pattern tables are externs
 void BgRewrite_804A7C98::fn_8029D8F0(const JGeometry::TVec3f* pos, s32 layer, s32 layerOffset, s32 pattern) {
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = (layer & 0xFE) < 8 ? &view->mVisibleBox : &view->field_0xdc;
