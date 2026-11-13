@@ -182,7 +182,10 @@ void Camera_804AA9E4::fn_8030DFE8(bool copy) {
 // size, and (when light is set) the light matrices; then the GX state of fn_8030DFE8.
 // FIXME(shotgun): 74.91 %, missing/extra + reloc-name; behaviour drift.
 void Camera_804AA9E4::fn_8030DD8C(const JGeometry::TBox2f* box, bool light) {
-    field_0x164 = *box;
+    field_0x164.i.x = box->i.x;
+    field_0x164.i.y = box->i.y;
+    field_0x164.f.x = box->f.x;
+    field_0x164.f.y = box->f.y;
     f32 halfW = 0.5f * (box->f.x - box->i.x);
     f32 halfH = 0.5f * (box->f.y - box->i.y);
     f32 centerX = 0.5f * (box->i.x + box->f.x);
@@ -787,7 +790,10 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
     JMath::gekko_ps_copy12(field_0x74, field_0x4);
     JMath::gekko_ps_copy16(field_0xa4, field_0x34);
-    field_0x164 = *box;
+    field_0x164.i.x = box->i.x;
+    field_0x164.i.y = box->i.y;
+    field_0x164.f.x = box->f.x;
+    field_0x164.f.y = box->f.y;
 }
 #pragma auto_inline reset
 
