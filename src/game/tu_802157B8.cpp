@@ -1,13 +1,7 @@
 #include "game/GameAudio.h"
 
 
-class cls_802157B8 {
-public:
-    void fn_802157B8(u8);
-    void fn_80215864();
-
-    /* 0x0 */ u32 field_0x0;
-};
+#include "game/cls_802157B8.h"
 
 void cls_802157B8::fn_80215864() {
     field_0x0 = 0;

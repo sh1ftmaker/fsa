@@ -145,7 +145,7 @@ void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
         if ((mFlags & 0x200000) ||
             field_0x358.fn_80214244()->fn_800FD5E8(field_0x358.fn_80214244()->field_0x3)) {
             skip = true;
-        } else if (field_0x524 & 0x100) {
+        } else if (field_0x524.field_0x0 & 0x100) {
             u8 start = field_0x358.fn_80214244()->field_0x3;
             field_0x358.fn_80214244()->fn_800FD818(1);
             u8 next = field_0x358.fn_80214244()->field_0x3;
@@ -178,7 +178,7 @@ void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
     } else {
         bool ok = true;
         if (field_0x59b != 0 || viewLayerFlag(field_0x4) ||
-            ((field_0x524 & 0x100) && field_0x358.fn_80214244()->fn_800FD5E8(0xFF))) {
+            ((field_0x524.field_0x0 & 0x100) && field_0x358.fn_80214244()->fn_800FD5E8(0xFF))) {
             ok = false;
         }
         if (!ok) {
@@ -186,7 +186,7 @@ void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
         }
         JGeometry::TVec2f detour;
         fn_801C9234(&detour);
-        if ((field_0x524 & 0x800) && !(mFlags & 0x2000000) && !(mFlags & 0x100000) &&
+        if ((field_0x524.field_0x0 & 0x800) && !(mFlags & 0x2000000) && !(mFlags & 0x100000) &&
             fn_801CF888(&detour, &field_0x32c, field_0x4)) {
             bool moved = false;
             u8 start = field_0x358.fn_80214244()->field_0x3;
@@ -247,7 +247,7 @@ void ShadowLink2_804A43E8::fn_801C8BC4(u8 flag) {
             field_0x55c[1] = 1;
         } else {
             field_0x55c[1] = fn_801CD664(4) + 1;
-            if (field_0x524 & 0x100) {
+            if (field_0x524.field_0x0 & 0x100) {
                 field_0x55c[1]++;
             }
             u8 cap = result - 2;
@@ -359,7 +359,7 @@ void ShadowLink2_804A43E8::fn_801C844C() {
     if (mFlags & 0x2000000) {
         return;
     }
-    if ((field_0x524 & 0x100) &&
+    if ((field_0x524.field_0x0 & 0x100) &&
         field_0x358.fn_80214244()->fn_800FD5E8(field_0x358.fn_80214244()->field_0x3)) {
         u8 start = field_0x358.fn_80214244()->field_0x3;
         field_0x358.fn_80214244()->fn_800FD818(1);
@@ -658,7 +658,7 @@ void ShadowLink2_804A43E8::fn_801C79A0() {
     fn_801C8C84(0, 1);
     fn_801C8BC4(1);
 
-    if (field_0x524 & 0x4) {
+    if (field_0x524.field_0x0 & 0x4) {
         field_0x4 = field_0x56c;
         mPos.set(field_0x570);
         if (fn_801CD2F8(field_0x56c)) {
@@ -705,7 +705,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
         }
     }
     u8 stepped = fn_801C7BD0();
-    if ((field_0x524 & 0x1000) && field_0x358.fn_80214244()->fn_800FD5E8(0xFF)) {
+    if ((field_0x524.field_0x0 & 0x1000) && field_0x358.fn_80214244()->fn_800FD5E8(0xFF)) {
         if (!gBgRewrite_8053AC98->fn_8029E248(&mPos, field_0x4)) {
             JGeometry::TVec3f below(mPos.x, mPos.y - 16.0f, mPos.z);
             gBgRewrite_8053AC98->fn_8029E248(&below, field_0x4);
@@ -727,7 +727,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
         fn_800FE294(&railPos, field_0x358.fn_80214244(), 0xFF);
         if (fn_801CCB1C(&railPos, field_0x4)) {
             fn_801C8B50();
-            if (!fn_801D0DD4() || (field_0x524 & 0x40)) {
+            if (!fn_801D0DD4() || (field_0x524.field_0x0 & 0x40)) {
                 return;
             }
             if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.5f) {
@@ -844,7 +844,7 @@ void ShadowLink2_804A43E8::fn_801C71BC() {
     }
     fn_801C8B50();
     field_0x33c += fn_801CD664(0x4001) - 0x2000;
-    if (!(field_0x524 & 0x40)) {
+    if (!(field_0x524.field_0x0 & 0x40)) {
         fn_801C3B7C(0x1C);
     }
 }
