@@ -430,11 +430,26 @@ bool fn_803BADAC(SaveFile_803B950C* file) {
     u32 sum = 0;
     u32 inverse = 0;
     const u8* bytes = (const u8*)file; // byte view for the checksum
-    for (int i = 0; i < 0xC0; i++) {
-        sum += bytes[i];
-        inverse += ~bytes[i];
+    for (int i = 0; i < 0x18; i++) {
+        sum += bytes[0];
+        inverse += ~bytes[0];
+        sum += bytes[1];
+        inverse += ~bytes[1];
+        sum += bytes[2];
+        inverse += ~bytes[2];
+        sum += bytes[3];
+        inverse += ~bytes[3];
+        sum += bytes[4];
+        inverse += ~bytes[4];
+        sum += bytes[5];
+        inverse += ~bytes[5];
+        sum += bytes[6];
+        inverse += ~bytes[6];
+        sum += bytes[7];
+        inverse += ~bytes[7];
+        bytes += 8;
     }
-    return sum == file->field_0xc0 && inverse == file->field_0xc4;
+    return ((sum ^ file->field_0xc0) | (inverse ^ file->field_0xc4)) == 0;
 }
 
 // Writes the checksum words of files[file].
