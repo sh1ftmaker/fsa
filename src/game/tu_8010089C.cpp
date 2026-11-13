@@ -119,6 +119,7 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     }
 }
 
+// FIXME: 95.59 %, missing/extra + reloc-name; behaviour near.
 // FIXME(shotgun): register allocation and float literal split differ.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
