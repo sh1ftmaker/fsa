@@ -55,7 +55,7 @@ void cls_804A6340::init() {
     mAnim.startAnim_801D22DC(1, 2, false);
 }
 
-// FIXME(shotgun): 85.98 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 98.40 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804A6340::fn_80213774(int mode) {
     switch (mode) {
     case 0:
