@@ -218,7 +218,8 @@ void ReaperShinigami_804A886C::vfunc_0x24() {
 static inline void reappear(ReaperShinigami_804A886C* self) {
     self->mPos = self->field_0x28c;
     self->field_0x4 = self->field_0x29c;
-    JGeometry::TVec3f emitterPos(self->mPos);
+    JGeometry::TVec3f emitterPos;
+    emitterPos.set(self->mPos);
     emitterPos.y += 32.0f;
     emitterPos.z += 16.0f;
     spawnEmitter_8013CC50(self->field_0x4, &emitterPos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
@@ -247,7 +248,8 @@ void ReaperShinigami_804A886C::fn_802B8078() {
             reappear(this);
         }
     } else {
-        JGeometry::TVec3f emitterPos(mPos);
+        JGeometry::TVec3f emitterPos;
+        emitterPos.set(mPos);
         emitterPos.y += 32.0f;
         emitterPos.z += 16.0f;
         spawnEmitter_8013CC50(field_0x4, &emitterPos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
