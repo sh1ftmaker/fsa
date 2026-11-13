@@ -302,9 +302,9 @@ void cls_800FE3EC::fn_800FD818(s32 dir) {
 bool cls_800FE3EC::fn_800FD5E8(u8 index) {
     u8 count = field_0x2;
     u32 mode = field_0x4[count - 1]->field_0x90 & 3;
-    u8 cur = field_0x3;
     if (index == 0xFF) {
-        s16 next = field_0x1 != 0 ? cur - 1 : cur + 1;
+        u8 cur = field_0x3;
+        s16 next = field_0x1 == 0 ? cur + 1 : cur - 1;
         if (next < 0) {
             if (mode != 1) {
                 return false;
@@ -321,8 +321,8 @@ bool cls_800FE3EC::fn_800FD5E8(u8 index) {
         }
         return false;
     }
-    s16 next = cur + 1;
-    s16 prev = cur - 1;
+    s16 next = index + 1;
+    s16 prev = index - 1;
     if (next == count) {
         if (mode == 1) {
             next = 0;
