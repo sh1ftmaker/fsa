@@ -20,7 +20,7 @@ bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
         return false;
     }
     for (s32 i = 0; i < field_0x2; i++) {
-        u32 index = (found[i]->field_0x90 >> 16) & 0xFF;
+        u8 index = (found[i]->field_0x90 >> 16) & 0xFF;
         if (index >= field_0x2 || field_0x4[index] != NULL) {
             return false;
         }
@@ -31,11 +31,12 @@ bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
             return false;
         }
     }
+    JGeometry::TVec3f target = pos;
     f32 best = 10000.0f;
     for (u16 i = 0; i < field_0x2; i++) {
         if (layer == fn_800FE25C(i)) {
-            JGeometry::TVec3f diff;
-            diff.sub(field_0x4[i]->mPos, pos);
+            JGeometry::TVec3f diff = field_0x4[i]->mPos;
+            diff.sub(target);
             f32 dist = diff.length();
             if (dist < best) {
                 best = dist;
