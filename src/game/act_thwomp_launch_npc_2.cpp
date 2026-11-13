@@ -314,7 +314,7 @@ void NPCLaunchedByThwomp2_804AD1C8::launch() {
     field_0x230 = 3;
 }
 
-// FIXME(shotgun): 72.95 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 74.78 %, different; behaviour drift.
 void NPCLaunchedByThwomp2_804AD1C8::draw() {
     const char* name = lbl_80472390.enemyGcSob;
     if (field_0x230 == 2) {
