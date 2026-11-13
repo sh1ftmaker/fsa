@@ -84,7 +84,11 @@ void Camera_804AA9E4::fn_8030E5BC() {
 void Camera_804AA9E4::fn_8030E154() {
     JGeometry::TBox2f box = field_0x154;
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
-        field_0x174 = field_0x179 != 0 ? 3 : 1;
+        if (field_0x179 != 0) {
+            field_0x174 = 3;
+        } else {
+            field_0x174 = 1;
+        }
     } else if (field_0x179 != 0) {
         field_0x174 = 3;
     } else if (field_0x17a != 0) {
@@ -106,6 +110,7 @@ void Camera_804AA9E4::fn_8030E154() {
         field_0x1b4.f.y == 0.0f) {
         field_0x7f5 = 0;
     }
+    const CameraEntry_804AA8E8* entry = &lbl_804AA8E8[field_0x174];
     if (field_0x17c != 0) {
         f32 w = box.f.x - box.i.x;
         f32 h = box.f.y - box.i.y;
@@ -117,7 +122,7 @@ void Camera_804AA9E4::fn_8030E154() {
     if (field_0x17d == 0) {
         JGeometry::TBox2f target;
         f32 depth;
-        fn_8030CD18(&box, &lbl_804AA8E8[field_0x174], &field_0x1b4, &target, &depth);
+        fn_8030CD18(&box, entry, &field_0x1b4, &target, &depth);
         if (field_0x1e8 != 0) {
             f32 t = (f32)field_0x1ec / 30.0f;
             t = t * t;
@@ -128,7 +133,6 @@ void Camera_804AA9E4::fn_8030E154() {
             target.f.y = t * target.f.y + u * field_0x1a0.f.y;
             depth = t * depth + u * field_0x1b0;
             if (field_0x1ec == 0) {
-                field_0x1e8 = 0;
                 fn_8030C85C();  // the reset of the armed state (inlined in the target)
             } else {
                 field_0x1ec--;
@@ -139,7 +143,10 @@ void Camera_804AA9E4::fn_8030E154() {
             field_0x1b4.i.x = 0.0f;
             field_0x1b4.f.y = 0.0f;
             field_0x1b4.f.x = 0.0f;
-            target = field_0x180;
+            target.i.x = field_0x180.i.x;
+            target.i.y = field_0x180.i.y;
+            target.f.x = field_0x180.f.x;
+            target.f.y = field_0x180.f.y;
             depth = 0.5f * (target.i.y + target.f.y) + 3072.0f;
             field_0x17e = 0;
         }
