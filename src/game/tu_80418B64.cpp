@@ -461,9 +461,9 @@ void cls_804B13D4::fn_8041F720() {
     }
     if (field_0x291 != 0) {
         f32 sx = lbl_8050DB0C.field_0x30[4] *
-                 ((f32)(s32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
+                 ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
         f32 sy = lbl_8050DB0C.field_0x30[4] *
-                 ((f32)(s32)JUTVideo::getManager()->getEfbHeight() / gGameRoot2_8053AB10->field_0x24->field_0x858);
+                 ((f32)JUTVideo::getManager()->getEfbHeight() / gGameRoot2_8053AB10->field_0x24->field_0x858);
         f32 w = 0.0f + sx;
         f32 h = 0.0f + sy;
         for (s32 i = 0; i < 4; i++) {
@@ -473,9 +473,9 @@ void cls_804B13D4::fn_8041F720() {
             if (field_0x21a[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x68 != 0) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / (f32)(s32)JUTVideo::getManager()->getFbWidth()) - (f32)(s32)JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 x = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth()) - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
                 f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / (f32)(s32)JUTVideo::getManager()->getEfbHeight()) - (f32)(s32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                        (sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight()) - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
                 JGeometry::TBox2f box(0.0f, 0.0f, w, h);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
@@ -484,9 +484,9 @@ void cls_804B13D4::fn_8041F720() {
             } else if (!isPaused() && fn_802366CC(fn_8022EA0C(i)) > 0 && fn_802366CC(fn_8022EA0C(i)) < 300) {
                 Vec screen;
                 gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
-                f32 x = sx * (screen.x / (f32)(s32)JUTVideo::getManager()->getFbWidth()) - (f32)(s32)JUTVideo::getManager()->getFbWidth() * 0.5f;
+                f32 x = sx * (screen.x / (f32)JUTVideo::getManager()->getFbWidth()) - (f32)JUTVideo::getManager()->getFbWidth() * 0.5f;
                 f32 y = lbl_8050DB0C.field_0x4c[1] +
-                        (sy * (screen.y / (f32)(s32)JUTVideo::getManager()->getEfbHeight()) - (f32)(s32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
+                        (sy * (screen.y / (f32)JUTVideo::getManager()->getEfbHeight()) - (f32)JUTVideo::getManager()->getEfbHeight() * 0.5f);
                 JGeometry::TBox2f box(0.0f, 0.0f, w, h);
                 field_0x4c->setOrtho(box, -10000.0f, 10000.0f);
                 field_0x4c->setPort();
@@ -655,7 +655,7 @@ void cls_804B13D4::fn_8041EDB0() {
 
 // FIXME(shotgun): 85.64 %, missing/extra
 void cls_804B13D4::fn_8041E8B4(s32 player) {
-    bool pending = (lbl_80529DEC.field_0x239 & (u8)(1 << player)) != 0 ? true : false;
+    bool pending = (lbl_80529DEC.field_0x239 & (u8)(1 << player)) != 0;
     if (pending) {
         lbl_80529DEC.field_0xd8[player] = fn_80237774(player);
         for (s32 i = 0; i < 4; i++) {
@@ -828,12 +828,12 @@ void cls_804B13D4::fn_8041E58C() {
 void cls_804B13D4::fn_8041E3B4(s32 player) {
     s32 mask = 1 << player;
     u8 bit = mask;
-    bool takesPart = (gGameRoot_8053AAF8->mPlayerMask & bit) != 0 ? true : false;
+    bool takesPart = (gGameRoot_8053AAF8->mPlayerMask & bit) != 0;
     if (!takesPart) {
         field_0x28f &= ~bit;
         return;
     }
-    bool flagged = (lbl_8053AED0->field_0xdd & bit) != 0 ? true : false;
+    bool flagged = (lbl_8053AED0->field_0xdd & bit) != 0;
     if (flagged && !(field_0x290 & bit)) {
         field_0x290 |= bit;
         field_0x28f |= bit;
@@ -1245,15 +1245,15 @@ void cls_804B13D4::fn_8041C0C0(s32 player) {
         field_0x4->search(lbl_8048D778[player][4])->hide();
     }
     const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 1000]));
-    n -= (n / 1000) * 1000;
+    n %= 1000;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 100]));
-    n -= (n / 100) * 100;
+    n %= 100;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit + 1]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit + 1]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 10]));
-    n -= (n / 10) * 10;
+    n %= 10;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit + 2]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit + 2]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n]));
