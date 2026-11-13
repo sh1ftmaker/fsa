@@ -51,7 +51,7 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D1D60();
 }
 
-// FIXME(shotgun): 81.72 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 85.50 %, missing/extra; behaviour drift.
 // the original keeps fewer values live (saves r30-r31 only)
 // and its jump table is named jumptable_804A3D24.
 void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
@@ -101,19 +101,28 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         s32 anim = 8;
         switch (kind) {
         case 0:
-            if (dir == 3) {
+            switch (dir) {
+            case 3:
                 anim = 9;
-            } else if (dir < 2) {
+                break;
+            case 2:
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 8 : 9;
+                break;
             }
             break;
         case 1:
-            if (dir == 3) {
+            switch (dir) {
+            case 3:
                 anim = 11;
-            } else if (dir >= 2) {
+                break;
+            case 2:
                 anim = 10;
-            } else {
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 10 : 11;
+                break;
             }
             break;
         case 2:
