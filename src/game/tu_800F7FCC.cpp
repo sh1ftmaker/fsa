@@ -1008,7 +1008,7 @@ void cls_8049C718::fn_800FA6B0() {
     mAnimTime++;
 }
 
-// FIXME: 82.61 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 85.55 %, missing/extra + reloc-name; behaviour clean.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
 // 
@@ -1038,15 +1038,14 @@ void cls_8049C718::fn_800FA1A4() {
         b->mPos = mid + off;
     }
     if (mSlot == 0) {
-        JGeometry::TVec3f c(mPos.x, mPos.y - 20.0f, mPos.z);
-        JGeometry::TVec3f v = c;
+        JGeometry::TVec3f v(mPos.x, mPos.y - 20.0f, mPos.z);
         v.sub(posA);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
             a->field_0x3c = v;
         }
-        v = c;
+        v = JGeometry::TVec3f(mPos.x, mPos.y - 20.0f, mPos.z);
         v.sub(posB);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
@@ -1134,20 +1133,18 @@ void StoneArrghusChildPuff_8049C678::init() {
     }
 }
 
-// FIXME(shotgun): 57.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 61.35 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     field_0xb0 = 0x80004;
     field_0x1a8 = true;
     cls_8049C718* parent = mParent;
     JGeometry::TVec3f target;
     f32 speed;
-    switch (parent->mState) {
-    case 3:
-        slotPos(parent, mIndex, target);
+    if (parent->mState == 3) {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.3f;
         mFlag249 = 1;
-        break;
-    case 4: {
+    } else if (parent->mState == 4) {
         s32 slot = parent->mSlot;
         s32 n = (slot >> 1) + 1;
         f32 off;
@@ -1165,18 +1162,14 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
         target.z = 10.0f + parent->mPos.z;
         speed = (0.36f + 0.001f * (f32)lbl_8049C3B8[8]) - (0.032f + 0.001f * (f32)lbl_8049C3B8[9]) * (f32)n;
         mFlag249 = 1;
-        break;
-    }
-    case 1:
-        slotPos(parent, mIndex, target);
+    } else if (parent->mState == 1) {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.08f;
         mFlag249 = 1;
-        break;
-    default:
-        slotPos(parent, mIndex, target);
+    } else {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.2f;
         mFlag249 = 0;
-        break;
     }
     if (fn_801F3D94(1) == 0) {
         if (fn_801F285C(NULL, NULL, true, -1) >= 0) {
@@ -1232,17 +1225,18 @@ void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     }
 }
 
-// FIXME(shotgun): 70.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 76.73 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
     cls_8049C718* parent = mParent;
     if (parent->mSlotUsed[mIndex] != 0) {
         f32 off;
         s16 ang;
-        s32 k = (parent->mSlot >> 1) + 1;
         if (mIndex == 0) {
+            s32 k = (parent->mSlot >> 1) + 1;
             ang = parent->mAngleA;
             off = 20.0f + (f32)(k * 20);
         } else {
+            s32 k = (parent->mSlot >> 1) + 1;
             ang = parent->mAngleB;
             off = (f32)(k * -20) - 20.0f;
         }
