@@ -410,7 +410,7 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
         f32 dy = mPos.y - getPlayerPos_8023E724(player)->y;
         dir = fn_801F681C((u16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f));
         JGeometry::TVec3f moved = mPos - mPrevPos;
-        if (!(PSVECMag(&moved) >= 1.0f)) {
+        if (PSVECMag(&moved) >= 1.0f) {
             field_0x380 = 0.5f;
             field_0x37c = 0.5f;
         }
