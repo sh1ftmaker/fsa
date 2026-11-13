@@ -167,23 +167,26 @@ void Score_804AF4C0::fn_80393514() {
     if (mTimer-- == 0) {
         s32 tensNew = field_0x240 / 10;
         s32 tensOld = field_0x244 / 10;
-        s32 n = tensNew - tensOld;
         s32 kind = tensOld + 1;
-        for (s32 i = 0; i < n; i++, kind++) {
-            s32 serial = -1;
-            if (kind >= 1 && kind < 3) {
-                JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
-                serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 2);
-            } else if (kind >= 3 && kind < 6) {
-                JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
-                serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 3);
-            } else {
-                getActorManager_801F856C()->spawnActor_801F9484('FARY', field_0x4, getPlayerPos_8023E724(mPlayer), 0, -1, -1);
-            }
-            if (serial >= 0) {
-                ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-                if (gem != NULL) {
-                    gem->field_0x3c.set(0.0f, 0.0f, -1.0f);
+        if (tensNew > tensOld) {
+            s32 n = tensNew - tensOld;
+            for (s32 i = 0; i < n; i++, kind++) {
+                s32 serial = -1;
+                if (kind >= 1 && kind < 3) {
+                    JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
+                    serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 2);
+                } else if (kind >= 3 && kind < 6) {
+                    JGeometry::TVec3f p(getPlayerPos_8023E724(mPlayer)->x, getPlayerPos_8023E724(mPlayer)->y, 300.0f);
+                    serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &p, 3);
+                } else {
+                    JGeometry::TVec3f* pos = getPlayerPos_8023E724(mPlayer);
+                    getActorManager_801F856C()->spawnActor_801F9484('FARY', field_0x4, pos, 0, -1, -1);
+                }
+                if (serial >= 0) {
+                    ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                    if (gem != NULL) {
+                        gem->field_0x3c.set(0.0f, 0.0f, -1.0f);
+                    }
                 }
             }
         }
