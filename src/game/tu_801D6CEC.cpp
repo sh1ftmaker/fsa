@@ -184,7 +184,7 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
             if (player >= 0 && player < 4) {
                 JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - a->mPos.x,
                                     getPlayerPos_8023E724(player)->y - a->mPos.y);
-                if (d.squared() <= JGeometry::TUtil<f32>::epsilon()) {
+                if (d.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
                     d.set(1.0f, 0.0f);
                 } else {
                     d.normalize();
