@@ -444,8 +444,8 @@ void Gohma_804A307C::fn_801AAF44() {
         field_0xdc = 0;
     }
 
-    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.5f, 1.0f);
-    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.5f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.3f, 1.0f);
 
     mPos += field_0x3c;
 
@@ -478,20 +478,18 @@ void Gohma_804A307C::fn_801AAF44() {
         // fallthrough
     case 8:
         mTimers[0] = 0;
-        mTimers[2] = 200 + (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        mTimers[2] = 200 + (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         field_0x244 = 0;
         field_0x98 = field_0x260;
         field_0x3c.z = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.x = 0.0f;
         {
-            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            f32 f = 0.7f + 0.35f * (3 - field_0x258);
             setMoveDir(field_0x264, field_0x98, f);
         }
         field_0x98 = 2;
-        // Named like the OKTM loop's `f` below: keeps 60 - 15 * n unfused (fsubs, not fnmsubs) as in the original.
-        f32 interval = 15.0f * (3 - field_0x258);
-        mTimers[1] = (s32)(60.0f - interval);
+        mTimers[1] = (s32)(100.0f - 20.0f * (3 - field_0x258));
         field_0x230 = 9;
         // fallthrough
     case 9:
@@ -501,7 +499,7 @@ void Gohma_804A307C::fn_801AAF44() {
             field_0x3c.z = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
-            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            f32 f = 0.7f + 0.35f * (3 - field_0x258);
             setMoveDir(field_0x264, field_0x98, f);
             field_0x98 = 2;
         }
@@ -524,8 +522,7 @@ void Gohma_804A307C::fn_801AAF44() {
                     if (actor != NULL) {
                         actor->field_0x3c = JGeometry::TVec3f(3.0f * JMASinShort(angle), 3.0f * JMACosShort(angle), 0.0f);
                         actor->field_0x98 = fn_801F681C(angle);
-                        f32 f = 15.0f * (3 - field_0x258);
-                        mTimers[1] = (s32)(60.0f - f);
+                        mTimers[1] = (s32)(100.0f - 20.0f * (3 - field_0x258));
                     }
                 }
                 angle += 0x2000;
