@@ -301,7 +301,7 @@ void ChiefSoldier_804A0B90::init() {
     }
 }
 
-// FIXME(shotgun): 81.63 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.25 %, missing/extra + reloc-name; behaviour drift.
 void ChiefSoldier_804A0B90::fn_801746DC() {
     if (field_0x29c != field_0x2a0) {
         field_0x2a0 = field_0x29c;
