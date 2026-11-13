@@ -367,38 +367,26 @@ void Log_804ACD70::vfunc_0x24() {
 // FIXME(shotgun): 65.95 %, missing/extra
 bool Log_804ACD70::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (field_0x230 == 0) {
-        switch (fn_8022461C(pos, layer)) {
-        case 0x27:
-        case 3:
+        s32 kind = fn_8022461C(pos, layer);
+        if (kind == 0x27 || kind == 3) {
             return false;
-        case 4:
-        case 0x28:
-        case 0x2C:
+        }
+        if (kind == 4 || kind == 0x28 || kind == 0x2C) {
             if (((s32)pos->y & 15) >= 8) {
                 return false;
             }
-            break;
-        case 5:
-        case 0x29:
-        case 0x2D:
+        } else if (kind == 5 || kind == 0x29 || kind == 0x2D) {
             if (((s32)pos->y & 15) < 8) {
                 return false;
             }
-            break;
-        case 6:
-        case 0x2A:
-        case 0x2E:
+        } else if (kind == 6 || kind == 0x2A || kind == 0x2E) {
             if (((s32)pos->x & 15) >= 8) {
                 return false;
             }
-            break;
-        case 7:
-        case 0x2B:
-        case 0x2F:
+        } else if (kind == 7 || kind == 0x2B || kind == 0x2F) {
             if (((s32)pos->x & 15) < 8) {
                 return false;
             }
-            break;
         }
         return ActorBase_804A5770::vfunc_0x4C(layer, pos);
     }
