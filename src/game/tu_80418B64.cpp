@@ -1245,15 +1245,15 @@ void cls_804B13D4::fn_8041C0C0(s32 player) {
         field_0x4->search(lbl_8048D778[player][4])->hide();
     }
     const ResTIMG* res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 1000]));
-    n %= 1000;
+    n -= (n / 1000) * 1000;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 100]));
-    n %= 100;
+    n -= (n / 100) * 100;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit + 1]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit + 1]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n / 10]));
-    n %= 10;
+    n -= (n / 10) * 10;
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D6D8[player][digit + 2]))->changeTexture(res, 0);
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit + 2]))->changeTexture(res, 0);
     res = static_cast<const ResTIMG*>(fn_804030C4('TIMG', lbl_804B139C[n]));
