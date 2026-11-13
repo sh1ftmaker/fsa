@@ -281,7 +281,7 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
         fn_801F3604();
         if (mFlags & 0x2000) {
             for (s32 p = 0; p < 4; p++) {
-                if (fn_8023F264(p) && getPlayerLayer_8023DE58(p) == field_0x4) {
+                if (fn_8023F264(p) && field_0x4 == getPlayerLayer_8023DE58(p)) {
                     JGeometry::TVec3f pos(getPlayerPos_8023E724(p)->x, getPlayerPos_8023E724(p)->y, 0.0f);
                     for (s32 j = 0; j < 4; j++) {
                         spawnEmitter_8013CC50(field_0x4, &pos, lbl_8046A78C[p][j], 0, 0, NULL, NULL, true, 1.0f);
@@ -294,7 +294,7 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
     case 2:
         if (mFlags & 0x2000) {
             for (s32 p = 0; p < 4; p++) {
-                if (fn_8023F264(p) && getPlayerLayer_8023DE58(p) == field_0x4) {
+                if (fn_8023F264(p) && field_0x4 == getPlayerLayer_8023DE58(p)) {
                     JGeometry::TVec3f pos(getPlayerPos_8023E724(p)->x, getPlayerPos_8023E724(p)->y, 0.0f);
                     fn_80230498(p, &pos, fn_80230CFC(p) + 0x3C, 0xFF, -0x80, -0x80, true);
                 }
@@ -324,8 +324,11 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
             field_0x2cc = mSpawnPos.y;
         }
         const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-        field_0x2c0.x = field_0x2c0.z + sincos.sinShort(-0x4000) * field_0x2bc;
-        field_0x2c0.y = field_0x2cc + sincos.cosShort(-0x4000) * field_0x2bc;
+        JGeometry::TVec2<f32> center(field_0x2c0.z, field_0x2cc);
+        JGeometry::TVec2<f32> offset(sincos.sinShort(-0x4000) * field_0x2bc, sincos.cosShort(-0x4000) * field_0x2bc);
+        center.add(offset);
+        field_0x2c0.x = center.x;
+        field_0x2c0.y = center.y;
         mPos.x = field_0x2c0.x;
         mPos.y = field_0x2c0.y;
         mPos.z = 0.0f;
@@ -350,7 +353,7 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
     case 6:
         if (mFlags & 0x2000) {
             for (s32 p = 0; p < 4; p++) {
-                if (fn_8023F264(p) && getPlayerLayer_8023DE58(p) == field_0x4) {
+                if (fn_8023F264(p) && field_0x4 == getPlayerLayer_8023DE58(p)) {
                     s32 v;
                     if (mFlags & 0x4000) {
                         v = 3;
