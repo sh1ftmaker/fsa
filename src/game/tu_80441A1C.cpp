@@ -7,26 +7,6 @@
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
-
-void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
-    field_0x8->mPane->setAlpha(0);
-    field_0x8->field_0x26 = 0;
-    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
-    field_0xc->field_0x22 = 0;
-    field_0x10 = arg;
-    field_0x14 = index - 1;
-    field_0x18 = 1;
-    field_0x1c = 0;
-    char* str = ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->getStringPtr();
-    s32 player = field_0x14;
-    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
-    if (mode == 1) {
-        getMessageText_803832BC(str, 0x3B, player + 1, NULL, NULL);
-    } else if (mode == 2) {
-        getMessageText_803832BC(str, 0x3A, player + 1, NULL, NULL);
-    }
-}
-
 cls_804B19F0::cls_804B19F0() {
     lbl_8053AEE0 = this;
     field_0x4 = new J2DScreen();
@@ -55,6 +35,25 @@ cls_804B19F0::~cls_804B19F0() {
     delete field_0xc;
     field_0xc = NULL;
     lbl_8053AEE0 = NULL;
+}
+
+void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
+    field_0x8->mPane->setAlpha(0);
+    field_0x8->field_0x26 = 0;
+    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
+    field_0xc->field_0x22 = 0;
+    field_0x10 = arg;
+    field_0x14 = index - 1;
+    field_0x18 = 1;
+    field_0x1c = 0;
+    char* str = ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->getStringPtr();
+    s32 player = field_0x14;
+    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
+    if (mode == 1) {
+        getMessageText_803832BC(str, 0x3B, player + 1, NULL, NULL);
+    } else if (mode == 2) {
+        getMessageText_803832BC(str, 0x3A, player + 1, NULL, NULL);
+    }
 }
 
 void cls_804B19F0::fn_80442200() {
@@ -234,3 +233,4 @@ s32 cls_804B19F0::fn_80441A1C() {
     }
     return 0x16;
 }
+
