@@ -186,9 +186,12 @@ void cls_804AC8C0::draw() {
 // The counts per stage (.rodata 0x80472158, whose strings follow).
 static const s32 lbl_80472158[3] = {10, 5, 1};
 
-// FIXME(shotgun): 81.53 %, missing/extra + reloc-name; behaviour drift.
+// The box is built in a temporary and copied, as in the original. Literal pool names differ.
+// FIXME: 98.81 %, missing/extra + reloc-name; behaviour near.
 void cls_804AC8C0::fn_8034ACF4() {
-    JGeometry::TBox2f box(9.0f, -7.0f, 103.0f, 87.0f);
+    JGeometry::TBox2f box;
+    JGeometry::TBox2f src(9.0f, -7.0f, 103.0f, 87.0f);
+    box = src;
     box.i.x += mPos.x;
     box.i.y += mPos.y;
     box.f.x += mPos.x;
