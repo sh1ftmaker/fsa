@@ -107,9 +107,6 @@ void PrincessZeldaEnding_804AD6F0::fn_8035E238() {
 
 // State 3: walks mPos across x, then y, with a 16-frame pause between the
 // legs (field_0x234), then moves on to state 4.
-// FIXME: 80.7 %. The original tests x with `cror eq, gt, eq; bne` and lays
-// the 1234 block out after the 0.31 block; here the 1234 block sits right
-// after the bne, so the far-block layout is not reached.
 void PrincessZeldaEnding_804AD6F0::fn_8035E070() {
     if (field_0x234 != 0) {
         if (field_0x234 == 1) {
@@ -123,12 +120,12 @@ void PrincessZeldaEnding_804AD6F0::fn_8035E070() {
                 fn_8035C1C4(5, 0x9b);
             }
             if (mPos.x >= 1234.0f) {
+                mPos.x -= 0.31f;
+            } else {
                 mPos.x = 1234.0f;
                 fn_8035C1C4(6, 0x9b);
                 field_0x238++;
                 field_0x234 = 0x10;
-            } else {
-                mPos.x -= 0.31f;
             }
         } else if (field_0x238 == 1) {
             if (fn_8035C15C(6) == 1) {
