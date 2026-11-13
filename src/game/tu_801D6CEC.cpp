@@ -167,7 +167,7 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 92.71 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.52 %, scheduling+regalloc; behaviour clean.
 void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x48 = pos->x;
     field_0x4c = -22.0f + pos->y;
@@ -184,7 +184,11 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
             if (player >= 0 && player < 4) {
                 JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - a->mPos.x,
                                     getPlayerPos_8023E724(player)->y - a->mPos.y);
-                d.normalize();
+                if (d.squared() <= JGeometry::TUtil<f32>::epsilon()) {
+                    d.set(1.0f, 0.0f);
+                } else {
+                    d.normalize();
+                }
                 s16 ang = -(s16)(fn_801CD664(0xE39) - 0x71C);
                 f32 s = JMath::sincosTable_.sinShort(ang);
                 f32 c = JMath::sincosTable_.cosShort(ang);
