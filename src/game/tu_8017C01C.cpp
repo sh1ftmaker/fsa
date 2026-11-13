@@ -241,6 +241,7 @@ void cls_804A1318::init() {
         field_0x290 = 0.0f;
         getGameView_802D6A9C()->fn_802D7440(false);
         // fall through
+    case 1:
     default:
         mBox.i.x = -16.0f;
         mBox.i.y = -8.0f;
