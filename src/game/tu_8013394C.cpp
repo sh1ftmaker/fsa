@@ -140,6 +140,8 @@ bool fn_80133B58() {
 }
 
 // 0x801339EC.
+// Not auto-inlined: update() calls fn_801339EC out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME(shotgun): 86.15 %, missing/extra (3-byte emitter color copy at emitter+0xBC..0xBE not written; JPABaseEmitter header layout differs).
 void cls_8049ED30::fn_801339EC() {
     static JUtility::TColor colors[6] = {
@@ -157,6 +159,7 @@ void cls_8049ED30::fn_801339EC() {
         }
     }
 }
+#pragma auto_inline reset
 
 // 0x8013394C.
 // FIXME(shotgun): 89.62 %, different
