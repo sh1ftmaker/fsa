@@ -313,21 +313,37 @@ void EscortBase_8049E0C8::vfunc_0x98(s32 a, s32 b, f32 limit) {
     }
 }
 
-// FIXME(shotgun): 92.78 %, missing/extra + reloc-name; behaviour drift.
-void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
-    if (player < 0) {
-        return;
-    }
-    s32 state = fn_8012285C();
-    s32 slot = state;
+static inline bool isPlayerHidden(s32 player) {
+    s32 slot = player;
     for (s32 i = 0; i < 4; i++) {
-        if (state == fn_8023ECF0(i)) {
+        if (player == fn_8023ECF0(i)) {
             slot = i;
             break;
         }
     }
-    bool hidden = fn_80234E30(slot) || fn_80235448(state);
-    if (hidden || !fn_8023BCD4(fn_8012285C())) {
+    if (fn_80234E30(slot) || fn_80235448(player)) {
+        return true;
+    }
+    return false;
+}
+
+static inline s32 findArrivedSlot(s32 player) {
+    if (!fn_8023E98C(player)) {
+        return -1;
+    }
+    for (s32 i = 0; i < 4; i++) {
+        if (fn_8023ED8C(i) && player == fn_8023ECF0(i) && fn_8022D75C(i)) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
+    if (player < 0) {
+        return;
+    }
+    if (isPlayerHidden(fn_8012285C()) || !fn_8023BCD4(fn_8012285C())) {
         mDrawEnabled = false;
     } else {
         mDrawEnabled = true;
@@ -336,26 +352,7 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
         vfunc_0x84();
         return;
     }
-    bool arrived = fn_8022D75C(player);
-    if (!arrived) {
-        s32 found;
-        if (!fn_8023E98C(player)) {
-            found = -1;
-        } else {
-            found = 0;
-            while (found < 4) {
-                if (fn_8023ED8C(found) && player == fn_8023ECF0(found) && fn_8022D75C(found)) {
-                    break;
-                }
-                found++;
-            }
-            if (found >= 4) {
-                found = -1;
-            }
-        }
-        arrived = found >= 0;
-    }
-    if (arrived) {
+    if (fn_8022D75C(player) || findArrivedSlot(player) >= 0) {
         if (fn_8023E10C(player) == 8) {
             vfunc_0x88();
             return;
@@ -400,14 +397,7 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
             index = 0x30;
         }
         if (fn_8023EA28(player) && fn_802265FC(&mPos, 0)) {
-            s32 pslot = player;
-            for (s32 i = 0; i < 4; i++) {
-                if (player == fn_8023ECF0(i)) {
-                    pslot = i;
-                    break;
-                }
-            }
-            if (fn_80234E30(pslot) || fn_80235448(player)) {
+            if (isPlayerHidden(player)) {
                 mPos = *fn_8023E4E4(player, index);
             } else {
                 mPos.x = fn_8023E4E4(player, index)->x;
@@ -420,20 +410,12 @@ void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f
         f32 dy = mPos.y - getPlayerPos_8023E724(player)->y;
         dir = fn_801F681C((u16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f));
         JGeometry::TVec3f moved = mPos - mPrevPos;
-        if (PSVECMag(&moved) < 1.0f) {
+        if (!(PSVECMag(&moved) >= 1.0f)) {
             field_0x380 = 0.5f;
             field_0x37c = 0.5f;
         }
     }
-    s32 st = fn_8012285C();
-    s32 who2 = st;
-    for (s32 i = 0; i < 4; i++) {
-        if (st == fn_8023ECF0(i)) {
-            who2 = i;
-            break;
-        }
-    }
-    if (fn_80234E30(who2) || fn_80235448(st)) {
+    if (isPlayerHidden(fn_8012285C())) {
         mPos = *getPlayerPos_8023E724(fn_8012285C());
     }
     if (field_0x380 <= 0.0f) {
