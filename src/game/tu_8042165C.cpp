@@ -350,7 +350,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 75.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_80425F6C() {
     f32 sx = lbl_8050DB0C.field_0x30[4] *
              ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
