@@ -4,7 +4,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 92.81 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.18 %, scheduling+regalloc; behaviour clean.
 // 0x800FE3EC
 bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
     field_0x0 = group;
@@ -20,7 +20,7 @@ bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
         return false;
     }
     for (s32 i = 0; i < field_0x2; i++) {
-        u32 index = (found[i]->field_0x90 >> 16) & 0xFF;
+        u8 index = (found[i]->field_0x90 >> 16) & 0xFF;
         if (index >= field_0x2 || field_0x4[index] != NULL) {
             return false;
         }
@@ -31,11 +31,12 @@ bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
             return false;
         }
     }
+    JGeometry::TVec3f target = pos;
     f32 best = 10000.0f;
     for (u16 i = 0; i < field_0x2; i++) {
         if (layer == fn_800FE25C(i)) {
-            JGeometry::TVec3f diff;
-            diff.sub(field_0x4[i]->mPos, pos);
+            JGeometry::TVec3f diff = field_0x4[i]->mPos;
+            diff.sub(target);
             f32 dist = diff.length();
             if (dist < best) {
                 best = dist;
@@ -90,7 +91,7 @@ u8 cls_800FE3EC::fn_800FE21C(u8 index) {
 // 0x800FE090
 // auto_inline off: the original's fn_800FDEA0 (bl at 0x800FDEFC) calls it out of line.
 #pragma auto_inline off
-// FIXME: 91.57 %, missing/extra; behaviour drift.
+// FIXME: 90.29 %, missing/extra; behaviour near.
 s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     s32 result = 0;
     f32 dx = field_0x4[field_0x3]->mPos.x - pos->x;
@@ -99,6 +100,7 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
         u8 cur = field_0x3;
         u32 mode = field_0x4[cur]->field_0x90 & 3;
         result = 2;
+        bool advance = true;
         if (cur == 0) {
             result = 1;
             if ((field_0x4[field_0x2 - 1]->field_0x90 & 3) == 2 && field_0x1 == 1) {
@@ -106,27 +108,24 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
             }
         } else if (cur == field_0x2 - 1) {
             result = 3;
-            if (mode != 1) {
-                if (mode != 2) {
-                    const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
-                    out->x = p.x;
-                    out->y = p.y;
-                    out->z = p.z;
-                    return result;
-                }
+            if (mode == 2) {
                 field_0x1 ^= 1;
+            } else if (mode != 1) {
+                advance = false;
             }
         }
-        if (field_0x1 == 0) {
-            field_0x3++;
-        } else {
-            field_0x3--;
-        }
-        if (field_0x3 == field_0x2) {
-            field_0x3 = 0;
-        }
-        if (field_0x3 == 0xFF) {
-            field_0x3 = field_0x2 - 1;
+        if (advance) {
+            if (field_0x1 == 0) {
+                field_0x3++;
+            } else {
+                field_0x3--;
+            }
+            if (field_0x3 == field_0x2) {
+                field_0x3 = 0;
+            }
+            if (field_0x3 == 0xFF) {
+                field_0x3 = field_0x2 - 1;
+            }
         }
     }
     const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
@@ -299,14 +298,14 @@ void cls_800FE3EC::fn_800FD818(s32 dir) {
     field_0x3 = pos;
 }
 
-// FIXME(shotgun): 79.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 88.68 %, missing/extra; behaviour drift.
 // 0x800FD5E8
 bool cls_800FE3EC::fn_800FD5E8(u8 index) {
     u8 count = field_0x2;
     u32 mode = field_0x4[count - 1]->field_0x90 & 3;
-    u8 cur = field_0x3;
     if (index == 0xFF) {
-        s16 next = field_0x1 != 0 ? cur - 1 : cur + 1;
+        u8 cur = field_0x3;
+        s16 next = field_0x1 == 0 ? cur + 1 : cur - 1;
         if (next < 0) {
             if (mode != 1) {
                 return false;
@@ -323,8 +322,8 @@ bool cls_800FE3EC::fn_800FD5E8(u8 index) {
         }
         return false;
     }
-    s16 next = cur + 1;
-    s16 prev = cur - 1;
+    s16 next = index + 1;
+    s16 prev = index - 1;
     if (next == count) {
         if (mode == 1) {
             next = 0;
