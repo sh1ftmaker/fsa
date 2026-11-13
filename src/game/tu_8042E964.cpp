@@ -76,15 +76,11 @@ cls_804B1634::cls_804B1634() {
     for (s32 i = 0; i < 4; i++) {
         u8 k = 0;
         for (s32 j = 0; j < 2; j++) {
-            const J2DPicture* a = static_cast<const J2DPicture*>(field_0x10[i]->mPane);
-            const J2DPicture* b = static_cast<const J2DPicture*>(field_0x24[i]->mPane);
-            field_0x38[i * 4 + j * 2] = a->mTexCoords[k];
-            field_0x78[i * 4 + j * 2] = b->mTexCoords[k];
+            field_0x38[i * 4 + j * 2] = static_cast<J2DPicture*>(field_0x10[i]->mPane)->mTexCoords[k];
+            field_0x78[i * 4 + j * 2] = static_cast<J2DPicture*>(field_0x24[i]->mPane)->mTexCoords[k];
             k++;
-            a = static_cast<const J2DPicture*>(field_0x10[i]->mPane);
-            b = static_cast<const J2DPicture*>(field_0x24[i]->mPane);
-            field_0x38[i * 4 + j * 2 + 1] = a->mTexCoords[k];
-            field_0x78[i * 4 + j * 2 + 1] = b->mTexCoords[k];
+            field_0x38[i * 4 + j * 2 + 1] = static_cast<J2DPicture*>(field_0x10[i]->mPane)->mTexCoords[k];
+            field_0x78[i * 4 + j * 2 + 1] = static_cast<J2DPicture*>(field_0x24[i]->mPane)->mTexCoords[k];
             k++;
         }
     }
