@@ -2073,8 +2073,7 @@ public:
     /* 0x04 */ J2DScreen* field_0x4;
     /* 0x08 */ PaneCtrl_804AF86C* field_0x8;
     /* 0x0C */ PaneCtrl_804AF86C* field_0xc[6];
-    /* 0x24 */ PaneCtrl_804AF86C* field_0x24;
-    /* 0x28 */ PaneCtrl_804AF86C* field_0x28;
+    /* 0x24 */ PaneCtrl_804AF86C* field_0x24[2];
     /* 0x2C */ PaneCtrl_804AF86C* field_0x2c;
     /* 0x30 */ PaneCtrl_804AF86C* field_0x30;
     /* 0x34 */ PaneCtrl_804AF86C* field_0x34;

@@ -12,13 +12,12 @@ void* fn_804030C4(u32 type, const char* name);
 static inline void rotateArrow(J2DScreen* screen, u64 tag, f32 angle) {
     f32 h = screen->search(tag)->getHeight();
     J2DPane* pane = screen->search(tag);
-    f32 w = pane->getWidth();
-    screen->search(tag)->rotate(0.5f * w, 0.5f * h, J2DROTATE_Z, angle);
+    screen->search(tag)->rotate(0.5f * pane->getWidth(), 0.5f * h, J2DROTATE_Z, angle);
 }
 
 // Fonts, texts and the arrows' base angles of the options screen: the constructor of the
 // object at 0x804AF860 (0x84 bytes).
-// FIXME(shotgun): 86.46 %, missing/extra + reloc-name
+// FIXME(shotgun): 86.46 %, missing/extra + reloc-name; behaviour drift.
 cls_804AF860::cls_804AF860() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     field_0x4 = new J2DScreen;
@@ -37,10 +36,10 @@ cls_804AF860::cls_804AF860() {
     field_0xc[4]->setPane_80402F04(field_0x4->search('Pocur05'));
     field_0xc[5] = new PaneCtrl_804AF86C;
     field_0xc[5]->setPane_80402F04(field_0x4->search('Pocur06'));
-    field_0x24 = new PaneCtrl_804AF86C;
-    field_0x24->setPane_80402F04(field_0x4->search('Par01'));
-    field_0x28 = new PaneCtrl_804AF86C;
-    field_0x28->setPane_80402F04(field_0x4->search('Par02'));
+    field_0x24[0] = new PaneCtrl_804AF86C;
+    field_0x24[0]->setPane_80402F04(field_0x4->search('Par01'));
+    field_0x24[1] = new PaneCtrl_804AF86C;
+    field_0x24[1]->setPane_80402F04(field_0x4->search('Par02'));
     field_0x2c = new PaneCtrl_804AF86C;
     field_0x2c->setPane_80402F04(field_0x4->search('Ndata03'));
     field_0x30 = new PaneCtrl_804AF86C;
@@ -104,10 +103,10 @@ cls_804AF860::~cls_804AF860() {
         delete field_0xc[i];
         field_0xc[i] = NULL;
     }
-    delete field_0x24;
-    field_0x24 = NULL;
-    delete field_0x28;
-    field_0x28 = NULL;
+    delete field_0x24[0];
+    field_0x24[0] = NULL;
+    delete field_0x24[1];
+    field_0x24[1] = NULL;
     delete field_0x2c;
     field_0x2c = NULL;
     delete field_0x30;
@@ -116,7 +115,7 @@ cls_804AF860::~cls_804AF860() {
 }
 
 // 0x803A7280.
-// FIXME(shotgun): 76.56 %, missing/extra
+// FIXME(shotgun): 76.81 %, missing/extra + reloc-name; behaviour near.
 void cls_804AF860::fn_803A7280() {
     field_0x64 = 0;
     field_0x68 = 0;
@@ -127,10 +126,9 @@ void cls_804AF860::fn_803A7280() {
         field_0xc[i]->moveFromCentre_80402E08(0.0f, -448.0f);
         field_0xc[i]->field_0x22 = 0;
     }
-    PaneCtrl_804AF86C** arrows = &field_0x24;
     for (s32 i = 0; i < 2; i++) {
-        arrows[i]->moveFromCentre_80402E08(0.0f, -448.0f);
-        arrows[i]->field_0x22 = 0;
+        field_0x24[i]->moveFromCentre_80402E08(0.0f, -448.0f);
+        field_0x24[i]->field_0x22 = 0;
     }
     field_0x2c->moveFromCentre_80402E08(0.0f, -448.0f);
     field_0x2c->field_0x22 = 0;
@@ -162,7 +160,7 @@ void cls_804AF860::fn_803A7280() {
     field_0x80 = 5;
 }
 
-// FIXME(shotgun): 99.86 %, reloc-name
+// FIXME(shotgun): 99.86 %, reloc-name; behaviour clean.
 void cls_804AF860::fn_803A71F0() {
     JFWDisplay::getManager()->setClearColor(JUtility::TColor(0, 0, 0, 0));
     gGameRoot2_8053AB10->fn_8013B490();
@@ -173,7 +171,8 @@ void cls_804AF860::fn_803A71F0() {
 // 0x803A6608. The options screen: left / right choose the arrow, up / down step the pane
 // offsets, the sound mode and the rumble setting toggle with messages 0x98 / 0x99 and
 // 0x38 / 0x39; the six cursor panes blink on a random timer.
-// FIXME(shotgun): 43.0 %, missing/extra + reloc-name (the blink block's show / hide pattern of the six panes is approximate)
+// FIXME(shotgun): 43.27 %, missing/extra + reloc-name; behaviour drift.
+// (the blink block's show / hide pattern of the six panes is approximate)
 void cls_804AF860::fn_803A6608() {
     field_0x80 = 5;
     if (!field_0x76) {
@@ -186,9 +185,8 @@ void cls_804AF860::fn_803A6608() {
             for (s32 i = 0; i < 6; i++) {
                 field_0xc[i]->fn_80402940(0x16, 0, -448.0f, 0.0f);
             }
-            PaneCtrl_804AF86C** arrows = &field_0x24;
             for (s32 i = 0; i < 2; i++) {
-                arrows[i]->fn_80402940(0x16, 0, -448.0f, 0.0f);
+                field_0x24[i]->fn_80402940(0x16, 0, -448.0f, 0.0f);
             }
             field_0x2c->fn_80402940(0x16, 0, -448.0f, 0.0f);
         }
@@ -228,9 +226,8 @@ void cls_804AF860::fn_803A6608() {
             field_0xc[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
         }
         field_0x6e = 0;
-        PaneCtrl_804AF86C** arrows = &field_0x24;
         for (s32 i = 0; i < 2; i++) {
-            arrows[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
+            field_0x24[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
         }
     } else if (lbl_8053AD30->fn_80309A9C(8, 1)) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
@@ -242,9 +239,8 @@ void cls_804AF860::fn_803A6608() {
             field_0xc[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
         }
         field_0x6e = 0;
-        PaneCtrl_804AF86C** arrows = &field_0x24;
         for (s32 i = 0; i < 2; i++) {
-            arrows[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
+            field_0x24[i]->moveFromCentre_80402E08(0.0f, field_0x60 * (f32)field_0x64);
         }
     } else if (lbl_8053AD30->fn_80309A9C(1, 1)) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
@@ -285,20 +281,20 @@ s32 fn_803A65EC() {
 }
 
 // 0x803A60E4.
-// FIXME(shotgun): 50.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 51.26 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AF860::fn_803A60E4() {
     if (field_0x6e == 0) {
-        field_0x6c--;
-        if (field_0x6c <= 0) {
-            field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
-            if (field_0x74 == -6) {
-                field_0x74 = 6;
-            } else {
-                field_0x74 = -6;
-            }
-            rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
-            rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
+        if (--field_0x6c > 0) {
+            return;
         }
+        field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
+        if (field_0x74 == -6) {
+            field_0x74 = 6;
+        } else {
+            field_0x74 = -6;
+        }
+        rotateArrow(field_0x4, 'Par01', (f32)(field_0x70 + field_0x74));
+        rotateArrow(field_0x4, 'Par02', (f32)(field_0x72 + field_0x74));
         return;
     }
     if (field_0x6e == 1 || field_0x6e == -1) {
@@ -316,7 +312,7 @@ void cls_804AF860::fn_803A60E4() {
                 field_0x6e = 0;
             }
         }
-        field_0x24->moveFromCentre_80402E08(-5.0f * (f32)field_0x64 / 25.0f, field_0x60 * (f32)(t * t));
+        field_0x24[0]->moveFromCentre_80402E08(-5.0f * (f32)field_0x64 / 25.0f, field_0x60 * (f32)(t * t));
         if (field_0x6e != 0) {
             field_0x6e--;
         }
@@ -328,7 +324,7 @@ void cls_804AF860::fn_803A60E4() {
                 field_0x6e = 0;
             }
         }
-        field_0x28->moveFromCentre_80402E08(5.0f * (f32)field_0x64 / 25.0f, field_0x60 * (f32)(t * t));
+        field_0x24[1]->moveFromCentre_80402E08(5.0f * (f32)field_0x64 / 25.0f, field_0x60 * (f32)(t * t));
         if (field_0x6e != 0) {
             field_0x6e++;
         }
