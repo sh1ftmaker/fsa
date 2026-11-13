@@ -163,13 +163,15 @@ u8 VaatiBoss_804A4958::fn_801E4094() {
         break;
     }
     if (stateOk && !(mFlags & 0x2000) && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
-        JGeometry::TBox2f saved = mBox;
+        JGeometry::TVec2f savedI(mBox.i);
+        JGeometry::TVec2f savedF(mBox.f);
         mBox.i.x *= 1.5f;
         mBox.i.y *= 1.5f;
         mBox.f.x *= 1.5f;
         mBox.f.y *= 1.5f;
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 48.0f);
-        mBox = saved;
+        mBox.i = savedI;
+        mBox.f = savedF;
         if (serial >= 0 && serial != mSerial) {
             ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (bomb != NULL && bomb->mActorId == 'HBMB' && bomb->field_0x94 == 1) {
