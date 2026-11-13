@@ -626,33 +626,25 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x8035001C.
-// Remaining difference: the scheduling of the zero stores against the loads in some cases.
-// FIXME: 86.01 %, scheduling+regalloc + reloc-name; behaviour drift.
+// Not auto-inlined: update calls fn_8035001C out of line in the original (docs/INLINING.md, pragma rule 1).
+// Remaining difference: the jump table's symbol name (jumptable_804ACAC8).
+#pragma auto_inline off
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
-        field_0x3c.x = 0.5f * field_0x260;
-        field_0x3c.y = 0.0f;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.5f * field_0x260, 0.0f, 0.0f);
         break;
     case 1:
-        field_0x3c.x = 0.5f * -(f32)field_0x260;
-        field_0x3c.y = 0.0f;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.5f * -(f32)field_0x260, 0.0f, 0.0f);
         break;
     case 2:
-        field_0x3c.x = 0.0f;
-        field_0x3c.y = 0.5f * field_0x260;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.0f, 0.5f * field_0x260, 0.0f);
         break;
     case 3:
-        field_0x3c.x = 0.0f;
-        field_0x3c.y = 0.5f * -(f32)field_0x260;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.0f, 0.5f * -(f32)field_0x260, 0.0f);
         break;
     case 4:
-        field_0x3c.x = field_0x3c.y = 0.5f * field_0x260;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.5f * field_0x260, 0.5f * field_0x260, 0.0f);
         break;
     case 5: {
         s32 v = field_0x260;
@@ -669,14 +661,14 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
         break;
     }
     case 7:
-        field_0x3c.x = field_0x3c.y = 0.5f * -(f32)field_0x260;
-        field_0x3c.z = 0.0f;
+        field_0x3c.set(0.5f * -(f32)field_0x260, 0.5f * -(f32)field_0x260, 0.0f);
         break;
     default:
-        field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
+        field_0x3c.zero();
         break;
     }
 }
+#pragma auto_inline reset
 
 // 0x8034F43C.
 // Still differs: the dir = -1 of the failed push tests is not merged with the default case.
