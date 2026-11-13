@@ -354,7 +354,7 @@ void cls_804A0738::draw() {
 
 // 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
 // player is then pushed along.
-// FIXME(shotgun): 73.06 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 77.54 %, missing/extra; behaviour drift.
 bool cls_804A0738::fn_80168C38() {
     s32 found = -1;
     JGeometry::TBox2f box = mBox;
