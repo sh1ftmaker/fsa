@@ -10,7 +10,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "game/act/act_score.h"
 
-// FIXME(shotgun): 98.0 %, different
+// FIXME(shotgun): 97.98 %, different + reloc-name; behaviour near.
 void Score_804AF4C0::init() {
     mValue = field_0x90 & 0xFFFF;
     mPlayer = (field_0x90 >> 16) & 0xFF;
@@ -84,7 +84,7 @@ void Score_804AF4C0::init() {
     }
 }
 
-// FIXME(shotgun): 99.6 %, regalloc-only
+// FIXME(shotgun): 99.66 %, regalloc-only + reloc-name; behaviour clean.
 void Score_804AF4C0::update() {
     if (mState == 0 || mState == 4) {
         fn_80393514();
@@ -115,7 +115,6 @@ void Score_804AF4C0::update() {
     }
 }
 
-// FIXME(shotgun): 99.7 %, reloc-name
 void Score_804AF4C0::draw() {
     if (mState == 0 || mState == 4) {
         fn_80393228();
@@ -130,16 +129,19 @@ void Score_804AF4C0::draw() {
 }
 
 // Per-player digit colours.
-static const u8 sDigitRed[4] = {0x28, 0xFF, 0x32, 0xBE};
-static const u8 sDigitGreen[4] = {0xFF, 0x50, 0xC8, 0x78};
-static const u8 sDigitBlue[4] = {0x28, 0x50, 0xFF, 0xFF};
+static const u8 lbl_80543180[4] = {0x28, 0xFF, 0x32, 0xBE};
+static const u8 lbl_8054317C[4] = {0xFF, 0x50, 0xC8, 0x78};
+static const u8 lbl_80543184[4] = {0x28, 0x50, 0xFF, 0xFF};
+static const u8 lbl_80543170[4] = {0x28, 0xFF, 0x32, 0xBE};
+static const u8 lbl_80543174[4] = {0xFF, 0x50, 0xC8, 0x78};
+static const u8 lbl_80543178[4] = {0x28, 0x50, 0xFF, 0xFF};
 
 // Not auto-inlined: draw and update call these out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // Force Gem / fairy sounds by tens digit.
 static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
 
-// FIXME(shotgun): 90.91 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.97 %, missing/extra + reloc-name; behaviour drift.
 void Score_804AF4C0::fn_80393514() {
     if (mTimer == 90) {
         // The original copies this 12-entry table (rodata 0x80475738) to the stack and passes entry 0.
@@ -199,7 +201,8 @@ void Score_804AF4C0::fn_80393514() {
     }
 }
 
-// FIXME(shotgun): 14.99 %, missing/extra + reloc-name (the original builds each TColor on the stack)
+// FIXME(shotgun): 13.01 %, missing/extra + reloc-name; behaviour drift.
+// (the original builds each TColor on the stack)
 void Score_804AF4C0::fn_80393228() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     if (mValue < 10) {
@@ -209,7 +212,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     } else if (mValue < 100) {
         if (field_0x4 < 8) {
@@ -218,7 +221,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue / 10, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
         if (field_0x4 < 8) {
             Vec pos;
@@ -226,7 +229,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue - (mValue / 10) * 10, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)(255.0f * ((f32)mTimer / 90.0f))));
         }
     } else {
         if (field_0x4 < 8) {
@@ -235,7 +238,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, 10, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     }
 }
@@ -251,7 +254,8 @@ static inline void putScoreDigit(const Score_804AF4C0* self, f32 fade, f32 dx, u
     }
 }
 
-// FIXME(shotgun): 15.94 %, missing/extra + reloc-name (cases 0-3 of the 12-entry jump table only; unrolled in the original)
+// FIXME(shotgun): 15.93 %, missing/extra + reloc-name; behaviour drift.
+// (cases 0-3 of the 12-entry jump table only; unrolled in the original)
 void Score_804AF4C0::fn_80391F58() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     switch (mValue) {
@@ -275,7 +279,8 @@ void Score_804AF4C0::fn_80391F58() {
     }
 }
 
-// FIXME(shotgun): 63.6 %, missing/extra (the original builds a TVec3f copy of mPos and passes it on)
+// FIXME(shotgun): 63.76 %, missing/extra + reloc-name; behaviour drift.
+// (the original builds a TVec3f copy of mPos and passes it on)
 void Score_804AF4C0::fn_80391D44() {
     s32 n = fn_8023BC38(mPlayer) / 60 + 1;
     if (n < 10) {
@@ -285,7 +290,7 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, n, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], 255));
+                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
         }
     } else {
         Vec pos;
@@ -294,14 +299,14 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 1, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], 255));
+                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
         }
         pos.x = mPos.x + 10.0f;
         pos.y = mPos.y;
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 0, &pos,
-                                      JUtility::TColor(sDigitRed[mPlayer], sDigitGreen[mPlayer], sDigitBlue[mPlayer], 255));
+                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
         }
     }
 }
