@@ -450,7 +450,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 79.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.98 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041F720() {
     s32 mode = lbl_80529DEC.field_0x118;
     if ((mode == 9 && lbl_80529DEC.field_0x11c == 3) || (mode == 0 && lbl_80529DEC.field_0x11c == 2) ||
