@@ -937,7 +937,7 @@ bool ForceGem_804AB6D8::fn_8032B3F8() {
     return true;
 }
 
-// FIXME(shotgun): 92.36 %, missing/extra + reloc-name
+// Remaining difference: float literal reloc names only.
 bool ForceGem_804AB6D8::fn_8032B0A4() {
     if (field_0x94 == 0x23 || field_0x94 == 0x24) {
         return false;
@@ -945,7 +945,7 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
     if (mPos.z > 4.0f) {
         return false;
     }
-    u16 tile = fn_8022461C(&mPos, field_0x4);
+    s32 tile = fn_8022461C(&mPos, field_0x4);
     if (tile == 3) {
         field_0x24c = 0x3ff;
         field_0x3c.z = 0.0f;
@@ -964,13 +964,13 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
             u16 effectA;
             u16 effectB;
             if (fn_802DE9A0() == true) {
-                startSound_801F0E34(0x50040, 0);
                 effectA = 0x2a9;
                 effectB = 0x2aa;
+                startSound_801F0E34(0x50040, 0);
             } else if (fn_802DEB58() == true) {
-                startSound_801F0E34(0x5003f, 0);
                 effectA = 0x45e;
                 effectB = 0x45f;
+                startSound_801F0E34(0x5003f, 0);
             } else {
                 return true;
             }
