@@ -224,8 +224,9 @@ s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVe
     if (kind == 0) {
         return 0;
     }
-    if ((kind == 2 || kind == 7 || kind == 8) && field_0xa0 >= 0) {
-        ActorBase_804A5770* holder = getActorManager_801F856C()->findActorBySerial_801F666C(field_0xa0);
+    s32 serial = field_0xa0;
+    if ((kind == 2 || kind == 7 || kind == 8) && serial >= 0) {
+        ActorBase_804A5770* holder = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (holder != NULL) {
             JGeometry::TVec3f p = holder->mPos;
             s32 hit = fn_8023AC74(box, field_0x4, pos);
