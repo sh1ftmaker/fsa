@@ -163,7 +163,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 94.29 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.27 %, missing/extra; behaviour near.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
@@ -202,8 +202,10 @@ void cls_804A4EE8::fn_801DB6C8() {
             step = len;
         }
         d.normalize();
-        mSearchPos.x += d.x * step;
-        mSearchPos.y += d.y * step;
+        d.x *= step;
+        d.y *= step;
+        mSearchPos.x += d.x;
+        mSearchPos.y += d.y;
     }
     if (mFlags & 0x2000) {
         mAngle -= mAngleSpeed;
