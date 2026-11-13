@@ -84,7 +84,7 @@ void cls_804B0478::update() {
             field_0x248 = 0;
             for (s32 i = 0; i < 4; i++) {
                 if (getPlayerLayer_8023DE58(i) < 8) {
-                    s32 id = 0x3ae;
+                    u16 id = 0x3ae;
                     if (fn_80237060(0) == 2) {
                         id = 0x3af;
                     }
@@ -114,6 +114,7 @@ void cls_804B0478::update() {
                     field_0x260[i].z = p->z;
                 }
             }
+            JGeometry::TVec3f pos;
             JGeometry::TBox2f box = mBox;
             box.i.x += mPos.x;
             box.f.x += mPos.x;
@@ -122,7 +123,6 @@ void cls_804B0478::update() {
             fn_8022FEB8(&box, field_0x4, mSerial, false, false);
             field_0x244 = fn_8022FD8C(mSerial);
             if (field_0x244 >= 0) {
-                JGeometry::TVec3f pos;
                 if (fn_8038BD08(field_0x244, 0x406, field_0x4, pos, 0x28)) {
                     mState = 2;
                 }
