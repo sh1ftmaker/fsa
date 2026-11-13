@@ -575,18 +575,20 @@ s32 cls_8049D83C::vfunc_0x5C() {
 void cls_8049D83C::fn_80113B54(s32 arg) {
     SpriteParams_801F5AE0 params;
     SpriteParams_801F5AE0 params2;
-    JGeometry::TVec3f pos(mPos.x, mSpawnPos.y, mPos.z);
-    s32 frame = arg + mAnim.mCel;
-    const char* name;
+    JGeometry::TVec3f pos(mPos);
+    pos.y = mSpawnPos.y;
     if (arg == 0x1D6) {
-        name = "enemy_both2_sob.bin";
+        fn_801EF830(field_0x4, &pos, &params2, 7, "enemy_both2_sob.bin", arg + mAnim.mCel, NULL);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, arg + mAnim.mCel, &params, 1.0f, 1.0f);
+        }
     } else {
-        name = "enemy_gc_sob.bin";
-    }
-    fn_801EF830(field_0x4, &pos, &params2, 7, name, frame, NULL);
-    if (field_0x4 < 8) {
-        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', name);
-        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
+        fn_801EF830(field_0x4, &pos, &params2, 7, "enemy_gc_sob.bin", arg + mAnim.mCel, NULL);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, arg + mAnim.mCel, &params, 1.0f, 1.0f);
+        }
     }
 }
 
