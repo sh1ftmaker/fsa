@@ -23,8 +23,9 @@ void cls_80204638::fn_80204ABC(bool reset) {
     if (reset) {
         field_0x0 = 0;
         for (s32 i = 0; i < 10; i++) {
-            mSlots[i][0] = NULL;
-            mSlots[i][1] = NULL;
+            for (s32 j = 0; j < 2; j++) {
+                mSlots[i][j] = NULL;
+            }
         }
     }
 }
