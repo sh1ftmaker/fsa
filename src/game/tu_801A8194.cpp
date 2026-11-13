@@ -9,7 +9,6 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 46.8 %, missing/extra: the original copies mPos into the 40-entry trail with a loop unrolled eight times (five groups of eight entries); ours is rolled
 void cls_804A2EC0::init() {
     mBox.i.x = -10.0f;
     mBox.i.y = -10.0f;
@@ -34,10 +33,37 @@ void cls_804A2EC0::init() {
     field_0x11e = 1;
     field_0x26c = 1.2f;
     field_0x274 = 255.0f;
-    field_0x27c = mPos;
-    field_0x288 = mPos;
-    for (s32 i = 0; i < 40; i++) {
-        field_0x294[i] = mPos;
+    field_0x27c.x = mPos.x;
+    field_0x27c.y = mPos.y;
+    field_0x27c.z = mPos.z;
+    field_0x288.x = mPos.x;
+    field_0x288.y = mPos.y;
+    field_0x288.z = mPos.z;
+    for (s32 i = 0; i < 5; i++) {
+        field_0x294[i * 8 + 0].x = mPos.x;
+        field_0x294[i * 8 + 0].y = mPos.y;
+        field_0x294[i * 8 + 0].z = mPos.z;
+        field_0x294[i * 8 + 1].x = mPos.x;
+        field_0x294[i * 8 + 1].y = mPos.y;
+        field_0x294[i * 8 + 1].z = mPos.z;
+        field_0x294[i * 8 + 2].x = mPos.x;
+        field_0x294[i * 8 + 2].y = mPos.y;
+        field_0x294[i * 8 + 2].z = mPos.z;
+        field_0x294[i * 8 + 3].x = mPos.x;
+        field_0x294[i * 8 + 3].y = mPos.y;
+        field_0x294[i * 8 + 3].z = mPos.z;
+        field_0x294[i * 8 + 4].x = mPos.x;
+        field_0x294[i * 8 + 4].y = mPos.y;
+        field_0x294[i * 8 + 4].z = mPos.z;
+        field_0x294[i * 8 + 5].x = mPos.x;
+        field_0x294[i * 8 + 5].y = mPos.y;
+        field_0x294[i * 8 + 5].z = mPos.z;
+        field_0x294[i * 8 + 6].x = mPos.x;
+        field_0x294[i * 8 + 6].y = mPos.y;
+        field_0x294[i * 8 + 6].z = mPos.z;
+        field_0x294[i * 8 + 7].x = mPos.x;
+        field_0x294[i * 8 + 7].y = mPos.y;
+        field_0x294[i * 8 + 7].z = mPos.z;
     }
     field_0x268 = 0;
     field_0x190 = 0;
