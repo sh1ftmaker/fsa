@@ -299,8 +299,8 @@ void cls_804A38D4::fn_801B5228() {
         }
         addCalc2_801F71A4(&mPos.x, x, 0.3f, field_0x25c);
         mPos.y = y;
-        f32 dz = fabs(mPos.z - field_0x258);
-        f32 dx = fabs(mPos.x - x);
+        f32 dz = std::fabs(mPos.z - field_0x258);
+        f32 dx = std::fabs(mPos.x - x);
         if (std::sqrtf(dx * dx + dz * dz) < 1.0f) {
             if (--lbl_8053A118 == 0) {
                 for (s32 i = 0; i < 4; i++) {
@@ -327,7 +327,7 @@ void cls_804A38D4::fn_801B5228() {
                         fn_80230498(i, &field_0x264[i], 0xB0, 0xFF, -0x80, -0x80, true);
                     }
                 }
-                if (fabs(mPos.z - field_0x258) < 2.0f) {
+                if (std::fabs(mPos.z - field_0x258) < 2.0f) {
                     lbl_8053A118 = 0x309;
                 }
             }
