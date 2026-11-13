@@ -23,11 +23,13 @@ static const u16 lbl_8046F5C8[4][4] = {{2, 3, 4, 5}, {6, 7, 8, 9}, {14, 15, 16, 
 static const u16 lbl_8046F5E8[20] = {1206, 1207, 1208, 1209, 1210, 1211, 1212, 1213, 1214, 1215,
                                      1221, 1222, 1223, 1224, 1225, 1216, 1217, 1218, 1219, 1220};
 
+// Not auto-inlined: vfunc_0x10 and the callers below call fn_802EEA24 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void fn_802EEA24(u8 value) {
     lbl_8053AB60 = value;
 }
+#pragma auto_inline reset
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void cls_804AA350::init() {
     mEmitter230 = NULL;
     mEmitter234 = NULL;
@@ -72,7 +74,7 @@ void cls_804AA350::init() {
     field_0x11f = 1;
 }
 
-// FIXME(shotgun): 83.7 %, missing/extra
+// FIXME(shotgun): 90.08 %, missing/extra; behaviour drift.
 void cls_804AA350::vfunc_0x10() {
     s32 count = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < count; i++) {
@@ -160,7 +162,7 @@ static inline bool isSlr4(s32 slot) {
     return false;
 }
 
-// FIXME(shotgun): 79.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.88 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AA350::update() {
     switch (field_0x24c) {
     case 0:
@@ -365,7 +367,7 @@ void cls_804AA350::update() {
     }
 }
 
-// FIXME(shotgun): 97.6 %, scheduling
+// FIXME(shotgun): 97.62 %, scheduling; behaviour clean.
 void cls_804AA350::draw() {
     if (field_0x2cc != NULL) {
         SpriteParams_801F5AE0 params;
@@ -398,7 +400,8 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
-// FIXME(shotgun): 54.8 %, missing/extra + reloc-name (structure, branches and constants follow the asm; the original builds the distance/angle with inlined TVec2 temporaries)
+// FIXME: 85.95 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): missing/extra + reloc-name (TUtilf::sqrt tests x > 0 in the original, not x <= 0; fn_802303FC's flag is passed as 0xFF there; field_0x4 is loaded late)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
     for (s32 p = 0; p < 4; p++) {
@@ -410,12 +413,9 @@ bool cls_804AA350::fn_802ED538() {
                 if (pos->z == 0.0f) {
                     f32 dx = mPos.x - pos->x;
                     f32 dy = (32.0f + mPos.y) - pos->y;
-                    e.mPos.z = getPlayerPos_8023E724(p)->z;
+                    e.mPos = *getPlayerPos_8023E724(p);
                     f32 len = dx * dx + dy * dy;
-                    if (len > 0.0f) {
-                        len = len * (1.0f / std::sqrtf(len));
-                    }
-                    e.mDist = len;
+                    e.mDist = JGeometry::TUtilf::sqrt(len);
                     e.mAngle = (s16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
                     e.mActive = 1;
                     fn_80230AD4(p);
