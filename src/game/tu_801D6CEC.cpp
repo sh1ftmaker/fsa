@@ -252,7 +252,7 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
                     s16 ang = -(s16)(field_0x54 + i * 0xFFF);
                     f32 s = JMath::sincosTable_.sinShort(ang);
                     f32 c = JMath::sincosTable_.cosShort(ang);
-                    JGeometry::TVec3f p(field_0x48.x + (c * 0.0f - field_0x5c * s), field_0x48.y + (s * 0.0f + field_0x5c * c),
+                    JGeometry::TVec3f p(field_0x48.x + (0.0f * c - field_0x5c * s), field_0x48.y + (0.0f * s + field_0x5c * c),
                                         field_0x48.z);
                     a->mPos = p;
                     if (field_0x44 == 2) {
