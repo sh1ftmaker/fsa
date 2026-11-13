@@ -74,7 +74,7 @@ void cls_804A2FB0::init() {
     field_0x23c = 0;
     for (int i = 0; i < 4; i++) {
         field_0x270[i] = -1;
-        field_0x280[i] = mPos;
+        field_0x280[i].set(mPos);
     }
     field_0xb0 = 0x5040004;
     mLife = 10000;
