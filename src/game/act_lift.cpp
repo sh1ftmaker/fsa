@@ -31,7 +31,8 @@ static inline void setRotScaleMtxS16(Mtx m, s16 x, s16 y, s16 z, f32 scale) {
     m[2][2] = scale * (cx * cy);
 }
 
-// FIXME: 74.75 %. The flags test loads 0x90 into r3 and reuses it; the
+// FIXME: 97.39 %, missing/extra; behaviour near.
+// The flags test loads 0x90 into r3 and the oris reuses it; the
 // original loads it into r0 for the test and reloads 0x90 (r31) for the oris.
 void Lift_804A6F6C::init() {
     if (((field_0x90 >> 17) & 0x1F) == 0) {
@@ -39,10 +40,12 @@ void Lift_804A6F6C::init() {
     }
     field_0x23c = gGameRoot_8053AAF8->field_0xa4->getResource(0x3F3F3F3F /* "????": a char constant would be a trigraph */, lbl_804A6F48[getMode()]);
     ResTIMG* res = static_cast<ResTIMG*>(field_0x23c);
-    mBox.i.x = -(s32)res->mSizeX / 2;
-    mBox.i.y = -(s32)res->mSizeY / 2;
-    mBox.f.x = res->mSizeX / 2;
-    mBox.f.y = res->mSizeY / 2;
+    u16 sizeX = res->mSizeX;
+    u16 sizeY = res->mSizeY;
+    mBox.i.x = -(s32)sizeX / 2;
+    mBox.i.y = -(s32)sizeY / 2;
+    mBox.f.x = sizeX / 2;
+    mBox.f.y = sizeY / 2;
     mLife = 0;
     field_0x230 = 0;
     field_0x238 = 0;
@@ -63,7 +66,8 @@ void Lift_804A6F6C::init() {
     }
 }
 
-// FIXME(shotgun): 66.9 %, missing/extra: the player-position vector arithmetic, the atan2 argument order and the tile-index math are scheduled differently
+// FIXME(shotgun): 73.68 %, missing/extra; behaviour drift.
+// the player-position vector arithmetic, the atan2 argument order and the tile-index math are scheduled differently
 bool Lift_804A6F6C::fn_802565BC(s32 index) {
     if (getPlayerLayer_8023DE58(index) != field_0x4) {
         return false;
@@ -71,9 +75,7 @@ bool Lift_804A6F6C::fn_802565BC(s32 index) {
     for (s32 i = 0; i < 8; i++) {
         JGeometry::TVec3f p;
         fn_8022E088(index, i, &p);
-        p.x -= mPos.x;
-        p.y -= mPos.y;
-        p.z -= mPos.z;
+        p -= mPos;
         p.z = 0.0f;
         s32 angle = JMath::atanTable_.atan2_(p.y, p.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         angle -= field_0x238;
@@ -167,7 +169,8 @@ void Lift_804A6F6C::fn_80256410() {
     mPos.y = mSpawnPos.y + 64.0f * JMath::sincosTable_.sinShort(field_0x23a);
 }
 
-// FIXME: 78.61 %. The frame is 0xA4 (original 0x80): the diff/d/push
+// FIXME: 78.61 %, missing/extra; behaviour drift.
+// The frame is 0xA4 (original 0x80): the diff/d/push
 // temporaries and the operator- results take more stack than the original;
 // this sits in r31 and i in r30 (original: r30 and r31).
 void Lift_804A6F6C::update() {
@@ -199,7 +202,8 @@ void Lift_804A6F6C::update() {
     }
 }
 
-// FIXME: 84.93 %. Same instructions; scheduling: MWCC places the reset
+// FIXME: 84.93 %, scheduling+regalloc + reloc-name; behaviour clean.
+// Same instructions; scheduling: MWCC places the reset
 // stores' li r9/r8 before the 0.0 lfs that the original loads first.
 void Lift_804A6F6C::draw() {
     SpriteParams_801F5AE0 params;
