@@ -87,7 +87,11 @@ void cls_804A5D60::vfunc_0x54() {
 // velocity. While bit 0x2000 is set only 8, 11 and 12 are taken.
 void cls_804A5D60::fn_8020AA78(s32 state) {
     if (mFlags & 0x2000) {
-        if (!(state == 8 || state == 11 || state == 12)) {
+        if (state < 11) {
+            if (state != 8) {
+                return;
+            }
+        } else if (state >= 13) {
             return;
         }
     }
@@ -122,14 +126,18 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         switch (field_0x98) {
         case 0:
             field_0x2b4 = 1.4f;
+            field_0x2b8 = 0.0f;
             break;
         case 1:
             field_0x2b4 = -1.4f;
+            field_0x2b8 = 0.0f;
             break;
         case 2:
+            field_0x2b4 = 0.0f;
             field_0x2b8 = 1.4f;
             break;
         case 3:
+            field_0x2b4 = 0.0f;
             field_0x2b8 = -1.4f;
             break;
         }
@@ -170,7 +178,9 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         startSound_801F0E34(0x50038, 0);
         mBox.i.set(1.0f, 1.0f);
         mBox.f.set(-1.0f, -1.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
+        break;
+    case 12:
         break;
     }
     mStateTimer = 0;
