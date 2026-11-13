@@ -17,6 +17,7 @@ static const s16* lbl_8049E330[4] = {lbl_80464EA0, lbl_80464EAC, lbl_80464EB8, l
 static const s16* lbl_8049E340[4] = {lbl_80464ED0, lbl_80464EDC, lbl_80464ED0, lbl_80464EDC};
 
 
+// FIXME: 99.92 %, reloc-name; behaviour clean.
 void cls_8049E350::init() {
     ActorBase_804A5770::init();
     field_0x238 = field_0x90 & 1;
@@ -81,6 +82,7 @@ inline void cls_8049E350::enterState() {
 }
 
 // 0x80125EFC.
+// FIXME: 89.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E350::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
@@ -156,6 +158,7 @@ void cls_8049E350::update() {
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
 }
 
+// FIXME: 82.44 %, missing/extra + reloc-name; behaviour near.
 void cls_8049E350::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
@@ -179,6 +182,7 @@ void cls_8049E350::draw() {
     }
 }
 
+// FIXME: 96.82 %, missing/extra + reloc-name; behaviour near.
 void cls_8049E350::fn_80125C58(bool flag) {
     field_0x231 = flag;
     if (field_0x231) {
@@ -197,6 +201,7 @@ void cls_8049E350::fn_80125C58(bool flag) {
     }
 }
 
+// FIXME: 99.60 %, reloc-name; behaviour clean.
 void cls_8049E350::fn_80125BF4() {
     JGeometry::TVec3f pos(mPos);
     pos.y += -24.0f;
