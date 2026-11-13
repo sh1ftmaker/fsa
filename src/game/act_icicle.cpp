@@ -44,7 +44,8 @@ void Icicle_8049CFC8::init() {
     }
 }
 
-// FIXME: 91.98%. Same calls and constants as the original; the rest is register
+// FIXME: 91.98 %, different + reloc-name; behaviour clean.
+// Same calls and constants as the original; the rest is register
 // and stack-slot allocation (the original keeps the `found` flags in r0 and r30,
 // and its box copies are laid out differently), plus the order of the fn_801CC640
 // call block.
@@ -189,7 +190,8 @@ void Icicle_8049CFC8::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME: 98.63%. Same instructions except the order of the field_0x54.y and
+// FIXME: 98.63 %, scheduling+regalloc; behaviour clean.
+// Same instructions except the order of the field_0x54.y and
 // field_0x54.x loads (the original loads y first). A read-once local for y
 // matches the order, but only as a trick.
 void Icicle_8049CFC8::draw() {
@@ -266,6 +268,7 @@ bool Icicle_8049CFC8::fn_8010B40C(s32 state) {
 // Not auto-inlined: update calls fn_8010B284 out of line in the original
 // (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
+// FIXME: 97.59 %, scheduling+regalloc; behaviour clean.
 bool Icicle_8049CFC8::fn_8010B284() {
     JGeometry::TVec3f playerPos;
     JGeometry::TVec3f probe = mPos;
