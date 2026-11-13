@@ -251,7 +251,7 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
-// FIXME(shotgun): 84.37 %, missing/extra; behaviour drift.
+// FIXME(shotgun): remaining diff is instruction scheduling and registers only.
 void cls_804A4EE8::vfunc_0x88() {
     if (field_0x2b4 != 0.0f) {
         if (mState == 0) {
@@ -279,8 +279,10 @@ void cls_804A4EE8::vfunc_0x88() {
         field_0x3c.z = 0.0f;
         return;
     }
-    f32 tx = mSearchPos.x + JMath::sincosTable_.sinShort(mAngle) * mRadius;
-    f32 ty = mSearchPos.y + JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 sinv = JMath::sincosTable_.sinShort(mAngle) * mRadius;
+    f32 cosv = JMath::sincosTable_.cosShort(mAngle) * mRadius;
+    f32 tx = mSearchPos.x + sinv;
+    f32 ty = mSearchPos.y + cosv;
     field_0x3c.x = tx - mPos.x;
     field_0x3c.y = ty - mPos.y;
     field_0x3c.z = 0.0f;
