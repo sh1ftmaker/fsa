@@ -1118,7 +1118,7 @@ def run_review(wt, owner, unit, base_head, first, changes, args):
             sh(["git", "reset", "-q"], wt)
             why = "the reviewer's repair no longer applies once the rejected changes are out" if r.returncode else None
         if why is None:
-            why, _, _ = judge(wt, unit, first, None)
+            why, rev, _ = judge(wt, unit, first, None)
             why = f"the reviewer's repair fails the checks ({why})" if why else None
         if why is None:
             sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
@@ -1127,8 +1127,10 @@ def run_review(wt, owner, unit, base_head, first, changes, args):
             sh(["git", "commit", "-qm", f"{unit[:-4]}: repaired in review\n\n{what}\n\n"
                 f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
             nfixed = len(fixed)
-            for c in fixed:
-                log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], "-", "-", "-", "-", "FIXED", verdict(c)[1]] + [""] * 7)
+            for c in fixed:  # what the function measures after the repair (a repair may give back the author's gain)
+                f0, f1 = first["functions"].get(c["fn"]), (rev or {}).get("functions", {}).get(c["fn"])
+                log([owner, c["tier"], c["lane"], unit, c["fn"], c["size"], f"{f0['pct']:.2f}" if f0 else "-", "-",
+                     f"{f1['pct']:.2f}" if f1 else "-", "-", "FIXED", verdict(c)[1]] + [""] * 7)
         else:  # without the repair these changes still carry what the reviewer objected to
             revert(wt)
             for c in fixed:
@@ -1385,11 +1387,17 @@ def highlights(since, k=3):
     rows = [dict(zip(COLS, r)) for r in ledger_rows() if len(r) >= len(COLS) and r[0] > since]
     out_ = {(r["unit"], r["fn"]) for r in rows if r["verdict"] == "TRICK"}
     num = lambda v: float(v) if re.match(r"^-?\d+(\.\d+)?$", v or "") else 0.0
+    repaired = {(r["unit"], r["fn"]): num(r["pct1"]) for r in rows
+                if r["verdict"] == "FIXED" and re.match(r"^\d", r["pct1"] or "")}
     best = []
     for r in rows:
         if r["verdict"] == "ACCEPT" and r["fn"] != "FILE" and (r["unit"], r["fn"]) not in out_:
-            gain = num(r["size"]) * (num(r["pct1"]) - num(r["pct0"])) / 100
-            best.append((gain, f"{r['why'].replace('rejudged: ', '')} ({int(num(r['size']))} B, {r['tier']})"))
+            p1, why = num(r["pct1"]), r["why"].replace("rejudged: ", "")
+            if (r["unit"], r["fn"]) in repaired:  # the reviewer's repair decides what was kept
+                p1 = repaired[(r["unit"], r["fn"])]
+                why = f"{why.split(' -> ')[0]} -> {p1:.2f} % after review repair"
+            gain = num(r["size"]) * (p1 - num(r["pct0"])) / 100
+            best.append((gain, f"{why} ({int(num(r['size']))} B, {r['tier']})"))
     kept = sum(1 for r in rows if r["verdict"] == "ACCEPT")
     return kept, len(out_), [t for _, t in sorted(best, reverse=True)[:k]]
 
