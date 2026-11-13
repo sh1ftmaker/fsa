@@ -102,7 +102,7 @@ s32 cls_8049DD68::vfunc_0x5C() {
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // FIXME(shotgun): 11.60 %, missing/extra + reloc-name; behaviour drift.
-// jump table and the dir[1] = -1 store in case 2 still differ
+// jump table is not yet a named jumptable_8049DDF0; stack layout still differs
 void cls_8049DD68::fn_8011D1B8(s32 state) {
     switch (state) {
     case 1:
@@ -163,7 +163,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 90.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.44 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 0:
@@ -192,10 +192,11 @@ void cls_8049DD68::fn_8011CF48() {
     case 6: {
         if (fn_8011921C()->field_0x8 >= lbl_80464BBC[6] + 20) {
             f32 d = (f32)(lbl_80464BBC[7] - 75 - fn_8011921C()->field_0x8);
+            f32 spawnY = mSpawnPos.y;
             if (d < FLT_EPSILON) {
-                field_0x240.y = mSpawnPos.y;
+                field_0x240.y = spawnY;
             } else {
-                field_0x240.y += (1.0f / d) * (mSpawnPos.y - field_0x240.y);
+                field_0x240.y += (1.0f / d) * (spawnY - field_0x240.y);
             }
         }
         JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
