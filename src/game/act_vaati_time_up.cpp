@@ -95,8 +95,8 @@ void VaatiTimeUp_804ACCC0::update() {
             field_0x2d8 += field_0x2e8;
             field_0x2dc += field_0x2ec;
             field_0x2e0 += field_0x2f0;
-            field_0x2c0--;
         }
+        field_0x2c0--;
         break;
     case 2:
         if (field_0x2c0 <= 0) {
