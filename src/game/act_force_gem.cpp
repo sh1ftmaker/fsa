@@ -598,7 +598,19 @@ void ForceGem_804AB6D8::update() {
 // literal table offsets, register order.
 void ForceGem_804AB6D8::draw() {
     s32 state = field_0x230;
-    if (state == 7 || state == 8 || state == 0xC || state == 0xE || state == 0x11) {
+    if (state == 7) {
+        return;
+    }
+    if (state == 8) {
+        return;
+    }
+    if (state == 0xC) {
+        return;
+    }
+    if (state == 0xE) {
+        return;
+    }
+    if (state == 0x11) {
         return;
     }
     if (field_0x94 == 0x24) {
