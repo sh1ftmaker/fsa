@@ -476,8 +476,7 @@ bool UnknownENDM_804AA0FC::fn_802E9884(const JGeometry::TVec2f* pos) {
 
 // Follows the target focus: closes in on (field_0x244, field_0x248) by easing, keeps the camera box
 // inside the limits, eases the zoom to its target and hands both to the camera.
-// Still differs: inv_sqrt's inner x <= 0 return is not in the original, and the
-// view box is copied to the stack by the original (16 bytes, word moves).
+// Still differs: the view box is copied to the stack by the original (16 bytes, word moves).
 // FIXME: 86.17 %, missing/extra + reloc-name; behaviour drift.
 void UnknownENDM_804AA0FC::fn_802E94F4() {
     f32 tx = field_0x244.x;
@@ -490,9 +489,7 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
         f32 dx = field_0x250 - tx;
         f32 dy = field_0x254 - ty;
         f32 dist = square(dx) + square(dy);
-        if (dist > 0.0f) {
-            dist = dist * JGeometry::TUtil<f32>::inv_sqrt(dist);
-        }
+        dist = JGeometry::TUtil<f32>::sqrt(dist);
         f32 speed = PSVECMag(&vel);
         if (dist <= 1.5f * speed) {
             field_0x250 = tx;
