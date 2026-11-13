@@ -596,7 +596,8 @@ void cls_804B1634::fn_8042EF9C(char* str, s32 id, u8 value) {
                     }
                     if (choice < 2) {
                         field_0xcc[choice] = lineW;
-                        field_0xd8[choice++] = field_0xe4;
+                        field_0xd8[choice] = field_0xe4;
+                        choice++;
                     }
                 } else if (p[4] == 1 || p[4] == 9 || p[4] == 0x11 || p[4] == 0x1A) {
                     if (choice == 1) {
