@@ -80,22 +80,22 @@ bool Lift_804A6F6C::fn_802565BC(s32 index) {
         s32 angle = JMath::atanTable_.atan2_(p.y, p.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         angle -= field_0x238;
         f32 len = JGeometry::TVec2f(p.x, p.y).length();
-        JGeometry::TVec3f q(len * JMath::sincosTable_.cosShort(angle), len * JMath::sincosTable_.sinShort(angle), 0.0f);
+        p.set(len * JMath::sincosTable_.cosShort(angle), len * JMath::sincosTable_.sinShort(angle), 0.0f);
         bool inside = false;
-        if (q.x >= mBox.i.x && q.y >= mBox.i.y && q.x < mBox.f.x && q.y < mBox.f.y) {
+        if (p.x >= mBox.i.x && p.y >= mBox.i.y && p.x < mBox.f.x && p.y < mBox.f.y) {
             inside = true;
         }
         if (inside) {
             ResTIMG* res = static_cast<ResTIMG*>(field_0x23c);
-            s32 px = (s32)q.x + (res->mSizeX >> 1);
-            s32 py = (s32)q.y + (res->mSizeY >> 1);
+            s32 px = (s32)p.x + (res->getWidth() >> 1);
+            s32 py = (s32)p.y + (res->getHeight() >> 1);
             bool hit = false;
-            if (px >= 0 && px < res->mSizeX && py >= 0 && py < res->mSizeY) {
+            if (px >= 0 && px < res->getWidth() && py >= 0 && py < res->getHeight()) {
                 switch (res->mTextureFormat) {
                 case 8:
                     switch (res->mLutFormat) {
                     case 2: {
-                        s32 tilesPerRow = ((res->mSizeX + 7) & 0xFFF8) >> 3;
+                        s32 tilesPerRow = ((res->getWidth() + 7) & 0xFFF8) >> 3;
                         s32 offset = (((px >> 3) + (py >> 3) * tilesPerRow) << 6) + ((py & 7) << 3) + (px & 7);
                         const u8* base = (const u8*)res;
                         const u8* image = base + res->mImageDataOffset;
