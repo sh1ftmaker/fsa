@@ -417,7 +417,7 @@ bool cls_8049D940::fn_80115A7C() {
         f32 dx = pos.x - mPos.x;
         f32 dy = pos.y - mPos.y;
         f32 len = JMAFastSqrt(square(dx) + square(dy));
-        if (!(len <= 90.0f)) {
+        if (len <= 90.0f) {
             fn_80230498(i, &pos, field_0x270.mCel + 0x3B5, 255, -128, -128, true);
         } else {
             fn_8023DFF4(i, &pos);
