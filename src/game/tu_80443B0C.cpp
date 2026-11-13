@@ -252,25 +252,25 @@ void cls_804B1B60::fn_80443B0C(char* dst, s32 msgId, s32 value) {
     const char* p;
     while ((p = text + i)[0] != 0) {
         if (p[0] == 0x1A) {
-            if ((u8)p[2] == 3) {
+            if (p[2] == 3) {
                 s8 c3 = p[3];
-                if ((c3 == 0 && (u8)p[4] == 3) || (c3 == 0 && (u8)p[4] == 4)) {
+                if ((c3 == 0 && p[4] == 3) || (c3 == 0 && p[4] == 4)) {
                     s32 rem = value;
                     if (value >= 10000) {
                         dst[j++] = d10000 + '0';
-                        rem = value - (value / 10000) * 10000;
+                        rem = value % 10000;
                     }
                     if (value >= 1000) {
                         dst[j++] = (rem / 1000) + '0';
-                        rem -= (rem / 1000) * 1000;
+                        rem = rem % 1000;
                     }
                     if (value >= 100) {
                         dst[j++] = (rem / 100) + '0';
-                        rem -= (rem / 100) * 100;
+                        rem = rem % 100;
                     }
                     if (value >= 10) {
                         dst[j++] = (rem / 10) + '0';
-                        rem -= (rem / 10) * 10;
+                        rem = rem % 10;
                     }
                     dst[j++] = rem + '0';
                 }
