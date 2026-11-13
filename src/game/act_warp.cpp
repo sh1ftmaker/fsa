@@ -454,7 +454,7 @@ void Warp_804A6DC8::draw() {
 
 // 0x802278A8. Per player: the player's reaction to standing in the warp's box (by warp kind, the
 // low 7 bits of the spawn parameter): marks it, hurts it, or sends it through (fn_802317F0).
-// FIXME(shotgun): 79.60 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 85.79 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
         box->set(mBox.i.x + mPos.x, mBox.i.y + mPos.y, mBox.f.x + mPos.x, mBox.f.y + mPos.y);
