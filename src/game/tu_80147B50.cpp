@@ -27,7 +27,7 @@ extern s32 lbl_8053AB30;
 extern s32 lbl_8053AB34;
 extern s32 lbl_8053AB38;
 
-// FIXME(shotgun): 84.26 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.77 %, different + reloc-name; behaviour drift.
 void cls_8049F6C8::init() {
     field_0x80.i.x = -8.0f;
     field_0x80.i.y = -8.0f;
@@ -54,12 +54,12 @@ void cls_8049F6C8::init() {
     field_0x280 = field_0x278;
     field_0x250 = 300;
     field_0x27c = field_0x278;
-    for (s32 i = 0; i < 10; i++) {
+    for (u32 i = 0; i < 10; i++) {
         mEmitters798[i] = NULL;
     }
     mEmitters7c0[0] = NULL;
     mEmitters7c0[1] = NULL;
-    field_0x98 = (s32)(15.0f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 1.0f));
+    field_0x98 = (s32)(15.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     field_0x298 = field_0x98;
     field_0x29c = -1;
     field_0x294 = 255.0f;
@@ -93,13 +93,16 @@ void cls_8049F6C8::init() {
     }
     field_0x284 = angle;
     field_0x286 = field_0x284;
-    for (s32 i = 0; i < 10; i++) {
+    for (u32 i = 0; i < 10; i++) {
         field_0x2c0[i].set(mPos);
         field_0x2ac[i] = field_0x284;
     }
-    for (s32 i = 0; i < 80; i++) {
+    for (u32 i = 0; i < 80; i++) {
         field_0x3d8[i].set(mPos);
         field_0x338[i] = field_0x284;
+    }
+    for (u32 i = 0; i < 10; i++) {
+        mEmitters798[i] = NULL;
     }
     field_0x290 = 1.3f;
     field_0x2a0.x = field_0x290 * JMath::sincosTable_.sinShort(field_0x284);
@@ -110,7 +113,7 @@ void cls_8049F6C8::init() {
     field_0x90 &= 3;
     field_0x94 = 0;
     field_0xbc = 2;
-    field_0xb0 = 0x4000004;
+    field_0xb0 = 0x8040004;
     getGameView_802D6A9C()->fn_802D7440(false);
     switch (field_0x90) {
     case 0:
