@@ -252,7 +252,7 @@ AudioMgr_8045A080::AudioMgr_8045A080() {
 }
 
 // 0x80459AE4
-// FIXME(shotgun): 89.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.79 %, missing/extra + reloc-name; behaviour drift.
 void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* initData, void* seqData) {
     JAU_JASInitializer jasInit;
     jasInit.mChannelPoolCount = lbl_8053A228;
