@@ -109,7 +109,7 @@ void MessageWindow_804AF490::fn_803913E0() {
     }
 }
 
-// FIXME(shotgun): 89.34 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.51 %, missing/extra; behaviour drift.
 // (the two position copies and their stack slots)
 void MessageWindow_804AF490::fn_80390EBC() {
     switch (field_0x24) {
