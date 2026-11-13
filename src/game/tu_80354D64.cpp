@@ -25,7 +25,7 @@ Log_804ACD70::~Log_804ACD70() {
     }
 }
 
-// FIXME(shotgun): 89.65 %, scheduling
+// FIXME(shotgun): 89.65 %, scheduling + reloc-name; behaviour clean.
 void Log_804ACD70::init() {
     field_0x2c0 = field_0x90 & 1;
     field_0x2c4 = (field_0x90 >> 4) & 1;
@@ -87,7 +87,7 @@ void Log_804ACD70::init() {
     mEmitter2e0 = NULL;
 }
 
-// FIXME(shotgun): 67.6 %, missing/extra
+// FIXME(shotgun): 67.60 %, missing/extra + reloc-name; behaviour drift.
 void Log_804ACD70::update() {
     JGeometry::TBox2f box;
     box.set(field_0x80.i.x + mPos.x, field_0x80.i.y + mPos.y, field_0x80.f.x + mPos.x,
@@ -272,7 +272,7 @@ void Log_804ACD70::update() {
     }
 }
 
-// FIXME(shotgun): 99.44 %, scheduling+regalloc
+// FIXME(shotgun): 99.44 %, scheduling+regalloc; behaviour clean.
 void Log_804ACD70::draw() {
     const char* name;
     SpriteParams_801F5AE0 params;
@@ -364,7 +364,6 @@ void Log_804ACD70::vfunc_0x24() {
     fn_801F3668();
 }
 
-// FIXME(shotgun): 65.95 %, missing/extra
 bool Log_804ACD70::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (field_0x230 == 0) {
         s32 kind = fn_8022461C(pos, layer);
@@ -393,7 +392,7 @@ bool Log_804ACD70::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return fn_801F132C(layer, pos, &field_0x2b8);
 }
 
-// FIXME(shotgun): 75.53 %, missing/extra
+// FIXME(shotgun): 87.17 %, missing/extra; behaviour near.
 void Log_804ACD70::fn_80354FE8() {
     if (field_0x2d4.squared() <= 32.0f * FLT_EPSILON) {
         if (field_0x2cc == 1) {
@@ -479,7 +478,7 @@ void Log_804ACD70::fn_80354FE8() {
     }
 }
 
-// FIXME(shotgun): 80.15 %, missing/extra
+// FIXME(shotgun): 92.19 %, missing/extra; behaviour clean.
 bool Log_804ACD70::fn_80354D64(u8 dir) {
     bool ok = false;
     JGeometry::TVec3f saved(mPos);
