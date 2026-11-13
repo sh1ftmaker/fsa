@@ -72,7 +72,7 @@ cls_804B0478::~cls_804B0478() {
 extern s32 lbl_804B03E8[];
 extern s32 lbl_8053A210[]; // .sdata, 2 entries: state 5
 
-// FIXME(shotgun): 92.10 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.66 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0478::update() {
     switch (mState) {
     case 0:
