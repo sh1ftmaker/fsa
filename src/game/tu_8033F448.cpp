@@ -14,7 +14,8 @@ void cls_804AC388::init() {
     field_0x23c = false;
 }
 
-// FIXME: 88.4 %. Three differences remain. (1) The original builds the
+// FIXME: 88.95 %, missing/extra; behaviour drift.
+// Three differences remain. (1) The original builds the
 // fn_80238548 position as an 8-byte stack object (x, y copied from the player
 // at 0x8/0xC, then +0.1 and -0.1; fn_80238548 reads only x and y), while a
 // TVec3f local puts it at 0x14 and skips the copy; a const TVec2f* prototype
