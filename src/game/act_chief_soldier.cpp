@@ -41,7 +41,7 @@ static inline void setScaleMtx(Mtx m, f32 s) {
     m[2][2] = s;
 }
 
-// FIXME(shotgun): 92.76 %, different + reloc-name.
+// FIXME(shotgun): 92.76 %, different + reloc-name; behaviour clean.
 void ChiefSoldier_804A0B90::fn_801752D8() {
     if (field_0x4 >= 8 && field_0x23c == 1 && lbl_80529DEC.field_0x118 == 6) {
         s32 gone = 0;
@@ -86,7 +86,7 @@ void ChiefSoldier_804A0B90::fn_801752D8() {
     }
 }
 
-// FIXME(shotgun): 78.46 %, missing/extra + reloc-name.
+// FIXME(shotgun): 86.05 %, missing/extra + reloc-name; behaviour drift.
 void ChiefSoldier_804A0B90::fn_80175024() {
     if (getType() == 6) {
         return;
@@ -103,7 +103,7 @@ void ChiefSoldier_804A0B90::fn_80175024() {
             type = 8;
             layer = 0;
         }
-        field_0x238 = getActorManager_801F856C()->spawnActor_801F9484('SLR2', layer, &mPos, type, -1, -1);
+        field_0x238 = getActorManager_801F856C()->spawnActor_801F9484('SLR4', layer, &mPos, type, -1, -1);
         serial = field_0x238;
         if (serial >= 0) {
             partner = static_cast<cls_804A00C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
@@ -145,24 +145,19 @@ void ChiefSoldier_804A0B90::fn_80175024() {
         if (field_0x29c == 3) {
             partner->field_0x94 = 1;
         }
+        JGeometry::TVec3f pos;
         if (partner->field_0x90 == 7) {
-            partner->mPos.x = mPos.x;
-            partner->mPos.y = mPos.y;
-            partner->mPos.z = mPos.z;
+            pos = mPos;
         } else {
-            s32 layer = field_0x4;
+            s32 layer = partner->field_0x4;
             GameView_804A9950* view = getGameView_802D6A9C();
-            JGeometry::TBox2f box;
-            if (layer < 8) {
-                box = view->mVisibleBox;
-            } else {
-                box = view->field_0xdc;
-            }
-            JGeometry::TVec3f pos(mPos.x + box.i.x, mPos.y + box.i.y, mPos.z);
-            partner->mPos.x = pos.x;
-            partner->mPos.y = pos.y;
-            partner->mPos.z = pos.z;
+            const JGeometry::TBox2f* boxp = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
+            JGeometry::TBox2f box = *boxp;
+            pos.x = mPos.x + box.i.x;
+            pos.y = mPos.y + box.i.y;
+            pos.z = mPos.z;
         }
+        partner->mPos = pos;
         partner->field_0x98 = field_0x98;
         break;
     }
@@ -171,7 +166,7 @@ void ChiefSoldier_804A0B90::fn_80175024() {
     }
 }
 
-// FIXME(shotgun): 97.54 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.59 %, missing/extra + reloc-name; behaviour near.
 void ChiefSoldier_804A0B90::init() {
     mBox.i.x = -12.0f;
     mBox.i.y = -20.0f;
@@ -230,7 +225,7 @@ void ChiefSoldier_804A0B90::init() {
             type = 8;
             layer = 0;
         }
-        field_0x238 = getActorManager_801F856C()->spawnActor_801F9484('SLR2', layer, &mPos, type, -1, -1);
+        field_0x238 = getActorManager_801F856C()->spawnActor_801F9484('SLR4', layer, &mPos, type, -1, -1);
         s32 serial = field_0x238;
         if (serial >= 0) {
             cls_804A00C8* partner = static_cast<cls_804A00C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
@@ -309,7 +304,7 @@ void ChiefSoldier_804A0B90::init() {
     }
 }
 
-// FIXME(shotgun): 81.55 %, different + reloc-name.
+// FIXME(shotgun): 81.63 %, different + reloc-name; behaviour drift.
 void ChiefSoldier_804A0B90::fn_801746DC() {
     if (field_0x29c != field_0x2a0) {
         field_0x2a0 = field_0x29c;
@@ -455,7 +450,7 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 91.60 %, missing/extra + reloc-name.
+// FIXME(shotgun): 91.66 %, missing/extra + reloc-name; behaviour near.
 void ChiefSoldier_804A0B90::fn_80174220() {
     s32 dir = field_0x98;
     s32 index = dir;
