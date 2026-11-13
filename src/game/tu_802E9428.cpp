@@ -478,6 +478,7 @@ bool UnknownENDM_804AA0FC::fn_802E9884(const JGeometry::TVec2f* pos) {
 // inside the limits, eases the zoom to its target and hands both to the camera.
 // Still differs: inv_sqrt's inner x <= 0 return is not in the original, and the
 // view box is copied to the stack by the original (16 bytes, word moves).
+// FIXME: 86.17 %, missing/extra + reloc-name; behaviour drift.
 void UnknownENDM_804AA0FC::fn_802E94F4() {
     f32 tx = field_0x244.x;
     f32 ty = field_0x244.y;
