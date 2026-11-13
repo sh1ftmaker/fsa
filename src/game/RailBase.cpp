@@ -298,14 +298,14 @@ void cls_800FE3EC::fn_800FD818(s32 dir) {
     field_0x3 = pos;
 }
 
-// FIXME(shotgun): 88.68 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 89.64 %, missing/extra; behaviour near.
 // 0x800FD5E8
 bool cls_800FE3EC::fn_800FD5E8(u8 index) {
     u8 count = field_0x2;
     u32 mode = field_0x4[count - 1]->field_0x90 & 3;
     if (index == 0xFF) {
         u8 cur = field_0x3;
-        s16 next = field_0x1 == 0 ? cur + 1 : cur - 1;
+        s16 next = field_0x1 != 0 ? cur - 1 : cur + 1;
         if (next < 0) {
             if (mode != 1) {
                 return false;
@@ -322,8 +322,8 @@ bool cls_800FE3EC::fn_800FD5E8(u8 index) {
         }
         return false;
     }
-    s16 next = index + 1;
-    s16 prev = index - 1;
+    int next = index + 1;
+    int prev = index - 1;
     if (next == count) {
         if (mode == 1) {
             next = 0;
