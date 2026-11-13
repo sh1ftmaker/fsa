@@ -1330,20 +1330,13 @@ void cls_804B146C::fn_8042165C() {
     field_0x1f0[3] = 0;
     for (s32 i = 0; i < 4; i++) {
         u32 bit = 1 << i;
-        bool takesPart = gGameRoot_8053AAF8->mPlayerMask & (u8)bit;
+        bool takesPart = (gGameRoot_8053AAF8->mPlayerMask & (u8)bit) != 0;
         if (takesPart && !fn_8022C8EC(i)) {
             u16 mask = (u16)bit;
-            if (i != 0) {
-                field_0x1f0[0] |= mask;
-            }
-            if (i != 1) {
-                field_0x1f0[1] |= mask;
-            }
-            if (i != 2) {
-                field_0x1f0[2] |= mask;
-            }
-            if (i != 3) {
-                field_0x1f0[3] |= mask;
+            for (s32 k = 0; k < 4; k++) {
+                if (i != k) {
+                    field_0x1f0[k] |= mask;
+                }
             }
             if (getPlayerLayer_8023DE58(i) < 8) {
                 Vec screen;
@@ -1360,17 +1353,10 @@ void cls_804B146C::fn_8042165C() {
             }
         }
         if (field_0x24d[i] != 0xFF) {
-            if (i != 0) {
-                field_0x1f0[0] |= (u16)(1 << field_0x24d[i]);
-            }
-            if (i != 1) {
-                field_0x1f0[1] |= (u16)(1 << field_0x24d[i]);
-            }
-            if (i != 2) {
-                field_0x1f0[2] |= (u16)(1 << field_0x24d[i]);
-            }
-            if (i != 3) {
-                field_0x1f0[3] |= (u16)(1 << field_0x24d[i]);
+            for (s32 k = 0; k < 4; k++) {
+                if (i != k) {
+                    field_0x1f0[k] |= (u16)(1 << field_0x24d[i]);
+                }
             }
         }
     }
