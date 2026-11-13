@@ -31,7 +31,8 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-// FIXME: 98.37 %. One instruction more than the original: it sets the zero it
+// FIXME: 98.37 %, missing/extra; behaviour clean.
+// One instruction more than the original: it sets the zero it
 // reuses for the state-0 store (`li r28, 0`) before the first loop's
 // float literal load, ours has it later.
 void InextinguishableFlame_804A9D28::init() {
@@ -96,11 +97,9 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
 // The state machine. States: 0 wait for the view (field_0x300), 1 search for a
 // tile, 2 spawn the grid, 3 hit, 4 spawn a BLZE actor, 5 count down, 6 wait
 // for the player's hit. The grids are walked in the order of the spawn loops.
-// FIXME: 89.77 %. The original copies mPos once more before the state test
-// (dead, overwritten by the copy before fn_801F2718) and builds mBox + mPos
-// on the stack before fn_801F2B7C although nothing reads it; MWCC drops the
-// unread local here, so those stores are missing. The jump table is @785
-// (dtk: jumptable_804A9D84), a data split.
+// Still differs: the original copies mPos once more before the state test and
+// builds a box before fn_801F2B7C; loop counter registers; case 1 tile order.
+// FIXME: 91.48 %, missing/extra + reloc-name; behaviour drift.
 void InextinguishableFlame_804A9D28::update() {
     if (mState >= 1) {
         fn_8020D58C()->addBox(mSerial);
@@ -138,9 +137,7 @@ void InextinguishableFlame_804A9D28::update() {
     }
     case 1:
         for (s32 i = 0; i < 8; i++) {
-            f32 x = mPos.x + lbl_8046F0C8[i];
-            f32 y = mPos.y + lbl_8046F108[i];
-            JGeometry::TVec3f tile(x, y, mPos.z);
+            JGeometry::TVec3f tile(mPos.x + lbl_8046F0C8[i], mPos.y + lbl_8046F108[i], mPos.z);
             if (fn_801EE3C0(fn_80226850(&tile, field_0x4)) == true) {
                 getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &tile, (field_0x98 << 4) | 0xF, -1, -1);
                 mActorId = 'BLZE';
@@ -179,9 +176,8 @@ void InextinguishableFlame_804A9D28::update() {
                         return;
                     }
                     fn_801F2B7C(field_0x114, -1, 7);
-                    JGeometry::TVec2<f32> p(mPos.x, mPos.y);
                     JGeometry::TBox2f box(field_0x80);
-                    box.addPos(p);
+                    box.addPos(mPos.x, mPos.y);
                     fn_80239914(&box, field_0x4, mSerial);
                     mPos.y += 16.0f;
                 }
@@ -272,7 +268,8 @@ void InextinguishableFlame_804A9D28::vfunc_0x24() {
 
 // Returns 1 when one of the four neighbours of pos is a tile in the
 // fn_801EE3C0 set.
-// FIXME: 97.81 %. Same instructions; the original loads the table bases in
+// FIXME: 97.81 %, scheduling+regalloc + reloc-name; behaviour clean.
+// Same instructions; the original loads the table bases in
 // the other order (lis lbl_8046F148 first, its pointer in r31), ours loads
 // lbl_8046F188 first.
 bool InextinguishableFlame_804A9D28::vfunc_0x58(JGeometry::TVec3f* pos) {
