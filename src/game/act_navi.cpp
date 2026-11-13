@@ -26,11 +26,11 @@ static const s16 lbl_8046A770[] = {
     -1, -1,
 };
 
-static const u16 lbl_8046A78C[16] = {
-    0x0513, 0x0514, 0x0515, 0x0516,
-    0x051B, 0x051C, 0x051D, 0x051E,
-    0x050F, 0x0510, 0x0511, 0x0512,
-    0x0517, 0x0518, 0x0519, 0x051A,
+static const u16 lbl_8046A78C[4][4] = {
+    {0x0513, 0x0514, 0x0515, 0x0516},
+    {0x051B, 0x051C, 0x051D, 0x051E},
+    {0x050F, 0x0510, 0x0511, 0x0512},
+    {0x0517, 0x0518, 0x0519, 0x051A},
 };
 
 struct ColorRGB {
@@ -274,7 +274,7 @@ void cls_804A6708::fn_8021E4F8() {
     field_0x2c0.y = field_0x2cc + (dx * s + dy * co);
 }
 
-// FIXME(shotgun): 86.34 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6708::fn_8021DFAC(s32 newState) {
     switch (newState) {
     case 1:
@@ -284,7 +284,7 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
                 if (fn_8023F264(p) && getPlayerLayer_8023DE58(p) == field_0x4) {
                     JGeometry::TVec3f pos(getPlayerPos_8023E724(p)->x, getPlayerPos_8023E724(p)->y, 0.0f);
                     for (s32 j = 0; j < 4; j++) {
-                        spawnEmitter_8013CC50(field_0x4, &pos, lbl_8046A78C[p * 4 + j], 0, 0, NULL, NULL, true, 1.0f);
+                        spawnEmitter_8013CC50(field_0x4, &pos, lbl_8046A78C[p][j], 0, 0, NULL, NULL, true, 1.0f);
                     }
                     fn_80230FD0(p, 0x20063);
                 }
@@ -316,8 +316,9 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
             follow = true;
         }
         if (follow) {
-            field_0x2c0.z = getPlayerPos_8023E724(field_0x2b4)->x;
-            field_0x2cc = getPlayerPos_8023E724(field_0x2b4)->y;
+            JGeometry::TVec3f* target = getPlayerPos_8023E724(field_0x2b4);
+            field_0x2c0.z = target->x;
+            field_0x2cc = target->y;
         } else {
             field_0x2c0.z = mSpawnPos.x;
             field_0x2cc = mSpawnPos.y;
@@ -372,8 +373,9 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
             follow = true;
         }
         if (follow) {
-            field_0x2c0.z = getPlayerPos_8023E724(field_0x2b4)->x;
-            field_0x2cc = getPlayerPos_8023E724(field_0x2b4)->y;
+            JGeometry::TVec3f* target = getPlayerPos_8023E724(field_0x2b4);
+            field_0x2c0.z = target->x;
+            field_0x2cc = target->y;
         } else {
             field_0x2c0.z = mSpawnPos.x;
             field_0x2cc = mSpawnPos.y;
@@ -392,6 +394,9 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
             fn_80230534(false);
             mFlags |= 0x40000;
         }
+        break;
+    case 0:
+    case 10:
         break;
     }
     mStateTimer = 0;
