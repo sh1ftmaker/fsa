@@ -357,6 +357,10 @@ void cls_804A0738::draw() {
 // FIXME(shotgun): 77.54 %, missing/extra; behaviour drift.
 bool cls_804A0738::fn_80168C38() {
     s32 found = -1;
+    const JGeometry::TVec3f* first = getPlayerPos_8023E724(field_0x90);
+    JGeometry::TVec2f d;
+    d.x = first->x - mPos.x;
+    d.y = first->y - mPos.y;
     JGeometry::TBox2f box = mBox;
     box.i.x = box.i.x + mPos.x - 4.0f;
     box.i.y = box.i.y + mPos.y - 4.0f;
