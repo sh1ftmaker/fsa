@@ -12,8 +12,8 @@ f32 fn_80210AF8(s32 dir);
 
 FusePoint_804A54C0::FusePoint_804A54C0() {}
 
-// FIXME(shotgun): 79.60 %, missing/extra; behaviour drift.
-// The mask of the sub-kind (cntlzw trick) and the TVec2 view of mPos are written plainly.
+// FIXME: 96.62 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): register choice for the spawn direction (original keeps it in r27).
 void FusePoint_804A54C0::init() {
     EnemyBase_804A4808::init();
     if ((field_0x90 >> 23) & 1) {
@@ -39,8 +39,7 @@ void FusePoint_804A54C0::init() {
     u8 sub = (kind == 0) ? ((param >> 16) & 0x1F) : 0;
     s32 layer = field_0x4;
     cls_801E9AFC* list = fn_801E9AFC();
-    JGeometry::TVec2f pos2(mPos.x, mPos.y);
-    list->field_0x0[list->field_0xf0].fn_801EA75C(sub, param >> 24, kind, layer, &pos2);
+    list->field_0x0[list->field_0xf0].fn_801EA75C(param >> 24, sub, kind, layer, (const JGeometry::TVec2f*)&mPos);
     mAlive = false;
 }
 
