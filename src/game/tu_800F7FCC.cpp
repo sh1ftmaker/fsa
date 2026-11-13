@@ -1140,13 +1140,11 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     cls_8049C718* parent = mParent;
     JGeometry::TVec3f target;
     f32 speed;
-    switch (parent->mState) {
-    case 3:
-        slotPos(parent, mIndex, target);
+    if (parent->mState == 3) {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.3f;
         mFlag249 = 1;
-        break;
-    case 4: {
+    } else if (parent->mState == 4) {
         s32 slot = parent->mSlot;
         s32 n = (slot >> 1) + 1;
         f32 off;
@@ -1164,18 +1162,14 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
         target.z = 10.0f + parent->mPos.z;
         speed = (0.36f + 0.001f * (f32)lbl_8049C3B8[8]) - (0.032f + 0.001f * (f32)lbl_8049C3B8[9]) * (f32)n;
         mFlag249 = 1;
-        break;
-    }
-    case 1:
-        slotPos(parent, mIndex, target);
+    } else if (parent->mState == 1) {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.08f;
         mFlag249 = 1;
-        break;
-    default:
-        slotPos(parent, mIndex, target);
+    } else {
+        slotPos(parent, parent->mSlot, target);
         speed = 0.2f;
         mFlag249 = 0;
-        break;
     }
     if (fn_801F3D94(1) == 0) {
         if (fn_801F285C(NULL, NULL, true, -1) >= 0) {
