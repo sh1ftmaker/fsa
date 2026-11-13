@@ -12,7 +12,7 @@
 static const char* lbl_804A5760[] = {"e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.bti",
                                      "e_gufu_4.bti"};
 
-// FIXME: 32.8%. The target picks max(1.0f + field_0x52c.field_0x28, 0.001f) with one fsel
+// The target picks max(1.0f + field_0x52c.field_0x28, 0.001f) with one fsel
 // (0.001f - x >= 0); ours compiles the ?: as fcmpo / cror / branch (the same
 // gap as EnemyBase_804A4808::fn_801CE010; tried a - b >= 0 ? a : b, a > b ? a : b,
 // a local and an inline). The rest of the body (stack layout, the stores, the
@@ -33,7 +33,7 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
         params.field_0x10.a = 0;
     }
     f32 scale = 1.0f + field_0x52c.field_0x28.value;
-    scale = 0.001f - scale >= 0.0f ? 0.001f : scale;
+    scale = 0.001f - scale < 0.0f ? scale : 0.001f;
     mtx[0][0] = 1.0f;
     mtx[0][1] = 0.0f;
     mtx[0][2] = 0.0f;
