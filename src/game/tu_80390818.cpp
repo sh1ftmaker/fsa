@@ -26,7 +26,6 @@ MessageWindow_804AF490::~MessageWindow_804AF490() {
     field_0x4c = NULL;
 }
 
-// FIXME(shotgun): 99.97 %, reloc-name
 void MessageWindow_804AF490::fn_80391678() {
     field_0x8 = 0;
     field_0x20 = 0;
@@ -110,7 +109,8 @@ void MessageWindow_804AF490::fn_803913E0() {
     }
 }
 
-// FIXME(shotgun): 89.11 %, missing/extra (the two position copies and their stack slots)
+// FIXME(shotgun): 89.34 %, missing/extra; behaviour drift.
+// (the two position copies and their stack slots)
 void MessageWindow_804AF490::fn_80390EBC() {
     switch (field_0x24) {
     case 0:
@@ -129,15 +129,13 @@ void MessageWindow_804AF490::fn_80390EBC() {
         proc->field_0x8->resetResourceCache();
         proc->field_0x1a2 = 0;
         field_0x44 = 2;
-        JGeometry::TVec3f pos = field_0x50;
         JGeometry::TVec3f boxPos = field_0x50;
+        JGeometry::TVec3f pos = field_0x50;
         proc = field_0x4c;
         u32 msg = field_0x20;
         proc->field_0x14c = msg;
         proc->field_0x8->setMessageCode(msg >> 16, msg & 0xFFFF);
-        proc->field_0x98 = pos.x;
-        proc->field_0x9c = pos.y;
-        proc->field_0xa0 = pos.z;
+        proc->field_0x98 = pos;
         proc->field_0xa4 = boxPos;
         field_0x24 = 2;
         break;
@@ -203,20 +201,16 @@ void MessageWindow_804AF490::fn_80390EBC() {
             u32 msg = field_0x20;
             proc->field_0x14c = msg;
             proc->field_0x8->setMessageCode(msg >> 16, msg & 0xFFFF);
-            proc->field_0x98 = pos.x;
-            proc->field_0x9c = pos.y;
-            proc->field_0xa0 = pos.z;
+            proc->field_0x98 = pos;
             proc->field_0xa4 = boxPos;
         } else {
-            JGeometry::TVec3f pos = field_0x50;
             JGeometry::TVec3f boxPos = field_0x50;
+            JGeometry::TVec3f pos = field_0x50;
             proc = field_0x48;
             u32 msg = field_0x20;
             proc->field_0x14c = msg;
             proc->field_0x8->setMessageCode(msg >> 16, msg & 0xFFFF);
-            proc->field_0x98 = pos.x;
-            proc->field_0x9c = pos.y;
-            proc->field_0xa0 = pos.z;
+            proc->field_0x98 = pos;
             proc->field_0xa4 = boxPos;
         }
         field_0x24 = 7;
@@ -280,7 +274,7 @@ bool MessageWindow_804AF490::fn_80390E40(s32 value, bool flag) {
     return false;
 }
 
-// FIXME(shotgun): 99.54 %, scheduling+regalloc
+// FIXME(shotgun): 99.54 %, scheduling+regalloc; behaviour clean.
 u16 MessageWindow_804AF490::fn_80390C6C() {
     if (field_0x24 == 3) {
         switch (field_0x41) {
