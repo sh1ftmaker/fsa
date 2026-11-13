@@ -24,7 +24,7 @@ static inline void rotateArrowPane(J2DPane* pane, f32 angle) {
     pane->rotate(0.5f * w, 0.5f * h, J2DROTATE_Z, angle);
 }
 
-// FIXME(shotgun): 91.91 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.91 %, missing/extra + reloc-name; behaviour drift.
 cls_804B16A8::cls_804B16A8() {
     mScreen = new J2DScreen;
     if (gGameRoot_8053AAF8->field_0x7f == 1) {
@@ -117,7 +117,7 @@ cls_804B16A8::~cls_804B16A8() {
     field_0x34 = NULL;
 }
 
-// FIXME(shotgun): 91.99 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.99 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B16A8::fn_8043670C(u8 arg) {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Tq01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
@@ -223,7 +223,7 @@ void cls_804B16A8::fn_8043670C(u8 arg) {
     }
 }
 
-// FIXME(shotgun): 97.14 %, different
+// FIXME(shotgun): 97.14 %, different; behaviour near.
 s32 cls_804B16A8::fn_804366B8() {
     (this->*lbl_804B1690[field_0x6b])();
     return field_0x6b == 2;
@@ -235,21 +235,21 @@ void cls_804B16A8::fn_80436668() {
     lbl_8053AED8->fn_80440EE8();
 }
 
-// FIXME(shotgun): 54.95 %, missing/extra
 void cls_804B16A8::fn_8043651C() {
-    bool a = false;
-    bool b = false;
-    bool c = false;
+    u8 a = 0;
+    u8 b = 0;
+    u8 c = 0;
     field_0x58++;
     if (field_0x58 > 0) {
-        a = field_0x8->fn_80402940(0x16, 0, -448.0f, 0.0f);
-        field_0xc[0]->fn_80402940(0x16, 0, -448.0f, field_0x44);
-        field_0xc[1]->fn_80402940(0x16, 0, -448.0f, field_0x44);
-        field_0x14->fn_80402940(0x16, 0, -448.0f, 0.0f);
-        field_0x18->fn_80402940(0x16, 0, -448.0f, 0.0f);
+        a = field_0x8->fn_80402940(0x10, 0, -448.0f, 0.0f);
+        for (int i = 0; i < 2; i++) {
+            field_0xc[i]->fn_80402940(0x10, 0, -448.0f + field_0x44, field_0x44);
+        }
+        field_0x14->fn_80402940(0x10, 0, -448.0f, 0.0f);
+        field_0x18->fn_80402940(0x10, 0, -448.0f, 0.0f);
     }
     if (field_0x58 > 0) {
-        b = field_0x34->fn_80402940(0x1A, 0, -200.0f, 0.0f);
+        b = field_0x34->fn_80402940(0x14, 0, -200.0f, 0.0f);
     }
     if (field_0x58 > 10) {
         c = field_0x38->fn_80402940(0x16, 0, -200.0f, 0.0f);
@@ -259,46 +259,69 @@ void cls_804B16A8::fn_8043651C() {
     }
 }
 
-// FIXME(shotgun): 61.56 %, missing/extra + reloc-name
 void cls_804B16A8::fn_804361A8() {
     if (lbl_8053AD30->fn_80309C4C(0x1100, field_0x54)) {
         if (field_0x6c == 0) {
-            lbl_8050EC80.getCurrentFile().field_0x5c = field_0x68;
-            lbl_8050EC80.getCurrentFile().field_0x68 = field_0x69;
+            if (field_0x68 != 0) {
+                lbl_8050EC80.getCurrentFile().field_0x5c = 1;
+            } else {
+                lbl_8050EC80.getCurrentFile().field_0x5c = 0;
+            }
+            if (field_0x69 != 0) {
+                lbl_8050EC80.getCurrentFile().field_0x68 = 1;
+            } else {
+                lbl_8050EC80.getCurrentFile().field_0x68 = 0;
+            }
         } else {
-            lbl_8050EC80.getCurrentFile().field_0x5d = field_0x68;
-            lbl_8050EC80.getCurrentFile().field_0x5f = field_0x69;
-            lbl_8050EC80.getCurrentFile().field_0x69 = field_0x6a;
+            if (field_0x68 != 0) {
+                lbl_8050EC80.getCurrentFile().field_0x5d = 1;
+            } else {
+                lbl_8050EC80.getCurrentFile().field_0x5d = 0;
+            }
+            if (field_0x69 != 0) {
+                lbl_8050EC80.getCurrentFile().field_0x5f = 1;
+            } else {
+                lbl_8050EC80.getCurrentFile().field_0x5f = 0;
+            }
+            if (field_0x6a != 0) {
+                lbl_8050EC80.getCurrentFile().field_0x69 = 1;
+            } else {
+                lbl_8050EC80.getCurrentFile().field_0x69 = 0;
+            }
         }
         field_0x6b = 2;
-        gAudioMgr_8053AF80->fn_80458880(11, -1);
     } else if (lbl_8053AD30->fn_80309C4C(0x200, field_0x54)) {
         field_0x6b = 2;
-        gAudioMgr_8053AF80->fn_80458880(12, -1);
     } else if (lbl_8053AD30->fn_80309A9C(4, field_0x54)) {
-        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
-        field_0x5a++;
-        if (field_0x6c == 0) {
-            if (field_0x5a > 1) {
-                field_0x5a = 0;
-            }
-        } else {
-            if (field_0x5a > 2) {
-                field_0x5a = 0;
-            }
-        }
-        fn_80434724();
-    } else if (lbl_8053AD30->fn_80309A9C(8, field_0x54)) {
-        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
-        field_0x5a--;
-        if (field_0x5a < 0) {
+        if (gGameRoot_8053AAF8->field_0x7e != 0) {
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            field_0x5a++;
             if (field_0x6c == 0) {
-                field_0x5a = 1;
+                if (field_0x5a > 1) {
+                    field_0x5a = 0;
+                }
             } else {
-                field_0x5a = 2;
+                if (field_0x5a > 2) {
+                    field_0x5a = 0;
+                }
             }
+            fn_80434724();
         }
-        fn_80434724();
+    } else if (lbl_8053AD30->fn_80309A9C(8, field_0x54)) {
+        if (gGameRoot_8053AAF8->field_0x7e != 0) {
+            gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+            field_0x5a--;
+            if (field_0x6c == 0) {
+                if (field_0x5a < 0) {
+                    field_0x5a = 1;
+                }
+            } else {
+                if (field_0x5a < 0) {
+                    field_0x5a = 2;
+                }
+            }
+            fn_80434724();
+        }
     } else if (lbl_8053AD30->fn_80309A9C(1, field_0x54)) {
         gAudioMgr_8053AF80->fn_80458880(0x26, -1);
         field_0x60 = -1;
@@ -311,7 +334,7 @@ void cls_804B16A8::fn_804361A8() {
     fn_80435E20();
 }
 
-// FIXME(shotgun): 97.48 %, missing/extra
+// FIXME(shotgun): 97.48 %, missing/extra; behaviour drift.
 void cls_804B16A8::fn_80435E20() {
     if (field_0x60 == 0) {
         field_0x5e--;
@@ -363,7 +386,7 @@ void cls_804B16A8::fn_80435E20() {
     }
 }
 
-// FIXME(shotgun): 27.21 %, missing/extra
+// FIXME(shotgun): 27.21 %, missing/extra; behaviour drift.
 void cls_804B16A8::fn_80434724() {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Ta01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
@@ -494,7 +517,7 @@ void cls_804B16A8::fn_80434724() {
     field_0x60 = 0;
 }
 
-// FIXME(shotgun): 58.96 %, missing/extra
+// FIXME(shotgun): 99.83 %, operands; behaviour near.
 void cls_804B16A8::fn_80434370() {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Ta01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
@@ -508,11 +531,8 @@ void cls_804B16A8::fn_80434370() {
             field_0x68 = 1;
             field_0x48 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta01'))->getStringPtr(), 0xFC, 0, NULL, NULL);
         }
-        f32 halfTextW = (field_0x48 * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta01')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta01')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
+        J2DPane* pane = mScreen->search('Ta01');
+        field_0x40 = (pane->getWidth() - field_0x48 * scale) * 0.5f;
     } else if (field_0x5a == 1) {
         if (field_0x6c == 0) {
             if (field_0x69 == 1) {
@@ -531,23 +551,17 @@ void cls_804B16A8::fn_80434370() {
                 field_0x4c = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta02'))->getStringPtr(), 0xFE, 0, NULL, NULL);
             }
         }
-        f32 halfTextW = (field_0x4c * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta02')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta02')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
+        J2DPane* pane = mScreen->search('Ta02');
+        field_0x40 = (pane->getWidth() - field_0x4c * scale) * 0.5f;
     } else if (field_0x5a == 2) {
-        if (field_0x6a == 1) {
-            field_0x6a = 0;
-            field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFD, 0, NULL, NULL);
-        } else {
-            field_0x6a = 1;
-            field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFC, 0, NULL, NULL);
+        if (field_0x6c == 1) {
+            if (field_0x6a == 1) {
+                field_0x6a = 0;
+                field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFD, 0, NULL, NULL);
+            } else {
+                field_0x6a = 1;
+                field_0x50 = getMessageText_803832BC(((J2DTextBox*)mScreen->search('Ta03'))->getStringPtr(), 0xFC, 0, NULL, NULL);
+            }
         }
-        f32 halfTextW = (field_0x50 * scale) * 0.5f;
-        f32 arrowHalfW = field_0xc[0]->field_0x18 * 0.5f;
-        f32 taX = mScreen->search('Ta03')->getBounds()->i.x;
-        f32 taW = mScreen->search('Ta03')->getWidth();
-        field_0x40 = ((taX + taW * 0.5f) - halfTextW - arrowHalfW) - field_0xc[0]->field_0x10;
     }
 }
