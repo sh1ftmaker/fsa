@@ -1264,7 +1264,7 @@ void cls_804B1D58::fn_8044D894() {
 }
 
 // Selects row `arg` (0-3) of the second list; like fn_8044CB08, with one emitter (field_0xb0).
-// FIXME(shotgun): 75.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.45 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1D58::fn_8044D298(int arg) {
     if (arg >= 0 && arg <= 3) {
         gGameRoot_8053AAF8->fn_80134D20(false);
@@ -1316,7 +1316,7 @@ u8 cls_804B1D58::fn_8044D290() {
 
 // Selects row `arg` (0-6): recolours the cursor panes, hides the row's panes and starts its two
 // emitters (stopped at once: the status bits 1, 2 and 4).
-// FIXME(shotgun): 76.06 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.41 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1D58::fn_8044CB08(int arg) {
     if (arg >= 0 && arg <= 6) {
         gGameRoot_8053AAF8->fn_80134D20(false);
