@@ -876,7 +876,7 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
                 continue;
             }
             if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
-                (((gGameRoot_8053AAF8->field_0x4c == 11 ? true : false) || gGameRoot_8053AAF8->field_0x88 != 0) &&
+                ((gGameRoot_8053AAF8->field_0x4c == 11 || gGameRoot_8053AAF8->field_0x88 != 0) &&
                  sprite->field_0x23 == 0)) {
                 sprite->mRemove = 1;
                 continue;
