@@ -328,7 +328,7 @@ void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     fn_80440928(screen.x, screen.y);
 }
 
-// FIXME(shotgun): 89.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.74 %, missing/extra + reloc-name; behaviour clean.
 // (the cx / cy and box bounds live in fewer float registers)
 void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     Vec screenA;
@@ -354,7 +354,7 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     }
 }
 
-// FIXME(shotgun): 89.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.25 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
     Vec screenOrigin;
     Vec screenUnit;
