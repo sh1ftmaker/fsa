@@ -335,10 +335,6 @@ void TwoSwordMotion_804ABA90::update() {
 
 void TwoSwordMotion_804ABA90::draw() {}
 
-// FIXME: 93.54 %, missing/extra; behaviour drift.
-// Instruction set matches; the mPos copy and the paired-single
-// sum are scheduled differently (the original loads mPos.z early and rebuilds
-// it through a stack word for the ps_add), so the stack slots shift.
 bool TwoSwordMotion_804ABA90::fn_80336040() {
     s32 column;
     bool result = false;
