@@ -13,7 +13,7 @@
 static const u32 lbl_80471840[] = {'FLME', 'BLZ2', 'NULL'};
 
 // 0x80324AC4.
-// FIXME(shotgun): 99.25 %, regalloc-only + reloc-name
+// FIXME(shotgun): 98.86 %, regalloc-only + reloc-name; behaviour drift.
 void SlingshotSeed_804AB3A8::init() {
     field_0x98 = (field_0x90 >> 4) & 7;
     field_0x94 = (field_0x90 >> 8) & 3;
@@ -111,6 +111,7 @@ static inline bool seedBump(SlingshotSeed_804AB3A8* seed) {
 }
 
 // Remaining: register order of layer/pos and the ids constants come from sdata2 in the original.
+// FIXME: 98.30 %, scheduling+regalloc + reloc-name; behaviour clean.
 bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 ids[2] = {'TOMI', ACTOR_NULL};
     s32 serial = mSerial;
@@ -456,7 +457,7 @@ void SlingshotSeed_804AB3A8::update() {
 #endif
 
 // 0x803239A0.
-// FIXME(shotgun): 97.24 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.37 %, missing/extra; behaviour clean.
 void SlingshotSeed_804AB3A8::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x10.a = (u8)(s32)field_0x234;
