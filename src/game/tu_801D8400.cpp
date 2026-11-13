@@ -43,7 +43,7 @@ cls_804A4C58::~cls_804A4C58() {
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 66.41 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 67.23 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -66,9 +66,11 @@ void cls_804A4C58::init() {
     field_0x114 = 0;
     field_0x196 = 1;
     GameView_804A9950* view = getGameView_802D6A9C();
-    JGeometry::TBox2f* box = &view->mVisibleBox;
+    JGeometry::TBox2f* box;
     if (field_0x4 >= 8) {
         box = &view->field_0xdc;
+    } else {
+        box = &view->mVisibleBox;
     }
     JGeometry::TVec3f p;
     p.x = mPos.x;
@@ -250,7 +252,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 79.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.33 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -259,22 +261,21 @@ void cls_804A4C58::fn_801D9960() {
         s32 target = -1;
         JGeometry::TVec3f from;
         if (mFlags & 0x2000) {
+            from.y = -6.0f + mPos.y;
             from.x = mPos.x - -30.0f;
+            from.z = 0.0f;
         } else {
+            from.y = -6.0f + mPos.y;
             from.x = -30.0f + mPos.x;
+            from.z = 0.0f;
         }
-        from.y = -6.0f + mPos.y;
-        from.z = 0.0f;
-        s16 angle = -0x2000;
-        if (mFlags & 0x2000) {
-            angle = 0x2000;
-        }
+        s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
         s32 player = fn_801D0338(&from, angle);
         if (player >= 0) {
             f32 dy = getPlayerPos_8023E724(player)->y - from.y;
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;
             s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-            f32 diff = (f32)(s16)(heading - angle);
+            f32 diff = (s16)(angle - heading);
             if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
                 target = player;
             }
@@ -296,7 +297,12 @@ void cls_804A4C58::fn_801D9960() {
                 columns[3] = 6;
                 columns[4] = 9;
                 columns[5] = 10;
-                field_0x334 = columns[fn_801CD664(6)];
+                s32 n = 6;
+                if (n > 0) {
+                    field_0x334 = columns[fn_801CD664(n)];
+                } else {
+                    field_0x334 = 0;
+                }
             } else {
                 field_0x334 = fn_801CD664(12);
             }
@@ -323,7 +329,7 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 73.68 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 74.71 %, different + reloc-name; behaviour drift.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
@@ -357,7 +363,8 @@ bool cls_804A4C58::fn_801D95F4() {
                 f32 dy = getPlayerPos_8023E724(player)->y - from.y;
                 f32 dx = getPlayerPos_8023E724(player)->x - from.x;
                 s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-                if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+                s16 diff = heading - angle;
+                if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
                     target = player;
                 }
             }
@@ -374,7 +381,7 @@ bool cls_804A4C58::fn_801D95F4() {
                 vx = dir.x;
                 vy = dir.y;
             } else {
-                s16 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+                s32 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
                 f32 s = JMath::sincosTable_.sinShort(-facing);
                 f32 c = JMath::sincosTable_.cosShort(-facing);
                 vx = 0.0f * c - 1.0f * s;
