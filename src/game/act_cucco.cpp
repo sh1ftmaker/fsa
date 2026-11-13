@@ -93,13 +93,14 @@ void Cucco_804AB8C0::init() {
         field_0x28c = 4;
         s32 players = gGameRoot_8053AAF8->fn_80138A30();
         for (s32 i = 0; i < players; i++) {
-            if (((gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3) == 2) {
+            u32 bits = (gGameRoot_8053AAF8->field_0x83 >> (i * 2)) & 3;
+            if (bits == 2) {
                 field_0x2a0 = 0;
                 break;
             }
         }
     }
-    field_0x2a8 = 0;
+    field_0x2a4[2] = 0;
     field_0x2b8.x = 0.0f;
     field_0x2b8.y = 0.0f;
     field_0x2b8.z = 0.0f;
@@ -128,7 +129,7 @@ void Cucco_804AB8C0::init() {
         } else {
             field_0x98 = 1;
         }
-        field_0x2a8 = 1;
+        field_0x2a4[2] = 1;
         field_0x230 = 7;
         break;
     }
