@@ -85,7 +85,8 @@ cls_804A6270::~cls_804A6270() {
     fn_80212AC0()->fn_80212BA0(mSerial);
 }
 
-// FIXME(shotgun): 98.53 %, missing/extra + reloc-name; its literals fixed .sdata2 to 94.74 %
+// FIXME(shotgun): 98.67 %, missing/extra; behaviour near.
+// its literals fixed .sdata2 to 94.74 %
 void cls_804A6270::init() {
     EnemyBase_804A4808::init();
     s32 kind = field_0x90 & 7;
@@ -246,7 +247,6 @@ void cls_804A6270::init() {
     }
 }
 
-// FIXME(shotgun): 99.90 %, reloc-name
 void cls_804A6270::fn_802121C8() {
     if (!(mFlags & 0x2000)) {
         field_0x38c = getActorManager_801F856C()->fn_801F76F0('WARP', field_0x4, &mPos, -1);
@@ -275,7 +275,7 @@ void cls_804A6270::vfunc_0x54() {
 // Not auto-inlined: vfunc_0x90 calls fn_80211EB0 and fn_80211C94 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 94.06 %, missing/extra
+// FIXME(shotgun): 94.62 %, missing/extra; behaviour drift.
 void cls_804A6270::fn_80211EB0() {
     if (mState != 0) {
         for (s32 i = 0; i < 4; i++) {
@@ -318,7 +318,7 @@ void cls_804A6270::fn_80211C94() {
 
 #pragma auto_inline reset
 
-// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.86 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6270::vfunc_0x90(u8 mapHit) {
     fn_80211EB0();
     fn_80211C94();
@@ -475,7 +475,7 @@ void cls_804A6270::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 90.16 %, missing/extra
+// FIXME(shotgun): 97.63 %, missing/extra; behaviour near.
 void cls_804A6270::fn_802110A8() {
     if ((mFlags & 0x8000) && mState != 0) {
         if (field_0x2bc != 0) {
@@ -517,11 +517,11 @@ void cls_804A6270::fn_802110A8() {
                 field_0x3c.y = step.y;
             }
         }
-        if (field_0x388 >= 0) {
+        if (field_0x38c >= 0) {
             if (!(field_0x3c.squared() <= 32.0f * JGeometry::TUtilf::epsilon())) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x388);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x38c);
                 if (actor != NULL) {
-                    actor->mPos += field_0x3c;
+                    actor->mPos = actor->mPos + field_0x3c;
                 }
             }
         }
@@ -551,10 +551,10 @@ bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
-// FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
-// scale match. The original picks the length with one fsel
-// (push - field_0x3a4 >= 0) where ours compares and branches (an explicit
-// `push - field_0x3a4 >= 0.0f` gave 88.9 %).
+// FIXME: 92.23 %, missing/extra; behaviour drift.
+// JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
+// scale match. The original picks the length with one fsel on
+// (push - field_0x3a4) where ours compares and branches.
 void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= 0.0f && mState != 0) {
@@ -566,7 +566,7 @@ void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
                 out->z = 0.0f;
                 out->normalize();
                 f32 push = dist - 2.0f;
-                out->scale(push >= field_0x3a4 ? field_0x3a4 : push);
+                out->scale(push < field_0x3a4 ? push : field_0x3a4);
             }
         }
     }
