@@ -383,8 +383,8 @@ void ShadowLink2_804A43E8::fn_801C844C() {
             rail->field_0x3 = start;
         }
         u8 opt[2];
-        opt[0] = prev;
-        opt[1] = next;
+        new (&opt[0]) u8(prev);
+        new (&opt[1]) u8(next);
         u8 pick;
         if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
             pick = opt[1];
@@ -424,8 +424,8 @@ void ShadowLink2_804A43E8::fn_801C844C() {
             rail->field_0x3 = start;
         }
         u8 opt[2];
-        opt[1] = prev;
-        opt[0] = next;
+        new (&opt[1]) u8(prev);
+        new (&opt[0]) u8(next);
         if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
             if (field_0x4 == field_0x358.fn_80214244()->fn_800FE25C(opt[1])) {
                 JGeometry::TVec3f p1;
