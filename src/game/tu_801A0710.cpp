@@ -1017,8 +1017,9 @@ void TennisShop_804A2BF4::fn_801A0910() {
     if (field_0x2c4 >= 0) {
         lbl_8053AF28->field_0x10 = (u8)field_0x26c;
         lbl_8053AF28->field_0x14 |= 1;
-        lbl_8053AF28->field_0x12 = field_0x2c4 / 60;
-        lbl_8053AF28->field_0x13 = (s32)(100.0f * (f32)(field_0x2c4 % 60) / 60.0f);
+        s32 frames = field_0x2c4;
+        lbl_8053AF28->field_0x12 = frames / 60;
+        lbl_8053AF28->field_0x13 = (s32)(100.0f * (f32)(frames % 60) / 60.0f);
         lbl_8053AF28->field_0x14 |= 2;
     }
 }
