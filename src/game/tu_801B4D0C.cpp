@@ -34,7 +34,7 @@ extern u8 lbl_8053ABF8;
 s32 lbl_8053A118 = 3;
 
 // 0x801B6170.
-// FIXME(shotgun): 78.11 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.49 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A38D4::init() {
     mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -85,7 +85,7 @@ void cls_804A38D4::init() {
 }
 
 // 0x801B609C.
-// FIXME(shotgun): 92.68 %, different
+// FIXME(shotgun): 92.68 %, different; behaviour near.
 cls_804A38D4::~cls_804A38D4() {
     for (s32 i = 0; i < 3; i++) {
         if (mEmitters294[i] != NULL) {
@@ -102,7 +102,7 @@ cls_804A38D4::~cls_804A38D4() {
 }
 
 // 0x801B56A0.
-// FIXME(shotgun): 78.06 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.06 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A38D4::fn_801B56A0() {
     JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f pos = mPos;
@@ -262,7 +262,7 @@ void cls_804A38D4::fn_801B56A0() {
 }
 
 // 0x801B5228.
-// FIXME(shotgun): 87.96 %, missing/extra
+// FIXME(shotgun): 87.96 %, missing/extra; behaviour drift.
 void cls_804A38D4::fn_801B5228() {
     addCalc2_801F71A4(&mPos.z, field_0x258, 0.3f, field_0x25c);
     switch (field_0x230) {
@@ -342,7 +342,6 @@ void cls_804A38D4::fn_801B5228() {
 }
 
 // 0x801B5198.
-// FIXME(shotgun): 100 %, matches
 void cls_804A38D4::update() {
     switch (field_0x250) {
     case 0:
@@ -362,7 +361,7 @@ void cls_804A38D4::update() {
 }
 
 // 0x801B4EC8.
-// FIXME(shotgun): 95.52 %, different
+// FIXME(shotgun): 95.52 %, different; behaviour clean.
 void cls_804A38D4::fn_801B4EC8() {
     Mtx mtx;
     SpriteParams_801F5AE0 params;
@@ -387,7 +386,6 @@ void cls_804A38D4::fn_801B4EC8() {
 }
 
 // 0x801B4D0C.
-// FIXME(shotgun): 100 %, matches
 void cls_804A38D4::draw() {
     switch (field_0x250) {
     case 0:
