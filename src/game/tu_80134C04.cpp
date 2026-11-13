@@ -1804,11 +1804,7 @@ void GameRoot_8049EF20::fn_80134DE4(s32 kind, s32 frames) {
         field_0x10c = 1;
         field_0x108 = 0x5B;
     } else if (kind == 10) {
-        s32 value = frames;
-        if (value == 0) {
-            value = 0x78;
-        }
-        field_0x108 = value;
+        field_0x108 = frames != 0 ? frames : 0x78;
     } else {
         field_0x108 = kind;
     }
