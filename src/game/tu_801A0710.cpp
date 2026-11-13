@@ -912,9 +912,7 @@ void TennisShop_804A2BF4::fn_801A0F90() {
 
 // FIXME(shotgun): 85.9 %, missing/extra
 void TennisShop_804A2BF4::fn_801A0BE4() {
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos += field_0x3c;
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     switch (field_0x230) {
     case 0x12: {
