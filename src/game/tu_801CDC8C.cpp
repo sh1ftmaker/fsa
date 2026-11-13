@@ -295,7 +295,8 @@ bool EnemyBase_804A4808::fn_801D0B44(s32 player) {
     return canTargetPlayer(player);
 }
 
-// FIXME: 99.73 %, regalloc only (the bools of canTargetPlayer swap).
+// FIXME: 99.73 %, regalloc-only; behaviour clean.
+// regalloc only (the bools of canTargetPlayer swap).
 // Whether player `player` (0-3) can be targeted and is within `range` of *pos.
 bool EnemyBase_804A4808::fn_801D08B4(s32 player, const JGeometry::TVec3f* pos, f32 range) {
     bool result = false;
@@ -305,14 +306,16 @@ bool EnemyBase_804A4808::fn_801D08B4(s32 player, const JGeometry::TVec3f* pos, f
     return result;
 }
 
-// FIXME: 98.99 %, registers and the order of the first loads in the prologue.
+// FIXME: 98.99 %, scheduling+regalloc; behaviour clean.
+// registers and the order of the first loads in the prologue.
 // The nearest player that can be targeted within `range` of *pos (any
 // distance when `range` is 0), or -1.
 s32 EnemyBase_804A4808::fn_801D05F8(const JGeometry::TVec3f* pos, f32 range) {
     return nearestPlayer(pos, range);
 }
 
-// FIXME: 99.35 %, regalloc only (the bools of canTargetPlayer swap).
+// FIXME: 99.35 %, regalloc-only; behaviour clean.
+// regalloc only (the bools of canTargetPlayer swap).
 // The player that can be targeted whose direction from *from is closest to
 // `angle` (16-bit angles; the difference as a fraction of a half turn), or
 // -1.
@@ -345,14 +348,16 @@ s32 EnemyBase_804A4808::fn_801D0280(s32 player) const {
     return JMath::atanTable_.atan2_(playerPos->x - mPos.x, playerPos->y - mPos.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
 }
 
-// FIXME: 90.9 %. Same instructions; the target loads the second offset's
+// FIXME: 90.86 %, scheduling+regalloc; behaviour clean.
+// Same instructions; the target loads the second offset's
 // coordinates before it stores *out (ours stores first), and registers differ.
 // The velocity toward *target (x, y), at most `speed` long.
 void EnemyBase_804A4808::fn_801D01A0(const JGeometry::TVec3f* target, JGeometry::TVec2f* out, f32 speed) {
     velocityToward(target, out, speed);
 }
 
-// FIXME: 88.9 %, scheduling and registers as in fn_801D01A0 (the same body).
+// FIXME: 88.90 %, scheduling+regalloc; behaviour clean.
+// and registers as in fn_801D01A0 (the same body).
 // The velocity (x, y) toward player `player`, at most `speed` long.
 void EnemyBase_804A4808::fn_801D00B4(s32 player, JGeometry::TVec2f* out, f32 speed) {
     JGeometry::TVec3f* playerPos = &field_0x1ac[player];
@@ -365,7 +370,8 @@ s32 EnemyBase_804A4808::fn_801D0020(const JGeometry::TVec3f* pos, s32 player, bo
     return directionTo(pos, player, axis);
 }
 
-// FIXME: 99.4 %, regalloc only (the loop counters and limits).
+// FIXME: 99.43 %, regalloc-only; behaviour clean.
+// regalloc only (the loop counters and limits).
 // Whether a step of `dist` in direction `dir` is blocked: field_0x80's box,
 // moved half the step that way and stretched to the step's length along
 // it, must lie inside the view's box for the layer, and the map
@@ -467,7 +473,8 @@ bool EnemyBase_804A4808::fn_801CFCF0(s32 dir) {
     return fn_801CFD68(dir, dist);
 }
 
-// FIXME: 98.5 %. The target copies `layer` into a second register (mr r31,
+// FIXME: 98.53 %, missing/extra; behaviour clean.
+// The target copies `layer` into a second register (mr r31,
 // r28) after getGameView_802D6A9C and uses the copy for vfunc_0x4C; the
 // rest is registers.
 // Whether the way from *from to *to is blocked: either point outside the
@@ -508,7 +515,8 @@ bool EnemyBase_804A4808::fn_801CFA70(const JGeometry::TVec3f* from, const JGeome
     return blocked;
 }
 
-// FIXME: 95.8 %. The target materialises the zero-length test as a bool
+// FIXME: 95.77 %, missing/extra; behaviour near.
+// The target materialises the zero-length test as a bool
 // (mfcr; extrwi.) before branching on it; ours branches on the compare.
 // The rest differs in registers and load order only.
 // Whether the way from *from to *to is blocked (fn_801CFA70): along the line
@@ -576,7 +584,8 @@ s32 EnemyBase_804A4808::fn_801CF6B8() {
     return dir;
 }
 
-// FIXME: 99.27 %. Registers (the bools of canTargetPlayer swap) and one extra
+// FIXME: 99.27 %, missing/extra; behaviour clean.
+// Registers (the bools of canTargetPlayer swap) and one extra
 // mr r4, r5 in the target before fn_801CFCF0.
 // A direction toward the nearest player within `range` (fn_801CF6B8's random
 // one when there is none): on the dominant axis, or the other one with
@@ -609,7 +618,8 @@ s32 EnemyBase_804A4808::fn_801CF1B0(bool turn, f32 range, f32 margin) {
     return dir;
 }
 
-// FIXME: 75.3. Same operations; the target does all loads (y - z first)
+// FIXME: 75.30 %, missing/extra; behaviour clean.
+// Same operations; the target does all loads (y - z first)
 // before it forms &pos in r3, ours forms &pos first and keeps `this` in r4
 // (one extra mr), which reorders the stores. const: the loads off `this`
 // sit above the register saves (61.7 -> 75.3).
@@ -632,7 +642,8 @@ s32 EnemyBase_804A4808::fn_801CF0F4() const {
     return fn_801F681C(angle);
 }
 
-// FIXME: 99.73 %, regalloc only (the two bools of canTargetPlayer swap r28 /
+// FIXME: 99.73 %, regalloc-only; behaviour clean.
+// regalloc only (the two bools of canTargetPlayer swap r28 /
 // r29, and the player-pointer induction register).
 // Spawns `actorId` (a cls_804A48B0 shot) at mPos aimed at the nearest player
 // within `range`, moving at `speed` (straight down +y when the player is on
@@ -766,12 +777,14 @@ void EnemyBase_804A4808::vfunc_0x78() {}
 
 void EnemyBase_804A4808::vfunc_0x7C() {}
 
-// FIXME: 99.8 %. The same frame-size difference as vfunc_0x80.
+// FIXME: 99.80 %, operands; behaviour clean.
+// The same frame-size difference as vfunc_0x80.
 void EnemyBase_804A4808::fn_801CE800() {
     landStep();
 }
 
-// FIXME: 99.9 %. Only the frame size (0x30, target 0x20): the target's two
+// FIXME: 99.89 %, operands; behaviour clean.
+// Only the frame size (0x30, target 0x20): the target's two
 // points are 8-byte slots (TVec2f-sized), ours TVec3f because fn_802265FC
 // and fn_801CCD34 are declared with TVec3f (they read only x, y).
 // The floor check after a step reached z <= 0 on a floor layer: on a tile of
@@ -851,7 +864,8 @@ void EnemyBase_804A4808::vfunc_0x94() {
     mAnim.fn_801D1C18();
 }
 
-// FIXME: 96.2 %, the same moveStep difference as vfunc_0x98.
+// FIXME: 96.25 %, missing/extra + reloc-name; behaviour clean.
+// the same moveStep difference as vfunc_0x98.
 void EnemyBase_804A4808::fn_801CE32C() {
     moveStep();
 }
@@ -860,7 +874,8 @@ void EnemyBase_804A4808::fn_801CE2BC(u8 mapHit) {
     stateStep(mapHit);
 }
 
-// FIXME: 96.3 % (moveStep): the target loads mAccel (lfs 0x25C) before the
+// FIXME: 96.36 %, missing/extra + reloc-name; behaviour clean.
+// (moveStep): the target loads mAccel (lfs 0x25C) before the
 // mSpeed > mTargetSpeed branch and mDecel in it; ours branches first and
 // loads the chosen one after.
 void EnemyBase_804A4808::vfunc_0x98() {
@@ -875,7 +890,8 @@ void EnemyBase_804A4808::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME: 88.1 %. The target picks the y with one fsel (top - y >= 0);
+// FIXME: 90.30 %, missing/extra; behaviour drift.
+// The target picks the y with one fsel (top - y >= 0);
 // ours compiles the ?: as fcmpo / cror / branch.
 // The screen position of the actor, raised to the top of the view box.
 void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
@@ -891,7 +907,8 @@ void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
 
 void EnemyBase_804A4808::vfunc_0xA0() {}
 
-// FIXME: 92.3 %. The target keeps `this` in r30 and the flag in r31 (ours:
+// FIXME: 93.53 %, missing/extra; behaviour near.
+// The target keeps `this` in r30 and the flag in r31 (ours:
 // r31 / r30), reloads mFlags before each `|=` (ours reuses the tested load),
 // and tests the hit bits before vfunc_0x68 as a bool value (clrlwi; neg; or;
 // srwi.) where ours uses clrlwi. A bool local and an inline isHit() gave
@@ -948,7 +965,8 @@ void EnemyBase_804A4808::update() {
     }
 }
 
-// FIXME: 99.4 %, regalloc only: the target loads pos->x into f2 and
+// FIXME: 99.41 %, regalloc-only; behaviour clean.
+// regalloc only: the target loads pos->x into f2 and
 // pos->z into f0, ours the other way round.
 // Starts sound `soundId` as if this actor were at *pos on `layer`.
 void EnemyBase_804A4808::fn_801CDCD0(s32 layer, const JGeometry::TVec3f* pos, u32 soundId) {
