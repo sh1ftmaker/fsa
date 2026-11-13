@@ -27,7 +27,7 @@ public:
     s32 fn_80350530();
     s32 fn_803506E0();
     // 0x803502CC: moves the lift's box by the push and tests it against the map.
-    bool fn_803502CC();
+    u8 fn_803502CC();
     // 0x80350974: the players on / pushing the lift; returns how many stand on it.
     s32 fn_80350974();
     // 0x803511F0: respawns the lift at its spawn position (with an effect when it was far away).

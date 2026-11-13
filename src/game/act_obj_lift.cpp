@@ -473,7 +473,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
     return count;
 }
 
-// FIXME(shotgun): 92.87 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.59 %, scheduling+regalloc; behaviour drift.
 s32 OBJLift_804ACA00::fn_803506E0() {
     static JGeometry::TVec2f lbl_8050AED8[4] = {
         JGeometry::TVec2f(32.0f, 0.0f),
@@ -496,8 +496,8 @@ s32 OBJLift_804ACA00::fn_803506E0() {
             if (held) {
                 limit = square(8.0f + field_0x260);
             }
-            if (square(px - getPlayerPos_8023E724(i)->x) + square(py - getPlayerPos_8023E724(i)->y) < limit &&
-                getPlayerPos_8023E724(i)->z == 0.0f) {
+            JGeometry::TVec3f* pl = getPlayerPos_8023E724(i);
+            if (square(px - pl->x) + square(py - pl->y) < limit && getPlayerPos_8023E724(i)->z == 0.0f) {
                 if (held == 0) {
                     startSound_801F0E34(0x30009, 0);
                 }
@@ -506,10 +506,10 @@ s32 OBJLift_804ACA00::fn_803506E0() {
         }
     }
     s32 mask = field_0x270;
-    if ((mask & 1) && (mask & 2)) {
+    if ((mask & 1) && ((mask >> 1) & 1)) {
         mask &= 0xC;
     }
-    if ((mask & 4) && (mask & 8)) {
+    if (((mask >> 2) & 1) && ((mask >> 3) & 1)) {
         mask &= 3;
     }
     if (mask == 1) {
@@ -577,15 +577,13 @@ s32 OBJLift_804ACA00::fn_80350530() {
 #pragma auto_inline reset
 
 // 0x803502CC.
-// FIXME(shotgun): 64.84 %, missing/extra; behaviour drift.
-bool OBJLift_804ACA00::fn_803502CC() {
-    f32 savedIX = field_0x80.i.x;
-    f32 savedIY = field_0x80.i.y;
-    f32 savedFX = field_0x80.f.x;
-    f32 savedFY = field_0x80.f.y;
+// Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
+// FIXME: 95.24 %, missing/extra; behaviour near.
+u8 OBJLift_804ACA00::fn_803502CC() {
+    JGeometry::TBox2f saved = field_0x80;
     if (field_0x258 == 4) {
         for (s32 i = 0; i < 4; i++) {
-            field_0x80 = lbl_8050ADF8[i];
+            field_0x80.set(lbl_8050ADF8[i]);
             if (field_0x268 == 0 || field_0x268 == 1) {
                 field_0x80.f.y -= 3.0f;
             } else {
@@ -593,21 +591,13 @@ bool OBJLift_804ACA00::fn_803502CC() {
                 field_0x80.f.y += field_0x290;
             }
             if (fn_801F2618(NULL, false) == 1) {
-                field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-                return true;
+                field_0x80.set(saved);
+                return 1;
             }
         }
-        field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-        return false;
     } else if (field_0x258 >= 16 && field_0x258 <= 20) {
         for (s32 j = 0; j < 2; j++) {
-            field_0x80 = lbl_8050AE38[(field_0x258 - 16) * 2 + j];
+            field_0x80.set(lbl_8050AE38[(field_0x258 - 16) * 2 + j]);
             if (field_0x268 == 0 || field_0x268 == 1) {
                 field_0x80.f.y -= 3.0f;
             } else {
@@ -615,20 +605,15 @@ bool OBJLift_804ACA00::fn_803502CC() {
                 field_0x80.f.y += field_0x290;
             }
             if (fn_801F2618(NULL, false) == 1) {
-                field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-                return true;
+                field_0x80.set(saved);
+                return 1;
             }
         }
-        field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-        return false;
+    } else {
+        return fn_801F2618(NULL, false);
     }
-    return fn_801F2618(NULL, false);
+    field_0x80.set(saved);
+    return 0;
 }
 
 // 0x80350274.
@@ -641,7 +626,8 @@ bool OBJLift_804ACA00::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x8035001C.
-// FIXME(shotgun): 63.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 77.16 %, missing/extra; behaviour drift.
+// Cases 5-6 reload field_0x260 and the switch has no jump table.
 void OBJLift_804ACA00::fn_8035001C(u32 dir) {
     switch (dir) {
     case 0:
@@ -665,8 +651,7 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
         field_0x3c.z = 0.0f;
         break;
     case 4:
-        field_0x3c.x = 0.5f * field_0x260;
-        field_0x3c.y = 0.5f * field_0x260;
+        field_0x3c.x = field_0x3c.y = 0.5f * field_0x260;
         field_0x3c.z = 0.0f;
         break;
     case 5:
@@ -680,14 +665,11 @@ void OBJLift_804ACA00::fn_8035001C(u32 dir) {
         field_0x3c.z = 0.0f;
         break;
     case 7:
-        field_0x3c.x = 0.5f * -(f32)field_0x260;
-        field_0x3c.y = 0.5f * -(f32)field_0x260;
+        field_0x3c.x = field_0x3c.y = 0.5f * -(f32)field_0x260;
         field_0x3c.z = 0.0f;
         break;
     default:
-        field_0x3c.z = 0.0f;
-        field_0x3c.y = 0.0f;
-        field_0x3c.x = 0.0f;
+        field_0x3c.x = field_0x3c.y = field_0x3c.z = 0.0f;
         break;
     }
 }
