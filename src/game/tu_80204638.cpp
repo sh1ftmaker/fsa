@@ -106,9 +106,7 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
                 }
             }
         }
-        JGeometry::TVec2f from(mPositions[nearest].x, mPositions[nearest].y);
-        JGeometry::TVec2f dir(vel->x, vel->y);
-        moved = fn_801CB85C(&from, &dir, &p, 20.0f, 0.5f);
+        moved = fn_801CB85C((const JGeometry::TVec2f*)&mPositions[nearest], (const JGeometry::TVec2f*)vel, &p, 20.0f, 0.5f);
         if (moved) {
             pos->x = p.x;
             pos->y = p.y;
