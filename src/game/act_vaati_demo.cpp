@@ -369,7 +369,8 @@ void cls_8049D940::fn_80115D8C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // Not auto-inlined: fn_80115A7C calls fn_80115BC4 out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 92.98 %, missing/extra + reloc-name: one extra frsp after the __fsel
+// FIXME: 92.98 %, missing/extra + reloc-name; behaviour near.
+// one extra frsp after the __fsel
 // (the intrinsic returns a double; the original scales by the fsel result directly),
 // plus .sdata2 literal symbol names.
 void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
