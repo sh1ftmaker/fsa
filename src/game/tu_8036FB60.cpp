@@ -455,14 +455,14 @@ void cls_804AE4B0::fn_80371284() {
             tickPlayer_80371284(this, i);
         }
     }
-    if (field_0x324.y <= 1720.0f) {
+    if (!(field_0x324.y > 1720.0f)) {
         field_0x324.y = 1720.0f;
         field_0x384[0] = 0;
         field_0x384[1] = 0;
         field_0x384[2] = 0;
         field_0x384[3] = 0;
-        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
+        JGeometry::TVec3f pos(0.5f * (f32)renderMode->fbWidth, 0.5f * (f32)renderMode->efbHeight, 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, 0x50F, field_0x4, pos, 0x22)) {
             mState = 2;
