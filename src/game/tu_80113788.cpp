@@ -593,7 +593,7 @@ void cls_8049D83C::fn_80113B54(s32 arg) {
     }
 }
 
-// FIXME(shotgun): 88.64 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.28 %, operands + reloc-name; behaviour drift.
 void cls_8049D83C::fn_8011395C() {
     Mtx mtx;
     PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
@@ -632,7 +632,7 @@ void cls_8049D83C::fn_8011395C() {
         crystal.mPos.x = 0.5f;
         crystal.mPos.y = 0.5f;
         crystal.mPos.z = 0.5f;
-        PSMTXCopy(mtx, crystal.mMtx);
+        JMath::gekko_ps_copy12(crystal.mMtx, mtx);
         crystal.field_0x48 = -1.0f;
         crystal.field_0x4c = frame;
         crystal.field_0x54 = 0;
