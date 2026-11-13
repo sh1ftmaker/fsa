@@ -84,10 +84,10 @@ void cls_804A1E50::fn_8018E894(s32 value) {
 
 // FIXME(shotgun): 92.72 %, different + reloc-name.
 void cls_804A1E50::init() {
-    mBox2.i.x = -8.0f;
-    mBox2.i.y = -8.0f;
-    mBox2.f.x = 8.0f;
-    mBox2.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
     field_0x26c = field_0x90 & 1;
     field_0x24c = 0;
     field_0x250 = 0;
@@ -105,7 +105,9 @@ void cls_804A1E50::init() {
         field_0x2e8[i] = 0;
         field_0x2f8[i].set(mPos);
     }
-    lbl_804C18B8.set(0.0f, 0.0f, 0.0f);
+    lbl_804C18B8.z = 0.0f;
+    lbl_804C18B8.y = 0.0f;
+    lbl_804C18B8.x = 0.0f;
     lbl_80539FC8 = -1;
     field_0x270 = 0;
     field_0x264 = 0;
@@ -117,7 +119,9 @@ void cls_804A1E50::init() {
     field_0x2ac.z = 0.0f;
     field_0x2ac.y = 0.0f;
     field_0x2ac.x = 0.0f;
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
     field_0x2a0.set(mPos);
     field_0x2c4[0].set(mPos);
     field_0x2c4[1].set(mPos);
