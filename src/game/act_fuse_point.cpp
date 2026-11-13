@@ -12,6 +12,7 @@ f32 fn_80210AF8(s32 dir);
 
 FusePoint_804A54C0::FusePoint_804A54C0() {}
 
+// FIXME: 96.62 %, scheduling+regalloc; behaviour clean.
 // FIXME(shotgun): register choice for the spawn direction (original keeps it in r27).
 void FusePoint_804A54C0::init() {
     EnemyBase_804A4808::init();
