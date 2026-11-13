@@ -30,7 +30,7 @@ struct GoalTables_8046EA10 {
 extern const GoalTables_8046EA10 lbl_8046EA10;
 
 // 0x802E3B2C.
-// FIXME(shotgun): 84.30 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 84.33 %, missing/extra; behaviour drift.
 void cls_804A9C20::init() {
     field_0x238 = field_0x90 & 0x1F;
     field_0x240 = (field_0x90 >> 22) & 0x1F;
