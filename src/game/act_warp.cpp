@@ -30,8 +30,7 @@ static inline bool boxesOverlap(const JGeometry::TBox2f& a, const JGeometry::TBo
 // The box `ofs` (relative to pos) in top-down screen space: the top edge shifts by z, the
 // bottom edge by z / 2 (read from fn_80227290's asm).
 static inline void toScreenBox(JGeometry::TBox2f* out, JGeometry::TBox2f ofs, JGeometry::TVec3f pos) {
-    f32 halfZ = pos.z * 0.5f;
-    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - halfZ);
+    out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z * 0.5f);
 }
 
 // The spawn parameter of the WARP that init() creates for the paired kinds 0x19-0x1C: this warp's
