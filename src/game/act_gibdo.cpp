@@ -51,7 +51,7 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D1D60();
 }
 
-// FIXME(shotgun): 86.13 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 99.47 %, missing/extra; behaviour drift.
 // the original keeps fewer values live (saves r30-r31 only)
 // and its jump table is named jumptable_804A3D24.
 void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
