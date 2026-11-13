@@ -39,8 +39,8 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}
 
-// FIXME(shotgun): 92.05 %, different; behaviour drift.
-// (the original reloads each emitter field for the call; 0xF4-0x100 are deleted without a null check)
+// FIXME(shotgun): 99.75 %, regalloc-only; behaviour clean.
+// (the loop's entry and index registers are swapped, r27/r28)
 GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     for (int i = 0; i < 4; i++) {
         if (field_0x140.mEntries[i].field_0x0 != NULL) {
@@ -51,25 +51,32 @@ GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
         }
     }
     if (field_0x138 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x138);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x138);
     }
     if (field_0x13c != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x13c);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x13c);
     }
     if (field_0x130 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x130);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x130);
     }
     if (field_0x134 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x134);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x134);
     }
     if (field_0x124 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x124);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x124);
     }
     if (field_0x128 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x128);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x128);
     }
     if (field_0x12c != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x12c);
+        JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+        manager->forceDeleteEmitter(field_0x12c);
     }
     if (field_0x120 != NULL) {
         delete field_0x120;
