@@ -863,9 +863,8 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
-// FIXME(shotgun): 85.53 %, missing/extra; behaviour drift.
-// the original repeats the sprite step before each
-// early `continue` (shared i++ block), and compares x unsigned (cmplwi) but shifts it signed.
+// Remaining: register order in the record stores (scheduling+regalloc).
+// FIXME: 89.62 %, missing/extra; behaviour drift.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 count = 0;
@@ -873,44 +872,47 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
     s32 slot = fn_8022EA0C(player);
     for (s32 timer = 5; timer >= 0; timer--) {
         cls_803099FC* sprite = lbl_80504A38[player];
-        for (s32 i = 0; i < 16; i++, sprite++) {
-            if (sprite->mActive != 1 || sprite->mTimer != timer) {
-                continue;
-            }
-            if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
-                ((gGameRoot_8053AAF8->field_0x4c == 11 || gGameRoot_8053AAF8->field_0x88 != 0) &&
-                 sprite->field_0x23 == 0)) {
-                sprite->mRemove = 1;
-                continue;
-            }
-            s32 x = fn_8023D9B0(&sprite->mPos, slot) & 0x1FF;
-            u8 y = fn_8023D4F8(&sprite->mPos, slot);
-            if (x == 0x180 || y == 0xE0) {
-                sprite->mRemove = 1;
-                continue;
-            }
-            if (sprite->field_0x20 >= 4) {
-                if (big >= 4) {
+        for (s32 i = 0; i < 16; i++) {
+            if (sprite->mActive == 1 && sprite->mTimer == timer) {
+                if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
+                    ((gGameRoot_8053AAF8->field_0x4c == 11 || gGameRoot_8053AAF8->field_0x88 != 0) &&
+                     sprite->field_0x23 == 0)) {
                     sprite->mRemove = 1;
+                    sprite++;
                     continue;
                 }
-                big++;
+                u16 x = fn_8023D9B0(&sprite->mPos, slot) & 0x1FF;
+                u8 y = fn_8023D4F8(&sprite->mPos, slot);
+                if (x == 0x180 || y == 0xE0) {
+                    sprite->mRemove = 1;
+                    sprite++;
+                    continue;
+                }
+                if (sprite->field_0x20 >= 4) {
+                    if (big >= 4) {
+                        sprite->mRemove = 1;
+                        sprite++;
+                        continue;
+                    }
+                    big++;
+                }
+                count++;
+                dst->f.field_0x3_0 = x >> 8;
+                s32 id = sprite->mId;
+                dst->f.field_0x2 = x;
+                dst->f.field_0x1 = y;
+                sprite->mRemove = 1;
+                dst->f.field_0x3_1 = id >> 8;
+                dst->f.field_0x0 = id;
+                dst->f.mKind = sprite->field_0x20;
+                dst->f.field_0x3_4 = sprite->field_0x21;
+                dst->f.field_0x3_3 = sprite->field_0x22;
+                if (count >= max) {
+                    return count;
+                }
+                dst++;
             }
-            count++;
-            dst->f.field_0x3_0 = x >> 8;
-            s32 id = sprite->mId;
-            dst->f.field_0x2 = x;
-            dst->f.field_0x1 = y;
-            sprite->mRemove = 1;
-            dst->f.field_0x3_1 = id >> 8;
-            dst->f.field_0x0 = id;
-            dst->f.mKind = sprite->field_0x20;
-            dst->f.field_0x3_4 = sprite->field_0x21;
-            dst->f.field_0x3_3 = sprite->field_0x22;
-            if (count >= max) {
-                return count;
-            }
-            dst++;
+            sprite++;
         }
     }
     return count;
