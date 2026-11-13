@@ -239,7 +239,7 @@ s32 cls_804AE088::vfunc_0x5C() {
 }
 
 // differs: register allocation (original keeps &mPos in a register across the draw calls) and the alpha store order.
-// FIXME: 59.15 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 93.90 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AE088::fn_8036AC58(s32 arg) {
     if (field_0x270 == 1 && field_0x274 < 0x80)
         return;
@@ -368,7 +368,6 @@ void cls_804AE088::fn_8036A894() {
 }
 #pragma auto_inline reset
 
-// FIXME: 82.37 %, missing/extra; behaviour drift.
 void cls_804AE088::fn_8036A65C() {
     deleteEmitter(&field_0x350);
     deleteEmitter(&field_0x354);
