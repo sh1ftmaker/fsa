@@ -577,15 +577,12 @@ s32 OBJLift_804ACA00::fn_80350530() {
 #pragma auto_inline reset
 
 // 0x803502CC.
-// FIXME(shotgun): 64.84 %, missing/extra; behaviour drift.
-bool OBJLift_804ACA00::fn_803502CC() {
-    f32 savedIX = field_0x80.i.x;
-    f32 savedIY = field_0x80.i.y;
-    f32 savedFX = field_0x80.f.x;
-    f32 savedFY = field_0x80.f.y;
+// Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
+u8 OBJLift_804ACA00::fn_803502CC() {
+    JGeometry::TBox2f saved = field_0x80;
     if (field_0x258 == 4) {
         for (s32 i = 0; i < 4; i++) {
-            field_0x80 = lbl_8050ADF8[i];
+            field_0x80.set(lbl_8050ADF8[i]);
             if (field_0x268 == 0 || field_0x268 == 1) {
                 field_0x80.f.y -= 3.0f;
             } else {
@@ -593,21 +590,13 @@ bool OBJLift_804ACA00::fn_803502CC() {
                 field_0x80.f.y += field_0x290;
             }
             if (fn_801F2618(NULL, false) == 1) {
-                field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-                return true;
+                field_0x80.set(saved);
+                return 1;
             }
         }
-        field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-        return false;
     } else if (field_0x258 >= 16 && field_0x258 <= 20) {
         for (s32 j = 0; j < 2; j++) {
-            field_0x80 = lbl_8050AE38[(field_0x258 - 16) * 2 + j];
+            field_0x80.set(lbl_8050AE38[(field_0x258 - 16) * 2 + j]);
             if (field_0x268 == 0 || field_0x268 == 1) {
                 field_0x80.f.y -= 3.0f;
             } else {
@@ -615,20 +604,15 @@ bool OBJLift_804ACA00::fn_803502CC() {
                 field_0x80.f.y += field_0x290;
             }
             if (fn_801F2618(NULL, false) == 1) {
-                field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-                return true;
+                field_0x80.set(saved);
+                return 1;
             }
         }
-        field_0x80.i.x = savedIX;
-                field_0x80.i.y = savedIY;
-                field_0x80.f.x = savedFX;
-                field_0x80.f.y = savedFY;
-        return false;
+    } else {
+        return fn_801F2618(NULL, false);
     }
-    return fn_801F2618(NULL, false);
+    field_0x80.set(saved);
+    return 0;
 }
 
 // 0x80350274.
