@@ -954,7 +954,7 @@ void cls_804ADF28::fn_80362C44() {
             field_0x264++;
             field_0x264 &= 7;
         }
-        field_0x2f8 += fabs(field_0x3c.y);
+        field_0x2f8 += __fabsf(field_0x3c.y);
         if (field_0x2f8 >= 160.0f) {
             field_0x238++;
             field_0x3c.x = 0.0f;
@@ -993,22 +993,23 @@ void cls_804ADF28::fn_80362C44() {
                 field_0x264 &= 7;
             }
             skip = true;
-            field_0x2f8 += fabs(field_0x3c.y);
+            field_0x2f8 += __fabsf(field_0x3c.y);
             if (field_0x2f8 >= 80.0f) {
                 field_0x248 = 300;
                 field_0x250 = (f32)gGameRoot2_8053AB10->field_0x2c->field_0xc;
                 field_0x254 = field_0x250 / (f32)field_0x248;
                 JGeometry::TVec3f effectPos;
-                effectPos.x = 0.0f;
-                effectPos.y = 0.0f;
+                effectPos.x = (f32)(s32)(mPos.x * 0.001953125f) * 512.0f + 256.0f;
+                effectPos.y = (f32)(s32)(mPos.y / 384.0f) * 384.0f + 192.0f;
                 effectPos.z = 0.0f;
-                // FIXME(shotgun): the original positions the first four effects from mPos
-                // (a stack-converted fctiwz pair); written with the plain position here.
                 static const u16 lbl_80542AF0[4] = {0x4A4, 0x4A5, 0x4A6, 0x4A7};
                 for (int i = 0; i < 4; i++) {
                     spawnEmitter_8013CC50(0, &effectPos, lbl_80542AF0[i], 0, 0, NULL, NULL, true, 1.0f);
                     deleteEmitter(&field_0x30c[i]);
                 }
+                effectPos.x = 0.0f;
+                effectPos.y = 0.0f;
+                effectPos.z = 0.0f;
                 spawnEmitter_8013CC50(0, &effectPos, 0x55a, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(0, &effectPos, 0x55b, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(0, &effectPos, 0x55c, 0, 0, NULL, NULL, true, 1.0f);
@@ -1054,8 +1055,8 @@ void cls_804ADF28::fn_80362C44() {
     case 7:
         gGameRoot2_8053AB10->field_0x2c->field_0xc = 0;
         skip = true;
-        deleteEmitter(&field_0x304);
-        deleteEmitter(&field_0x308);
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x304);
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x308);
         gGameRoot_8053AAF8->fn_8013670C(1);
         field_0x238++;
         break;
