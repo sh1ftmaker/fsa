@@ -823,9 +823,9 @@ void ShadowLink2_804A43E8::fn_801C71BC() {
             buf->field_0x3 = start;
         }
         u8 opt[3];
-        opt[0] = prev;
-        opt[1] = start;
-        opt[2] = next;
+        new (&opt[0]) u8(prev);
+        new (&opt[1]) u8(start);
+        new (&opt[2]) u8(next);
         if (field_0x358.fn_80214244()->fn_800FD4C0(opt[1], opt[0]) ||
             field_0x358.fn_80214244()->fn_800FD4C0(opt[1], opt[2])) {
             JGeometry::TVec3f railPos;
