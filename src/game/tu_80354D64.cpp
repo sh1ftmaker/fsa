@@ -323,13 +323,10 @@ void Log_804ACD70::draw() {
     }
 }
 
-// FIXME(shotgun): 92.56 %, missing/extra
 void Log_804ACD70::vfunc_0x24() {
-    // FIXME(shotgun): the asm leaves the three emitter ids unset when field_0x2c0/field_0x2c4 match no
-    // case (the original passes indeterminate values); they are zeroed here, a behaviour difference.
-    s32 a = 0;
-    s32 b = 0;
-    s32 c = 0;
+    u16 a;
+    u16 b;
+    u16 c;
     switch (field_0x2c0) {
     case 0:
         switch (field_0x2c4) {
