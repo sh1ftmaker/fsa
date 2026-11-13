@@ -730,6 +730,9 @@ bool cls_8049E770::fn_8012A5EC() {
         }
     }
     Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
-    Vec camPos = {-cam->field_0x4[0][3], -cam->field_0x4[1][3], 0.0f};
+    Vec camPos;
+    camPos.x = -cam->field_0x4[0][3];
+    camPos.y = -cam->field_0x4[1][3];
+    camPos.z = 0.0f;
     return PSVECDistance(&field_0x238, &camPos) < 0.1f;
 }
