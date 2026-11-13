@@ -2100,7 +2100,7 @@ void cls_804A2944::update() {
     }
 }
 
-// FIXME(shotgun): 82.45 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 86.18 %, different; behaviour near.
 // The original addresses the frame tables and sprite bank names off one .rodata base (r31); here the names are plain literals and the tables extern.
 void cls_804A2944::draw() {
     switch (field_0x90) {
