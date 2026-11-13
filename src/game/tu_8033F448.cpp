@@ -39,11 +39,10 @@ void cls_804AC388::update() {
                 if (fn_8023F264(i) && getPlayerLayer_8023DE58(i) < 8 && !fn_80230188(i) &&
                     !fn_8022F478(i) && !fn_80236D14(i)) {
                     JGeometry::TVec3f* player = getPlayerPos_8023E724(i);
-                    JGeometry::TVec3f pos;
-                    pos.x = player->x + 0.1f;
-                    pos.y = player->y - 0.1f;
-                    // fn_80238548 reads only x and y of the position.
-                    fn_80238548(i, 1, (const JGeometry::TVec2f*)&pos, 1);
+                    JGeometry::TVec2f pos(player->x, player->y);
+                    pos.x += 0.1f;
+                    pos.y -= 0.1f;
+                    fn_80238548(i, 1, &pos, 1);
                     lbl_80529DEC.field_0x239 |= (u8)(1 << i);
                     spawned = true;
                 }
