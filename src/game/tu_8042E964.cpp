@@ -42,7 +42,8 @@ inline cls_804B1600::cls_804B1600() {
     field_0x12 = 0;
 }
 
-// FIXME(shotgun): 94.05 %, missing/extra (loop counter and pointer registers)
+// FIXME(shotgun): 95.78 %, missing/extra + reloc-name; behaviour near.
+// (loop counter and pointer registers)
 cls_804B1634::cls_804B1634() {
     JUTResFont* font;
     lbl_8053AEC0 = this;
@@ -152,7 +153,8 @@ bool cls_804B1634::fn_80431900(s32 id, u8 value, u8* out) {
     return false;
 }
 
-// FIXME: 99.76. Code identical; only the .sdata2 literal names differ (same pool
+// FIXME: 99.94 %, reloc-name; behaviour clean.
+// Code identical; only the .sdata2 literal names differ (same pool
 // order cause as fn_80431740).
 BOOL cls_804B1634::fn_804317AC() {
     if (field_0xec != 0) {
@@ -173,8 +175,6 @@ BOOL cls_804B1634::fn_804317AC() {
     return FALSE;
 }
 
-// FIXME: 99.81. Code identical; only the .sdata2 literal names differ (the pool
-// order also needs the literals of the unwritten fn_8042EF9C / fn_8042F6DC first).
 BOOL cls_804B1634::fn_80431740() {
     if (field_0xec != 0) {
         if (field_0xc->fn_80402940(10, 0, 0.0f, 480.0f) == 0) {
@@ -193,7 +193,8 @@ void cls_804B1634::fn_804316EC() {
     }
 }
 
-// FIXME: 99.46. Not a counted match: the .sdata2 literals (1.0f, 11.0f, 0.5f) pair
+// FIXME: 99.57 %, regalloc-only + reloc-name; behaviour clean.
+// Not a counted match: the .sdata2 literals (1.0f, 11.0f, 0.5f) pair
 // only once fn_8042EF9C / fn_8042F6DC put theirs first, and the temporaries
 // f0-f3 of the cursor placement are numbered differently (regalloc only).
 bool cls_804B1634::fn_80431174(u8 cursor) {
@@ -323,7 +324,8 @@ f32 cls_804B1634::fn_80430518(u8 noun, s32 count, f32 scale) {
     return total;
 }
 
-// FIXME(shotgun): 99.10 %, operands (string literal pool offsets)
+// FIXME(shotgun): 99.61 %, operands; behaviour drift.
+// (string literal pool offsets)
 f32 cls_804B1634::fn_80430368(u8 noun, s32 count, char* out) {
     switch (noun) {
     case 1:
@@ -393,7 +395,8 @@ f32 cls_804B1634::fn_80430368(u8 noun, s32 count, char* out) {
     return 0.0f;
 }
 
-// FIXME(shotgun): 98.74 %, cls_804B1634
+// FIXME(shotgun): 98.74 %, missing/extra + reloc-name; behaviour near.
+// cls_804B1634
 void cls_804B1634::fn_8042F6DC() {
     f32 w = field_0xb8[0] + 48.0f;
     f32 lineSpace = static_cast<J2DTextBox*>(field_0x8->search(0x0000005477743031ull))->getLineSpace();
@@ -539,7 +542,7 @@ void cls_804B1634::fn_8042F6DC() {
     }
 }
 
-// FIXME(shotgun): 93.21 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.34 %, missing/extra + reloc-name; behaviour drift.
 // Lays message `id` out into `str` with each line centred in 428 (a "\x1BCR[n]" prefix), the
 // 0x1A size-3 commands replaced by the digit `value` and its counted noun; on the way it
 // measures the lines and the two choices (0x1A size-2 commands) into field_0xb8-field_0xe4.
