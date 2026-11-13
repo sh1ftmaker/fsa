@@ -14,7 +14,7 @@
 extern const f32 lbl_8046ACC8[37][2];
 
 // 0x8022A83C.
-// FIXME(shotgun): 96.87 %, different
+// FIXME(shotgun): 96.87 %, different; behaviour drift.
 void PlayerEffect_804A6E20::init() {
     u32 kind = (field_0x90 >> 2) & 0x3F;
     if (kind != 5) {
@@ -90,7 +90,7 @@ void PlayerEffect_804A6E20::init() {
 }
 
 // 0x80229F1C.
-// FIXME(shotgun): 97.53 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.27 %, missing/extra + reloc-name; behaviour drift.
 void PlayerEffect_804A6E20::update() {
     field_0x230++;
     switch ((field_0x90 >> 2) & 0x3F) {
@@ -321,7 +321,7 @@ static inline void drawShadow_802297FC(s32 layer, const JGeometry::TVec3f* pos, 
 }
 
 // 0x802297FC.
-// FIXME(shotgun): 86.05 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.23 %, missing/extra + reloc-name; behaviour drift.
 void PlayerEffect_804A6E20::draw() {
     SpriteParams_801F5AE0 params;
     switch ((field_0x90 >> 2) & 0x3F) {
