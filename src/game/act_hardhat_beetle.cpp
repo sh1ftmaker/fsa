@@ -36,7 +36,7 @@ void HardhatBeetle_804A06C0::init() {
     mState = 0;
 }
 
-// FIXME(shotgun): 95.61 %, missing/extra
+// FIXME(shotgun): 95.61 %, missing/extra; behaviour drift.
 void HardhatBeetle_804A06C0::update() {
     u16 angle = 0;
     s32 outDir = 0;
@@ -190,7 +190,8 @@ void HardhatBeetle_804A06C0::update() {
     }
 }
 
-// FIXME: 99.0 %. regalloc-only: the original keeps mScale in f29 and cos x
+// FIXME: 99.01 %, regalloc-only; behaviour clean.
+// regalloc-only: the original keeps mScale in f29 and cos x
 // in f31, ours the other way round, and sin x / sin z get f28 / f26 there,
 // f26 / f28 here.
 void HardhatBeetle_804A06C0::draw() {
