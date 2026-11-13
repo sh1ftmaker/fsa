@@ -160,7 +160,7 @@ bool cls_804A51E4::vfunc_0x58() {
     return hit;
 }
 
-// FIXME(shotgun): 79.85 %, different; behaviour drift.
+// FIXME(shotgun): 84.04 %, missing/extra; behaviour near.
 u8 cls_804A51E4::vfunc_0x60() {
     u8 hit = 0;
     s32 other = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
