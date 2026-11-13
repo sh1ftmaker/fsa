@@ -762,7 +762,7 @@ void Camera_804AA9E4::fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraE
 
 // Not inlined into its caller fn_8030E5BC in the original.
 #pragma auto_inline off
-// FIXME(shotgun): 70.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 70.35 %, missing/extra + reloc-name; behaviour drift.
 // (the target keeps the box corners in float registers)
 void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     f32 halfW = 0.5f * (box->f.x - box->i.x);
