@@ -8,9 +8,8 @@
 #include "game/Effect.h"
 #include "game/EnemyBase.h"
 
-// FIXME(shotgun): tables not written out (gate.py literal tripwire); extern-declared, sizes
-// from symbols.txt. lbl_8046C658 / lbl_8046C6C8: the x and y shake offsets of four steps per
-// shake kind (s32, 16 bytes per kind).
+// lbl_8046C658 / lbl_8046C6C8: the x and y shake offsets of four steps per shake kind (s32,
+// 16 bytes per kind). lbl_8046C6C8 is 0x160 bytes in the binary; only its first 0x70 are written out.
 const s32 lbl_8046C658[7][4] = {
     {-24, 40, -24, 40}, {0, 64, 0, 64}, {0, -48, 48, 0}, {0, 32, 64, 96},
     {0, 0, 0, 0}, {0, 48, 112, 160}, {80, -80, 80, -80},
