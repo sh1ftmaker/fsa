@@ -105,7 +105,7 @@ s32 cls_801E9B54::fn_801EA6D8(u8 arg0, s32 arg1) {
     return result;
 }
 
-// FIXME: 89.98 %, missing/extra; behaviour drift.
+// FIXME: 94.56 %, missing/extra; behaviour near.
 // The slot shift-down loop: the original recomputes the source
 // slot from the index each pass (addi, mulli, add; 81 instructions), ours
 // walks a second pointer (80).
@@ -121,8 +121,8 @@ void cls_801E9B54::fn_801EA594() {
                         field_0x0[i].actor->mDrawEnabled = false;
                     }
                     Slot_801E9B54* dst = &field_0x0[i];
-                    for (; i < field_0x60 - 1; i++) {
-                        *dst = field_0x0[i + 1];
+                    while (i < field_0x60 - 1) {
+                        *dst = field_0x0[++i];
                         dst++;
                     }
                     field_0x60 = field_0x60 - 1;
