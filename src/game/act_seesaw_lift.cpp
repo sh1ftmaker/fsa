@@ -22,6 +22,8 @@ static void (SeesawLift_804AD348::*lbl_804AD30C[5])() = {
 
 static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
+static const u16 lbl_80542868[2] = {864, 12};
+
 // Writes tile `tile` over the lift's 6 x 6 tile area.
 static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     JGeometry::TVec3f p = lift->mPos + JGeometry::TVec3f(lift->mBox.i.x, lift->mBox.i.y, 0.0f);
@@ -37,7 +39,7 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 83.69 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.73 %, missing/extra; behaviour drift.
 // the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
@@ -77,7 +79,7 @@ void SeesawLift_804AD348::init() {
     fillTiles(this, 864);
 }
 
-// FIXME: 90.79 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME: 90.92 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling differs: original hoists the field_0x4 load above the layer call
 s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     if (fn_8022D75C(player)) {
@@ -126,7 +128,7 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     return 0;
 }
 
-// FIXME: 90.10 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME: 90.22 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling of the player loop differs; literal names differ
 s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     if (fn_8022D75C(player)) {
@@ -172,7 +174,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 93.75 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 93.89 %, missing/extra + reloc-name; behaviour near.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     s32 moved = 0;
@@ -234,7 +236,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME: 81.39 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 81.47 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
     rel.sub(mPos);
@@ -267,7 +269,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 91.06 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.60 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -278,27 +280,29 @@ void SeesawLift_804AD348::fn_8035A210() {
             JGeometry::TBox2f box;
             fn_801F317C(&box);
             f32 centerY = mPos.y;
-            f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+            f32 c = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
             box.i.y = (box.i.y - centerY) * c + centerY;
             box.f.y = (box.f.y - centerY) * c + centerY;
             JGeometry::TVec2f out;
+            s8 side;
             if (fn_8023AAF8(p, &box, field_0x4, &out)) {
                 f32 d = centerY - out.y;
                 if (field_0x24e && d == 0.0f) {
                     d = 0.1f;
                 }
-                if (!field_0x24e && __fabs(d) <= 8.0f) {
+                if (!field_0x24e && __fabsf(d) <= 8.0f) {
                     d = 0.0f;
                 }
                 field_0x240 += 20.0f * d;
                 if (d >= 0.0f) {
-                    field_0x24a[p] = 1;
+                    side = 1;
                 } else {
-                    field_0x24a[p] = -1;
+                    side = -1;
                 }
             } else {
-                field_0x24a[p] = 0;
+                side = 0;
             }
+            field_0x24a[p] = side;
         }
     }
     if ((field_0x24a[0] | field_0x24a[1] | field_0x24a[2] | field_0x24a[3]) != 0 && field_0x240 != 0.0f) {
@@ -307,8 +311,8 @@ void SeesawLift_804AD348::fn_8035A210() {
     for (s32 p = 0; p < 4; p++) {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
-            f32 push = 1.8f * (sinVal * __fabs(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            f32 push = 1.8f * (sinVal * __fabsf(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
@@ -379,7 +383,7 @@ static inline void setTiltMtx(Mtx mtx, s16 angle, f32 scale) {
     mtx[2][2] = scale * (ca * cx);
 }
 
-// FIXME: 90.69 %, different + reloc-name; behaviour drift.
+// FIXME: 90.75 %, different + reloc-name; behaviour drift.
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -430,8 +434,9 @@ void SeesawLift_804AD348::draw() {
     }
 }
 
-// FIXME(shotgun): 84.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.37 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803597EC() {
+    s32 mask = 0;
     field_0x240 = 0.0f;
     field_0x24e = 0;
     if (field_0x254 != 0) {
@@ -440,7 +445,6 @@ void SeesawLift_804AD348::fn_803597EC() {
             fn_801F0D20(3);
         }
     }
-    s32 mask = 0;
     for (s32 p = 0; p < 4; p++) {
         field_0x246[p] = 0;
         field_0x24a[p] = 0;
@@ -451,27 +455,23 @@ void SeesawLift_804AD348::fn_803597EC() {
                 JGeometry::TBox2f box;
                 fn_801F317C(&box);
                 f32 centerY = mPos.y;
-                f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+                f32 c = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
                 box.i.y = (box.i.y - centerY) * c + centerY;
                 box.f.y = (box.f.y - centerY) * c + centerY;
                 JGeometry::TVec2f out;
+                s32 side = 0;
                 if (fn_8023AAF8(p, &box, field_0x4, &out)) {
                     f32 d = centerY - out.y;
                     if (field_0x24e && d == 0.0f) {
                         d = 0.1f;
                     }
-                    if (!field_0x24e && __fabs(d) <= 8.0f) {
+                    if (!field_0x24e && __fabsf(d) <= 8.0f) {
                         d = 0.0f;
                     }
                     field_0x240 += 20.0f * d;
-                    if (d >= 0.0f) {
-                        field_0x24a[p] = 1;
-                    } else {
-                        field_0x24a[p] = -1;
-                    }
-                } else {
-                    field_0x24a[p] = 0;
+                    side = (d >= 0.0f) ? 1 : -1;
                 }
+                field_0x24a[p] = side;
             }
         }
         mask |= field_0x24e;
@@ -480,7 +480,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     if (mask != 0) {
         if (field_0x238 == 0 && field_0x240 != 0.0f) {
             field_0x254 = 30;
-            fillTiles(this, 12);
+            fillTiles(this, lbl_80542868[1]);
             field_0x258 = 1;
             if (field_0x240 > 0.0f) {
                 field_0x238 = 0x200;
@@ -492,8 +492,8 @@ void SeesawLift_804AD348::fn_803597EC() {
     for (s32 p = 0; p < 4; p++) {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
-            f32 push = 1.8f * (sinVal * __fabs(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            f32 push = 1.8f * (sinVal * __fabsf(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
@@ -529,13 +529,13 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
     if (field_0x230 == 0 || field_0x230 == -0x8000) {
         if (field_0x238 != 0) {
-            fillTiles(this, 864);
+            fillTiles(this, lbl_80542868[0]);
             field_0x238 = 0;
         }
     }
 }
 
-// FIXME(shotgun): 85.27 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 86.02 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_80358F98() {
     if (field_0x245) {
         GameRootSub20_801902C0* sub = fn_801902C0();
@@ -586,8 +586,8 @@ void SeesawLift_804AD348::fn_80358F98() {
     for (s32 p = 0; p < 4; p++) {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
-            f32 push = 1.8f * (sinVal * __fabs(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            f32 push = 1.8f * (sinVal * __fabsf(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
@@ -665,7 +665,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     }
 }
 
-// FIXME(shotgun): 80.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.34 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 > 0) {
         field_0x250--;
@@ -754,8 +754,8 @@ void SeesawLift_804AD348::fn_803584C0() {
     for (s32 p = 0; p < 4; p++) {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
-            f32 push = 1.8f * (sinVal * __fabs(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            f32 push = 1.8f * (sinVal * __fabsf(sinVal));
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
