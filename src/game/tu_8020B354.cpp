@@ -153,7 +153,8 @@ void cls_804A5E98::vfunc_0x74() {
     mFlags |= ENEMY_FLAG_NO_HURT;
 }
 
-// FIXME: 79.4. Same work as EnemyBase::fn_801CE010 but with 0.001f; the target computes the box
+// FIXME: 97.50 %, missing/extra; behaviour near.
+// Same work as EnemyBase::fn_801CE010 but with 0.001f; the target computes the box
 // pointer into r5 and the stack position's address into r4 before loading mPos (as if a member
 // taking the out pointer were inlined), ours loads the camera pointer last and has 3 more moves.
 void cls_804A5E98::vfunc_0xA0() {
@@ -163,7 +164,7 @@ void cls_804A5E98::vfunc_0xA0() {
         JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         JGeometry::TVec3f pos(mPos.x, mPos.y - mPos.z, 0.0f);
         f32 top = 0.001f + box->i.y;
-        pos.y = top - pos.y >= 0.0f ? top : pos.y;
+        pos.y = __fsel(top - pos.y, top, pos.y);
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
     }
 }
@@ -206,7 +207,8 @@ void cls_804A5E98::fn_8020B500() {
     }
 }
 
-// FIXME: 98.14. Regalloc only: the -1.0f and 2.4f literals and the two products are in other
+// FIXME: 98.14 %, regalloc-only; behaviour clean.
+// Regalloc only: the -1.0f and 2.4f literals and the two products are in other
 // float registers (f2, f1 and f3, f1 in the target).
 void cls_804A5E98::fn_8020B434() {
     if (mState == 1) {
