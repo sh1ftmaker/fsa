@@ -906,7 +906,8 @@ public:
     /* 0xD8 */ u8 field_0xd8[4];
     /* 0xDC */ u8 field_0xdc[4];
     /* 0xE0 */ u8 field_0xe0[4];
-    /* 0xE4 */ u8 field_0xe4[2];
+    /* 0xE4 */ u8 field_0xe4;
+    /* 0xE5 */ u8 field_0xe5;
     /* 0xE6 */ u8 field_0xe6[6];
     // Owner: game/tu_803099FC.cpp (0x80309A00 / 0x80309A38 / 0x80309A54 /
     // 0x80309A78 / 0x80309D48, same unit): accessors for the arrays above.

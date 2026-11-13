@@ -57,8 +57,8 @@ void cls_804AA8C8::fn_8030AB38() {
         field_0xe0[i] = 0;
         field_0xb4[i] = 0;
     }
-    field_0xe4[0] = 0;
-    field_0xe4[1] = 0;
+    field_0xe4 = 0;
+    field_0xe5 = 0;
 }
 
 // 0x8030AAF4
@@ -78,7 +78,7 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
-// FIXME(shotgun): 14.50 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 11.71 %, missing/extra; behaviour drift.
 // The logic follows the asm; the low % is the register
 // numbering, one higher in the target throughout (this in r22, the key word in r31; ours r21/r22),
 // plus two local shapes: the target materialises mState >= 4 as a value (li 4; subi; orc; srwi;
@@ -189,20 +189,36 @@ void cls_804AA8C8::fn_8030A43C() {
             if (pad->getButton() & 0x800) {
                 field_0x4[i] |= 0x40;
             }
-            if (field_0xe4[1] != 0) {
-                field_0xe4[1] = pad->getAnalogRf() > 0.6f;
+            if (field_0xe5 != 0) {
+                if (pad->getAnalogRf() > 0.6f) {
+                    field_0xe5 = 1;
+                } else {
+                    field_0xe5 = 0;
+                }
             } else {
-                field_0xe4[1] = pad->getAnalogRf() > 0.7f;
+                if (pad->getAnalogRf() > 0.7f) {
+                    field_0xe5 = 1;
+                } else {
+                    field_0xe5 = 0;
+                }
             }
-            if (field_0xe4[1] != 0) {
+            if (field_0xe5 != 0) {
                 field_0x4[i] |= 0x20;
             }
-            if (field_0xe4[0] != 0) {
-                field_0xe4[0] = pad->getAnalogLf() > 0.6f;
+            if (field_0xe4 != 0) {
+                if (pad->getAnalogLf() > 0.6f) {
+                    field_0xe4 = 1;
+                } else {
+                    field_0xe4 = 0;
+                }
             } else {
-                field_0xe4[0] = pad->getAnalogLf() > 0.7f;
+                if (pad->getAnalogLf() > 0.7f) {
+                    field_0xe4 = 1;
+                } else {
+                    field_0xe4 = 0;
+                }
             }
-            if (field_0xe4[0] != 0) {
+            if (field_0xe4 != 0) {
                 field_0x4[i] |= 0x40;
             }
             if (pad->getButton() & 0x100) {
