@@ -55,10 +55,8 @@ void cls_8049E5B8::init() {
     mTimer = 150;
 }
 
-// FIXME: 80.6%. try.py class: missing/extra. The original calls fn_8012952C
-// (bl, three sites); MWCC auto-inlines it into update here, which also shifts
-// the saved registers (this in r30, the serial in r31). Defining it after
-// update un-inlines it (95.6%) but swaps the .text order, so it stays here.
+// FIXME: try.py class: missing/extra. Ours keeps this in r31 and the serial
+// in r30; the original has this in r30 and the serial in r31.
 void cls_8049E5B8::update() {
     if (vfunc_0x3C() > 0 && !vfunc_0x34()) {
         return;
@@ -101,6 +99,8 @@ void cls_8049E5B8::update() {
 
 // The state setter: 1 clears the spawn, 2 spawns a new one. State 0 is
 // never entered with work to do, but the original's switch has a case 0.
+// Not auto-inlined: update calls fn_8012952C out of line in the original.
+#pragma auto_inline off
 void cls_8049E5B8::fn_8012952C(s32 state) {
     switch (state) {
     case 0:
