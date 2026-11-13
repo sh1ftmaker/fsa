@@ -281,7 +281,8 @@ cls_804B1D58::~cls_804B1D58() {
     lbl_8053AF40 = NULL;
 }
 
-// FIXME: 98.68 %, register choice in the first loop differs (the original keeps the zero shared with the counter).
+// FIXME: 98.68 %, different + reloc-name; behaviour clean.
+// register choice in the first loop differs (the original keeps the zero shared with the counter).
 void cls_804B1D58::fn_80452350() {
     lbl_8053AEC0->fn_804310CC();
     s32 i = 0;
