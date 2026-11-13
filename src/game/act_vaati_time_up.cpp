@@ -56,7 +56,7 @@ void VaatiTimeUp_804ACCC0::init() {
     field_0x2b8 = 1;
 }
 
-// FIXME(shotgun): 89.7 %, missing/extra + reloc-name
+// FIXME(shotgun): the original also compares the field_0x290/field_0x294 distance with an unused result before atan2; not reproduced. Literal names differ.
 void VaatiTimeUp_804ACCC0::update() {
     if (field_0x2b8 != 0) {
         cls_804A03A8* sub = gGameRoot2_8053AB10->field_0x30;
@@ -83,9 +83,9 @@ void VaatiTimeUp_804ACCC0::update() {
         if (field_0x2c0 <= 0) {
             startSound_801F0E34(0x4003F, 0);
             field_0x230.field_0x58 = 255.0f;
-            field_0x3c.x = 0.0f;
-            field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
             field_0x2c0 = 0;
             field_0x2b8 = 2;
             field_0x2d8 = 0.6f * (f32)(field_0x2d4 >> 24);
@@ -95,8 +95,8 @@ void VaatiTimeUp_804ACCC0::update() {
             field_0x2d8 += field_0x2e8;
             field_0x2dc += field_0x2ec;
             field_0x2e0 += field_0x2f0;
+            field_0x2c0--;
         }
-        field_0x2c0--;
         break;
     case 2:
         if (field_0x2c0 <= 0) {
@@ -118,10 +118,10 @@ void VaatiTimeUp_804ACCC0::update() {
                 field_0x290 = mViewBox.i.x - 192.0f;
                 field_0x294 = (mViewBox.i.y + mViewBox.f.y) * 0.5f + 96.0f;
             }
-            field_0x2d0 = (s16)(JMath::atanTable_.atan2_(field_0x290 - mPos.x, field_0x294 - mPos.y) * 10430.378f);
+            field_0x2d0 = (u16)(10430.378f * JMath::atanTable_.atan2_(field_0x290 - mPos.x, field_0x294 - mPos.y));
             field_0x2c4 = 6;
         }
-        addCalcAngle2_801F714C((u16*)&field_0x2cc, field_0x2d0, 20, 0x1000);
+        addCalcAngle2_801F714C(&field_0x2cc, field_0x2d0, 20, 0x1000);
         field_0x2a0 = 6.0f * JMath::sincosTable_.sinShort(field_0x2cc);
         field_0x2a4 = 6.0f * JMath::sincosTable_.cosShort(field_0x2cc);
         addCalc2_801F71A4(&field_0x3c.x, field_0x2a0, 0.1f, 0.2f);
@@ -159,7 +159,7 @@ void VaatiTimeUp_804ACCC0::update() {
         break;
     }
 
-    u32 color = ((u32)field_0x2d8 << 24) | ((u32)field_0x2dc << 16) | ((u32)field_0x2e0 << 8) | (u32)field_0x2e4;
+    u32 color = ((s32)field_0x2d8 << 24) | ((s32)field_0x2dc << 16) | ((s32)field_0x2e0 << 8) | (s32)field_0x2e4;
     fn_8013A884(&color);
 }
 
