@@ -1986,7 +1986,7 @@ void cls_804A2944::fn_801979C4() {
 
 // FIXME(shotgun): 91.86 %, missing/extra.
 void cls_804A2944::fn_801976E8() {
-    s32 base = field_0x94 * 6;
+    u32 base = field_0x94 * 6;
     addCalc2_801F71A4(&field_0x270, 255.0f, 0.3f, 10.0f);
     switch (mState) {
     case 0x4F:
@@ -2003,7 +2003,7 @@ void cls_804A2944::fn_801976E8() {
         }
         if (lbl_8053ABA4 == 2) {
             for (s32 i = 0; i < 6; i++) {
-                if (i <= 1 || i == 5) {
+                if (i == 0 || i == 1 || i == 5) {
                     if (mEmitters[i] == NULL) {
                         mEmitters[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_804A28FC[base + i], 0, 5,
                                                              NULL, NULL, true, 1.0f);
