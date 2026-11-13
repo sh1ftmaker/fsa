@@ -15,8 +15,6 @@
 #include "game/act/act_treasure_chest.h"
 #include "game/StageFlag.h"
 
-// FIXME: 99.63 %. Only the literal relocations differ (lbl_805413B8 vs @474,
-// lbl_805413C0 vs @476 and the other sdata2 floats): the data split, not code.
 void TreasureChest_804AA178::init() {
     field_0x234 = field_0x90 & 0xFF;
     field_0x238 = (field_0x90 >> 8) & 0xF;
@@ -65,7 +63,8 @@ void TreasureChest_804AA178::init() {
     field_0x24c[3] = -1;
 }
 
-// FIXME: 96.10 %. In state 2 the spawn code is built in other registers (the
+// FIXME: 96.27 %, different; behaviour clean.
+// In state 2 the spawn code is built in other registers (the
 // original compares field_0x244 with i as `cmpw r29, r0` and reloads
 // field_0x234 off r28), and the literals are @NNN, not lbl_805413C0 onwards.
 void TreasureChest_804AA178::update() {
@@ -182,6 +181,7 @@ void TreasureChest_804AA178::update() {
 void TreasureChest_804AA178::draw() {}
 
 // Differs only in register numbers.
+// FIXME: 95.09 %, missing/extra; behaviour clean.
 bool TreasureChest_804AA178::vfunc_0x54() {
     bool ok = false;
     bool result = false;
@@ -284,6 +284,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     return result;
 }
 
+// FIXME: 97.11 %, missing/extra; behaviour clean.
 bool TreasureChest_804AA178::fn_802EB27C() {
     // FIXME: 97.11 %. The original copies findActorBySerial_801F666C's result through r0
     // (mr r0, r3; mr. r30, r0) where ours tests it directly (mr. r30, r3).
