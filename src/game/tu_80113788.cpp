@@ -632,7 +632,7 @@ void cls_8049D83C::fn_8011395C() {
         crystal.mPos.x = 0.5f;
         crystal.mPos.y = 0.5f;
         crystal.mPos.z = 0.5f;
-        PSMTXCopy(mtx, crystal.mMtx);
+        JMath::gekko_ps_copy12(crystal.mMtx, mtx);
         crystal.field_0x48 = -1.0f;
         crystal.field_0x4c = frame;
         crystal.field_0x54 = 0;
