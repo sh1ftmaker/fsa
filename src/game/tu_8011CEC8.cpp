@@ -164,6 +164,9 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
 // FIXME(shotgun): 77.76 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
+    case 0:
+    case 9:
+        break;
     case 2:
         if (field_0x240.y - (mSpawnPos.y - 440.0f) >= 116.0f) {
             fn_801CD950(&field_0x23c, -1.4f, -0.01f);
@@ -179,8 +182,7 @@ void cls_8049DD68::fn_8011CF48() {
     case 1:
     case 3:
     case 4:
-    case 5:
-    case 7: {
+    case 5: {
         JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
         gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&c, field_0x258);
         break;
@@ -198,8 +200,14 @@ void cls_8049DD68::fn_8011CF48() {
         gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&c, field_0x258);
         break;
     }
+    case 7: {
+        JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
+        gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&c, field_0x258);
+        break;
+    }
     case 8: {
-        ActorBase_804A5770** it = fn_8011921C()->fn_8011871C(fn_8011921C()->mBegin, 0x444D5357);
+        cls_801192AC* list = fn_8011921C();
+        ActorBase_804A5770** it = list->fn_8011871C(list->mBegin, 'DMSW');
         JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
         const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mPos;
         fn_801CD950(&field_0x240.y, 40.0f + pos->y, 1.8f);
