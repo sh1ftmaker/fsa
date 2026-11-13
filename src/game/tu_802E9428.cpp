@@ -1,5 +1,6 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/GameView.h"
 #include "game/Camera.h"
 #include "game/ActorManager.h"
@@ -453,7 +454,7 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
         JGeometry::TVec3f vel = field_0x240->field_0x3c;
         f32 dx = field_0x250 - tx;
         f32 dy = field_0x254 - ty;
-        f32 sq = dx * dx + dy * dy;
+        f32 sq = square(dx) + square(dy);
         f32 dist = sq;
         if (!(sq <= 0.0f)) {
             dist = sq * JGeometry::TUtil<f32>::inv_sqrt(sq);
