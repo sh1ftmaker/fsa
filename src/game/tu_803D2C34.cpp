@@ -362,7 +362,7 @@ static inline f32 paneH(PaneCtrl_804AF86C* c) {
     return c->mPane->getHeight();
 }
 
-// FIXME(shotgun): 88.81 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.98 %, missing/extra; behaviour near.
 void cls_804B0288::fn_803D49A4() {
     f32 w0 = field_0x2c[0]->field_0x18;
     f32 wide = paneW(field_0x2c[0]);
