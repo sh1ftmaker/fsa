@@ -201,6 +201,7 @@ void ActorBase_804A5770::vfunc_0x10() {}
 
 void ActorBase_804A5770::update() {}
 
+// FIXME: 99.47 %, regalloc-only; behaviour clean.
 // FIXME: float registers differ (the player's z lands in f7, the target uses
 // f5; the overlap box's max in f5/f6 instead of f6/f7); the rest matches.
 void ActorBase_804A5770::vfunc_0x18() {
@@ -228,7 +229,8 @@ void ActorBase_804A5770::savePrevPos() {
 
 void ActorBase_804A5770::draw() {}
 
-// FIXME: 99.1. Register allocation only (r4-r11 in the switch prologue)
+// FIXME: 99.32 %, regalloc-only + reloc-name; behaviour drift.
+// Register allocation only (r4-r11 in the switch prologue)
 // besides the data: the original's array initialisers are six separate
 // 4-byte objects (lbl_8053F728/72C 'NULL' at the very start of .sdata2,
 // lbl_80543F40-4C zero in .sbss2); MWCC makes one 8-byte @NNN per array here.
@@ -341,7 +343,8 @@ void ActorBase_804A5770::fn_801F52A4() {
 // "dasu" drop (fn_801F52A4). Then the death effects (0x172, 0x173; the
 // killer's effect slot gets the first), the killer's score updates,
 // the death sound, and the view's counters (fn_802D7704 / fn_802D766C).
-// FIXME: 99.75. Register allocation only (the emitter and the killer swap
+// FIXME: 99.80 %, regalloc-only; behaviour clean.
+// Register allocation only (the emitter and the killer swap
 // r29/r30); 1.0f and 0.2f are @NNN until .sdata2 is in order.
 void ActorBase_804A5770::vfunc_0x24() {
     if (gGameRoot_8053AAF8->field_0x7e != 0 && field_0x1a8 == true &&
@@ -389,10 +392,6 @@ void ActorBase_804A5770::vfunc_0x24() {
     }
 }
 
-// FIXME: 99.7. Instructions identical; 1.0f is @NNN (lbl_8053F774 once the
-// unit's .sdata2 is in order).
-// Starts the four effects 0x6D, 0x6A-0x6C at mPos + (x, y) and sets
-// field_0xd8 = 0, field_0x188 = 300 and the game root's 300 (fn_80134DE4).
 void ActorBase_804A5770::vfunc_0x28(s32 height, f32 x, f32 y) {
     field_0xd8 = 0;
     field_0x188 = 300;
@@ -413,7 +412,8 @@ void ActorBase_804A5770::vfunc_0x28(s32 height, f32 x, f32 y) {
 // (ACTOR_GOLD) and five Force Gems (ACTOR_RUPY; Stone Arrghus' second form
 // three) thrown out at random, then the boss music ends (or GameRoot's
 // fn_80138B7C for Stone Arrghus' second form and the Helmaroc King).
-// FIXME: 98.8. Register allocation only (the inlined random number
+// FIXME: 98.96 %, regalloc-only + reloc-name; behaviour clean.
+// Register allocation only (the inlined random number
 // generator's scratch registers r5-r12); literals are @NNN until .sdata2 is
 // in order.
 bool ActorBase_804A5770::vfunc_0x2C(f32 x, f32 y, f32 scale) {
@@ -521,8 +521,6 @@ void ActorBase_804A5770::vfunc_0x48() {}
 
 // Plays the actor's "voic" sound (if it has one) and, unless field_0xe8 is
 // set, the sound 0x40002.
-// FIXME: 97.9. Instructions identical; only the lbl_80469F38 reference differs until the unit's
-// .rodata is in the original order.
 void ActorBase_804A5770::fn_801F4694() const {
     if (field_0x190 > 0) {
         startSound_801F0E34(lbl_80469F38[field_0x190 - 1], 0);
@@ -548,7 +546,8 @@ void ActorBase_804A5770::fn_801F4694() const {
 // field_0xe0 runs: the death effect for field_0xfc at 30, then vfunc_0x24
 // at 0. field_0xe8 more hit sparks every 5 frames. Returns 0 (nothing to
 // do), 1, or -1 when the actor has no life left.
-// FIXME: 99.0. One extra instruction: ours keeps the death effect id in r28
+// FIXME: 99.12 %, missing/extra; behaviour clean.
+// One extra instruction: ours keeps the death effect id in r28
 // across case 1/2's calls and copies it to r5; the original has it in r5
 // (the path with the two effects skips the id test). Literals are @NNN
 // until .sdata2 is in order.
@@ -726,7 +725,8 @@ s32 ActorBase_804A5770::fn_801F3D94(u8 flag) {
     return result;
 }
 
-// FIXME: 94.3. Two differences, both shared with siblings: MWCC keeps the
+// FIXME: 94.40 %, missing/extra; behaviour near.
+// Two differences, both shared with siblings: MWCC keeps the
 // .rodata base in r31 for lbl_8046A00C / lbl_80469F38 / lbl_80469EF8 where
 // the original addresses each table on its own (as fn_801EF830; with the
 // tables extern the hoist goes away, so they likely belong to another
@@ -1026,7 +1026,6 @@ void ActorBase_804A5770::fn_801F317C(JGeometry::TBox2f* out) const {
 }
 
 // The centre of mBox in screen space.
-// FIXME: 99.8. Instructions identical; only the 0.5f literal (lbl_8053F74C) pairs once .sdata2 is in order.
 void ActorBase_804A5770::fn_801F3128(JGeometry::TVec2f* out) {
     JGeometry::TBox2f box;
     toScreenBox(&box, mBox, mPos);
@@ -1072,8 +1071,6 @@ u8 ActorBase_804A5770::fn_801F2FAC() {
 // (field_0x164 = 1). Returns whether it was hit.
 // u8 (clrlwi r3, r28, 24 at the return; EnemyBase / Thief / Beamos
 // vfunc_0x60 return it raw).
-// FIXME: 99.96. The 32.0f and 1.0f literals (lbl_8053F748, lbl_8053F774)
-// pair only once .sdata2 is in order.
 u8 ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excludeIds) {
     bool hit = false;
     s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
@@ -1125,7 +1122,8 @@ u8 ActorBase_804A5770::fn_801F2DB4(u32 includeId, u32 excludeId, const u32* excl
 // on this layer, with fn_80238548 at the box's centre (moved through
 // fn_801CD0D0 for a player below layer 8 while this is on 8); damage -100
 // means field_0x114 ("atcp"). Returns the bits of the players hit.
-// FIXME: 98.2. Register allocation (this, damage, arg and the result one
+// FIXME: 98.27 %, regalloc-only; behaviour clean.
+// Register allocation (this, damage, arg and the result one
 // register off; the inlined fn_801F2740's result is copied once more), and
 // the 32.0f, 0.5f and 0.0f literals (lbl_8053F748, lbl_8053F74C,
 // lbl_8053F740) pair only once .sdata2 is in order.
@@ -1170,10 +1168,6 @@ u8 ActorBase_804A5770::fn_801F2B20(s32 arg) {
     return prev;
 }
 
-// FIXME: 99.9. Instructions identical; 32.0f is @NNN (lbl_8053F748).
-// Whether a player other than skipPlayer's group (fn_8022E438) touches mBox
-// on this layer (fn_80239B64 with type, a and b); on a layer without the
-// view's flag the player's z must also be within 32 of mPos.z.
 bool ActorBase_804A5770::fn_801F2A10(s32 skipPlayer, s32 type, bool a, bool b) {
     JGeometry::TBox2f box;
     toScreenBox(&box, mBox, mPos);
@@ -1195,7 +1189,8 @@ bool ActorBase_804A5770::fn_801F2A10(s32 skipPlayer, s32 type, bool a, bool b) {
 // or 0 when fn_80233DA4 holds for it), else by fn_8023B848 / fn_8023B768
 // (*outFlag 0); on a layer without the view's flag its z must be within 32
 // of mPos.z. *outXY gets the point the test reports. -1 when none.
-// FIXME: 99.8. Register allocation only: before fn_8023B9CC the target moves
+// FIXME: 99.82 %, regalloc-only; behaviour clean.
+// Register allocation only: before fn_8023B9CC the target moves
 // arg into r7 before player into r3, ours the other way round.
 // const: the screen box (the inlined fn_801F31C4) loads before the register
 // saves.
@@ -1245,7 +1240,8 @@ s32 ActorBase_804A5770::fn_801F285C(JGeometry::TVec2f* outXY, s32* outFlag, bool
 // The players other than skipPlayer whose box (fn_8023B190) overlaps mBox
 // on this layer, as bits; on a layer without the view's flag the player's z
 // must also be within 32 of mPos.z. fn_801F2B7C inlines it.
-// FIXME: 99.15. The target ends in clrlwi r3, r30, 24 where ours returns
+// FIXME: 99.15 %, different; behaviour near.
+// The target ends in clrlwi r3, r30, 24 where ours returns
 // hits with mr (the callers' raw use of r3 shows a u8 return; a bool local
 // gives that narrowing, as in fn_801F2FAC / fn_801F2618, but a bitmask in a
 // bool is not written here; an s32 local drops the in-loop clrlwi instead).
@@ -1271,7 +1267,6 @@ u8 ActorBase_804A5770::fn_801F2740(s32 skipPlayer) const {
     return hits;
 }
 
-// FIXME: 99.5 %. Only the literal differs (lbl_8053F748, see above).
 s32 ActorBase_804A5770::fn_801F2718(u32 actorId) const {
     return fn_801F8108(this, actorId, mSerial, 32.0f);
 }
@@ -1304,7 +1299,8 @@ u8 ActorBase_804A5770::fn_801F2618(JGeometry::TVec3f* out, bool flag) {
 }
 
 // u8, as fn_801F2618 / fn_801F2FAC / fn_801F2DB4 (clrlwi r3, r30, 24).
-// FIXME: 99.1. Float register allocation (step / negStep swap f28/f29);
+// FIXME: 99.24 %, regalloc-only; behaviour clean.
+// Float register allocation (step / negStep swap f28/f29);
 // 0.01f / 8.0f / 0.5f are @NNN until .sdata2 is in order.
 u8 ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
                                      const JGeometry::TVec3f* from, const JGeometry::TBox2f* box,
@@ -1376,7 +1372,8 @@ u8 ActorBase_804A5770::fn_801F23BC(s32 layer, const JGeometry::TVec3f* to,
 // the far end.) When it moved and `out` is given, *out is the direction of the
 // push (with `flag`, the diagonal tiles 8-0xB at the corners of the old
 // position bend it), normalised. Returns whether it moved.
-// FIXME: 91.96 (try.py; 6 instructions fewer than the target's 804). Structurally complete; two differences: MWCC keeps the
+// FIXME: 92.15 %, missing/extra + reloc-name; behaviour drift.
+// (try.py; 6 instructions fewer than the target's 804). Structurally complete; two differences: MWCC keeps the
 // .rodata base in r31 for the four counter initialisers (the target
 // addresses each with its own lis/addi, lbl_80469F78-lbl_80469F9C; one more
 // saved register and a 0x10-larger frame here, as fn_801EF830), and the
@@ -1561,7 +1558,8 @@ bool ActorBase_804A5770::vfunc_0x50(s32 layer, const JGeometry::TVec3f* pos) {
 
 // Whether pos is blocked on layer: by a tile, or by another actor's
 // collision box from the last frame.
-// FIXME: 89.5 %. Same instructions; the target keeps layer in r29 and pos
+// FIXME: 89.50 %, scheduling+regalloc; behaviour clean.
+// Same instructions; the target keeps layer in r29 and pos
 // in r28, this code the other way round (so the two argument moves before
 // fn_802265DC are scheduled differently).
 bool ActorBase_804A5770::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
@@ -1636,7 +1634,8 @@ bool ActorBase_804A5770::fn_801F132C(s32 layer, const JGeometry::TVec3f* pos, s3
 // back to mPrevPos's x/y and 8 further along the reverse of field_0x98's
 // direction; if that is outside the view's box for the layer, respawns at
 // mSpawnPos on layer field_0x8. Returns whether it was blocked.
-// FIXME: 99.4. Float register allocation only (the step's operands); 8.0f
+// FIXME: 99.41 %, regalloc-only; behaviour clean.
+// Float register allocation only (the step's operands); 8.0f
 // is @NNN until .sdata2 is in order (lbl_8053F7A4).
 bool ActorBase_804A5770::fn_801F11B4() {
     bool blocked = false;
@@ -1670,7 +1669,8 @@ ActorSoundObj_804578F4* ActorBase_804A5770::fn_801F1184() const {
 // Starts sound soundId on the actor's sound object, with the layer
 // (field_0x4 >= 8) and a mode (field_0x45) from the view. Four sounds on
 // layers 8 and up go to fn_803037D4 for the players near the actor instead.
-// FIXME: 99.25. Register allocation only: the target keeps the player loops'
+// FIXME: 99.25 %, regalloc-only; behaviour clean.
+// Register allocation only: the target keeps the player loops'
 // counter in r28 (where `sound` lives later), ours in r31 (fadeTime's).
 JAISoundHandle* ActorBase_804A5770::startSound_801F0E34(u32 soundId, u32 fadeTime) const {
     if (field_0x4 >= 8 && !fn_8022BB48(field_0x4, &mPos)) {
@@ -1752,7 +1752,8 @@ void ActorBase_804A5770::fn_801F0D20(u32 id) {
     gAudioMgr_8053AF80->fn_80458880(id, -1);
 }
 
-// FIXME(shotgun): 57.1 %, missing/extra (the hit-colour and params copies are scheduled differently)
+// FIXME(shotgun): 57.11 %, missing/extra; behaviour drift.
+// (the hit-colour and params copies are scheduled differently)
 // Draws frame `frame` of the "SOB " bank `name` at mPos: the shadow (fn_801EF830) unless
 // mSpriteParams.mMtx is set, then the sprite with a copy of params. While the hit timer
 // field_0xd8 runs (its last 25 frames, or all of it when shorter) the copy's 0x14 colour is
@@ -1802,11 +1803,11 @@ void ActorBase_804A5770::drawSprite_801F06F0(const char* name, s32 frame,
         if (mSpriteParams.mMtx != NULL) {
             if (sp.mMtx != NULL) {
                 // FIXME(shotgun): the original copies sp.mMtx inline (12 word pairs) after the
-                // identity; no Mtx struct type found for it.
+                // identity; here it is a PSMTXCopy call.
                 Mtx m;
                 PSMTXIdentity(m);
                 PSMTXCopy(sp.mMtx, m);
-                PSMTXConcat(mSpriteParams.mMtx, m, m);
+                PSMTXConcat(m, mSpriteParams.mMtx, m);
                 sp.mMtx = m;
             } else {
                 sp.mMtx = mSpriteParams.mMtx;
@@ -1825,7 +1826,8 @@ void ActorBase_804A5770::drawSprite_801F06F0(const char* name, s32 frame,
     }
 }
 
-// FIXME(shotgun): 69 %, missing/extra + reloc-name (params copied differently, scale literals)
+// FIXME(shotgun): 68.99 %, missing/extra; behaviour near.
+// (params copied differently, scale literals)
 void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_801F5AE0* params,
                                      s32 flags, s32 mode, bool arg, f32 scaleX, f32 scaleY) {
     if (params != NULL && params->field_0x10.a == 0) {
@@ -1882,7 +1884,7 @@ void ActorBase_804A5770::fn_801F02BC(const char* name, s32 frame, SpriteParams_8
     }
 }
 
-// FIXME(shotgun): 57.4 %, missing/extra
+// FIXME(shotgun): 57.44 %, missing/extra; behaviour near.
 // drawSprite_801F06F0 for a loaded resource `res` (fn_802F745C) at mPos + (x, y, z), below
 // layer 8. During the hit flash a fast knock-back (|field_0x3c|^2 > 1) sets the copy's 0x30 to 8;
 // otherwise the actor's matrix is used and the death countdown field_0x188 tints it (200, 0x41).
@@ -1945,7 +1947,8 @@ void ActorBase_804A5770::fn_801EFD34(void* res, SpriteParams_801F5AE0* params, s
     }
 }
 
-// FIXME: 93.3. One instruction extra: MWCC keeps the .rodata base
+// FIXME: 93.44 %, missing/extra + reloc-name; behaviour near.
+// One instruction extra: MWCC keeps the .rodata base
 // (lbl_80469FA8 and the two strings) in r30 from the prologue (one more
 // saved register, shifting r20-r30); the original addresses each with its
 // own lis/addi. Also the copy of params' 0x1C/0x1D stores 0x1C before
@@ -2046,7 +2049,8 @@ void fn_801EF830(s32 layer, const JGeometry::TVec3f* pos, SpriteParams_801F5AE0*
     }
 }
 
-// FIXME(shotgun): 60.2 %, missing/extra (the original copies the params field by field through registers)
+// FIXME(shotgun): 60.18 %, missing/extra; behaviour clean.
+// (the original copies the params field by field through registers)
 extern "C" void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec3f* pos,
                             SpriteParams_801F5AE0* params) {
     SpriteParams_801F5AE0 sp;
@@ -2067,7 +2071,8 @@ extern "C" void fn_801EF574(const char* sobName, s32 arg1, const JGeometry::TVec
 }
 
 // fn_801F2DB4 over the 17 actor ids below (the list is copied to the stack).
-// FIXME: 99.0. Instructions identical; the list is an @NNN literal here but lbl_80469FC8 in the
+// FIXME: 99.00 %, reloc-name; behaviour clean.
+// Instructions identical; the list is an @NNN literal here but lbl_80469FC8 in the
 // target (rodata order: the unit's earlier .rodata users are unwritten).
 void ActorBase_804A5770::fn_801EF510() {
     u32 list[17] = {'SWBM', 'FIRE', 'BLZE', 'HBMB', 'FLME', 'THCL', 'GRAS', 'SSTN', 'STON',
@@ -2187,7 +2192,8 @@ void ActorBase_804A5770::fn_801EEC98(s32 serial, u16* outAngle, s32* outDir, f32
     }
 }
 
-// FIXME: 99.6. Scheduling and float registers in the prologue, as in
+// FIXME: 99.80 %, scheduling+regalloc; behaviour clean.
+// Scheduling and float registers in the prologue, as in
 // fn_801EE558; literals @NNN.
 // fn_801EE558 that also skips players failing fn_80230188 or fn_8022DCD8;
 // with no player found the direction is zero (and the distance unset).
@@ -2235,7 +2241,8 @@ void ActorBase_804A5770::fn_801EE8F4(JGeometry::TVec3f* outDir, f32* outDist, s3
     }
 }
 
-// FIXME: 99.4. Scheduling and float registers only: the original loads
+// FIXME: 99.65 %, scheduling+regalloc; behaviour clean.
+// Scheduling and float registers only: the original loads
 // mPos.y before mPos.z and x last for `pos`; the literals are @NNN until the
 // unit's .sdata2 is in order.
 // The nearest player (all four, or only player - 1): the direction from
