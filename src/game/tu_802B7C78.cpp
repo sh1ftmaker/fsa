@@ -93,10 +93,7 @@ void ReaperShinigami_804A886C::update() {
                             field_0x27c = 0;
                         }
                     } else {
-                        if (field_0x27c >= 4) {
-                            mAlive = false;
-                            startSound_801F0E34(0x40041, 0);
-                        } else {
+                        if (field_0x27c < 4) {
                             while (true) {
                                 field_0x298 = field_0x2a0[field_0x27c];
                                 if (playerInGame(field_0x298) == 1 && fn_8023F264(field_0x298) == 1 &&
@@ -114,6 +111,9 @@ void ReaperShinigami_804A886C::update() {
                                 fn_802B8078();
                                 field_0x27c++;
                             }
+                        } else {
+                            mAlive = false;
+                            startSound_801F0E34(0x40041, 0);
                         }
                     }
                 } else {
