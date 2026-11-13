@@ -1133,7 +1133,7 @@ void StoneArrghusChildPuff_8049C678::init() {
     }
 }
 
-// FIXME(shotgun): 66.11 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 69.29 %, missing/extra + reloc-name; behaviour near.
 void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     field_0xb0 = 0x80004;
     field_0x1a8 = true;
@@ -1146,22 +1146,21 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
         mFlag249 = 1;
     } else if (parent->mState == 4) {
         s32 slot = parent->mSlot;
-        s32 n = (slot >> 1) + 1;
         f32 off;
         s16 ang;
         if (slot & 1) {
             ang = parent->mAngleA;
-            off = 20.0f + (f32)(n * 20);
+            off = 20.0f + (f32)(((slot >> 1) + 1) * 20);
         } else {
             ang = parent->mAngleB;
-            off = (f32)(n * -20) - 20.0f;
+            off = (f32)(((slot >> 1) + 1) * -20) - 20.0f;
         }
         JGeometry::TVec3f pos(parent->mPos.x + off * JMASinShort(ang),
                               parent->mPos.y + off * JMACosShort(ang),
                               10.0f + parent->mPos.z);
         parent->mSlot++;
         target = pos;
-        speed = (0.36f + 0.001f * (f32)lbl_8049C3B8[8]) - (0.032f + 0.001f * (f32)lbl_8049C3B8[9]) * (f32)n;
+        speed = (0.36f + 0.001f * (f32)lbl_8049C3B8[8]) - (0.032f + 0.001f * (f32)lbl_8049C3B8[9]) * (f32)((slot >> 1) + 1);
         mFlag249 = 1;
     } else if (parent->mState == 1) {
         target = slotPosOf(parent, parent->mSlot);
