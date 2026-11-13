@@ -296,6 +296,18 @@ extern "C" cls_801192AC* fn_8011921C() {
     return &lbl_804BC540;
 }
 
+// JGadget::TVector<T>::TDestructed_deallocate_: frees its pointer through the allocator on scope exit.
+struct ActorVectorDealloc {
+    ActorVectorDealloc(JGadget::TAllocator<ActorBase_804A5770*>& alloc, ActorBase_804A5770** pointer) {
+        mAllocator = &alloc;
+        mPointer = pointer;
+    }
+    ~ActorVectorDealloc() { mAllocator->deallocate(mPointer, 0); }
+    void set(ActorBase_804A5770** p) { mPointer = p; }
+    JGadget::TAllocator<ActorBase_804A5770*>* mAllocator;
+    ActorBase_804A5770** mPointer;
+};
+
 // FIXME: 79.27 %, missing/extra; behaviour drift.
 // FIXME(shotgun): TVector::reserve(20) inline; copy loop and empty destroy loop.
 void cls_801192AC::fn_801190E4() {
@@ -306,20 +318,15 @@ void cls_801192AC::fn_801190E4() {
     if (p == NULL) {
         return;
     }
-    ActorBase_804A5770** dst = p;
-    ActorBase_804A5770** src = mBegin;
-    if (src < mEnd) {
-        for (u32 n = ((u32)mEnd + 3 - (u32)src) >> 2; n != 0; --n) {
-            *dst++ = *src++;
-        }
-    }
+    ActorVectorDealloc guard(mAllocator, p);
+    copyDown(mBegin, mEnd, p);
     ActorBase_804A5770** old = mBegin;
     for (ActorBase_804A5770** it = mBegin; it != mEnd; ++it) {
     }
+    guard.set(old);
     mEnd = p + (mEnd - mBegin);
     mBegin = p;
     mCapacity = 20;
-    operator delete(old);
 }
 
 // FIXME(shotgun): 97.68 %, different; behaviour drift.
@@ -370,18 +377,6 @@ struct ActorVector {
     u32 (*mExtend)(u32, u32, u32);
     ActorBase_804A5770** Insert_raw(ActorBase_804A5770** pos, u32 count);
     void fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value);
-};
-
-// JGadget::TVector<T>::TDestructed_deallocate_: frees its pointer through the allocator on scope exit.
-struct ActorVectorDealloc {
-    ActorVectorDealloc(JGadget::TAllocator<ActorBase_804A5770*>& alloc, ActorBase_804A5770** pointer) {
-        mAllocator = &alloc;
-        mPointer = pointer;
-    }
-    ~ActorVectorDealloc() { mAllocator->deallocate(mPointer, 0); }
-    void set(ActorBase_804A5770** p) { mPointer = p; }
-    JGadget::TAllocator<ActorBase_804A5770*>* mAllocator;
-    ActorBase_804A5770** mPointer;
 };
 
 // stand-ins for std::copy / std::copy_backward (the MSL <algorithm> is not usable from game code)
