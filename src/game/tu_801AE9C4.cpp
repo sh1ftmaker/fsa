@@ -52,14 +52,14 @@ void OkameSan_804A3448::fn_801AF7D0(s32 state) {
             field_0x278 = -16.0f;
         }
         break;
-    case 2:
-        field_0x254 = 8;
-        break;
     case 3:
         field_0x280 = 0.0f;
         field_0x27c = 0.0f;
         field_0x278 = 0.0f;
         field_0x254 = 0x18;
+        break;
+    case 2:
+        field_0x254 = 8;
         break;
     case 4:
         field_0x254 = 0xC;
@@ -72,14 +72,14 @@ void OkameSan_804A3448::fn_801AF7D0(s32 state) {
             field_0x27c = -16.0f;
         }
         break;
-    case 6:
-        field_0x254 = 0x14;
-        break;
     case 7:
         field_0x280 = 0.0f;
         field_0x27c = 0.0f;
         field_0x278 = 0.0f;
         field_0x254 = 0x1B;
+        break;
+    case 6:
+        field_0x254 = 0x14;
         break;
     }
 
