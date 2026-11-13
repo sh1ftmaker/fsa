@@ -335,10 +335,6 @@ void TwoSwordMotion_804ABA90::update() {
 
 void TwoSwordMotion_804ABA90::draw() {}
 
-// FIXME: 93.54 %, missing/extra; behaviour drift.
-// Instruction set matches; the mPos copy and the paired-single
-// sum are scheduled differently (the original loads mPos.z early and rebuilds
-// it through a stack word for the ps_add), so the stack slots shift.
 bool TwoSwordMotion_804ABA90::fn_80336040() {
     s32 column;
     bool result = false;
@@ -386,12 +382,10 @@ bool TwoSwordMotion_804ABA90::fn_80336040() {
     if (field_0x26c > 0x28) {
         result = true;
     }
-    JGeometry::TVec3f pos;
-    JGeometry::TVec3f swing;
-    pos = mPos;
-    const f32* table = lbl_80471AE0[row * 4 + column];
-    JGeometry::TVec3f offset(table[0], table[1], table[2]);
-    swing.add(pos, offset);
+    JGeometry::TVec3f pos(mPos);
+    JGeometry::TVec3f swing(mPos);
+    JGeometry::TVec3f offset(lbl_80471AE0[row * 4 + column][0], lbl_80471AE0[row * 4 + column][1], lbl_80471AE0[row * 4 + column][2]);
+    swing.add(offset);
     fn_80230498(field_0x24c, &pos, field_0x270, 0xff, -0x80, -0x80, true);
     fn_80230498(field_0x250, &swing, field_0x274, 0xff, -0x80, -0x80, true);
     return result;
