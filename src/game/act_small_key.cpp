@@ -18,7 +18,7 @@
 static const f32 lbl_8046D560[4][2] = {{0.5f, 0.0f}, {-0.5f, 0.0f}, {0.0f, 0.5f}, {0.0f, -0.5f}};
 
 // 0x802C52DC.
-// FIXME(shotgun): 95.50 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.56 %, missing/extra + reloc-name; behaviour drift.
 void SmallKey_804A8CD8::init() {
     field_0x280 = field_0x90 & 0x1F;
     field_0x27c = (field_0x90 >> 7) & 0xF;
@@ -161,7 +161,7 @@ void SmallKey_804A8CD8::fn_802C5284() {
 }
 
 // 0x802C4498.
-// FIXME(shotgun): 88.99 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.99 %, missing/extra + reloc-name; behaviour drift.
 void SmallKey_804A8CD8::update() {
     field_0x2ad = 0xFF;
     field_0x2ac = 0;
@@ -481,7 +481,7 @@ void SmallKey_804A8CD8::update() {
     }
 }
 
-// FIXME(shotgun): 90.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
 // The key on the floor: kind 6 slides with friction; a player touching it picks it up
 // (kinds 3-5 spawn a 'TKRA' instead), players walking into it push it (field_0x2ae the
 // direction), pits and water drop it; keeps its place registered with the view.
@@ -684,7 +684,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
 }
 
 // 0x802C2C30.
-// FIXME(shotgun): 91.68 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.68 %, missing/extra + reloc-name; behaviour near.
 void SmallKey_804A8CD8::fn_802C2C30() {
     fn_802C24A8();
     if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
@@ -1006,7 +1006,7 @@ void SmallKey_804A8CD8::fn_802C2B64() {
 }
 
 // 0x802C2840.
-// FIXME(shotgun): 87.92 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.67 %, missing/extra + reloc-name; behaviour clean.
 void SmallKey_804A8CD8::fn_802C2840() {
     s32 layer = field_0x4;
     if (getGameView_802D6A9C()->field_0x131df[layer] != 0 || mPos.z > 2.0f || field_0x3c.z > 0.0f) {
@@ -1048,15 +1048,16 @@ void SmallKey_804A8CD8::fn_802C2840() {
     }
     box.addPos(mPos.x, mPos.y);
     s32 viewLayer = field_0x4;
-    JGeometry::TBox2f* screen = viewLayer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* screen = viewLayer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     box.addPos(-screen->i.x, -screen->i.y);
     s32 slot = field_0x298;
     if (slot != -1) {
-        ActorBase_804A5770* carrier = getActorManager_801F856C()->mActors[slot];
+        ActorManager_804A5800* manager = getActorManager_801F856C();
+        ActorBase_804A5770* carrier = manager->mActors[slot];
         if (fn_802C2684(carrier, &box)) {
             mPos.z = 0.0f;
-            JGeometry::TVec3f d = carrier->mPos - field_0x254;
-            mPos += d;
+            mPos += carrier->mPos - field_0x254;
             field_0x254 = carrier->mPos;
             return;
         }
@@ -1076,19 +1077,21 @@ void SmallKey_804A8CD8::fn_802C2840() {
 }
 
 // 0x802C2684.
-// FIXME(shotgun): 91.07 %, missing/extra
+// FIXME: 99.55 %, regalloc-only; behaviour clean.
+// FIXME(shotgun): regalloc-only (f0/f1 swapped in the screen-offset block)
 bool SmallKey_804A8CD8::fn_802C2684(ActorBase_804A5770* other, JGeometry::TBox2f* box) {
     if (other == NULL) {
         return false;
     }
     u32 id = other->mActorId;
     if (id == ACTOR_LIFT || id == ACTOR_LIF2 || id == ACTOR_CLOD ||
-        (id == ACTOR_OBLF && static_cast<OBJLift_804ACA00*>(other)->field_0x230 != 0) ||
+        (id == ACTOR_OBLF && static_cast<OBJLift_804ACA00*>(other)->field_0x230 == 0) ||
         (id == ACTOR_SSLF && (static_cast<SeesawLift_804AD348*>(other)->field_0x230 & 0x7FFF) == 0)) {
         JGeometry::TBox2f theirs(other->mBox);
         theirs.addPos(other->mPos.x, other->mPos.y);
         s32 layer = other->field_0x4;
-        JGeometry::TBox2f* screen = layer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+        GameView_804A9950* view = getGameView_802D6A9C();
+        JGeometry::TBox2f* screen = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         theirs.addPos(-screen->i.x, -screen->i.y);
         if (theirs.intersect(*box)) {
             return true;
@@ -1098,7 +1101,7 @@ bool SmallKey_804A8CD8::fn_802C2684(ActorBase_804A5770* other, JGeometry::TBox2f
 }
 
 // 0x802C24A8.
-// FIXME(shotgun): 98.70 %, regalloc-only + reloc-name
+// FIXME(shotgun): 98.70 %, regalloc-only + reloc-name; behaviour clean.
 void SmallKey_804A8CD8::fn_802C24A8() {
     JGeometry::TBox2f ours(mBox);
     ours.addPos(mPos.x, mPos.y);
@@ -1181,7 +1184,7 @@ bool SmallKey_804A8CD8::fn_802C2300(u8 playerBits) {
 }
 
 // 0x802C2154.
-// FIXME(shotgun): 97.93 %, different
+// FIXME(shotgun): 97.93 %, different; behaviour drift.
 bool SmallKey_804A8CD8::fn_802C2154() {
     JGeometry::TBox2f ours(mBox);
     ours.i.x -= 4.0f;
@@ -1212,7 +1215,7 @@ bool SmallKey_804A8CD8::fn_802C2154() {
 }
 
 // 0x802C1EC4.
-// FIXME(shotgun): 93.93 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.96 %, missing/extra + reloc-name; behaviour near.
 void SmallKey_804A8CD8::draw() {
     if (field_0x27c == 8 || field_0x2b4 == 0 || field_0x280 >= 16 || field_0x240 < 2) {
         return;
@@ -1293,7 +1296,8 @@ void SmallKey_804A8CD8::fn_802C1D30(const JGeometry::TVec3f& pos, s32 layer) {
 
 // The tile codes as act_bombchu's vfunc_0x4C (a != chain, the 0x25 / 0x26 results narrowed as
 // bytes).
-// FIXME: 98.52. Scheduling and register allocation only: pos and layer take r30 / r28 the
+// FIXME: 98.52 %, scheduling+regalloc; behaviour clean.
+// Scheduling and register allocation only: pos and layer take r30 / r28 the
 // other way round (the target copies pos to r30 in the prologue, layer to r28 after the
 // first argument move), and for field_0x3c.x == 0.0f the target loads the field before the
 // constant.
@@ -1377,7 +1381,7 @@ bool SmallKey_804A8CD8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 
 // The key's registration with the view (fn_802D6D70): the key's value packs its mode,
 // flag, state, id and layer.
-// FIXME(shotgun): 79.96 %, missing/extra
+// FIXME(shotgun): 79.96 %, missing/extra; behaviour near.
 void SmallKey_804A8CD8::fn_802C1778() {
     if (field_0x4 >= 8 && field_0x2a8 != 0xFFFF) {
         bool registered = false;
@@ -1402,7 +1406,7 @@ void SmallKey_804A8CD8::fn_802C1778() {
     }
 }
 
-// FIXME(shotgun): 83.45 %, different
+// FIXME(shotgun): 83.45 %, different; behaviour clean.
 void SmallKey_804A8CD8::fn_802C1674() {
     if (field_0x240 == 4 && field_0xc4 == 0 && field_0x2af != 0 && field_0x2a8 != 0xFFFF) {
         JGeometry::TVec2f a(field_0x230.x, field_0x230.y);
