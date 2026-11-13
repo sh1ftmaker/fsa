@@ -85,7 +85,7 @@ void cls_80204638::fn_80204834() {
     }
 }
 
-// FIXME(shotgun): 72.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 78.79 %, missing/extra; behaviour drift.
 bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     if (mCount >= 10) {
         return false;
@@ -108,8 +108,8 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
         }
         JGeometry::TVec2f from(mPositions[nearest].x, mPositions[nearest].y);
         JGeometry::TVec2f dir(vel->x, vel->y);
-        if (fn_801CB85C(&from, &dir, &p, 20.0f, 0.5f)) {
-            moved = true;
+        moved = fn_801CB85C(&from, &dir, &p, 20.0f, 0.5f);
+        if (moved) {
             pos->x = p.x;
             pos->y = p.y;
         }
@@ -127,13 +127,8 @@ extern "C" cls_80204638* fn_80204638() {
     return &sInstance;
 }
 
-// Pool statics instantiated in this unit (their registration is the unit's static initializer).
+// Pool statics this unit's static initializer registers. The others come in through the headers.
+// FIXME: JASTrack, JASChannel, JAIStream, JAISoundChild, JAISeq and JAISe pools still differ.
 template class JASPoolAllocObject_MultiThreaded<JASTrack::TChannelMgr>;
-template class JASPoolAllocObject_MultiThreaded<JASTrack>;
-template class JASPoolAllocObject_MultiThreaded<JASChannel>;
 template class JASPoolAllocObject<JAUDopplerAudible<4> >;
 template class JASPoolAllocObject<JAUAudible<4> >;
-template class JASPoolAllocObject<JAIStream>;
-template class JASPoolAllocObject<JAISoundChild>;
-template class JASPoolAllocObject<JAISeq>;
-template class JASPoolAllocObject<JAISe>;
