@@ -110,19 +110,17 @@ static inline bool seedBump(SlingshotSeed_804AB3A8* seed) {
     return false;
 }
 
-// FIXME(shotgun): 84 %, missing/extra
+// Remaining: register order of layer/pos and the ids constants come from sdata2 in the original.
 bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u32 ids[2];
-    ids[0] = 'TOMI';
-    ids[1] = ACTOR_NULL;
+    u32 ids[2] = {'TOMI', ACTOR_NULL};
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ids) == 1) {
         return true;
     }
-    u16 tile = fn_8022461C(pos, layer);
-    u16 code = fn_80226850(pos, layer);
-    if ((u16)(tile - 0x10) <= 7 || (code >= 0x140 && code <= 0x15F)) {
+    s32 tile = fn_8022461C(pos, layer);
+    s32 code = fn_80226850(pos, layer);
+    if ((tile - 0x10) <= 7u || (code >= 0x140 && code <= 0x15F)) {
         if (field_0x250 == 0) {
             field_0x250 = 1;
             field_0x260 = 6;
@@ -140,7 +138,7 @@ bool SlingshotSeed_804AB3A8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos)
     if (field_0x94 == 0 && field_0x250 == 1) {
         return false;
     }
-    if ((u16)(code - 0x230) <= 1 || code == 0x234) {
+    if ((code - 0x230) <= 1u || code == 0x234) {
         field_0x250 = 0;
         return false;
     }
