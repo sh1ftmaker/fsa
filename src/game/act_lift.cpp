@@ -169,7 +169,7 @@ void Lift_804A6F6C::fn_80256410() {
     mPos.y = mSpawnPos.y + 64.0f * JMath::sincosTable_.sinShort(field_0x23a);
 }
 
-// FIXME: 78.61 %, missing/extra; behaviour drift.
+// FIXME: 88.98 %, missing/extra; behaviour drift.
 // The frame is 0xA4 (original 0x80): the diff/d/push
 // temporaries and the operator- results take more stack than the original;
 // this sits in r31 and i in r30 (original: r30 and r31).
