@@ -746,7 +746,10 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
         fn_800FE294(&railPos, field_0x358.fn_80214244(), 0xFF);
         if (fn_801CCB1C(&railPos, field_0x4)) {
             fn_801C8B50();
-            if (!fn_801D0DD4() || (field_0x524.field_0x0 & 0x40)) {
+            if (!fn_801D0DD4()) {
+                return;
+            }
+            if (field_0x524.field_0x0 & 0x40) {
                 return;
             }
             if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.5f) {
