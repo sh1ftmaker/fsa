@@ -323,7 +323,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME: 93.20 %, missing/extra; behaviour drift.
+// FIXME: 97.71 %, missing/extra; behaviour drift.
 // FIXME(shotgun): missing/extra; behaviour drift (register allocation, push magnitude not vectorized to ps).
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
@@ -561,7 +561,6 @@ s32 OBJLift_804ACA00::fn_80350530() {
 
 // 0x803502CC.
 // Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
-// FIXME: 95.24 %, missing/extra; behaviour near.
 u8 OBJLift_804ACA00::fn_803502CC() {
     JGeometry::TBox2f saved;
     saved.set(field_0x80);
