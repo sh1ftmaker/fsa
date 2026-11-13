@@ -80,7 +80,7 @@ bool Lift_804A6F6C::fn_802565BC(s32 index) {
         s32 angle = JMath::atanTable_.atan2_(p.y, p.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
         angle -= field_0x238;
         f32 len = JGeometry::TVec2f(p.x, p.y).length();
-        JGeometry::TVec2f q(len * JMath::sincosTable_.cosShort(angle), len * JMath::sincosTable_.sinShort(angle));
+        JGeometry::TVec3f q(len * JMath::sincosTable_.cosShort(angle), len * JMath::sincosTable_.sinShort(angle), 0.0f);
         bool inside = false;
         if (q.x >= mBox.i.x && q.y >= mBox.i.y && q.x < mBox.f.x && q.y < mBox.f.y) {
             inside = true;
