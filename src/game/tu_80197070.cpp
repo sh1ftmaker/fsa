@@ -108,7 +108,7 @@ void fn_8019CD9C(s32 v) {
     gGameRoot_8053AAF8->fn_8013670C(v);
 }
 
-// FIXME(shotgun): 96.15 %, missing/extra + reloc-name.
+// FIXME(shotgun): 96.21 %, missing/extra; behaviour drift.
 void cls_804A2944::init() {
     lbl_8053ABA8 = 0;
     mBox.i.x = -8.0f;
@@ -233,7 +233,7 @@ cls_804A2944::~cls_804A2944() {
     }
 }
 
-// FIXME(shotgun): 99.55 %, different.
+// FIXME(shotgun): 99.55 %, different; behaviour drift.
 void cls_804A2944::vfunc_0x44() {
     if (field_0x90 == 1 && mState != 0x49) {
         if (getActorManager_801F856C()->findActorBySerial_801F666C(field_0x25c) != NULL) {
@@ -274,7 +274,8 @@ void cls_804A2944::vfunc_0x44() {
     }
 }
 
-// FIXME: 89.43. Scheduling and registers: the original keeps the layer in r31,
+// FIXME: 89.54 %, scheduling+regalloc; behaviour clean.
+// Scheduling and registers: the original keeps the layer in r31,
 // the player index in r29 and the position pointer in r30; ours has the layer
 // in r29, the index in r30 and the pointer in r31. The .sdata2 literal pairs
 // once the unit's literals are laid out.
@@ -298,7 +299,7 @@ void fn_8019C4F4(JGeometry::TVec2f* v, f32 x, f32 y) {
     v->set(x, y);
 }
 
-// FIXME(shotgun): 80.13 %, missing/extra + reloc-name.
+// FIXME(shotgun): 80.13 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A2944::fn_80198828() {
     JGeometry::TVec3f savedPos;
     fn_801F3D94(1);
@@ -1771,7 +1772,7 @@ static inline void takeToken(cls_804A2944* self, ActorBase_804A5770* actor) {
     deleteEmitter(&self->mEmitters[1]);
 }
 
-// FIXME(shotgun): 92.19 %, missing/extra + reloc-name.
+// FIXME(shotgun): 92.19 %, missing/extra + reloc-name; behaviour near.
 void cls_804A2944::fn_80197EB0() {
     switch (mState) {
     case 0x46:
@@ -1903,7 +1904,7 @@ void cls_804A2944::fn_80197EB0() {
     }
 }
 
-// FIXME(shotgun): 94.26 %, missing/extra.
+// FIXME(shotgun): 94.26 %, missing/extra; behaviour near.
 void cls_804A2944::fn_801979C4() {
     for (int i = 0; i < 13; i++) {
         setEmitterPos_8013CB44(mEmitters[i], &mPos, 0, 4, true);
@@ -1984,7 +1985,7 @@ void cls_804A2944::fn_801979C4() {
     }
 }
 
-// FIXME(shotgun): 91.86 %, missing/extra.
+// FIXME(shotgun): 92.19 %, missing/extra; behaviour near.
 void cls_804A2944::fn_801976E8() {
     u32 base = field_0x94 * 6;
     addCalc2_801F71A4(&field_0x270, 255.0f, 0.3f, 10.0f);
@@ -2057,7 +2058,8 @@ void cls_804A2944::fn_801976E8() {
     }
 }
 
-// FIXME(shotgun): 98.84 %, missing/extra. The last two timer decrements go through a shared base register (this+8) in the original.
+// FIXME(shotgun): 98.84 %, missing/extra; behaviour drift.
+// The last two timer decrements go through a shared base register (this+8) in the original.
 void cls_804A2944::update() {
     JGeometry::TVec3f pos = mPos;
     mLife = 10000;
@@ -2098,7 +2100,8 @@ void cls_804A2944::update() {
     }
 }
 
-// FIXME(shotgun): 82.45 %, missing/extra. The original addresses the frame tables and sprite bank names off one .rodata base (r31); here the names are plain literals and the tables extern.
+// FIXME(shotgun): 82.45 %, missing/extra; behaviour drift.
+// The original addresses the frame tables and sprite bank names off one .rodata base (r31); here the names are plain literals and the tables extern.
 void cls_804A2944::draw() {
     switch (field_0x90) {
     case 0: {
