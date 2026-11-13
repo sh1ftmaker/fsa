@@ -117,7 +117,8 @@ static const NPCLaunchTable lbl_80472390 = {
     "enemy_gc_sob.bin"
 };
 
-// FIXME: 94.43% scheduling+regalloc + reloc-name. Multiplier 0x19660d hoisted into r4 vs r6, and literal relocations.
+// FIXME: 94.43 %, scheduling+regalloc + reloc-name; behaviour clean.
+// Multiplier 0x19660d hoisted into r4 vs r6, and literal relocations.
 void NPCLaunchedByThwomp2_804AD1C8::init() {
     field_0x230 = 0;
     field_0xb0 = 0;
@@ -174,7 +175,8 @@ void NPCLaunchedByThwomp2_804AD1C8::init() {
     field_0x194 = 1;
 }
 
-// FIXME: 91.07% missing/extra. Stack frame size (0x80 vs 0x70) and float temporary layout in inlined launch(), plus switch dispatch ordering in updateAnim().
+// FIXME: 91.07 %, missing/extra; behaviour drift.
+// Stack frame size (0x80 vs 0x70) and float temporary layout in inlined launch(), plus switch dispatch ordering in updateAnim().
 void NPCLaunchedByThwomp2_804AD1C8::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x -= 2.0f;
@@ -312,17 +314,17 @@ void NPCLaunchedByThwomp2_804AD1C8::launch() {
     field_0x230 = 3;
 }
 
-// FIXME(shotgun): 66.71 %, missing/extra
+// FIXME(shotgun): 72.95 %, missing/extra; behaviour drift.
 void NPCLaunchedByThwomp2_804AD1C8::draw() {
+    const char* name = lbl_80472390.enemyGcSob;
     if (field_0x230 == 2) {
         return;
     }
-    const char* name = lbl_80472390.enemyGcSob;
     if (lbl_80472390.spriteInfo[field_0x250].sobType == 1) {
         name = lbl_80472390.enemyBothSob;
     }
     s32 frame;
-    if (field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
+    if (field_0x230 == 0 || (field_0x230 >= 3 && field_0x230 <= 4) || field_0x230 == 1) {
         frame = lbl_80472390.spriteInfo[field_0x250].baseSpriteId + lbl_80472390.animInfo[field_0x250].spriteFrames0[field_0x248][field_0x238];
     } else {
         frame = lbl_80472390.spriteInfo[field_0x250].baseSpriteId + lbl_80472390.animInfo[field_0x250].spriteFrames1[field_0x248][field_0x238];
