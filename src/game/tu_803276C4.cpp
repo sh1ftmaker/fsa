@@ -12,19 +12,27 @@
 // The "TIMG" texture names (by field_0x250).
 static const char* const lbl_804AB518[4] = {"said_a.bti", "said_b.bti", "said_c.bti", "said_d.bti"};
 
-// FIXME(shotgun): 85.7 %, missing/extra: the OSIN search loop and the box constants
+// FIXME: 95.00 %, missing/extra; behaviour drift.
+// FIXME(shotgun): the found actor is kept in r3 instead of r4 (null test as cmplwi, not mr.)
 void cls_804AB528::init() {
     field_0x94 = field_0x90 & 0xF;
     field_0x240 = (field_0x90 >> 4) & 0xF;
     field_0x248 = (field_0x90 >> 8) & 0xF;
     field_0x25a = (field_0x90 >> 12) & 1;
     s32 serial = -1;
-    while ((serial = getActorManager_801F856C()->fn_801F78F4(ACTOR_OSIN, serial)) >= 0) {
+    for (;;) {
+        serial = getActorManager_801F856C()->fn_801F78F4(ACTOR_OSIN, serial);
+        if (serial < 0) {
+            break;
+        }
         if (serial == mSerial) {
             continue;
         }
         cls_804AB528* other = static_cast<cls_804AB528*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
-        if (other != NULL && other->field_0x248 == field_0x248) {
+        if (other == NULL) {
+            continue;
+        }
+        if (other->field_0x248 == field_0x248) {
             if (!fn_801F6758(&other->mPos, other->field_0x4, 0.0f)) {
                 mAlive = false;
             }
@@ -71,7 +79,7 @@ void cls_804AB528::init() {
     }
 }
 
-// FIXME(shotgun): 90.9 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.86 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AB528::update() {
     if (field_0x25c < 1.0f) {
         if (vfunc_0x34() == 1 && field_0x25a == 1) {
@@ -300,7 +308,8 @@ void cls_804AB528::update() {
     }
 }
 
-// FIXME(shotgun): 70.2 %, missing/extra: the Mtx diagonal setup and the sprite call order
+// FIXME(shotgun): 70.24 %, missing/extra + reloc-name; behaviour near.
+// the Mtx diagonal setup and the sprite call order
 void cls_804AB528::draw() {
     if (field_0x25c == 0.0f) {
         return;
