@@ -1794,8 +1794,8 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 n = 3;
     while (i28 >= 0 || i27 >= 0 || n >= 0) {
         s32 keyMark = n >= 0 ? markKey(record, player, order[n]) : 0xFF;
-        s32 keyA = i28 >= 0 ? fn_803074A4(lbl_80506F88[player][0][i28].f.mKind, spriteId(lbl_80506F88[player][0][i28])) : 0xFF;
-        s32 keyB = i27 >= 0 ? fn_803074A4(lbl_80506F88[player][1][i27].f.mKind, spriteId(lbl_80506F88[player][1][i27])) : 0xFF;
+        s32 keyA = i28 >= 0 ? spriteKind(lbl_80506F88[player][0][i28]) : 0xFF;
+        s32 keyB = i27 >= 0 ? spriteKind(lbl_80506F88[player][1][i27]) : 0xFF;
         if (i27 >= 0 && (n < 0 || keyB < keyMark ||
                          (keyB == keyMark && record->mEntries[order[n]].mY >= lbl_80506F88[player][1][i27].f.field_0x1)) &&
             (i28 < 0 || keyA > keyB ||
@@ -1807,8 +1807,10 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][1][i27], lbl_80506D78[player], flag, set);
             }
             i27--;
-            while (i27 >= 0 && isHiddenSprite(lbl_80506F88[player][1][i27])) {
-                i27--;
+            for (; i27 >= 0; i27--) {
+                if (!isHiddenSprite(lbl_80506F88[player][1][i27])) {
+                    break;
+                }
             }
         } else if (i28 >= 0 && (n < 0 || keyA < keyMark ||
                                 (keyA == keyMark && record->mEntries[order[n]].mY >= lbl_80506F88[player][0][i28].f.field_0x1)))
@@ -1819,8 +1821,10 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][0][i28], lbl_80506D78[player], flag, set);
             }
             i28--;
-            while (i28 >= 0 && isHiddenSprite(lbl_80506F88[player][0][i28])) {
-                i28--;
+            for (; i28 >= 0; i28--) {
+                if (!isHiddenSprite(lbl_80506F88[player][0][i28])) {
+                    break;
+                }
             }
         } else {
             if (markKey(record, player, order[n]) >= 2) {
