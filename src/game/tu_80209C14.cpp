@@ -10,7 +10,7 @@
 #include "game/act/tu_80207548.h"
 #include "game/act/tu_80209C14.h"
 
-// FIXME(shotgun): 99.83 %, reloc-name
+// FIXME(shotgun): 99.83 %, reloc-name; behaviour clean.
 cls_804A5D60::cls_804A5D60() : mTargetSerial(-1), field_0x2ac(0), field_0x2b0(1), field_0x2b1(0) {
     field_0x2b4 = 0.0f;
     field_0x2b8 = 0.0f;
@@ -22,12 +22,12 @@ cls_804A5D60::cls_804A5D60() : mTargetSerial(-1), field_0x2ac(0), field_0x2b0(1)
 // The animation tables (.data 0x804A5D38), not written yet.
 extern const s16* lbl_804A5D38[];
 
-// FIXME(shotgun): 86.98 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.16 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804A5D60::init() {
     EnemyBase_804A4808::init();
     mBox.i.set(1.0f, 1.0f);
     mBox.f.set(-1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0x80.i.set(1.0f, 1.0f);
     field_0x80.f.set(-1.0f, -1.0f);
     field_0xb0 = 0x50303;
@@ -43,9 +43,10 @@ void cls_804A5D60::init() {
         mAnim.startAnim_801D22DC(5, 2, false);
         mBox.i.set(-8.0f, -8.0f);
         mBox.f.set(8.0f, 8.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         break;
-    default:
+    case 1:
+    case 2:
         mState = 0;
         mAnim.startAnim_801D22DC(0, 0, false);
         startSound_801F0E34(0x50037, 0);
@@ -81,12 +82,16 @@ void cls_804A5D60::vfunc_0x54() {
     field_0x2c0 = offset;
 }
 
-// FIXME(shotgun): 78.11 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.83 %, missing/extra + reloc-name; behaviour drift.
 // 0x8020AA78: enters `state`, starting its animation and
 // velocity. While bit 0x2000 is set only 8, 11 and 12 are taken.
 void cls_804A5D60::fn_8020AA78(s32 state) {
     if (mFlags & 0x2000) {
-        if (!(state == 8 || state == 11 || state == 12)) {
+        if (state < 11) {
+            if (state != 8) {
+                return;
+            }
+        } else if (state >= 13) {
             return;
         }
     }
@@ -121,14 +126,18 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         switch (field_0x98) {
         case 0:
             field_0x2b4 = 1.4f;
+            field_0x2b8 = 0.0f;
             break;
         case 1:
             field_0x2b4 = -1.4f;
+            field_0x2b8 = 0.0f;
             break;
         case 2:
+            field_0x2b4 = 0.0f;
             field_0x2b8 = 1.4f;
             break;
         case 3:
+            field_0x2b4 = 0.0f;
             field_0x2b8 = -1.4f;
             break;
         }
@@ -169,7 +178,9 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
         startSound_801F0E34(0x50038, 0);
         mBox.i.set(1.0f, 1.0f);
         mBox.f.set(-1.0f, -1.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
+        break;
+    case 12:
         break;
     }
     mStateTimer = 0;
@@ -177,7 +188,7 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
 }
 
 // The animation steps of the box-shrinking state machine; vfunc_0x90 is its per-frame step.
-// FIXME(shotgun): 92.36 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.53 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5D60::vfunc_0x90(u8 mapHit) {
     if (mFlags & 0x2000) {
         if (!(mState == 8 || mState == 11 || mState == 12)) {
@@ -369,7 +380,7 @@ void cls_804A5D60::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 95.10 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.10 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5D60::vfunc_0x88() {
     switch (mState) {
     case 3:
@@ -397,7 +408,7 @@ void cls_804A5D60::vfunc_0x88() {
     }
 }
 
-// FIXME(shotgun): 97.38 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.38 %, missing/extra + reloc-name; behaviour clean.
 bool cls_804A5D60::vfunc_0x58() {
     if (mBox2.f.x - mBox2.i.x <= 0.0f || mBox2.f.y - mBox2.i.y <= 0.0f) {
         return false;
@@ -453,7 +464,7 @@ u8 cls_804A5D60::vfunc_0x60() {
     return 0;
 }
 
-// FIXME(shotgun): 97.21 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.21 %, missing/extra + reloc-name; behaviour clean.
 u8 cls_804A5D60::vfunc_0x5C() {
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 flag;
@@ -482,7 +493,7 @@ void cls_804A5D60::vfunc_0x24() {
     ActorBase_804A5770::vfunc_0x24();
 }
 
-// FIXME(shotgun): 73.03 %, missing/extra + reloc-name
+// FIXME(shotgun): 73.03 %, missing/extra + reloc-name; behaviour near.
 void cls_804A5D60::draw() {
     bool tiny = field_0x54.squared() <= 32.0f * JGeometry::TUtilf::epsilon();
     if (!tiny) {
@@ -522,7 +533,8 @@ void cls_804A5D60::fn_80209D44() {
     mFlags |= 0x2000;
 }
 
-// FIXME(shotgun): 87.22 %, missing/extra (the original re-reads mFlags)
+// FIXME(shotgun): 87.22 %, missing/extra; behaviour near.
+// (the original re-reads mFlags)
 void cls_804A5D60::fn_80209D20(s32 dir, u8 steps) {
     if (!(mFlags & 0x2000)) {
         mFlags |= 0x4000;
@@ -531,7 +543,8 @@ void cls_804A5D60::fn_80209D20(s32 dir, u8 steps) {
     }
 }
 
-// FIXME(shotgun): 70.82 %, missing/extra (the original re-reads mFlags)
+// FIXME(shotgun): 70.82 %, missing/extra; behaviour near.
+// (the original re-reads mFlags)
 void cls_804A5D60::fn_80209CF4(const JGeometry::TVec2f* target) {
     if (!(mFlags & 0x2000)) {
         mFlags |= 0x8000;
