@@ -24,9 +24,7 @@ static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
 // Writes tile `tile` over the lift's 6 x 6 tile area.
 static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
-    JGeometry::TVec3f p = lift->mPos;
-    p.x += lift->mBox.i.x;
-    p.y += lift->mBox.i.y;
+    JGeometry::TVec3f p = lift->mPos + JGeometry::TVec3f(lift->mBox.i.x, lift->mBox.i.y, 0.0f);
     f32 baseY = p.y;
     lift->field_0x258 = 0;
     for (s32 row = 0; row < 6; row++) {
@@ -39,7 +37,7 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 78.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.69 %, missing/extra + reloc-name; behaviour drift.
 // the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
@@ -69,23 +67,14 @@ void SeesawLift_804AD348::init() {
     field_0x246[3] = 0;
     field_0x24a[3] = 0;
     field_0x250 = 0;
+    field_0x26c = 0;
     field_0x25c[0] = NULL;
     field_0x25c[1] = NULL;
     field_0x25c[2] = NULL;
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    JGeometry::TVec3f p = mPos + JGeometry::TVec3f(mBox.i.x, mBox.i.y, 0.0f);
-    f32 baseY = p.y;
-    field_0x258 = 0;
-    for (s32 row = 0; row < 6; row++) {
-        for (s32 col = 0; col < 6; col++) {
-            gBgRewrite_8053AC98->fn_802A381C(&p, field_0x4, 0x360);
-            p.y += 16.0f;
-        }
-        p.y = baseY;
-        p.x += 16.0f;
-    }
+    fillTiles(this, 864);
 }
 
 // FIXME: 90.79 %, scheduling+regalloc + reloc-name; behaviour clean.
@@ -278,7 +267,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 88.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.06 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -441,7 +430,7 @@ void SeesawLift_804AD348::draw() {
     }
 }
 
-// FIXME(shotgun): 79.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.91 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803597EC() {
     field_0x240 = 0.0f;
     field_0x24e = 0;
@@ -546,7 +535,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
 }
 
-// FIXME(shotgun): 82.52 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.27 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_80358F98() {
     if (field_0x245) {
         GameRootSub20_801902C0* sub = fn_801902C0();
@@ -676,7 +665,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     }
 }
 
-// FIXME(shotgun): 78.55 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.98 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 > 0) {
         field_0x250--;
