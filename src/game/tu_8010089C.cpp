@@ -119,7 +119,7 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     }
 }
 
-// FIXME(shotgun): 90.82 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.35 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
         SpriteParams_801F5AE0 params;
@@ -139,7 +139,7 @@ void WhackAMoleShop_8049C8EC::draw() {
             lbl_8053AF18->field_0x31 = (u8)((f32)(field_0x23c % 60) / 0.6f);
             lbl_8053AF18->field_0x32 |= 0x10;
             for (s32 i = 0; i < field_0x244; i++) {
-                lbl_8053AF18->field_0x32 |= 1 << i;
+                lbl_8053AF18->field_0x32 |= (u8)(1 << i);
                 lbl_8053AF18->field_0x2c[i] = (u8)field_0x260[i];
             }
         }
@@ -390,7 +390,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
     }
 }
 
-// FIXME(shotgun): 94.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.16 %, missing/extra + reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x290 = static_cast<WhackAMoleShop_8049C8EC*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x90 & 0xFFFF));
     mBox.i.x = -12.0f;
@@ -406,7 +406,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x245 = 0;
     field_0x240 = 0;
     s32 roll = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-    u8 players = gGameRoot_8053AAF8->fn_80138A30();
+    s32 players = (u8)gGameRoot_8053AAF8->fn_80138A30();
     if (field_0x290->field_0x23c > 720) {
         if (roll < 10) {
             field_0x244 = 1;
@@ -423,10 +423,10 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
         }
     } else {
         s32 base = 0;
-        s32 w1 = 0;
         s32 w2 = 0;
-        s32 w3 = 0;
+        s32 w1 = 0;
         s32 w4 = 0;
+        s32 w3 = 0;
         switch (players) {
         case 1:
             w1 = 90;
