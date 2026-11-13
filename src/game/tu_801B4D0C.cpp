@@ -47,7 +47,7 @@ void cls_804A38D4::init() {
     for (s32 i = 0; i < 3; i++) {
         mEmitters294[i] = NULL;
     }
-    for (int i = 0; i < 20; i++) {
+    for (s32 i = 0; i < 20; i++) {
         mEmitters2A0[i] = NULL;
     }
     lbl_8053ABF8 = 0;
