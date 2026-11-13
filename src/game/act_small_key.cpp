@@ -1048,15 +1048,16 @@ void SmallKey_804A8CD8::fn_802C2840() {
     }
     box.addPos(mPos.x, mPos.y);
     s32 viewLayer = field_0x4;
-    JGeometry::TBox2f* screen = viewLayer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* screen = viewLayer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     box.addPos(-screen->i.x, -screen->i.y);
     s32 slot = field_0x298;
     if (slot != -1) {
-        ActorBase_804A5770* carrier = getActorManager_801F856C()->mActors[slot];
+        ActorManager_804A5800* manager = getActorManager_801F856C();
+        ActorBase_804A5770* carrier = manager->mActors[slot];
         if (fn_802C2684(carrier, &box)) {
             mPos.z = 0.0f;
-            JGeometry::TVec3f d = carrier->mPos - field_0x254;
-            mPos += d;
+            mPos += carrier->mPos - field_0x254;
             field_0x254 = carrier->mPos;
             return;
         }
