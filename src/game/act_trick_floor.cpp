@@ -23,6 +23,14 @@ void TrickFloor_804A83A0::init() {
     field_0x23c = (field_0x90 >> 24) & 3;
     field_0x248 = 0.0f;
     switch (field_0x234) {
+    case 6:
+    default:
+        if (field_0x23c == 1) {
+            mBox.set(-20.0f, -20.0f, 20.0f, 20.0f);
+        } else {
+            mBox.set(-32.0f, -32.0f, 32.0f, 32.0f);
+        }
+        break;
     case 2:
         mBox.i.x = -40.0f;
         mBox.i.y = -32.0f;
@@ -43,19 +51,6 @@ void TrickFloor_804A83A0::init() {
         mBox.f.y = 50.0f;
         field_0x248 = -0.06f;
         break;
-    default:
-        if (field_0x23c == 1) {
-            mBox.i.x = -20.0f;
-            mBox.i.y = -20.0f;
-            mBox.f.x = 20.0f;
-            mBox.f.y = 20.0f;
-        } else {
-            mBox.i.x = -32.0f;
-            mBox.i.y = -32.0f;
-            mBox.f.x = 32.0f;
-            mBox.f.y = 32.0f;
-        }
-        break;
     }
     field_0x244 = 20;
     if (gGameRoot_8053AAF8->field_0x7f == 1) {
@@ -68,7 +63,8 @@ void TrickFloor_804A83A0::init() {
         s32 layer = field_0x4;
         GameView_804A9950* gameView = getGameView_802D6A9C();
         const JGeometry::TBox2f* src = (layer < 8) ? &gameView->mVisibleBox : &gameView->field_0xdc;
-        const JGeometry::TBox2f view = *src;
+        JGeometry::TBox2f view;
+        view = *src;
         for (s32 i = 0; i < lbl_8046C8B0[field_0x234]; i++) {
             f32 py = mPos.y;
             s32 tx = (s32)(px - view.i.x);
