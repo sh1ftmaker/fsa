@@ -579,7 +579,7 @@ void cls_804ADF28::fn_80364340() {
     }
 }
 
-// FIXME(shotgun): 92.87 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): the original divides by (6.283184f * dist) with fres (estimate), we emit fdivs; literal names differ.
 void cls_804ADF28::fn_80363FFC() {
     s32 tileX;
     s32 tileY;
@@ -618,7 +618,7 @@ void cls_804ADF28::fn_80363FFC() {
     JGeometry::TVec3f center(1808.0f, 3296.0f, 0.0f);
     if (mPos.x >= center.x) {
         if (mPos.y < center.y) {
-            s16 angle = (s16)(JMath::atanTable_.atan2_(mPos.y - center.y, mPos.x - center.x) * 10430.378f);
+            s32 angle = (JMath::atanTable_.atan2_(mPos.y - center.y, mPos.x - center.x) * 10430.378f);
             f32 dist = PSVECDistance(&mPos, &center);
             s32 delta = 65536.0f * (1.3f / (6.283184f * dist));
             u16 a = angle + delta;
@@ -637,7 +637,7 @@ void cls_804ADF28::fn_80363FFC() {
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
         } else {
-            field_0x3c = lbl_8050C028[0];
+            field_0x3c.set(lbl_8050C028[0]);
         }
     }
     mPos.add(field_0x3c);
