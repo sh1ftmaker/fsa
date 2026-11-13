@@ -333,7 +333,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME(shotgun): 88.24 %, different; behaviour drift.
+// FIXME(shotgun): 90.26 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
     field_0x283[1] = 0;
