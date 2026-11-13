@@ -186,7 +186,7 @@ void cls_804AC8C0::draw() {
 // The counts per stage (.rodata 0x80472158, whose strings follow).
 static const s32 lbl_80472158[3] = {10, 5, 1};
 
-// FIXME(shotgun): 77.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 81.53 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::fn_8034ACF4() {
     JGeometry::TBox2f box(9.0f, -7.0f, 103.0f, 87.0f);
     box.i.x += mPos.x;
@@ -211,9 +211,9 @@ void cls_804AC8C0::fn_8034ACF4() {
             field_0x288[i] = 0;
         }
         JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-        if (pos.z <= 1.0f && containsPoint(box, pos) == true) {
+        if (pos.z <= 1.0f && containsPoint(box, pos)) {
             lbl_8053AED0->fn_8043D67C(0x410, 0, 0);
-            JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
+            JGeometry::TVec3f push;
             switch (field_0x260[i]) {
             case 0:
                 push.set(-2.0f, 0.0f, 5.0f);
