@@ -96,13 +96,13 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
 // The state machine. States: 0 wait for the view (field_0x300), 1 search for a
 // tile, 2 spawn the grid, 3 hit, 4 spawn a BLZE actor, 5 count down, 6 wait
 // for the player's hit. The grids are walked in the order of the spawn loops.
-// Still differs: loop counter registers and the case 1 tile arithmetic order.
+// Still differs: the original copies mPos once more before the state test and
+// builds a box before fn_801F2B7C; loop counter registers; case 1 tile order.
 void InextinguishableFlame_804A9D28::update() {
-    JGeometry::TVec3f pos = mPos;
     if (mState >= 1) {
         fn_8020D58C()->addBox(mSerial);
     }
-    pos = mPos;
+    JGeometry::TVec3f pos = mPos;
     fn_801F2718('TUBO');
 
     switch (mState) {
@@ -173,10 +173,8 @@ void InextinguishableFlame_804A9D28::update() {
                         mState = 3;
                         return;
                     }
-                    JGeometry::TBox2f box(mBox);
-                    box.addPos(mPos.x, mPos.y);
                     fn_801F2B7C(field_0x114, -1, 7);
-                    box = field_0x80;
+                    JGeometry::TBox2f box(field_0x80);
                     box.addPos(mPos.x, mPos.y);
                     fn_80239914(&box, field_0x4, mSerial);
                     mPos.y += 16.0f;
