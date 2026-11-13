@@ -916,7 +916,7 @@ void cls_804ADF28::fn_8036335C() {}
 
 // FIXME(shotgun): 88.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
-    bool skip = false;
+    s32 skip = 0;
     JGeometry::TVec3f pos = mPos;
     switch (field_0x238) {
     case 0:
@@ -992,7 +992,7 @@ void cls_804ADF28::fn_80362C44() {
                 field_0x264++;
                 field_0x264 &= 7;
             }
-            skip = true;
+            skip = 1;
             field_0x2f8 += __fabsf(field_0x3c.y);
             if (field_0x2f8 >= 80.0f) {
                 field_0x248 = 300;
@@ -1022,7 +1022,7 @@ void cls_804ADF28::fn_80362C44() {
         }
         break;
     case 5:
-        skip = true;
+        skip = 1;
         if (field_0x250 > 0.0f) {
             field_0x250 -= field_0x254;
             if (field_0x250 <= 0.0f) {
@@ -1043,18 +1043,22 @@ void cls_804ADF28::fn_80362C44() {
         field_0x244++;
         gGameRoot2_8053AB10->field_0x2c->field_0xc = 0;
         if (field_0x248 == 0) {
-            skip = true;
+            skip = 1;
+            u32 found = 0;
             for (int i = 0; i < 4; i++) {
-                if (lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(i), 0x100) != 0) {
-                    field_0x238++;
+                found = lbl_8053AD30->fn_80309D6C(getPlayerInputSlot_8030AAF4(i), 0x100);
+                if (found != 0) {
                     break;
                 }
+            }
+            if (found != 0) {
+                field_0x238++;
             }
         }
         break;
     case 7:
         gGameRoot2_8053AB10->field_0x2c->field_0xc = 0;
-        skip = true;
+        skip = 1;
         getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x304);
         getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x308);
         gGameRoot_8053AAF8->fn_8013670C(1);
@@ -1062,10 +1066,10 @@ void cls_804ADF28::fn_80362C44() {
         break;
     default:
         gGameRoot2_8053AB10->field_0x2c->field_0xc = 0;
-        skip = true;
+        skip = 1;
         break;
     }
-    if (!skip) {
+    if (skip == 0) {
         field_0x2fc->mPos = pos;
     }
 }
