@@ -1273,11 +1273,11 @@ void cls_804B1D58::fn_8044D298(int arg) {
         field_0x134 = 0;
         field_0x138 = arg;
         for (s32 i = 0; i < 3; i++) {
-            JUtility::TColor black(100, 100, 100, field_0x15c[0].a);
-            JUtility::TColor white(0, 0, 0, field_0x154[0].a);
+            JUtility::TColor white(100, 100, 100, field_0x15c[0].a);
+            JUtility::TColor black(0, 0, 0, field_0x154[0].a);
             static_cast<J2DPicture*>(mScreen->search(lbl_80490FC8[i]))->setBlackWhite(black, white);
-            JUtility::TColor black2(80, 80, 80, field_0x14c[0].a);
-            JUtility::TColor white2(80, 80, 80, field_0x144[0].a);
+            JUtility::TColor white2(80, 80, 80, field_0x14c[0].a);
+            JUtility::TColor black2(80, 80, 80, field_0x144[0].a);
             static_cast<J2DWindow*>(mScreen->search(lbl_80490FE0[i]))->setBlackWhite(black2, white2);
             JUtility::TColor c3(150, 150, 150, field_0x164[0].field_0xc.a);
             JUtility::TColor c2(150, 150, 150, field_0x164[0].field_0x8.a);
@@ -1287,6 +1287,7 @@ void cls_804B1D58::fn_8044D298(int arg) {
             mScreen->search(lbl_80490FE0[i])->setAlpha(200);
         }
         mScreen->search(lbl_80491210[field_0x138])->mIsVisible = true;
+        mScreen->search(lbl_80491210[field_0x138])->setAlpha(0);
         mScreen->search(lbl_80491230[field_0x138])->setAlpha(0);
         mScreen->search(lbl_80491250[field_0x138])->setAlpha(0);
         if (field_0xb0[field_0x138] == NULL) {
