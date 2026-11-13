@@ -195,7 +195,7 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
-// FIXME(shotgun): 94.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.74 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     switch (state) {
     case 1:
