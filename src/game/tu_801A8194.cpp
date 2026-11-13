@@ -74,7 +74,7 @@ void cls_804A2EC0::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 85.97 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 99.39 %, different; behaviour near.
 // sqrtf expansion and trail-collision loop
 void cls_804A2EC0::update() {
     s32 player = -1;
@@ -96,12 +96,16 @@ void cls_804A2EC0::update() {
     if (field_0x230 == 1 && field_0x238 == 0) {
         field_0x294[0] = mPos;
         for (s32 i = 39; i > 0; i--) {
-            field_0x294[i] = field_0x294[i - 1];
+            field_0x294[i].x = field_0x294[i - 1].x;
+            field_0x294[i].y = field_0x294[i - 1].y;
+            field_0x294[i].z = field_0x294[i - 1].z;
         }
         field_0x238 = 3;
     }
     if (field_0x264 > 0) {
-        JGeometry::TVec3f saved = mPos;
+        f32 savedX = mPos.x;
+        f32 savedY = mPos.y;
+        f32 savedZ = mPos.z;
         mBox.i.x = -2.0f;
         mBox.i.y = -2.0f;
         mBox.f.x = 2.0f;
@@ -110,12 +114,13 @@ void cls_804A2EC0::update() {
             if (player >= 0) {
                 f32 dx = getPlayerPos_8023E724(player)->x - field_0x294[i].x;
                 f32 dy = getPlayerPos_8023E724(player)->y - (field_0x294[i].y - field_0x294[i].z);
-                field_0x288 = *getPlayerPos_8023E724(player);
+                const JGeometry::TVec3f* pp = getPlayerPos_8023E724(player);
+                field_0x288.x = pp->x;
+                field_0x288.y = pp->y;
+                field_0x288.z = pp->z;
                 f32 dist = std::sqrtf(dx * dx + dy * dy);
                 if (dist < 16.0f) {
-                    mPos.x = field_0x294[i].x;
-                    mPos.y = field_0x294[i].y;
-                    mPos.z = 0.0f;
+                    mPos.set(field_0x294[i].x, field_0x294[i].y, 0.0f);
                     fn_801F2B7C(field_0x114, -1, 5);
                 }
             }
@@ -124,7 +129,9 @@ void cls_804A2EC0::update() {
         mBox.i.y = -10.0f;
         mBox.f.x = 10.0f;
         mBox.f.y = 10.0f;
-        mPos = saved;
+        mPos.x = savedX;
+        mPos.y = savedY;
+        mPos.z = savedZ;
     }
     if (field_0x230 == 2) {
         addCalc2_801F71A4(&field_0x274, 0.0f, 0.3f, 5.0f);
