@@ -51,13 +51,16 @@ void cls_804A5568::init() {
 // The point on the chain's curve at control point `idx`, sixteenth `seg` (0 and 16 are the control
 // points themselves): inlined twice by fn_801E9224.
 static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* outX, f32* outY) {
-    if (seg == 0) {
-        *outX = self->field_0x2b0[idx].x;
-        *outY = self->field_0x2b0[idx].y;
-    } else if (seg == 16) {
+    switch (seg) {
+    case 16:
         *outX = self->field_0x2b0[idx + 1].x;
         *outY = self->field_0x2b0[idx + 1].y;
-    } else {
+        break;
+    case 0:
+        *outX = self->field_0x2b0[idx].x;
+        *outY = self->field_0x2b0[idx].y;
+        break;
+    default: {
         f32 prevX;
         f32 prevY;
         if (idx == 0) {
@@ -84,10 +87,11 @@ static inline void curvePoint(const cls_804A5568* self, u8 idx, u8 seg, f32* out
         *outY = fn_801CD6D8(prevY, p1y, p2y, p3y, t);
         *outX = fn_801CD6D8(prevX, p1x, p2x, p3x, t);
     }
+    }
 }
 
 // Moves the chain's head along its curve by the speed (0.5 per frame).
-// FIXME(shotgun): 81.23 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 85.74 %, different; behaviour drift.
 void cls_804A5568::fn_801E9224() {
     if (!(mFlags & 0x4000)) {
         f32 budget = 0.5f;
@@ -313,7 +317,7 @@ void fn_801E8B1C(f32 a, f32 b, const JGeometry::TVec2f* center, u16 ang, u16 spa
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 75.52 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.39 %, missing/extra + reloc-name; behaviour drift.
 // cls_804A5568
 void cls_804A5568::fn_801E8080() {
     f32 len = 0.0f;
