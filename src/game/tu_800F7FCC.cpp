@@ -1008,7 +1008,7 @@ void cls_8049C718::fn_800FA6B0() {
     mAnimTime++;
 }
 
-// FIXME: 82.61 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 85.55 %, missing/extra + reloc-name; behaviour clean.
 // FIXME(shotgun): the original does its vector arithmetic with paired singles
 // through temporaries; this is the same arithmetic written plainly.
 // 
@@ -1133,7 +1133,7 @@ void StoneArrghusChildPuff_8049C678::init() {
     }
 }
 
-// FIXME(shotgun): 57.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 61.35 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     field_0xb0 = 0x80004;
     field_0x1a8 = true;
@@ -1225,7 +1225,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     }
 }
 
-// FIXME(shotgun): 70.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 76.73 %, missing/extra + reloc-name; behaviour drift.
 void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
     cls_8049C718* parent = mParent;
     if (parent->mSlotUsed[mIndex] != 0) {
