@@ -461,7 +461,7 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
         box->i.y = mBox.i.y;
         box->f.x = mBox.f.x;
         box->f.y = mBox.f.y;
-        box->set(mBox.i.x + mPos.x, mBox.i.y + mPos.y, mBox.f.x + mPos.x, mBox.f.y + mPos.y);
+        box->addPos(mPos.x, mPos.y);
         if (!fn_8022D75C(player) && fn_8022D534(player)) {
             field_0x234[player] = 1;
             continue;
