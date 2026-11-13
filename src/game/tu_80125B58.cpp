@@ -99,10 +99,13 @@ void cls_8049E350::update() {
         break;
     case 1: {
         u16 msg;
-        if (field_0x238 == 1) {
+        switch (field_0x238) {
+        case 1:
             msg = 0x4C0;
-        } else {
+            break;
+        default:
             msg = 0x4BF;
+            break;
         }
         JGeometry::TBox2f talkBox(mBox);
         talkBox.addPos(mPos.x, mPos.y);
