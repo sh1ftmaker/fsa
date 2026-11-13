@@ -1702,8 +1702,8 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
     s32 len = 0;
     s32 pos = 0;
     s32 lines = 1;
-    f32 width = 0.0f;
     f32 widest = 0.0f;
+    f32 width = 0.0f;
     u8 part = 0;
     for (s32 i = 0; i < 10; i++) {
         lineWidth[i] = 0.0f;
@@ -1720,7 +1720,10 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
             lines++;
             pos++;
         } else if (c == 0x1A) {
-            if (p[2] == 3) {
+            if (p[2] == 2) {
+                if (p[4] == 0 || p[4] == 10 || p[4] == 0x12 || p[4] == 0x19 || p[4] == 1) {
+                }
+            } else if (p[2] == 3) {
                 width += lbl_8053AD78->mFont->JUTFont::getWidth(value + '0');
                 width += fn_80381560(p[5], value, 0.7692308f);
             }
