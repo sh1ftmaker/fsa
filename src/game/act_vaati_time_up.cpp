@@ -9,7 +9,8 @@
 #include "game/cls_804AE9B0.h"
 #include "game/act/act_vaati_time_up.h"
 
-// FIXME: 99.2 %. mPos.y's sum takes f4/f5 where the original uses f5/f6, the
+// FIXME: 99.38 %, operands + reloc-name; behaviour clean.
+// mPos.y's sum takes f4/f5 where the original uses f5/f6, the
 // u32-to-float conversions differ in one li, the epilogue reloads r0 and r31 in
 // the other order, and the unit's .sdata2 literals are not split (@NNN).
 void VaatiTimeUp_804ACCC0::init() {
@@ -56,6 +57,7 @@ void VaatiTimeUp_804ACCC0::init() {
     field_0x2b8 = 1;
 }
 
+// FIXME: 95.89 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): the original also compares the field_0x290/field_0x294 distance with an unused result before atan2; not reproduced. Literal names differ.
 void VaatiTimeUp_804ACCC0::update() {
     if (field_0x2b8 != 0) {
@@ -166,7 +168,8 @@ void VaatiTimeUp_804ACCC0::update() {
 // Frame offsets of the "enemy_gc_sob.bin" sprite, indexed by field_0x2c8.
 static const s32 lbl_80472288[4] = {0, 1, 0, 2};
 
-// FIXME: 99.9 %. Only the 1.0f literal: the unit's .sdata2 is not split
+// FIXME: 99.94 %, reloc-name; behaviour clean.
+// Only the 1.0f literal: the unit's .sdata2 is not split
 // (lbl_80542750 vs @NNN).
 void VaatiTimeUp_804ACCC0::draw() {
     SpriteParams_801F5AE0 params;
