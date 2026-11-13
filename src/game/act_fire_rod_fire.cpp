@@ -783,9 +783,9 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         field_0x27c = lbl_8046CB88[field_0x288];
-        if (field_0x27c == 0 || field_0x27c == 0x61 || field_0x27c - 2 <= 5 || field_0x27c == 0x50 ||
-            field_0x27c - 0x27 <= 8 || field_0x27c == 0x20 || field_0x27c - 0xC <= 2 ||
-            field_0x27c - 0x39 <= 2 || field_0x27c - 0x23 <= 1 ||
+        if (field_0x27c == 0 || field_0x27c == 0x61 || (u32)(field_0x27c - 2) <= 5 || field_0x27c == 0x50 ||
+            (u32)(field_0x27c - 0x27) <= 8 || field_0x27c == 0x20 || (u32)(field_0x27c - 0xC) <= 2 ||
+            (u32)(field_0x27c - 0x39) <= 2 || (u32)(field_0x27c - 0x23) <= 1 ||
             (field_0x27c >= 4 && field_0x27c <= 7) || (field_0x27c >= 0x18 && field_0x27c <= 0x1F)) {
             return false;
         }
