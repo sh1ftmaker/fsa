@@ -389,7 +389,7 @@ void HammerShopMinigame_8049C858::update() {
     }
 }
 
-// FIXME: 62.50 %, missing/extra; behaviour drift.
+// FIXME: 77.86 %, different; behaviour clean.
 // FIXME(shotgun): register allocation differs in the unrolled score loop
 void HammerShopMinigame_8049C858::draw() {
     if (field_0x230 == 4 || field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
