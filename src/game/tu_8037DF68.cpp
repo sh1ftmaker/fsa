@@ -1466,7 +1466,7 @@ static inline void flushLine(char* out, const char* line, s32 lines, f32 cur, f3
     strcat(out, line);
 }
 
-// FIXME(shotgun): 84.28 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.78 %, missing/extra + reloc-name; behaviour drift.
 // The text of message msg for the box, line by line, each line centred in `width` (the widths are
 // scaled by `scale`); `a` is the player number the 0x1A size 3 commands write and `b` a number of up to
 // four digits. Returns the number of lines.
