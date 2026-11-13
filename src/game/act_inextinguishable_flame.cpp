@@ -31,7 +31,8 @@ static inline void invalidateEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-// FIXME: 98.37 %. One instruction more than the original: it sets the zero it
+// FIXME: 98.37 %, missing/extra; behaviour clean.
+// One instruction more than the original: it sets the zero it
 // reuses for the state-0 store (`li r28, 0`) before the first loop's
 // float literal load, ours has it later.
 void InextinguishableFlame_804A9D28::init() {
@@ -98,6 +99,7 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
 // for the player's hit. The grids are walked in the order of the spawn loops.
 // Still differs: the original copies mPos once more before the state test and
 // builds a box before fn_801F2B7C; loop counter registers; case 1 tile order.
+// FIXME: 91.48 %, missing/extra + reloc-name; behaviour drift.
 void InextinguishableFlame_804A9D28::update() {
     if (mState >= 1) {
         fn_8020D58C()->addBox(mSerial);
@@ -266,7 +268,8 @@ void InextinguishableFlame_804A9D28::vfunc_0x24() {
 
 // Returns 1 when one of the four neighbours of pos is a tile in the
 // fn_801EE3C0 set.
-// FIXME: 97.81 %. Same instructions; the original loads the table bases in
+// FIXME: 97.81 %, scheduling+regalloc + reloc-name; behaviour clean.
+// Same instructions; the original loads the table bases in
 // the other order (lis lbl_8046F148 first, its pointer in r31), ours loads
 // lbl_8046F188 first.
 bool InextinguishableFlame_804A9D28::vfunc_0x58(JGeometry::TVec3f* pos) {
