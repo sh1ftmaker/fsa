@@ -184,13 +184,24 @@ void cls_804A5D60::fn_8020AA78(s32 state) {
 }
 
 // The animation steps of the box-shrinking state machine; vfunc_0x90 is its per-frame step.
-// FIXME(shotgun): 92.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.30 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5D60::vfunc_0x90(u8 mapHit) {
     if (mFlags & 0x2000) {
-        if (!(mState == 8 || mState == 11 || mState == 12)) {
-            if (!(mAnim.mAnim == 6 || mAnim.mAnim == 2)) {
+        switch (mState) {
+        case 8:
+        case 11:
+        case 12:
+            break;
+        default:
+            switch (mAnim.mAnim) {
+            case 2:
+            case 6:
+                break;
+            default:
                 fn_8020AA78(11);
+                break;
             }
+            break;
         }
     }
     switch (mState) {
@@ -198,7 +209,7 @@ void cls_804A5D60::vfunc_0x90(u8 mapHit) {
         if (mStateTimer > 1 && mAnim.fn_801D21F0()) {
             mBox.i.set(-8.0f, -8.0f);
             mBox.f.set(8.0f, 8.0f);
-            mBox2 = mBox;
+            mBox2.set(mBox);
             fn_8020AA78(1);
         }
         break;
@@ -248,7 +259,7 @@ void cls_804A5D60::vfunc_0x90(u8 mapHit) {
             case 3: {
                 mBox.i.set(-8.0f, -8.0f);
                 mBox.f.set(8.0f, 8.0f);
-                mBox2 = mBox;
+                mBox2.set(mBox);
                 ActorBase_804A5770* manager = getActorManager_801F856C()->findActorBySerial_801F666C(mTargetSerial);
                 if (manager != NULL) {
                     static_cast<cls_804A5BD8*>(manager)->fn_80207ECC();
@@ -364,7 +375,7 @@ void cls_804A5D60::vfunc_0x90(u8 mapHit) {
             mAlive = false;
         } else {
             f32 left = (f32)(12 - mStateTimer);
-            if (left < JGeometry::TUtilf::epsilon()) {
+            if (left < FLT_EPSILON) {
                 field_0x54.x = 0.0f;
             } else {
                 field_0x54.x = (1.0f / left) * (0.0f - field_0x54.x) + field_0x54.x;
