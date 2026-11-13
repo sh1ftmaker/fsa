@@ -15,7 +15,7 @@ extern const f32 lbl_8046C924[7];
 extern const f32 lbl_8046C940[7];
 extern const f32 lbl_8046C95C[7];
 
-// FIXME(shotgun): 77.37 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.18 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor_804A83A0::init() {
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = (field_0x90 >> 7) & 0x1F;
@@ -95,7 +95,8 @@ void TrickFloor_804A83A0::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 17.86 %, missing/extra. States 2-8 are not written.
+// FIXME(shotgun): 17.89 %, missing/extra + reloc-name; behaviour drift.
+// States 2-8 are not written.
 void TrickFloor_804A83A0::update() {
     JGeometry::TVec3f savedPos = mPos;
     switch (field_0x234) {
@@ -226,7 +227,7 @@ static inline void setRotMtx(Mtx mtx, f32 rx, f32 ry, f32 rz) {
     mtx[2][2] = cx * cy;
 }
 
-// FIXME(shotgun): 78.29 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.29 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor_804A83A0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
