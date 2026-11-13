@@ -68,7 +68,7 @@ void ZoraFishHerding_804A2E30::init() {
 
 // Advances the fish animation: picks the sprite frame (field_0x254) of the
 // current mode and steps to the next mode when its loop ends.
-// FIXME(shotgun): 87.88 %, missing/extra (the original has a dead cmpwi 4 / beqlr after the mode 5 test)
+// The original has a dead cmpwi 4 / beqlr after the mode 5 test; not reproduced.
 void ZoraFishHerding_804A2E30::fn_801A7C48() {
     if (field_0x234 != 0) {
         return;
@@ -78,22 +78,27 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 5:
         field_0x254 = field_0x240 + 2;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 7;
-        if (field_0x240 >= 4 && field_0x250 == 5) {
-            field_0x250 = 4;
-            field_0x234 = 0;
-            field_0x240 = 0;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 7;
+        if (field_0x240 >= 4) {
+            if (field_0x250 == 5) {
+                field_0x250 = 4;
+                field_0x234 = 0;
+                field_0x240 = 0;
+            }
         }
         break;
     case 1:
         field_0x254 = field_0x240 + 12;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         break;
     case 2:
         field_0x254 = 13 - field_0x240;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         if (field_0x240 == 0) {
             field_0x250 = 0;
         }
@@ -101,7 +106,8 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 3:
         field_0x254 = field_0x240 + 10;
         field_0x234 = 8;
-        field_0x240 = (field_0x240 + 1) & 3;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 3;
         if (field_0x240 == 0) {
             field_0x250 = 1;
         }
@@ -109,7 +115,8 @@ void ZoraFishHerding_804A2E30::fn_801A7C48() {
     case 4:
         field_0x254 = field_0x240;
         field_0x234 = 15;
-        field_0x240 = (field_0x240 + 1) & 1;
+        field_0x240 = field_0x240 + 1;
+        field_0x240 = field_0x240 & 1;
         break;
     }
 }
