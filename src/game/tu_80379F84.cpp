@@ -229,13 +229,10 @@ u8 fn_8037A120(void) {
     return 0;
 }
 
-// FIXME: 94.29 %. The original's first block tests stage < 8, sub < 4, stage >= 0,
-// stage <= 7, sub >= 0, sub <= 3, in that order (six separate compares); ours
-// tests stage >= 0, stage < 8, sub >= 0, sub < 4 and has no stage <= 7 / sub <= 3.
 void fn_80379FF4(void) {
     s32 stage = lbl_80529DEC.field_0x118;
     s32 sub = lbl_80529DEC.field_0x11c;
-    if (stage >= 0 && stage < 8 && sub >= 0 && sub < 4) {
+    if (stage < 8 && sub < 4 && stage >= 0 && stage <= 7 && sub >= 0 && sub <= 3) {
         lbl_8050EC80.getCurrentFile().mFlags |= 1 << (stage * 4 + sub);
     }
     if (stage >= 8) {
