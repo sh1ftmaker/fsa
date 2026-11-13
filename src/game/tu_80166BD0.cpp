@@ -23,7 +23,6 @@ void MojamojaUnidentifiedEnemy_804A0668::vfunc_0x44() {
     }
 }
 
-// FIXME: 99.6 %. Only the .sdata2 literals: not split (lbl_8053D838.. vs @NNN).
 void MojamojaUnidentifiedEnemy_804A0668::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -48,6 +47,7 @@ void MojamojaUnidentifiedEnemy_804A0668::init() {
     field_0x230 = 0;
 }
 
+// FIXME: 99.76 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME: only the .sdata2 literals differ (lbl_ names vs @NNN, not split into this unit).
 void MojamojaUnidentifiedEnemy_804A0668::update() {
     if (mEmitter26c != NULL) {
@@ -183,7 +183,8 @@ void MojamojaUnidentifiedEnemy_804A0668::update() {
     }
 }
 
-// FIXME: 99.0 %. Register allocation only: the scale (0x258) sits in f31 and
+// FIXME: 98.99 %, regalloc-only; behaviour clean.
+// Register allocation only: the scale (0x258) sits in f31 and
 // the first sin result in f26 where the original has f29 and f28.
 void MojamojaUnidentifiedEnemy_804A0668::draw() {
     if (field_0x230 == 3) {
