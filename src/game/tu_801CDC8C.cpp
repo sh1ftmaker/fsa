@@ -890,9 +890,8 @@ void EnemyBase_804A4808::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME: 90.30 %, missing/extra; behaviour drift.
-// The target picks the y with one fsel (top - y >= 0);
-// ours compiles the ?: as fcmpo / cror / branch.
+// FIXME: 97.30 %, missing/extra; behaviour near.
+// Ours adds one frsp after the fsel.
 // The screen position of the actor, raised to the top of the view box.
 void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
     s32 layer = field_0x4;
@@ -900,9 +899,7 @@ void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
     JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     out->set(mPos.x, mPos.y - mPos.z, 0.0f);
     f32 top = 1.0f + box->i.y;
-    if (top - out->y >= 0.0f) {
-        out->y = top;
-    }
+    out->y = __fsel(top - out->y, top, out->y);
 }
 
 void EnemyBase_804A4808::vfunc_0xA0() {}
