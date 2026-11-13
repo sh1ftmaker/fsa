@@ -4,7 +4,7 @@
 #include "JSystem/JMath/JMath.h"
 #include "std/math.h"
 
-// FIXME(shotgun): 92.81 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.18 %, scheduling+regalloc; behaviour clean.
 // 0x800FE3EC
 bool cls_800FE3EC::fn_800FE3EC(u8 group, JGeometry::TVec3f pos, int layer) {
     field_0x0 = group;
@@ -91,7 +91,7 @@ u8 cls_800FE3EC::fn_800FE21C(u8 index) {
 // 0x800FE090
 // auto_inline off: the original's fn_800FDEA0 (bl at 0x800FDEFC) calls it out of line.
 #pragma auto_inline off
-// FIXME: 91.57 %, missing/extra; behaviour drift.
+// FIXME: 90.29 %, missing/extra; behaviour near.
 s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) {
     s32 result = 0;
     f32 dx = field_0x4[field_0x3]->mPos.x - pos->x;
@@ -298,7 +298,7 @@ void cls_800FE3EC::fn_800FD818(s32 dir) {
     field_0x3 = pos;
 }
 
-// FIXME(shotgun): 79.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 88.68 %, missing/extra; behaviour drift.
 // 0x800FD5E8
 bool cls_800FE3EC::fn_800FD5E8(u8 index) {
     u8 count = field_0x2;
