@@ -299,16 +299,16 @@ void Thief_804A5A30::fn_80205E0C(s32 newState) {
         mPathCount = 0;
         field_0x368.fn_80217484();
         break;
-    case 1:
-        field_0x349 = 30;
-        mTargetSpeed = lbl_8046A238[mType].field_0x4;
-        mFlags |= ENEMY_FLAG_NO_MAP_HIT;
-        break;
     case 2:
         field_0x340 = -1;
         field_0x348 = 30;
         mTargetSpeed = lbl_8046A238[mType].field_0x0;
         mPathCount = 0;
+        mFlags |= ENEMY_FLAG_NO_MAP_HIT;
+        break;
+    case 1:
+        field_0x349 = 30;
+        mTargetSpeed = lbl_8046A238[mType].field_0x4;
         mFlags |= ENEMY_FLAG_NO_MAP_HIT;
         break;
     case 3:
