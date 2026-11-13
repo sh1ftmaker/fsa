@@ -74,7 +74,7 @@ void cls_804A2EC0::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 85.97 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 99.39 %, different; behaviour near.
 // sqrtf expansion and trail-collision loop
 void cls_804A2EC0::update() {
     s32 player = -1;
