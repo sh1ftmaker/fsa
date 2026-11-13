@@ -7,6 +7,7 @@
 #include "game/GameView.h"
 #include "game/Map.h"
 #include "game/Player.h"
+#include "game/PlayerBit.h"
 
 BgRewrite_804A7C98::BgRewrite_804A7C98() {
     gBgRewrite_8053AC98 = this;
@@ -588,11 +589,10 @@ bool BgRewrite_804A7C98::fn_8029E508(const JGeometry::TVec3f* pos, s32 player, s
     field_0x24 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, field_0x20);
     JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(player);
     if (field_0x24 == 0x19C || field_0x24 == 0x19D) {
-        bool blocked = false;
+        s32 blocked = false;
         if (gGameRoot_8053AAF8->field_0x7e == 1) {
             for (s32 i = 0; i < 4; i++) {
-                bool present = (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) != 0;
-                if (present == true && fn_8023F264(i) == true && fn_80303750(i) == 1 && fn_8022C8EC(i) == 1) {
+                if (isPlayerBitSet(gGameRoot_8053AAF8, i) == true && fn_8023F264(i) == true && fn_80303750(i) == 1 && fn_8022C8EC(i) == 1) {
                     blocked = true;
                 }
             }
