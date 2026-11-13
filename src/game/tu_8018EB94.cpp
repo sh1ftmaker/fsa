@@ -13,7 +13,7 @@ s32 lbl_80539FD8[2] = {8, 14};
 s32 lbl_80539FE0[2] = {3, 5};
 
 
-// FIXME(shotgun): 88.04 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.65 %, missing/extra + reloc-name; behaviour drift.
 // the original addresses the 0x2d0 array off the this pointer (mr r5, r3) and has no
 // inner compare; the random/sin part allocates f-registers differently.
 void cls_804A1FA0::init() {
@@ -101,7 +101,7 @@ void cls_804A1FA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 84.32 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.32 %, missing/extra + reloc-name; behaviour drift.
 // the body of `if (field_0x230 == 0)` is laid out
 // with beq/b in the original, ours skips it with bne; register and literal differences in the rest.
 void cls_804A1FA0::update() {
