@@ -234,9 +234,7 @@ void RotatingSkull_804A8588::fn_802B21EC() {
             field_0x3c.y = 0.0f;
             field_0x270.x = 0.0f;
             JGeometry::TVec3f prev(mPos);
-            mPos.x += field_0x3c.x * 3.0f + field_0x270.x;
-            mPos.y += field_0x3c.y * 3.0f + field_0x270.y;
-            mPos.z += field_0x3c.z * 3.0f + field_0x270.z;
+            mPos += field_0x3c * 3.0f + field_0x270;
             JGeometry::TVec3f hitC(0.0f, 0.0f, 0.0f);
             if (fn_801F2618(&hitC, false)) {
                 mPos = prev;
@@ -276,9 +274,7 @@ void RotatingSkull_804A8588::fn_802B21EC() {
             field_0x3c.x = 0.0f;
             field_0x270.y = 0.0f;
             JGeometry::TVec3f prev(mPos);
-            mPos.x += field_0x3c.x * 3.0f + field_0x270.x;
-            mPos.y += field_0x3c.y * 3.0f + field_0x270.y;
-            mPos.z += field_0x3c.z * 3.0f + field_0x270.z;
+            mPos += field_0x3c * 3.0f + field_0x270;
             JGeometry::TVec3f hitC(0.0f, 0.0f, 0.0f);
             if (fn_801F2618(&hitC, false)) {
                 mPos = prev;
