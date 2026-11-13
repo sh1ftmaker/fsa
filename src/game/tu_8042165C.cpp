@@ -350,7 +350,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 75.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B146C::fn_80425F6C() {
     f32 sx = lbl_8050DB0C.field_0x30[4] *
              ((f32)JUTVideo::getManager()->getFbWidth() / gGameRoot2_8053AB10->field_0x24->field_0x858);
@@ -362,8 +362,8 @@ void cls_804B146C::fn_80425F6C() {
         if (!(gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i)) || getPlayerLayer_8023DE58(fn_8022EA0C(i)) >= 8) {
             continue;
         }
+        Vec screen;
         if (field_0x1e8[i] > 0 && lbl_8050EC80.getCurrentFile().field_0x69 != 0) {
-            Vec screen;
             gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
             f32 x = sx * (screen.x / JUTVideo::getManager()->getFbWidth()) - JUTVideo::getManager()->getFbWidth() * 0.5f;
             f32 y = lbl_8050DB0C.field_0x4c[1] +
@@ -374,7 +374,6 @@ void cls_804B146C::fn_80425F6C() {
             field_0x8[i]->draw(x, y, field_0x4c);
             field_0x208[i] = 0;
         } else if (!isPaused() && fn_802366CC(fn_8022EA0C(i)) > 0 && fn_802366CC(fn_8022EA0C(i)) < 300) {
-            Vec screen;
             gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(getPlayerPos_8023E724(fn_8022EA0C(i)), false, false, &screen);
             f32 x = sx * (screen.x / JUTVideo::getManager()->getFbWidth()) - JUTVideo::getManager()->getFbWidth() * 0.5f;
             f32 y = lbl_8050DB0C.field_0x4c[1] +
