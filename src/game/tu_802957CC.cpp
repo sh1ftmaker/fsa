@@ -253,7 +253,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 80.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.91 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -458,7 +458,7 @@ void cls_804A7AE0::fn_8029A494() {
     }
 }
 
-// FIXME(shotgun): 80.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.85 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -1782,7 +1782,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 65.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 70.37 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
