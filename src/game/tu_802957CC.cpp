@@ -474,14 +474,14 @@ void cls_804A7AE0::fn_80299FB0() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        s32 r;
-        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4 &&
-            (r = fn_80238BC4(mSerial), r >= 0 && r < 4)) {
-            field_0x2cc = 1;
-        } else {
-            r = -1;
+        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4) {
+            dir = fn_80238BC4(mSerial);
+            if (dir >= 0 && dir < 4) {
+                field_0x2cc = 1;
+            } else {
+                dir = -1;
+            }
         }
-        dir = r;
         if (dir == -1) {
             JGeometry::TBox2f box;
             box.i.x = field_0x80.i.x;
@@ -496,22 +496,17 @@ void cls_804A7AE0::fn_80299FB0() {
                 s32 q = fn_8023885C(mSerial);
                 if (q >= 0 && q < 4) {
                     if (q == 0) {
-                        r = 1;
+                        dir = 1;
                     } else if (q == 1) {
-                        r = 0;
+                        dir = 0;
                     } else if (q == 2) {
-                        r = 3;
+                        dir = 3;
                     } else if (q == 3) {
-                        r = 2;
+                        dir = 2;
                     }
                     field_0x2cc = -1;
-                } else {
-                    r = -1;
                 }
-            } else {
-                r = -1;
             }
-            dir = r;
         }
     }
     if (dir != 1) {
@@ -532,8 +527,9 @@ void cls_804A7AE0::fn_80299FB0() {
     f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
