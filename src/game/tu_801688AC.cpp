@@ -357,11 +357,11 @@ void cls_804A0738::draw() {
 // FIXME(shotgun): 73.06 %, missing/extra; behaviour drift.
 bool cls_804A0738::fn_80168C38() {
     s32 found = -1;
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x - 4.0f;
-    box.i.y = mBox.i.y + mPos.y - 4.0f;
-    box.f.x = mBox.f.x + mPos.x + 4.0f;
-    box.f.y = mBox.f.y + mPos.y + 4.0f;
+    JGeometry::TBox2f box = mBox;
+    box.i.x = box.i.x + mPos.x - 4.0f;
+    box.i.y = box.i.y + mPos.y - 4.0f;
+    box.f.x = box.f.x + mPos.x + 4.0f;
+    box.f.y = box.f.y + mPos.y + 4.0f;
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023EA28(i) != 1) {
             if (!fn_8022E438(i, field_0x90) ||
