@@ -80,7 +80,7 @@ s32 cls_800FE3EC::fn_800FE25C(u8 index) {
     return field_0x4[index]->field_0x4;
 }
 
-u8 cls_800FE3EC::fn_800FE21C(u8 index) {
+u32 cls_800FE3EC::fn_800FE21C(u8 index) {
     if (index == 0xFF) {
         return field_0x4[field_0x3]->field_0x90 >> 24;
     }
