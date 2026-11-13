@@ -109,7 +109,7 @@ void cls_801D7730::fn_801D7638() {
     }
 }
 
-// FIXME(shotgun): 93.58 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 93.93 %, scheduling+regalloc; behaviour clean.
 void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
     fn_801D77B4();
     field_0x40 = layer;
@@ -131,7 +131,7 @@ void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
 }
 
 // The ring's slot i is on a circle of radius field_0x5c around (field_0x48.x, field_0x48.y).
-// FIXME: 67.39 %, missing/extra; behaviour drift.
+// FIXME: 75.33 %, missing/extra; behaviour drift.
 // FIXME(shotgun): the original stores d.x/d.y as one paired-single pair; ours uses separate stores.
 void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
@@ -159,7 +159,7 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 94.92 %, missing/extra; behaviour near.
+// FIXME(shotgun): 95.23 %, missing/extra; behaviour near.
 void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
@@ -195,7 +195,7 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 88.99 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 92.84 %, missing/extra; behaviour drift.
 void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
     field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
