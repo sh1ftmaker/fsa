@@ -120,7 +120,8 @@ Thief_804A5A30::~Thief_804A5A30() {
     fn_80204638()->fn_802049E0(this);
 }
 
-// FIXME: 99.74% (regalloc-only + reloc-name). Register allocation; its 1.0f is vfunc_0x90's (see there).
+// FIXME: 99.74 %, regalloc-only + reloc-name; behaviour clean.
+// (regalloc-only + reloc-name). Register allocation; its 1.0f is vfunc_0x90's (see there).
 void Thief_804A5A30::init() {
     EnemyBase_804A4808::init();
 
@@ -212,7 +213,8 @@ s32 Thief_804A5A30::fn_802063FC() {
     return result;
 }
 
-// FIXME: 98.85% (regalloc-only + reloc-name). Register allocation swap between r29 and r30; 1.0f pool slot (see vfunc_0x90).
+// FIXME: 98.85 %, regalloc-only + reloc-name; behaviour clean.
+// (regalloc-only + reloc-name). Register allocation swap between r29 and r30; 1.0f pool slot (see vfunc_0x90).
 void Thief_804A5A30::fn_80206168() {
     if (field_0x344 == 0) {
         return;
@@ -275,7 +277,6 @@ bool Thief_804A5A30::fn_8020609C() const {
     return result;
 }
 
-// FIXME: 80.45% (scheduling). Instruction scheduling.
 void Thief_804A5A30::fn_80205E0C(s32 newState) {
     if (newState == 7) {
         switch (mState) {
@@ -365,7 +366,8 @@ void Thief_804A5A30::fn_80205E0C(s32 newState) {
     mState = newState;
 }
 
-// FIXME: 94.33%. Ours has one more instruction (539 vs 538), the rest is register allocation (this in r29 vs
+// FIXME: 94.33 %, missing/extra + reloc-name; behaviour drift.
+// Ours has one more instruction (539 vs 538), the rest is register allocation (this in r29 vs
 // r31, the layer argument of fn_801CF888 in states 0 and 6 is loaded into a saved register before
 // getPlayerPos_8023E724 in the original) and literal relocations (the original pools 1.0f before
 // 1.2f / 2.0f; ours pools it last).
@@ -626,7 +628,8 @@ void Thief_804A5A30::vfunc_0x94() {
     EnemyBase_804A4808::vfunc_0x94();
 }
 
-// FIXME: 99.69% (regalloc-only). The field_0x354 pointer and the loop counter swap r28 / r29.
+// FIXME: 99.69 %, regalloc-only; behaviour clean.
+// (regalloc-only). The field_0x354 pointer and the loop counter swap r28 / r29.
 void Thief_804A5A30::vfunc_0x9C(u8 mapHit) {
     if (field_0xc4 != 0 && field_0xc8 >= 0 && field_0xc8 < 4) {
         if (fn_80204638()->field_0x0 != 0 || fn_802064E0()) {
