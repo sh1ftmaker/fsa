@@ -23,7 +23,7 @@ void VaatiBoss_804A4958::fn_801E4790(bool big) {
     mBox.i.y = -26.0f * s;
     mBox.f.x = 16.0f * s;
     mBox.f.y = 4.0f * s;
-    mBox2 = mBox;
+    mBox2.set(mBox);
 }
 
 // FIXME(shotgun): 98.93 %, reloc-name
