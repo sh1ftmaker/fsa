@@ -131,9 +131,11 @@ void cls_804A1FA0::update() {
             mPos += field_0x3c;
             fn_801F2B7C(field_0x114, -1, 1);
             if (fn_801F2618(NULL, false) && field_0x234[1] == 0) {
-                field_0x98 = (field_0x98 + 8) & 0xF;
+                field_0x98 += 8;
+                field_0x98 &= 0xF;
                 if (field_0x264 == field_0x98) {
-                    field_0x98 = (field_0x98 + field_0x254 * 4) & 0xF;
+                    field_0x98 += field_0x254 * 4;
+                    field_0x98 &= 0xF;
                 }
                 field_0x264 = field_0x260;
                 field_0x260 = field_0x98;
@@ -185,19 +187,20 @@ void cls_804A1FA0::update() {
             field_0x25c = idx;
         }
         if (field_0x25c != field_0x98 && (field_0x234[2] & 3) == 0) {
-            field_0x98 = (field_0x98 + field_0x254) & 0xF;
+            field_0x98 += field_0x254;
+            field_0x98 &= 0xF;
         }
         s16 angle = (s32)(4000.0f * (f32)field_0x98);
         field_0x27c.x = field_0x278 * JMath::sincosTable_.sinShort(angle);
         field_0x27c.y = field_0x278 * JMath::sincosTable_.cosShort((s32)(4000.0f * (f32)field_0x98));
-        field_0x288[4] = mPos;
+        field_0x288[3] = mPos;
         angle = (s32)(4000.0f * (f32)((field_0x98 - 2) & 0xF));
+        field_0x288[3].x += 6.0f * JMath::sincosTable_.sinShort(angle);
+        field_0x288[3].y += 6.0f * JMath::sincosTable_.cosShort(angle);
+        field_0x288[4] = mPos;
+        angle = (s32)(4000.0f * (f32)((field_0x98 + 2) & 0xF));
         field_0x288[4].x += 6.0f * JMath::sincosTable_.sinShort(angle);
         field_0x288[4].y += 6.0f * JMath::sincosTable_.cosShort(angle);
-        field_0x288[5] = mPos;
-        angle = (s32)(4000.0f * (f32)((field_0x98 + 2) & 0xF));
-        field_0x288[5].x += 6.0f * JMath::sincosTable_.sinShort(angle);
-        field_0x288[5].y += 6.0f * JMath::sincosTable_.cosShort(angle);
         field_0x270 += 500.0f;
     }
     if (field_0x234[0] == 0) {
