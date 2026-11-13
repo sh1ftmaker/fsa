@@ -64,7 +64,8 @@ static inline void setMoveDir(JGeometry::TVec3f& v, s32 dir, f32 speed) {
     }
 }
 
-// FIXME: 99.59 % (scheduling+regalloc + reloc-name). `field_0x250 = field_0x244 + field_0x98 * 4` loads field_0x98 and
+// FIXME: 99.84 %, scheduling+regalloc; behaviour clean.
+// (scheduling+regalloc + reloc-name). `field_0x250 = field_0x244 + field_0x98 * 4` loads field_0x98 and
 // field_0x244 into swapped registers (r5/r0); everything else differs only in literal reloc names.
 void Gohma_804A307C::init() {
     mBox.i.x = -10.0f;
@@ -162,7 +163,6 @@ Gohma_804A307C::~Gohma_804A307C() {
     }
 }
 
-// FIXME: 99.87 % (reloc-name). Instruction-identical; only the -10.0f literal's reloc name differs (lbl_8053E7B0 vs @NNN).
 void Gohma_804A307C::vfunc_0x44() {
     if (field_0x25c == mLife) {
         return;
@@ -192,7 +192,8 @@ void Gohma_804A307C::vfunc_0x44() {
     field_0x230 = 5;
 }
 
-// FIXME: 97.40 % (missing/extra + reloc-name). (1) Both emitter stops: the original also stores 1 at emitter+0x24
+// FIXME: 97.44 %, missing/extra + reloc-name; behaviour drift.
+// (missing/extra + reloc-name). (1) Both emitter stops: the original also stores 1 at emitter+0x24
 // right after the status-bit store (JPAEmitter.h has no field there, same as act_force_gem_wooden). (2) The vec.x
 // sign test in case 2 branches the other way round (bge/blt, `flag` set in another block). (3) The original stores and
 // reloads field_0x244 after `(field_0x244 + 1) & 3`. (4) The `field_0x98 = dir` store is scheduled differently.
@@ -415,7 +416,8 @@ void Gohma_804A307C::fn_801AB6A8() {
     }
 }
 
-// FIXME: 91.56 % (missing/extra + reloc-name). Scheduling, ours has 2 fewer instructions: the 0.0f that zeroes
+// FIXME: 90.65 %, missing/extra + reloc-name; behaviour drift.
+// (missing/extra + reloc-name). Scheduling, ours has 2 fewer instructions: the 0.0f that zeroes
 // field_0x3c is loaded earlier in the original (before the case-8/9 speed and timer arithmetic), the `li` argument
 // setup of the fn_801EEC98 call and `li r30, 1` are ordered differently, and in case 11 the original stores
 // field_0x244 and reloads it for the `> 2` test.
@@ -444,8 +446,8 @@ void Gohma_804A307C::fn_801AAF44() {
         field_0xdc = 0;
     }
 
-    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.5f, 1.0f);
-    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.5f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, field_0x264.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, field_0x264.y, 0.3f, 1.0f);
 
     mPos += field_0x3c;
 
@@ -478,20 +480,18 @@ void Gohma_804A307C::fn_801AAF44() {
         // fallthrough
     case 8:
         mTimers[0] = 0;
-        mTimers[2] = 200 + (s32)(30.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        mTimers[2] = 200 + (s32)(200.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
         field_0x244 = 0;
         field_0x98 = field_0x260;
         field_0x3c.z = 0.0f;
         field_0x3c.y = 0.0f;
         field_0x3c.x = 0.0f;
         {
-            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            f32 f = 0.7f + 0.35f * (3 - field_0x258);
             setMoveDir(field_0x264, field_0x98, f);
         }
         field_0x98 = 2;
-        // Named like the OKTM loop's `f` below: keeps 60 - 15 * n unfused (fsubs, not fnmsubs) as in the original.
-        f32 interval = 15.0f * (3 - field_0x258);
-        mTimers[1] = (s32)(60.0f - interval);
+        mTimers[1] = (s32)(100.0f - 20.0f * (3 - field_0x258));
         field_0x230 = 9;
         // fallthrough
     case 9:
@@ -501,7 +501,7 @@ void Gohma_804A307C::fn_801AAF44() {
             field_0x3c.z = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.x = 0.0f;
-            f32 f = 5.0f + 1.0f * (3 - field_0x258);
+            f32 f = 0.7f + 0.35f * (3 - field_0x258);
             setMoveDir(field_0x264, field_0x98, f);
             field_0x98 = 2;
         }
@@ -524,8 +524,7 @@ void Gohma_804A307C::fn_801AAF44() {
                     if (actor != NULL) {
                         actor->field_0x3c = JGeometry::TVec3f(3.0f * JMASinShort(angle), 3.0f * JMACosShort(angle), 0.0f);
                         actor->field_0x98 = fn_801F681C(angle);
-                        f32 f = 15.0f * (3 - field_0x258);
-                        mTimers[1] = (s32)(60.0f - f);
+                        mTimers[1] = (s32)(100.0f - 20.0f * (3 - field_0x258));
                     }
                 }
                 angle += 0x2000;
