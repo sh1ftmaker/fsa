@@ -16,53 +16,8 @@ static const s16 lbl_80464EDC[6] = {0, 4, 3, 10, -1, -1};
 static const s16* lbl_8049E330[4] = {lbl_80464EA0, lbl_80464EAC, lbl_80464EB8, lbl_80464EC4};
 static const s16* lbl_8049E340[4] = {lbl_80464ED0, lbl_80464EDC, lbl_80464ED0, lbl_80464EDC};
 
-void cls_8049E350::fn_80125C58(bool flag) {
-    field_0x231 = flag;
-    if (field_0x231) {
-        // FIXME: 96.82 %. The original compares field_0x238 with 1 as
-        // beq / bge / b (an extra bge and b to the default block); ours
-        // has only beq and b.
-        switch (field_0x238) {
-        case 1:
-            mAnim27c.startAnim_801D22DC(0, 0, false);
-            break;
-        default:
-            mAnim27c.startAnim_801D22DC(1, 0, false);
-            break;
-        }
-        mAnim27c.fn_801D1F14(0.0f);
-    }
-}
 
-void cls_8049E350::fn_80125BF4() {
-    JGeometry::TVec3f pos(mPos);
-    pos.y += -24.0f;
-    spawnEmitter_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
-}
-
-void cls_8049E350::draw() {
-    ActorBase_804A5770::draw();
-    SpriteParams_801F5AE0 params;
-    // FIXME: 82.62 %. The original puts the name's lis/addi and li 0x2E6
-    // between the stores of params (0xB4-0xC4 of the diff), so its
-    // registers differ from ours from the first reset store on.
-    fn_801F02BC("enemy_gc_sob.bin", mAnim244.mCel + (field_0x238 == 1 ? 0x2D2 : 0x2E6),
-                &params, 0x407, 0, false, 1.0f, 1.0f);
-    if (field_0x231) {
-        JGeometry::TVec3f pos(mPos);
-        pos.y += -20.0f;
-        if (field_0x238 == 1) {
-            pos.x += 10.0f;
-        } else {
-            pos.x += -10.0f;
-        }
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, mAnim27c.mCel + 0x2A3, NULL, 1.0f, 1.0f);
-        }
-    }
-}
-
+// FIXME: 99.92 %, reloc-name; behaviour clean.
 void cls_8049E350::init() {
     ActorBase_804A5770::init();
     field_0x238 = field_0x90 & 1;
@@ -102,9 +57,6 @@ void cls_8049E350::init() {
     }
 }
 
-cls_8049E350::~cls_8049E350() {}
-
-#ifdef NONMATCHING
 #include "game/Message.h"
 #include "game/Player.h"
 
@@ -129,8 +81,8 @@ inline void cls_8049E350::enterState() {
     }
 }
 
-// FIXME(shotgun): compiled 89.3 %, but its float literals shift the pool (draw and fn_80125BF4 drop), so it is not built.
 // 0x80125EFC.
+// FIXME: 89.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049E350::update() {
     ActorBase_804A5770::update();
     JGeometry::TBox2f box(mBox);
@@ -205,4 +157,55 @@ void cls_8049E350::update() {
     mAnim27c.fn_801D1C18();
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
 }
-#endif
+
+// FIXME: 82.44 %, missing/extra + reloc-name; behaviour near.
+void cls_8049E350::draw() {
+    ActorBase_804A5770::draw();
+    SpriteParams_801F5AE0 params;
+    // FIXME: 82.62 %. The original puts the name's lis/addi and li 0x2E6
+    // between the stores of params (0xB4-0xC4 of the diff), so its
+    // registers differ from ours from the first reset store on.
+    fn_801F02BC("enemy_gc_sob.bin", mAnim244.mCel + (field_0x238 == 1 ? 0x2D2 : 0x2E6),
+                &params, 0x407, 0, false, 1.0f, 1.0f);
+    if (field_0x231) {
+        JGeometry::TVec3f pos(mPos);
+        pos.y += -20.0f;
+        if (field_0x238 == 1) {
+            pos.x += 10.0f;
+        } else {
+            pos.x += -10.0f;
+        }
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&pos, res, mAnim27c.mCel + 0x2A3, NULL, 1.0f, 1.0f);
+        }
+    }
+}
+
+// FIXME: 96.82 %, missing/extra + reloc-name; behaviour near.
+void cls_8049E350::fn_80125C58(bool flag) {
+    field_0x231 = flag;
+    if (field_0x231) {
+        // FIXME: 96.82 %. The original compares field_0x238 with 1 as
+        // beq / bge / b (an extra bge and b to the default block); ours
+        // has only beq and b.
+        switch (field_0x238) {
+        case 1:
+            mAnim27c.startAnim_801D22DC(0, 0, false);
+            break;
+        default:
+            mAnim27c.startAnim_801D22DC(1, 0, false);
+            break;
+        }
+        mAnim27c.fn_801D1F14(0.0f);
+    }
+}
+
+// FIXME: 99.60 %, reloc-name; behaviour clean.
+void cls_8049E350::fn_80125BF4() {
+    JGeometry::TVec3f pos(mPos);
+    pos.y += -24.0f;
+    spawnEmitter_8013CC50(field_0x4, &pos, 0x33A, 0, 0, NULL, NULL, true, 1.0f);
+}
+
+cls_8049E350::~cls_8049E350() {}
