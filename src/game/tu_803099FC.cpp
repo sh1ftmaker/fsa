@@ -78,7 +78,7 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
-// FIXME(shotgun): 11.71 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 11.87 %, missing/extra; behaviour drift.
 // The logic follows the asm; the low % is the register
 // numbering, one higher in the target throughout (this in r22, the key word in r31; ours r21/r22),
 // plus two local shapes: the target materialises mState >= 4 as a value (li 4; subi; orc; srwi;
@@ -120,7 +120,7 @@ void cls_804AA8C8::fn_8030A43C() {
                     u32 keys = client.mKeys;
                     memcpy(client.mTransfer, &lbl_80506DE8[i], lbl_80541618[lbl_8053AD08] * 4);
                     OSSendMessage(&client.mQueue, (OSMessage)10, 1);
-                    if (lbl_8053AD34[i] != 0 && (u8)keys == fn_803006E8((keys & 0xFF00) | ((keys >> 16) & 0xFF))) {
+                    if (lbl_8053AD34[i] != 0 && (u8)keys == fn_803006E8(((keys >> 16) & 0xFF) | (keys & 0xFF00))) {
                         field_0x4[i] = (((keys >> 20) & 1) ? 2 : 0) | (((keys >> 22) & 1) ? 8 : 0) | ((keys >> 21) & 1) |
                                        (((keys >> 9) & 1) ? 0x40 : 0) | (((keys >> 23) & 1) ? 4 : 0) |
                                        (((keys >> 8) & 1) ? 0x20 : 0) | (((keys >> 19) & 1) ? 0x1000 : 0) |
