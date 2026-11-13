@@ -79,7 +79,8 @@ cls_804A6708::~cls_804A6708() {
     }
 }
 
-// FIXME: 96.8%. Only branch shapes differ: the original has bge; b over the stage >= 1 test (0x8021EA3C) and
+// FIXME: 96.80 %, missing/extra + reloc-name; behaviour clean.
+// Only branch shapes differ: the original has bge; b over the stage >= 1 test (0x8021EA3C) and
 // beq; b over li 1 for the two spawnEmitter_8013CC50 flag arguments, ours blt/bne; the .sdata2 literals are not split.
 void cls_804A6708::init() {
     EnemyBase_804A4808::init();
@@ -183,6 +184,7 @@ void cls_804A6708::init() {
 }
 
 
+// FIXME: 82.11 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): missing/extra + reloc-name (the original passes the TVec2f at 0x2c0 to
 // fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies)
 void cls_804A6708::fn_8021E4F8() {
@@ -272,7 +274,7 @@ void cls_804A6708::fn_8021E4F8() {
     field_0x2c0.y = field_0x2cc + (dx * s + dy * co);
 }
 
-// FIXME(shotgun): 86.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 86.34 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6708::fn_8021DFAC(s32 newState) {
     switch (newState) {
     case 1:
@@ -396,7 +398,8 @@ void cls_804A6708::fn_8021DFAC(s32 newState) {
     mState = newState;
 }
 
-// FIXME: 98.88% (missing/extra: ours has 2 fewer instrs (216 vs 218)). In case 3, the compiler merges
+// FIXME: 98.88 %, missing/extra + reloc-name; behaviour drift.
+// (missing/extra: ours has 2 fewer instrs (216 vs 218)). In case 3, the compiler merges
 // the two "flag = true" assignments into a single branch.
 void cls_804A6708::vfunc_0x90(u8 mapHit) {
     switch (mState) {
@@ -506,7 +509,8 @@ void cls_804A6708::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 96.5%. Only the two setEmitterPos_8013CB44 flag arguments differ in branch shape (ours bne over li 1,
+// FIXME: 96.53 %, missing/extra + reloc-name; behaviour clean.
+// Only the two setEmitterPos_8013CB44 flag arguments differ in branch shape (ours bne over li 1,
 // the original beq; b over li 1), and the .sdata2 literals are not split.
 void cls_804A6708::vfunc_0x9C(u8 mapHit) {
     EnemyBase_804A4808::vfunc_0x9C(mapHit);
@@ -541,7 +545,7 @@ void cls_804A6708::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
+// FIXME(shotgun): 99.92 %, reloc-name; behaviour drift.
 void cls_804A6708::vfunc_0x88() {
     field_0x3c.x = 0.0f;
     field_0x3c.y = 0.0f;
@@ -600,6 +604,7 @@ void cls_804A6708::vfunc_0xA0() {
     }
 }
 
+// FIXME: 91.05 %, different; behaviour clean.
 // FIXME(shotgun): params block register allocation differs
 void cls_804A6708::draw() {
     if (mState != 3 && field_0x2b8 > 0.0f) {
