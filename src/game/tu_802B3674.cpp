@@ -1009,13 +1009,12 @@ void cls_804A8638::vfunc_0x5C() {
 
 // Starts BGM 0x100000E unless one of these is already the current music (id - 0x1000000).
 // 0x802B3674.
-// FIXME(shotgun): 91.75 %, missing/extra
 void cls_804A8638::vfunc_0x60() {
     u32 current = gAudioMgr_8053AF80->field_0x60;
     if (!fn_802DEBF8() && current != 0) {
         u32 id = current - 0x1000000;
-        if (id != 0x21 && id != 9 && id != 0x18 && id != 0x19 && id != 1 && id != 0xD && id != 7 && id != 0x2E &&
-            id != 0x29 && id != 0x24 && id != 0xE) {
+        if (id != 0x21 && id != 9 && id - 0x18 > 1 && id != 1 && id != 0xD && id != 7 && id != 0x2E && id != 0x29 &&
+            id != 0x24 && id != 0xE) {
             gAudioMgr_8053AF80->fn_80458FF0(0x100000E, false, 0);
         }
     }
