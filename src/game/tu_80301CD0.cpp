@@ -1590,7 +1590,7 @@ void fn_8030361C() {
 
 // Draws one GBA sprite word on the map in the resource its kind selects, with a
 // scale (or rotation about y by `scale`) chosen by its flag bits.
-// FIXME: 94.75 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: register order in the sin/cos matrix block and literal order differ.
 void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
     s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
     s32 y = sprite->f.field_0x1;
@@ -1630,9 +1630,22 @@ void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set)
         } else {
             setRotScaleMtx(mtx, rot, 0.75f);
         }
-        for (s32 i = 0; i < 16; i++) {
-            params.field_0x0[i] = 7;
-        }
+        params.field_0x0[0] = 7;
+        params.field_0x0[1] = 7;
+        params.field_0x0[2] = 7;
+        params.field_0x0[3] = 7;
+        params.field_0x0[4] = 7;
+        params.field_0x0[5] = 7;
+        params.field_0x0[6] = 7;
+        params.field_0x0[7] = 7;
+        params.field_0x0[8] = 7;
+        params.field_0x0[9] = 7;
+        params.field_0x0[10] = 7;
+        params.field_0x0[11] = 7;
+        params.field_0x0[12] = 7;
+        params.field_0x0[13] = 7;
+        params.field_0x0[14] = 7;
+        params.field_0x0[15] = 7;
     } else if (sprite->f.field_0x3_4 == 1 || (sprite->f.mKind == 2 && id >= 0x39 && id < 0x45)) {
         PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
     } else {
