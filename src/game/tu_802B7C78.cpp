@@ -53,7 +53,7 @@ void ReaperShinigami_804A886C::init() {
 
 // The player at field_0x2a0[field_0x27c] is in the game and present.
 static inline bool playerInGame(s32 player) {
-    return (gGameRoot_8053AAF8->mPlayerMask & (1 << player)) != 0;
+    return (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) != 0;
 }
 
 // FIXME(shotgun): 89.10 %, missing/extra; behaviour drift.
@@ -93,23 +93,27 @@ void ReaperShinigami_804A886C::update() {
                             field_0x27c = 0;
                         }
                     } else {
-                        bool found = false;
-                        while (field_0x27c < 4) {
-                            field_0x298 = field_0x2a0[field_0x27c];
-                            if (playerInGame(field_0x298) == 1 && fn_8023F264(field_0x298) == 1 &&
-                                fn_80237774(field_0x298) > 1) {
-                                found = true;
-                                break;
-                            }
-                            field_0x27c++;
-                        }
-                        if (!found) {
+                        if (field_0x27c >= 4) {
                             mAlive = false;
                             startSound_801F0E34(0x40041, 0);
-                        }
-                        if (mAlive) {
-                            fn_802B8078();
-                            field_0x27c++;
+                        } else {
+                            while (true) {
+                                field_0x298 = field_0x2a0[field_0x27c];
+                                if (playerInGame(field_0x298) == 1 && fn_8023F264(field_0x298) == 1 &&
+                                    fn_80237774(field_0x298) > 1) {
+                                    break;
+                                }
+                                field_0x27c++;
+                                if (field_0x27c >= 4) {
+                                    mAlive = false;
+                                    startSound_801F0E34(0x40041, 0);
+                                    break;
+                                }
+                            }
+                            if (mAlive) {
+                                fn_802B8078();
+                                field_0x27c++;
+                            }
                         }
                     }
                 } else {
@@ -171,6 +175,8 @@ void ReaperShinigami_804A886C::update() {
             field_0x244 = 300;
             startSound_801F0E34(0x4003F, 0);
         }
+        break;
+    case 6:
         break;
     case 7:
         fn_802B7D1C(1, 8);
