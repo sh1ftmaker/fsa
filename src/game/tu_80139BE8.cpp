@@ -24,12 +24,13 @@ extern const char lbl_80465960[];
 // 0x8013A884
 // auto_inline off: the original GameRootSub04 destructor (bl at 0x8013A2B8) calls it out of line.
 #pragma auto_inline off
+// FIXME: 33.09 %, missing/extra; behaviour drift.
 void fn_8013A884(u32* color) {
     gGameRoot2_8053AB10->field_0x2c->field_0x4.set(*color);
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 96.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.97 %, missing/extra + reloc-name; behaviour drift.
 // 0x8013A538
 GameRootSub04_801F856C::GameRootSub04_801F856C(JKRHeap* heap) {
     lbl_8053AB00 = heap;
@@ -157,21 +158,14 @@ static inline bool isFrozenRoom() {
     return false;
 }
 
-// FIXME(shotgun): 93.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.28 %, missing/extra + reloc-name; behaviour drift.
 // 0x80139D9C
 void GameRootSub04_801F856C::fn_80139D9C() {
-    GameRoot_8049EF20* root = gGameRoot_8053AAF8;
-    s32 mode = root->field_0x4c;
-    bool step = false;
-    if (mode == GAME_MODE_7 && root->field_0x60 >= 4) {
-        step = true;
-    } else if (isGameMode(GAME_MODE_B) || (root->field_0x88 == 2 ? true : false)) {
-        step = true;
-    } else if (root->field_0x7f == 0 && (mode == GAME_MODE_A || mode == GAME_MODE_C)) {
-        step = true;
-    }
-    if (step) {
-        root->fn_80136500();
+    s32 mode = gGameRoot_8053AAF8->field_0x4c;
+    if ((mode == GAME_MODE_7 && gGameRoot_8053AAF8->field_0x60 >= 4) ||
+        (gGameRoot_8053AAF8->field_0x4c == GAME_MODE_B ? true : gGameRoot_8053AAF8->field_0x88 == 2) ||
+        (gGameRoot_8053AAF8->field_0x7f == 0 && (mode == GAME_MODE_A || mode == GAME_MODE_C))) {
+        gGameRoot_8053AAF8->fn_80136500();
         mView->vfunc_0x10();
         fn_8023F390();
         field_0x20->fn_801914C4();
