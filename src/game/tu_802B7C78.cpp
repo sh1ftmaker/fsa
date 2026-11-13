@@ -23,9 +23,6 @@ static inline void normalize(JGeometry::TVec2f& v) {
     v.y *= norm;
 }
 
-// FIXME: 99.64 %. Only reloc-names: the -8.0f, 8.0f and 2.0f literals are
-// @603-@605 here, lbl_80540ADC/AE0/AE4 in the original; they sit at the right
-// offsets once fn_802B8078 and update() (which use 16.0f and 48.0f) are written.
 void ReaperShinigami_804A886C::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -59,7 +56,7 @@ static inline bool playerInGame(s32 player) {
     return (gGameRoot_8053AAF8->mPlayerMask & (1 << player)) != 0;
 }
 
-// FIXME(shotgun): 89.05 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.10 %, missing/extra; behaviour drift.
 void ReaperShinigami_804A886C::update() {
     if (gGameRoot_8053AAF8->field_0xfe == 0) {
         vfunc_0x24();
@@ -218,7 +215,8 @@ void ReaperShinigami_804A886C::vfunc_0x24() {
 static inline void reappear(ReaperShinigami_804A886C* self) {
     self->mPos = self->field_0x28c;
     self->field_0x4 = self->field_0x29c;
-    JGeometry::TVec3f emitterPos(self->mPos);
+    JGeometry::TVec3f emitterPos;
+    emitterPos.set(self->mPos);
     emitterPos.y += 32.0f;
     emitterPos.z += 16.0f;
     spawnEmitter_8013CC50(self->field_0x4, &emitterPos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
@@ -229,7 +227,7 @@ static inline void reappear(ReaperShinigami_804A886C* self) {
 }
 
 // 0x802B8078 is a plain `fn_802B8078` symbol in the original; ours is the mangled member.
-// FIXME(shotgun): 77.86 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.75 %, missing/extra; behaviour near.
 void ReaperShinigami_804A886C::fn_802B8078() {
     field_0x29c = getPlayerLayer_8023DE58(field_0x298);
     if (field_0x29c < 8) {
@@ -247,7 +245,8 @@ void ReaperShinigami_804A886C::fn_802B8078() {
             reappear(this);
         }
     } else {
-        JGeometry::TVec3f emitterPos(mPos);
+        JGeometry::TVec3f emitterPos;
+        emitterPos.set(mPos);
         emitterPos.y += 32.0f;
         emitterPos.z += 16.0f;
         spawnEmitter_8013CC50(field_0x4, &emitterPos, 0x17D, 1, 0, NULL, NULL, true, 1.0f);
@@ -269,7 +268,8 @@ void ReaperShinigami_804A886C::fn_802B8078() {
     }
 }
 
-// FIXME: 89.45 %. Its frame is 0x40 with the playerPos copy at 0x10 (ours
+// FIXME: 92.40 %, missing/extra; behaviour drift.
+// Its frame is 0x40 with the playerPos copy at 0x10 (ours
 // 0x30, playerPos at 0x8). The direction temp's dead stack stores are not
 // reproduced, and the idx table walk takes other registers (r28 / r29). (The
 // layer is read through getField_0x4(), before the call, as the original does.)
@@ -304,7 +304,10 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
         s32 arg3 = 0x12;
         if (gGameRoot_8053AAF8->field_0x7f == 0) {
             s32 n = fn_80237774(field_0x298);
-            damage = n > 1 ? n - 1 : 0;
+            damage = 0;
+            if (n > 1) {
+                damage = n - 1;
+            }
             arg3 = 4;
         }
         if (fn_8023F264(field_0x298) == true && !fn_80236B50(field_0x298)) {
