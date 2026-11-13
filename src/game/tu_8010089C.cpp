@@ -12,7 +12,7 @@
 #include "game/Player.h"
 #include "game/act/tu_8010089C.h"
 
-// FIXME(shotgun): 99.7 %, reloc-name
+// FIXME(shotgun): 99.68 %, reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::init() {
     if (field_0x90 & 0x10000) {
         fn_80100A90();
@@ -55,6 +55,7 @@ void WhackAMoleShop_8049C8EC::init() {
     }
 }
 
+// FIXME: 99.87 %, reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::update() {
     if (field_0x90 & 0x10000) {
         field_0x245++;
@@ -118,7 +119,7 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     }
 }
 
-// FIXME(shotgun): 87.28 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.82 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
         SpriteParams_801F5AE0 params;
@@ -145,7 +146,7 @@ void WhackAMoleShop_8049C8EC::draw() {
     }
 }
 
-// FIXME(shotgun): 88.00 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.17 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
     JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f msgPos = mPos;
@@ -389,7 +390,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
     }
 }
 
-// FIXME(shotgun): 94.59 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.59 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x290 = static_cast<WhackAMoleShop_8049C8EC*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x90 & 0xFFFF));
     mBox.i.x = -12.0f;
@@ -465,7 +466,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 96.4 %, missing/extra
+// FIXME(shotgun): 96.83 %, missing/extra + reloc-name; behaviour near.
 void WhackAMoleShop_8049C8EC::vfunc_0x44() {
     s32 player = field_0x10c;
     if (player < 0) {
