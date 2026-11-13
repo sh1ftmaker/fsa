@@ -22,7 +22,7 @@ static const s32 lbl_80464BBC[11] = {0, 0, 360, 800, 830, 950, 1040, 1160, 1325,
 
 s32 fn_801365A8();
 
-// FIXME(shotgun): 99.69 %, reloc-name; behaviour clean.
+// FIXME(shotgun): 99.84 %, reloc-name; behaviour clean.
 // only (the two float literals are @NNN, not lbl_)
 void cls_8049DD68::init() {
     cls_8049D140::init();
@@ -34,7 +34,7 @@ void cls_8049DD68::init() {
     getGameView_802D6A9C()->fn_802D7440(0);
 }
 
-// FIXME(shotgun): 78.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 78.66 %, missing/extra + reloc-name; behaviour drift.
 // the guarded static (lbl_8053AA98 / lbl_8053AA9C) update() zero-inits is not written
 void cls_8049DD68::update() {
     cls_8049D140::update();
@@ -101,7 +101,7 @@ s32 cls_8049DD68::vfunc_0x5C() {
 // Not auto-inlined: update and vfunc_0x54 call fn_8011D1B8 / fn_8011CF48 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 11.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.76 %, different + reloc-name; behaviour drift.
 // jump table is not yet a named jumptable_8049DDF0; stack layout still differs
 void cls_8049DD68::fn_8011D1B8(s32 state) {
     switch (state) {
@@ -118,7 +118,9 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
         field_0x23c = 0.0f;
         field_0x238 = 0.0f;
         field_0x230 = 0;
-        s32 dir[2] = {0, -1};
+        s32 dir[2];
+        dir[0] = 0;
+        dir[1] = -1;
         getGameView_802D6A9C()->fn_802DCD1C(dir);
         break;
     }
@@ -133,18 +135,31 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
         for (s32 i = 0; i < 4; i++) {
             cls_801192AC* area = fn_8011921C();
             ActorBase_804A5770** it = area->fn_8011871C(area->mBegin, ACTOR_DMLK);
-            JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-            const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mSpawnPos;
+            JGeometry::TVec3f zero;
+            const JGeometry::TVec3f* pos;
+            if (it == fn_8011921C()->mEnd) {
+                zero.set(0.0f, 0.0f, 0.0f);
+                pos = &zero;
+            } else {
+                pos = &(*it)->mSpawnPos;
+            }
             fn_80230498(i, pos, 0x3F, 0, -0x80, -0x80, true);
         }
         cls_801192AC* area = fn_8011921C();
         ActorBase_804A5770** it = area->fn_8011871C(area->mBegin, ACTOR_DMLK);
-        JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-        const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mSpawnPos;
-        spawnEmitter_8013CC50(field_0x4, pos, 0x33F, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, pos, 0x340, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, pos, 0x341, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, pos, 0x342, 0, 0, NULL, NULL, true, 1.0f);
+        JGeometry::TVec3f zero;
+        const JGeometry::TVec3f* pos;
+        if (it == fn_8011921C()->mEnd) {
+            zero.set(0.0f, 0.0f, 0.0f);
+            pos = &zero;
+        } else {
+            pos = &(*it)->mSpawnPos;
+        }
+        JGeometry::TVec3f spawnPos = *pos;
+        spawnEmitter_8013CC50(field_0x4, &spawnPos, 0x33F, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &spawnPos, 0x340, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &spawnPos, 0x341, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &spawnPos, 0x342, 0, 0, NULL, NULL, true, 1.0f);
         startSound_801F0E34(0x30079, 0);
         break;
     }
@@ -163,7 +178,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 92.44 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.63 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 0:
@@ -211,8 +226,13 @@ void cls_8049DD68::fn_8011CF48() {
     case 8: {
         cls_801192AC* list = fn_8011921C();
         ActorBase_804A5770** it = list->fn_8011871C(list->mBegin, 'DMSW');
-        JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-        const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mPos;
+        const JGeometry::TVec3f* pos;
+        if (it == fn_8011921C()->mEnd) {
+            JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
+            pos = &zero;
+        } else {
+            pos = &(*it)->mPos;
+        }
         fn_801CD950(&field_0x240.y, 40.0f + pos->y, 1.8f);
         JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
         gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&c, field_0x258);
