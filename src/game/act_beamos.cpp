@@ -56,9 +56,8 @@ void Beamos_804A40E0::init() {
 // and its cos half (table + 4) in r30 and loads mPos.y before mPos.x; ours keeps
 // only the table base and loads the literals earlier.
 void Beamos_804A40E0::fn_801BE86C() {
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
-                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
+    JGeometry::TVec3f pos(mPos.x + 10.0f * JMASinShort(field_0x2a8),
+                          -15.0f + (6.0f * JMACosShort(field_0x2a8) + mPos.y), mPos.z);
     s32 serial = getActorManager_801F856C()->spawnActor_801F9484('LNBM', field_0x4, &pos, mSerial, -1, -1);
     if (serial < 0) {
         return;
@@ -72,7 +71,7 @@ void Beamos_804A40E0::fn_801BE86C() {
         depth = 1;
     }
     actor->field_0x94 = depth;
-    JGeometry::TVec2f dir(10.0f * sincos.sinShort(field_0x2a8), 6.0f * sincos.cosShort(field_0x2a8));
+    JGeometry::TVec2f dir(10.0f * JMASinShort(field_0x2a8), 6.0f * JMACosShort(field_0x2a8));
     dir.normalize();
     dir.scale(10.5f);
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
