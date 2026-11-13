@@ -173,6 +173,7 @@ void cls_804AAD60::draw() {
     }
 }
 
+// FIXME: 95.50 %, missing/extra; behaviour clean.
 // FIXME(shotgun): missing/extra; argument setup order of the first fn_8038AD24 call differs.
 void cls_804AAD60::fn_80315EE8() {
     updateFacing();
