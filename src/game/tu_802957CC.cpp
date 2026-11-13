@@ -308,7 +308,7 @@ void cls_804A7AE0::fn_8029A974() {
         return;
     }
     s32 layer = field_0x4;
-    JGeometry::TBox2f view = *layerBox(layer);
+    const JGeometry::TBox2f* view = layerBox(layer);
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
     p.x += 8.0f;
@@ -316,10 +316,10 @@ void cls_804A7AE0::fn_8029A974() {
     p.y -= 8.0f;
     p.z = 0.0f;
     const f32 inset = -32.0f;
-    f32 minX = view.i.x - inset;
-    f32 minY = view.i.y - inset;
-    f32 maxX = view.f.x + inset;
-    f32 maxY = view.f.y + inset;
+    f32 minX = view->i.x - inset;
+    f32 minY = view->i.y - inset;
+    f32 maxX = view->f.x + inset;
+    f32 maxY = view->f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
