@@ -22,7 +22,7 @@ static const s32 lbl_80464BBC[11] = {0, 0, 360, 800, 830, 950, 1040, 1160, 1325,
 
 s32 fn_801365A8();
 
-// FIXME(shotgun): 99.69 %, reloc-name; behaviour clean.
+// FIXME(shotgun): 99.84 %, reloc-name; behaviour clean.
 // only (the two float literals are @NNN, not lbl_)
 void cls_8049DD68::init() {
     cls_8049D140::init();
@@ -34,7 +34,7 @@ void cls_8049DD68::init() {
     getGameView_802D6A9C()->fn_802D7440(0);
 }
 
-// FIXME(shotgun): 78.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 78.66 %, missing/extra + reloc-name; behaviour drift.
 // the guarded static (lbl_8053AA98 / lbl_8053AA9C) update() zero-inits is not written
 void cls_8049DD68::update() {
     cls_8049D140::update();
@@ -101,7 +101,7 @@ s32 cls_8049DD68::vfunc_0x5C() {
 // Not auto-inlined: update and vfunc_0x54 call fn_8011D1B8 / fn_8011CF48 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 11.60 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.76 %, different + reloc-name; behaviour drift.
 // jump table is not yet a named jumptable_8049DDF0; stack layout still differs
 void cls_8049DD68::fn_8011D1B8(s32 state) {
     switch (state) {
@@ -178,7 +178,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 92.44 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.63 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 0:
