@@ -218,45 +218,11 @@ void cls_804AE4B0::fn_803721F4() {
 #pragma auto_inline reset
 
 // Starts the next lane pattern `arg` (0-3): the four sprites slide in from their start offsets.
-// FIXME(shotgun): 77.73 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.18 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371D50(s32 arg) {
     mTimer = 0x80;
     field_0x398 = 0;
     switch (arg) {
-    case 0: {
-        static JGeometry::TVec3f offsets[4] = {
-            JGeometry::TVec3f(0.0f, 0.0f, 0.0f),
-            JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
-            JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
-            JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
-        };
-        for (s32 i = 0; i < 4; i++) {
-            field_0x2c4[i] = mPos + offsets[i];
-            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
-                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
-            field_0x350[i] = 0x391;
-            field_0x340[i] = 3;
-        }
-        break;
-    }
-    case 1:
-        for (s32 i = 0; i < 4; i++) {
-            field_0x2c4[i] = mPos + JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
-            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
-                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
-            field_0x350[i] = 0x388;
-            field_0x340[i] = 0;
-        }
-        break;
-    case 2:
-        for (s32 i = 0; i < 4; i++) {
-            field_0x2c4[i] = mPos + JGeometry::TVec3f(0.0f, 16.0f * (f32)i, 0.0f);
-            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
-                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
-            field_0x350[i] = 0x38E;
-            field_0x340[i] = 2;
-        }
-        break;
     case 3: {
         static JGeometry::TVec3f offsets[4] = {
             JGeometry::TVec3f(0.0f, 0.0f, 0.0f),
@@ -266,10 +232,44 @@ void cls_804AE4B0::fn_80371D50(s32 arg) {
         };
         for (s32 i = 0; i < 4; i++) {
             field_0x2c4[i] = mPos + offsets[i];
-            field_0x2f4[i].set((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
-                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x2f4[i] = JGeometry::TVec3f((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
             field_0x350[i] = lbl_80474EE0[i];
             field_0x340[i] = lbl_80474EF0[i];
+        }
+        break;
+    }
+    case 1:
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
+            field_0x2f4[i] = JGeometry::TVec3f((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x388;
+            field_0x340[i] = 0;
+        }
+        break;
+    case 2:
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + JGeometry::TVec3f(0.0f, 16.0f * (f32)i, 0.0f);
+            field_0x2f4[i] = JGeometry::TVec3f((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x38E;
+            field_0x340[i] = 2;
+        }
+        break;
+    case 0: {
+        static JGeometry::TVec3f offsets[4] = {
+            JGeometry::TVec3f(0.0f, 0.0f, 0.0f),
+            JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
+            JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
+            JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+        };
+        for (s32 i = 0; i < 4; i++) {
+            field_0x2c4[i] = mPos + offsets[i];
+            field_0x2f4[i] = JGeometry::TVec3f((field_0x2c4[i].x - field_0x294[i].x) / 10.0f,
+                                               (field_0x2c4[i].y - field_0x294[i].y) / 10.0f, 0.0f);
+            field_0x350[i] = 0x391;
+            field_0x340[i] = 3;
         }
         break;
     }
@@ -441,7 +441,7 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
 }
 
 // The second state: the camera pans to the lane tile; when it has arrived the message is shown.
-// FIXME(shotgun): 88.24 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.34 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371284() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -461,8 +461,8 @@ void cls_804AE4B0::fn_80371284() {
         field_0x384[1] = 0;
         field_0x384[2] = 0;
         field_0x384[3] = 0;
-        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        GXRenderModeObj* renderMode = JUTVideo::sManager->getRenderMode();
+        JGeometry::TVec3f pos(0.5f * (f32)renderMode->fbWidth, 0.5f * (f32)renderMode->efbHeight, 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, 0x50F, field_0x4, pos, 0x22)) {
             mState = 2;
