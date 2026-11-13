@@ -535,9 +535,9 @@ void ShadowLink2_804A43E8::fn_801C7F98() {
         f32 dx1 = copy1.x - field_0x32c.x;
         f32 dy1 = copy1.y - field_0x32c.y;
         s16 a1 = (s32)(JMath::atanTable_.atan2_(dx1, dy1) * 10430.378f);
-        f32 d1 = __fabs((f32)(angle - a1));
+        f32 d1 = __fabsf(angle - a1);
         s16 a0 = (s32)(JMath::atanTable_.atan2_(dx0, dy0) * 10430.378f);
-        f32 d0 = __fabs((f32)(angle - a0));
+        f32 d0 = __fabsf(angle - a0);
         if (0.000030517578f * d0 < 0.000030517578f * d1) {
             if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(opt[1])) {
                 field_0x358.fn_80214244()->field_0x1 = 1;
