@@ -122,10 +122,7 @@ void ChiefSoldier_804A0B90::fn_80175024() {
                 partner->field_0x94 = 0;
                 if (field_0x4 >= 8 && field_0x23c == 1) {
                     s32 dir = field_0x98;
-                    mBox.i.x = lbl_804A0A58[dir][0];
-                    mBox.i.y = lbl_804A0A58[dir][1];
-                    mBox.f.x = lbl_804A0A58[dir][2];
-                    mBox.f.y = lbl_804A0A58[dir][3];
+                    mBox.set(lbl_804A0A58[dir][0], lbl_804A0A58[dir][1], lbl_804A0A58[dir][2], lbl_804A0A58[dir][3]);
                 }
                 fn_801F2B7C(-100, -1, 1);
             } else {
