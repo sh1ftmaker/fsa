@@ -109,17 +109,23 @@ void StrangeBlock_804AC2D8::update() {
         if (PSVECDistance(&mPos, (const Vec*)&field_0x238) >= reach) {
             if (mPos.x <= mSpawnPos.x + 11.5f && mPos.x >= mSpawnPos.x - 11.5f) {
                 mPos.x = mSpawnPos.x;
-            } else if (mPos.x < field_0x238.x) {
-                mPos.x = field_0x238.x - (reach + 0.1f);
             } else {
-                mPos.x = field_0x238.x + (reach + 0.1f);
+                f32 gap = reach + 0.1f;
+                if (mPos.x < field_0x238.x) {
+                    mPos.x = field_0x238.x - gap;
+                } else {
+                    mPos.x = field_0x238.x + gap;
+                }
             }
             if (mPos.y <= mSpawnPos.y + 11.5f && mPos.y >= mSpawnPos.y - 11.5f) {
                 mPos.y = mSpawnPos.y;
-            } else if (mPos.y < field_0x238.y) {
-                mPos.y = field_0x238.y - (reach + 0.1f);
             } else {
-                mPos.y = field_0x238.y + (reach + 0.1f);
+                f32 gap = reach + 0.1f;
+                if (mPos.y < field_0x238.y) {
+                    mPos.y = field_0x238.y - gap;
+                } else {
+                    mPos.y = field_0x238.y + gap;
+                }
             }
             field_0x238 = mPos;
             field_0x3c.x = 0.0f;
@@ -152,8 +158,7 @@ void StrangeBlock_804AC2D8::update() {
                 field_0x258 = fn_8022FD8C(mSerial);
                 if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                     fn_802300EC(field_0x258)) {
-                    JGeometry::TVec3f p = mPos;
-                    if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                         field_0x234 = 1;
                         field_0x254 = fn_80230CFC(field_0x258);
                         field_0x254 = field_0x254 ^ 1;
@@ -189,8 +194,7 @@ void StrangeBlock_804AC2D8::update() {
                     field_0x258 = fn_8022FD8C(mSerial);
                     if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                         fn_802300EC(field_0x258)) {
-                        JGeometry::TVec3f p = mPos;
-                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                                                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                             field_0x234 = 1;
                             field_0x254 = fn_80230CFC(field_0x258);
                             field_0x254 = field_0x254 ^ 1;
@@ -338,8 +342,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             fn_8022FEB8(&box, field_0x4, mSerial, true, false);
             field_0x258 = fn_8022FD8C(mSerial);
             if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f && fn_802300EC(field_0x258)) {
-                JGeometry::TVec3f p = mPos;
-                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                     field_0x234 = 1;
                     field_0x254 = fn_80230CFC(field_0x258);
                     field_0x254 = field_0x254 ^ 1;
