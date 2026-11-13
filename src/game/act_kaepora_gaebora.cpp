@@ -35,8 +35,8 @@ void cls_804A6550::init() {
     bool cleared = isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c) != FALSE;
     bool viewFlag = getGameView_802D6A9C()->field_0x131f9 != 0;
     field_0x2a8 = (field_0x90 & 0xFFFF) + 0x12B;
-    f32 v = (f32)((field_0x90 >> 20) & 0x1F);
-    field_0x2ac = __fsel(v - 1.5f, v, 1.5f);
+    u32 t = (field_0x90 >> 20) & 0x1F;
+    field_0x2ac = __fsel((f32)t - 1.5f, (f32)t, 1.5f);
     field_0x2b0 = (field_0x90 >> 25) & 0x1F;
     if (lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 0 && (field_0x90 >> 31) != 0) {
         mFlags |= 0x10000;
@@ -84,7 +84,8 @@ void cls_804A6550::init() {
     fn_801D0E58();
     mPos.z = 16.0f;
     s32 layer = field_0x4;
-    JGeometry::TBox2f* box = layer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
     if (mPos.x <= 0.5f * (box->i.x + box->f.x)) {
         mFlags |= 0x2000;
     }
