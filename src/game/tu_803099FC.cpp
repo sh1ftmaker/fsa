@@ -78,7 +78,7 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
-// FIXME(shotgun): 14.50 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 11.71 %, missing/extra; behaviour drift.
 // The logic follows the asm; the low % is the register
 // numbering, one higher in the target throughout (this in r22, the key word in r31; ours r21/r22),
 // plus two local shapes: the target materialises mState >= 4 as a value (li 4; subi; orc; srwi;
