@@ -379,7 +379,7 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     mState = state;
 }
 
-// FIXME(shotgun): 91.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.38 %, missing/extra + reloc-name; behaviour near.
 void VaatiBoss_804A4958::fn_801D5B70() {
     if (mStateTimer >= field_0x250) {
         if (fn_801CD2F8(field_0x4)) {
@@ -702,6 +702,7 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
 // Original reloads field_0x5bc/0x5c0 in each case body and interleaves the sin/cos stores; layout differs.
+// FIXME: 92.28 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
