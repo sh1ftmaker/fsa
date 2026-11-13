@@ -280,27 +280,29 @@ void SeesawLift_804AD348::fn_8035A210() {
             JGeometry::TBox2f box;
             fn_801F317C(&box);
             f32 centerY = mPos.y;
-            f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+            f32 c = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
             box.i.y = (box.i.y - centerY) * c + centerY;
             box.f.y = (box.f.y - centerY) * c + centerY;
             JGeometry::TVec2f out;
+            s8 side;
             if (fn_8023AAF8(p, &box, field_0x4, &out)) {
                 f32 d = centerY - out.y;
                 if (field_0x24e && d == 0.0f) {
                     d = 0.1f;
                 }
-                if (!field_0x24e && __fabs(d) <= 8.0f) {
+                if (!field_0x24e && __fabsf(d) <= 8.0f) {
                     d = 0.0f;
                 }
                 field_0x240 += 20.0f * d;
                 if (d >= 0.0f) {
-                    field_0x24a[p] = 1;
+                    side = 1;
                 } else {
-                    field_0x24a[p] = -1;
+                    side = -1;
                 }
             } else {
-                field_0x24a[p] = 0;
+                side = 0;
             }
+            field_0x24a[p] = side;
         }
     }
     if ((field_0x24a[0] | field_0x24a[1] | field_0x24a[2] | field_0x24a[3]) != 0 && field_0x240 != 0.0f) {
@@ -310,7 +312,7 @@ void SeesawLift_804AD348::fn_8035A210() {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
             f32 push = 1.8f * (sinVal * __fabsf(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
@@ -753,7 +755,7 @@ void SeesawLift_804AD348::fn_803584C0() {
         if (fn_8023F264(p) && field_0x246[p] != 0 && !fn_8022D75C(p) && !fn_80230188(p) && !fn_8022F514(p)) {
             f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
             f32 push = 1.8f * (sinVal * __fabsf(sinVal));
-            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 12) & 0x1F) >= 2) {
+            if (gGameRoot_8053AAF8->field_0x7e != 0 && ((field_0x90 >> 7) & 0x1F) >= 2) {
                 push *= 5.5f;
             }
             if (field_0x244 == 0) {
