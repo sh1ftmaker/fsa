@@ -99,6 +99,7 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
         u8 cur = field_0x3;
         u32 mode = field_0x4[cur]->field_0x90 & 3;
         result = 2;
+        bool advance = true;
         if (cur == 0) {
             result = 1;
             if ((field_0x4[field_0x2 - 1]->field_0x90 & 3) == 2 && field_0x1 == 1) {
@@ -106,27 +107,24 @@ s32 cls_800FE3EC::fn_800FE090(const JGeometry::TVec3f* pos, JGeometry::TVec3f* o
             }
         } else if (cur == field_0x2 - 1) {
             result = 3;
-            if (mode != 1) {
-                if (mode != 2) {
-                    const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
-                    out->x = p.x;
-                    out->y = p.y;
-                    out->z = p.z;
-                    return result;
-                }
+            if (mode == 2) {
                 field_0x1 ^= 1;
+            } else if (mode != 1) {
+                advance = false;
             }
         }
-        if (field_0x1 == 0) {
-            field_0x3++;
-        } else {
-            field_0x3--;
-        }
-        if (field_0x3 == field_0x2) {
-            field_0x3 = 0;
-        }
-        if (field_0x3 == 0xFF) {
-            field_0x3 = field_0x2 - 1;
+        if (advance) {
+            if (field_0x1 == 0) {
+                field_0x3++;
+            } else {
+                field_0x3--;
+            }
+            if (field_0x3 == field_0x2) {
+                field_0x3 = 0;
+            }
+            if (field_0x3 == 0xFF) {
+                field_0x3 = field_0x2 - 1;
+            }
         }
     }
     const JGeometry::TVec3f& p = field_0x4[field_0x3]->mPos;
