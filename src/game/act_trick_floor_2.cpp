@@ -63,9 +63,8 @@ static inline s32 tileIndex(s32 tx, s32 ty) {
 // copies; init's loop with tile 6).
 static inline void fillTiles(TrickFloor2_804AA628* self, f32 x, u16 tile) {
     s32 layer = self->field_0x4;
-    const JGeometry::TBox2f& view = layer < 8 ? getGameView_802D6A9C()->mVisibleBox
-                                              : getGameView_802D6A9C()->field_0xdc;
-    JGeometry::TBox2f box = view;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f box = layer < 8 ? view->mVisibleBox : view->field_0xdc;
     for (s32 i = 0; i < lbl_8046F788[self->mType]; i++) {
         s32 tx = (s32)(x - box.i.x);
         f32 y = self->mPos.y;
