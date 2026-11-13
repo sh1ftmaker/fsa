@@ -31,7 +31,7 @@
 
 <!-- treemap:start -->
 <p align="center">
-<a href="https://sh1ftmaker.github.io/fsa/#/game/game-player" title="Player: 59.4 % of 407,528 bytes matched, 934 / 1,054 functions. Open it on the progress site."><img src="site/badges/treemap/player.svg" width="11.4%" alt="Player: 59.4 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-enemies" title="Enemies &amp; bosses: 28.9 % of 679,252 bytes matched, 868 / 1,339 functions. Open it on the progress site."><img src="site/badges/treemap/enemies.svg" width="19%" alt="Enemies &amp; bosses: 28.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-npcs" title="NPCs: 30.6 % of 291,360 bytes matched, 375 / 594 functions. Open it on the progress site."><img src="site/badges/treemap/npcs.svg" width="8.15%" alt="NPCs: 30.6 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-objects" title="Objects &amp; gimmicks: 32.2 % of 900,452 bytes matched, 1,005 / 1,518 functions. Open it on the progress site."><img src="site/badges/treemap/objects.svg" width="25.02%" alt="Objects &amp; gimmicks: 32.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-stage" title="Stage &amp; world: 16.9 % of 182,272 bytes matched, 163 / 311 functions. Open it on the progress site."><img src="site/badges/treemap/stage.svg" width="5.1%" alt="Stage &amp; world: 16.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-menus" title="Menus &amp; screens: 27.5 % of 801,744 bytes matched, 521 / 872 functions. Open it on the progress site."><img src="site/badges/treemap/menus.svg" width="22.43%" alt="Menus &amp; screens: 27.5 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-core" title="Game core: 53.7 % of 198,580 bytes matched, 645 / 773 functions. Open it on the progress site."><img src="site/badges/treemap/core.svg" width="5.55%" alt="Game core: 53.7 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-media" title="Media &amp; link: 42.7 % of 112,596 bytes matched, 278 / 328 functions. Open it on the progress site."><img src="site/badges/treemap/media.svg" width="3.15%" alt="Media &amp; link: 42.7 % matched"></a><br>
+<a href="https://sh1ftmaker.github.io/fsa/#/game/game-player" title="Player: 59.4 % of 407,528 bytes matched, 934 / 1,054 functions. Open it on the progress site."><img src="site/badges/treemap/player.svg" width="11.4%" alt="Player: 59.4 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-enemies" title="Enemies &amp; bosses: 28.9 % of 679,252 bytes matched, 868 / 1,339 functions. Open it on the progress site."><img src="site/badges/treemap/enemies.svg" width="19%" alt="Enemies &amp; bosses: 28.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-npcs" title="NPCs: 30.8 % of 291,360 bytes matched, 376 / 594 functions. Open it on the progress site."><img src="site/badges/treemap/npcs.svg" width="8.15%" alt="NPCs: 30.8 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-objects" title="Objects &amp; gimmicks: 32.2 % of 900,452 bytes matched, 1,005 / 1,518 functions. Open it on the progress site."><img src="site/badges/treemap/objects.svg" width="25.02%" alt="Objects &amp; gimmicks: 32.2 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-stage" title="Stage &amp; world: 16.9 % of 182,272 bytes matched, 163 / 311 functions. Open it on the progress site."><img src="site/badges/treemap/stage.svg" width="5.1%" alt="Stage &amp; world: 16.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-menus" title="Menus &amp; screens: 27.5 % of 801,744 bytes matched, 521 / 872 functions. Open it on the progress site."><img src="site/badges/treemap/menus.svg" width="22.43%" alt="Menus &amp; screens: 27.5 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-core" title="Game core: 53.7 % of 198,580 bytes matched, 645 / 773 functions. Open it on the progress site."><img src="site/badges/treemap/core.svg" width="5.55%" alt="Game core: 53.7 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/game/game-media" title="Media &amp; link: 42.7 % of 112,596 bytes matched, 278 / 328 functions. Open it on the progress site."><img src="site/badges/treemap/media.svg" width="3.15%" alt="Media &amp; link: 42.7 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#/jsystem" title="JSystem: 97.9 % of 630,852 bytes matched, 3,650 / 3,702 functions. Open it on the progress site."><img src="site/badges/treemap/jsystem.svg" width="72.47%" alt="JSystem: 97.9 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/sdk" title="Dolphin SDK: 100 % of 131,224 bytes matched, 610 / 610 functions. Open it on the progress site."><img src="site/badges/treemap/sdk.svg" width="15.11%" alt="Dolphin SDK: 100 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/runtime" title="MSL, Runtime, TRK: 90.0 % of 72,512 bytes matched, 281 / 284 functions. Open it on the progress site."><img src="site/badges/treemap/runtime.svg" width="8.35%" alt="MSL, Runtime, TRK: 90.0 % matched"></a><a href="https://sh1ftmaker.github.io/fsa/#/gx" title="GX: 100 % of 33,660 bytes matched, 172 / 172 functions. Open it on the progress site."><img src="site/badges/treemap/gx.svg" width="3.87%" alt="GX: 100 % matched"></a><br>
 <a href="https://sh1ftmaker.github.io/fsa/#treemap" title="Open the interactive treemap"><img src="site/badges/treemap/legend.svg" width="100%" alt="area = bytes of code, fill = matched"></a>
 </p>
@@ -48,9 +48,9 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 <!-- progress:start -->
 As of 2026-11-13:
 
-- **Structural progress: 65.34 %** (2,902,614 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
-- **Matched code: 46.64 %** (2,071,980 of 4,442,032 bytes), **9,502 / 11,557** functions fully matched.
-- **Structurally matched:** 10,253 / 11,557 functions (same instructions, register or order differences only), +301 close.
+- **Structural progress: 65.42 %** (2,906,173 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
+- **Matched code: 46.66 %** (2,072,436 of 4,442,032 bytes), **9,503 / 11,557** functions fully matched.
+- **Structurally matched:** 10,259 / 11,557 functions (same instructions, register or order differences only), +303 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -146,17 +146,17 @@ Dolphin); the progress site's *Group by* switch shows the game code that way
 too.
 
 <!-- game:start -->
-Of 3,573,784 bytes of game code: **57.3 %** structural progress, **34.3 %** matched code; **4,789 / 6,789** functions fully matched.
+Of 3,573,784 bytes of game code: **57.4 %** structural progress, **34.3 %** matched code; **4,790 / 6,789** functions fully matched.
 
 | Category | Structural | Code matched | Functions | Files Matching | Unconfirmed |
 |---|--:|--:|--:|--:|--:|
 | [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 94.6 % | 59.4 % of 407,528 bytes | 934 / 1,054 | 0 / 10 | – |
-| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 46.0 % | 28.9 % of 679,252 bytes | 868 / 1,339 | 29 / 139 | 54 |
-| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 50.1 % | 30.6 % of 291,360 bytes | 375 / 594 | 10 / 54 | 17 |
-| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 49.7 % | 32.2 % of 900,452 bytes | 1,005 / 1,518 | 68 / 229 | 56 |
+| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 46.2 % | 28.9 % of 679,252 bytes | 868 / 1,339 | 29 / 139 | 54 |
+| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 50.3 % | 30.8 % of 291,360 bytes | 376 / 594 | 10 / 54 | 17 |
+| [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 49.9 % | 32.2 % of 900,452 bytes | 1,005 / 1,518 | 68 / 229 | 56 |
 | [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 40.0 % | 16.9 % of 182,272 bytes | 163 / 311 | 0 / 10 | 2 |
 | [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 59.4 % | 27.5 % of 801,744 bytes | 521 / 872 | 8 / 47 | 11 |
-| [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 72.9 % | 53.7 % of 198,580 bytes | 645 / 773 | 4 / 24 | 7 |
+| [Game core](https://sh1ftmaker.github.io/fsa/#/game/game-core) | 73.1 % | 53.7 % of 198,580 bytes | 645 / 773 | 4 / 24 | 7 |
 | [Media & link](https://sh1ftmaker.github.io/fsa/#/game/game-media) | 54.2 % | 42.7 % of 112,596 bytes | 278 / 328 | 6 / 15 | 2 |
 
 - **Player:** The four players and their manager: the ten Player units of docs/PLAYER.md (states, movement, drawing).
@@ -190,7 +190,7 @@ same symbols too. They are regenerated with every merge; see
 
 <!-- now:start -->
 - **Now** (phase 2): **Library holdouts.** About fifty JSystem functions that resist (register allocation and J3DMatBlock's word copies, tagged with FIXMEs) and MSL's ansi_fp and strtoul. Most go to the crack pass. Currently 98.6 % of the functions matched.
-- **Now** (phase 3): **Waves of small-function units.** One agent per file, one reviewer per wave. Actor waves, the ActorManager spawner (tu_801F9484, 322 functions) and many small units are merged; recurring shapes are in the rules card. Currently 70.5 % of the functions matched.
+- **Now** (phase 3): **Waves of small-function units.** One agent per file, one reviewer per wave. Actor waves, the ActorManager spawner (tu_801F9484, 322 functions) and many small units are merged; recurring shapes are in the rules card. Currently 70.6 % of the functions matched.
 - **Now** (phase 3): **Big functions, structure first.** Write a big function before it reaches 100 %, merge it when it is structurally done or close, so the literal pool, field offsets and callee names settle (docs/RULES_CARD.md). Just started on the file select, game mode screen and GBA link units.
 - **Now** (phase 4): **Boot to main menu.** main(), the framework, the THP movie player (162 of 168 functions), the title screen and the screens built at boot (file select, the game mode screen, the GBA link manager). Currently 34.2 % of the code matched.
 - **Now** (phase 4): **Main menu to Shadow Battle.** Stage load, the players, the field and the actors on it, up to two Links fighting on The Field. Currently 37.1 % of the code matched.
