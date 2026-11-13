@@ -43,7 +43,7 @@ cls_804A4C58::~cls_804A4C58() {
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 58.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 59.02 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -106,7 +106,7 @@ void cls_804A4C58::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
-// FIXME(shotgun): 97.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.94 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9C58(int state) {
     field_0x336 = 0;
     if (mState == 0x11) {
@@ -243,7 +243,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 75.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.96 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -306,7 +306,7 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 71.70 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 71.73 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
@@ -729,6 +729,7 @@ void cls_804A4C58::vfunc_0x80() {
     EnemyBase_804A4808::vfunc_0x80();
 }
 
+// FIXME: 99.65 %, regalloc-only; behaviour clean.
 void cls_804A4C58::vfunc_0x88() {
     switch (mState) {
     case 0xB: case 0xC: case 0xD: case 0xE: {
@@ -833,7 +834,6 @@ void cls_804A4C58::vfunc_0x74() {
 }
 
 // Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
-// FIXME: 99.90 %, reloc-name; behaviour clean.
 void cls_804A4C58::vfunc_0xA0() {
     if (mState == 0) {
         return;
@@ -861,6 +861,7 @@ void cls_804A4C58::vfunc_0xA0() {
 
 void cls_804A4C58::vfunc_0x24() {}
 
+// FIXME: 95.11 %, scheduling+regalloc; behaviour clean.
 void cls_804A4C58::update() {
     if (vfunc_0x2C(0.0f, -16.0f, 50.0f)) {
         Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
