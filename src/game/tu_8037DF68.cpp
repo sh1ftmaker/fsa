@@ -1473,7 +1473,7 @@ static inline void flushLine(char* out, const char* line, s32 lines, f32 cur, f3
 s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
     MessageInf1_804AF070* inf1 = &lbl_8053AD78->mBmg->inf1;
     const char* text = &((const char*)inf1 + 8)[inf1->size + inf1->entries[msg].textOffset];
-    char line[64];
+    char line[100];
     s32 len = 0;
     s32 pos = 0;
     s32 lines = 1;
@@ -1514,7 +1514,7 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
                     }
                 } else if (p[4] == 0x2E) {
                     if (a >= 1 && a <= 4) {
-                        if (isPlayerBitSet(gGameRoot_8053AAF8, a - 1)) {
+                        if (isPlayerBitSet(gGameRoot_8053AAF8, a - 1) == true) {
                             if (((gGameRoot_8053AAF8->field_0x83 >> shift) & 3) == 1) {
                                 if (getPlayerLayer_8023DE58(a - 1) >= 8) {
                                     fn_80230E1C(a - 1, false);
