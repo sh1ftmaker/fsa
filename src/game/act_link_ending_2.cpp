@@ -70,8 +70,8 @@ void Link2Ending_804AE338::init() {
         fn_80230498(i, &mPos, 0, 0, -0x80, -0x80, true);
     }
     JGeometry::TVec3f pos;
-    pos.y = 384.0f * (s32)(mPos.y / 384.0f) + 192.0f;
     pos.z = 0.0f;
+    pos.y = 384.0f * (s32)(mPos.y / 384.0f) + 192.0f;
     pos.x = 512.0f * (s32)(mPos.x * 0.001953125f) + 256.0f;
     field_0x2A8 = spawnEmitter_8013CC50(field_0x4, &pos, 0x274, 0, 0, NULL, NULL, true, 1.0f);
     s32 end = getActorManager_801F856C()->mActorEnd;
