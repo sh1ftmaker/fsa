@@ -105,7 +105,7 @@ s32 cls_801E9B54::fn_801EA6D8(u8 arg0, s32 arg1) {
     return result;
 }
 
-// FIXME: 89.98 %, missing/extra; behaviour drift.
+// FIXME: 94.56 %, missing/extra; behaviour near.
 // The slot shift-down loop: the original recomputes the source
 // slot from the index each pass (addi, mulli, add; 81 instructions), ours
 // walks a second pointer (80).
