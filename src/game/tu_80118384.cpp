@@ -296,7 +296,19 @@ extern "C" cls_801192AC* fn_8011921C() {
     return &lbl_804BC540;
 }
 
-// FIXME: 79.27 %, missing/extra; behaviour drift.
+// JGadget::TVector<T>::TDestructed_deallocate_: frees its pointer through the allocator on scope exit.
+struct ActorVectorDealloc {
+    ActorVectorDealloc(JGadget::TAllocator<ActorBase_804A5770*>& alloc, ActorBase_804A5770** pointer) {
+        mAllocator = &alloc;
+        mPointer = pointer;
+    }
+    ~ActorVectorDealloc() { mAllocator->deallocate(mPointer, 0); }
+    void set(ActorBase_804A5770** p) { mPointer = p; }
+    JGadget::TAllocator<ActorBase_804A5770*>* mAllocator;
+    ActorBase_804A5770** mPointer;
+};
+
+// FIXME: 97.56 %, regalloc-only; behaviour clean.
 // FIXME(shotgun): TVector::reserve(20) inline; copy loop and empty destroy loop.
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
@@ -306,20 +318,15 @@ void cls_801192AC::fn_801190E4() {
     if (p == NULL) {
         return;
     }
-    ActorBase_804A5770** dst = p;
-    ActorBase_804A5770** src = mBegin;
-    if (src < mEnd) {
-        for (u32 n = ((u32)mEnd + 3 - (u32)src) >> 2; n != 0; --n) {
-            *dst++ = *src++;
-        }
-    }
+    ActorVectorDealloc guard(mAllocator, p);
+    copyDown(mBegin, mEnd, p);
     ActorBase_804A5770** old = mBegin;
     for (ActorBase_804A5770** it = mBegin; it != mEnd; ++it) {
     }
+    guard.set(old);
     mEnd = p + (mEnd - mBegin);
     mBegin = p;
     mCapacity = 20;
-    operator delete(old);
 }
 
 // FIXME(shotgun): 97.68 %, different; behaviour drift.
@@ -370,18 +377,6 @@ struct ActorVector {
     u32 (*mExtend)(u32, u32, u32);
     ActorBase_804A5770** Insert_raw(ActorBase_804A5770** pos, u32 count);
     void fn_80118938(ActorBase_804A5770** pos, u32 count, ActorBase_804A5770* const* value);
-};
-
-// JGadget::TVector<T>::TDestructed_deallocate_: frees its pointer through the allocator on scope exit.
-struct ActorVectorDealloc {
-    ActorVectorDealloc(JGadget::TAllocator<ActorBase_804A5770*>& alloc, ActorBase_804A5770** pointer) {
-        mAllocator = &alloc;
-        mPointer = pointer;
-    }
-    ~ActorVectorDealloc() { mAllocator->deallocate(mPointer, 0); }
-    void set(ActorBase_804A5770** p) { mPointer = p; }
-    JGadget::TAllocator<ActorBase_804A5770*>* mAllocator;
-    ActorBase_804A5770** mPointer;
 };
 
 // stand-ins for std::copy / std::copy_backward (the MSL <algorithm> is not usable from game code)
@@ -462,22 +457,27 @@ void cls_801192AC::fn_8011888C(ActorBase_804A5770* actor) {
     fn_801188B8(&mAllocator, &actor);
 }
 
-// FIXME(shotgun): 82.62 %, missing/extra; behaviour drift.
-// (stand-in: the original is std::find_if with a by-value
-// predicate, then the JGadget TVector erase(it, it + 1) inline: copyForward, the empty DestroyElement_
-// loop, mEnd = new end. Needs the TVector member at 0xC.)
+// by-value predicate of the std::find_if the original uses: matches an actor by its serial
+struct ActorSerialEq {
+    s32 mSerial;
+    bool operator()(ActorBase_804A5770* actor) const { return mSerial == actor->mSerial; }
+};
+
+// FIXME: 90.25 %, missing/extra; behaviour near.
+// FIXME: erase of the found element (TVector::erase inline); still differs in the stack frame.
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
-    s32 serial = actor->mSerial;
-    ActorBase_804A5770** it;
+    ActorSerialEq pred = {actor->mSerial};
     ActorBase_804A5770** end = mEnd;
-    it = mBegin;
-    while (it != end && serial != (*it)->mSerial) {
+    ActorBase_804A5770** it = mBegin;
+    while (it != end && !pred(*it)) {
         it++;
     }
     if (it != end) {
         ActorBase_804A5770** next = it + 1;
         while (next < end) {
             *it++ = *next++;
+        }
+        for (ActorBase_804A5770** p = it; p != mEnd; p++) {
         }
         mEnd = it;
     }
