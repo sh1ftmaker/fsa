@@ -914,7 +914,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 90.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.16 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     s32 skip = 0;
     JGeometry::TVec3f pos = mPos;
@@ -954,12 +954,12 @@ void cls_804ADF28::fn_80362C44() {
             field_0x264++;
             field_0x264 &= 7;
         }
-        field_0x2f8 += __fabsf(field_0x3c.y);
+        field_0x2f8 = __fabsf(field_0x3c.y) + field_0x2f8;
         if (field_0x2f8 >= 160.0f) {
             field_0x238++;
-            field_0x3c.x = 0.0f;
-            field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
             field_0x264 = 0;
             field_0x248 = 0x3c;
         }
@@ -993,14 +993,14 @@ void cls_804ADF28::fn_80362C44() {
                 field_0x264 &= 7;
             }
             skip = 1;
-            field_0x2f8 += __fabsf(field_0x3c.y);
+            field_0x2f8 = __fabsf(field_0x3c.y) + field_0x2f8;
             if (field_0x2f8 >= 80.0f) {
                 field_0x248 = 300;
                 field_0x250 = (f32)gGameRoot2_8053AB10->field_0x2c->field_0xc;
                 field_0x254 = field_0x250 / (f32)field_0x248;
                 JGeometry::TVec3f effectPos;
-                effectPos.x = (f32)(s32)(mPos.x * 0.001953125f) * 512.0f + 256.0f;
                 effectPos.y = (f32)(s32)(mPos.y / 384.0f) * 384.0f + 192.0f;
+                effectPos.x = (f32)(s32)(mPos.x * 0.001953125f) * 512.0f + 256.0f;
                 effectPos.z = 0.0f;
                 static const u16 lbl_80542AF0[4] = {0x4A4, 0x4A5, 0x4A6, 0x4A7};
                 for (int i = 0; i < 4; i++) {
