@@ -71,7 +71,7 @@ u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
 }
 
 // 0x801C544C.
-// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.76 %, scheduling+regalloc + reloc-name; behaviour clean.
 void ShadowLink2_804A43E8::init() {
     EnemyBase_804A4808::init();
     field_0x94 = fn_801C0D70()->fn_801C14A8(mSerial);
