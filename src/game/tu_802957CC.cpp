@@ -1796,8 +1796,7 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
     mBox.f.y = 44.0f;
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f view_box;
-    view_box = *src;
+    JGeometry::TBox2f view_box = *src;
     view_box.i.x -= 32.0f;
     view_box.i.y -= 32.0f;
     view_box.f.x += 32.0f;
@@ -1814,8 +1813,12 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
         p.y += mBox.i.y;
         p.y += 8.0f;
         for (s32 i = 0; i < 6; i++) {
-            if (!gBgRewrite_8053AC98->fn_802A1490(&p) ||
-                fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            if (!gBgRewrite_8053AC98->fn_802A1490(&p)) {
+                ok = false;
+                break;
+            }
+            CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+            if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
                 ok = false;
                 break;
             }
@@ -1853,9 +1856,13 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
                 q.x += lbl_8046C298[dir][0];
                 q.y += lbl_8046C298[dir][1];
                 q.z += lbl_8046C298[dir][2];
-                if (!gBgRewrite_8053AC98->fn_802A1490(&q) ||
-                    fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &q, mSerial, NULL)) {
+                if (!gBgRewrite_8053AC98->fn_802A1490(&q)) {
                     ok = false;
+                } else {
+                    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+                    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &q, mSerial, NULL)) {
+                        ok = false;
+                    }
                 }
             }
         }
