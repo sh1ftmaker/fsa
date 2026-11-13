@@ -27,7 +27,7 @@ void cls_804A5D60::init() {
     EnemyBase_804A4808::init();
     mBox.i.set(1.0f, 1.0f);
     mBox.f.set(-1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0x80.i.set(1.0f, 1.0f);
     field_0x80.f.set(-1.0f, -1.0f);
     field_0xb0 = 0x50303;
@@ -43,9 +43,10 @@ void cls_804A5D60::init() {
         mAnim.startAnim_801D22DC(5, 2, false);
         mBox.i.set(-8.0f, -8.0f);
         mBox.f.set(8.0f, 8.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         break;
-    default:
+    case 1:
+    case 2:
         mState = 0;
         mAnim.startAnim_801D22DC(0, 0, false);
         startSound_801F0E34(0x50037, 0);
