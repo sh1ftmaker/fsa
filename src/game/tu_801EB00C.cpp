@@ -124,7 +124,7 @@ void cls_801EB8CC::fn_801EB418(const JGeometry::TVec3f* pos) {
     if (field_0x5c != 0 && 0.0f == field_0x54) {
         done = true;
     }
-    bool remove = done;
+    bool remove = done != 0;
     u8 alpha = field_0x54;
     JGeometry::TVec2f offset(0.0f, 14.0f);
     for (s32 i = 0; i < 7; i++) {
