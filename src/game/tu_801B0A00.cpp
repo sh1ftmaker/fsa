@@ -142,26 +142,30 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 }
 
 // 0x801B2000.
-// FIXME(shotgun): 82.28 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): operands differ: fn_802303FC's original call passes 0xFF for its bool flag; register choice for mPos.y differs.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
     for (s32 i = 0; i < 4; i++) {
-        if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
-            const JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
-            field_0x288[i].x = pos->x;
-            field_0x288[i].y = pos->y;
-            field_0x288[i].z = pos->z;
-            if (mode == 0) {
-                if (field_0x258 == 1) {
-                    field_0x288[i].y = y;
-                }
-                fn_80230498(i, &field_0x288[i], 0x3E, 0xFF, -128, -128, true);
-            } else {
-                addCalc2_801F71A4(&field_0x288[i].y, y, 0.3f, 1.0f);
-                fn_80230BF4(i, 2);
-                fn_802303FC(i, &field_0x288[i], 0xFF);
-                if (fabs(getPlayerPos_8023E724(i)->y - y) < 1.0f) {
-                    field_0x258 = 1;
+        if (fn_8023F264(i)) {
+            s32 layer = field_0x4;
+            if (layer == getPlayerLayer_8023DE58(i)) {
+                const JGeometry::TVec3f* pos = getPlayerPos_8023E724(i);
+                field_0x288[i].x = pos->x;
+                field_0x288[i].y = pos->y;
+                field_0x288[i].z = pos->z;
+                if (mode == 0) {
+                    if (field_0x258 == 1) {
+                        field_0x288[i].y = y;
+                    }
+                    fn_80230498(i, &field_0x288[i], 0x3E, 0xFF, -128, -128, true);
+                } else {
+                    addCalc2_801F71A4(&field_0x288[i].y, y, 0.3f, 1.0f);
+                    fn_80230BF4(i, 2);
+                    fn_802303FC(i, &field_0x288[i], 0xFF);
+                    f32 dy = fabs(getPlayerPos_8023E724(i)->y - y);
+                    if (dy < 1.0f) {
+                        field_0x258 = 1;
+                    }
                 }
             }
         }
