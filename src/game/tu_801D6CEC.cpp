@@ -167,7 +167,7 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 97.52 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 94.92 %, missing/extra; behaviour near.
 void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x48 = pos->x;
     field_0x4c = -22.0f + pos->y;
@@ -205,7 +205,7 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 81.86 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 88.99 %, missing/extra; behaviour drift.
 void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
     field_0x48 = pos->x;
     field_0x4c = -22.0f + pos->y;
