@@ -807,7 +807,7 @@ void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     }
 }
 
-// FIXME(shotgun): 67.29 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.87 %, missing/extra + reloc-name; behaviour near.
 // The pairwise push pass over the actors fn_801F871C listed in field_0x201c: each pair on the
 // same layer whose boxes overlap (and the second's 0xBC is not lower) records the other's
 // serial in field_0x9c. Kind 2 (0xB8) only records it; the others are pushed out of the overlap
@@ -822,7 +822,8 @@ void ActorManager_804A5800::fn_801F6A4C() {
         if (a == NULL || !a->mAlive) {
             continue;
         }
-        JGeometry::TBox2f boxA = a->mBox;
+        JGeometry::TBox2f boxA;
+        boxA = a->mBox;
         boxA.addPos(a->mPos.x, a->mPos.y);
         a->field_0x9c = -1;
         for (s32 j = 0; j < field_0x301c; j++) {
@@ -836,7 +837,8 @@ void ActorManager_804A5800::fn_801F6A4C() {
             {
                 continue;
             }
-            JGeometry::TBox2f boxB = b->mBox;
+            JGeometry::TBox2f boxB;
+            boxB = b->mBox;
             boxB.addPos(b->mPos.x, b->mPos.y);
             if ((u8)a->field_0xb8 == 2) {
                 JGeometry::TBox2f overlap = boxA;
@@ -847,11 +849,7 @@ void ActorManager_804A5800::fn_801F6A4C() {
                 continue;
             }
             s32 tries = 0;
-            while (true) {
-                JGeometry::TBox2f overlap = boxA;
-                if (!overlap.intersect(boxB) || tries >= 8) {
-                    break;
-                }
+            while (JGeometry::TBox2f(boxA).intersect(boxB) && tries < 8) {
                 a->field_0x9c = b->mSerial;
                 JGeometry::TVec3f pos = a->mPos;
                 f32 dx = a->mPos.x - b->mPos.x;
