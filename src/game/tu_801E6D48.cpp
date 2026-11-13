@@ -57,14 +57,17 @@ void cls_804A5418::vfunc_0x10() {
 
 extern const s32 lbl_80469C40[4][2];
 
-// FIXME(shotgun): 85.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.51 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5418::fn_801E728C(int state) {
     if (state == 1) {
         if ((mFlags & 0x4000) && !(mFlags & 0x10000)) {
             getActorManager_801F856C()->spawnActor_801F9484('IBBM', field_0x4, &mPos, field_0x90, field_0x16c, -1);
             mAlive = false;
         } else {
-            JGeometry::TBox2f saved = mBox;
+            f32 savedIx = mBox.i.x;
+            f32 savedIy = mBox.i.y;
+            f32 savedFx = mBox.f.x;
+            f32 savedFy = mBox.f.y;
             fn_80210A30(&mBox);
             mBox.i.x *= 1.5f;
             mBox.i.y *= 1.5f;
@@ -86,7 +89,10 @@ void cls_804A5418::fn_801E728C(int state) {
                 }
                 spot.y += 16.0f;
             }
-            mBox = saved;
+            mBox.i.x = savedIx;
+            mBox.i.y = savedIy;
+            mBox.f.x = savedFx;
+            mBox.f.y = savedFy;
             getGameView_802D6A9C()->fn_802D79E8(field_0x4, 8.0f, 0.0f, false);
             gGameRoot_8053AAF8->fn_80134DE4(2, 0);
             spawnEmitter_8013CC50(field_0x4, &mPos, 0x59, 0, 0, NULL, NULL, true, 2.0f);
@@ -96,7 +102,8 @@ void cls_804A5418::fn_801E728C(int state) {
             if (mFlags & 0x2000) {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x262, 0, 0, NULL, NULL, true, 1.0f);
                 for (s32 g = 0; g < 4; g++) {
-                    for (s32 k = 0; k < lbl_80469C40[g][1]; k++) {
+                    s32 count = lbl_80469C40[g][1];
+                    for (s32 k = 0; k < count; k++) {
                         s32 serial = getActorManager_801F856C()->fn_801F8544(ACTOR_RUPY, field_0x4, &mPos, lbl_80469C40[g][0]);
                         if (serial >= 0) {
                             ActorBase_804A5770* gem = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -114,8 +121,9 @@ void cls_804A5418::fn_801E728C(int state) {
             } else {
                 spawnEmitter_8013CC50(field_0x4, &mPos, 0x261, 0, 0, NULL, NULL, true, 1.0f);
             }
-            if (field_0x2b4 != 0) {
-                getGameView_802D6A9C()->fn_802D8050(field_0x2b4, true, 0xFF);
+            s32 bit = field_0x2b4;
+            if (bit != 0) {
+                getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
             }
             startSound_801F0E34(0x30001, 0);
             fn_801F3668();
