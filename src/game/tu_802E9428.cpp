@@ -67,7 +67,7 @@ JGeometry::TVec2f lbl_804D56A8[17] = {
     JGeometry::TVec2f(50.0f, 40.0f),
     JGeometry::TVec2f(50.0f, 40.0f)
 };
-JGeometry::TVec2f lbl_804D5730[49] = {
+JGeometry::TVec2f lbl_804D5730[17] = {
     JGeometry::TVec2f(2740.0f, 1726.0f),
     JGeometry::TVec2f(2000.0f, 100.0f),
     JGeometry::TVec2f(250.0f, 100.0f),
