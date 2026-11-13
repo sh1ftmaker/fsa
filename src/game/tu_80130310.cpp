@@ -37,7 +37,6 @@ inline void cls_8049EA88::setState(s32 state) {
     }
 }
 
-// FIXME(shotgun): 99.7 %, reloc-name
 void cls_8049EA88::init() {
     ActorBase_804A5770::init();
     mBox.i.x = -8.0f;
@@ -56,7 +55,6 @@ void cls_8049EA88::init() {
     field_0x240 = (field_0x90 >> 17) & 0x1F;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void cls_8049EA88::vfunc_0x10() {
     s32 serial = getActorManager_801F856C()->fn_801F7884('OPGA', field_0x4);
     while (serial != -1) {
@@ -76,7 +74,7 @@ void cls_8049EA88::vfunc_0x10() {
     mPos.y += 24.0f;
 }
 
-// FIXME(shotgun): 89.7 %, missing/extra
+// FIXME(shotgun): 90.39 %, missing/extra + reloc-name; behaviour near.
 void cls_8049EA88::update() {
     ActorBase_804A5770::update();
     if (field_0x230 >= 2 && field_0x230 <= 4) {
@@ -181,7 +179,7 @@ void cls_8049EA88::update() {
 
 // Not auto-inlined: update calls fn_8013056C out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 94.5 %, scheduling
+// FIXME(shotgun): 94.52 %, scheduling; behaviour clean.
 s32 cls_8049EA88::fn_8013056C(u16 msg, s32 mode, s32 value) {
     s32 serial = field_0x238;
     if (mode == 1) {
@@ -225,7 +223,7 @@ s32 cls_8049EA88::fn_8013056C(u16 msg, s32 mode, s32 value) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 98.5 %, operands + reloc-name
+// FIXME(shotgun): 98.53 %, operands + reloc-name; behaviour near.
 bool cls_8049EA88::fn_80130370() {
     ActorBase_804A5770* target = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x238);
     if (target == NULL) {
