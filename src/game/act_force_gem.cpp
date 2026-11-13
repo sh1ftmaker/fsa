@@ -49,7 +49,7 @@ static inline void setKick(ActorBase_804A5770* actor, s32 dir) {
 }
 
 // 0x8032D6C0.
-// FIXME(shotgun): 99.86 %, reloc-name
+// FIXME(shotgun): 99.86 %, reloc-name; behaviour drift.
 void ForceGem_804AB6D8::init() {
     field_0x94 = (field_0x90 >> 16) & 0xFF;
     field_0x268 = field_0x90 & 0xFF;
@@ -264,16 +264,16 @@ void ForceGem_804AB6D8::vfunc_0x10() {
 }
 
 // 0x8032D578.
-// FIXME(shotgun): 88.79 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.19 %, missing/extra + reloc-name; behaviour near.
 bool ForceGem_804AB6D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 skipIds[2] = {'TOMI', 'NULL'};
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, skipIds)) {
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, skipIds) == 1) {
         return true;
     }
-    u8 result;
-    u16 code = fn_8022461C(pos, layer);
+    bool result;
+    s32 code = fn_8022461C(pos, layer);
     if (code == 0x3B || code == 0x23) {
         result = false;
     } else {
@@ -288,7 +288,7 @@ bool ForceGem_804AB6D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 s32 ActorBase_804A5770::fn_8032D564(s32 index) { return lbl_804719D8[index]; }
 
 // 0x8032D534.
-// FIXME(shotgun): 99.58 %, reloc-name
+// FIXME(shotgun): 99.58 %, reloc-name; behaviour clean.
 void ForceGem_804AB6D8::vfunc_0x40() {
     field_0x3c.z = 0.0f;
     field_0x3c.y = 0.0f;
@@ -321,7 +321,7 @@ inline void ForceGem_804AB6D8::tickTimer() {
 }
 
 // 0x8032C664.
-// FIXME(shotgun): 93.96 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.96 %, missing/extra + reloc-name; behaviour drift.
 void ForceGem_804AB6D8::update() {
     field_0x29c = mPos;
     if (field_0x230 != 0x11 && field_0x230 != 0xF && field_0x230 != 0x10) {
@@ -594,7 +594,7 @@ void ForceGem_804AB6D8::update() {
 }
 
 // 0x8032BFB0.
-// FIXME(shotgun): 93.62 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.62 %, missing/extra + reloc-name; behaviour drift.
 void ForceGem_804AB6D8::draw() {
     s32 state = field_0x230;
     if (state == 7 || state == 8 || state == 0xC || state == 0xE || state == 0x11) {
@@ -688,7 +688,7 @@ void ForceGem_804AB6D8::draw() {
     mPos = saved;
 }
 
-// FIXME(shotgun): 95.41 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.41 %, missing/extra + reloc-name; behaviour drift.
 void ForceGem_804AB6D8::fn_8032BB90() {
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023A51C(i) == true && field_0x4 == getPlayerLayer_8023DE58(i)) {
@@ -755,7 +755,7 @@ void ForceGem_804AB6D8::fn_8032BB90() {
     }
 }
 
-// FIXME(shotgun): 96.87 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.87 %, missing/extra + reloc-name; behaviour clean.
 void ForceGem_804AB6D8::fn_8032B7C0() {
     if (field_0x94 == 0x23 || field_0x94 == 0x24) {
         return;
@@ -855,7 +855,7 @@ void ForceGem_804AB6D8::fn_8032B7C0() {
     }
 }
 
-// FIXME(shotgun): 99.19 %, regalloc-only + reloc-name
+// FIXME(shotgun): 99.19 %, regalloc-only + reloc-name; behaviour clean.
 bool ForceGem_804AB6D8::fn_8032B3F8() {
     s32 layer = field_0x4;
     if (getGameView_802D6A9C()->field_0x131df[layer] == 0) {
@@ -937,7 +937,8 @@ bool ForceGem_804AB6D8::fn_8032B3F8() {
     return true;
 }
 
-// FIXME(shotgun): 92.36 %, missing/extra + reloc-name
+// Remaining difference: float literal reloc names only.
+// FIXME: 99.84 %, reloc-name; behaviour clean.
 bool ForceGem_804AB6D8::fn_8032B0A4() {
     if (field_0x94 == 0x23 || field_0x94 == 0x24) {
         return false;
@@ -945,7 +946,7 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
     if (mPos.z > 4.0f) {
         return false;
     }
-    u16 tile = fn_8022461C(&mPos, field_0x4);
+    s32 tile = fn_8022461C(&mPos, field_0x4);
     if (tile == 3) {
         field_0x24c = 0x3ff;
         field_0x3c.z = 0.0f;
@@ -964,13 +965,13 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
             u16 effectA;
             u16 effectB;
             if (fn_802DE9A0() == true) {
-                startSound_801F0E34(0x50040, 0);
                 effectA = 0x2a9;
                 effectB = 0x2aa;
+                startSound_801F0E34(0x50040, 0);
             } else if (fn_802DEB58() == true) {
-                startSound_801F0E34(0x5003f, 0);
                 effectA = 0x45e;
                 effectB = 0x45f;
+                startSound_801F0E34(0x5003f, 0);
             } else {
                 return true;
             }
@@ -1009,7 +1010,7 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
     return false;
 }
 
-// FIXME(shotgun): 81.84 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.84 %, missing/extra + reloc-name; behaviour drift.
 void ForceGem_804AB6D8::fn_8032ABE0() {
     if (!(field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 2 || field_0x230 == 6 || field_0x230 == 9 ||
           field_0x230 == 0xd)) {
