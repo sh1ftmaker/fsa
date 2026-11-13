@@ -23,9 +23,12 @@ static const u16 lbl_8046F5C8[4][4] = {{2, 3, 4, 5}, {6, 7, 8, 9}, {14, 15, 16, 
 static const u16 lbl_8046F5E8[20] = {1206, 1207, 1208, 1209, 1210, 1211, 1212, 1213, 1214, 1215,
                                      1221, 1222, 1223, 1224, 1225, 1216, 1217, 1218, 1219, 1220};
 
+// Not auto-inlined: vfunc_0x10 and the callers below call fn_802EEA24 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void fn_802EEA24(u8 value) {
     lbl_8053AB60 = value;
 }
+#pragma auto_inline reset
 
 // FIXME(shotgun): 99.9 %, reloc-name
 void cls_804AA350::init() {
