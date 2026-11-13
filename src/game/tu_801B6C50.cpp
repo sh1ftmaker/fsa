@@ -36,7 +36,7 @@ u8 fn_801B7550(void) {
 #pragma auto_inline reset
 
 // 0x801B73B8.
-// FIXME(shotgun): 76.79 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.51 %, regalloc-only + reloc-name; behaviour clean.
 void cls_804A39DC::init() {
     mBox.set(-128.0f, -128.0f, 128.0f, 128.0f);
     field_0x25c = fn_801B7550();
@@ -86,7 +86,7 @@ cls_804A39DC::~cls_804A39DC() {
 }
 
 // 0x801B6C54.
-// FIXME(shotgun): 95.1 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.95 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A39DC::update() {
     if (field_0x24c == 0 && field_0x230 != 0) {
         fn_80128C58((s32)field_0x260);
