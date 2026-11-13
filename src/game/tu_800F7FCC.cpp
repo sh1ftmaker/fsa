@@ -1190,7 +1190,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
     }
 }
 
-// FIXME(shotgun): 85.15 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.30 %, missing/extra + reloc-name; behaviour near.
 void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     mFlag249 = 1;
     cls_8049C718* parent = mParent;
@@ -1223,10 +1223,10 @@ void StoneArrghusChildPuff_8049C678::fn_800F9170() {
     if (mPos.z < 10.0f || mCount >= 0x50) {
         v.zero();
     }
-    field_0x3c = v;
+    field_0x3c.set(v);
     mPos.add(field_0x3c);
     mAngle += 0x480;
-    mPos.z = 25.0f * __fabs(JMath::sincosTable_.sinShort((s16)mAngle));
+    mPos.z = 25.0f * __fabsf(JMath::sincosTable_.sinShort((s16)mAngle));
     if (mPos.z <= 1.5f) {
         startSound_801F0E34(0x50083, 0);
     }
