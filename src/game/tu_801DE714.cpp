@@ -287,7 +287,7 @@ bool cls_804A51E4::fn_801E1D7C() {
     return result;
 }
 
-// FIXME(shotgun): 81.24 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 82.73 %, missing/extra; behaviour clean.
 bool cls_804A51E4::fn_801E1CF8() const {
     bool result = false;
     if (mState != 0 && !(mState >= 0xF && mState < 0x13)) {
