@@ -223,7 +223,7 @@ bool cls_80215E48::fn_80215D38() {
     return result;
 }
 
-// FIXME(shotgun): 83.67 %, different; behaviour drift.
+// FIXME(shotgun): 85.78 %, missing/extra; behaviour drift.
 bool cls_80215E48::fn_80215C6C(s32 index) {
     bool result = false;
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
