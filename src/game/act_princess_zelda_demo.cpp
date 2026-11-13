@@ -175,6 +175,7 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
+// FIXME: 96.18 %, different + reloc-name; behaviour drift.
 // FIXME(shotgun): the original swaps r29/r30 for player/loop index.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
     JGeometry::TBox2f box = mBox;
