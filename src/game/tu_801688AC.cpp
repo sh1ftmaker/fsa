@@ -17,7 +17,7 @@ extern s32 lbl_804A0718[]; // per-variant angle (s16 units)
 // layer 0 gives the view box.
 
 // 0x80169DCC.
-// FIXME(shotgun): 95.45 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.54 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0738::init() {
     field_0x98 = (field_0x90 >> 7) & 7;
     field_0x25c = (field_0x90 >> 8) & 1;
@@ -95,7 +95,7 @@ static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f d, bool fas
 // The |dx|, |dy| <= 16 tests and the other fabs conditions were re-checked against the full asm.
 // 0x80169030. A chaser: it follows the trail of positions the player recorded, then the
 // player, and is caught by the player (state 1) or lost when it leaves the room.
-// FIXME(shotgun): 69.4 %, missing/extra + reloc-name
+// FIXME(shotgun): 69.45 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0738::update() {
     s32 target = field_0x90;
     if (fn_8022F478(field_0x90) == 1 && fn_8022F514(field_0x90) == 1) {
@@ -339,7 +339,7 @@ void cls_804A0738::update() {
 }
 
 // 0x80168E78.
-// FIXME(shotgun): 95.86 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.91 %, missing/extra; behaviour near.
 void cls_804A0738::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x30 = 0x11;
@@ -354,7 +354,7 @@ void cls_804A0738::draw() {
 
 // 0x80168C38. Whether a player standing in the (grown) hit box gets caught; every other
 // player is then pushed along.
-// FIXME(shotgun): 70.14 %, missing/extra + reloc-name
+// FIXME(shotgun): 73.06 %, missing/extra; behaviour drift.
 bool cls_804A0738::fn_80168C38() {
     s32 found = -1;
     JGeometry::TBox2f box;
@@ -372,34 +372,35 @@ bool cls_804A0738::fn_80168C38() {
             }
         }
     }
-    if (found < 0) {
-        return false;
-    }
-    if (fn_8022CAF8(found) != 4) {
-        for (s32 i = 0; i < 4; i++) {
-            if (fn_8022E438(i, found) == 1) {
-                field_0x261 = 1;
-                fn_8022E23C(i, mSerial);
-                fn_8022CC20(i);
-                if (fn_8022F514(i) == 1) {
-                    JGeometry::TVec3f d = mPos;
-                    d -= *getPlayerPos_8023E724(i);
-                    fn_8023DFF4(i, &d);
+    if (found >= 0) {
+        if (fn_8022CAF8(found) != 4) {
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8022E438(i, found) == 1) {
+                    field_0x261 = 1;
+                    fn_8022E23C(i, mSerial);
+                    fn_8022CC20(i);
+                    if (fn_8022F514(i) == 1) {
+                        JGeometry::TVec3f d = mPos;
+                        d -= *getPlayerPos_8023E724(i);
+                        fn_8023DFF4(i, &d);
+                    }
                 }
             }
+            return true;
         }
-        return true;
+        field_0x261 = 1;
+        return fn_8022E23C(found, mSerial);
     }
-    field_0x261 = 1;
-    return fn_8022E23C(found, mSerial);
+    return false;
 }
 
 // 0x8016890C.
-// FIXME(shotgun): 93.09 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.32 %, missing/extra + reloc-name; behaviour near.
 void cls_804A0738::fn_8016890C(const JGeometry::TVec3f* pos, s32 layer, JGeometry::TBox2f* out) {
     if (layer == 0) {
         GameView_804A9950* view = getGameView_802D6A9C();
-        *out = (layer < 8) ? view->mVisibleBox : view->field_0xdc;
+        const JGeometry::TBox2f& box = (layer < 8) ? view->mVisibleBox : view->field_0xdc;
+        out->set(box);
         return;
     }
     JGeometry::TVec3f p = *pos;
