@@ -131,7 +131,7 @@ void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
 }
 
 // The ring's slot i is on a circle of radius field_0x5c around (field_0x48.x, field_0x48.y).
-// FIXME: 75.65 %, missing/extra; behaviour drift.
+// FIXME: 99.23 %, regalloc-only; behaviour clean.
 // FIXME(shotgun): the original stores d.x/d.y as one paired-single pair; ours uses separate stores.
 void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
