@@ -78,7 +78,8 @@ s32 getPlayerInputSlot_8030AAF4(s32 player) {
     return -0x3E7;
 }
 
-// FIXME(shotgun): 14.5 %, missing/extra. The logic follows the asm; the low % is the register
+// FIXME(shotgun): 14.50 %, missing/extra; behaviour drift.
+// The logic follows the asm; the low % is the register
 // numbering, one higher in the target throughout (this in r22, the key word in r31; ours r21/r22),
 // plus two local shapes: the target materialises mState >= 4 as a value (li 4; subi; orc; srwi;
 // subf; srwi.) as main in tu_801344C0 does, where we emit cmplwi 4, and it builds the checksum
@@ -222,6 +223,7 @@ void cls_804AA8C8::fn_8030A43C() {
     fn_8030A078();
 }
 
+// FIXME: 93.29 %, missing/extra; behaviour near.
 // FIXME: the original keeps the inlined fn_8030A308 byte in r3 and tests it with clrlwi./bnelr.
 // 0x8030A3B0
 bool cls_804AA8C8::fn_8030A3B0(s32 slot) {
@@ -365,7 +367,7 @@ u32 cls_804AA8C8::fn_80309D24(s32 slot, u32 mask) {
     return field_0x4[slot] & mask;
 }
 
-// FIXME(shotgun): 97.8 %, missing/extra
+// FIXME(shotgun): 97.78 %, missing/extra; behaviour clean.
 // 0x80309C4C
 u32 cls_804AA8C8::fn_80309C4C(u32 mask, s32 slot) {
     s32 count = slot;
@@ -381,7 +383,7 @@ u32 cls_804AA8C8::fn_80309C4C(u32 mask, s32 slot) {
     return 0;
 }
 
-// FIXME(shotgun): 97.8 %, missing/extra
+// FIXME(shotgun): 97.78 %, missing/extra; behaviour clean.
 // 0x80309B74
 u32 cls_804AA8C8::fn_80309B74(u32 mask, s32 slot) {
     s32 count = slot;
@@ -397,7 +399,7 @@ u32 cls_804AA8C8::fn_80309B74(u32 mask, s32 slot) {
     return 0;
 }
 
-// FIXME(shotgun): 97.8 %, missing/extra
+// FIXME(shotgun): 97.78 %, missing/extra; behaviour clean.
 // 0x80309A9C
 u32 cls_804AA8C8::fn_80309A9C(u32 mask, s32 slot) {
     s32 count = slot;
