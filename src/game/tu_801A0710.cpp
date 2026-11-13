@@ -919,7 +919,18 @@ void TennisShop_804A2BF4::fn_801A0BE4() {
     switch (field_0x230) {
     case 0x12: {
         s32 serial = field_0x320;
-        if (serial < 0 || getActorManager_801F856C()->findActorBySerial_801F666C(serial) == NULL) {
+        if (serial < 0) {
+            field_0x238[1] = 50;
+            field_0x3c.x = 0.0f;
+            field_0x3c.y = 5.0f;
+            field_0x3c.z = 3.0f;
+            startSound_801F0E34(0x3004D, 0);
+            field_0x230 = 0x13;
+            break;
+        }
+        TennisShop_804A2BF4* other =
+            static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
+        if (other == NULL) {
             field_0x238[1] = 50;
             field_0x3c.x = 0.0f;
             field_0x3c.y = 5.0f;
@@ -938,7 +949,7 @@ void TennisShop_804A2BF4::fn_801A0BE4() {
                     field_0x3c.x = 10.0f * JMath::sincosTable_.sinShort(angle);
                     field_0x3c.y = 10.0f * JMath::sincosTable_.cosShort(angle);
                 } else {
-                    field_0x2ac[i] = 1;
+                    other->field_0x2ac[i] = 1;
                     field_0x238[1] = 50;
                     field_0x3c.x *= -0.5f;
                     field_0x3c.y *= -0.5f;
