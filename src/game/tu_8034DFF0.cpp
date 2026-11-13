@@ -192,11 +192,6 @@ void cls_804AC9A8::draw() {
 }
 
 
-// FIXME: 73.26 %. After the probe loop the original computes pos - players[nearest]
-// (TVec3 operator-: copy of pos, sub, return copy, three stack copies) and never
-// reads it; that dead result is missing here (15 instructions), so the stack
-// slots after it move. The .sdata2 literal order also differs (-60 and 120 are
-// first used in the other order in the original).
 void cls_804AC9A8::fn_8034E050() {
     JGeometry::TVec3f players[4];
     u8 taken[4];
@@ -225,8 +220,8 @@ void cls_804AC9A8::fn_8034E050() {
             JGeometry::TVec3f pos = mPos;
             pos.x += storeX;
             pos.y += (16.0f * (f32)k + -8.0f) + lbl_804721C8[field_0x238];
+            JGeometry::TVec3f offset = pos - players[nearest];
             field_0x254[nearest] = pos;
-            field_0x254[nearest].z = mPos.z;
             taken[nearest] = 1;
         }
     }
