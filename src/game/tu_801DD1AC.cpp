@@ -5,7 +5,7 @@
 #include "game/Effect.h"
 #include "game/GameGlobals.h"
 
-// FIXME(shotgun): 97.94 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.45 %, missing/extra; behaviour drift.
 void cls_804A4C58::fn_801DE12C() {
     if ((mState >= 0 && mState < 4) || (mState >= 0x13 && mState < 0x15)) {
         mBox.i.x = 1.0f;
@@ -175,7 +175,7 @@ void cls_804A4C58::fn_801DE12C() {
     mBox2.f.y = mBox.f.y;
 }
 
-// FIXME(shotgun): 90 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.94 %, missing/extra; behaviour near.
 bool cls_804A4C58::fn_801DE018() {
     bool inRange = false;
     if (mState == 5 || (mState >= 4 && mState < 8)) {
@@ -206,7 +206,7 @@ bool cls_804A4C58::fn_801DE018() {
 
 extern const u8 lbl_8053F1C8; // hits before the knock-back state (tu_801D8400's .sdata)
 
-// FIXME(shotgun): 77.34 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.43 %, missing/extra; behaviour near.
 bool cls_804A4C58::fn_801DDBE4() {
     bool hit = false;
     bool active = false;
@@ -334,7 +334,7 @@ static inline bool playerTouches(cls_804A4C58* boss, s32 i) {
     return touched;
 }
 
-// FIXME(shotgun): 87.94 %, different + reloc-name
+// FIXME(shotgun): 96.60 %, different; behaviour near.
 bool cls_804A4C58::fn_801DD410() {
     bool hit = false;
     bool active = false;
@@ -463,7 +463,7 @@ bool cls_804A4C58::fn_801DD410() {
     return hit;
 }
 
-// FIXME(shotgun): 98 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.87 %, missing/extra; behaviour clean.
 u8 cls_804A4C58::fn_801DD28C() {
     u8 hit = 0;
     f32 x0 = 1.0f;
@@ -499,7 +499,7 @@ u8 cls_804A4C58::fn_801DD28C() {
     return hit;
 }
 
-// FIXME(shotgun): 98 %, missing/extra
+// FIXME(shotgun): 98.00 %, missing/extra; behaviour clean.
 bool cls_804A4C58::fn_801DD1AC() {
     bool clamped = false;
     if (!(mFlags & ENEMY_FLAG_NO_MAP_HIT)) {
