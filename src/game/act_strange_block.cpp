@@ -258,7 +258,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             }
             if (dir >= 0 && dir < 4) {
                 fn_80238E08(mSerial);
-                f32 speed = 0.0f;
+                f32 speed;
                 switch (field_0x25c) {
                 case 0:
                 case 1:
@@ -275,9 +275,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 field_0x3c.x = lbl_804AC2A8[dir * 3];
                 field_0x3c.y = lbl_804AC2A8[dir * 3 + 1];
                 field_0x3c.z = lbl_804AC2A8[dir * 3 + 2];
-                field_0x3c.x *= speed;
-                field_0x3c.y *= speed;
-                field_0x3c.z *= speed;
+                field_0x3c.scale(speed);
                 if (field_0x271 == 1) {
                     field_0x271 = 0;
                 } else {
@@ -289,17 +287,15 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 field_0x272 = 1;
             }
             if (field_0x25c == 4) {
-                s32 id;
                 if (dir == 0) {
-                    id = 0x31A;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31A, 1, 1, NULL, NULL, true, 1.0f);
                 } else if (dir == 1) {
-                    id = 0x31B;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31B, 1, 1, NULL, NULL, true, 1.0f);
                 } else if (dir == 2) {
-                    id = 0x31C;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31C, 1, 1, NULL, NULL, true, 1.0f);
                 } else {
-                    id = 0x319;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
                 }
-                field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, id, 1, 1, NULL, NULL, true, 1.0f);
             }
         }
     } else if (((field_0x90 >> 16) & 1) && PSVECDistance(&mPos, &mSpawnPos) > 1.0f) {
