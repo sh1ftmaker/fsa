@@ -399,7 +399,8 @@ bool cls_804A0738::fn_80168C38() {
 void cls_804A0738::fn_8016890C(const JGeometry::TVec3f* pos, s32 layer, JGeometry::TBox2f* out) {
     if (layer == 0) {
         GameView_804A9950* view = getGameView_802D6A9C();
-        *out = (layer < 8) ? view->mVisibleBox : view->field_0xdc;
+        const JGeometry::TBox2f& box = (layer < 8) ? view->mVisibleBox : view->field_0xdc;
+        out->set(box);
         return;
     }
     JGeometry::TVec3f p = *pos;
