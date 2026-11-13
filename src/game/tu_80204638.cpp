@@ -85,7 +85,7 @@ void cls_80204638::fn_80204834() {
     }
 }
 
-// FIXME(shotgun): 72.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 78.79 %, missing/extra; behaviour drift.
 bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     if (mCount >= 10) {
         return false;
