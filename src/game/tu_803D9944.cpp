@@ -6,6 +6,7 @@
 #include "game/GameState.h"
 #include "game/Camera.h"
 #include "game/ActorManager.h"
+#include "game/PlayerBit.h"
 #include "game/act/tu_803D9944.h"
 
 // FIXME(shotgun): 97.43 %, missing/extra + reloc-name; behaviour drift.
@@ -69,10 +70,24 @@ cls_804B0478::~cls_804B0478() {
 
 // Indexed by update's states 7 to 10 (see the sub-tables there); owned by this unit
 // (.data 0x804B03E8, 0x90 bytes) but not written here yet.
-extern s32 lbl_804B03E8[];
-extern s32 lbl_8053A210[]; // .sdata, 2 entries: state 5
+struct {
+    s32 a[3];
+    s32 b[3];
+    s32 c[8];
+    s32 d[9];
+    s32 e[10];
+    u16 f[6];
+} lbl_804B03E8 = {
+    {10, 11, 12},
+    {13, 14, 15},
+    {16, 17, 18, 19, 20, 21, 22, 23},
+    {0, 2, 3, 4, 5, 6, 7, 8, 9},
+    {0x20, 2, 2, 2, 2, 2, 2, 2, 2, 0x20},
+    {0x3A7, 0x3A8, 0x3A9, 0x3AA, 0x3AB, 0},
+};
+s32 lbl_8053A210[2] = {0, 1}; // state 5
 
-// FIXME(shotgun): 92.66 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.18 %, missing/extra; behaviour drift.
 void cls_804B0478::update() {
     switch (mState) {
     case 0:
@@ -140,7 +155,7 @@ void cls_804B0478::update() {
             field_0x238 = 0x15e;
             field_0x23c = 0x5a;
             for (s32 i = 0; i < 4; i++) {
-                if ((bool)(gGameRoot_8053AAF8->mPlayerMask & (1 << i))) {
+                if (isPlayerBitSet(gGameRoot_8053AAF8, i) == 1) {
                     if (fn_80237774(i) < fn_80237810(i) - 4) {
                         fn_80236554(i, fn_80237810(i) - fn_80237774(i) - 4, true);
                     }
@@ -215,7 +230,7 @@ void cls_804B0478::update() {
     case 7:
         field_0x244++;
         if (field_0x234 == 0) {
-            field_0x24c = lbl_804B03E8[field_0x240];
+            field_0x24c = lbl_804B03E8.a[field_0x240];
             field_0x240++;
             field_0x234 = 2;
             if (field_0x240 > 2) {
@@ -227,7 +242,7 @@ void cls_804B0478::update() {
     case 8:
         field_0x244++;
         if (field_0x234 == 0) {
-            field_0x24c = lbl_804B03E8[3 + field_0x240];
+            field_0x24c = lbl_804B03E8.b[field_0x240];
             field_0x240++;
             field_0x234 = 2;
             if (field_0x240 > 2) {
@@ -242,7 +257,7 @@ void cls_804B0478::update() {
     case 9:
         field_0x244++;
         if (field_0x234 == 0) {
-            field_0x24c = lbl_804B03E8[6 + field_0x240];
+            field_0x24c = lbl_804B03E8.c[field_0x240];
             field_0x240++;
             field_0x234 = 2;
             if (field_0x240 > 7) {
@@ -257,8 +272,8 @@ void cls_804B0478::update() {
         break;
     case 10:
         if (field_0x234 == 0) {
-            field_0x24c = lbl_804B03E8[14 + field_0x240];
-            field_0x234 = lbl_804B03E8[23 + field_0x240];
+            field_0x24c = lbl_804B03E8.d[field_0x240];
+            field_0x234 = lbl_804B03E8.e[field_0x240];
             field_0x240++;
             if (field_0x240 > 9) {
                 mAlive = false;
