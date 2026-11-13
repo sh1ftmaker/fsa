@@ -756,13 +756,15 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
             u8 start = field_0x358.fn_80214244()->field_0x3;
             field_0x358.fn_80214244()->fn_800FD818(1);
             u8 next = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* rail = field_0x358.fn_80214244();
+            if (start < rail->field_0x2) {
+                rail->field_0x3 = start;
             }
             field_0x358.fn_80214244()->fn_800FD818(-1);
             u8 prev = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            rail = field_0x358.fn_80214244();
+            if (start < rail->field_0x2) {
+                rail->field_0x3 = start;
             }
             u8 opt[2];
             opt[0] = prev;
@@ -813,7 +815,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
         s32 player = fn_801D05F8(&mPos, 100.0f);
         if (player >= 0) {
             s16 pAngle = fn_801D0280(player);
-            f32 diff = __fabs((f32)(s16)(field_0x33c - pAngle));
+            f32 diff = __fabsf((f32)(s16)(field_0x33c - pAngle));
             if (0.000030517578f * diff <= 0.3f) {
                 doReset = true;
             }
