@@ -583,7 +583,7 @@ void cls_804A51E4::fn_801E1300() {
     }
 }
 
-// FIXME(shotgun): 90.57 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.33 %, missing/extra + reloc-name; behaviour near.
 void cls_804A51E4::fn_801E0CF4() {
     if (mState == 0) {
         field_0x2a8 = -1;
