@@ -327,7 +327,7 @@ void Cucco_804AB8C0::fn_803324A8() {
             f32 dy = mPos.y - field_0x2c4[2].y;
             field_0x294 = field_0x4;
             setVec(field_0x2c4[2], mPos);
-            f32 distSq = dx * dx + dy * dy;
+            f32 distSq = dy * dy + dx * dx;
             if (field_0x294 != field_0x4 || !(distSq < 5.0f)) {
                 field_0x280 = 0;
                 return;
