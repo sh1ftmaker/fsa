@@ -6,6 +6,7 @@
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
 #include "game/Effect.h"
+#include "game/EmitterDelete.h"
 #include "game/GameRootSub20.h"
 #include "game/RotMatrix.h"
 #include "game/GameAudio.h"
@@ -372,62 +373,27 @@ void cls_804AE088::fn_8036A894() {
 
 // FIXME: 82.37 %, missing/extra; behaviour drift.
 void cls_804AE088::fn_8036A65C() {
-    if (field_0x350 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x350);
-        field_0x350 = NULL;
-    }
-    if (field_0x354 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x354);
-        field_0x354 = NULL;
-    }
-    if (field_0x358 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x358);
-        field_0x358 = NULL;
-    }
-    if (field_0x398 != NULL) {
-        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x398);
-        field_0x398 = NULL;
-    }
+    deleteEmitter(&field_0x350);
+    deleteEmitter(&field_0x354);
+    deleteEmitter(&field_0x358);
+    deleteEmitter(&field_0x398);
     for (s32 i = 0; i < 7; i++) {
-        if (field_0x35c[i] != NULL) {
-            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x35c[i]);
-            field_0x35c[i] = NULL;
+        deleteEmitter(&field_0x35c[i]);
+        if (i < 2) {
+            deleteEmitter(&field_0x3b4[i]);
         }
-        if (i < 2 && field_0x3b4[i] != NULL) {
-            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3b4[i]);
-            field_0x3b4[i] = NULL;
-        }
-        if (i < 3 && field_0x378[i] != NULL) {
-            getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x378[i]);
-            field_0x378[i] = NULL;
+        if (i < 3) {
+            deleteEmitter(&field_0x378[i]);
         }
         if (i < 5) {
-            if (field_0x384[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x384[i]);
-                field_0x384[i] = NULL;
-            }
-            if (field_0x3ec[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3ec[i]);
-                field_0x3ec[i] = NULL;
-            }
-            if (field_0x400[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x400[i]);
-                field_0x400[i] = NULL;
-            }
+            deleteEmitter(&field_0x384[i]);
+            deleteEmitter(&field_0x3ec[i]);
+            deleteEmitter(&field_0x400[i]);
         }
         if (i < 6) {
-            if (field_0x3bc[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3bc[i]);
-                field_0x3bc[i] = NULL;
-            }
-            if (field_0x3d4[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x3d4[i]);
-                field_0x3d4[i] = NULL;
-            }
-            if (field_0x39c[i] != NULL) {
-                getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x39c[i]);
-                field_0x39c[i] = NULL;
-            }
+            deleteEmitter(&field_0x3bc[i]);
+            deleteEmitter(&field_0x3d4[i]);
+            deleteEmitter(&field_0x39c[i]);
         }
     }
 }
