@@ -85,7 +85,7 @@ void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
 
-// FIXME(shotgun): 92.85 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.77 %, missing/extra + reloc-name; behaviour drift.
 // (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
@@ -914,7 +914,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 90.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     bool skip = false;
     JGeometry::TVec3f pos = mPos;
