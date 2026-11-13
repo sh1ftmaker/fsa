@@ -28,11 +28,12 @@ cls_804A5568::~cls_804A5568() {
     releaseEmitter_801EE434(mEmitter3c0);
 }
 
-// FIXME(shotgun): 86.04 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.15 %, regalloc-only + reloc-name; behaviour drift.
 void cls_804A5568::init() {
     EnemyBase_804A4808::init();
     field_0x2ac = field_0x90;
-    mBox.set(-16.0f, -16.0f, 16.0f, 16.0f);
+    f32 half = 16.0f;
+    mBox.set(-half, -half, half, half);
     mBox2.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0xb0 = 0;
