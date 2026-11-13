@@ -382,28 +382,28 @@ void VaatiBoss_804A4958::fn_801D5B70() {
         if (fn_801CD2F8(field_0x4)) {
             if (field_0x5d0 == 0) {
                 fn_801D5D84(0x15);
-            } else if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
-                bool found = false;
-                s32 player = fn_801D05F8(&mPos, 160.0f);
-                if (player >= 0) {
-                    const JGeometry::TVec3f* p = getPlayerPos_8023E724(player);
-                    found = true;
-                    JGeometry::TVec2f d(p->x - mPos.x, p->y - mPos.y);
-                    if (d.squared() <= JGeometry::TUtilf::epsilon()) {
-                        d.set(1.0f, 0.0f);
-                    }
-                    d.normalize();
-                    field_0x5c4 = mPos.x;
-                    field_0x5c8 = mPos.y;
-                    field_0x5c4 += d.x * 10000.0f;
-                    field_0x5c8 += d.y * 10000.0f;
-                }
-                if (found) {
-                    fn_801D5D84(0x11);
-                } else {
-                    fn_801D5D84(0xF);
-                }
             } else {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                    bool found = false;
+                    s32 player = fn_801D05F8(&mPos, 160.0f);
+                    if (player >= 0) {
+                        const JGeometry::TVec3f* p = getPlayerPos_8023E724(player);
+                        found = true;
+                        JGeometry::TVec2f d(p->x - mPos.x, p->y - mPos.y);
+                        if (d.squared() <= JGeometry::TUtilf::epsilon()) {
+                            d.set(1.0f, 0.0f);
+                        }
+                        d.normalize();
+                        field_0x5c4 = mPos.x;
+                        field_0x5c8 = mPos.y;
+                        field_0x5c4 += d.x * 10000.0f;
+                        field_0x5c8 += d.y * 10000.0f;
+                    }
+                    if (found) {
+                        fn_801D5D84(0x11);
+                        return;
+                    }
+                }
                 fn_801D5D84(0xF);
             }
         } else if (field_0x5d0 == 0) {
