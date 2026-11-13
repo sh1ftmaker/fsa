@@ -133,10 +133,7 @@ void OBJLift_804ACA00::init() {
         free[3] = true;
         s32 serial = -1;
         s32 taken = 0;
-        for (;;) {
-            if (taken >= 4) {
-                break;
-            }
+        while (taken < 4) {
             serial = getActorManager_801F856C()->fn_801F78F4('OBLF', serial);
             if (serial < 0) {
                 break;
@@ -165,22 +162,21 @@ void OBJLift_804ACA00::init() {
             field_0x258 = (s32)(4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 6;
         } else {
             s32 list[4];
-            s32* p = list;
             s32 n = 0;
             if (free[0] == true) {
-                *p++ = 0;
+                list[n] = 0;
                 n++;
             }
             if (free[1] == true) {
-                *p++ = 1;
+                list[n] = 1;
                 n++;
             }
             if (free[2] == true) {
-                *p++ = 2;
+                list[n] = 2;
                 n++;
             }
             if (free[3] == true) {
-                *p++ = 3;
+                list[n] = 3;
                 n++;
             }
             field_0x258 = list[(s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1())] + 6;
