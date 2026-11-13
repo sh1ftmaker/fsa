@@ -13,7 +13,6 @@ extern s32 lbl_8053ABD0;
 extern const u16 lbl_804A2F18[10];
 extern const u16 lbl_8053A108[4];
 
-// FIXME(shotgun): 100.00 %, match
 void cls_804A2FB0::fn_801AA8F4() {
     if (field_0x234 == 0) {
         field_0x24c = field_0x25c + field_0x240;
@@ -62,7 +61,7 @@ void cls_804A2FB0::fn_801AA8F4() {
     }
 }
 
-// FIXME(shotgun): 86.86 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.32 %, different; behaviour near.
 void cls_804A2FB0::init() {
     mBox.set(-7.0f, -7.0f, 7.0f, 7.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -126,7 +125,6 @@ void cls_804A2FB0::init() {
     }
 }
 
-// FIXME(shotgun): 100.00 %, match
 cls_804A2FB0::~cls_804A2FB0() {
     releaseEmitter_801EE434(field_0x2b8);
     if (field_0x258 == 0 && gGameRoot_8053AAF8->field_0x4c != 9) {
@@ -137,7 +135,7 @@ cls_804A2FB0::~cls_804A2FB0() {
     }
 }
 
-// FIXME(shotgun): 96.06 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.06 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A2FB0::fn_801A9CF4() {
     mLife = 10000;
     fn_801F3D94(0);
@@ -250,7 +248,7 @@ void cls_804A2FB0::fn_801A9CF4() {
     fn_801AA8F4();
 }
 
-// FIXME(shotgun): 94.62 %, different
+// FIXME(shotgun): 94.62 %, different; behaviour near.
 void cls_804A2FB0::fn_801A96B4() {
     f32 speed = 0.0f;
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
@@ -400,7 +398,7 @@ void cls_804A2FB0::fn_801A96B4() {
     }
 }
 
-// FIXME(shotgun): 96.95 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.21 %, missing/extra; behaviour near.
 void cls_804A2FB0::update() {
     switch (field_0x258) {
     case 0:
@@ -425,7 +423,7 @@ void cls_804A2FB0::update() {
     }
 }
 
-// FIXME(shotgun): 99.00 %, regalloc-only
+// FIXME(shotgun): 99.00 %, regalloc-only; behaviour clean.
 void cls_804A2FB0::fn_801A9374() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -440,7 +438,8 @@ void cls_804A2FB0::fn_801A9374() {
     fn_801EFD34(res, &params, -1, 0.0f, 0.0f, 0.0f);
 }
 
-// FIXME: 99.0 %. regalloc-only: the original keeps the angle (and then
+// FIXME: 98.99 %, regalloc-only; behaviour clean.
+// regalloc-only: the original keeps the angle (and then
 // cos y) in f30 and cos x in f31, ours the other way round, and sin x / sin z
 // get f29 / f27 there, f27 / f29 here.
 void cls_804A2FB0::fn_801A90D4() {
