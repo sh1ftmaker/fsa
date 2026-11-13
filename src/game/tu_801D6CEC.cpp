@@ -31,7 +31,7 @@ void cls_801D6A58::fn_801D7830() {
     }
 }
 
-// FIXME(shotgun): 96.13 %, regalloc-only
+// FIXME(shotgun): 96.13 %, regalloc-only; behaviour clean.
 void cls_801D7730::fn_801D77B4() {
     field_0x0[0x0] = -1;
     field_0x0[0x1] = -1;
@@ -62,7 +62,7 @@ void cls_801D7730::fn_801D77B4() {
     field_0x64 = 0;
 }
 
-// FIXME(shotgun): 98.94 %, regalloc-only
+// FIXME(shotgun): 98.94 %, regalloc-only; behaviour clean.
 cls_801D7730::~cls_801D7730() {
     fn_801D7638();
 }
@@ -113,7 +113,7 @@ void cls_801D7730::fn_801D7638() {
     }
 }
 
-// FIXME(shotgun): 93.58 %, scheduling+regalloc
+// FIXME(shotgun): 93.58 %, scheduling+regalloc; behaviour clean.
 void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
     fn_801D77B4();
     field_0x40 = layer;
@@ -137,6 +137,7 @@ void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
 }
 
 // The ring's slot i is on a circle of radius field_0x5c around (field_0x48, field_0x4c).
+// FIXME: 67.39 %, missing/extra; behaviour drift.
 // FIXME(shotgun): the original stores d.x/d.y as one paired-single pair; ours uses separate stores.
 void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x48 = pos->x;
@@ -166,7 +167,7 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 90.12 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.71 %, missing/extra + reloc-name; behaviour drift.
 void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x48 = pos->x;
     field_0x4c = -22.0f + pos->y;
@@ -200,7 +201,7 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 80.58 %, missing/extra
+// FIXME(shotgun): 81.86 %, missing/extra; behaviour drift.
 void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
     field_0x48 = pos->x;
     field_0x4c = -22.0f + pos->y;
@@ -274,6 +275,7 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
 }
 
 // Remaining diff: load order and register choice around the normalize.
+// FIXME: 92.48 %, missing/extra; behaviour near.
 void cls_801D6CEC::fn_801D6D38(const JGeometry::TVec2f* dir) {
     JGeometry::TVec2f v(dir->x, dir->y);
     if (v.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
@@ -292,7 +294,7 @@ void cls_801D6CEC::fn_801D6D08() {
     fn_801E4AB0(&field_0x28, 0x1E, 0x400, -3.0f);
 }
 
-// FIXME(shotgun): 81.43 %, scheduling+regalloc
+// FIXME(shotgun): 81.43 %, scheduling+regalloc; behaviour clean.
 void cls_801D6CEC::fn_801D6CEC(JGeometry::TVec3f* out) {
     out->x = field_0x0.value;
     out->y = field_0x14.value;
