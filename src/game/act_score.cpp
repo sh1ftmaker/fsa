@@ -201,7 +201,7 @@ void Score_804AF4C0::fn_80393514() {
     }
 }
 
-// FIXME(shotgun): 13.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 20.93 %, missing/extra + reloc-name; behaviour drift.
 // (the original builds each TColor on the stack)
 void Score_804AF4C0::fn_80393228() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
@@ -269,7 +269,7 @@ void Score_804AF4C0::fn_80391F58() {
     }
 }
 
-// FIXME(shotgun): 63.76 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 63.83 %, missing/extra + reloc-name; behaviour drift.
 // (the original builds a TVec3f copy of mPos and passes it on)
 void Score_804AF4C0::fn_80391D44() {
     s32 n = fn_8023BC38(mPlayer) / 60 + 1;
