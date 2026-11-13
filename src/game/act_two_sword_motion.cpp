@@ -91,7 +91,8 @@ void TwoSwordMotion_804ABA90::init() {
     field_0x230 = 0;
 }
 
-// FIXME: 92.08. Scheduling and register allocation only: the original keeps layer in r29
+// FIXME: 92.08 %, scheduling+regalloc; behaviour clean.
+// Scheduling and register allocation only: the original keeps layer in r29
 // and the serial (loaded before the fn_8020D58C call) in r30; ours assigns them the other
 // way round, which moves an mr pair. The tile code is an s32 local (cmpwi after the clrlwi.).
 bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
@@ -131,7 +132,8 @@ bool TwoSwordMotion_804ABA90::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos
     return fn_802265DC(pos, layer, true);
 }
 
-// FIXME: 96.1 %. At the fn_8038BD08 call the original loads field_0x4 and
+// FIXME: 96.09 %, missing/extra; behaviour drift.
+// At the fn_8038BD08 call the original loads field_0x4 and
 // the address of its by-value mPos copy before the psq copy and builds the
 // copy at sp+0x44 (frame 0x90); ours builds it at sp+0x8, so the stack slots
 // of the later position temporaries differ.
@@ -333,7 +335,8 @@ void TwoSwordMotion_804ABA90::update() {
 
 void TwoSwordMotion_804ABA90::draw() {}
 
-// FIXME: 91.65 %. Instruction set matches; the mPos copy and the paired-single
+// FIXME: 93.54 %, missing/extra; behaviour drift.
+// Instruction set matches; the mPos copy and the paired-single
 // sum are scheduled differently (the original loads mPos.z early and rebuilds
 // it through a stack word for the ps_add), so the stack slots shift.
 bool TwoSwordMotion_804ABA90::fn_80336040() {
