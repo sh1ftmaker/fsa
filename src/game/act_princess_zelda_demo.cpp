@@ -175,7 +175,7 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
-// FIXME(shotgun): the original keeps a second dir >= 0 test and swaps r29/r30 for player/loop index.
+// FIXME(shotgun): the original swaps r29/r30 for player/loop index.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -262,7 +262,7 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         s32 other;
         s32 dir;
         fn_801EEC98(mSerial, &angle, &dir, &dist, &other, 0, 2);
-        if (dir >= 0 && !(dist > 80.0f)) {
+        if (dir >= 0 && !(dist > 80.0f) && dir >= 0) {
             field_0x98 = dir;
             if (dir + 6 != mAnim0.mAnim) {
                 mAnim0.startAnim_801D22DC(dir + 6, 2, false);
