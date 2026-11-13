@@ -69,7 +69,7 @@ extern const s16* lbl_80539EF8[2];
 // The scenario keys of the demo (rodata 0x80464550).
 extern const s32 lbl_80464550[];
 
-// FIXME(shotgun): 82.09 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::init() {
     cls_8049D140::init();
     field_0x234 = field_0x90 & 0xFF;
@@ -85,7 +85,16 @@ void PrincessZeldaDemo_8049D208::init() {
     mAnim1.fn_801D1F14(0.0f);
     if (field_0x234 == 2) {
         if (getGameView_802D6A9C()->fn_802D800C(field_0x250)) {
-            fn_8010F478(0x3d);
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(0x3d);
+                break;
+            case 2:
+                fn_8010E2D4(0x3d);
+                break;
+            }
+            field_0x238 = 0x3d;
         } else {
             mDrawEnabled = false;
         }
@@ -688,21 +697,28 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
 }
 
 // The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
-// FIXME(shotgun): 87.76 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 97.32 %, regalloc-only + reloc-name; behaviour clean.
+// FIXME(shotgun): register allocation and literal-pool names still differ.
 void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
     JGeometry::TVec3f n;
     n.normalize(*axis);
     f32 s = sin(rad);
     f32 c = cos(rad);
     f32 t = 1.0f - c;
+    f32 ytx = n.y * (t * n.x);
+    f32 szn = s * n.z;
+    f32 ztx = n.z * (t * n.x);
+    f32 syn = s * n.y;
+    f32 zty = n.z * (t * n.y);
+    f32 sxn = s * n.x;
     m[0][0] = t * (n.x * n.x) + c;
-    m[0][1] = n.y * (t * n.x) - s * n.z;
-    m[0][2] = n.z * (t * n.x) + s * n.y;
-    m[1][0] = n.y * (t * n.x) + s * n.z;
+    m[0][1] = ytx - szn;
+    m[0][2] = ztx + syn;
+    m[1][0] = ytx + szn;
     m[1][1] = t * (n.y * n.y) + c;
-    m[1][2] = n.z * (t * n.y) - s * n.x;
-    m[2][0] = n.z * (t * n.x) - s * n.y;
-    m[2][1] = n.z * (t * n.y) + s * n.x;
+    m[1][2] = zty - sxn;
+    m[2][0] = ztx - syn;
+    m[2][1] = zty + sxn;
     m[2][2] = t * (n.z * n.z) + c;
 }
 
