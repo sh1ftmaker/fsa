@@ -7,11 +7,65 @@
 #include "JSystem/J2D/J2DPane.h"
 #include "JSystem/J2D/J2DGrafContext.h"
 
-// FIXME: 85.4 %. The first differing rows are in state 1 (0x21C-0x23C): our
-// `this` lives in r27 where the original keeps it in r29, so every later
-// access to a field in this function uses another base register. From state 2
-// on (0x2C0 onward) the float ratio is scheduled in a different order (the
-// original loads the magic double and 480.0f before the ratio's first lfs).
+cls_804B19F0::cls_804B19F0() {
+    lbl_8053AEE0 = this;
+    field_0x4 = new J2DScreen();
+    field_0x4->setPriority("gba_connect_error_window.blo", 0x1100000, lbl_80529DEC.field_0x20);
+    JUTResFont* font = lbl_8053AD78->mFont;
+    ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->setFont(font);
+    field_0x8 = new PaneCtrl_804AF86C();
+    field_0x8->setPane_80402F04(field_0x4->search(0x005077626c6b3031ull));
+    field_0xc = new PaneCtrl_804AF86C();
+    field_0xc->setPane_80402F04(field_0x4->search(0x4e64617461673031ull));
+    field_0x8->mPane->setAlpha(0);
+    field_0x8->field_0x26 = 0;
+    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
+    field_0xc->field_0x22 = 0;
+    field_0x10 = 0x16;
+    field_0x14 = 0;
+    field_0x18 = 0;
+    field_0x1c = 0;
+}
+
+cls_804B19F0::~cls_804B19F0() {
+    delete field_0x4;
+    field_0x4 = NULL;
+    delete field_0x8;
+    field_0x8 = NULL;
+    delete field_0xc;
+    field_0xc = NULL;
+    lbl_8053AEE0 = NULL;
+}
+
+void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
+    field_0x8->mPane->setAlpha(0);
+    field_0x8->field_0x26 = 0;
+    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
+    field_0xc->field_0x22 = 0;
+    field_0x10 = arg;
+    field_0x14 = index - 1;
+    field_0x18 = 1;
+    field_0x1c = 0;
+    char* str = ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->getStringPtr();
+    s32 player = field_0x14;
+    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
+    if (mode == 1) {
+        getMessageText_803832BC(str, 0x3B, player + 1, NULL, NULL);
+    } else if (mode == 2) {
+        getMessageText_803832BC(str, 0x3A, player + 1, NULL, NULL);
+    }
+}
+
+void cls_804B19F0::fn_80442200() {
+    gGameRoot2_8053AB10->fn_8013B490();
+    if (field_0x18 != 0) {
+        field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
+    }
+}
+
+// FIXME: 95.44 %, missing/extra; behaviour drift.
+// FIXME: the float ratio in the state 2/3 blocks is scheduled differently and
+// the register for `this` drifts after state 3 (0x31C onward).
 s32 cls_804B19F0::fn_80441A1C() {
     s32 player = field_0x14;
     u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
@@ -64,7 +118,7 @@ s32 cls_804B19F0::fn_80441A1C() {
         if (field_0xc->field_0x26 < lim) {
             field_0xc->field_0x26++;
             f32 ratio = (f32)(field_0xc->field_0x26 * field_0xc->field_0x26) / (f32)(lim * lim);
-            field_0xc->moveFromCentre_80402E08(0.0f, (480.0f + lbl_8050DB0C.field_0x4c[34]) * ratio - 480.0f);
+            field_0xc->moveFromCentre_80402E08(0.0f, (480.0f + lbl_8050DB0C.field_0x4c[34]) * ratio + -480.0f);
         }
         if (field_0xc->field_0x26 >= lim) {
             field_0x18 = 3;
@@ -73,15 +127,14 @@ s32 cls_804B19F0::fn_80441A1C() {
     }
     case 3: {
         field_0x1c++;
-        PaneCtrl_804AF86C* q = field_0xc;
-        s32 lim = lbl_8050DB0C.field_0x4c[32] + lbl_8050DB0C.field_0x4c[33] + 2;
-        if (q->field_0x26 < lim) {
-            q->field_0x26++;
-            f32 ratio = (f32)((lim - q->field_0x26) * (lim - q->field_0x26))
+        s32 lim = (lbl_8050DB0C.field_0x4c[32] + lbl_8050DB0C.field_0x4c[33]) + 2;
+        if (field_0xc->field_0x26 < lim) {
+            field_0xc->field_0x26++;
+            f32 ratio = (f32)((lim - field_0xc->field_0x26) * (lim - field_0xc->field_0x26))
                 / (f32)(lbl_8050DB0C.field_0x4c[33] * lbl_8050DB0C.field_0x4c[33]);
-            q->moveFromCentre_80402E08(0.0f, (f32)lbl_8050DB0C.field_0x4c[34] * ratio);
+            field_0xc->moveFromCentre_80402E08(0.0f, (f32)lbl_8050DB0C.field_0x4c[34] * ratio);
         }
-        if (q->field_0x26 >= lim) {
+        if (field_0xc->field_0x26 >= lim) {
             field_0x18 = 4;
         }
         break;
@@ -96,18 +149,16 @@ s32 cls_804B19F0::fn_80441A1C() {
     case 5:
         field_0x1c++;
         if (field_0x1c >= 0xB4) {
-            PaneCtrl_804AF86C* q = field_0xc;
-            if (q->field_0x26 > 10) {
-                q->field_0x26 = 10;
+            if (field_0xc->field_0x26 > 10) {
+                field_0xc->field_0x26 = 10;
             }
             field_0x18 = 13;
         }
         break;
     case 6: {
         if (lbl_8053AD30->fn_80309C4C(0x1300, -1)) {
-            PaneCtrl_804AF86C* q = field_0xc;
-            if (q->field_0x26 > 10) {
-                q->field_0x26 = 10;
+            if (field_0xc->field_0x26 > 10) {
+                field_0xc->field_0x26 = 10;
             }
             field_0x18 = 13;
             break;
@@ -139,39 +190,37 @@ s32 cls_804B19F0::fn_80441A1C() {
     }
     case 11: {
         PaneCtrl_804AF86C* p = field_0x8;
-        PaneCtrl_804AF86C* q = field_0xc;
         s32 sum = lbl_8050DB0C.field_0x4c[35] + lbl_8050DB0C.field_0x4c[36];
-        if (p->field_0x26 > 0 && p->field_0x26 >= q->field_0x26) {
+        if (p->field_0x26 > 0 && p->field_0x26 >= field_0xc->field_0x26) {
             p->field_0x26--;
             f32 ratio = (f32)(p->field_0x26 * p->field_0x26)
                 / (f32)(lbl_8050DB0C.field_0x4c[36] * lbl_8050DB0C.field_0x4c[36]);
             p->mPane->setAlpha((s32)(ratio * (f32)p->field_0x28));
         }
-        if (q->field_0x26 > 0) {
-            q->field_0x26--;
+        if (field_0xc->field_0x26 > 0) {
+            field_0xc->field_0x26--;
         }
-        if (q->field_0x26 > lbl_8050DB0C.field_0x4c[36]) {
-            f32 ratio = (f32)((sum - q->field_0x26) * (sum - q->field_0x26))
+        if (field_0xc->field_0x26 > lbl_8050DB0C.field_0x4c[36]) {
+            f32 ratio = (f32)((sum - field_0xc->field_0x26) * (sum - field_0xc->field_0x26))
                 / (f32)(lbl_8050DB0C.field_0x4c[35] * lbl_8050DB0C.field_0x4c[35]);
-            q->moveFromCentre_80402E08(0.0f, (f32)lbl_8050DB0C.field_0x4c[34] * ratio);
-        } else if (q->field_0x26 > 0) {
-            f32 ratio = (f32)(q->field_0x26 * q->field_0x26)
+            field_0xc->moveFromCentre_80402E08(0.0f, (f32)lbl_8050DB0C.field_0x4c[34] * ratio);
+        } else if (field_0xc->field_0x26 > 0) {
+            f32 ratio = (f32)(field_0xc->field_0x26 * field_0xc->field_0x26)
                 / (f32)(lbl_8050DB0C.field_0x4c[36] * lbl_8050DB0C.field_0x4c[36]);
-            q->moveFromCentre_80402E08(0.0f, (480.0f + lbl_8050DB0C.field_0x4c[34]) * ratio - 480.0f);
+            field_0xc->moveFromCentre_80402E08(0.0f, (480.0f + lbl_8050DB0C.field_0x4c[34]) * ratio + -480.0f);
         } else {
-            q->moveFromCentre_80402E08(0.0f, -480.0f);
+            field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
         }
-        if (p->field_0x26 > 0 || q->field_0x26 > 0) {
+        if (p->field_0x26 > 0 || field_0xc->field_0x26 > 0) {
             break;
         }
         return field_0x10;
     }
     case 13: {
-        PaneCtrl_804AF86C* q = field_0xc;
-        if (q->field_0x26 > 0) {
-            q->field_0x26--;
-            f32 ratio = (f32)((10 - q->field_0x26) * (10 - q->field_0x26)) / 100.0f;
-            q->moveFromCentre_80402E08(0.0f, 480.0f * ratio);
+        if (field_0xc->field_0x26 > 0) {
+            field_0xc->field_0x26--;
+            f32 ratio = (f32)((10 - field_0xc->field_0x26) * (10 - field_0xc->field_0x26)) / 100.0f;
+            field_0xc->moveFromCentre_80402E08(0.0f, 480.0f * ratio);
         }
         if (field_0xc->field_0x26 > 0) {
             break;
@@ -186,58 +235,3 @@ s32 cls_804B19F0::fn_80441A1C() {
     return 0x16;
 }
 
-void cls_804B19F0::fn_80442254(s32 arg, s32 index) {
-    field_0x8->mPane->setAlpha(0);
-    field_0x8->field_0x26 = 0;
-    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
-    field_0xc->field_0x22 = 0;
-    field_0x10 = arg;
-    field_0x14 = index - 1;
-    field_0x18 = 1;
-    field_0x1c = 0;
-    char* str = ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->getStringPtr();
-    s32 player = field_0x14;
-    u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (player * 2)) & 3;
-    if (mode == 1) {
-        getMessageText_803832BC(str, 0x3B, player + 1, NULL, NULL);
-    } else if (mode == 2) {
-        getMessageText_803832BC(str, 0x3A, player + 1, NULL, NULL);
-    }
-}
-
-cls_804B19F0::cls_804B19F0() {
-    lbl_8053AEE0 = this;
-    field_0x4 = new J2DScreen();
-    field_0x4->setPriority("gba_connect_error_window.blo", 0x1100000, lbl_80529DEC.field_0x20);
-    JUTResFont* font = lbl_8053AD78->mFont;
-    ((J2DTextBox*)field_0x4->search(0x0000005477743031ull))->setFont(font);
-    field_0x8 = new PaneCtrl_804AF86C();
-    field_0x8->setPane_80402F04(field_0x4->search(0x005077626c6b3031ull));
-    field_0xc = new PaneCtrl_804AF86C();
-    field_0xc->setPane_80402F04(field_0x4->search(0x4e64617461673031ull));
-    field_0x8->mPane->setAlpha(0);
-    field_0x8->field_0x26 = 0;
-    field_0xc->moveFromCentre_80402E08(0.0f, -480.0f);
-    field_0xc->field_0x22 = 0;
-    field_0x10 = 0x16;
-    field_0x14 = 0;
-    field_0x18 = 0;
-    field_0x1c = 0;
-}
-
-cls_804B19F0::~cls_804B19F0() {
-    delete field_0x4;
-    field_0x4 = NULL;
-    delete field_0x8;
-    field_0x8 = NULL;
-    delete field_0xc;
-    field_0xc = NULL;
-    lbl_8053AEE0 = NULL;
-}
-
-void cls_804B19F0::fn_80442200() {
-    gGameRoot2_8053AB10->fn_8013B490();
-    if (field_0x18 != 0) {
-        field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
-    }
-}
