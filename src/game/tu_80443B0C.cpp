@@ -15,7 +15,7 @@ static cls_804B1B60::StateFunc lbl_804B1B30[4] = {
     &cls_804B1B60::fn_80443D5C,
 };
 
-// FIXME(shotgun): 92.24 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.24 %, missing/extra + reloc-name; behaviour near.
 cls_804B1B60::cls_804B1B60() {
     mScreen = new J2DScreen();
     mScreen->setPriority("map_yagura_window.blo", 0x1100000, lbl_80529DEC.field_0x34);
@@ -93,7 +93,7 @@ cls_804B1B60::~cls_804B1B60() {
     }
 }
 
-// FIXME(shotgun): 99.88 %, reloc-name
+// FIXME(shotgun): 99.88 %, reloc-name; behaviour clean.
 void cls_804B1B60::fn_804446F0(s32 arg) {
     field_0x44 = arg;
     fn_80443B0C(static_cast<J2DTextBox*>(mScreen->search('Tmm01'))->getStringPtr(), 0x241, arg);
@@ -133,7 +133,7 @@ bool cls_804B1B60::fn_804446A4() {
     return true;
 }
 
-// FIXME(shotgun): 99.76 %, reloc-name
+// FIXME(shotgun): 99.76 %, reloc-name; behaviour clean.
 void cls_804B1B60::fn_80444650() {
     if (field_0x4d != 4) {
         gGameRoot2_8053AB10->fn_8013B490();
@@ -149,14 +149,14 @@ void cls_804B1B60::fn_804445E0() {
     }
 }
 
-// FIXME(shotgun): 99.75 %, reloc-name
+// FIXME(shotgun): 99.75 %, reloc-name; behaviour clean.
 void cls_804B1B60::fn_80444590() {
     if (field_0x8->fn_80402940(5, 0, 26.0f, 0.0f)) {
         field_0x4d = 2;
     }
 }
 
-// FIXME(shotgun): 99.92 %, reloc-name
+// FIXME(shotgun): 99.92 %, reloc-name; behaviour clean.
 void cls_804B1B60::fn_80443DAC() {
     if (lbl_8053AD30->fn_80309C4C(4, -1)) {
         if (field_0x4c == 0) {
@@ -234,14 +234,14 @@ void cls_804B1B60::fn_80443DAC() {
     }
 }
 
-// FIXME(shotgun): 99.50 %, reloc-name
+// FIXME(shotgun): 99.50 %, reloc-name; behaviour clean.
 void cls_804B1B60::fn_80443D5C() {
     if (field_0x8->fn_80402940(10, 0, 0.0f, 480.0f)) {
         field_0x4d = 4;
     }
 }
 
-// FIXME(shotgun): 79.51 %, missing/extra
+// FIXME(shotgun): 85.76 %, missing/extra; behaviour drift.
 void cls_804B1B60::fn_80443B0C(char* dst, s32 msgId, s32 value) {
     MessageInf1_804AF070* inf1 =
         &static_cast<MessageFile_804AF070*>(gGameRoot_8053AAF8->field_0xa8->getResource('????', "gc_four_swords_text_e.bmg"))->inf1;
@@ -252,25 +252,25 @@ void cls_804B1B60::fn_80443B0C(char* dst, s32 msgId, s32 value) {
     const char* p;
     while ((p = text + i)[0] != 0) {
         if (p[0] == 0x1A) {
-            if ((u8)p[2] == 3) {
+            if (p[2] == 3) {
                 s8 c3 = p[3];
-                if ((c3 == 0 && (u8)p[4] == 3) || (c3 == 0 && (u8)p[4] == 4)) {
+                if ((c3 == 0 && p[4] == 3) || (c3 == 0 && p[4] == 4)) {
                     s32 rem = value;
                     if (value >= 10000) {
                         dst[j++] = d10000 + '0';
-                        rem = value - (value / 10000) * 10000;
+                        rem = value % 10000;
                     }
                     if (value >= 1000) {
                         dst[j++] = (rem / 1000) + '0';
-                        rem -= (rem / 1000) * 1000;
+                        rem = rem % 1000;
                     }
                     if (value >= 100) {
                         dst[j++] = (rem / 100) + '0';
-                        rem -= (rem / 100) * 100;
+                        rem = rem % 100;
                     }
                     if (value >= 10) {
                         dst[j++] = (rem / 10) + '0';
-                        rem -= (rem / 10) * 10;
+                        rem = rem % 10;
                     }
                     dst[j++] = rem + '0';
                 }
