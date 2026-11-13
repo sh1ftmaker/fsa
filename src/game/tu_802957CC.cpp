@@ -1788,8 +1788,7 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
     mBox.i.y = -44.0f;
     mBox.f.x = 44.0f;
     mBox.f.y = 44.0f;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f* src = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    const JGeometry::TBox2f* src = field_0x4 < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
     JGeometry::TBox2f view_box = *src;
     view_box.i.x -= 32.0f;
     view_box.i.y -= 32.0f;
