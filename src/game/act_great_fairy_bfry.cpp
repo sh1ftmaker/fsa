@@ -66,6 +66,8 @@ void GreatFairy_804AF338::init() {
             mState = 7;
         }
         switch (field_0x29c) {
+        case 0:
+            break;
         case 1:
             field_0x260 = 0x260;
             break;
@@ -84,14 +86,14 @@ void GreatFairy_804AF338::init() {
         case 6:
             field_0x260 = 0x268;
             break;
-        case 7:
-            field_0x260 = 0x26A;
-            break;
         case 8:
             field_0x260 = 0x269;
             break;
+        case 7:
+            field_0x260 = 0x26A;
+            break;
         case 9:
-            if (((gGameRoot_8053AAF8->field_0x83 >> (fn_8022F340(field_0x234) * 2)) & 3) == 2) {
+            if (((gGameRoot_8053AAF8->field_0x83 >> (fn_8022F340(field_0x234) * 2)) & 3u) == 2) {
                 field_0x260 = 0x27F;
             } else {
                 field_0x260 = 0x284;
