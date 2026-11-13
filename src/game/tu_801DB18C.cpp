@@ -56,10 +56,9 @@ void cls_804A4EE8::init() {
         f32 n = (f32)(fn_801CD664(0x3C) + 1);
         field_0x2b4 = 0.0f;
         field_0x2b8 = 0.1f * n;
-        f32 s = JMath::sincosTable_.sinShort(-a);
-        f32 c = JMath::sincosTable_.cosShort(-a);
-        field_0x2b4 = field_0x2b4 * c - field_0x2b8 * s;
-        field_0x2b8 = field_0x2b8 * c + field_0x2b4 * s;
+        f32 x = field_0x2b4;
+        field_0x2b4 = x * JMath::sincosTable_.cosShort(-a) - field_0x2b8 * JMath::sincosTable_.sinShort(-a);
+        field_0x2b8 = x * JMath::sincosTable_.sinShort(-a) + field_0x2b8 * JMath::sincosTable_.cosShort(-a);
     }
     mState = 0;
     mStateTimer = 0;
