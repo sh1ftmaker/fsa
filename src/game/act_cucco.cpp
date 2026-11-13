@@ -442,7 +442,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
         if (warp == NULL) {
             return;
         }
-        target.set(warp->field_0x238);
+        target = warp->field_0x238;
         if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
             target.z = mPos.z;
         }
@@ -455,7 +455,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
         if (circle == NULL) {
             return;
         }
-        target.set(circle->field_0x268);
+        target = circle->field_0x268;
         if (!getGameView_802D6A9C()->field_0x131df[field_0x4]) {
             target.z = mPos.z;
         }
@@ -487,7 +487,7 @@ void Cucco_804AB8C0::fn_80331E6C() {
             return;
         }
     }
-    mPos.set(target);
+    mPos = target;
     field_0x4 = newLayer;
     field_0x284 = 0x14;
     setVec(field_0x2c4[3], target);
