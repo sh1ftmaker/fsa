@@ -363,7 +363,8 @@ bool cls_804A4C58::fn_801D95F4() {
                 f32 dy = getPlayerPos_8023E724(player)->y - from.y;
                 f32 dx = getPlayerPos_8023E724(player)->x - from.x;
                 s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-                if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+                s16 diff = heading - angle;
+                if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
                     target = player;
                 }
             }
@@ -380,7 +381,7 @@ bool cls_804A4C58::fn_801D95F4() {
                 vx = dir.x;
                 vy = dir.y;
             } else {
-                s16 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+                s32 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
                 f32 s = JMath::sincosTable_.sinShort(-facing);
                 f32 c = JMath::sincosTable_.cosShort(-facing);
                 vx = 0.0f * c - 1.0f * s;
