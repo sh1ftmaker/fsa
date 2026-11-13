@@ -268,7 +268,7 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
     }
 }
 
-// FIXME(shotgun): 86.10 %, missing/extra
+// Remaining diff: load order and register choice around the normalize.
 void cls_801D6CEC::fn_801D6D38(const JGeometry::TVec2f* dir) {
     JGeometry::TVec2f v(dir->x, dir->y);
     if (v.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
@@ -277,8 +277,10 @@ void cls_801D6CEC::fn_801D6D38(const JGeometry::TVec2f* dir) {
     } else {
         v.normalize();
     }
-    fn_801E4AB0(&field_0x0, 0x3C, 0x2000, v.x * 20.0f);
-    fn_801E4AB0(&field_0x14, 0x3C, 0x2000, v.y * 20.0f);
+    v.x *= 20.0f;
+    v.y *= 20.0f;
+    fn_801E4AB0(&field_0x0, 0x3C, 0x2000, v.x);
+    fn_801E4AB0(&field_0x14, 0x3C, 0x2000, v.y);
 }
 
 void cls_801D6CEC::fn_801D6D08() {
