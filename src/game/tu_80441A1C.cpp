@@ -63,6 +63,7 @@ void cls_804B19F0::fn_80442200() {
     }
 }
 
+// FIXME: 95.44 %, missing/extra; behaviour drift.
 // FIXME: the float ratio in the state 2/3 blocks is scheduled differently and
 // the register for `this` drifts after state 3 (0x31C onward).
 s32 cls_804B19F0::fn_80441A1C() {
