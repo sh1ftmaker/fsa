@@ -790,53 +790,53 @@ void cls_804B1920::fn_8043CDA0() {
     }
 }
 
-// FIXME(shotgun): 79.16 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 81.77 %, missing/extra; behaviour drift.
 bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale) {
-    if (field_0x252 >= 10) {
-        return false;
-    }
-    field_0x118[field_0x252] = x - 0.5f * (19.0f * (digits % 2) * scale) - 16.0f * (digits >> 1) * scale;
-    field_0x140[field_0x252] = y - 0.5f * (19.0f * scale);
-    field_0x168[field_0x252] = scale;
-    field_0x244[field_0x252] = arg2;
-    field_0x226[field_0x252] = digits;
-    field_0x1f4[0][field_0x252] = 0xFF;
-    field_0x1f4[1][field_0x252] = 0xFF;
-    field_0x1f4[2][field_0x252] = 0xFF;
-    field_0x1f4[3][field_0x252] = 0xFF;
-    field_0x1f4[4][field_0x252] = 0xFF;
-    bool seen = flag;
-    s32 div = 1;
-    for (s32 i = 0; i < digits; i++) {
-        div *= 10;
-    }
-    if (value > div - 1) {
-        value = div - 1;
-    }
-    if (value < 0) {
-        value = 0;
-    }
-    div /= 10;
-    for (s32 i = 0; i < digits - 1; i++) {
-        s32 digit = value / div;
-        value -= digit * div;
-        if (!seen && digit == 0) {
-            field_0x1f4[i][field_0x252] = 0xFF;
-        } else {
-            if (!seen) {
-                seen = true;
-            }
-            field_0x1f4[i][field_0x252] = digit;
+    if (field_0x252 < 10) {
+        field_0x118[field_0x252] = x - 0.5f * (19.0f * (digits % 2) * scale) - 16.0f * (digits >> 1) * scale;
+        field_0x140[field_0x252] = y - 0.5f * (19.0f * scale);
+        field_0x168[field_0x252] = scale;
+        field_0x244[field_0x252] = arg2;
+        field_0x226[field_0x252] = digits;
+        field_0x1f4[0][field_0x252] = 0xFF;
+        field_0x1f4[1][field_0x252] = 0xFF;
+        field_0x1f4[2][field_0x252] = 0xFF;
+        field_0x1f4[3][field_0x252] = 0xFF;
+        field_0x1f4[4][field_0x252] = 0xFF;
+        bool seen = flag;
+        s32 div = 1;
+        for (s32 i = 0; i < digits; i++) {
+            div *= 10;
+        }
+        if (value > div - 1) {
+            value = div - 1;
+        }
+        if (value < 0) {
+            value = 0;
         }
         div /= 10;
+        for (s32 i = 0; i < digits - 1; i++) {
+            s32 digit = value / div;
+            value -= digit * div;
+            if (!seen && digit == 0) {
+                field_0x1f4[i][field_0x252] = 0xFF;
+            } else {
+                if (!seen) {
+                    seen = true;
+                }
+                field_0x1f4[i][field_0x252] = digit;
+            }
+            div /= 10;
+        }
+        field_0x1f4[digits - 1][field_0x252] = value;
+        if (arg3 > 5) {
+            arg3 = 5;
+        }
+        field_0x23a[field_0x252] = arg3;
+        field_0x252++;
+        return true;
     }
-    field_0x1f4[digits - 1][field_0x252] = value;
-    if (arg3 > 5) {
-        arg3 = 5;
-    }
-    field_0x23a[field_0x252] = arg3;
-    field_0x252++;
-    return true;
+    return false;
 }
 
 // FIXME: 99.96 %, reloc-name; behaviour drift.
