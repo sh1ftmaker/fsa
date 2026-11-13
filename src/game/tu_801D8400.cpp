@@ -258,13 +258,17 @@ void cls_804A4C58::fn_801D9960() {
         }
         from.y = -6.0f + mPos.y;
         from.z = 0.0f;
-        s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+        s16 angle = -0x2000;
+        if (mFlags & 0x2000) {
+            angle = 0x2000;
+        }
         s32 player = fn_801D0338(&from, angle);
         if (player >= 0) {
             f32 dy = getPlayerPos_8023E724(player)->y - from.y;
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;
             s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-            if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+            f32 diff = (f32)(s16)(heading - angle);
+            if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
                 target = player;
             }
         }
@@ -278,7 +282,13 @@ void cls_804A4C58::fn_801D9960() {
         field_0x338--;
         if (field_0x338 == 0) {
             if (field_0x33f == 3) {
-                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
+                s32 columns[6];
+                columns[0] = 1;
+                columns[1] = 2;
+                columns[2] = 5;
+                columns[3] = 6;
+                columns[4] = 9;
+                columns[5] = 10;
                 field_0x334 = columns[fn_801CD664(6)];
             } else {
                 field_0x334 = fn_801CD664(12);
