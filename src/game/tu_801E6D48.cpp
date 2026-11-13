@@ -15,22 +15,23 @@ cls_804A5418::cls_804A5418() {
     field_0x2b4 = 0;
 }
 
-// FIXME(shotgun): 92.02 %, different + reloc-name
+// FIXME: 99.88 %, reloc-name; behaviour clean.
+// FIXME(shotgun): literal pool order differs (lbl_8053F5DC/F5C4 vs @938/@939)
 void cls_804A5418::init() {
     EnemyBase_804A4808::init();
     field_0x98 = field_0x90 & 3;
     field_0x2b4 = (field_0x90 >> 2) & 0x1F;
-    if (field_0x90 & 0x200000) {
+    if ((field_0x90 >> 21) & 1) {
         mFlags |= 0x8000;
-    } else if (field_0x90 & 0x800000) {
+    } else if ((field_0x90 >> 23) & 1) {
         mFlags |= 0x2000;
-    } else if (field_0x90 & 0x400000) {
+    } else if ((field_0x90 >> 22) & 1) {
         mFlags |= 0x4000;
     }
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     if (mFlags & 0x8000) {
         mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         field_0xb0 = 0;
     } else {
         fn_80210990(field_0x98, &mBox);
@@ -56,7 +57,7 @@ void cls_804A5418::vfunc_0x10() {
 
 extern const s32 lbl_80469C40[4][2];
 
-// FIXME(shotgun): 85.01 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.01 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5418::fn_801E728C(int state) {
     if (state == 1) {
         if ((mFlags & 0x4000) && !(mFlags & 0x10000)) {
@@ -124,7 +125,7 @@ void cls_804A5418::fn_801E728C(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 95.83 %, missing/extra
+// FIXME(shotgun): 95.83 %, missing/extra; behaviour near.
 void cls_804A5418::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 2:
@@ -136,11 +137,14 @@ void cls_804A5418::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 77.48 %, missing/extra + reloc-name
+// FIXME(shotgun): 96.25 %, missing/extra + reloc-name; behaviour drift.
 u8 cls_804A5418::vfunc_0x60() {
     s32 skip = -1;
     if (mState == 0 && field_0x2ac == -1) {
-        JGeometry::TBox2f saved = mBox;
+        f32 savedIx = mBox.i.x;
+        f32 savedIy = mBox.i.y;
+        f32 savedFx = mBox.f.x;
+        f32 savedFy = mBox.f.y;
         f32 cx = fn_80210B34(field_0x98);
         f32 cy = fn_80210AF8(field_0x98);
         mBox.i.x = cx - 1.0f;
@@ -157,18 +161,19 @@ u8 cls_804A5418::vfunc_0x60() {
         if (skip >= 0) {
             fn_801E728C(1);
         }
-        mBox = saved;
+        mBox.i.x = savedIx;
+        mBox.i.y = savedIy;
+        mBox.f.x = savedFx;
+        mBox.f.y = savedFy;
     }
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial && serial != skip) {
             ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
-                if (other->mActorId == ACTOR_FIRE) {
-                    if (((FireRodFire_804A89F0*)other)->fn_802BA9F8() == 1) {
-                        if (mState == 0) {
-                            fn_801E728C(2);
-                        }
+                if (other->mActorId == ACTOR_FIRE && ((FireRodFire_804A89F0*)other)->fn_802BA9F8() == 1) {
+                    if (mState == 0) {
+                        fn_801E728C(2);
                     }
                 } else if (other->mActorId == 'SWBM') {
                     fn_801CB538(field_0x4, &other->mPos, 0, 0);
