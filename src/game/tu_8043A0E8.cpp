@@ -48,16 +48,16 @@ static inline f32 bottomOffset(cls_804B1920* m) {
     return result;
 }
 
-static inline bool insideBox(f32 x, f32 y, f32 px, f32 py, f32 margin) {
+static inline bool outsideBox(f32 x, f32 y, f32 px, f32 py, f32 margin) {
     JGeometry::TBox2f box(x - 94.0f, y - 61.5f, 94.0f + x, 61.5f + y);
     box.i.x -= margin;
     box.i.y -= margin;
     box.f.x = margin + box.f.x;
     box.f.y = margin + box.f.y;
     if (px >= box.i.x && px <= box.f.x && py >= box.i.y && py <= box.f.y) {
-        return true;
+        return false;
     }
-    return false;
+    return true;
 }
 
 
@@ -341,16 +341,16 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     margin = (margin >= dy) ? margin : dy;
     f32 cx = (screenA.x + screenB.x) * 0.5f;
     f32 cy = (screenA.y + screenB.y) * 0.5f;
-    if (insideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
+    if (!outsideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
         lbl_8053AED0->field_0xdc |= 1;
     }
-    if (insideBox(514.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
+    if (!outsideBox(514.0f, 61.5f + topOffset(lbl_8053AED0), cx, cy, margin)) {
         lbl_8053AED0->field_0xdc |= 2;
     }
-    if (insideBox(93.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
+    if (!outsideBox(93.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
         lbl_8053AED0->field_0xdc |= 4;
     }
-    if (insideBox(514.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
+    if (!outsideBox(514.0f, 407.5f + bottomOffset(lbl_8053AED0), cx, cy, margin)) {
         lbl_8053AED0->field_0xdc |= 8;
     }
 }
@@ -367,16 +367,16 @@ void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
     unit.y = unit.z = 0.0f;
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&unit, false, false, &screenUnit);
     f32 margin = screenUnit.x - screenOrigin.x;
-    if (insideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), x, y, margin)) {
+    if (!outsideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), x, y, margin)) {
         lbl_8053AED0->field_0xdc |= 1;
     }
-    if (insideBox(514.0f, 61.5f + topOffset(lbl_8053AED0), x, y, margin)) {
+    if (!outsideBox(514.0f, 61.5f + topOffset(lbl_8053AED0), x, y, margin)) {
         lbl_8053AED0->field_0xdc |= 2;
     }
-    if (insideBox(93.0f, 407.5f + bottomOffset(lbl_8053AED0), x, y, margin)) {
+    if (!outsideBox(93.0f, 407.5f + bottomOffset(lbl_8053AED0), x, y, margin)) {
         lbl_8053AED0->field_0xdc |= 4;
     }
-    if (insideBox(514.0f, 407.5f + bottomOffset(lbl_8053AED0), x, y, margin)) {
+    if (!outsideBox(514.0f, 407.5f + bottomOffset(lbl_8053AED0), x, y, margin)) {
         lbl_8053AED0->field_0xdc |= 8;
     }
 }
