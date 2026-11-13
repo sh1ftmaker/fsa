@@ -66,7 +66,8 @@ inline bool cls_8049D020::fallStep() {
     return atGround;
 }
 
-// FIXME: 99.88%. reloc-name: exact instructions match target.
+// FIXME: 99.88 %, reloc-name; behaviour clean.
+// reloc-name: exact instructions match target.
 cls_8049D020::cls_8049D020()
     : field_0x230(0), field_0x234(0), field_0x238(0), field_0x23c(-1), field_0x240(0),
       field_0x244(0), field_0x248(0), field_0x24c(0), field_0x250(0), field_0x254(0),
@@ -83,7 +84,8 @@ cls_8049D020::~cls_8049D020() {
     field_0x37c = NULL;
 }
 
-// FIXME: 99.80%. reloc-name: exact instructions match target.
+// FIXME: 99.80 %, reloc-name; behaviour clean.
+// reloc-name: exact instructions match target.
 void cls_8049D020::init() {
     ActorBase_804A5770::init();
     field_0x234 = field_0x90 & 0xF;
@@ -131,7 +133,8 @@ void cls_8049D020::init() {
     }
 }
 
-// FIXME: 98.85%. missing/extra + reloc-name: ours has 3 more instrs (713 vs 710): a mov/clrlwi pair and a lwz in cases 2 and 4, plus swapped stack slots and registers.
+// FIXME: 98.85 %, missing/extra + reloc-name; behaviour drift.
+// missing/extra + reloc-name: ours has 3 more instrs (713 vs 710): a mov/clrlwi pair and a lwz in cases 2 and 4, plus swapped stack slots and registers.
 void cls_8049D020::update() {
     ActorBase_804A5770::update();
     field_0x26c = 1.0f;
@@ -334,7 +337,8 @@ void cls_8049D020::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME: 95.71%. missing/extra + reloc-name: ours has 1 fewer instr (215 vs 216); the scale matrices are built with different float register assignment and the frame/pos/res locals are scheduled differently.
+// FIXME: 95.71 %, missing/extra + reloc-name; behaviour near.
+// missing/extra + reloc-name: ours has 1 fewer instr (215 vs 216); the scale matrices are built with different float register assignment and the frame/pos/res locals are scheduled differently.
 void cls_8049D020::draw() {
     ActorBase_804A5770::draw();
     SpriteParams_801F5AE0 params;
@@ -356,7 +360,8 @@ void cls_8049D020::draw() {
     }
 }
 
-// FIXME: 90.19%. missing/extra + reloc-name: ours has 2 fewer instrs (274 vs 276): the original keeps the table, the actor manager tag and the serial in r27-r29 (stmw/lmw r27) and negates case 5 through two stack TVec3f copies; the single-case switch in case 13 has an extra bge in the original.
+// FIXME: 90.80 %, missing/extra + reloc-name; behaviour drift.
+// missing/extra + reloc-name: ours has 2 fewer instrs (274 vs 276): the original keeps the table, the actor manager tag and the serial in r27-r29 (stmw/lmw r27) and negates case 5 through two stack TVec3f copies; the single-case switch in case 13 has an extra bge in the original.
 bool cls_8049D020::fn_8010C294(s32 state) {
     switch (state) {
     case 1:
