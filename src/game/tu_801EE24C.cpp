@@ -1802,11 +1802,11 @@ void ActorBase_804A5770::drawSprite_801F06F0(const char* name, s32 frame,
         if (mSpriteParams.mMtx != NULL) {
             if (sp.mMtx != NULL) {
                 // FIXME(shotgun): the original copies sp.mMtx inline (12 word pairs) after the
-                // identity; no Mtx struct type found for it.
+                // identity; here it is a PSMTXCopy call.
                 Mtx m;
                 PSMTXIdentity(m);
                 PSMTXCopy(sp.mMtx, m);
-                PSMTXConcat(mSpriteParams.mMtx, m, m);
+                PSMTXConcat(m, mSpriteParams.mMtx, m);
                 sp.mMtx = m;
             } else {
                 sp.mMtx = mSpriteParams.mMtx;
