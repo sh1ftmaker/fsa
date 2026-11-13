@@ -708,9 +708,8 @@ void VaatiBoss_804A4958::vfunc_0x98() {
         field_0x5d1--;
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
-            s16 angle = field_0x5d2;
-            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(angle);
-            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(angle);
+            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(field_0x5d2);
+            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(field_0x5d2);
         }
     }
     switch (mState) {
