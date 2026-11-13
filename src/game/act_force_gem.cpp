@@ -594,7 +594,8 @@ void ForceGem_804AB6D8::update() {
 }
 
 // 0x8032BFB0.
-// FIXME(shotgun): 93.96 %, missing/extra + reloc-name; literal table offsets, register order.
+// FIXME(shotgun): 93.62 %, missing/extra + reloc-name; behaviour drift.
+// literal table offsets, register order.
 void ForceGem_804AB6D8::draw() {
     s32 state = field_0x230;
     if (state == 7 || state == 8 || state == 0xC || state == 0xE || state == 0x11) {
@@ -1010,7 +1011,7 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
     return false;
 }
 
-// FIXME(shotgun): 81.84 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.93 %, scheduling+regalloc + reloc-name; behaviour clean.
 void ForceGem_804AB6D8::fn_8032ABE0() {
     if (!(field_0x230 == 0 || field_0x230 == 6 || field_0x230 == 1 || field_0x230 == 2 || field_0x230 == 9 ||
           field_0x230 == 0xd)) {
