@@ -194,7 +194,7 @@ void RotatingSkull_804A8588::fn_802B2728() {
 
 // The sign of a bounce: -1 when the push (`along`) and the other velocity component point
 // the way the axis needs, else 1.
-// FIXME(shotgun): 68.82 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.50 %, missing/extra; behaviour clean.
 void RotatingSkull_804A8588::fn_802B21EC() {
     f32 sign = 1.0f;
     JGeometry::TVec3f hitB(0.0f, 0.0f, 0.0f);
