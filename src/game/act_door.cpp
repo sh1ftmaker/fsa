@@ -14,9 +14,7 @@
 
 // FIXME(shotgun): 86.0 %, missing/extra + reloc-name
 void Door_804A8D88::init() {
-    field_0x258.x = mPos.x;
-    field_0x258.y = mPos.y;
-    field_0x258.z = mPos.z;
+    field_0x258 = mPos;
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = (field_0x90 >> 7) & 0x1F;
     field_0x23c = (field_0x90 >> 12) & 0x1F;
@@ -48,6 +46,9 @@ void Door_804A8D88::init() {
                 mPos.y += 4.0f;
                 break;
             case 1:
+                mPos.x += 12.0f;
+                mPos.y += 12.0f;
+                break;
             case 2:
                 mPos.x += 12.0f;
                 mPos.y += 12.0f;
@@ -139,32 +140,29 @@ void Door_804A8D88::init() {
     field_0x26c.f.x += field_0x264.x;
     field_0x26c.f.y += field_0x264.y;
     if (field_0x23c == 0 || (field_0x23c == 2 && field_0x234 == 0)) {
-        if (field_0x23c == 0 && field_0x238 < 2) {
-            JGeometry::TVec2f v(field_0x258.x + 16.0f, field_0x258.y);
-            field_0x244 = fn_80226BC4(&v, field_0x4);
-        } else if (field_0x23c == 2 && field_0x234 == 0) {
-            JGeometry::TVec2f v(field_0x258.x, field_0x258.y);
-            field_0x244 = fn_80226BC4(&v, field_0x4);
-        } else {
-            JGeometry::TVec2f v(field_0x258.x, field_0x258.y + 16.0f);
-            field_0x244 = fn_80226BC4(&v, field_0x4);
-        }
+        JGeometry::TVec2f v(field_0x258.x, field_0x258.y);
+        field_0x244 = fn_80226BC4(&v, field_0x4);
+    } else if (field_0x238 < 2) {
+        JGeometry::TVec2f v(field_0x258.x + 16.0f, field_0x258.y);
+        field_0x244 = fn_80226BC4(&v, field_0x4);
     } else {
         JGeometry::TVec2f v(field_0x258.x, field_0x258.y + 16.0f);
         field_0x244 = fn_80226BC4(&v, field_0x4);
     }
     if ((field_0x234 >= 1 && field_0x234 <= 4) || field_0x234 == 8) {
         s32 layer = field_0x4;
-        bool hit;
         if (layer < 8) {
-            hit = getGameView_802D6A9C()->fn_802D49A8(layer, (u16)field_0x244);
+            if (getGameView_802D6A9C()->fn_802D49A8(layer, (u16)field_0x244)) {
+                field_0x230 = 3;
+                update();
+                field_0x230 = 5;
+            }
         } else {
-            hit = getGameView_802D6A9C()->fn_802D4ADC(layer, (u16)field_0x244);
-        }
-        if (hit == true) {
-            field_0x230 = 3;
-            update();
-            field_0x230 = 5;
+            if (getGameView_802D6A9C()->fn_802D4ADC(layer, (u16)field_0x244)) {
+                field_0x230 = 3;
+                update();
+                field_0x230 = 5;
+            }
         }
     } else if (field_0x234 >= 5) {
         if (getGameView_802D6A9C()->fn_802D4ADC(field_0x4, (u16)field_0x244) == true) {
