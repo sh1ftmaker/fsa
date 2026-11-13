@@ -43,7 +43,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
-// FIXME(shotgun): 92.63 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.24 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::init() {
     field_0x258 = (field_0x90 & 0xF) + ((field_0x90 >> 12) & 0xF0);
     field_0x260 = (field_0x90 >> 4) & 0xF;
@@ -131,8 +131,8 @@ void OBJLift_804ACA00::init() {
         free[1] = true;
         free[2] = true;
         free[3] = true;
-        s32 taken = 0;
         s32 serial = -1;
+        s32 taken = 0;
         while (taken < 4) {
             serial = getActorManager_801F856C()->fn_801F78F4('OBLF', serial);
             if (serial < 0) {
@@ -145,10 +145,10 @@ void OBJLift_804ACA00::init() {
             if (other == NULL) {
                 continue;
             }
+            s32 state = other->field_0x258;
             if (field_0x4 != other->field_0x4) {
                 continue;
             }
-            s32 state = other->field_0x258;
             if (state < 6 || state > 9) {
                 continue;
             }
@@ -333,7 +333,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME(shotgun): 72.72 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 88.24 %, different; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
     field_0x283[1] = 0;
@@ -347,27 +347,31 @@ s32 OBJLift_804ACA00::fn_80350974() {
     JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
     for (s32 i = 0; i < 4; i++) {
         if (field_0x258 == 4) {
-            JGeometry::TBox2f saved = field_0x80;
+            JGeometry::TBox2f saved;
+            saved.set(field_0x80);
             for (s32 j = 0; j < 4; j++) {
-                field_0x80 = lbl_8050ADF8[j];
-                field_0x283[i] = fn_80351020(i);
-                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                field_0x80.set(lbl_8050ADF8[j]);
+                bool hit = fn_80351020(i);
+                field_0x283[i] = hit;
+                if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                     count++;
                     break;
                 }
             }
-            field_0x80 = saved;
+            field_0x80.set(saved);
         } else if (field_0x258 >= 0x10 && field_0x258 <= 0x14) {
-            JGeometry::TBox2f saved = field_0x80;
+            JGeometry::TBox2f saved;
+            saved.set(field_0x80);
             for (s32 j = 0; j < 2; j++) {
-                field_0x80 = lbl_8050AE38[(field_0x258 - 0x10) * 2 + j];
-                field_0x283[i] = fn_80351020(i);
-                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                field_0x80.set(lbl_8050AE38[(field_0x258 - 0x10) * 2 + j]);
+                bool hit = fn_80351020(i);
+                field_0x283[i] = hit;
+                if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                     count++;
                     break;
                 }
             }
-            field_0x80 = saved;
+            field_0x80.set(saved);
         } else if (field_0x258 >= 6 && field_0x258 <= 9) {
             bool hit = fn_80351020(i);
             field_0x283[i] = hit;
@@ -375,8 +379,9 @@ s32 OBJLift_804ACA00::fn_80350974() {
                 field_0x280 = hit;
             }
         } else {
-            field_0x283[i] = fn_80351020(i);
-            if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+            bool hit = fn_80351020(i);
+            field_0x283[i] = hit;
+            if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                 count++;
             }
         }
@@ -399,32 +404,28 @@ s32 OBJLift_804ACA00::fn_80350974() {
         }
     }
 
-    if (field_0x258 == 5 && count == 0) {
-        f32 dx = mPos.x - mSpawnPos.x;
-        f32 dy = mPos.y - mSpawnPos.y;
-        if (dx * dx + dy * dy > 8.0f) {
-            field_0x250++;
-            if (field_0x250 > 0xF0) {
-                s32 layer = field_0x4;
-                if (layer >= 8) {
-                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
-                    field_0x28c = 1.0f;
-                } else {
-                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-                }
-                mPos = mSpawnPos;
-                field_0x28c = 0.0f;
-                layer = field_0x4;
-                if (layer >= 8) {
-                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
-                    field_0x28c = 1.0f;
-                } else {
-                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-                }
-                startSound_801F0E34(0x30003, 0);
+    f32 dx = mPos.x - mSpawnPos.x;
+    f32 dy = mPos.y - mSpawnPos.y;
+    if (field_0x258 == 5 && count == 0 && dx * dx + dy * dy > 8.0f) {
+        field_0x250++;
+        if (field_0x250 > 0xF0) {
+            s32 layer = field_0x4;
+            if (layer >= 8) {
+                getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                field_0x28c = 1.0f;
+            } else {
+                spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
             }
-        } else {
-            field_0x250 = 0;
+            mPos = mSpawnPos;
+            field_0x28c = 0.0f;
+            layer = field_0x4;
+            if (layer >= 8) {
+                getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                field_0x28c = 1.0f;
+            } else {
+                spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
+            }
+            startSound_801F0E34(0x30003, 0);
         }
     } else {
         field_0x250 = 0;
@@ -580,7 +581,8 @@ s32 OBJLift_804ACA00::fn_80350530() {
 // Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
 // FIXME: 95.24 %, missing/extra; behaviour near.
 u8 OBJLift_804ACA00::fn_803502CC() {
-    JGeometry::TBox2f saved = field_0x80;
+    JGeometry::TBox2f saved;
+    saved.set(field_0x80);
     if (field_0x258 == 4) {
         for (s32 i = 0; i < 4; i++) {
             field_0x80.set(lbl_8050ADF8[i]);
@@ -963,7 +965,7 @@ void OBJLift_804ACA00::update() {
     field_0x294 = field_0x3c;
 }
 
-// FIXME(shotgun): 91.96 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.34 %, different; behaviour drift.
 void OBJLift_804ACA00::draw() {
     s32 alpha = 0xFF;
     if (field_0x230 == 4) {
@@ -979,15 +981,18 @@ void OBJLift_804ACA00::draw() {
         return;
     }
     if (field_0x250 > 0x78) {
-        s32 phase = field_0x250 % 40;
         if (field_0x4 < 8) {
+            s32 phase = field_0x250 % 40;
             if (phase > 20) {
                 alpha = (s32)(255.0f * (((f32)phase - 20.0f) / 20.0f));
             } else {
                 alpha = (s32)(255.0f * ((20.0f - (f32)phase) / 20.0f));
             }
-        } else if (phase < 20) {
-            return;
+        } else {
+            s32 phase = field_0x250 % 40;
+            if (phase < 20) {
+                return;
+            }
         }
     }
     SpriteParams_801F5AE0 params;
@@ -995,9 +1000,8 @@ void OBJLift_804ACA00::draw() {
     PSMTXIdentity(mtx);
     params.field_0x10.a = alpha;
     params.field_0x20 = 0;
-    f32 scale = field_0x28c;
     if (field_0x258 == 0xB) {
-        f32 big = 1.5f * scale;
+        f32 big = 1.5f * field_0x28c;
         mtx[0][0] = big;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
@@ -1008,15 +1012,15 @@ void OBJLift_804ACA00::draw() {
         mtx[2][1] = 0.0f;
         mtx[2][2] = big;
     } else if (field_0x258 == 0x11) {
-        mtx[0][0] = -scale;
+        mtx[0][0] = -field_0x28c;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
         mtx[1][0] = 0.0f;
-        mtx[1][1] = scale;
+        mtx[1][1] = field_0x28c;
         mtx[1][2] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
-        mtx[2][2] = scale;
+        mtx[2][2] = field_0x28c;
     } else if (field_0x258 == 0x13) {
         // Euler rotation (0, 270 deg, 0) from sincosTable_ entries (the original reads them
         // at run time: table index 0 and index 1536).
@@ -1026,29 +1030,29 @@ void OBJLift_804ACA00::draw() {
         f32 cy = JMath::sincosTable_.cosShort(-0x4000);
         f32 sz = sx;
         f32 cz = cx;
-        mtx[0][0] = scale * (cy * cz);
-        mtx[1][0] = scale * (cy * sz);
-        mtx[2][0] = scale * -sy;
-        mtx[0][1] = scale * (sx * sy * cz - cx * sz);
-        mtx[1][1] = scale * (sx * sy * sz + cx * cz);
-        mtx[2][1] = scale * (sx * cy);
-        mtx[0][2] = scale * (cx * cz * sy + sx * sz);
-        mtx[1][2] = scale * (cx * sz * sy - sx * cz);
-        mtx[2][2] = scale * (cx * cy);
+        mtx[0][0] = field_0x28c * (cy * cz);
+        mtx[1][0] = field_0x28c * (cy * sz);
+        mtx[2][0] = field_0x28c * -sy;
+        mtx[0][1] = field_0x28c * (sx * sy * cz - cx * sz);
+        mtx[1][1] = field_0x28c * (sx * sy * sz + cx * cz);
+        mtx[2][1] = field_0x28c * (sx * cy);
+        mtx[0][2] = field_0x28c * (cx * cz * sy + sx * sz);
+        mtx[1][2] = field_0x28c * (cx * sz * sy - sx * cz);
+        mtx[2][2] = field_0x28c * (cx * cy);
     } else if (field_0x258 == 5) {
-        f32 angle = 2.0f * (3.14f * (1.0f - scale));
+        f32 angle = 2.0f * (3.14f * (1.0f - field_0x28c));
         JGeometry::TVec3f rot(angle, angle, 0.0f);
-        setRotScaleMtx(mtx, rot, scale);
+        setRotScaleMtx(mtx, rot, field_0x28c);
     } else {
-        mtx[0][0] = scale;
+        mtx[0][0] = field_0x28c;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
         mtx[1][0] = 0.0f;
-        mtx[1][1] = scale;
+        mtx[1][1] = field_0x28c;
         mtx[1][2] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
-        mtx[2][2] = scale;
+        mtx[2][2] = field_0x28c;
     }
     params.mMtx = mtx;
     params.field_0x21 = 1;
