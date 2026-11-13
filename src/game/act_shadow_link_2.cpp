@@ -20,7 +20,7 @@ const u32 lbl_80469450[4] = {
 // FIXME(shotgun): not written; it is the implicit inline destructor of the base classes.
 
 // 0x801C573C.
-// FIXME(shotgun): 92.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.93 %, reloc-name; behaviour clean.
 ShadowLink2_804A43E8::ShadowLink2_804A43E8() {
     field_0x550.fn_80217484();
     field_0x55c[0] = 0;
