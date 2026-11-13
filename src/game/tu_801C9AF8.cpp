@@ -471,7 +471,7 @@ bool ShadowLink2_804A43E8::fn_801C9CB0() {
         JGeometry::TVec3f savedPos = mPos;
         u8 floorLayer = viewLayerFlag(field_0x4);
         bool lifted = false;
-        if (mState == 0x1C && mPos.z > 0.0f && floorLayer != 0) {
+        if (mState == 0x1C && !(mPos.z <= 0.0f) && floorLayer != 0) {
             lifted = true;
             mPrevPos.y = mPrevPos.y - mPrevPos.z;
             mPrevPos.z = 0.0f;
@@ -480,16 +480,20 @@ bool ShadowLink2_804A43E8::fn_801C9CB0() {
         }
         hit = fn_801F2618(&mMapHitDir, lbl_8053EFC0);
         if (lifted) {
-            mPrevPos = savedPrev;
+            mPrevPos.x = savedPrev.x;
+            mPrevPos.y = savedPrev.y;
+            mPrevPos.z = savedPrev.z;
             if (!hit) {
-                mPos = savedPos;
+                mPos.x = savedPos.x;
+                mPos.y = savedPos.y;
+                mPos.z = savedPos.z;
             } else {
                 mPos.z = savedPos.z - (mPos.y - (savedPos.y - savedPos.z));
                 mPos.y = savedPos.y;
                 fn_801CE800();
             }
-        } else if (hit && floorLayer != 0 && !(mFlags & ENEMY_FLAG_LANDED) && mPos.z > 0.0f &&
-                   FABS(mMapHitDir.y - -1.0f) < 0.001f && FABS(mPos.y - mPrevPos.y) < 0.001f) {
+        } else if (hit && floorLayer != 0 && !(mFlags & ENEMY_FLAG_LANDED) && !(mPos.z <= 0.0f) &&
+                   __fabsf(mMapHitDir.y - -1.0f) < 0.001f && __fabsf(mPos.y - mPrevPos.y) < 0.001f) {
             mPos.z = 0.0f;
             field_0x3c.z = 0.0f;
             mFlags |= 0x10;
