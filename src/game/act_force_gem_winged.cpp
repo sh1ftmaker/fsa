@@ -52,7 +52,7 @@ static inline void showMessage(s32 who) {
     }
 }
 
-// FIXME(shotgun): 95.94 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.94 %, missing/extra + reloc-name; behaviour drift.
 void WingedForceGem_804AB098::init() {
     field_0x94 = (field_0x90 >> 16) & 0xFF;
     field_0x270 = field_0x90 & 7;
@@ -152,7 +152,7 @@ void WingedForceGem_804AB098::init() {
     }
 }
 
-// FIXME(shotgun): 93.14 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.10 %, missing/extra + reloc-name; behaviour drift.
 void WingedForceGem_804AB098::update() {
     if (field_0x281 == 1) {
         if (vfunc_0x34() == 1) {
@@ -502,7 +502,7 @@ void WingedForceGem_804AB098::update() {
     }
 }
 
-// FIXME(shotgun): 92.91 %, different + reloc-name
+// FIXME(shotgun): 97.48 %, scheduling+regalloc + reloc-name; behaviour clean.
 void WingedForceGem_804AB098::draw() {
     if (field_0x281 == 1 || field_0x230 == 1 || field_0x230 == 2) {
         return;
