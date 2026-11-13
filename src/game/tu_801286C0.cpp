@@ -28,7 +28,8 @@ void cls_8049E500::init() {
     fn_80128728(0);
 }
 
-// FIXME: 84.86%. try.py class: scheduling+regalloc with reloc-name. The
+// FIXME: 85.31 %, scheduling+regalloc; behaviour drift.
+// try.py class: scheduling+regalloc with reloc-name. The
 // original loads the 96.0f constant before the camera's byte at 0x179 is
 // stored (ours after), and the float pool (lbl_8053CAF8..CB18) and the state
 // jump table are @NNN in ours. Not yet pinned down; the .sdata2 order
@@ -150,7 +151,8 @@ s32 cls_8049E500::vfunc_0x5C() {
     return field_0x230 == 10;
 }
 
-// FIXME(shotgun): 63.1 %, missing/extra: the camera-box centre in case 4 and the screen-centre vector of cases 5 / 7 are built differently; jump table is @NNN
+// FIXME(shotgun): 68.90 %, missing/extra + reloc-name; behaviour drift.
+// the camera-box centre in case 4 and the screen-centre vector of cases 5 / 7 are built differently; jump table is @NNN
 void cls_8049E500::fn_80128728(int state) {
     switch (state) {
     case 0:
