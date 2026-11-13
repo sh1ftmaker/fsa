@@ -281,8 +281,8 @@ cls_804B1D58::~cls_804B1D58() {
     lbl_8053AF40 = NULL;
 }
 
-// FIXME(shotgun): 89.08 %, missing/extra + reloc-name; behaviour drift.
-// (the zero shared with the loop counter, lbl_80529DEC reloaded per test)
+// FIXME: 98.68 %, different + reloc-name; behaviour clean.
+// register choice in the first loop differs (the original keeps the zero shared with the counter).
 void cls_804B1D58::fn_80452350() {
     lbl_8053AEC0->fn_804310CC();
     s32 i = 0;
@@ -313,22 +313,21 @@ void cls_804B1D58::fn_80452350() {
         field_0xc[i]->field_0x22 = 0;
     }
     const ResTIMG* image;
-    bool useBack = false;
-    if (gGameRoot_8053AAF8->field_0x7f != 0) {
-        s32 mode = lbl_80529DEC.field_0x118;
-        if ((mode == 0 && lbl_80529DEC.field_0x11c == 2) || (mode == 1 && lbl_80529DEC.field_0x11c == 2) ||
-            (mode == 2 && lbl_80529DEC.field_0x11c == 2) || (mode == 3 && lbl_80529DEC.field_0x11c == 2) ||
-            (mode == 4 && lbl_80529DEC.field_0x11c == 2) || (mode == 5 && lbl_80529DEC.field_0x11c == 2) ||
-            (mode == 6 && lbl_80529DEC.field_0x11c == 2) || (mode == 7 && lbl_80529DEC.field_0x11c == 1)) {
-            useBack = true;
-        }
-    }
-    if (useBack) {
+    if (gGameRoot_8053AAF8->field_0x7f != 0 &&
+        ((lbl_80529DEC.field_0x118 == 0 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 1 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 2 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 3 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 4 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 5 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 6 && lbl_80529DEC.field_0x11c == 2) ||
+         (lbl_80529DEC.field_0x118 == 7 && lbl_80529DEC.field_0x11c == 1))) {
         image = static_cast<const ResTIMG*>(fn_804030C4('TIMG', "kk_pYback_01.bti"));
+        static_cast<J2DPicture*>(mScreen->search('Psc01'))->changeTexture(image, 0);
     } else {
         image = static_cast<const ResTIMG*>(fn_80403084('TIMG', "kk_pCselect_01.bti"));
+        static_cast<J2DPicture*>(mScreen->search('Psc01'))->changeTexture(image, 0);
     }
-    static_cast<J2DPicture*>(mScreen->search('Psc01'))->changeTexture(image, 0);
     fn_8044D894();
     field_0x184 = 9;
 }
