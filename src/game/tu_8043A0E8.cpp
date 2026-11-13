@@ -359,14 +359,14 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
 
 // FIXME(shotgun): 89.03 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
+    Vec screenOrigin;
+    Vec screenUnit;
     Vec origin;
     origin.x = origin.y = origin.z = 0.0f;
-    Vec screenOrigin;
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&origin, false, false, &screenOrigin);
     Vec unit;
     unit.x = 16.0f;
     unit.y = unit.z = 0.0f;
-    Vec screenUnit;
     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&unit, false, false, &screenUnit);
     f32 margin = screenUnit.x - screenOrigin.x;
     if (insideBox(93.0f, 61.5f + topOffset(lbl_8053AED0), x, y, margin)) {
