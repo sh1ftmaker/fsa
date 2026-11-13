@@ -74,10 +74,10 @@ VaatiBoss_804A4958::VaatiBoss_804A4958() {
     field_0x5e4 = 0.0f;
     field_0x5e8 = 0;
     field_0x5e9 = 0;
-    field_0x5ec = 0.0f;
-    field_0x5f0 = 0.0f;
-    field_0x5f4 = 0.0f;
-    field_0x5f8 = 0.0f;
+    field_0x5ec.x = 0.0f;
+    field_0x5ec.y = 0.0f;
+    field_0x5f4.x = 0.0f;
+    field_0x5f4.y = 0.0f;
     field_0x5fc = 0;
     field_0x600.set(0.0f, 0.0f, 0.0f);
     field_0x60c.set(0.0f, 0.0f, 0.0f);
@@ -96,7 +96,7 @@ VaatiBoss_804A4958::VaatiBoss_804A4958() {
 }
 
 // FIXME: 96.98 %, scheduling+regalloc + reloc-name; behaviour clean.
-// scheduling+regalloc + reloc-name. Float conversion temporaries and the stores of field_0x5f0 / field_0x5f4 / field_0x5f8 are scheduled differently.
+// scheduling+regalloc + reloc-name. Float conversion temporaries and the stores of field_0x5ec.y / field_0x5f4 / field_0x5f4.y are scheduled differently.
 void VaatiBoss_804A4958::init() {
     EnemyBase_804A4808::init();
     field_0x5dc = field_0x90 & 0xF;
@@ -142,10 +142,10 @@ void VaatiBoss_804A4958::init() {
 
     field_0x5bc = mPos.x;
     field_0x5c0 = mPos.y;
-    field_0x5ec = field_0x5e0 + (f32)field_0x5e8 * 8.0f + 32.0f;
-    field_0x5f0 = field_0x5e4;
-    field_0x5f4 = field_0x5ec;
-    field_0x5f8 = field_0x5e4 + -32.0f;
+    field_0x5ec.x = field_0x5e0 + (f32)field_0x5e8 * 8.0f + 32.0f;
+    field_0x5ec.y = field_0x5e4;
+    field_0x5f4.x = field_0x5ec.x;
+    field_0x5f4.y = field_0x5e4 + -32.0f;
 
     if (gGameRoot_8053AAF8->field_0x7e != 0) {
         field_0x5cc = 6;
@@ -587,12 +587,12 @@ void VaatiBoss_804A4958::vfunc_0x90(u8 mapHit) {
         }
         break;
     case 21:
-        if (__fabsf(mPos.x - field_0x5ec) < 0.1f && __fabsf(mPos.y - field_0x5f0) < 0.1f) {
+        if (__fabsf(mPos.x - field_0x5ec.x) < 0.1f && __fabsf(mPos.y - field_0x5ec.y) < 0.1f) {
             fn_801D5D84(22);
         }
         break;
     case 22:
-        if (__fabsf(mPos.x - field_0x5f4) < 0.1f && __fabsf(mPos.y - field_0x5f8) < 0.1f) {
+        if (__fabsf(mPos.x - field_0x5f4.x) < 0.1f && __fabsf(mPos.y - field_0x5f4.y) < 0.1f) {
             fn_801D5D84(23);
         }
         break;
@@ -808,16 +808,15 @@ void VaatiBoss_804A4958::fn_801D4C70() {
         return;
     case 0x15: {
         JGeometry::TVec2f out;
-        JGeometry::TVec3f target(field_0x5ec, field_0x5f0, 0.0f);
-        fn_801D01A0(&target, &out, 1.5f);
+        // fn_801D01A0 reads only (x, y) of its target; the original passes this 8-byte TVec2f slot.
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x5ec, &out, 1.5f);
         field_0x3c.x = out.x;
         field_0x3c.y = out.y;
         return;
     }
     case 0x16: {
         JGeometry::TVec2f out;
-        JGeometry::TVec3f target(field_0x5f4, field_0x5f8, 0.0f);
-        fn_801D01A0(&target, &out, 0.5f);
+        fn_801D01A0((const JGeometry::TVec3f*)&field_0x5f4, &out, 0.5f);
         field_0x3c.x = out.x;
         field_0x3c.y = out.y;
         return;
