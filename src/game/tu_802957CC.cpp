@@ -1833,8 +1833,12 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
         p.x += mBox.i.x;
         p.x += 8.0f;
         for (s32 i = 0; i < 6; i++) {
-            if (!gBgRewrite_8053AC98->fn_802A1490(&p) ||
-                fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            if (!gBgRewrite_8053AC98->fn_802A1490(&p)) {
+                ok = false;
+                break;
+            }
+            CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+            if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
                 ok = false;
                 break;
             }
