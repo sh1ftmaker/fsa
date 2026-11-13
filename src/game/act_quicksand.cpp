@@ -275,7 +275,7 @@ void cls_804A6270::vfunc_0x54() {
 // Not auto-inlined: vfunc_0x90 calls fn_80211EB0 and fn_80211C94 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 94.62 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.78 %, missing/extra; behaviour near.
 void cls_804A6270::fn_80211EB0() {
     if (mState != 0) {
         for (s32 i = 0; i < 4; i++) {
@@ -551,10 +551,9 @@ bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
-// FIXME: 92.23 %, missing/extra; behaviour drift.
 // JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
-// scale match. The original picks the length with one fsel on
-// (push - field_0x3a4) where ours compares and branches.
+// scale match. Ours adds one frsp after the fsel.
+// FIXME: 98.64 %, missing/extra; behaviour near.
 void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= 0.0f && mState != 0) {
@@ -566,7 +565,8 @@ void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
                 out->z = 0.0f;
                 out->normalize();
                 f32 push = dist - 2.0f;
-                out->scale(push < field_0x3a4 ? push : field_0x3a4);
+                push = __fsel(push - field_0x3a4, field_0x3a4, push);
+                out->scale(push);
             }
         }
     }
