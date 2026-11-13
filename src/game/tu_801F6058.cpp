@@ -807,7 +807,7 @@ void addCalcAngle2_801F714C(u16* value, u16 target, u16 step, u16 maxStep) {
     }
 }
 
-// FIXME(shotgun): 67.29 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.87 %, missing/extra + reloc-name; behaviour near.
 // The pairwise push pass over the actors fn_801F871C listed in field_0x201c: each pair on the
 // same layer whose boxes overlap (and the second's 0xBC is not lower) records the other's
 // serial in field_0x9c. Kind 2 (0xB8) only records it; the others are pushed out of the overlap
