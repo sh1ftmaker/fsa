@@ -1076,19 +1076,20 @@ void SmallKey_804A8CD8::fn_802C2840() {
 }
 
 // 0x802C2684.
-// FIXME(shotgun): 91.07 %, missing/extra
+// FIXME(shotgun): regalloc-only (f0/f1 swapped in the screen-offset block)
 bool SmallKey_804A8CD8::fn_802C2684(ActorBase_804A5770* other, JGeometry::TBox2f* box) {
     if (other == NULL) {
         return false;
     }
     u32 id = other->mActorId;
     if (id == ACTOR_LIFT || id == ACTOR_LIF2 || id == ACTOR_CLOD ||
-        (id == ACTOR_OBLF && static_cast<OBJLift_804ACA00*>(other)->field_0x230 != 0) ||
+        (id == ACTOR_OBLF && static_cast<OBJLift_804ACA00*>(other)->field_0x230 == 0) ||
         (id == ACTOR_SSLF && (static_cast<SeesawLift_804AD348*>(other)->field_0x230 & 0x7FFF) == 0)) {
         JGeometry::TBox2f theirs(other->mBox);
         theirs.addPos(other->mPos.x, other->mPos.y);
         s32 layer = other->field_0x4;
-        JGeometry::TBox2f* screen = layer < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+        GameView_804A9950* view = getGameView_802D6A9C();
+        JGeometry::TBox2f* screen = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         theirs.addPos(-screen->i.x, -screen->i.y);
         if (theirs.intersect(*box)) {
             return true;
