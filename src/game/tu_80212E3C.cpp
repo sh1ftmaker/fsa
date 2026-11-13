@@ -90,10 +90,12 @@ void cls_804A6340::fn_80213774(int mode) {
         break;
     case 4:
         {
-            mBox.i.x = -8.0f * field_0x54.x;
-            mBox.i.y = -8.0f * field_0x54.y;
-            mBox.f.x = 8.0f * field_0x54.x;
-            mBox.f.y = 8.0f * field_0x54.y;
+            f32 vx = field_0x54.x;
+            f32 vy = field_0x54.y;
+            mBox.i.x = -8.0f * vx;
+            mBox.i.y = -8.0f * vy;
+            mBox.f.x = 8.0f * vx;
+            mBox.f.y = 8.0f * vy;
         }
         field_0x250 = fn_801CD664(0x3D) + 0x1E;
         mAnim.fn_801D22A0(1, 2);
@@ -101,19 +103,23 @@ void cls_804A6340::fn_80213774(int mode) {
         break;
     case 5:
         {
-            mBox.i.x = -8.0f * field_0x54.x;
-            mBox.i.y = -8.0f * field_0x54.y;
-            mBox.f.x = 8.0f * field_0x54.x;
-            mBox.f.y = 8.0f * field_0x54.y;
+            f32 vx = field_0x54.x;
+            f32 vy = field_0x54.y;
+            mBox.i.x = -8.0f * vx;
+            mBox.i.y = -8.0f * vy;
+            mBox.f.x = 8.0f * vx;
+            mBox.f.y = 8.0f * vy;
         }
         mAnim.startAnim_801D22DC(2, 0, false);
         break;
     case 6:
         {
-            mBox.i.x = -8.0f * field_0x54.x;
-            mBox.i.y = -8.0f * field_0x54.y;
-            mBox.f.x = 8.0f * field_0x54.x;
-            mBox.f.y = 8.0f * field_0x54.y;
+            f32 vx = field_0x54.x;
+            f32 vy = field_0x54.y;
+            mBox.i.x = -8.0f * vx;
+            mBox.i.y = -8.0f * vy;
+            mBox.f.x = 8.0f * vx;
+            mBox.f.y = 8.0f * vy;
         }
         mAnim.startAnim_801D22DC(3, 0, false);
         break;
