@@ -10,7 +10,8 @@ static const f32 lbl_804721C8[3] = {-5.0f, -2.5f, 0.0f};
 static const s32 lbl_804721D4[15] = {30, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 10, 1};
 
 
-// FIXME: 99.72 %. The zeroing loop's store order differs (the original stores
+// FIXME: 99.88 %, scheduling; behaviour clean.
+// The zeroing loop's store order differs (the original stores
 // each field_0x254 vector as z, y, x, this build x, y, z).
 // 0x8034EAB4.
 void cls_804AC9A8::init() {
@@ -34,7 +35,7 @@ void cls_804AC9A8::init() {
 }
 
 // 0x8034E49C.
-// FIXME(shotgun): 90.40 %, missing/extra
+// FIXME(shotgun): 90.40 %, missing/extra; behaviour near.
 void cls_804AC9A8::update() {
     JGeometry::TBox2f box(mBox);
     box.addPos(mPos.x, mPos.y);
@@ -192,11 +193,6 @@ void cls_804AC9A8::draw() {
 }
 
 
-// FIXME: 73.26 %. After the probe loop the original computes pos - players[nearest]
-// (TVec3 operator-: copy of pos, sub, return copy, three stack copies) and never
-// reads it; that dead result is missing here (15 instructions), so the stack
-// slots after it move. The .sdata2 literal order also differs (-60 and 120 are
-// first used in the other order in the original).
 void cls_804AC9A8::fn_8034E050() {
     JGeometry::TVec3f players[4];
     u8 taken[4];
@@ -225,8 +221,8 @@ void cls_804AC9A8::fn_8034E050() {
             JGeometry::TVec3f pos = mPos;
             pos.x += storeX;
             pos.y += (16.0f * (f32)k + -8.0f) + lbl_804721C8[field_0x238];
+            JGeometry::TVec3f offset = pos - players[nearest];
             field_0x254[nearest] = pos;
-            field_0x254[nearest].z = mPos.z;
             taken[nearest] = 1;
         }
     }
