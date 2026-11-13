@@ -66,9 +66,11 @@ void cls_804A4C58::init() {
     field_0x114 = 0;
     field_0x196 = 1;
     GameView_804A9950* view = getGameView_802D6A9C();
-    JGeometry::TBox2f* box = &view->mVisibleBox;
+    JGeometry::TBox2f* box;
     if (field_0x4 >= 8) {
         box = &view->field_0xdc;
+    } else {
+        box = &view->mVisibleBox;
     }
     JGeometry::TVec3f p;
     p.x = mPos.x;
