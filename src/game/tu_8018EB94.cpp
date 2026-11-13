@@ -101,7 +101,7 @@ void cls_804A1FA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 92.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.44 %, different + reloc-name; behaviour drift.
 // the body of `if (field_0x230 == 0)` is laid out
 // with beq/b in the original, ours skips it with bne; register and literal differences in the rest.
 void cls_804A1FA0::update() {
