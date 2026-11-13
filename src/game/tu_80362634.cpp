@@ -85,8 +85,8 @@ void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
 
-// FIXME(shotgun): 52.86 %, missing/extra + reloc-name; behaviour drift.
-// (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
+// FIXME(shotgun): 92.85 %, missing/extra + reloc-name; behaviour drift.
+// (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; the 2c4 stores are not paired as in the original)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -127,24 +127,54 @@ void cls_804ADF28::fn_803653EC() {
         switch (field_0x238 & 3) {
         case 0: {
             field_0x26c = 0x391;
-            static JGeometry::TVec3f offsets[3] = {
+            static JGeometry::TVec3f lbl_8050C0B8[3] = {
                 JGeometry::TVec3f(-16.0f, 16.0f, 0.0f),
                 JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
                 JGeometry::TVec3f(0.0f, 32.0f, 0.0f),
             };
             for (int i = 0; i < 3; i++) {
-                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2a0[i] = mPos + lbl_8050C0B8[i];
                 field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
                                    (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
                 field_0x2e8[i] = lbl_80474A5C[i];
             }
             break;
         }
-        case 1:
-        case 2:
-        case 3:
-            // FIXME(shotgun): cases 1-3 not written (the three formation set-ups; sprites 0x388, 0x38E, 0x391 respectively).
+        case 1: {
+            field_0x26c = 0x388;
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x388;
+            }
             break;
+        }
+        case 2: {
+            field_0x26c = 0x38E;
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x38E;
+            }
+            break;
+        }
+        case 3: {
+            field_0x26c = 0x391;
+            static JGeometry::TVec3f lbl_8050C0DC[3] = {
+                JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
+                JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
+                JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+            };
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + lbl_8050C0DC[i];
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x391;
+            }
+            break;
+        }
         }
         field_0x238++;
     } else {
@@ -460,7 +490,7 @@ void cls_804ADF28::fn_80364900() {
     }
 }
 
-// FIXME(shotgun): 97.27 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.29 %, different + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803645B4() {
     if (field_0x248 == 0 || field_0x238 != 0) {
         if (field_0x238 == 0) {
@@ -535,7 +565,7 @@ void cls_804ADF28::fn_803645B4() {
     }
 }
 
-// FIXME(shotgun): 97.87 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 98.28 %, missing/extra + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80364340() {
     if (field_0x248 == 0) {
         JGeometry::TVec3f oldPos = mPos;
@@ -664,9 +694,8 @@ void cls_804ADF28::fn_80363F7C() {
     mPos.add(field_0x3c);
 }
 
-// FIXME(shotgun): 94.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.24 %, different + reloc-name; behaviour near.
 void cls_804ADF28::fn_80363880() {
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     s32 slot = field_0x24c;
     if (slot >= 0) {
         ActorBase_804A5770* owl = getActorManager_801F856C()->mActors[slot];
@@ -682,8 +711,8 @@ void cls_804ADF28::fn_80363880() {
                 target.z = 0.0f;
                 if (PSVECDistance(&mPos, &target) >= 10.0f) {
                     field_0x240 = (s16)(JMath::atanTable_.atan2_(target.y - mPos.y, target.x - mPos.x) * 10430.378f);
-                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                    field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
                 }
                 u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
                 if (angle >= 0x2000 && angle < 0x6000) {
@@ -709,14 +738,12 @@ void cls_804ADF28::fn_80363880() {
         for (s32 i = 0; i < end; i++) {
             EndingOwl_804ADF28* actor = static_cast<EndingOwl_804ADF28*>(getActorManager_801F856C()->mActors[i]);
             if (actor != NULL && actor->mActorId == ACTOR_EOWL && actor->mAlive == true && actor->field_0x278 == 0) {
-                if (PSVECDistance(&mPos, &actor->mPos) >= 100.0f) {
-                    break;
-                }
-                field_0x24c = i;
+                if (PSVECDistance(&mPos, &actor->mPos) < 100.0f) {
+                    field_0x24c = i;
                 JGeometry::TVec3f target = actor->mPos;
                 field_0x240 = (s16)(JMath::atanTable_.atan2_(actor->mPos.y - mPos.y, actor->mPos.x - mPos.x) * 10430.378f);
-                field_0x3c.x = 0.8f * sincos.cosShort(field_0x240);
-                field_0x3c.y = 0.8f * sincos.sinShort(field_0x240);
+                field_0x3c.x = 0.8f * JMath::sincosTable_.cosShort(field_0x240);
+                field_0x3c.y = 0.8f * JMath::sincosTable_.sinShort(field_0x240);
                 u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
                 if (angle >= 0x2000 && angle < 0x6000) {
                     field_0x23c = 0;
@@ -733,6 +760,7 @@ void cls_804ADF28::fn_80363880() {
                 field_0x25c = field_0x270[0];
                 field_0x264 = field_0x274[0];
                 field_0x258 = 0;
+                }
                 break;
             }
         }
@@ -753,16 +781,16 @@ void cls_804ADF28::fn_80363880() {
                     } else {
                         field_0x240 -= 0x1000;
                     }
-                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                    field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
                     field_0x248 = 0x40;
                 }
             }
             if (PSVECDistance(&mPos, &field_0x27c[0]) >= 60.0f) {
                 field_0x248 = 0x80;
                 field_0x240 = (s16)(JMath::atanTable_.atan2_(field_0x27c[0].y - mPos.y, field_0x27c[0].x - mPos.x) * 10430.378f);
-                field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
             }
         }
     }
@@ -886,7 +914,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 84.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     bool skip = false;
     JGeometry::TVec3f pos = mPos;
@@ -926,7 +954,7 @@ void cls_804ADF28::fn_80362C44() {
             field_0x264++;
             field_0x264 &= 7;
         }
-        field_0x2f8 += fabs(field_0x3c.y);
+        field_0x2f8 += __fabsf(field_0x3c.y);
         if (field_0x2f8 >= 160.0f) {
             field_0x238++;
             field_0x3c.x = 0.0f;
@@ -965,22 +993,23 @@ void cls_804ADF28::fn_80362C44() {
                 field_0x264 &= 7;
             }
             skip = true;
-            field_0x2f8 += fabs(field_0x3c.y);
+            field_0x2f8 += __fabsf(field_0x3c.y);
             if (field_0x2f8 >= 80.0f) {
                 field_0x248 = 300;
                 field_0x250 = (f32)gGameRoot2_8053AB10->field_0x2c->field_0xc;
                 field_0x254 = field_0x250 / (f32)field_0x248;
                 JGeometry::TVec3f effectPos;
-                effectPos.x = 0.0f;
-                effectPos.y = 0.0f;
+                effectPos.x = (f32)(s32)(mPos.x * 0.001953125f) * 512.0f + 256.0f;
+                effectPos.y = (f32)(s32)(mPos.y / 384.0f) * 384.0f + 192.0f;
                 effectPos.z = 0.0f;
-                // FIXME(shotgun): the original positions the first four effects from mPos
-                // (a stack-converted fctiwz pair); written with the plain position here.
                 static const u16 lbl_80542AF0[4] = {0x4A4, 0x4A5, 0x4A6, 0x4A7};
                 for (int i = 0; i < 4; i++) {
                     spawnEmitter_8013CC50(0, &effectPos, lbl_80542AF0[i], 0, 0, NULL, NULL, true, 1.0f);
                     deleteEmitter(&field_0x30c[i]);
                 }
+                effectPos.x = 0.0f;
+                effectPos.y = 0.0f;
+                effectPos.z = 0.0f;
                 spawnEmitter_8013CC50(0, &effectPos, 0x55a, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(0, &effectPos, 0x55b, 0, 0, NULL, NULL, true, 1.0f);
                 spawnEmitter_8013CC50(0, &effectPos, 0x55c, 0, 0, NULL, NULL, true, 1.0f);
@@ -1026,8 +1055,8 @@ void cls_804ADF28::fn_80362C44() {
     case 7:
         gGameRoot2_8053AB10->field_0x2c->field_0xc = 0;
         skip = true;
-        deleteEmitter(&field_0x304);
-        deleteEmitter(&field_0x308);
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x304);
+        getEffectSystem_8013C824()->mEmitterManager->forceDeleteEmitter(field_0x308);
         gGameRoot_8053AAF8->fn_8013670C(1);
         field_0x238++;
         break;
