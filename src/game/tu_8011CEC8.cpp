@@ -101,7 +101,7 @@ s32 cls_8049DD68::vfunc_0x5C() {
 // Not auto-inlined: update and vfunc_0x54 call fn_8011D1B8 / fn_8011CF48 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 91.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 11.60 %, missing/extra + reloc-name; behaviour drift.
 // jump table and the dir[1] = -1 store in case 2 still differ
 void cls_8049DD68::fn_8011D1B8(s32 state) {
     switch (state) {
@@ -163,7 +163,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 77.76 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.35 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 0:
