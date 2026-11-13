@@ -48,6 +48,8 @@ public:
         s32 field_0x270w;
         s16 field_0x270;
     };
-}; // Size: 0x274 (init also stores words at 0x274 and 0x278, past the allocation)
+    /* 0x274 */ s32 field_0x274;
+    /* 0x278 */ s32 field_0x278;
+};
 
 #endif

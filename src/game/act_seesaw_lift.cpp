@@ -24,9 +24,7 @@ static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
 // Writes tile `tile` over the lift's 6 x 6 tile area.
 static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
-    JGeometry::TVec3f p = lift->mPos;
-    p.x += lift->mBox.i.x;
-    p.y += lift->mBox.i.y;
+    JGeometry::TVec3f p = lift->mPos + JGeometry::TVec3f(lift->mBox.i.x, lift->mBox.i.y, 0.0f);
     f32 baseY = p.y;
     lift->field_0x258 = 0;
     for (s32 row = 0; row < 6; row++) {
@@ -69,23 +67,16 @@ void SeesawLift_804AD348::init() {
     field_0x246[3] = 0;
     field_0x24a[3] = 0;
     field_0x250 = 0;
+    field_0x26c = 0;
     field_0x25c[0] = NULL;
     field_0x25c[1] = NULL;
     field_0x25c[2] = NULL;
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    JGeometry::TVec3f p = mPos + JGeometry::TVec3f(mBox.i.x, mBox.i.y, 0.0f);
-    f32 baseY = p.y;
-    field_0x258 = 0;
-    for (s32 row = 0; row < 6; row++) {
-        for (s32 col = 0; col < 6; col++) {
-            gBgRewrite_8053AC98->fn_802A381C(&p, field_0x4, 0x360);
-            p.y += 16.0f;
-        }
-        p.y = baseY;
-        p.x += 16.0f;
-    }
+    field_0x274 = 0;
+    field_0x278 = 0;
+    fillTiles(this, 864);
 }
 
 // FIXME: 90.79 %, scheduling+regalloc + reloc-name; behaviour clean.
