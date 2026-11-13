@@ -12,7 +12,7 @@
 #include "game/Player.h"
 #include "game/act/tu_8010089C.h"
 
-// FIXME(shotgun): 99.7 %, reloc-name
+// FIXME(shotgun): 99.68 %, reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::init() {
     if (field_0x90 & 0x10000) {
         fn_80100A90();
@@ -55,6 +55,7 @@ void WhackAMoleShop_8049C8EC::init() {
     }
 }
 
+// FIXME: 99.87 %, reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::update() {
     if (field_0x90 & 0x10000) {
         field_0x245++;
@@ -118,7 +119,7 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     }
 }
 
-// FIXME(shotgun): 87.28 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.82 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
         SpriteParams_801F5AE0 params;
@@ -133,11 +134,7 @@ void WhackAMoleShop_8049C8EC::draw() {
     } else {
         mPos.y = field_0x250 + field_0x258;
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x311 + field_0x247 * 2 + field_0x246, NULL, 0, 1.0f, 1.0f);
-        switch (field_0x230) {
-        case 5:
-        case 6:
-        case 7:
-        case 8:
+        if (field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7 || field_0x230 == 8) {
             lbl_8053AF18->field_0x30 = field_0x23c / 60;
             lbl_8053AF18->field_0x31 = (u8)((f32)(field_0x23c % 60) / 0.6f);
             lbl_8053AF18->field_0x32 |= 0x10;
@@ -145,12 +142,11 @@ void WhackAMoleShop_8049C8EC::draw() {
                 lbl_8053AF18->field_0x32 |= 1 << i;
                 lbl_8053AF18->field_0x2c[i] = (u8)field_0x260[i];
             }
-            break;
         }
     }
 }
 
-// FIXME(shotgun): 88.00 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.17 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
     JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f msgPos = mPos;
@@ -394,7 +390,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
     }
 }
 
-// FIXME(shotgun): 94.59 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.59 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x290 = static_cast<WhackAMoleShop_8049C8EC*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x90 & 0xFFFF));
     mBox.i.x = -12.0f;
@@ -470,7 +466,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 96.4 %, missing/extra
+// FIXME(shotgun): 96.83 %, missing/extra + reloc-name; behaviour near.
 void WhackAMoleShop_8049C8EC::vfunc_0x44() {
     s32 player = field_0x10c;
     if (player < 0) {
