@@ -50,7 +50,8 @@ cls_801D6A58::cls_801D6A58() {
 
 cls_801E6AB8::~cls_801E6AB8() {}
 
-// FIXME: 99.90%. reloc-name. The original calls fn_801D77B4 (an identical copy of cls_801D7730's constructor, tu_801D6CEC) for the member at 0x4C4; ours calls __ct__12cls_801D7730Fv.
+// FIXME: 99.90 %, reloc-name; behaviour drift.
+// reloc-name. The original calls fn_801D77B4 (an identical copy of cls_801D7730's constructor, tu_801D6CEC) for the member at 0x4C4; ours calls __ct__12cls_801D7730Fv.
 VaatiBoss_804A4958::VaatiBoss_804A4958() {
     field_0x5b0 = -1;
     field_0x5b4 = 0;
@@ -94,7 +95,8 @@ VaatiBoss_804A4958::VaatiBoss_804A4958() {
     field_0x448.mOwner = this;
 }
 
-// FIXME: 96.98%. scheduling+regalloc + reloc-name. Float conversion temporaries and the stores of field_0x5f0 / field_0x5f4 / field_0x5f8 are scheduled differently.
+// FIXME: 96.98 %, scheduling+regalloc + reloc-name; behaviour clean.
+// scheduling+regalloc + reloc-name. Float conversion temporaries and the stores of field_0x5f0 / field_0x5f4 / field_0x5f8 are scheduled differently.
 void VaatiBoss_804A4958::init() {
     EnemyBase_804A4808::init();
     field_0x5dc = field_0x90 & 0xF;
@@ -175,7 +177,8 @@ void VaatiBoss_804A4958::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
-// FIXME: 97.13%. regalloc-only + reloc-name. Register allocation of the random-velocity arithmetic.
+// FIXME: 97.13 %, regalloc-only + reloc-name; behaviour clean.
+// regalloc-only + reloc-name. Register allocation of the random-velocity arithmetic.
 void VaatiBoss_804A4958::fn_801D63D0() {
     for (s32 i = 0; i < 5; i++) {
         s32 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, 2);
@@ -192,7 +195,7 @@ void VaatiBoss_804A4958::fn_801D63D0() {
     }
 }
 
-// FIXME(shotgun): 94.83 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.83 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     switch (state) {
     case 1:
@@ -376,34 +379,34 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
     mState = state;
 }
 
-// FIXME(shotgun): 88.96 %, different + reloc-name
+// FIXME(shotgun): 91.97 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::fn_801D5B70() {
     if (mStateTimer >= field_0x250) {
         if (fn_801CD2F8(field_0x4)) {
             if (field_0x5d0 == 0) {
                 fn_801D5D84(0x15);
-            } else if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
-                bool found = false;
-                s32 player = fn_801D05F8(&mPos, 160.0f);
-                if (player >= 0) {
-                    const JGeometry::TVec3f* p = getPlayerPos_8023E724(player);
-                    found = true;
-                    JGeometry::TVec2f d(p->x - mPos.x, p->y - mPos.y);
-                    if (d.squared() <= JGeometry::TUtilf::epsilon()) {
-                        d.set(1.0f, 0.0f);
-                    }
-                    d.normalize();
-                    field_0x5c4 = mPos.x;
-                    field_0x5c8 = mPos.y;
-                    field_0x5c4 += d.x * 10000.0f;
-                    field_0x5c8 += d.y * 10000.0f;
-                }
-                if (found) {
-                    fn_801D5D84(0x11);
-                } else {
-                    fn_801D5D84(0xF);
-                }
             } else {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.6f) {
+                    bool found = false;
+                    s32 player = fn_801D05F8(&mPos, 160.0f);
+                    if (player >= 0) {
+                        const JGeometry::TVec3f* p = getPlayerPos_8023E724(player);
+                        found = true;
+                        JGeometry::TVec2f d(p->x - mPos.x, p->y - mPos.y);
+                        if (d.squared() <= JGeometry::TUtilf::epsilon()) {
+                            d.set(1.0f, 0.0f);
+                        }
+                        d.normalize();
+                        field_0x5c4 = mPos.x;
+                        field_0x5c8 = mPos.y;
+                        field_0x5c4 += d.x * 10000.0f;
+                        field_0x5c8 += d.y * 10000.0f;
+                    }
+                    if (found) {
+                        fn_801D5D84(0x11);
+                        return;
+                    }
+                }
                 fn_801D5D84(0xF);
             }
         } else if (field_0x5d0 == 0) {
@@ -436,7 +439,7 @@ static inline s32 pickTarget(VaatiBoss_804A4958* boss) {
     return chosen;
 }
 
-// FIXME(shotgun): 99.37 %, different + reloc-name
+// FIXME(shotgun): 99.37 %, different + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -653,7 +656,7 @@ void VaatiBoss_804A4958::vfunc_0x94() {
 }
 
 // The step of the vtable slot 0x9C (0x801D5180, a plain `fn_801D5180` symbol in the original).
-// FIXME(shotgun): 93.87 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.92 %, missing/extra + reloc-name; behaviour clean.
 void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
     if (!(mFlags & 0x2000)) {
         if (mState >= 1 && mState < 4) {
@@ -696,7 +699,7 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
 }
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
-// FIXME(shotgun): 92.28 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.28 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
@@ -785,7 +788,8 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     fn_801E4A18(&field_0x52c.field_0x28);
 }
 
-// FIXME(shotgun): 74.69 %, missing/extra + reloc-name (the follow flag and target selection are shaped differently; the 0x5EC/0x5F4 pairs are copied into a TVec3f temp because the original passes the field address itself)
+// FIXME(shotgun): 74.69 %, missing/extra + reloc-name; behaviour drift.
+// (the follow flag and target selection are shaped differently; the 0x5EC/0x5F4 pairs are copied into a TVec3f temp because the original passes the field address itself)
 void VaatiBoss_804A4958::fn_801D4C70() {
     switch (mState) {
     case 1:
@@ -862,7 +866,7 @@ void VaatiBoss_804A4958::fn_801D4C70() {
     addCalc2_801F71A4(&field_0x3c.y, dy, 0.3f, 1.0f);
 }
 
-// FIXME(shotgun): 99.39 %, reloc-name
+// FIXME(shotgun): 99.39 %, reloc-name; behaviour clean.
 void VaatiBoss_804A4958::vfunc_0x88() {
     fn_801D4C70();
     switch (mState) {
@@ -885,7 +889,8 @@ void VaatiBoss_804A4958::vfunc_0x88() {
     }
 }
 
-// FIXME: 98.45%. missing/extra. The original reloads mFlags (0x230) before clearing 0x8000; ours reuses the loaded value.
+// FIXME: 98.45 %, missing/extra; behaviour near.
+// missing/extra. The original reloads mFlags (0x230) before clearing 0x8000; ours reuses the loaded value.
 void VaatiBoss_804A4958::vfunc_0x74() {
     if (mState == 5) {
         fn_801E4D74();
@@ -922,7 +927,7 @@ void VaatiBoss_804A4958::vfunc_0x74() {
 
 // The camera step of the vtable slot 0xA0 (0x801D47DC, a plain `fn_801D47DC` symbol in the original):
 // follows Vaati (its ground position) with the camera, by state.
-// FIXME(shotgun): 90.17 %, different + reloc-name
+// FIXME(shotgun): 96.41 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0xA0() {
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* box = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
@@ -955,7 +960,9 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         if (cam->field_0x7f5 == 0) {
             cam->field_0x7f4 = 1;
             cam->field_0x7f8 = 4;
-            cam->field_0x7fc = focus;
+            cam->field_0x7fc.x = focus.x;
+            cam->field_0x7fc.y = focus.y;
+            cam->field_0x7fc.z = focus.z;
             cam->field_0x7f6 = 0;
         }
         break;
@@ -964,11 +971,11 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
         if (cam->field_0x840 == 0) {
             cam->field_0x840 = 1;
-            cam->field_0x854 = 1.0f;
             cam->field_0x844.f.x = focus.x;
             cam->field_0x844.i.x = focus.x;
             cam->field_0x844.f.y = focus.y;
             cam->field_0x844.i.y = focus.y;
+            cam->field_0x854 = 1.0f;
             cam->field_0x1d4 = -1.0f;
             cam->field_0x1d8 = -1.0f;
         }
@@ -986,10 +993,9 @@ void VaatiBoss_804A4958::vfunc_0xA0() {
         break;
     }
     default: {
-        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
-        cam->addFocusPoint_8030C210(&focus);
-        if (cam->field_0x179 == 0) {
-            cam->field_0x178 = 1;
+        gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
+        if (gGameRoot2_8053AB10->field_0x24->field_0x179 == 0) {
+            gGameRoot2_8053AB10->field_0x24->field_0x178 = 1;
         }
         break;
     }
