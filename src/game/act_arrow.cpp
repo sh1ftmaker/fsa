@@ -100,7 +100,7 @@ bool ArrowPlayer_804A05E0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, lbl_804662E8) == true) {
         return true;
     }
-    u16 code = fn_8022461C(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
     s32 tile = fn_80226850(pos, layer);
     if ((u32)(code - 0x10) <= 7 || (tile >= 0x140 && tile <= 0x15F)) {
         field_0x23c = 0;
