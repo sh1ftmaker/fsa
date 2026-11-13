@@ -401,7 +401,7 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
-// FIXME(shotgun): 54.8 %, missing/extra + reloc-name (structure, branches and constants follow the asm; the original builds the distance/angle with inlined TVec2 temporaries)
+// FIXME(shotgun): missing/extra + reloc-name (TUtilf::sqrt tests x > 0 in the original, not x <= 0; fn_802303FC's flag is passed as 0xFF there; field_0x4 is loaded late)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
     for (s32 p = 0; p < 4; p++) {
@@ -413,12 +413,9 @@ bool cls_804AA350::fn_802ED538() {
                 if (pos->z == 0.0f) {
                     f32 dx = mPos.x - pos->x;
                     f32 dy = (32.0f + mPos.y) - pos->y;
-                    e.mPos.z = getPlayerPos_8023E724(p)->z;
+                    e.mPos = *getPlayerPos_8023E724(p);
                     f32 len = dx * dx + dy * dy;
-                    if (len > 0.0f) {
-                        len = len * (1.0f / std::sqrtf(len));
-                    }
-                    e.mDist = len;
+                    e.mDist = JGeometry::TUtilf::sqrt(len);
                     e.mAngle = (s16)(s32)(JMath::atanTable_.atan2_(-dx, -dy) * 10430.378f);
                     e.mActive = 1;
                     fn_80230AD4(p);
