@@ -269,14 +269,16 @@ void cls_804A7AE0::fn_8029A974() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        s32 r;
-        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4 &&
-            (r = fn_80238BC4(mSerial), r >= 0 && r < 4)) {
-            field_0x2cc = 1;
-        } else {
-            r = -1;
+        if (fn_80239108(mSerial) >= 4) {
+            s32 layer = field_0x4;
+            if (getPlayerLayer_8023DE58(0) == layer) {
+                s32 r = fn_80238BC4(mSerial);
+                if (r >= 0 && r < 4) {
+                    field_0x2cc = 1;
+                    dir = r;
+                }
+            }
         }
-        dir = r;
         if (dir == -1) {
             JGeometry::TBox2f box;
             box.i.x = field_0x80.i.x;
@@ -291,22 +293,17 @@ void cls_804A7AE0::fn_8029A974() {
                 s32 q = fn_8023885C(mSerial);
                 if (q >= 0 && q < 4) {
                     if (q == 0) {
-                        r = 1;
+                        dir = 1;
                     } else if (q == 1) {
-                        r = 0;
+                        dir = 0;
                     } else if (q == 2) {
-                        r = 3;
+                        dir = 3;
                     } else if (q == 3) {
-                        r = 2;
+                        dir = 2;
                     }
                     field_0x2cc = -1;
-                } else {
-                    r = -1;
                 }
-            } else {
-                r = -1;
             }
-            dir = r;
         }
     }
     if (dir != 3) {
@@ -320,14 +317,16 @@ void cls_804A7AE0::fn_8029A974() {
     p.y += mBox.i.y;
     p.y -= 8.0f;
     p.z = 0.0f;
-    f32 minX = view.i.x + 32.0f;
-    f32 minY = view.i.y + 32.0f;
-    f32 maxX = view.f.x - 32.0f;
-    f32 maxY = view.f.y - 32.0f;
+    const f32 inset = -32.0f;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
