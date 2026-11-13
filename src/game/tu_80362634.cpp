@@ -85,7 +85,7 @@ void cls_804ADF28::fn_80365AB8() {
     (this->*lbl_804ADDE8[field_0x234])();
 }
 
-// FIXME(shotgun): 52.86 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.85 %, missing/extra + reloc-name; behaviour drift.
 // (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; the 2c4 stores are not paired as in the original)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
@@ -490,7 +490,7 @@ void cls_804ADF28::fn_80364900() {
     }
 }
 
-// FIXME(shotgun): 97.27 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.29 %, different + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803645B4() {
     if (field_0x248 == 0 || field_0x238 != 0) {
         if (field_0x238 == 0) {
@@ -565,7 +565,7 @@ void cls_804ADF28::fn_803645B4() {
     }
 }
 
-// FIXME(shotgun): 97.87 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 98.28 %, missing/extra + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80364340() {
     if (field_0x248 == 0) {
         JGeometry::TVec3f oldPos = mPos;
@@ -694,7 +694,7 @@ void cls_804ADF28::fn_80363F7C() {
     mPos.add(field_0x3c);
 }
 
-// FIXME(shotgun): 94.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.24 %, different + reloc-name; behaviour near.
 void cls_804ADF28::fn_80363880() {
     s32 slot = field_0x24c;
     if (slot >= 0) {
@@ -914,7 +914,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 84.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     bool skip = false;
     JGeometry::TVec3f pos = mPos;
