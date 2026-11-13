@@ -399,9 +399,8 @@ void Log_804ACD70::fn_80354FE8() {
         if (field_0x2cc == 1) {
             field_0x2cc = 0;
         } else {
-            JGeometry::TBox2f box;
-            box.set(field_0x80.i.x + mPos.x, field_0x80.i.y + mPos.y, field_0x80.f.x + mPos.x,
-                    field_0x80.f.y + mPos.y);
+            JGeometry::TBox2f box = field_0x80;
+            box.set(box.i.x + mPos.x, box.i.y + mPos.y, box.f.x + mPos.x, box.f.y + mPos.y);
             s32 dirA = -1;
             s32 dirB = -1;
             if (fn_80239470(&box, field_0x4, mSerial) >= 0 && fn_80238A68(mSerial) >= 4) {
@@ -433,9 +432,8 @@ void Log_804ACD70::fn_80354FE8() {
                 return;
             }
             JGeometry::TVec3f saved(mPos);
-            mPos.x += lbl_804722B0[dir][0];
-            mPos.y += lbl_804722B0[dir][1];
-            bool hit = fn_801F2618(NULL, false);
+            mPos += JGeometry::TVec3f(lbl_804722B0[dir][0], lbl_804722B0[dir][1], 0.0f);
+            u8 hit = fn_801F2618(NULL, false);
             mPos = saved;
             if (hit != true && fn_80354D64(dir)) {
                 if (dirA == -1 && dirB != -1) {
