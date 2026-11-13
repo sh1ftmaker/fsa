@@ -51,9 +51,7 @@ void cls_801D7730::fn_801D77B4() {
     field_0x0[0xF] = -1;
     field_0x40 = 0;
     field_0x44 = 0;
-    field_0x48 = 0.0f;
-    field_0x4c = 0.0f;
-    field_0x50 = 0.0f;
+    field_0x48.set(0.0f, 0.0f, 0.0f);
     field_0x54 = 0;
     field_0x56 = 0;
     field_0x58 = 0;
@@ -86,9 +84,7 @@ cls_801D7730::cls_801D7730() {
     field_0x0[0xF] = -1;
     field_0x40 = 0;
     field_0x44 = 0;
-    field_0x48 = 0.0f;
-    field_0x4c = 0.0f;
-    field_0x50 = 0.0f;
+    field_0x48.set(0.0f, 0.0f, 0.0f);
     field_0x54 = 0;
     field_0x56 = 0;
     field_0x58 = 0;
@@ -113,15 +109,13 @@ void cls_801D7730::fn_801D7638() {
     }
 }
 
-// FIXME(shotgun): 93.58 %, scheduling+regalloc; behaviour clean.
+// FIXME(shotgun): 93.93 %, scheduling+regalloc; behaviour clean.
 void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
     fn_801D77B4();
     field_0x40 = layer;
-    field_0x48 = pos->x;
-    field_0x4c = -22.0f + pos->y;
-    field_0x50 = pos->z;
+    field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
-        field_0x4c = -25.0f + pos->y;
+        field_0x48.y = -25.0f + pos->y;
     }
     s32 count;
     if (fn_801CD2F8(field_0x40)) {
@@ -132,19 +126,17 @@ void cls_801D7730::fn_801D74E0(const JGeometry::TVec3f* pos, s32 layer) {
         count = 16;
     }
     for (s32 i = 0; i < count; i++) {
-        field_0x0[i] = getActorManager_801F856C()->spawnActor_801F9484('BGBL', field_0x40, (const JGeometry::TVec3f*)&field_0x48, 0, -1, -1);
+        field_0x0[i] = getActorManager_801F856C()->spawnActor_801F9484('BGBL', field_0x40, &field_0x48, 0, -1, -1);
     }
 }
 
-// The ring's slot i is on a circle of radius field_0x5c around (field_0x48, field_0x4c).
-// FIXME: 67.39 %, missing/extra; behaviour drift.
+// The ring's slot i is on a circle of radius field_0x5c around (field_0x48.x, field_0x48.y).
+// FIXME: 75.33 %, missing/extra; behaviour drift.
 // FIXME(shotgun): the original stores d.x/d.y as one paired-single pair; ours uses separate stores.
 void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
-    field_0x48 = pos->x;
-    field_0x4c = -22.0f + pos->y;
-    field_0x50 = pos->z;
+    field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
-        field_0x4c = -25.0f + pos->y;
+        field_0x48.y = -25.0f + pos->y;
     }
     for (s32 i = 0; i < 16; i++) {
         s32 serial = field_0x0[i];
@@ -154,9 +146,9 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
                 s16 ang = -(s16)(field_0x54 + i * 0xFFF);
                 f32 s = JMath::sincosTable_.sinShort(ang);
                 f32 c = JMath::sincosTable_.cosShort(ang);
-                JGeometry::TVec3f center(field_0x48, field_0x4c, field_0x50);
-                JGeometry::TVec3f d(field_0x48 + (0.0f * c - field_0x5c * s), field_0x4c + (0.0f * s + field_0x5c * c),
-                                    field_0x50);
+                JGeometry::TVec3f center(field_0x48);
+                JGeometry::TVec3f d(field_0x48.x + (0.0f * c - field_0x5c * s), field_0x48.y + (0.0f * s + field_0x5c * c),
+                                    field_0x48.z);
                 d = d - center;
                 d.normalize();
                 d.scale(10.0f);
@@ -167,13 +159,11 @@ void cls_801D7730::fn_801D72C0(const JGeometry::TVec3f* pos) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 94.92 %, missing/extra; behaviour near.
+// FIXME(shotgun): 95.23 %, missing/extra; behaviour near.
 void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
-    field_0x48 = pos->x;
-    field_0x4c = -22.0f + pos->y;
-    field_0x50 = pos->z;
+    field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
-        field_0x4c = -25.0f + pos->y;
+        field_0x48.y = -25.0f + pos->y;
     }
     s32 serial = field_0x0[0];
     if (serial >= 0) {
@@ -205,13 +195,11 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
     field_0x44 = 4;
 }
 
-// FIXME(shotgun): 88.99 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 92.84 %, missing/extra; behaviour drift.
 void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
-    field_0x48 = pos->x;
-    field_0x4c = -22.0f + pos->y;
-    field_0x50 = pos->z;
+    field_0x48.set(pos->x, -22.0f + pos->y, pos->z);
     if (fn_801CD2F8(field_0x40)) {
-        field_0x4c = -25.0f + pos->y;
+        field_0x48.y = -25.0f + pos->y;
     }
     switch (field_0x44) {
     case 1: {
@@ -219,9 +207,7 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
         if (serial >= 0) {
             ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (a != NULL) {
-                a->mPos.x = field_0x48;
-                a->mPos.y = field_0x4c;
-                a->mPos.z = field_0x50;
+                a->mPos = field_0x48;
             }
         }
         break;
@@ -266,8 +252,8 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
                     s16 ang = -(s16)(field_0x54 + i * 0xFFF);
                     f32 s = JMath::sincosTable_.sinShort(ang);
                     f32 c = JMath::sincosTable_.cosShort(ang);
-                    JGeometry::TVec3f p(field_0x48 + (0.0f * c - field_0x5c * s), field_0x4c + (0.0f * s + field_0x5c * c),
-                                        field_0x50);
+                    JGeometry::TVec3f p(field_0x48.x + (0.0f * c - field_0x5c * s), field_0x48.y + (0.0f * s + field_0x5c * c),
+                                        field_0x48.z);
                     a->mPos = p;
                     if (field_0x44 == 2) {
                         ((cls_804A4BB0*)a)->fn_801D7DB4(field_0x60);
