@@ -1347,14 +1347,13 @@ void cls_804B1D58::fn_8044CB08(int arg) {
             f32 h = pane->mBounds.f.y - pane->mBounds.i.y;
             f32 y0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.y;
             f32 y1 = mScreen->search('Ndata06')->getBounds()->i.y;
-            JGeometry::TVec3f pos;
-            pos.y = 0.5f * h + (y1 + y0);
+            f32 y = 0.5f * h + (y1 + y0);
             pane = mScreen->search(lbl_804911D8[field_0x138]);
             f32 w = pane->mBounds.f.x - pane->mBounds.i.x;
             f32 x0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.x;
             f32 x1 = mScreen->search('Ndata06')->getBounds()->i.x;
-            pos.x = 0.5f * w + (x1 + x0);
-            pos.z = 0.0f;
+            f32 x = 0.5f * w + (x1 + x0);
+            JGeometry::TVec3f pos(x, y, 0.0f);
             field_0x6c[field_0x138] = spawnEmitter_8013CC50(0, &pos, lbl_804913B0[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
         }
         if (field_0x88[field_0x138] == NULL) {
@@ -1362,14 +1361,13 @@ void cls_804B1D58::fn_8044CB08(int arg) {
             f32 h = pane->mBounds.f.y - pane->mBounds.i.y;
             f32 y0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.y;
             f32 y1 = mScreen->search('Ndata06')->getBounds()->i.y;
-            JGeometry::TVec3f pos;
-            pos.y = 0.5f * h + (y1 + y0);
+            f32 y = 0.5f * h + (y1 + y0);
             pane = mScreen->search(lbl_804911D8[field_0x138]);
             f32 w = pane->mBounds.f.x - pane->mBounds.i.x;
             f32 x0 = mScreen->search(lbl_804911D8[field_0x138])->getBounds()->i.x;
             f32 x1 = mScreen->search('Ndata06')->getBounds()->i.x;
-            pos.x = 0.5f * w + (x1 + x0);
-            pos.z = 0.0f;
+            f32 x = 0.5f * w + (x1 + x0);
+            JGeometry::TVec3f pos(x, y, 0.0f);
             field_0x88[field_0x138] = spawnEmitter_8013CC50(0, &pos, lbl_804913C0[field_0x138], 0, 0, NULL, NULL, true, 1.0f);
         }
         field_0x6c[field_0x138]->setStatus(1);
