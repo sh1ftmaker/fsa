@@ -133,6 +133,9 @@ void Score_804AF4C0::draw() {
 static const u8 lbl_80543180[4] = {0x28, 0xFF, 0x32, 0xBE};
 static const u8 lbl_8054317C[4] = {0xFF, 0x50, 0xC8, 0x78};
 static const u8 lbl_80543184[4] = {0x28, 0x50, 0xFF, 0xFF};
+static const u8 lbl_80543170[4] = {0x28, 0xFF, 0x32, 0xBE};
+static const u8 lbl_80543174[4] = {0xFF, 0x50, 0xC8, 0x78};
+static const u8 lbl_80543178[4] = {0x28, 0x50, 0xFF, 0xFF};
 
 // Not auto-inlined: draw and update call these out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
@@ -209,7 +212,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     } else if (mValue < 100) {
         if (field_0x4 < 8) {
@@ -218,7 +221,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue / 10, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
         if (field_0x4 < 8) {
             Vec pos;
@@ -226,7 +229,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue - (mValue / 10) * 10, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)(255.0f * ((f32)mTimer / 90.0f))));
         }
     } else {
         if (field_0x4 < 8) {
@@ -235,7 +238,7 @@ void Score_804AF4C0::fn_80393228() {
             pos.y = mPos.y;
             pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, 10, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], (s32)fade));
+                                      JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     }
 }
