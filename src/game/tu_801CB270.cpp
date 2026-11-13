@@ -12,6 +12,7 @@
 #include "game/EmitterDelete.h"
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/act/act_bombchu.h"
 #include "game/act/tu_801688AC.h"
@@ -136,7 +137,7 @@ bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold) {
 
 // Moves *cur toward *target by `factor` of the way, the step clamped between minStep and
 // maxStep; true once the point is on the target.
-// FIXME(shotgun): 85.76 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 84.16 %, missing/extra; behaviour drift.
 bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep) {
     if (factor > 1.0f) {
         factor = 1.0f;
@@ -144,11 +145,12 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
         factor = 0.0f;
     }
     JGeometry::TVec2f d(target->x - cur->x, target->y - cur->y);
-    f32 len = d.length();
+    f32 sq = square(d.x) + square(d.y);
+    f32 len = JGeometry::TUtilf::sqrt(sq);
     if (len > 0.0f) {
         f32 step = len * factor;
         if (step < minStep) {
-            f32 f = (1.0f / len) * minStep;
+            f32 f = minStep * (1.0f / len);
             if (f > 1.0f) {
                 f = 1.0f;
             } else if (f < factor) {
@@ -156,7 +158,7 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
             }
             factor = f;
         } else if (step > maxStep) {
-            f32 f = (1.0f / len) * maxStep;
+            f32 f = maxStep * (1.0f / len);
             if (f > factor) {
                 f = factor;
             } else if (f < 0.0f) {
@@ -174,11 +176,7 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
         }
         cur->y = factor * (target->y - cur->y) + cur->y;
     }
-    bool arrived = false;
-    if (cur->x == target->x && cur->y == target->y) {
-        arrived = true;
-    }
-    return arrived;
+    return !(cur->x == target->x && cur->y == target->y);
 }
 
 // Catmull-Rom spline through p1 (t = 0) and p2 (t = 1), with p0 and p3 as
@@ -213,27 +211,31 @@ s32 fn_801CD580(s32 except) {
 }
 
 // A random integer in [0, 4) other than a and b.
-// FIXME(shotgun): 69.26 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 98.59 %, different; behaviour clean.
 s32 fn_801CD398(s32 a, s32 b) {
-    s32 choices[4];
-    s32 count = 0;
-    s32* out = choices;
     if (a == b) {
+        s32 choices[4];
+        s32 count = 0;
+        s32* out = choices;
         for (s32 i = 0; i < 4; i++) {
             if (i != a) {
                 *out++ = i;
                 count++;
             }
         }
+        return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
     } else {
+        s32 choices[4];
+        s32 count = 0;
+        s32* out = choices;
         for (s32 i = 0; i < 4; i++) {
             if (i != a && i != b) {
                 *out++ = i;
                 count++;
             }
         }
+        return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
     }
-    return choices[(s32)(count * gGameRoot_8053AAF8->mRandom.get_ufloat_1())];
 }
 
 // Swaps the pairs 0<->1 and 2<->3; any other value maps to 0.
