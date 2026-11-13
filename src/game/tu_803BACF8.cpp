@@ -73,7 +73,7 @@ static inline bool isCardStatusValid(CARDFileInfo* file) {
            CARDGetIconSpeed(&stat, 7) == CARD_STAT_SPEED_END;
 }
 
-// FIXME: 40.10 %, missing/extra; behaviour drift.
+// FIXME: 81.78 %, missing/extra; behaviour near.
 s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 bodySize) {
     snprintf((char*)(lbl_805222C0 + 0x1C00), 0x20, "Four Swords Adventures");
     OSCalendarTime cal;
