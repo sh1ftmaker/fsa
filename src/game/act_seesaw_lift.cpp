@@ -188,9 +188,9 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
 // FIXME(shotgun): 93.07 %, missing/extra + reloc-name; behaviour drift.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
+    s32 moved = 0;
     bool near = false;
     bool all = false;
-    s32 moved = 0;
     if (field_0x246[0] && field_0x246[1] && field_0x246[2] && field_0x246[3]) {
         all = true;
     }
@@ -200,7 +200,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
     bool flag = near;
     if (!gGameRoot_8053AAF8->field_0x7e) {
         bool owned = fn_8022CAF8(0) == 1;
-        flag = near && owned;
+        flag = near & owned;
     }
     if (field_0x240 != 0.0f) {
         if (flag || field_0x250 > 0) {
