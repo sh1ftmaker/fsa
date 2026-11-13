@@ -145,7 +145,8 @@ void Boulder_8049C4C0::fn_800F5E08() {
     s32 serial = fn_801F2718(ACTOR_OIWA);
     if (serial != -1) {
         ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-        JGeometry::TVec3f d(mPos.x - other->mPos.x, mPos.y - other->mPos.y, mPos.z - other->mPos.z);
+        JGeometry::TVec3f d;
+        d.sub(mPos, other->mPos);
         if (d.x > 0.0f) {
             field_0x3c.x = 0.5f;
         } else {
@@ -173,7 +174,7 @@ void Boulder_8049C4C0::fn_800F5E08() {
                 JGeometry::TVec3f p = mPos;
                 p.x += offset[0];
                 p.y += offset[1];
-                u16 code = fn_8022461C(&p, field_0x4);
+                s32 code = fn_8022461C(&p, field_0x4);
                 if ((code == 3 || code == 0xE || code == 2) && !vfunc_0x34()) {
                     getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
                     spawnEmitter_8013CC50(field_0x4, &mPos, 0x76, 0, 0, NULL, NULL, true, 0.8f);
@@ -182,9 +183,7 @@ void Boulder_8049C4C0::fn_800F5E08() {
                     startSound_801F0E34(0x4002C, 0);
                     s32 btin = getActorManager_801F856C()->fn_801F778C(ACTOR_BTIN, &mPos, NULL);
                     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(btin);
-                    mPos.x = actor->mPos.x;
-                    mPos.y = actor->mPos.y;
-                    mPos.z = actor->mPos.z;
+                    mPos = actor->mPos;
                     mPos.z = 0.0f;
                     mPos.y += 8.0f;
                 }
