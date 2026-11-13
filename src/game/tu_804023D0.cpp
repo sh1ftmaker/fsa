@@ -222,7 +222,7 @@ void GameState_804B0FE0::fn_80403680() {
     field_0x252 = 0;
 }
 
-// FIXME(shotgun): 55 %, missing/extra
+// FIXME(shotgun): 55.71 %, missing/extra; behaviour drift.
 void GameState_804B0FE0::fn_80403514() {
     field_0x118 = 0;
     field_0x11c = 0;
@@ -343,10 +343,12 @@ s32 fn_8040305C(s32 index) {
     return lbl_8048C170[index];
 }
 
-// FIXME(shotgun): 74 %, missing/extra (the original also keeps a second unread stack copy of pos and rounds z with frsp)
+// FIXME: 79.90 %, missing/extra; behaviour near.
+// FIXME(shotgun): missing/extra (the original also keeps a second unread stack copy of pos and rounds z with frsp)
 void fn_80402FBC(s32 player, JGeometry::TVec3f pos) {
     s32 i = fn_8022F340(player);
-    lbl_80529DEC.field_0x1c4[i].set(pos.x, pos.y, pos.z);
+    JGeometry::TVec3f copy = pos;
+    lbl_80529DEC.field_0x1c4[i].set(copy);
     lbl_80529DEC.field_0x236 |= 1 << fn_8022F340(player);
 }
 
@@ -378,7 +380,8 @@ void PaneCtrl_804AF86C::moveFromCentre_80402E08(f32 x, f32 y) {
     mPane->move(field_0x10 + x - 0.5f * mPane->getWidth(), field_0x14 + y - 0.5f * mPane->getHeight());
 }
 
-// FIXME: 99.59. Regalloc only: saved floats f29/f31/f28 are assigned in a different order.
+// FIXME: 99.59 %, regalloc-only; behaviour clean.
+// Regalloc only: saved floats f29/f31/f28 are assigned in a different order.
 void PaneCtrl_804AF86C::fn_80402CE0(f32 x, f32 y) {
     resizeKeepCentre(this, x, y);
 }
@@ -431,7 +434,8 @@ u8 PaneCtrl_804AF86C::fn_80402940(s16 frames, u8 mode, f32 x, f32 y) {
     return 0;
 }
 
-// FIXME: 99.56. Regalloc only: the original keeps the old width in f31 and the old y in f28, ours
+// FIXME: 99.56 %, regalloc-only; behaviour clean.
+// Regalloc only: the original keeps the old width in f31 and the old y in f28, ours
 // gets the four saved floats in a different order.
 u8 PaneCtrl_804AF86C::fn_8040271C(s16 frames, f32 x, f32 y) {
     if (field_0x24 < frames - 1) {
