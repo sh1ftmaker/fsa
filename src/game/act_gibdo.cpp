@@ -101,19 +101,29 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         s32 anim = 8;
         switch (kind) {
         case 0:
-            if (dir == 3) {
+            switch (dir) {
+            case 3:
                 anim = 9;
-            } else if (dir < 2) {
+                break;
+            case 2:
+                anim = 8;
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 8 : 9;
+                break;
             }
             break;
         case 1:
-            if (dir == 3) {
+            switch (dir) {
+            case 3:
                 anim = 11;
-            } else if (dir >= 2) {
+                break;
+            case 2:
                 anim = 10;
-            } else {
+                break;
+            default:
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 10 : 11;
+                break;
             }
             break;
         case 2:
@@ -151,18 +161,19 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         mLife = 1;
         JUtility::TColor color = gGameRoot2_8053AB10->field_0x2c->field_0x4;
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x329, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter1 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
-        JPABaseEmitter* emitter2 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
+        JPABaseEmitter* emitters[3];
+        emitters[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
+        emitters[1] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
+        emitters[2] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x54F, 0, 0, NULL, NULL, true, 1.0f);
-        if (emitter0 != NULL) {
-            emitter0->setColorRGB(color.r, color.g, color.b);
+        if (emitters[0] != NULL) {
+            emitters[0]->setColorRGB(color.r, color.g, color.b);
         }
-        if (emitter1 != NULL) {
-            emitter1->setColorRGB(color.r, color.g, color.b);
+        if (emitters[1] != NULL) {
+            emitters[1]->setColorRGB(color.r, color.g, color.b);
         }
-        if (emitter2 != NULL) {
-            emitter2->setColorRGB(color.r, color.g, color.b);
+        if (emitters[2] != NULL) {
+            emitters[2]->setColorRGB(color.r, color.g, color.b);
         }
         startSound_801F0E34(0x5007E, 0);
         startSound_801F0E34(0x40003, 0);
