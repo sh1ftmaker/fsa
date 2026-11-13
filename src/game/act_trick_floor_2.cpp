@@ -54,8 +54,18 @@ static inline void drawSmp(TrickFloor2_804AA628* self, const JGeometry::TVec3f* 
 
 // The tile index of a view-relative position (as init computes it).
 static inline s32 tileIndex(s32 tx, s32 ty) {
-    s32 cx = tx < 0 ? 0 : (tx >= 0x200 ? 0x1FF : tx);
-    s32 cy = ty < 0 ? 0 : (ty >= 0x200 ? 0x1FF : ty);
+    s32 cx = tx;
+    if (cx < 0) {
+        cx = 0;
+    } else if (cx >= 0x200) {
+        cx = 0x1FF;
+    }
+    s32 cy = ty;
+    if (cy < 0) {
+        cy = 0;
+    } else if (cy >= 0x200) {
+        cy = 0x1FF;
+    }
     return (cx & 0x100) | ((cy & 0x100) << 1) | (cy & 0xF0) | ((cx >> 4) & 0xF);
 }
 
