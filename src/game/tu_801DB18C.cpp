@@ -202,8 +202,10 @@ void cls_804A4EE8::fn_801DB6C8() {
             step = len;
         }
         d.normalize();
-        mSearchPos.x += d.x * step;
-        mSearchPos.y += d.y * step;
+        d.x *= step;
+        d.y *= step;
+        mSearchPos.x += d.x;
+        mSearchPos.y += d.y;
     }
     if (mFlags & 0x2000) {
         mAngle -= mAngleSpeed;
