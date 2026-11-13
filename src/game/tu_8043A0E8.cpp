@@ -803,7 +803,10 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
         field_0x1f4[2][field_0x252] = 0xFF;
         field_0x1f4[3][field_0x252] = 0xFF;
         field_0x1f4[4][field_0x252] = 0xFF;
-        bool seen = flag;
+        bool seen = false;
+        if (flag) {
+            seen = true;
+        }
         s32 div = 1;
         for (s32 i = 0; i < digits; i++) {
             div *= 10;
