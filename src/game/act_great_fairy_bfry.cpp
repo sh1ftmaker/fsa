@@ -214,7 +214,7 @@ void GreatFairy_804AF338::update() {
     }
 }
 
-// FIXME(shotgun): 92.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.99 %, missing/extra + reloc-name; behaviour clean.
 void GreatFairy_804AF338::draw() {
     if (field_0x248 != 1 && (field_0x240 & 2) && field_0x90 != 3) {
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x244 + 0x61, NULL, 7, 1.0f, 1.0f);
