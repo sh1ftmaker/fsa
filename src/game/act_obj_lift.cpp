@@ -399,7 +399,7 @@ s32 OBJLift_804ACA00::fn_80350974() {
     }
 
     for (s32 i = 0; i < 4; i++) {
-        if (field_0x283[i] == 1 && (fn_80230188(i) == 1 || fn_8022CCAC(i) == 1)) {
+        if (field_0x283[i] == 1 && (fn_80230188(i) || fn_8022CCAC(i))) {
             onLift = 1;
         }
     }
