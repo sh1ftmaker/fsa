@@ -226,8 +226,7 @@ void Cucco_804AB8C0::fn_80332A60() {
                 if (other->mActorId == ACTOR_FLME) {
                     JGeometry::TVec2f center2d(0.0f, 0.0f);
                     other->fn_801F3128(&center2d);
-                    JGeometry::TVec3f from(center2d.x - other->field_0x3c.x, center2d.y - other->field_0x3c.y,
-                                           0.0f - other->field_0x3c.z);
+                    JGeometry::TVec3f from = JGeometry::TVec3f(center2d.x, center2d.y, 0.0f) - other->field_0x3c;
                     hit = fn_801F37AC(other->field_0x118, &from, 0, other->field_0x168, other->field_0x110);
                 }
                 if (hit) {
