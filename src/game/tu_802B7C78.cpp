@@ -56,7 +56,7 @@ static inline bool playerInGame(s32 player) {
     return (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) != 0;
 }
 
-// FIXME(shotgun): 89.10 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 92.41 %, missing/extra; behaviour drift.
 void ReaperShinigami_804A886C::update() {
     if (gGameRoot_8053AAF8->field_0xfe == 0) {
         vfunc_0x24();
