@@ -33,7 +33,7 @@ extern const GoalTables_8046EA10 lbl_8046EA10;
 // FIXME(shotgun): 84.30 %, missing/extra; behaviour drift.
 void cls_804A9C20::init() {
     field_0x238 = field_0x90 & 0x1F;
-    field_0x240 = (field_0x90 >> 12) & 0x1F;
+    field_0x240 = (field_0x90 >> 22) & 0x1F;
     field_0x244 = (field_0x90 >> 7) & 1;
     field_0x23c = gGameRoot_8053AAF8->fn_80138A30();
     for (s32 i = 0; i < 4; i++) {
