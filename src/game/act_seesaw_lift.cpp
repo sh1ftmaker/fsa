@@ -39,7 +39,7 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 70.87 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 78.53 %, missing/extra + reloc-name; behaviour drift.
 // the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
@@ -390,7 +390,7 @@ static inline void setTiltMtx(Mtx mtx, s16 angle, f32 scale) {
     mtx[2][2] = scale * (ca * cx);
 }
 
-// FIXME: 83.28 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 90.69 %, different + reloc-name; behaviour drift.
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
