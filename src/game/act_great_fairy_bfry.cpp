@@ -227,7 +227,7 @@ void GreatFairy_804AF338::draw() {
             s32 frame = lbl_80475600[field_0x29c - 1];
             params.field_0x1d = 0;
             params.field_0x1c = 0;
-            mPos.set(field_0x284.x, field_0x284.y, field_0x284.z);
+            mPos = field_0x284;
             if (mState == 10 || mState == 11 || mState == 12) {
                 frame = lbl_80475600[field_0x29c + 10];
             }
@@ -239,7 +239,7 @@ void GreatFairy_804AF338::draw() {
             }
             drawSprite_801F06F0("enemy_both2_sob.bin", frame, &params, flags, 1.0f, 1.0f);
             fn_803075AC(mSerial, field_0x4, &mPos, frame, false, 2, -1, 1, 0, 0);
-            mPos.set(savedPos);
+            mPos = savedPos;
         }
     }
 }
