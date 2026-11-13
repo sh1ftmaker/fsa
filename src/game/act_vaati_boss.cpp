@@ -397,10 +397,12 @@ void VaatiBoss_804A4958::fn_801D5B70() {
                             d.set(1.0f, 0.0f);
                         }
                         d.normalize();
+                        d.x *= 10000.0f;
+                        d.y *= 10000.0f;
                         field_0x5c4 = mPos.x;
                         field_0x5c8 = mPos.y;
-                        field_0x5c4 += d.x * 10000.0f;
-                        field_0x5c8 += d.y * 10000.0f;
+                        field_0x5c4 += d.x;
+                        field_0x5c8 += d.y;
                     }
                     if (found) {
                         fn_801D5D84(0x11);
