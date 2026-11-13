@@ -554,18 +554,23 @@ void cls_804ADF28::fn_80364340() {
         } else if (mPos.x > 2984.0f && mPos.y < 120.0f) {
             blocked = true;
         } else {
-            JGeometry::TVec3f c1(2688.0f, 120.0f, 0.0f);
-            if (PSVECDistance(&mPos, &c1) < 78.0f) {
+            JGeometry::TVec3f c(2688.0f, 120.0f, 0.0f);
+            if (PSVECDistance(&mPos, &c) < 78.0f) {
                 blocked = true;
             } else {
-                JGeometry::TVec3f c2(2944.0f, 216.0f, 0.0f);
-                blocked = PSVECDistance(&mPos, &c2) < 78.0f;
+                c.set(2944.0f, 216.0f, 0.0f);
+                if (PSVECDistance(&mPos, &c) < 78.0f) {
+                    blocked = true;
+                } else {
+                    blocked = false;
+                }
             }
         }
         if (blocked) {
             mPos = oldPos;
         } else {
             field_0x248 = fn_801CD664(50) + 60;
+            off.z = 100.0f;
             mPos = oldPos;
             u32 param = fn_801CD664(8) | 0x250000;
             JGeometry::TVec3f spawnPos = mPos + off;
