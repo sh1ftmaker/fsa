@@ -201,42 +201,32 @@ void Score_804AF4C0::fn_80393514() {
     }
 }
 
-// FIXME(shotgun): 13.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 20.93 %, missing/extra + reloc-name; behaviour drift.
 // (the original builds each TColor on the stack)
 void Score_804AF4C0::fn_80393228() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     if (mValue < 10) {
         if (field_0x4 < 8) {
-            Vec pos;
-            pos.x = mPos.x;
-            pos.y = mPos.y;
-            pos.z = mPos.z;
+            JGeometry::TVec3f pos = mPos;
             lbl_8053AF50->fn_80455770(0.5f, mValue, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     } else if (mValue < 100) {
         if (field_0x4 < 8) {
-            Vec pos;
+            JGeometry::TVec3f pos = mPos;
             pos.x = mPos.x - 8.333f;
-            pos.y = mPos.y;
-            pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue / 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
         if (field_0x4 < 8) {
-            Vec pos;
+            JGeometry::TVec3f pos = mPos;
             pos.x = 8.333f + mPos.x;
-            pos.y = mPos.y;
-            pos.z = mPos.z;
             lbl_8053AF50->fn_80455770(0.5f, mValue - (mValue / 10) * 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)(255.0f * ((f32)mTimer / 90.0f))));
         }
     } else {
         if (field_0x4 < 8) {
-            Vec pos;
-            pos.x = mPos.x;
-            pos.y = mPos.y;
-            pos.z = mPos.z;
+            JGeometry::TVec3f pos = mPos;
             lbl_8053AF50->fn_80455770(0.5f, 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
@@ -279,7 +269,7 @@ void Score_804AF4C0::fn_80391F58() {
     }
 }
 
-// FIXME(shotgun): 63.76 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 63.83 %, missing/extra + reloc-name; behaviour drift.
 // (the original builds a TVec3f copy of mPos and passes it on)
 void Score_804AF4C0::fn_80391D44() {
     s32 n = fn_8023BC38(mPlayer) / 60 + 1;
@@ -290,7 +280,7 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, n, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
     } else {
         Vec pos;
@@ -299,14 +289,14 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 1, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
         pos.x = mPos.x + 10.0f;
         pos.y = mPos.y;
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 0, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
     }
 }
