@@ -10,6 +10,7 @@
 // embedded in the Shadow Link actor (act_shadow_link_2, +0x358).
 class cls_80214244 {
 public:
+    cls_80214244() { fn_802142A8(); }
     // The current element.
     cls_800FE3EC* fn_80214244();
     void fn_80214254(u8);

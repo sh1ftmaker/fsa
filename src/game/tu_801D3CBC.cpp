@@ -109,7 +109,7 @@ void ShadowLink2_804A43E8::fn_801D3CBC() {
     case 0xD:
         return;
     case 0x17:
-        if (field_0x524 & 0x200) {
+        if (field_0x524.field_0x0 & 0x200) {
             fn_801D41B8();
         }
         break;

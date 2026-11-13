@@ -186,7 +186,7 @@ void cls_802150B8::fn_80214994() {
 void cls_802150B8::fn_80214740(s32 layer, const JGeometry::TVec3f* pos, bool flag) {
     ShadowLink2_804A43E8* owner = static_cast<ShadowLink2_804A43E8*>(mOwner);
     s32 extra = 0;
-    if (owner->field_0x524 & 0x400) {
+    if (owner->field_0x524.field_0x0 & 0x400) {
         extra = 1;
     }
     // field_0x50 is a u32 in GameGlobals.h, but the original tests its sign
@@ -222,7 +222,7 @@ void cls_802150B8::fn_80214900() {
 void cls_802150B8::fn_802146A4() const {
     ShadowLink2_804A43E8* owner = static_cast<ShadowLink2_804A43E8*>(mOwner);
     s32 flag = 0;
-    if (owner->field_0x524 & 0x400) {
+    if (owner->field_0x524.field_0x0 & 0x400) {
         flag = 1;
     }
     spawnEmitter_8013CC50(owner->getField_0x4(), owner->getPos(), 0x416, 0, flag - 1, NULL, NULL, true, 1.0f);

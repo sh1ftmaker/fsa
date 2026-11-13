@@ -11,6 +11,8 @@
 #include "game/cls_80217128.h"
 #include "game/cls_80217374.h"
 #include "game/cls_80218A8C.h"
+#include "game/cls_802157B8.h"
+#include "game/cls_802153A8.h"
 
 // The SLK2 actor ("Shadow Link 2", docs/names/actors.tsv, high confidence):
 // the spawner constructs it with fn_801C573C, which calls the shared base's
@@ -146,10 +148,11 @@ public:
     /* 0x340 */ cls_800FE8C0 field_0x340; // animation sequencer (mIndex at 0x34D, mFlags at 0x354)
     /* 0x358 */ cls_80214244 field_0x358;
     /* 0x4EC */ cls_802150B8 field_0x4ec; // the destructor destroys it
-    /* 0x524 */ u32 field_0x524; // bits 0x8, 0x10, 0x20 pick the attack
+    /* 0x524 */ cls_802157B8 field_0x524; // bits 0x8, 0x10, 0x20 pick the attack
     /* 0x528 */ cls_80217128 mHitBox; // mOwner is this actor
     /* 0x540 */ cls_80218A8C mHelper540;       // fn_801C573C calls its constructor
-    /* 0x548 */ u8 field_0x548[0x550 - 0x548];
+    /* 0x548 */ cls_802153A8 field_0x548;
+    /* 0x54E */ u8 pad_0x54e[2];
     /* 0x550 */ cls_80217374 field_0x550;
     /* 0x55C */ u8 field_0x55c[0x560 - 0x55C];
     /* 0x560 */ s32 field_0x560;

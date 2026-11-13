@@ -20,12 +20,8 @@ const u32 lbl_80469450[4] = {
 // FIXME(shotgun): not written; it is the implicit inline destructor of the base classes.
 
 // 0x801C573C.
-// FIXME(shotgun): 92.93 %, missing/extra + reloc-name; behaviour drift.
-// the members at 0x524 (cls_802157B8, fn_80215864) and 0x548
-// (cls_802153A8, fn_80215578) are constructed by functions not yet named as constructors, and the
-// member constructors run before the body, so the 0x358 call comes after them.
+// FIXME(shotgun): 99.93 %, reloc-name; behaviour clean.
 ShadowLink2_804A43E8::ShadowLink2_804A43E8() {
-    field_0x358.fn_802142A8();
     field_0x550.fn_80217484();
     field_0x55c[0] = 0;
     field_0x55c[1] = 0;
@@ -363,7 +359,7 @@ void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
                 fn_8022ADE4();
             }
             mDrawEnabled = true;
-            if (!(field_0x524 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
+            if (!(field_0x524.field_0x0 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
                 mPos.set(mSpawnPos.x, mSpawnPos.y, mSpawnPos.z);
             }
             field_0x3c.x = 0.0f;
@@ -530,7 +526,7 @@ void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
     case 0x1E:
         if (mState == 0xD) {
             mDrawEnabled = true;
-            if (!(field_0x524 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
+            if (!(field_0x524.field_0x0 & 2) && !(fn_801C0D70()->field_0x50 < 0)) {
                 mPos.set(mSpawnPos.x, mSpawnPos.y, mSpawnPos.z);
             }
             field_0x3c.x = 0.0f;
@@ -831,7 +827,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
         break;
     case 9:
         if (mStateTimer >= 0x3C) {
-            if (field_0x524 & 2) {
+            if (field_0x524.field_0x0 & 2) {
                 fn_801C3B7C(0xA);
             } else {
                 fn_801C3B7C(0xC);
@@ -1005,7 +1001,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     case 0x27:
     case 0x28:
         if (mStateTimer >= field_0x250) {
-            if ((field_0x524 & 8) && field_0x597 == 0 && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f &&
+            if ((field_0x524.field_0x0 & 8) && field_0x597 == 0 && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f &&
                 fn_801D183C(64.0f)) {
                 fn_801C3B7C(0x22);
             } else {
@@ -1208,7 +1204,7 @@ void ShadowLink2_804A43E8::vfunc_0x98() {
     }
     field_0x4ec.fn_80214CE4();
     field_0x4ec.fn_80214994();
-    if ((field_0x524 & 1) && !fn_801CD2F8(field_0x4) && mPos.z <= 0.0f) {
+    if ((field_0x524.field_0x0 & 1) && !fn_801CD2F8(field_0x4) && mPos.z <= 0.0f) {
         switch (mState) {
         case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8: case 9:
         case 0xB: case 0xC: case 0xD: case 0xE:
@@ -1240,7 +1236,7 @@ void ShadowLink2_804A43E8::vfunc_0x74() {
             case 0:
                 if (!(mFlags & 0x10000)) {
                     fn_801C3B7C(0x29);
-                } else if (field_0x524 & 0x80) {
+                } else if (field_0x524.field_0x0 & 0x80) {
                     fn_8021CDE4(1);
                 } else {
                     fn_8021CDE4(2);

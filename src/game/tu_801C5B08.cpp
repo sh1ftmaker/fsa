@@ -29,12 +29,12 @@ void ShadowLink2_804A43E8::fn_801C6260() {
     f32 dist = fn_801D0DA0(field_0x338, &mPos);
     bool near = fn_801D183C(1.0f);
     bool notTarget = !fn_801CAED4(field_0x338);
-    if (field_0x597 == 0 && near && notTarget && (field_0x524 & 0x10) && dist <= 900.0f) {
+    if (field_0x597 == 0 && near && notTarget && (field_0x524.field_0x0 & 0x10) && dist <= 900.0f) {
         fn_801C3B7C(0x22);
         return;
     }
     if (dist <= 2500.0f) {
-        if (field_0x59a == 0 && fn_801D0DD4() && !(field_0x524 & 0x40) &&
+        if (field_0x59a == 0 && fn_801D0DD4() && !(field_0x524.field_0x0 & 0x40) &&
             (!notTarget || gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f)) {
             s32 player = field_0x338;
             s32 layer = field_0x4;
@@ -75,8 +75,8 @@ void ShadowLink2_804A43E8::fn_801C6260() {
             }
             fn_801C3B7C(0x1C);
         } else if (field_0x597 == 0 && notTarget) {
-            if ((field_0x524 & 0x10) && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
-                if (field_0x524 & 0x20) {
+            if ((field_0x524.field_0x0 & 0x10) && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.2f) {
+                if (field_0x524.field_0x0 & 0x20) {
                     if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.67f) {
                         fn_801C3B7C(0x26);
                     } else {
@@ -85,7 +85,7 @@ void ShadowLink2_804A43E8::fn_801C6260() {
                 } else {
                     fn_801C3B7C(0x25);
                 }
-            } else if (near && (field_0x524 & 0x8)) {
+            } else if (near && (field_0x524.field_0x0 & 0x8)) {
                 fn_801C3B7C(0x22);
             }
         }
@@ -195,7 +195,7 @@ void ShadowLink2_804A43E8::fn_801C5B08(bool flag) {
     if (mState != 0x1B) {
         return;
     }
-    if (field_0x59a == 0 && mStateTimer >= 0xF0 && fn_801D0DD4() && !(field_0x524 & 0x40)) {
+    if (field_0x59a == 0 && mStateTimer >= 0xF0 && fn_801D0DD4() && !(field_0x524.field_0x0 & 0x40)) {
         s32 layer = field_0x4;
         if (viewLayerFlag(layer) != 0 && !fn_801CC9F8(&mPos, field_0x4)) {
             if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
