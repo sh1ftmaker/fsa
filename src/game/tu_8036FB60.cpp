@@ -455,7 +455,7 @@ void cls_804AE4B0::fn_80371284() {
             tickPlayer_80371284(this, i);
         }
     }
-    if (!(field_0x324.y > 1720.0f)) {
+    if (field_0x324.y <= 1720.0f) {
         field_0x324.y = 1720.0f;
         field_0x384[0] = 0;
         field_0x384[1] = 0;
