@@ -11,8 +11,14 @@
 // FIXME(shotgun): tables not written out (gate.py literal tripwire); extern-declared, sizes
 // from symbols.txt. lbl_8046C658 / lbl_8046C6C8: the x and y shake offsets of four steps per
 // shake kind (s32, 16 bytes per kind).
-extern const s32 lbl_8046C658[28];
-extern const s32 lbl_8046C6C8[88];
+const s32 lbl_8046C658[7][4] = {
+    {-24, 40, -24, 40}, {0, 64, 0, 64}, {0, -48, 48, 0}, {0, 32, 64, 96},
+    {0, 0, 0, 0}, {0, 48, 112, 160}, {80, -80, 80, -80},
+};
+const s32 lbl_8046C6C8[7][4] = {
+    {-24, -24, 40, 40}, {0, 0, 64, 64}, {0, 48, 48, 96}, {0, 0, 0, 0},
+    {0, 32, 64, 96}, {0, 48, 48, 0}, {-32, -32, 80, -80},
+};
 // FIXME(shotgun): the drop offsets of state 1 (x, then y, by field_0x234), f32 tables inside
 // the lbl_8046C6C8 block (+0xA8 and +0xC0); extern-declared under their addresses.
 extern const f32 lbl_8046C770[6];
@@ -23,8 +29,8 @@ static inline void burst(cls_804A7EB0* self) {
     JGeometry::TVec3f pos;
     pos.z = self->mPos.z;
     for (s32 i = 0; i < 4; i++) {
-        pos.x = self->mPos.x + (f32)lbl_8046C658[self->field_0x234 * 4 + i];
-        pos.y = self->mPos.y + (f32)lbl_8046C6C8[self->field_0x234 * 4 + i];
+        pos.x = self->mPos.x + (f32)lbl_8046C658[self->field_0x234][i];
+        pos.y = self->mPos.y + (f32)lbl_8046C6C8[self->field_0x234][i];
         spawnEmitter_8013CC50(self->field_0x4, &pos, 0x202, 1, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(self->field_0x4, &pos, 0x203, 1, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(self->field_0x4, &pos, 0x204, 0, -4, NULL, NULL, true, 1.0f);
@@ -176,8 +182,8 @@ void cls_804A7EB0::draw() {
             params.field_0x1d = -1;
             s32 frame = field_0x250 + 0x10D;
             JGeometry::TVec3f pos;
-            pos.x = mPos.x + (f32)lbl_8046C658[field_0x234 * 4 + i];
-            pos.y = mPos.y + (f32)lbl_8046C6C8[field_0x234 * 4 + i];
+            pos.x = mPos.x + (f32)lbl_8046C658[field_0x234][i];
+            pos.y = mPos.y + (f32)lbl_8046C6C8[field_0x234][i];
             pos.z = mPos.z;
             if (field_0x4 < 8) {
                 void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
@@ -208,8 +214,8 @@ void cls_804A7EB0::vfunc_0x54() {
     f32 y = mPos.y;
     f32 z = mPos.z;
     for (s32 i = 0; i < 4; i++) {
-        mPos.x = x + (f32)lbl_8046C658[field_0x234 * 4 + i];
-        mPos.y = y + (f32)lbl_8046C6C8[field_0x234 * 4 + i];
+        mPos.x = x + (f32)lbl_8046C658[field_0x234][i];
+        mPos.y = y + (f32)lbl_8046C6C8[field_0x234][i];
         startSound_801F0E34(0x30084, 0);
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     }
