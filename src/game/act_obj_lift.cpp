@@ -323,6 +323,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
+// FIXME: 93.20 %, missing/extra; behaviour drift.
 // FIXME(shotgun): missing/extra; behaviour drift (register allocation, push magnitude not vectorized to ps).
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
