@@ -797,7 +797,7 @@ void TileMap_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 87.09 %, missing/extra; behaviour drift.
+// FIXME: 90.32 %, different; behaviour near.
 // Structurally close (2 instructions more): the original builds
 // the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
 // -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
