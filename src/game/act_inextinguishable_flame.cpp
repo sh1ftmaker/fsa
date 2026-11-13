@@ -98,7 +98,7 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
 // tile, 2 spawn the grid, 3 hit, 4 spawn a BLZE actor, 5 count down, 6 wait
 // for the player's hit. The grids are walked in the order of the spawn loops.
 // Still differs: an extra beq after the state 0 flag test.
-// FIXME: 91.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 99.05 %, different; behaviour drift.
 void InextinguishableFlame_804A9D28::update() {
     JGeometry::TVec3f pos = mPos;
     if (mState >= 1) {
