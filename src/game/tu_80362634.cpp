@@ -86,7 +86,7 @@ void cls_804ADF28::fn_80365AB8() {
 }
 
 // FIXME(shotgun): 52.86 %, missing/extra + reloc-name; behaviour drift.
-// (cases 1-3 of the switch are not written; the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; case 0 checked against the asm)
+// (the function-local TVec3f statics are guarded with an out-of-line constructor here, the original initialises them inline; the 2c4 stores are not paired as in the original)
 void cls_804ADF28::fn_803653EC() {
     if (field_0x238 < 0) {
         if (field_0x248 >= 0x80) {
@@ -140,11 +140,41 @@ void cls_804ADF28::fn_803653EC() {
             }
             break;
         }
-        case 1:
-        case 2:
-        case 3:
-            // FIXME(shotgun): cases 1-3 not written (the three formation set-ups; sprites 0x388, 0x38E, 0x391 respectively).
+        case 1: {
+            field_0x26c = 0x388;
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x388;
+            }
             break;
+        }
+        case 2: {
+            field_0x26c = 0x38E;
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + JGeometry::TVec3f(16.0f * i + 16.0f, 0.0f, 0.0f);
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x38E;
+            }
+            break;
+        }
+        case 3: {
+            field_0x26c = 0x391;
+            static JGeometry::TVec3f offsets[3] = {
+                JGeometry::TVec3f(16.0f, 0.0f, 0.0f),
+                JGeometry::TVec3f(0.0f, 16.0f, 0.0f),
+                JGeometry::TVec3f(16.0f, 16.0f, 0.0f),
+            };
+            for (int i = 0; i < 3; i++) {
+                field_0x2a0[i] = mPos + offsets[i];
+                field_0x2c4[i].set((field_0x2a0[i].x - field_0x27c[i].x) / 10.0f,
+                                   (field_0x2a0[i].y - field_0x27c[i].y) / 10.0f, 0.0f);
+                field_0x2e8[i] = 0x391;
+            }
+            break;
+        }
         }
         field_0x238++;
     } else {
