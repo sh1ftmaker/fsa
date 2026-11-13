@@ -268,7 +268,7 @@ void ReaperShinigami_804A886C::fn_802B8078() {
     }
 }
 
-// FIXME: 92.40 %, missing/extra; behaviour drift.
+// FIXME: 94.89 %, missing/extra; behaviour near.
 // Its frame is 0x40 with the playerPos copy at 0x10 (ours
 // 0x30, playerPos at 0x8). The direction temp's dead stack stores are not
 // reproduced, and the idx table walk takes other registers (r28 / r29). (The
@@ -311,7 +311,7 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
             arg3 = 4;
         }
         if (fn_8023F264(field_0x298) == true && !fn_80236B50(field_0x298)) {
-            u8 hit = fn_801F2B7C(damage, -1, arg3);
+            s32 hit = fn_801F2B7C(damage, -1, arg3);
             if (hit) {
                 startSound_801F0E34(0x40041, 0);
                 field_0x244 = 140;
