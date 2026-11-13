@@ -184,8 +184,8 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
-    bool moved = false;
     bool all = false;
+    s32 moved = 0;
     if (field_0x246[0] && field_0x246[1] && field_0x246[2] && field_0x246[3]) {
         all = true;
     }
@@ -212,7 +212,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
                     field_0x240 = 10.0f;
                 }
             }
-            moved = true;
+            moved = 1;
         } else {
             if (!gGameRoot_8053AAF8->field_0x7e) {
                 if (field_0x240 > 0.0f) {
