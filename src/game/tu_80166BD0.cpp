@@ -23,7 +23,6 @@ void MojamojaUnidentifiedEnemy_804A0668::vfunc_0x44() {
     }
 }
 
-// FIXME: 99.6 %. Only the .sdata2 literals: not split (lbl_8053D838.. vs @NNN).
 void MojamojaUnidentifiedEnemy_804A0668::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -48,7 +47,8 @@ void MojamojaUnidentifiedEnemy_804A0668::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 94.59 %, missing/extra + reloc-name
+// FIXME: 99.76 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME: only the .sdata2 literals differ (lbl_ names vs @NNN, not split into this unit).
 void MojamojaUnidentifiedEnemy_804A0668::update() {
     if (mEmitter26c != NULL) {
         addCalc2_801F71A4(&field_0x254, 1.0f, 10.0f, 0.0f);
@@ -76,12 +76,11 @@ void MojamojaUnidentifiedEnemy_804A0668::update() {
     }
     addCalc2_801F71A4(&field_0x3c.x, field_0x260, 0.5f, 1.0f);
     addCalc2_801F71A4(&field_0x3c.y, field_0x264, 0.5f, 1.0f);
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
-    bool hitWall = false;
+    mPos += field_0x3c;
+    u8 hitWall = 0;
     if (field_0x230 != 3) {
-        if (fn_8022461C(&mPos, field_0x4) == 0xE) {
+        s32 code = fn_8022461C(&mPos, field_0x4);
+        if (code == 0xE) {
             startSound_801F0E34(0x4001A, 0);
             field_0x3c.set(0.0f, 0.0f, 0.0f);
             field_0x260 = 0.0f;
@@ -122,7 +121,7 @@ void MojamojaUnidentifiedEnemy_804A0668::update() {
                 field_0x268 = 0.0f;
             }
             if (field_0x23c == 0) {
-                JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+                JGeometry::TVec3f pos(mPos);
                 pos.y -= 8.0f;
                 mEmitter26c = spawnEmitter_8013CC50(field_0x4, &pos, 0x170, 0, 1, NULL, NULL, true, 0.3f);
                 field_0x254 = 255.0f;
@@ -184,7 +183,8 @@ void MojamojaUnidentifiedEnemy_804A0668::update() {
     }
 }
 
-// FIXME: 99.0 %. Register allocation only: the scale (0x258) sits in f31 and
+// FIXME: 98.99 %, regalloc-only; behaviour clean.
+// Register allocation only: the scale (0x258) sits in f31 and
 // the first sin result in f26 where the original has f29 and f28.
 void MojamojaUnidentifiedEnemy_804A0668::draw() {
     if (field_0x230 == 3) {
