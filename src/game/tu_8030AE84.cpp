@@ -115,7 +115,8 @@ void cls_804AA8D8::fn_8030B97C() {
     }
 }
 
-// FIXME(shotgun): 94.5 %, different (epsilon compare shape)
+// Remaining difference: instruction scheduling of the d.set() operands only.
+// FIXME: 96.12 %, scheduling+regalloc; behaviour clean.
 void cls_804AA8D8::fn_8030B774() {
     if (!fn_8023F264(field_0x288)) {
         return;
@@ -124,8 +125,8 @@ void cls_804AA8D8::fn_8030B774() {
         field_0x28c = getPlayerLayer_8023DE58(field_0x288);
         fn_8030B97C();
     }
-    s32 y;
     s32 x;
+    s32 y;
     field_0x2b4 = fn_8030B570(&x, &y);
     if (field_0x2b4 != field_0x2b0) {
         JGeometry::TVec2f d;
@@ -135,15 +136,13 @@ void cls_804AA8D8::fn_8030B774() {
         if (len > 16.0f) {
             // Move 16 units a frame towards the target.
             f32 sq = d.squared();
-            f32 dy = d.x;
-            f32 dx = d.y;
-            if (sq > 32.0f * FLT_EPSILON) {
+            if (!(sq <= 32.0f * FLT_EPSILON)) {
                 f32 inv = JGeometry::TUtil<f32>::inv_sqrt(sq);
-                dx *= inv;
-                dy *= inv;
+                d.x *= inv;
+                d.y *= inv;
             }
-            field_0x290 = (s32)((f32)field_0x290 + 16.0f * dx);
-            field_0x294 = (s32)((f32)field_0x294 + 16.0f * dy);
+            field_0x290 = (s32)((f32)field_0x290 + 16.0f * d.y);
+            field_0x294 = (s32)((f32)field_0x294 + 16.0f * d.x);
         } else {
             field_0x290 = x;
             field_0x294 = y;
@@ -220,7 +219,8 @@ s32 cls_804AA8D8::fn_8030B570(s32* outA, s32* outB) {
     return player;
 }
 
-// FIXME(shotgun): 91.5 %, regalloc/scheduling (227 vs 226 instrs)
+// FIXME(shotgun): 91.48 %, missing/extra; behaviour near.
+// regalloc/scheduling (227 vs 226 instrs)
 s32* cls_804AA8D8::fn_8030B1E8(u8 layer, u8 mode, u16 scroll) {
     if (layer != field_0x2bc) {
         if (mode == 0 || mode == 6) {
