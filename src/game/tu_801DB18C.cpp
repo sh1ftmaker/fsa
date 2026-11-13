@@ -38,7 +38,7 @@ cls_804A4EE8::~cls_804A4EE8() {
     }
 }
 
-// FIXME(shotgun): 92.11 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.81 %, missing/extra + reloc-name; behaviour clean.
 void cls_804A4EE8::init() {
     EnemyBase_804A4808::init();
     mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
@@ -164,7 +164,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 84.62 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.97 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
@@ -252,6 +252,7 @@ void cls_804A4EE8::vfunc_0x9C(u8 mapHit) {
     setEmitterPos_8013CB44(field_0x2e4, &mPos, 1, 0, true);
 }
 
+// FIXME: 87.43 %, scheduling+regalloc; behaviour clean.
 // FIXME(shotgun): remaining diff is instruction scheduling and registers only.
 void cls_804A4EE8::vfunc_0x88() {
     if (field_0x2b4 != 0.0f) {
