@@ -736,7 +736,7 @@ s32 FireRodFire_804A89F0::fn_802BA9F0() {
     return field_0x260;
 }
 
-// FIXME(shotgun): 82.63 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.38 %, missing/extra + reloc-name; behaviour drift.
 bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 ignoreIds[5] = {'TOMI', 'IPOT', 'WDRY', 'ICEB', 'NULL'};
     if (field_0x264 != 1) {
@@ -744,7 +744,7 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     }
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ignoreIds)) {
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ignoreIds) == 1) {
         return true;
     }
     if (field_0x264 != 3 && field_0x264 != 4) {
@@ -753,7 +753,7 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         }
         s32 cell = fn_80226AE0(pos, field_0x4);
         field_0x288 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, cell);
-        if (fn_801EE3C0(field_0x288)) {
+        if (fn_801EE3C0(field_0x288) == 1) {
             JGeometry::TVec3f tmp;
             fn_80226CA8(cell, field_0x4, &tmp);
             tmp.x += 8.0f;
