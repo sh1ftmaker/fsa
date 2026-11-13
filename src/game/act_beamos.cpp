@@ -52,13 +52,13 @@ void Beamos_804A40E0::init() {
 // Not auto-inlined: fn_801BE6C4 calls fn_801BE86C out of line in the original, and vfunc_0x90
 // calls fn_801BE6C4 out of line (bl in its asm); docs/INLINING.md pragma rule 1.
 #pragma auto_inline off
-// FIXME: 81.63 %. One instruction short: the original keeps the sincos table
+// FIXME: 80.76 %, scheduling+regalloc + reloc-name; behaviour clean.
+// One instruction short: the original keeps the sincos table
 // and its cos half (table + 4) in r30 and loads mPos.y before mPos.x; ours keeps
 // only the table base and loads the literals earlier.
 void Beamos_804A40E0::fn_801BE86C() {
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
-    JGeometry::TVec3f pos(mPos.x + 10.0f * sincos.sinShort(field_0x2a8),
-                          -15.0f + (6.0f * sincos.cosShort(field_0x2a8) + mPos.y), mPos.z);
+    JGeometry::TVec3f pos(mPos.x + 10.0f * JMASinShort(field_0x2a8),
+                          -15.0f + (6.0f * JMACosShort(field_0x2a8) + mPos.y), mPos.z);
     s32 serial = getActorManager_801F856C()->spawnActor_801F9484('LNBM', field_0x4, &pos, mSerial, -1, -1);
     if (serial < 0) {
         return;
@@ -72,13 +72,14 @@ void Beamos_804A40E0::fn_801BE86C() {
         depth = 1;
     }
     actor->field_0x94 = depth;
-    JGeometry::TVec2f dir(10.0f * sincos.sinShort(field_0x2a8), 6.0f * sincos.cosShort(field_0x2a8));
+    JGeometry::TVec2f dir(10.0f * JMASinShort(field_0x2a8), 6.0f * JMACosShort(field_0x2a8));
     dir.normalize();
     dir.scale(10.5f);
     actor->field_0x3c = JGeometry::TVec3f(dir.x, dir.y, 0.0f);
 }
 
-// FIXME: 99.76 %. Instructions identical; only the .sdata2 literal names differ
+// FIXME: 99.91 %, reloc-name; behaviour clean.
+// Instructions identical; only the .sdata2 literal names differ
 // (the unit's literals are not split in the original order yet).
 void Beamos_804A40E0::fn_801BE6C4(s32 state) {
     switch (state) {
@@ -115,7 +116,7 @@ void Beamos_804A40E0::fn_801BE6C4(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 95 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.61 %, missing/extra + reloc-name; behaviour drift.
 void Beamos_804A40E0::vfunc_0x90(u8 mapHit) {
     if ((mFlags & 0x2000) && field_0x2b0 != 0) {
         if (getGameView_802D6A9C()->fn_802D800C(field_0x2b0)) {
@@ -178,7 +179,8 @@ void Beamos_804A40E0::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 80.85 %. The original keeps `this` in r30 and loads the layer and
+// FIXME: 80.85 %, missing/extra; behaviour clean.
+// The original keeps `this` in r30 and loads the layer and
 // serial into r30 and r31 before the fn_8020D58C call (ours loads them after
 // it, so only r31 is saved); its box corners also load mPos.y before the 8.0f
 // constant and add it as (y, c) where ours adds (c, y).
@@ -235,7 +237,8 @@ void Beamos_804A40E0::vfunc_0x24() {
     ActorBase_804A5770::vfunc_0x24();
 }
 
-// FIXME: 95.22 %. Same instructions modulo registers: the position block's
+// FIXME: 95.29 %, scheduling+regalloc + reloc-name; behaviour drift.
+// Same instructions modulo registers: the position block's
 // table pointer and x term are scheduled in another order (as in fn_801BE86C),
 // plus the .sdata2 literal names.
 void Beamos_804A40E0::draw() {
