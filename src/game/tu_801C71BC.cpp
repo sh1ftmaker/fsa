@@ -360,7 +360,7 @@ void ShadowLink2_804A43E8::fn_801C887C() {
     }
 }
 
-// FIXME(shotgun): 85.54 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 95.66 %, missing/extra; behaviour near.
 void ShadowLink2_804A43E8::fn_801C844C() {
     JGeometry::TVec3f pos = mPos;
     field_0x358.fn_80214244()->fn_800FE2E4(&pos, field_0x4);
