@@ -183,32 +183,34 @@ void cls_804A6708::init() {
 }
 
 
-// FIXME(shotgun): 35.9 %, missing/extra + reloc-name (structure and constants are the asm's; the original passes the TVec2f at 0x2c0 to
-// fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies; sqrt is written with std::sqrtf)
+// FIXME(shotgun): missing/extra + reloc-name (the original passes the TVec2f at 0x2c0 to
+// fn_801CD754 in place and builds the temporaries with inlined TVec2 copies, ours goes through copies)
 void cls_804A6708::fn_8021E4F8() {
-    if (mState == 4) {
+    switch (mState) {
+    case 4: {
         f32 d = (f32)(0x78 - mStateTimer);
         if (d < FLT_EPSILON) {
             field_0x2bc = 18.0f;
         } else {
             field_0x2bc += (1.0f / d) * (18.0f - field_0x2bc);
         }
-    } else if (mState == 7) {
+        break;
+    }
+    case 7: {
         f32 d = (f32)(0x78 - mStateTimer);
         if (d < FLT_EPSILON) {
             field_0x2bc = 1.0f;
         } else {
             field_0x2bc += (1.0f / d) * (1.0f - field_0x2bc);
         }
+        break;
+    }
     }
     f32 dy = field_0x2c0.y - field_0x2cc;
     f32 dx = field_0x2c0.x - field_0x2c0.z;
     f32 len2 = dx * dx + dy * dy;
     if (len2 > 32.0f * FLT_EPSILON) {
-        f32 inv = len2;
-        if (len2 > 0.0f) {
-            inv = 1.0f / std::sqrtf(len2);
-        }
+        f32 inv = JGeometry::TUtilf::inv_sqrt(len2);
         dx = dx * inv;
         dy = dy * inv;
     }
@@ -248,10 +250,7 @@ void cls_804A6708::fn_8021E4F8() {
     }
     dx = field_0x2c0.x - field_0x2c0.z;
     dy = field_0x2c0.y - field_0x2cc;
-    f32 len = dx * dx + dy * dy;
-    if (len > 0.0f) {
-        len = len * (1.0f / std::sqrtf(len));
-    }
+    f32 len = JGeometry::TVec2f(dx, dy).length();
     s16 angle = 0x622;
     if (len > 0.001f) {
         s16 v = (s16)(s32)(1.0f / len * (1570.0f * field_0x2bc));
