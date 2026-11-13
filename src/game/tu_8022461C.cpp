@@ -251,14 +251,7 @@ bool fn_8022517C(const JGeometry::TVec3f* pos, s32 layer) {
 
 // FIXME(shotgun): 90.4 %, missing/extra
 bool fn_80225000(const JGeometry::TVec3f* pos, s32 layer) {
-    u16 code = rawTileAt(pos, layer);
-    if (code == lbl_8053FF48[0]) {
-        return true;
-    }
-    if (code == lbl_8053FF48[1]) {
-        return true;
-    }
-    return false;
+    return inList(rawTileAt(pos, layer), lbl_8053FF48, 2);
 }
 
 // Whether the raw tile at pos is one of the two codes of lbl_8053FF4C.
