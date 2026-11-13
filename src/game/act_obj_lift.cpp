@@ -43,7 +43,7 @@ static JGeometry::TBox2f lbl_8050AE38[10] = {
 };
 
 // 0x803513C0.
-// FIXME(shotgun): 93.24 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.02 %, missing/extra + reloc-name; behaviour drift.
 void OBJLift_804ACA00::init() {
     field_0x258 = (field_0x90 & 0xF) + ((field_0x90 >> 12) & 0xF0);
     field_0x260 = (field_0x90 >> 4) & 0xF;
