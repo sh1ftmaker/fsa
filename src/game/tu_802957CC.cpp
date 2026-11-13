@@ -461,8 +461,7 @@ void cls_804A7AE0::fn_8029A494() {
 // FIXME(shotgun): 81.50 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
-    bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
-    if (!still) {
+    if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         return;
     }
     if (field_0x2c0 == 1) {
@@ -474,15 +473,15 @@ void cls_804A7AE0::fn_80299FB0() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4) {
-            dir = fn_80238BC4(mSerial);
-            if (dir >= 0 && dir < 4) {
-                field_0x2cc = 1;
-            } else {
-                dir = -1;
-            }
+        s32 r;
+        if (fn_80239108(mSerial) >= 4 && field_0x4 == getPlayerLayer_8023DE58(0) &&
+            (r = fn_80238BC4(mSerial), r >= 0 && r < 4)) {
+            field_0x2cc = 1;
+        } else {
+            r = -1;
         }
-        if (dir == -1) {
+        dir = r;
+    if (dir == -1) {
             JGeometry::TBox2f box;
             box.i.x = field_0x80.i.x;
             box.i.y = field_0x80.i.y;
