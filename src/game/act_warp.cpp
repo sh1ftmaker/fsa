@@ -29,7 +29,7 @@ static inline bool boxesOverlap(const JGeometry::TBox2f& a, const JGeometry::TBo
 
 // The box `ofs` (relative to pos) in top-down screen space: the top edge shifts by z, the
 // bottom edge by z / 2 (read from fn_80227290's asm).
-static inline void toScreenBox(JGeometry::TBox2f* out, JGeometry::TBox2f ofs, Vec pos) {
+static inline void toScreenBox(JGeometry::TBox2f* out, JGeometry::TBox2f ofs, JGeometry::TVec3f pos) {
     out->set(ofs.i.x + pos.x, ofs.i.y + pos.y - pos.z, ofs.f.x + pos.x, ofs.f.y + pos.y - pos.z * 0.5f);
 }
 
@@ -617,7 +617,7 @@ void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
 
 // 0x80227290. The serial of a live actor on the warp's layer (not excludeSerial, one of `ids`, within
 // maxDz in z unless the layer ignores z) whose box overlaps the warp's, or -1.
-// FIXME(shotgun): 66.07 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 70.73 %, missing/extra; behaviour drift.
 s32 Warp_804A6DC8::fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial) {
     s32 found = -1;
     u8 anyZ = viewLayerFlag(field_0x4);
