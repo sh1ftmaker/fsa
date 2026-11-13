@@ -1156,8 +1156,8 @@ void StoneArrghusChildPuff_8049C678::fn_800F953C() {
             ang = parent->mAngleB;
             off = (f32)(n * -20) - 20.0f;
         }
-        JGeometry::TVec3f pos(parent->mPos.x + off * JMath::sincosTable_.sinShort(ang),
-                              parent->mPos.y + off * JMath::sincosTable_.cosShort(ang),
+        JGeometry::TVec3f pos(parent->mPos.x + off * JMASinShort(ang),
+                              parent->mPos.y + off * JMACosShort(ang),
                               10.0f + parent->mPos.z);
         parent->mSlot++;
         target = pos;
@@ -1241,11 +1241,11 @@ void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
             ang = parent->mAngleB;
             off = (f32)(k * -20) - 20.0f;
         }
-        JGeometry::TVec3f target(parent->mPos.x + off * JMath::sincosTable_.sinShort(ang),
-                                 parent->mPos.y + off * JMath::sincosTable_.cosShort(ang),
+        JGeometry::TVec3f target(parent->mPos.x + off * JMASinShort(ang),
+                                 parent->mPos.y + off * JMACosShort(ang),
                                  10.0f + parent->mPos.z);
         mFlag249 = 1;
-        field_0x3c = mPos;
+        field_0x3c.set(mPos.x, mPos.y, mPos.z);
         f32 speed = 0.36f - 0.032f * (f32)((parent->mSlot >> 1) + 1);
         mPos.x += cut4(target.x - mPos.x) * speed;
         mPos.y += cut4(target.y - mPos.y) * speed;
@@ -1254,9 +1254,7 @@ void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
         field_0x3c.scale(-0.5f);
     } else {
         field_0x3c.z -= 0.2f;
-        mPos.x += field_0x3c.x;
-        mPos.y += field_0x3c.y;
-        mPos.z += field_0x3c.z;
+        mPos.add(field_0x3c);
         if (mPos.z <= 0.0f) {
             mPos.z = 0.0f;
             field_0x3c.z = 0.0f;
