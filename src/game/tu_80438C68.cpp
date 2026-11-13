@@ -338,7 +338,7 @@ void cls_804B17A0::fn_80438E10(u8 flag) {
     fn_80439AB0();
 }
 
-// FIXME(shotgun): 89.29 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.56 %, missing/extra; behaviour drift.
 // 0x80438C68
 void cls_804B17A0::fn_80438C68() {
     switch (field_0x58) {
