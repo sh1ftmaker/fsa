@@ -826,8 +826,7 @@ void SeesawLift_804AD348::fn_803584C0() {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E0, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E1, 0, 0, NULL, NULL, true, 1.0f);
         field_0x245 = 1;
-        fillTiles(this, 12, 0);
-        field_0x258 = 1;
+        fillTiles(this, 12, 1);
     }
     if (field_0x230 != 0) {
         field_0x250 = 0;
