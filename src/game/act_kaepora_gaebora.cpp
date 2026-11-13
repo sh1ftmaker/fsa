@@ -11,7 +11,6 @@
 #include "game/Message.h"
 #include "game/ActorManager.h"
 
-// FIXME: 99.52% (reloc-name). Floating-point literals pooled in sdata2.
 cls_804A6550::cls_804A6550()
     : field_0x2a8(0),
       field_0x2ac(1.5f),
@@ -29,7 +28,7 @@ cls_804A6550::~cls_804A6550() {
 
 extern const s16* lbl_804A6540[4]; // the sprite animation tables (.data of this unit)
 
-// FIXME(shotgun): 91.71 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.56 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6550::init() {
     EnemyBase_804A4808::init();
     bool cleared = isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c) != FALSE;
@@ -139,7 +138,8 @@ bool cls_804A6550::fn_80219E04() const {
     return ret;
 }
 
-// FIXME: 98.07% (missing/extra + reloc-name). Target reloads mFlags before ori 0x2000 in case 12.
+// FIXME: 98.32 %, missing/extra + reloc-name; behaviour drift.
+// (missing/extra + reloc-name). Target reloads mFlags before ori 0x2000 in case 12.
 void cls_804A6550::fn_80219AFC(s32 state) {
     // The state tests (states 5 and 11) are written out as in the original's inlined helper; a shared helper drops to 91.68 %.
     bool oldFlying = false;
@@ -270,7 +270,7 @@ void cls_804A6550::fn_80219AFC(s32 state) {
 
 extern const f32 lbl_8046A640[4][2]; // x, y offsets (about +-16) by facing, .rodata of this unit
 
-// FIXME(shotgun): 84.84 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.84 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6550::vfunc_0x90(u8 mapHit) {
     JGeometry::TBox2f box;
     if (mState == 3) {
@@ -460,7 +460,6 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME: 99.69% (reloc-name). Frame check float literals pooled in sdata2.
 void cls_804A6550::vfunc_0x94() {
     if (mAnim.mAnim == 1) {
         if (mAnim.mFrameCtrl.checkPass(0.1f) ||
@@ -477,7 +476,6 @@ void cls_804A6550::vfunc_0x94() {
     }
 }
 
-// FIXME: 99.85% (reloc-name). Floating-point literals pooled in sdata2.
 void cls_804A6550::vfunc_0x9C(u8 mapHit) {
     // The 0x10000 test appears twice in the original (a single test drops to 98.38 %).
     if (mFlags & 0x10000) {
@@ -500,7 +498,6 @@ void cls_804A6550::vfunc_0x9C(u8 mapHit) {
     fn_8021B548();
 }
 
-// FIXME: 99.73% (reloc-name). Velocity float literals pooled in sdata2.
 void cls_804A6550::vfunc_0x88() {
     JGeometry::TVec2f vel;
     field_0x3c.set(0.0f, 0.0f, 0.0f);
@@ -540,6 +537,7 @@ u8 cls_804A6550::vfunc_0x60() {
 // The camera: in states 4, 5, 8 and 9 the owl is kept in view (clamped into the view box by 0.001),
 // a scripted camera move to it (states 4 and 5 while field_0x2b4 is 0) or focus points (also
 // 24 units higher in states 8 and 9).
+// FIXME: 94.66 %, missing/extra; behaviour drift.
 void cls_804A6550::vfunc_0xA0() {
     if (field_0x2b4 == 0 || field_0x2b4 == 3) {
         switch (mState) {
