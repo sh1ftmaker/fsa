@@ -234,7 +234,7 @@ void VaatiBoss_804A4958::fn_801D5D84(s32 state) {
         mFlags |= 0x2000;
         mFlags &= ~0x300;
         field_0x5b0 = -1;
-        field_0x98 = 3;
+        field_0xb0 = 3;
         JGeometry::TBox2f box;
         fn_801E4618(&box, fn_801CD2F8(field_0x4));
         field_0x60c.x = 0.5f * (box.f.x - box.i.x) + box.i.x;
