@@ -1756,7 +1756,7 @@ static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 81.53 %, different; behaviour drift.
+// FIXME: 82.72 %, missing/extra; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     s32 mask = record->mMask;
