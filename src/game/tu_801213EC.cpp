@@ -339,6 +339,7 @@ static inline s32 findArrivedSlot(s32 player) {
     return -1;
 }
 
+// FIXME: 97.78 %, missing/extra + reloc-name; behaviour clean.
 void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     if (player < 0) {
         return;
