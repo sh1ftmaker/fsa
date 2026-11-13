@@ -54,8 +54,18 @@ static inline void drawSmp(TrickFloor2_804AA628* self, const JGeometry::TVec3f* 
 
 // The tile index of a view-relative position (as init computes it).
 static inline s32 tileIndex(s32 tx, s32 ty) {
-    s32 cx = tx < 0 ? 0 : (tx >= 0x200 ? 0x1FF : tx);
-    s32 cy = ty < 0 ? 0 : (ty >= 0x200 ? 0x1FF : ty);
+    s32 cx = tx;
+    if (cx < 0) {
+        cx = 0;
+    } else if (cx >= 0x200) {
+        cx = 0x1FF;
+    }
+    s32 cy = ty;
+    if (cy < 0) {
+        cy = 0;
+    } else if (cy >= 0x200) {
+        cy = 0x1FF;
+    }
     return (cx & 0x100) | ((cy & 0x100) << 1) | (cy & 0xF0) | ((cx >> 4) & 0xF);
 }
 
@@ -97,7 +107,7 @@ static inline void spawnDust(TrickFloor2_804AA628* self, s32 a) {
     }
 }
 
-// FIXME(shotgun): 85.96 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.66 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor2_804AA628::init() {
     mType = field_0x90 & 0xF;
     field_0x238 = (field_0x90 >> 4) & 0xF;
@@ -133,7 +143,7 @@ void TrickFloor2_804AA628::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 81.90 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.79 %, missing/extra + reloc-name; behaviour drift.
 // Finds who stands on the floor (fn_8023AF14, the 'SBAL' ball, fn_8023A97C per player), then:
 // 0 reads the tile under it, 2 waits for a rider (vfunc_0x34) and drops (tiles 6, state 3) or,
 // for types 4 / 5, waits for all four players to open (state 6), 3 sinks to 1.6384, 4 holds
