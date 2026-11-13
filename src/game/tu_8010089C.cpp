@@ -135,10 +135,8 @@ void WhackAMoleShop_8049C8EC::draw() {
         mPos.y = field_0x250 + field_0x258;
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x311 + field_0x247 * 2 + field_0x246, NULL, 0, 1.0f, 1.0f);
         if (field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7 || field_0x230 == 8) {
-            s32 time = field_0x23c;
-            s32 minutes = time / 60;
-            lbl_8053AF18->field_0x30 = minutes;
-            lbl_8053AF18->field_0x31 = (u8)((f32)(time - minutes * 60) / 0.6f);
+            lbl_8053AF18->field_0x30 = field_0x23c / 60;
+            lbl_8053AF18->field_0x31 = (u8)((f32)(field_0x23c % 60) / 0.6f);
             lbl_8053AF18->field_0x32 |= 0x10;
             for (s32 i = 0; i < field_0x244; i++) {
                 lbl_8053AF18->field_0x32 |= (u8)(1 << i);
@@ -428,7 +426,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
         s32 w2 = 0;
         s32 w1 = 0;
         s32 w4 = 0;
-        s32 w3;
+        s32 w3 = 0;
         switch (players) {
         case 1:
             w1 = 90;
