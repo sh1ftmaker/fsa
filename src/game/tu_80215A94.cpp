@@ -12,10 +12,10 @@ static const s32 lbl_8046A590[4] = {500, 300, 100, 0};
 
 // Moves v toward target by 1/d of the way (all the way once d is below epsilon).
 static inline void stepToward(f32& v, f32 target, f32 d) {
-    if (d >= FLT_EPSILON) {
-        v += (1.0f / d) * (target - v);
-    } else {
+    if (d < FLT_EPSILON) {
         v = target;
+    } else {
+        v += (1.0f / d) * (target - v);
     }
 }
 
@@ -36,8 +36,9 @@ static inline void fn_802162B8_loop(cls_80216238Sub* sub, s32 id, s32 key) {
             } else {
                 GameView_804A9950* view = getGameView_802D6A9C();
                 f32 d = sub->mFlagA;
+                f32 yGoal = view->mVisibleBox.i.y + yTarget;
                 stepToward(pos.x, 32.0f + view->mVisibleBox.i.x, d);
-                stepToward(pos.y, view->mVisibleBox.i.y + yTarget, d);
+                stepToward(pos.y, yGoal, d);
                 stepToward(pos.z, 0.0f, d);
                 fn_80230498(i, &pos, sub->field_0xc.field_0x0 + 0x33A, 0xFF, -0x80, -0x80, true);
             }
