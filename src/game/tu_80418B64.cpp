@@ -169,7 +169,7 @@ const char* lbl_804B13C4[4] = {
     "kk_mainRank_04.bti",
 };
 
-// FIXME(shotgun): 87.83 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.84 %, missing/extra + reloc-name; behaviour drift.
 cls_804B13D4::cls_804B13D4() : field_0x244(0xFFFFFFFF), field_0x248(0xFFFFFFFF) {
     if (lbl_80529DEC.field_0x118 != 0 || lbl_80529DEC.field_0x11c != 0) {
         lbl_8053AED0->field_0x10e |= 1;
@@ -350,7 +350,7 @@ cls_804B13D4::~cls_804B13D4() {
     }
 }
 
-// FIXME(shotgun): 90.19 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.21 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041FC2C() {
     for (s32 i = 0; i < 4; i++) {
         fn_8041E3B4(i);
@@ -450,7 +450,7 @@ static inline bool isPaused() {
     return gGameRoot_8053AAF8->field_0x88 == 2;
 }
 
-// FIXME(shotgun): 79.80 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.83 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041F720() {
     s32 mode = lbl_80529DEC.field_0x118;
     if ((mode == 9 && lbl_80529DEC.field_0x11c == 3) || (mode == 0 && lbl_80529DEC.field_0x11c == 2) ||
@@ -498,7 +498,6 @@ void cls_804B13D4::fn_8041F720() {
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME(shotgun): 99.93 %, reloc-name
 void cls_804B13D4::fn_8041F5FC() {
     s32 mode = lbl_80529DEC.field_0x118;
     if ((mode == 9 && lbl_80529DEC.field_0x11c == 3) || (mode == 0 && lbl_80529DEC.field_0x11c == 2) ||
@@ -514,7 +513,7 @@ void cls_804B13D4::fn_8041F5FC() {
     }
 }
 
-// FIXME(shotgun): 94.34 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.47 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041EDB0() {
     if (gGameRoot_8053AAF8->field_0x7e == 0) {
         fn_8041E3B4(0);
@@ -653,7 +652,7 @@ void cls_804B13D4::fn_8041EDB0() {
     }
 }
 
-// FIXME(shotgun): 85.64 %, missing/extra
+// FIXME(shotgun): 92.24 %, missing/extra; behaviour near.
 void cls_804B13D4::fn_8041E8B4(s32 player) {
     bool pending = (lbl_80529DEC.field_0x239 & (u8)(1 << player)) != 0;
     if (pending) {
@@ -753,7 +752,7 @@ void cls_804B13D4::fn_8041E8B4(s32 player) {
     }
 }
 
-// FIXME(shotgun): 99.58 %, regalloc-only
+// FIXME(shotgun): 99.58 %, regalloc-only; behaviour clean.
 void cls_804B13D4::fn_8041E708(s32 id, s32 arg1, u32 arg2) {
     s32 target;
     if (fn_8022F514(id)) {
@@ -796,7 +795,8 @@ void cls_804B13D4::fn_8041E708(s32 id, s32 arg1, u32 arg2) {
     field_0x28b |= (u8)(1 << target);
 }
 
-// FIXME(shotgun): 98.84 %, missing/extra (the takesPart bool test is one cmplwi longer)
+// FIXME(shotgun): 98.84 %, missing/extra; behaviour near.
+// (the takesPart bool test is one cmplwi longer)
 void cls_804B13D4::fn_8041E58C() {
     for (s32 i = 0; i < 4; i++) {
         bool takesPart = gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << i);
@@ -825,6 +825,7 @@ void cls_804B13D4::fn_8041E58C() {
 }
 
 // register assignment of mask/bit is swapped vs the original
+// FIXME: 92.42 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041E3B4(s32 player) {
     s32 mask = 1 << player;
     u8 bit = mask;
@@ -865,7 +866,7 @@ void cls_804B13D4::fn_8041E3B4(s32 player) {
     }
 }
 
-// FIXME(shotgun): 94.92 %, missing/extra
+// FIXME(shotgun): 94.92 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041DD24() {
     if (!(field_0x28a & 1)) {
         return;
@@ -936,7 +937,7 @@ void cls_804B13D4::fn_8041DD24() {
     }
 }
 
-// FIXME(shotgun): 90.11 %, missing/extra
+// FIXME(shotgun): 90.11 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041D18C(s32 player) {
     s32 idx = -1;
     if (gGameRoot_8053AAF8->field_0x7e == 0) {
@@ -1115,7 +1116,7 @@ void cls_804B13D4::fn_8041D18C(s32 player) {
     }
 }
 
-// FIXME(shotgun): 83.30 %, missing/extra
+// FIXME(shotgun): 87.86 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_8041CC04() {
     if (!(field_0x28b & 1)) {
         return;
@@ -1164,7 +1165,7 @@ void cls_804B13D4::fn_8041CC04() {
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D680[digit + 3]))->changeTexture(res, 0);
 }
 
-// FIXME(shotgun): 90.34 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.36 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041C67C() {
     field_0x4->search('Ndata13')->hide();
     field_0x4->search('Php1ni02')->hide();
@@ -1212,7 +1213,7 @@ void cls_804B13D4::fn_8041C67C() {
     }
 }
 
-// FIXME(shotgun): 68.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 68.65 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041C0C0(s32 player) {
     if (!(field_0x28b & (u8)(1 << player))) {
         return;
@@ -1261,7 +1262,7 @@ void cls_804B13D4::fn_8041C0C0(s32 player) {
     static_cast<J2DPicture*>(field_0x4->search(lbl_8048D778[player][digit + 3]))->changeTexture(res, 0);
 }
 
-// FIXME(shotgun): 99.78 %, missing/extra
+// FIXME(shotgun): 99.78 %, missing/extra; behaviour clean.
 void cls_804B13D4::fn_8041B69C() {
     s32 count = 0;
     s32 assigned = 0;
@@ -1361,7 +1362,7 @@ void cls_804B13D4::fn_8041B69C() {
     }
 }
 
-// FIXME(shotgun): 87.66 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.66 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_8041A868(bool arg) {
     f32 prev0 = field_0x118[0];
     f32 prev4 = field_0x158[0];
@@ -1491,7 +1492,7 @@ void cls_804B13D4::fn_8041A868(bool arg) {
     }
 }
 
-// FIXME(shotgun): 89.69 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.69 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_80419C38(s32 player, bool arg) {
     f32 prev1 = field_0x118[player];
     f32 prev2 = field_0x138[player];
@@ -1637,7 +1638,7 @@ void cls_804B13D4::fn_80419C38(s32 player, bool arg) {
     }
 }
 
-// FIXME(shotgun): 81.76 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.76 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B13D4::fn_80419570(s32 player) {
     if (field_0x21a[player] == 0) {
         field_0x1d8[player] = fn_80237774(player);
@@ -1751,7 +1752,7 @@ void cls_804B13D4::fn_8041918C(s32 player) {
     }
 }
 
-// FIXME(shotgun): 91.26 %, missing/extra
+// FIXME(shotgun): 91.26 %, missing/extra; behaviour drift.
 void cls_804B13D4::fn_80418D08(s32 player, bool force) {
     u8 bit = 1 << player;
     f32 prevA = field_0x128[player];
