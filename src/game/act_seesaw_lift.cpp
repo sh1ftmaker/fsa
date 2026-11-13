@@ -245,14 +245,9 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // FIXME: 76.71 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
-    rel.x -= mPos.x;
-    rel.y -= mPos.y;
-    rel.z -= mPos.z;
+    rel.sub(mPos);
     rel.z = 0.0f;
-    bool inside = false;
-    if (rel.x >= mBox.i.x + 7.0f && rel.y >= mBox.i.y && rel.x < mBox.f.x - 7.0f && rel.y < mBox.f.y) {
-        inside = true;
-    }
+    bool inside = rel.x >= mBox.i.x + 7.0f && rel.y >= mBox.i.y && rel.x < mBox.f.x - 7.0f && rel.y < mBox.f.y;
     if (inside) {
         f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
         f32 cosVal = JMath::sincosTable_.cosShort(field_0x230);
