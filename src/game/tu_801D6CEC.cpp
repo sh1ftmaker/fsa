@@ -232,12 +232,12 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
             field_0x44 = 3;
         } else {
             f32 t = (f32)(0x2D - field_0x64);
-            if (t < JGeometry::TUtil<f32>::epsilon()) {
+            if (t < FLT_EPSILON) {
                 field_0x60 = 1.0f;
             } else {
                 field_0x60 = (1.0f / t) * (1.0f - field_0x60) + field_0x60;
             }
-            if (t < JGeometry::TUtil<f32>::epsilon()) {
+            if (t < FLT_EPSILON) {
                 field_0x5c = 60.0f;
             } else {
                 field_0x5c = (1.0f / t) * (60.0f - field_0x5c) + field_0x5c;
@@ -266,9 +266,9 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
                     s16 ang = -(s16)(field_0x54 + i * 0xFFF);
                     f32 s = JMath::sincosTable_.sinShort(ang);
                     f32 c = JMath::sincosTable_.cosShort(ang);
-                    a->mPos.x = field_0x48 + (0.0f * c - field_0x5c * s);
-                    a->mPos.y = field_0x4c + (0.0f * s + field_0x5c * c);
-                    a->mPos.z = field_0x50;
+                    JGeometry::TVec3f p(field_0x48 + (0.0f * c - field_0x5c * s), field_0x4c + (0.0f * s + field_0x5c * c),
+                                        field_0x50);
+                    a->mPos = p;
                     if (field_0x44 == 2) {
                         ((cls_804A4BB0*)a)->fn_801D7DB4(field_0x60);
                     }
