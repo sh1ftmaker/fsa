@@ -12,7 +12,8 @@
 #include "game/SpriteParams.h"
 #include "game/act/act_fish.h"
 
-// FIXME(shotgun): 91.2 %, missing/extra + reloc-name
+// FIXME: 97.72 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): different + reloc-name (register order and literal placement in the spawn loop)
 void Fish_804AC658::init() {
     u32 param = field_0x90;
     field_0x90 = param & 0xFFF;
@@ -40,33 +41,38 @@ void Fish_804AC658::init() {
     fn_801F6758(&mPos, field_0x4, 0.0f);
     s32 count = field_0x90;
     if (count != 0) {
-        s16 tiles[0x2C9];
-        const JGeometry::TBox2f* box = field_0x4 < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
+        u16 tiles[0x2C9];
+        s32 layer = field_0x4;
+        GameView_804A9950* view = getGameView_802D6A9C();
+        const JGeometry::TBox2f* box = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
         f32 x0 = box->i.x;
         f32 y0 = box->i.y;
         s32 width = (s32)(box->f.x - x0);
         s32 height = (s32)(box->f.y - y0);
         s32 n = 0;
         s32 xi = 1;
-        bool full = false;
-        for (s32 x = 16; x < width && !full; x += 16) {
+        for (s32 x = 16; x < width; x += 16) {
             s32 packed = xi + 0x20;
-            for (s32 y = 16; y < height && !full; y += 16) {
-                JGeometry::TVec3f p(x + x0, y + y0, 0.0f);
-                u16 tile = fn_802265FC(&p, field_0x4);
+            for (s32 y = 16; y < height; y += 16) {
+                JGeometry::TVec3f p;
+                p.x = x + x0;
+                p.y = y + y0;
+                s32 tile = fn_802265FC(&p, field_0x4);
                 if (tile == 0xD || tile == 0x3A) {
                     if (n >= 0x2C9) {
-                        full = true;
-                    } else {
-                        tiles[n] = packed;
-                        n++;
+                        return;
                     }
+                    tiles[n] = packed;
+                    n++;
                 }
                 packed += 0x20;
             }
             xi++;
         }
-        if (n != 0) {
+        if (n == 0) {
+            return;
+        }
+        {
             s32 spawned = 0;
             while (spawned < count) {
                 s32 idx = (s32)(n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
@@ -107,7 +113,7 @@ bool Fish_804AC658::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return true;
 }
 
-// FIXME(shotgun): 95.4 %, different + reloc-name
+// FIXME(shotgun): 95.63 %, different + reloc-name; behaviour clean.
 bool Fish_804AC658::fn_80346330() {
     field_0x264 = 0.0f;
     field_0x268 = 0;
@@ -147,7 +153,8 @@ static inline void swimVelocity(Fish_804AC658* fish, f32 speed) {
     fish->field_0x3c.z = fish->field_0x25c;
 }
 
-// FIXME(shotgun): 83.7 %, missing/extra + reloc-name (states follow the asm's switch (0 falls into 1, 2 into 3); the hit-avoid branch of state 1 and the wall-bounce
+// FIXME(shotgun): 83.70 %, missing/extra + reloc-name; behaviour drift.
+// (states follow the asm's switch (0 falls into 1, 2 into 3); the hit-avoid branch of state 1 and the wall-bounce
 // heading draws of state 5 are the asm's, written with plain field stores; the original's vector-add temporaries are not matched)
 void Fish_804AC658::update() {
     addCalc2_801F71A4(&field_0x3c.x, field_0x254, 0.1f, field_0x260);
@@ -308,7 +315,8 @@ void Fish_804AC658::update() {
     }
 }
 
-// FIXME(shotgun): 76.2 %, missing/extra (the SpriteParams stores and the matrix are scheduled differently)
+// FIXME(shotgun): 76.21 %, missing/extra + reloc-name; behaviour near.
+// (the SpriteParams stores and the matrix are scheduled differently)
 void Fish_804AC658::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
