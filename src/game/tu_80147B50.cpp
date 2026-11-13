@@ -574,7 +574,7 @@ void cls_8049F6C8::update() {
             break;
         }
         mBox.set(-10.0f, -10.0f, 10.0f, 10.0f);
-        field_0xb0 = 0x4000004;
+        field_0xb0 = 0x8040004;
         addCalcAngle2_801F714C(&field_0x284, field_0x286 + 0x500 - (s32)(4096.0f * JMath::sincosTable_.sinShort(field_0x260)), 1, 0x200);
         field_0x260 += 0x500;
         field_0x2a0.x = field_0x290 * JMath::sincosTable_.sinShort(field_0x284);
