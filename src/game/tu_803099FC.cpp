@@ -222,15 +222,16 @@ void cls_804AA8C8::fn_8030A43C() {
     fn_8030A078();
 }
 
-// FIXME: 87.14. The original's inlined fn_8030A308 ends in `if (byte == 1) result = 1 else 0`
-// (cmplwi 1 and branches); ours inlines the call's `== 1` as subfic/cntlzw/extrwi and
-// converts the byte result with neg/or/srwi.
+// FIXME: the original keeps the inlined fn_8030A308 byte in r3 and tests it with clrlwi./bnelr.
 // 0x8030A3B0
 bool cls_804AA8C8::fn_8030A3B0(s32 slot) {
     if (slot == -0x3E7) {
         return false;
     }
-    return fn_8030A308(slot) || lbl_8053AD38[slot] != 0;
+    if (fn_8030A308(slot)) {
+        return true;
+    }
+    return lbl_8053AD38[slot] != 0;
 }
 
 // 0x8030A388
@@ -260,7 +261,10 @@ u8 cls_804AA8C8::fn_8030A308(s32 slot) {
     if (field_0xd4[slot] != 0) {
         return 0;
     }
-    return field_0xd8[slot] == 1;
+    if (field_0xd8[slot] == 1) {
+        return 1;
+    }
+    return 0;
 }
 
 // 0x8030A2E4
