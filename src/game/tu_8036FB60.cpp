@@ -544,11 +544,8 @@ void cls_804AE4B0::fn_80370C84() {
     if (field_0x240 == 0x23) {
         field_0x234 = 1;
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos = mPos;
-            pos.z += 0.0f;
             JGeometry::TVec3f off((f32)i * 16.0f, 0.0f, 0.0f);
-            field_0x294[i] = JGeometry::TVec3f(mPos.x, mPos.y, 0.0f) + off;
-            field_0x294[i].z = pos.z;
+            field_0x294[i] = mPos + off;
             field_0x2f4[i].zero();
             field_0x350[i] = 0x38E;
             field_0x330[i] = 0;
@@ -560,12 +557,13 @@ void cls_804AE4B0::fn_80370C84() {
     }
     if (field_0x240 <= 0x23) {
         for (s32 i = 0; i < 4; i++) {
-            JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
-            JGeometry::TVec3f base(2232.0f, 1624.0f, 0.0f);
-            pos = base + JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
             if (fn_8023EFEC(i)) {
+                JGeometry::TVec3f pos = JGeometry::TVec3f(2232.0f, 1624.0f, 0.0f) +
+                                        JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
                 fn_80230498(i, &pos, 0x2C8, 0xFF, -0x80, -0x80, true);
             } else {
+                JGeometry::TVec3f pos = JGeometry::TVec3f(2232.0f, 1624.0f, 0.0f) +
+                                        JGeometry::TVec3f(16.0f * (f32)i, 0.0f, 0.0f);
                 fn_80230498(i, &pos, 0x10, 0xFF, -0x80, -0x80, true);
             }
         }
