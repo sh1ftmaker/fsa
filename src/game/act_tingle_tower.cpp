@@ -173,12 +173,14 @@ void cls_804AAD60::draw() {
     }
 }
 
-// FIXME(shotgun): 85.80 %, missing/extra; behaviour drift.
+// FIXME: 95.50 %, missing/extra; behaviour clean.
+// FIXME(shotgun): missing/extra; argument setup order of the first fn_8038AD24 call differs.
 void cls_804AAD60::fn_80315EE8() {
     updateFacing();
+    JGeometry::TBox2f box;
     if (field_0x234 == 0) {
         s32 found = -1;
-        JGeometry::TBox2f box(field_0x258);
+        box.set(field_0x258);
         box.i.x += mPos.x;
         box.i.y += mPos.y;
         box.f.x += mPos.x;
@@ -215,12 +217,12 @@ void cls_804AAD60::fn_80315EE8() {
                 startSound_801F0E34(0x50057, 0);
             }
         } else {
-            JGeometry::TBox2f box2(mBox);
-            box2.i.x += mPos.x;
-            box2.i.y += mPos.y;
-            box2.f.x += mPos.x;
-            box2.f.y += mPos.y;
-            fn_8022FEB8(&box2, field_0x4, mSerial, true, false);
+            box.set(mBox);
+            box.i.x += mPos.x;
+            box.i.y += mPos.y;
+            box.f.x += mPos.x;
+            box.f.y += mPos.y;
+            fn_8022FEB8(&box, field_0x4, mSerial, true, false);
             s32 p = fn_8022FD8C(mSerial);
             if (p >= 0 && fn_802300EC(p)) {
                 if (gGameRoot_8053AAF8->field_0x7e != 0) {
@@ -241,7 +243,7 @@ void cls_804AAD60::fn_80315EE8() {
     } else if (field_0x234 == 1) {
         switch (field_0x268) {
         case 0x47D: {
-            JGeometry::TBox2f box(mBox);
+            box.set(mBox);
             box.i.x += mPos.x;
             box.i.y += mPos.y;
             box.f.x += mPos.x;
@@ -254,7 +256,7 @@ void cls_804AAD60::fn_80315EE8() {
             break;
         }
         case 0x47E: {
-            JGeometry::TBox2f box(field_0x258);
+            box.set(field_0x258);
             box.i.x += mPos.x;
             box.i.y += mPos.y;
             box.f.x += mPos.x;
@@ -282,7 +284,7 @@ void cls_804AAD60::fn_80315EE8() {
             break;
         }
         case 0x47F: {
-            JGeometry::TBox2f box(field_0x258);
+            box.set(field_0x258);
             box.i.x += mPos.x;
             box.i.y += mPos.y;
             box.f.x += mPos.x;
@@ -296,7 +298,7 @@ void cls_804AAD60::fn_80315EE8() {
         }
         case 0x47C:
         default: {
-            JGeometry::TBox2f box(mBox);
+            box.set(mBox);
             box.i.x += mPos.x;
             box.i.y += mPos.y;
             box.f.x += mPos.x;
