@@ -46,7 +46,7 @@ static inline void fn_802162B8_loop(cls_80216238Sub* sub, s32 id, s32 key) {
     }
 }
 
-// FIXME(shotgun): 85.09 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.29 %, regalloc-only; behaviour clean.
 // cls_80216238Sub
 void cls_80216238Sub::fn_802162B8(s32 id, s32 key) {
     if (mFlag8) {
