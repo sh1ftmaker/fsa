@@ -185,7 +185,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 93.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.75 %, missing/extra + reloc-name; behaviour near.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     s32 moved = 0;
