@@ -180,7 +180,7 @@ void Camera_804AA9E4::fn_8030DFE8(bool copy) {
 
 // The 2D view of the box: the view matrix straight into the GX one, the projection from the box's
 // size, and (when light is set) the light matrices; then the GX state of fn_8030DFE8.
-// FIXME(shotgun): 74.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.01 %, missing/extra + reloc-name; behaviour drift.
 void Camera_804AA9E4::fn_8030DD8C(const JGeometry::TBox2f* box, bool light) {
     field_0x164.i.x = box->i.x;
     field_0x164.i.y = box->i.y;
@@ -765,7 +765,7 @@ void Camera_804AA9E4::fn_8030CD18(const JGeometry::TBox2f* bounds, const CameraE
 
 // Not inlined into its caller fn_8030E5BC in the original.
 #pragma auto_inline off
-// FIXME(shotgun): 70.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.15 %, missing/extra + reloc-name; behaviour drift.
 // (the target keeps the box corners in float registers)
 void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     f32 halfW = 0.5f * (box->f.x - box->i.x);
