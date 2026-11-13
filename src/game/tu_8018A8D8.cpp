@@ -267,12 +267,15 @@ void cls_804A1E50::fn_8018DFCC() {
             field_0x264 = 0;
         }
         break;
-    case 1:
-    case 10:
+    case 3:
+    case 5:
+    case 11:
         field_0x264++;
         if (field_0x264 > 7) {
-            if (field_0x268 == 1) {
-                fn_8018E30C(2);
+            if (field_0x268 == 3) {
+                fn_8018E30C(4);
+            } else if (field_0x268 == 5) {
+                fn_8018E30C(6);
             } else {
                 field_0x264 = 7;
             }
@@ -290,15 +293,12 @@ void cls_804A1E50::fn_8018DFCC() {
         field_0x264++;
         field_0x264 &= 3;
         break;
-    case 3:
-    case 5:
-    case 11:
+    case 1:
+    case 10:
         field_0x264++;
         if (field_0x264 > 7) {
-            if (field_0x268 == 3) {
-                fn_8018E30C(4);
-            } else if (field_0x268 == 5) {
-                fn_8018E30C(6);
+            if (field_0x268 == 1) {
+                fn_8018E30C(2);
             } else {
                 field_0x264 = 7;
             }
