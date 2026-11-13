@@ -367,9 +367,9 @@ bool cls_8049D020::fn_8010C294(s32 state) {
         field_0x248 = 0;
         field_0x24c = 0;
         u16 outAngle = 0;
-        s32 outDir = 0;
-        s32 outPlayer = 0;
         f32 outDist = 0.0f;
+        s32 outPlayer = 0;
+        s32 outDir = 0;
         fn_801EEC98(mSerial, &outAngle, &outDir, &outDist, &outPlayer, field_0x23c, 2);
         field_0x230 = outAngle;
         break;
@@ -450,10 +450,9 @@ bool cls_8049D020::fn_8010C294(s32 state) {
             if (field_0x258 >= 1) {
                 kind = 1;
             }
-            ActorManager_804A5800* mgr = getActorManager_801F856C();
-            s32 serial = mgr->fn_801F8544('RUPY', field_0x4, &mPos, lbl_80464328[kind]);
+            s32 serial = getActorManager_801F856C()->fn_801F8544('RUPY', field_0x4, &mPos, lbl_80464328[kind]);
             if (serial >= 0) {
-                mgr->findActorBySerial_801F666C(serial);
+                getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             }
             break;
         }
