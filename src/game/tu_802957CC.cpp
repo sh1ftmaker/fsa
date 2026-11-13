@@ -528,14 +528,16 @@ void cls_804A7AE0::fn_80299FB0() {
     p.y += mBox.i.y;
     p.y += 8.0f;
     p.z = 0.0f;
-    f32 minX = view.i.x + 32.0f;
-    f32 minY = view.i.y + 32.0f;
-    f32 maxX = view.f.x - 32.0f;
-    f32 maxY = view.f.y - 32.0f;
+    const f32 inset = -32.0f;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
+    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
