@@ -31,7 +31,7 @@ static const s32 lbl_804648C0[3] = {0xC8, 0x190, 0x258};
 static const s32 lbl_804648CC[7] = {1, 4, 0, 5, 3, 2, 6};
 
 // 0x80115590.
-// FIXME(shotgun): 99.9 %, reloc-name
+// FIXME(shotgun): 99.92 %, reloc-name; behaviour clean.
 cls_8049D83C::cls_8049D83C()
     : field_0x230(1), field_0x231(1), field_0x232(0), field_0x233(0), field_0x234(1), field_0x238(0),
       field_0x23c(0), field_0x240(0), field_0x244(0), field_0x248(0), field_0x24c(0), field_0x250(0.0f),
@@ -56,7 +56,7 @@ cls_8049D83C::cls_8049D83C()
 }
 
 // 0x80115430.
-// FIXME(shotgun): 99.0 %, regalloc-only
+// FIXME(shotgun): 98.98 %, regalloc-only; behaviour clean.
 cls_8049D83C::~cls_8049D83C() {
     if (field_0x2a0 != NULL) {
         releaseEmitter_801EE434(field_0x2a0);
@@ -113,7 +113,7 @@ extern const u16 lbl_80464948[];
 extern const u16 lbl_80464958[];
 
 // 0x80115248.
-// FIXME(shotgun): 95.5 %, scheduling+regalloc + reloc-name
+// FIXME(shotgun): 95.52 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_8049D83C::init() {
     cls_8049D140::init();
     field_0x238 = field_0x90 & 0xFF;
@@ -149,7 +149,8 @@ void cls_8049D83C::init() {
 }
 
 // 0x80114C98.
-// FIXME(shotgun): 96.7 %, missing/extra (case 5: the original keeps the flag test and the input test in a bool temporary)
+// FIXME(shotgun): 96.74 %, missing/extra + reloc-name; behaviour drift.
+// (case 5: the original keeps the flag test and the input test in a bool temporary)
 void cls_8049D83C::update() {
     cls_8049D140::update();
     switch (field_0x23c) {
@@ -306,7 +307,7 @@ void cls_8049D83C::draw() {
 }
 
 // 0x80114860.
-// FIXME(shotgun): 99.5 %, missing/extra
+// FIXME(shotgun): 99.54 %, missing/extra; behaviour clean.
 void cls_8049D83C::vfunc_0x54() {
     cls_801192AC* sub = fn_8011921C();
     s32 t = sub->field_0x8;
@@ -362,7 +363,7 @@ void cls_8049D83C::vfunc_0x54() {
 }
 
 // 0x80113EC4.
-// FIXME(shotgun): 85.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 84.45 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049D83C::vfunc_0x60(s32 arg) {
     switch (arg) {
     case 2:
@@ -571,7 +572,7 @@ s32 cls_8049D83C::vfunc_0x5C() {
 #pragma auto_inline off
 // Darkens the screen: draws the image field_0x260 scaled by 96 with an alpha of field_0x248.
 // 0x80113790.
-// FIXME(shotgun): 74.0 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.93 %, missing/extra + reloc-name; behaviour clean.
 void cls_8049D83C::fn_80113B54(s32 arg) {
     SpriteParams_801F5AE0 params;
     SpriteParams_801F5AE0 params2;
@@ -592,7 +593,7 @@ void cls_8049D83C::fn_80113B54(s32 arg) {
     }
 }
 
-// FIXME(shotgun): 84.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.64 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049D83C::fn_8011395C() {
     Mtx mtx;
     PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
@@ -639,7 +640,7 @@ void cls_8049D83C::fn_8011395C() {
     }
 }
 
-// FIXME(shotgun): 95.13 %, different + reloc-name
+// FIXME(shotgun): 95.13 %, different + reloc-name; behaviour clean.
 void cls_8049D83C::fn_80113790() {
     if (field_0x248 > 0) {
         SpriteParams_801F5AE0 params;
