@@ -1038,15 +1038,14 @@ void cls_8049C718::fn_800FA1A4() {
         b->mPos = mid + off;
     }
     if (mSlot == 0) {
-        JGeometry::TVec3f c(mPos.x, mPos.y - 20.0f, mPos.z);
-        JGeometry::TVec3f v = c;
+        JGeometry::TVec3f v(mPos.x, mPos.y - 20.0f, mPos.z);
         v.sub(posA);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
             v.scale(-5.0f);
             a->field_0x3c = v;
         }
-        v = c;
+        v = JGeometry::TVec3f(mPos.x, mPos.y - 20.0f, mPos.z);
         v.sub(posB);
         if (PSVECMag((Vec*)&v) < 50.0f) {
             v.normalize();
