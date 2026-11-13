@@ -586,8 +586,9 @@ void ZoraFishHerding_804A2E30::draw() {
         if (field_0x258 >= 0) {
             lbl_8053AF20->field_0x10 = field_0x25c;
             lbl_8053AF20->field_0x13 |= 1;
-            lbl_8053AF20->field_0x11 = field_0x258 / 60;
-            lbl_8053AF20->field_0x12 = (f32)(field_0x258 % 60) * 100.0f / 60.0f;
+            s32 frames = field_0x258;
+            lbl_8053AF20->field_0x11 = frames / 60;
+            lbl_8053AF20->field_0x12 = (f32)(frames % 60) * 100.0f / 60.0f;
             lbl_8053AF20->field_0x13 |= 2;
         }
         break;
