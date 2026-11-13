@@ -343,10 +343,7 @@ bool cls_804A4C58::fn_801DD410() {
     }
     s32 outFlag;
     if (active) {
-        f32 sx0 = mBox.i.x;
-        f32 sy0 = mBox.i.y;
-        f32 sx1 = mBox.f.x;
-        f32 sy1 = mBox.f.y;
+        JGeometry::TBox2f saved = mBox;
         mBox.i.x = -40.0f;
         mBox.i.y = -16.0f;
         mBox.f.x = 40.0f;
@@ -354,16 +351,10 @@ bool cls_804A4C58::fn_801DD410() {
         if (fn_801F285C(NULL, &outFlag, true, -1) >= 0) {
             fn_801D9C58(5);
         }
-        mBox.i.x = sx0;
-        mBox.i.y = sy0;
-        mBox.f.x = sx1;
-        mBox.f.y = sy1;
+        mBox.set(saved);
     }
     if (mState == 0x11) {
-        f32 sx0 = mBox.i.x;
-        f32 sy0 = mBox.i.y;
-        f32 sx1 = mBox.f.x;
-        f32 sy1 = mBox.f.y;
+        JGeometry::TBox2f saved = mBox;
         mBox.i.x = -20.0f;
         mBox.i.y = -26.0f;
         mBox.f.x = 22.0f;
@@ -399,10 +390,7 @@ bool cls_804A4C58::fn_801DD410() {
             }
             fn_801D9C58(0x13);
         }
-        mBox.i.x = sx0;
-        mBox.i.y = sy0;
-        mBox.f.x = sx1;
-        mBox.f.y = sy1;
+        mBox.set(saved);
         if (!hit && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
             for (s32 i = 0; i < 4; i++) {
                 if (i == fn_801F285C(NULL, &outFlag, true, i)) {
