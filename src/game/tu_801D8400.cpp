@@ -43,14 +43,17 @@ cls_804A4C58::~cls_804A4C58() {
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 59.02 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 66.41 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
     mBox.i.y = 1.0f;
     mBox.f.x = -1.0f;
     mBox.f.y = -1.0f;
-    mBox2 = mBox;
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
     field_0x80.i.x = 1.0f;
     field_0x80.i.y = 1.0f;
     field_0x80.f.x = -1.0f;
@@ -62,9 +65,10 @@ void cls_804A4C58::init() {
     mLifeBackup = mLife;
     field_0x114 = 0;
     field_0x196 = 1;
-    JGeometry::TBox2f* box = &getGameView_802D6A9C()->field_0xdc;
-    if (field_0x4 < 8) {
-        box = &getGameView_802D6A9C()->mVisibleBox;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* box = &view->mVisibleBox;
+    if (field_0x4 >= 8) {
+        box = &view->field_0xdc;
     }
     JGeometry::TVec3f p;
     p.x = mPos.x;
@@ -82,12 +86,15 @@ void cls_804A4C58::init() {
     f32 x0 = mSpawnPos.x - 120.0f;
     f32 y0 = 32.0f + mSpawnPos.y;
     f32 step = 0.5f * (field_0x2d0 - 48.0f - y0);
+    f32 y = y0;
     for (s32 row = 0; row < 3; row++) {
-        f32 y = y0 + step * row;
+        f32 x = x0;
         for (s32 col = 0; col < 4; col++) {
-            field_0x2d4[row * 4 + col].x = x0 + 80.0f * col;
+            field_0x2d4[row * 4 + col].x = x;
             field_0x2d4[row * 4 + col].y = y;
+            x += 80.0f;
         }
+        y += step;
     }
     mState = 0;
     mStateTimer = 0;
@@ -243,7 +250,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 75.96 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.46 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -258,13 +265,17 @@ void cls_804A4C58::fn_801D9960() {
         }
         from.y = -6.0f + mPos.y;
         from.z = 0.0f;
-        s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
+        s16 angle = -0x2000;
+        if (mFlags & 0x2000) {
+            angle = 0x2000;
+        }
         s32 player = fn_801D0338(&from, angle);
         if (player >= 0) {
             f32 dy = getPlayerPos_8023E724(player)->y - from.y;
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;
             s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-            if (0.000030517578f * std::fabsf((f32)(s16)(heading - angle)) <= 0.3f) {
+            f32 diff = (f32)(s16)(heading - angle);
+            if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
                 target = player;
             }
         }
@@ -278,7 +289,13 @@ void cls_804A4C58::fn_801D9960() {
         field_0x338--;
         if (field_0x338 == 0) {
             if (field_0x33f == 3) {
-                static const s32 columns[6] = {1, 2, 5, 6, 9, 10};
+                s32 columns[6];
+                columns[0] = 1;
+                columns[1] = 2;
+                columns[2] = 5;
+                columns[3] = 6;
+                columns[4] = 9;
+                columns[5] = 10;
                 field_0x334 = columns[fn_801CD664(6)];
             } else {
                 field_0x334 = fn_801CD664(12);
@@ -306,17 +323,19 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 71.73 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 73.68 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
     if (mFlags & 0x2000) {
         pos.x = mPos.x - -30.0f;
+        pos.y = -6.0f + mPos.y;
+        pos.z = 0.0f;
     } else {
         pos.x = -30.0f + mPos.x;
+        pos.y = -6.0f + mPos.y;
+        pos.z = 0.0f;
     }
-    pos.y = -6.0f + mPos.y;
-    pos.z = 0.0f;
     s32 serial = getActorManager_801F856C()->spawnActor_801F9484('BOIB', field_0x4, &pos, 0, -1, -1);
     if (serial >= 0) {
         ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -325,11 +344,13 @@ bool cls_804A4C58::fn_801D95F4() {
             JGeometry::TVec3f from;
             if (mFlags & 0x2000) {
                 from.x = mPos.x - -30.0f;
+                from.y = -6.0f + mPos.y;
+                from.z = 0.0f;
             } else {
                 from.x = -30.0f + mPos.x;
+                from.y = -6.0f + mPos.y;
+                from.z = 0.0f;
             }
-            from.y = -6.0f + mPos.y;
-            from.z = 0.0f;
             s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
             s32 player = fn_801D0338(&from, angle);
             if (player >= 0) {
