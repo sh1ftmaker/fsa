@@ -39,7 +39,7 @@ void getMapTexView(JGeometry::TVec3f& center, JGeometry::TVec3f& half);
 
 cls_8016FDE0::cls_8016FDE0() {}
 
-// FIXME(shotgun): 92.05 %, different; behaviour drift.
+// FIXME(shotgun): 99.75 %, regalloc-only; behaviour clean.
 // (the loop's entry and index registers are swapped, r27/r28)
 GameRootSub24_8016A3AC::~GameRootSub24_8016A3AC() {
     for (int i = 0; i < 4; i++) {
