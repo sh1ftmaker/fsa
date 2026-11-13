@@ -207,26 +207,24 @@ void Score_804AF4C0::fn_80393228() {
     f32 fade = 255.0f * ((f32)mTimer / 90.0f);
     if (mValue < 10) {
         if (field_0x4 < 8) {
-            JGeometry::TVec3f pos = mPos;
+            JGeometry::TVec3f pos = JGeometry::TVec3f(mPos);
             lbl_8053AF50->fn_80455770(0.5f, mValue, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
     } else if (mValue < 100) {
         if (field_0x4 < 8) {
-            JGeometry::TVec3f pos = mPos;
-            pos.x = mPos.x - 8.333f;
+            JGeometry::TVec3f pos = JGeometry::TVec3f(mPos.x - 8.333f, mPos.y, mPos.z);
             lbl_8053AF50->fn_80455770(0.5f, mValue / 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
         if (field_0x4 < 8) {
-            JGeometry::TVec3f pos = mPos;
-            pos.x = 8.333f + mPos.x;
+            JGeometry::TVec3f pos = JGeometry::TVec3f(8.333f + mPos.x, mPos.y, mPos.z);
             lbl_8053AF50->fn_80455770(0.5f, mValue - (mValue / 10) * 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)(255.0f * ((f32)mTimer / 90.0f))));
         }
     } else {
         if (field_0x4 < 8) {
-            JGeometry::TVec3f pos = mPos;
+            JGeometry::TVec3f pos = JGeometry::TVec3f(mPos);
             lbl_8053AF50->fn_80455770(0.5f, 10, &pos,
                                       JUtility::TColor(lbl_80543170[mPlayer], lbl_80543174[mPlayer], lbl_80543178[mPlayer], (s32)fade));
         }
