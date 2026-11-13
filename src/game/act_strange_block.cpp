@@ -83,7 +83,7 @@ void StrangeBlock_804AC2D8::init() {
 
 // 0x8033DA78. States of field_0x234: 0 the block waits to be pushed or slides, 1 a player's
 // message is open, then back to 0.
-// FIXME(shotgun): 91.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour near.
 void StrangeBlock_804AC2D8::update() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
@@ -109,17 +109,23 @@ void StrangeBlock_804AC2D8::update() {
         if (PSVECDistance(&mPos, (const Vec*)&field_0x238) >= reach) {
             if (mPos.x <= mSpawnPos.x + 11.5f && mPos.x >= mSpawnPos.x - 11.5f) {
                 mPos.x = mSpawnPos.x;
-            } else if (mPos.x < field_0x238.x) {
-                mPos.x = field_0x238.x - (reach + 0.1f);
             } else {
-                mPos.x = field_0x238.x + (reach + 0.1f);
+                f32 gap = reach + 0.1f;
+                if (mPos.x < field_0x238.x) {
+                    mPos.x = field_0x238.x - gap;
+                } else {
+                    mPos.x = field_0x238.x + gap;
+                }
             }
             if (mPos.y <= mSpawnPos.y + 11.5f && mPos.y >= mSpawnPos.y - 11.5f) {
                 mPos.y = mSpawnPos.y;
-            } else if (mPos.y < field_0x238.y) {
-                mPos.y = field_0x238.y - (reach + 0.1f);
             } else {
-                mPos.y = field_0x238.y + (reach + 0.1f);
+                f32 gap = reach + 0.1f;
+                if (mPos.y < field_0x238.y) {
+                    mPos.y = field_0x238.y - gap;
+                } else {
+                    mPos.y = field_0x238.y + gap;
+                }
             }
             field_0x238 = mPos;
             field_0x3c.x = 0.0f;
@@ -152,8 +158,7 @@ void StrangeBlock_804AC2D8::update() {
                 field_0x258 = fn_8022FD8C(mSerial);
                 if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                     fn_802300EC(field_0x258)) {
-                    JGeometry::TVec3f p = mPos;
-                    if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                         field_0x234 = 1;
                         field_0x254 = fn_80230CFC(field_0x258);
                         field_0x254 = field_0x254 ^ 1;
@@ -189,8 +194,7 @@ void StrangeBlock_804AC2D8::update() {
                     field_0x258 = fn_8022FD8C(mSerial);
                     if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                         fn_802300EC(field_0x258)) {
-                        JGeometry::TVec3f p = mPos;
-                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                            if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                             field_0x234 = 1;
                             field_0x254 = fn_80230CFC(field_0x258);
                             field_0x254 = field_0x254 ^ 1;
@@ -225,13 +229,14 @@ void StrangeBlock_804AC2D8::update() {
 
 // 0x8033D4CC. Called when the block is idle: pushes it one step when a player has been
 // shoving it long enough, or lets it slide back to its spawn position.
-// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 96.66 %, different + reloc-name; behaviour clean.
+// FIXME(shotgun): stack slot order and literal pool names differ.
 void StrangeBlock_804AC2D8::fn_8033D4CC() {
     s32 pushers = fn_80239108(mSerial);
     if (pushers >= field_0x260) {
-        JGeometry::TVec3f saved = mPos;
         if (PSVECDistance(&mPos, &mSpawnPos) < (f32)(field_0x260 << 4) - 0.1f) {
             s32 dir = fn_80238BC4(mSerial);
+            JGeometry::TVec3f saved = mPos;
             JGeometry::TVec3f step(lbl_804A79E0[dir * 3], lbl_804A79E0[dir * 3 + 1], lbl_804A79E0[dir * 3 + 2]);
             mPos += step;
             if (fn_801F2618(NULL, false)) {
@@ -254,24 +259,25 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             }
             if (dir >= 0 && dir < 4) {
                 fn_80238E08(mSerial);
-                f32 speed;
                 switch (field_0x25c) {
                 case 0:
                 case 1:
                 case 5:
-                    speed = 0.7f;
+                    field_0x3c.x = lbl_804AC2A8[dir * 3];
+                    field_0x3c.y = lbl_804AC2A8[dir * 3 + 1];
+                    field_0x3c.z = lbl_804AC2A8[dir * 3 + 2];
+                    field_0x3c.scale(0.7f);
                     break;
                 case 2:
                 case 3:
                 case 4:
                 case 6:
-                    speed = 0.4f;
+                    field_0x3c.x = lbl_804AC2A8[dir * 3];
+                    field_0x3c.y = lbl_804AC2A8[dir * 3 + 1];
+                    field_0x3c.z = lbl_804AC2A8[dir * 3 + 2];
+                    field_0x3c.scale(0.4f);
                     break;
                 }
-                field_0x3c.x = lbl_804AC2A8[dir * 3];
-                field_0x3c.y = lbl_804AC2A8[dir * 3 + 1];
-                field_0x3c.z = lbl_804AC2A8[dir * 3 + 2];
-                field_0x3c.scale(speed);
                 if (field_0x271 == 1) {
                     field_0x271 = 0;
                 } else {
@@ -328,17 +334,16 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             field_0x248--;
         }
     } else {
-        JGeometry::TBox2f box;
-        box.i.x = mBox.i.x + mPos.x;
-        box.i.y = mBox.i.y + mPos.y;
-        box.f.x = mBox.f.x + mPos.x;
-        box.f.y = mBox.f.y + mPos.y;
+        JGeometry::TBox2f box = mBox;
+        box.i.x += mPos.x;
+        box.f.x += mPos.x;
+        box.i.y += mPos.y;
+        box.f.y += mPos.y;
         if (field_0x25c == 0 || field_0x25c == 2) {
             fn_8022FEB8(&box, field_0x4, mSerial, true, false);
             field_0x258 = fn_8022FD8C(mSerial);
             if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f && fn_802300EC(field_0x258)) {
-                JGeometry::TVec3f p = mPos;
-                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, p, 0)) {
+                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                     field_0x234 = 1;
                     field_0x254 = fn_80230CFC(field_0x258);
                     field_0x254 = field_0x254 ^ 1;
