@@ -52,6 +52,11 @@ static inline u16 rawTileAt(const V* pos, s32 layer) {
     return gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, ((y & 0x100) << 1) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF)) & 0x3FF;
 }
 
+// field_0x60[row][col] == value for the current screen.
+static inline bool screenValueIs(s32 value) {
+    return getGameView_802D6A9C()->field_0x60[getGameView_802D6A9C()->field_0x18][getGameView_802D6A9C()->field_0x14] == value;
+}
+
 // The tile's collision code: the raw tile code (as fn_80226850) through lbl_8046CB88, adjusted
 // when the layer's GameView byte 0x131DF + layer is set (0 -> 2, 0x61 -> 0) and on stage (7, 2) /
 // (7, 3) (0xE -> 0x51).
@@ -69,7 +74,7 @@ static inline u16 collisionCodeAt(const V* pos, s32 layer) {
     } else if (code == 0xE && gGameRoot_8053AAF8->field_0x7f != 0) {
         if ((getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 2) ||
             (getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 3 &&
-             getGameView_802D6A9C()->field_0x60[getGameView_802D6A9C()->field_0x18][getGameView_802D6A9C()->field_0x14] == 0x10 &&
+             screenValueIs(0x10) &&
              pos->y > 2470.0f)) {
             return 0x51;
         }
