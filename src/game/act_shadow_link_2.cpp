@@ -82,7 +82,8 @@ void ShadowLink2_804A43E8::init() {
     u32 kind = (field_0x90 >> 5) & 7;
     if (kind == 1 || kind == 2) {
         mFlags |= 0x6000;
-        fn_801C0D70()->field_0x54.set(mPos.x, mPos.y, mPos.z);
+        cls_801C0D70* obj = fn_801C0D70();
+        obj->field_0x54.set(mPos);
         switch (kind) {
         case 1:
             fn_801C0D70()->field_0x0 |= 2;
@@ -110,7 +111,7 @@ void ShadowLink2_804A43E8::init() {
     // FIXME(shotgun): field_0x524 is a cls_802157B8 here: field_0x524.fn_802157B8((u8)n) is not
     // written until the header member has that type (other units test it as a u32).
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0xb0 = 0x50303;
     mFlags |= 0x100;
