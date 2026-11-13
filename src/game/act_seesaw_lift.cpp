@@ -48,8 +48,8 @@ void SeesawLift_804AD348::init() {
     u16 height = res[2];
     mBox.i.x = (f32)(-(s32)width / 2);
     mBox.i.y = (f32)(-(s32)height / 2);
-    mBox.f.x = (f32)(width >> 1);
-    mBox.f.y = (f32)(height >> 1);
+    mBox.f.x = (f32)(width / 2);
+    mBox.f.y = (f32)(height / 2);
     mLife = 0;
     field_0x230 = 0;
     field_0x238 = 0;
@@ -75,9 +75,7 @@ void SeesawLift_804AD348::init() {
     field_0x25c[3] = NULL;
     field_0x26c = 0;
     field_0x270w = 0;
-    JGeometry::TVec3f p = mPos;
-    p.x += mBox.i.x;
-    p.y += mBox.i.y;
+    JGeometry::TVec3f p = mPos + JGeometry::TVec3f(mBox.i.x, mBox.i.y, 0.0f);
     f32 baseY = p.y;
     field_0x258 = 0;
     for (s32 row = 0; row < 6; row++) {
