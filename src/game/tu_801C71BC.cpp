@@ -360,7 +360,7 @@ void ShadowLink2_804A43E8::fn_801C887C() {
     }
 }
 
-// FIXME(shotgun): 84.21 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 85.54 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C844C() {
     JGeometry::TVec3f pos = mPos;
     field_0x358.fn_80214244()->fn_800FE2E4(&pos, field_0x4);
@@ -388,14 +388,12 @@ void ShadowLink2_804A43E8::fn_801C844C() {
         u8 pick;
         if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
             pick = opt[1];
-            s32 layer = field_0x4;
-            if (layer != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
+            if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
                 pick = opt[0];
             }
         } else {
             pick = opt[0];
-            s32 layer = field_0x4;
-            if (layer != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
+            if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(pick)) {
                 pick = opt[1];
             }
         }
@@ -458,7 +456,7 @@ void ShadowLink2_804A43E8::fn_801C844C() {
     }
 }
 
-// FIXME(shotgun): 77.85 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 78.58 %, missing/extra; behaviour near.
 void ShadowLink2_804A43E8::fn_801C7F98() {
     fn_801C844C();
     fn_801C8C84(0, 0);
@@ -537,9 +535,9 @@ void ShadowLink2_804A43E8::fn_801C7F98() {
         f32 dx1 = copy1.x - field_0x32c.x;
         f32 dy1 = copy1.y - field_0x32c.y;
         s16 a1 = (s32)(JMath::atanTable_.atan2_(dx1, dy1) * 10430.378f);
-        f32 d1 = __fabs((f32)(angle - a1));
+        f32 d1 = __fabsf(angle - a1);
         s16 a0 = (s32)(JMath::atanTable_.atan2_(dx0, dy0) * 10430.378f);
-        f32 d0 = __fabs((f32)(angle - a0));
+        f32 d0 = __fabsf(angle - a0);
         if (0.000030517578f * d0 < 0.000030517578f * d1) {
             if (field_0x4 != field_0x358.fn_80214244()->fn_800FE25C(opt[1])) {
                 field_0x358.fn_80214244()->field_0x1 = 1;
@@ -691,7 +689,7 @@ void ShadowLink2_804A43E8::fn_801C79A0() {
     }
 }
 
-// FIXME(shotgun): 88.99 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 89.73 %, missing/extra; behaviour near.
 void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
     if (!(mFlags & 0x2000000)) {
         if (fn_801C5340()) {
@@ -758,13 +756,15 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
             u8 start = field_0x358.fn_80214244()->field_0x3;
             field_0x358.fn_80214244()->fn_800FD818(1);
             u8 next = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* rail = field_0x358.fn_80214244();
+            if (start < rail->field_0x2) {
+                rail->field_0x3 = start;
             }
             field_0x358.fn_80214244()->fn_800FD818(-1);
             u8 prev = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            rail = field_0x358.fn_80214244();
+            if (start < rail->field_0x2) {
+                rail->field_0x3 = start;
             }
             u8 opt[2];
             opt[0] = prev;
@@ -815,7 +815,7 @@ void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
         s32 player = fn_801D05F8(&mPos, 100.0f);
         if (player >= 0) {
             s16 pAngle = fn_801D0280(player);
-            f32 diff = __fabs((f32)(s16)(field_0x33c - pAngle));
+            f32 diff = __fabsf((f32)(s16)(field_0x33c - pAngle));
             if (0.000030517578f * diff <= 0.3f) {
                 doReset = true;
             }
