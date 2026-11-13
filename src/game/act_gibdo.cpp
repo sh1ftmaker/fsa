@@ -53,9 +53,8 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D1D60();
 }
 
-// FIXME(shotgun): case 3 also copies the fade colour to the three emitters (0x32A, 0x41B,
-// 0x41C) it keeps the handles of; those copies are left out (see the note at the top).
-// FIXME(shotgun): 79.02 %, missing/extra
+// FIXME(shotgun): 81.72 %, missing/extra: the original keeps fewer values live (saves r30-r31 only)
+// and its jump table is named jumptable_804A3D24.
 void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     mFlags &= ~0x8000;
     switch (mode) {
@@ -75,6 +74,7 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     case 2: {
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
+        s32 dir = field_0x98;
         s32 kind;
         switch (mAnim.mAnim) {
         case 0:
@@ -99,15 +99,12 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
             kind = 3;
             break;
         }
-        s32 dir = field_0x98;
         s32 anim = 8;
         switch (kind) {
         case 0:
             if (dir == 3) {
                 anim = 9;
-            } else if (dir >= 2) {
-                anim = 8;
-            } else {
+            } else if (dir < 2) {
                 anim = gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f ? 8 : 9;
             }
             break;
@@ -142,25 +139,37 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
         mAnim.startAnim_801D22DC(anim, 0, false);
         break;
     }
-    case 3:
+    case 3: {
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
         field_0x3c.set(0.0f, 0.0f, 0.0f);
         mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-        mBox2 = mBox;
+        mBox2.i = mBox.i;
+        mBox2.f = mBox.f;
         field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
         field_0xb0 = 0;
         mFlags |= 0x300;
         mLife = 1;
+        JUtility::TColor color = gGameRoot2_8053AB10->field_0x2c->field_0x4;
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x329, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
-        spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
+        JPABaseEmitter* emitter0 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x32A, 0, 0, NULL, NULL, true, 1.0f);
+        JPABaseEmitter* emitter1 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41B, 0, 0, NULL, NULL, true, 1.0f);
+        JPABaseEmitter* emitter2 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x41C, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x54F, 0, 0, NULL, NULL, true, 1.0f);
+        if (emitter0 != NULL) {
+            emitter0->setColorRGB(color.r, color.g, color.b);
+        }
+        if (emitter1 != NULL) {
+            emitter1->setColorRGB(color.r, color.g, color.b);
+        }
+        if (emitter2 != NULL) {
+            emitter2->setColorRGB(color.r, color.g, color.b);
+        }
         startSound_801F0E34(0x5007E, 0);
         startSound_801F0E34(0x40003, 0);
         mDrawEnabled = false;
         break;
+    }
     }
     mStateTimer = 0;
     mState = mode;
