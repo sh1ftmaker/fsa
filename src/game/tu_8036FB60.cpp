@@ -429,7 +429,7 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
             self->field_0x384[i] = 0;
         }
     }
-    if (!fn_80230188(i) && self->mState == 1) {
+    if (fn_80230188(i) || self->mState == 1) {
         if (fn_8023EFEC(i)) {
             JGeometry::TVec3f pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
             fn_80230498(i, &pos, 0x2CF + self->field_0x384[i], 0xFF, -0x80, -0x80, true);
@@ -441,7 +441,7 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
 }
 
 // The second state: the camera pans to the lane tile; when it has arrived the message is shown.
-// FIXME(shotgun): 88.34 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.68 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371284() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -455,7 +455,7 @@ void cls_804AE4B0::fn_80371284() {
             tickPlayer_80371284(this, i);
         }
     }
-    if (field_0x324.y <= 1720.0f) {
+    if (!(field_0x324.y > 1720.0f)) {
         field_0x324.y = 1720.0f;
         field_0x384[0] = 0;
         field_0x384[1] = 0;
