@@ -119,7 +119,7 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     }
 }
 
-// FIXME(shotgun): 90.82 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.35 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
         SpriteParams_801F5AE0 params;
@@ -390,7 +390,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
     }
 }
 
-// FIXME(shotgun): 94.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.16 %, missing/extra + reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x290 = static_cast<WhackAMoleShop_8049C8EC*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x90 & 0xFFFF));
     mBox.i.x = -12.0f;
