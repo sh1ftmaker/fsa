@@ -313,7 +313,7 @@ void EscortBase_8049E0C8::vfunc_0x98(s32 a, s32 b, f32 limit) {
     }
 }
 
-// FIXME(shotgun): 89.58 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.78 %, missing/extra + reloc-name; behaviour drift.
 void EscortBase_8049E0C8::vfunc_0x9C(s32 player, f32 arg2, f32 arg3, f32 arg4, f32 arg5, f32 arg6) {
     if (player < 0) {
         return;
