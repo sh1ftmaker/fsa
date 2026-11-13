@@ -797,7 +797,7 @@ void TileMap_804AA858::fn_802FC80C() {
     }
 }
 
-// FIXME: 87.09 %, missing/extra; behaviour drift.
+// FIXME: 90.32 %, different; behaviour near.
 // Structurally close (2 instructions more): the original builds
 // the four vertex indices as a chain of u16 truncations (clrlwi after +1, +65,
 // -1; ours folds them into offsets from one clrlwi), keeps the draw loop's
@@ -876,24 +876,24 @@ void TileMap_804AA858::fn_802FC268(const JGeometry::TVec3f* origin, s32 layer, u
                                 u16 corner = entry & 0xFFF;
                                 f32 s = (origin->x + cx * 8) * 0.0078125f;
                                 f32 t = (origin->y + cy * 8) * 0.0078125f;
-                                u16 vertex = cx + cy * 65;
-                                GXPosition1x16(vertex);
-                                GXColor1x16(vertex);
+                                u16 v0 = cx + cy * 65;
+                                GXPosition1x16(v0);
+                                GXColor1x16(v0);
                                 GXTexCoord1x16(corner);
                                 GXTexCoord2f32(s, t);
-                                vertex++;
-                                GXPosition1x16(vertex);
-                                GXColor1x16(vertex);
+                                u16 v1 = v0 + 1;
+                                GXPosition1x16(v1);
+                                GXColor1x16(v1);
                                 GXTexCoord1x16(corner ^ 0x400);
                                 GXTexCoord2f32(0.0625f + s, t);
-                                vertex += 65;
-                                GXPosition1x16(vertex);
-                                GXColor1x16(vertex);
+                                u16 v2 = v1 + 65;
+                                GXPosition1x16(v2);
+                                GXColor1x16(v2);
                                 GXTexCoord1x16(corner ^ 0xC00);
                                 GXTexCoord2f32(0.0625f + s, 0.0625f + t);
-                                vertex--;
-                                GXPosition1x16(vertex);
-                                GXColor1x16(vertex);
+                                u16 v3 = v2 - 1;
+                                GXPosition1x16(v3);
+                                GXColor1x16(v3);
                                 GXTexCoord1x16(corner ^ 0x800);
                                 GXTexCoord2f32(s, 0.0625f + t);
                             }
