@@ -746,7 +746,6 @@ static inline u16 cornerAngle(f32 dx, f32 dy) {
 // = point) when it is outside the box.
 // FIXME(shotgun): 64.79 %, missing/extra + reloc-name; behaviour drift.
 void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 angleArg, f32 speed, JGeometry::TVec2f* out) {
-    s16 angle = angleArg;
     out->x = p->x;
     out->y = p->y;
     bool inside = false;
@@ -756,18 +755,17 @@ void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 a
     if (!inside) {
         return;
     }
-    u16 ua = angle;
-    f32 sn = JMASSin(angle);
-    f32 cs = JMASCos(angle);
+    u16 ua = angleArg;
+    f32 sn = JMASSin(angleArg);
     if (__fabsf(sn) <= JGeometry::TUtilf::epsilon()) {
-        if (cs > 0.0f) {
+        if (JMASCos(angleArg) > 0.0f) {
             out->y = box->f.y + speed;
         } else {
             out->y = box->i.y - speed;
         }
         return;
     }
-    if (__fabsf(cs) <= JGeometry::TUtilf::epsilon()) {
+    if (__fabsf(JMASCos(angleArg)) <= JGeometry::TUtilf::epsilon()) {
         if (sn > 0.0f) {
             out->x = box->f.x + speed;
         } else {
@@ -778,14 +776,14 @@ void fn_801CBB98(const JGeometry::TBox2f* box, const JGeometry::TVec3f* p, s32 a
     if (ua <= 0x4000) {
         u16 ca = cornerAngle(box->f.x - p->x, box->f.y - p->y);
         if (ua < ca) {
-            out->x = p->x + __fabsf(box->f.y - p->y) * edgeSlope(angle);
+            out->x = p->x + __fabsf(box->f.y - p->y) * edgeSlope(angleArg);
             out->y = box->f.y;
         } else {
             out->x = box->f.x;
-            out->y = p->y + __fabsf(box->f.x - p->x) * edgeSlope((s16)(0x4000 - angle));
+            out->y = p->y + __fabsf(box->f.x - p->x) * edgeSlope((s16)(0x4000 - angleArg));
         }
-        out->x += speed * JMASSin(angle);
-        out->y += speed * JMASCos(angle);
+        out->x += speed * JMASSin(angleArg);
+        out->y += speed * JMASCos(angleArg);
     } else if (ua >= 0x4000 && ua <= 0x8000) {
         s16 a2 = 0x8000 - ua;
         u16 ca = cornerAngle(box->f.x - p->x, box->i.y - p->y);
