@@ -218,7 +218,7 @@ void cls_804AE4B0::fn_803721F4() {
 #pragma auto_inline reset
 
 // Starts the next lane pattern `arg` (0-3): the four sprites slide in from their start offsets.
-// FIXME(shotgun): 77.77 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 77.73 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371D50(s32 arg) {
     mTimer = 0x80;
     field_0x398 = 0;
@@ -533,7 +533,7 @@ void cls_804AE4B0::fn_8037100C() {
     }
 }
 
-// FIXME(shotgun): 94.62 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.63 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AE4B0::fn_80370C84() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -615,7 +615,7 @@ void cls_804AE4B0::fn_80370A7C() {
     }
 }
 
-// FIXME(shotgun): 90.19 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.43 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370764() {
     fn_803703C8();
     for (s32 i = 0; i < 4; i++) {
