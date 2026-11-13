@@ -188,10 +188,14 @@ void cls_804A5F40::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 68.48 %, missing/extra.
+// FIXME(shotgun): register allocation differs (f0/f1/f2 assignment).
 void cls_804A5F40::vfunc_0x88() {
-    field_0x3c.x = JMath::sincosTable_.sinShort(field_0x2ae) * mSpeed;
-    field_0x3c.y = JMath::sincosTable_.cosShort(field_0x2ae) * mSpeed;
+    f32 sinV = JMath::sincosTable_.sinShort(field_0x2ae);
+    f32 cosV = JMath::sincosTable_.cosShort(field_0x2ae);
+    f32 x = sinV * mSpeed;
+    f32 y = cosV * mSpeed;
+    field_0x3c.x = x;
+    field_0x3c.y = y;
     vfunc_0x84();
 }
 
