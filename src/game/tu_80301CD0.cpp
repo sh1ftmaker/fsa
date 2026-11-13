@@ -1590,7 +1590,8 @@ void fn_8030361C() {
 
 // Draws one GBA sprite word on the map in the resource its kind selects, with a
 // scale (or rotation about y by `scale`) chosen by its flag bits.
-// FIXME: 94.75 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 95.44 %, different + reloc-name; behaviour clean.
+// FIXME: register order in the sin/cos matrix block and literal order differ.
 void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
     s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
     s32 y = sprite->f.field_0x1;
@@ -1630,9 +1631,22 @@ void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set)
         } else {
             setRotScaleMtx(mtx, rot, 0.75f);
         }
-        for (s32 i = 0; i < 16; i++) {
-            params.field_0x0[i] = 7;
-        }
+        params.field_0x0[0] = 7;
+        params.field_0x0[1] = 7;
+        params.field_0x0[2] = 7;
+        params.field_0x0[3] = 7;
+        params.field_0x0[4] = 7;
+        params.field_0x0[5] = 7;
+        params.field_0x0[6] = 7;
+        params.field_0x0[7] = 7;
+        params.field_0x0[8] = 7;
+        params.field_0x0[9] = 7;
+        params.field_0x0[10] = 7;
+        params.field_0x0[11] = 7;
+        params.field_0x0[12] = 7;
+        params.field_0x0[13] = 7;
+        params.field_0x0[14] = 7;
+        params.field_0x0[15] = 7;
     } else if (sprite->f.field_0x3_4 == 1 || (sprite->f.mKind == 2 && id >= 0x39 && id < 0x45)) {
         PSMTXScale(mtx, 2.0f, 2.0f, 2.0f);
     } else {
@@ -1742,7 +1756,7 @@ static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 81.15 %, missing/extra; behaviour drift.
+// FIXME: 81.53 %, different; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     s32 mask = record->mMask;
@@ -1762,7 +1776,7 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
             }
         }
     }
-        s32 i28 = 18;
+    s32 i28 = 18;
     for (; i28 >= 0; i28--) {
         if (!(lbl_80506F88[player][0][i28].f.field_0x3_0 == 1 && lbl_80506F88[player][0][i28].f.field_0x2 == 0x80)) {
             break;
@@ -1784,7 +1798,7 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
         s32 keyB = i27 >= 0 ? fn_803074A4(lbl_80506F88[player][1][i27].f.mKind, spriteId(lbl_80506F88[player][1][i27])) : 0xFF;
         if (i27 >= 0 && (n < 0 || keyB < keyMark ||
                          (keyB == keyMark && record->mEntries[order[n]].mY >= lbl_80506F88[player][1][i27].f.field_0x1)) &&
-            (i28 < 0 || keyA <= keyB ||
+            (i28 < 0 || keyA > keyB ||
              (keyA == keyB && lbl_80506F88[player][0][i28].f.field_0x1 >= lbl_80506F88[player][1][i27].f.field_0x1)))
         {
             if (keyB >= 2) {
@@ -1793,7 +1807,7 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][1][i27], lbl_80506D78[player], flag, set);
             }
             i27--;
-            while (i27 >= 0 && lbl_80506F88[player][1][i27].f.field_0x3_0 == 1 && lbl_80506F88[player][1][i27].f.field_0x2 == 0x80) {
+            while (i27 >= 0 && isHiddenSprite(lbl_80506F88[player][1][i27])) {
                 i27--;
             }
         } else if (i28 >= 0 && (n < 0 || keyA < keyMark ||
@@ -1805,7 +1819,7 @@ void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
                 fn_80302F9C(&lbl_80506F88[player][0][i28], lbl_80506D78[player], flag, set);
             }
             i28--;
-            while (i28 >= 0 && lbl_80506F88[player][0][i28].f.field_0x3_0 == 1 && lbl_80506F88[player][0][i28].f.field_0x2 == 0x80) {
+            while (i28 >= 0 && isHiddenSprite(lbl_80506F88[player][0][i28])) {
                 i28--;
             }
         } else {
