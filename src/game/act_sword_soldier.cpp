@@ -11,6 +11,7 @@
 #include "game/GameView.h"
 #include "game/ViewLayer.h"
 #include "game/Player.h"
+#include "game/RotMatrix.h"
 #include "game/act/act_chief_soldier.h"
 #include "game/act/act_sword_soldier.h"
 #include "JSystem/JMath/JMath.h"
@@ -37,7 +38,6 @@ static struct {
 // A random float in [0, 1) from the game's RNG. Called from 10 units.
 // The instructions match; its 1.0f only pairs with lbl_8053D25C once the
 // unit's earlier functions put 0.0f (lbl_8053D258) first in .sdata2.
-// FIXME: 99.72 %, reloc-name; behaviour clean.
 f32 fn_80154744() {
     return gGameRoot_8053AAF8->mRandom.get_ufloat_1();
 }
@@ -212,7 +212,7 @@ s32 fn_80154248(u32 id, s32 layer, const JGeometry::TVec3f* pos, u32 arg) {
     return getActorManager_801F856C()->fn_801F8544(id, layer, pos, arg);
 }
 
-// FIXME(shotgun): 99.35 %, different + reloc-name; behaviour near.
+// FIXME(shotgun): 99.52 %, different + reloc-name; behaviour near.
 void SwordSoldier_8049FCA0::init() {
     mBox.set(-8.0f, -4.0f, 8.0f, 8.0f);
     mBox2.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -415,7 +415,7 @@ void SwordSoldier_8049FCA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 93.16 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 93.25 %, missing/extra; behaviour near.
 SwordSoldier_8049FCA0::~SwordSoldier_8049FCA0() {
     if (mLife <= 0) {
         if (field_0x288 == 1 || field_0x288 == 3) {
@@ -443,7 +443,7 @@ SwordSoldier_8049FCA0::~SwordSoldier_8049FCA0() {
     }
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean.
+// FIXME: 99.88 %, reloc-name; behaviour clean.
 // FIXME(shotgun): literal reloc names (lbl_ vs @NNN) still differ
 bool SwordSoldier_8049FCA0::vfunc_0x54() {
     if (viewLayerFlag(field_0x4)) {
@@ -480,7 +480,7 @@ bool SwordSoldier_8049FCA0::vfunc_0x54() {
     return false;
 }
 
-// FIXME(shotgun): 93.61 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.70 %, missing/extra + reloc-name; behaviour drift.
 void SwordSoldier_8049FCA0::update() {
     JGeometry::TBox2f boxD8;
     fn_801546F4(&boxD8, &field_0x80);
@@ -1684,7 +1684,7 @@ void SwordSoldier_8049FCA0::update() {
     }
 }
 
-// FIXME(shotgun): 92.50 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.05 %, missing/extra + reloc-name; behaviour near.
 void SwordSoldier_8049FCA0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -1704,23 +1704,8 @@ void SwordSoldier_8049FCA0::draw() {
             params.field_0x0[2] = 11;
         }
         if (mState == 0xE) {
-            f32 yaw = field_0x294;
-            f32 scale = field_0x298;
-            f32 sx = sin(0.0f);
-            f32 sy = sin(yaw);
-            f32 sz = sin(0.0f);
-            f32 cx = cos(0.0f);
-            f32 cy = cos(yaw);
-            f32 cz = cos(0.0f);
-            mtx[0][0] = scale * (cy * cz);
-            mtx[0][1] = scale * (sx * sy * cz - cx * sz);
-            mtx[0][2] = scale * (cx * cz * sy + sx * sz);
-            mtx[1][0] = scale * (cy * sz);
-            mtx[1][1] = scale * (sx * sy * sz + cx * cz);
-            mtx[1][2] = scale * (cx * sz * sy - sx * cz);
-            mtx[2][0] = scale * -sy;
-            mtx[2][1] = scale * (sx * cy);
-            mtx[2][2] = scale * (cx * cy);
+            JGeometry::TVec3f rot(0.0f, field_0x294, 0.0f);
+            setRotScaleMtx(mtx, rot, field_0x298);
             params.mMtx = mtx;
             if (field_0x90 == 2 || field_0x90 == 3 || field_0x90 == 1) {
                 fn_801F02BC(lbl_80465DBC, field_0x274 + 0x1F4, &params, 0, 0, false, 1.0f, 1.0f);
@@ -1747,10 +1732,14 @@ void SwordSoldier_8049FCA0::draw() {
         bool blink = false;
         s32 t = field_0x248;
         if (t < 100) {
-            if (t >= 50) {
-                blink = !(t & 8);
+            if (t < 50) {
+                if ((t & 4) == 0) {
+                    blink = true;
+                }
             } else {
-                blink = !(t & 4);
+                if ((t & 8) == 0) {
+                    blink = true;
+                }
             }
         }
         if (blink) {
@@ -1769,9 +1758,9 @@ void SwordSoldier_8049FCA0::draw() {
         mtx[2][2] = field_0x54.z;
         params.mMtx = mtx;
     }
-    bool far = false;
+    s32 far = 0;
     if (field_0x4 >= 8 && (field_0x90 == 6 || field_0x288 == 3)) {
-        far = true;
+        far = 1;
     }
     if (field_0x288 == 1 || field_0x288 == 3) {
         fn_801F02BC(lbl_80465DD0, field_0x274 + 0xA8, &params, flags, far, false, 1.0f, 1.0f);
