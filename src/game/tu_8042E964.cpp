@@ -667,7 +667,7 @@ void cls_804B1634::fn_8042EF9C(char* str, s32 id, u8 value) {
                 strcat(str, prefix);
             }
         } else if (p[0] == 0x1A) {
-            if ((u8)p[2] == 3) {
+            if (p[2] == 3) {
                 ch[0] = digit;
                 code = digit;
                 ch[1] = 0;
