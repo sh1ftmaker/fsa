@@ -43,7 +43,7 @@ cls_801EB8CC::~cls_801EB8CC() {
 // fn_801EB710: restarts the ring: stores *pos in field_0x0, clears field_0x5c and
 // spawns, on effect layer `layer`, the seven emitters (ids 0x233 + i, 14 away from
 // *pos, 0x1F70 apart) with field_0x54 as their alpha, plus id 0x23A once at the first.
-// FIXME(shotgun): 92.83 %, missing/extra
+// FIXME(shotgun): 92.83 %, missing/extra; behaviour near.
 void cls_801EB8CC::fn_801EB710(s32 layer, const JGeometry::TVec3f* pos) {
     field_0x0.set(*pos);
     field_0x5c = 0;
@@ -107,7 +107,8 @@ bool cls_801EB8CC::fn_801EB648() const {
 // 0x16A a frame, 0x1F70 apart) and the one at 0x50 on the first spot; field_0x54
 // eases towards field_0x58 and is the emitters' alpha. Once it reaches 0 with
 // field_0x5c set, the emitters are deleted.
-// FIXME: 89.25. missing/extra (4 fewer): the original turns the u8 fade-out flag into
+// FIXME: 97.08 %, missing/extra; behaviour near.
+// missing/extra (4 fewer): the original turns the u8 fade-out flag into
 // the bool with neg / or / srwi (ours: clrlwi) and keeps the alpha's clrlwi; its
 // loop-invariant loads are ordered differently (registers follow).
 void cls_801EB8CC::fn_801EB418(const JGeometry::TVec3f* pos) {
@@ -147,7 +148,8 @@ void cls_801EB8CC::fn_801EB418(const JGeometry::TVec3f* pos) {
 // -field_0xc.field_0x24 about field_0x0 and eases its distance towards
 // field_0xc.field_0x10 (fn_801CD950, step field_0xc.field_0x1c); z is set to
 // field_0xc.field_0x20. Else *out is zero.
-// FIXME: 98.21. regalloc-only (f3/f4, f1/f3, f5/f6, f4/f7 swapped).
+// FIXME: 98.21 %, regalloc-only; behaviour clean.
+// regalloc-only (f3/f4, f1/f3, f5/f6, f4/f7 swapped).
 void cls_801EB8CC::fn_801EB1F4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= field_0xc.field_0x8) {
@@ -180,7 +182,8 @@ void cls_801EB8CC::fn_801EB1F4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // field_0xc.field_0x8 high) inside field_0xc.field_0xc, faster nearer
 // field_0xc.field_0x10 (field_0xc.field_0x14 to field_0xc.field_0x18, never past
 // field_0x0), plus fn_801EB1F4's step.
-// FIXME: 97.42. missing/extra: one frsp after the fsel (the intrinsic returns a
+// FIXME: 97.42 %, missing/extra; behaviour near.
+// missing/extra: one frsp after the fsel (the intrinsic returns a
 // double; the original scales by the fsel result directly).
 void cls_801EB8CC::fn_801EB00C(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
