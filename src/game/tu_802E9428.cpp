@@ -477,10 +477,10 @@ bool UnknownENDM_804AA0FC::fn_802E9884(const JGeometry::TVec2f* pos) {
 // Follows the target focus: closes in on (field_0x244, field_0x248) by easing, keeps the camera box
 // inside the limits, eases the zoom to its target and hands both to the camera.
 // Still differs: the view box is copied to the stack by the original (16 bytes, word moves).
-// FIXME: 90.38 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 90.80 %, missing/extra + reloc-name; behaviour drift.
 void UnknownENDM_804AA0FC::fn_802E94F4() {
-    f32 tx = field_0x244.x;
     f32 ty = field_0x244.y;
+    f32 tx = field_0x244.x;
     if (field_0x298 != 0) {
         field_0x250 = tx;
         field_0x254 = ty;
@@ -488,8 +488,7 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
         JGeometry::TVec3f vel = field_0x240->field_0x3c;
         f32 dx = field_0x250 - tx;
         f32 dy = field_0x254 - ty;
-        f32 dist = square(dx) + square(dy);
-        dist = JGeometry::TUtil<f32>::sqrt(dist);
+        f32 dist = JGeometry::TUtil<f32>::sqrt(square(dx) + square(dy));
         f32 speed = PSVECMag(&vel);
         if (dist <= 1.5f * speed) {
             field_0x250 = tx;
@@ -508,7 +507,8 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
         }
     }
     JGeometry::TVec2f pos(field_0x250, field_0x254);
-    JGeometry::TVec2f focus = pos + JGeometry::TVec2f(0.0f, -30.0f);
+    JGeometry::TVec2f offset(0.0f, -30.0f);
+    JGeometry::TVec2f focus = pos + offset;
     JGeometry::TBox2f view = gGameRoot2_8053AB10->field_0x24->field_0x164;
     f32 halfW = view.getWidth() * 0.5f;
     f32 halfH = view.getHeight() * 0.5f;
