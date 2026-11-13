@@ -50,7 +50,10 @@ void cls_804A4C58::init() {
     mBox.i.y = 1.0f;
     mBox.f.x = -1.0f;
     mBox.f.y = -1.0f;
-    mBox2 = mBox;
+    mBox2.i.x = mBox.i.x;
+    mBox2.i.y = mBox.i.y;
+    mBox2.f.x = mBox.f.x;
+    mBox2.f.y = mBox.f.y;
     field_0x80.i.x = 1.0f;
     field_0x80.i.y = 1.0f;
     field_0x80.f.x = -1.0f;
@@ -62,9 +65,10 @@ void cls_804A4C58::init() {
     mLifeBackup = mLife;
     field_0x114 = 0;
     field_0x196 = 1;
-    JGeometry::TBox2f* box = &getGameView_802D6A9C()->field_0xdc;
-    if (field_0x4 < 8) {
-        box = &getGameView_802D6A9C()->mVisibleBox;
+    GameView_804A9950* view = getGameView_802D6A9C();
+    JGeometry::TBox2f* box = &view->mVisibleBox;
+    if (field_0x4 >= 8) {
+        box = &view->field_0xdc;
     }
     JGeometry::TVec3f p;
     p.x = mPos.x;
@@ -82,12 +86,15 @@ void cls_804A4C58::init() {
     f32 x0 = mSpawnPos.x - 120.0f;
     f32 y0 = 32.0f + mSpawnPos.y;
     f32 step = 0.5f * (field_0x2d0 - 48.0f - y0);
+    f32 y = y0;
     for (s32 row = 0; row < 3; row++) {
-        f32 y = y0 + step * row;
+        f32 x = x0;
         for (s32 col = 0; col < 4; col++) {
-            field_0x2d4[row * 4 + col].x = x0 + 80.0f * col;
+            field_0x2d4[row * 4 + col].x = x;
             field_0x2d4[row * 4 + col].y = y;
+            x += 80.0f;
         }
+        y += step;
     }
     mState = 0;
     mStateTimer = 0;
