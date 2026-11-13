@@ -75,14 +75,15 @@ u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
 }
 
 // 0x801C544C.
-// FIXME(shotgun): 66.85 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::init() {
     EnemyBase_804A4808::init();
     field_0x94 = fn_801C0D70()->fn_801C14A8(mSerial);
     u32 kind = (field_0x90 >> 5) & 7;
     if (kind == 1 || kind == 2) {
         mFlags |= 0x6000;
-        fn_801C0D70()->field_0x54.set(mPos.x, mPos.y, mPos.z);
+        cls_801C0D70* obj = fn_801C0D70();
+        obj->field_0x54.set(mPos);
         switch (kind) {
         case 1:
             fn_801C0D70()->field_0x0 |= 2;
@@ -110,7 +111,7 @@ void ShadowLink2_804A43E8::init() {
     // FIXME(shotgun): field_0x524 is a cls_802157B8 here: field_0x524.fn_802157B8((u8)n) is not
     // written until the header member has that type (other units test it as a u32).
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
-    mBox2 = mBox;
+    mBox2.set(mBox);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
     field_0xb0 = 0x50303;
     mFlags |= 0x100;
@@ -169,7 +170,8 @@ bool fn_801C5340() {
 }
 
 // 0x801C50A8. Leaves the old state (mState) for `state`.
-// FIXME(shotgun): 77.12 %, different + reloc-name; behaviour drift.
+// Remaining diff: the float constants are literals where the original uses lbl_ names.
+// FIXME: 99.76 %, reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C50A8(int state) {
     mFlags &= ~0x40000;
     field_0x55c[0] = 0;
@@ -196,7 +198,7 @@ void ShadowLink2_804A43E8::fn_801C50A8(int state) {
     case 0x1E:
         mFlags &= ~0x100;
         mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
         break;
     case 0x17:
@@ -205,7 +207,7 @@ void ShadowLink2_804A43E8::fn_801C50A8(int state) {
     case 0x1A:
         mFlags &= ~0x1100;
         mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
         mFlags |= 0x40000;
         if (mState == 0x17) {
             field_0x59b = 6;
@@ -230,7 +232,9 @@ void ShadowLink2_804A43E8::fn_801C50A8(int state) {
     case 0x2F:
         mFlags &= ~0x100;
         mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-        mBox2 = mBox;
+        mBox2.set(mBox);
+        break;
+    default:
         break;
     }
 }
