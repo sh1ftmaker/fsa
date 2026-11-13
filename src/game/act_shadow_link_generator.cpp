@@ -101,6 +101,8 @@ void ShadowLinkGenerator_804A4310::update() {
             mState = 3;
         }
         break;
+    case 3:
+        break;
     case 4:
         if (mStateTimer >= 0x3C) {
             for (s32 i = 0; i < 3; i++) {
@@ -110,9 +112,10 @@ void ShadowLinkGenerator_804A4310::update() {
             mState = 5;
         } else {
             f32 t = 0.016666668f * (f32)(0x3C - mStateTimer);
-            if (mEmitters[1] != NULL) {
-                mEmitters[1]->mGlobalPScl.x = t;
-                mEmitters[1]->mGlobalPScl.y = 1.0f;
+            JPABaseEmitter* emitter1 = mEmitters[1];
+            if (emitter1 != NULL) {
+                emitter1->mGlobalPScl.x = t;
+                emitter1->mGlobalPScl.y = 1.0f;
             }
             if (mEmitters[2] != NULL) {
                 mEmitters[2]->setGlobalAlpha((s32)(255.0f * t));
@@ -205,6 +208,8 @@ void ShadowLinkGenerator_804A4310::update() {
             mState = 11;
         }
         break;
+    case 11:
+        break;
     }
     if (mEmitters[0] != NULL) {
         u32 frame = mEmitters[0]->mCurrentFrame;
@@ -240,7 +245,8 @@ void ShadowLinkGenerator_804A4310::draw() {
 // the spawn serial (then the found actor) in r29; ours swaps them.
 void ShadowLinkGenerator_804A4310::fn_801C186C() const {
     for (s32 i = 0; i < 4; i++) {
-        s32 slot = mSlotFirst + fn_801CD664(mSlotLast - mSlotFirst + 1);
+        u8 first = mSlotFirst;
+        s32 slot = first + fn_801CD664(mSlotLast - first + 1);
         s32 serial = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_SLK2, field_0x4, &mPos, fn_801C5660(8, 0, slot, 0, 0), -1, -1);
         if (serial >= 0) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
