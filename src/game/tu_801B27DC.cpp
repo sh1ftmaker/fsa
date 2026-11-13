@@ -559,8 +559,8 @@ void cls_804A3698::draw() {
 // 0x801B27DC.
 // FIXME(shotgun): 73.73 %, missing/extra
 bool cls_804A3698::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
-    u16 code = fn_8022461C(pos, layer);
-    u16 tile = fn_80226850(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
+    s32 tile = fn_80226850(pos, layer);
     if (tile == 0x230 || tile == 0x231 || tile == 0x234) {
         return false;
     }
