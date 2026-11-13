@@ -227,8 +227,8 @@ bool cls_80215E48::fn_80215D38() {
 bool cls_80215E48::fn_80215C6C(s32 index) {
     bool result = false;
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
-        u8 seconds = lbl_8050EC80.getCurrentFile().field_0x59;
-        u8 centis = lbl_8050EC80.getCurrentFile().field_0x58;
+        u8 seconds = lbl_8050EC80.mFiles[lbl_8050EC80.mCurrentFile].field_0x59;
+        u8 centis = lbl_8050EC80.mFiles[lbl_8050EC80.mCurrentFile].field_0x58;
         if (seconds == 0 && centis == 0) {
             result = true;
         } else if (mEntries[index].mWatch.mSeconds < seconds) {
@@ -245,8 +245,8 @@ bool cls_80215E48::fn_80215C6C(s32 index) {
 // mSeconds, before the second save-row index load; ours loads it after.
 void cls_80215E48::fn_80215BCC(s32 index) {
     if (mEntries[index].mWatch.mStopped != 0 && !mEntries[index].mWatch.fn_801ED7B0()) {
-        lbl_8050EC80.getCurrentFile().field_0x59 = mEntries[index].mWatch.mSeconds;
-        lbl_8050EC80.getCurrentFile().field_0x58 = mEntries[index].mWatch.mCentis;
+        lbl_8050EC80.mFiles[lbl_8050EC80.mCurrentFile].field_0x59 = mEntries[index].mWatch.mSeconds;
+        lbl_8050EC80.mFiles[lbl_8050EC80.mCurrentFile].field_0x58 = mEntries[index].mWatch.mCentis;
         getGameView_802D6A9C()->fn_802D7844(1, mEntries[index].mId);
     }
 }
