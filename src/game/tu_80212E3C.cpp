@@ -90,12 +90,10 @@ void cls_804A6340::fn_80213774(int mode) {
         break;
     case 4:
         {
-            f32 x = field_0x54.x;
-            f32 y = field_0x54.y;
-            mBox.i.x = -8.0f * x;
-            mBox.i.y = -8.0f * y;
-            mBox.f.x = 8.0f * x;
-            mBox.f.y = 8.0f * y;
+            mBox.i.x = -8.0f * field_0x54.x;
+            mBox.i.y = -8.0f * field_0x54.y;
+            mBox.f.x = 8.0f * field_0x54.x;
+            mBox.f.y = 8.0f * field_0x54.y;
         }
         field_0x250 = fn_801CD664(0x3D) + 0x1E;
         mAnim.fn_801D22A0(1, 2);
@@ -103,23 +101,19 @@ void cls_804A6340::fn_80213774(int mode) {
         break;
     case 5:
         {
-            f32 x = field_0x54.x;
-            f32 y = field_0x54.y;
-            mBox.i.x = -8.0f * x;
-            mBox.i.y = -8.0f * y;
-            mBox.f.x = 8.0f * x;
-            mBox.f.y = 8.0f * y;
+            mBox.i.x = -8.0f * field_0x54.x;
+            mBox.i.y = -8.0f * field_0x54.y;
+            mBox.f.x = 8.0f * field_0x54.x;
+            mBox.f.y = 8.0f * field_0x54.y;
         }
         mAnim.startAnim_801D22DC(2, 0, false);
         break;
     case 6:
         {
-            f32 x = field_0x54.x;
-            f32 y = field_0x54.y;
-            mBox.i.x = -8.0f * x;
-            mBox.i.y = -8.0f * y;
-            mBox.f.x = 8.0f * x;
-            mBox.f.y = 8.0f * y;
+            mBox.i.x = -8.0f * field_0x54.x;
+            mBox.i.y = -8.0f * field_0x54.y;
+            mBox.f.x = 8.0f * field_0x54.x;
+            mBox.f.y = 8.0f * field_0x54.y;
         }
         mAnim.startAnim_801D22DC(3, 0, false);
         break;
@@ -222,12 +216,10 @@ void cls_804A6340::vfunc_0x94() {
             mBox.f.x = -1.0f;
             mBox.f.y = -1.0f;
         } else {
-            f32 x = field_0x54.x;
-            f32 y = field_0x54.y;
-            mBox.i.x = -8.0f * x;
-            mBox.i.y = -8.0f * y;
-            mBox.f.x = 8.0f * x;
-            mBox.f.y = 8.0f * y;
+            mBox.i.x = -8.0f * field_0x54.x;
+            mBox.i.y = -8.0f * field_0x54.y;
+            mBox.f.x = 8.0f * field_0x54.x;
+            mBox.f.y = 8.0f * field_0x54.y;
         }
         if (mState == 0) {
             field_0xb0 = 0;
