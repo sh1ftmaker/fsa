@@ -35,7 +35,6 @@ static inline void freeEmitter(JPABaseEmitter** emitter) {
 } // ids of the actors the arrow flies through (rodata)
 
 // 0x80166814.
-// FIXME(shotgun): 99.46 %, reloc-name
 void ArrowPlayer_804A05E0::init() {
     field_0x98 = (field_0x90 >> 4) & 3;
     field_0x94 = (field_0x90 >> 8) & 0xF;
@@ -93,14 +92,14 @@ void ArrowPlayer_804A05E0::init() {
 }
 
 // 0x8016636C. Whether the arrow is blocked at pos: by a collision box, or by the tile there.
-// FIXME(shotgun): 88.86 %, missing/extra
+// FIXME(shotgun): 99.28 %, missing/extra; behaviour clean.
 bool ArrowPlayer_804A05E0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, lbl_804662E8) == true) {
         return true;
     }
-    u16 code = fn_8022461C(pos, layer);
+    s32 code = fn_8022461C(pos, layer);
     s32 tile = fn_80226850(pos, layer);
     if ((u32)(code - 0x10) <= 7 || (tile >= 0x140 && tile <= 0x15F)) {
         field_0x23c = 0;
@@ -216,7 +215,7 @@ ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
 }
 
 // 0x80165730. States: 0 flying, 1 spinning away after a hit, 2/3 burning up, 4 caught by a flame.
-// FIXME(shotgun): 87.83 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.83 %, missing/extra + reloc-name; behaviour drift.
 void ArrowPlayer_804A05E0::update() {
     if (field_0x94 == 3) {
         JGeometry::TBox2f box;
@@ -488,7 +487,7 @@ void ArrowPlayer_804A05E0::update() {
 }
 
 // 0x8016545C.
-// FIXME(shotgun): 99.39 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.39 %, missing/extra + reloc-name; behaviour clean.
 void ArrowPlayer_804A05E0::draw() {
     if (field_0x94 != 3) {
         if (field_0x24c >= 50 || (field_0x24c & 2) == 0) {
