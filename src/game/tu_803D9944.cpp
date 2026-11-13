@@ -8,7 +8,7 @@
 #include "game/ActorManager.h"
 #include "game/act/tu_803D9944.h"
 
-// FIXME(shotgun): 97.14 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.43 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0478::init() {
     mBox.i.x = -1280.0f;
     mBox.i.y = -1280.0f;
@@ -72,7 +72,7 @@ cls_804B0478::~cls_804B0478() {
 extern s32 lbl_804B03E8[];
 extern s32 lbl_8053A210[]; // .sdata, 2 entries: state 5
 
-// FIXME(shotgun): 90.68 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.10 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B0478::update() {
     switch (mState) {
     case 0:
