@@ -163,21 +163,11 @@ void OBJLift_804ACA00::init() {
         } else {
             s32 list[4];
             s32 n = 0;
-            if (free[0] == true) {
-                list[n] = 0;
-                n++;
-            }
-            if (free[1] == true) {
-                list[n] = 1;
-                n++;
-            }
-            if (free[2] == true) {
-                list[n] = 2;
-                n++;
-            }
-            if (free[3] == true) {
-                list[n] = 3;
-                n++;
+            for (s32 i = 0; i < 4; i++) {
+                if (free[i] == true) {
+                    list[n] = i;
+                    n++;
+                }
             }
             field_0x258 = list[(s32)((f32)n * gGameRoot_8053AAF8->mRandom.get_ufloat_1())] + 6;
         }
