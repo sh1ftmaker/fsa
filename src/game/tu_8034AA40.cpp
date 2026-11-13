@@ -187,6 +187,7 @@ void cls_804AC8C0::draw() {
 static const s32 lbl_80472158[3] = {10, 5, 1};
 
 // The box is built in a temporary and copied, as in the original. Literal pool names differ.
+// FIXME: 98.81 %, missing/extra + reloc-name; behaviour near.
 void cls_804AC8C0::fn_8034ACF4() {
     JGeometry::TBox2f box;
     JGeometry::TBox2f src(9.0f, -7.0f, 103.0f, 87.0f);
