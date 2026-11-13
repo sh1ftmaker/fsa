@@ -12,7 +12,8 @@
 
 extern const s32 lbl_8046D388[4];
 
-// FIXME: 99.45%. scheduling + reloc-name. Identical codegen; pending update's float literals in .sdata2.
+// FIXME: 99.99 %, scheduling; behaviour clean.
+// scheduling + reloc-name. Identical codegen; pending update's float literals in .sdata2.
 void FireRodFire_804A89F0::init() {
     field_0x284 = (field_0x90 >> 11) & 1;
     field_0x98 = (field_0x90 >> 4) & 3;
@@ -232,7 +233,7 @@ FireRodFire_804A89F0::~FireRodFire_804A89F0() {
     }
 }
 
-// FIXME(shotgun): 70.32 %, missing/extra
+// FIXME(shotgun): 70.32 %, missing/extra; behaviour drift.
 void FireRodFire_804A89F0::update() {
     switch (field_0x238) {
     case 0: {
@@ -455,6 +456,7 @@ void FireRodFire_804A89F0::update() {
     }
 }
 
+// FIXME: 95.38 %, missing/extra; behaviour near.
 // FIXME: (field_0x268 == 2) is built as extrwi 8,19 here; the original keeps cntlzw + srwi 5 for it.
 void FireRodFire_804A89F0::draw() {
     if (field_0x264 != 5 && field_0x264 != 6) {
@@ -512,7 +514,8 @@ void FireRodFire_804A89F0::draw() {
     }
 }
 
-// FIXME: 98.15%. missing/extra + reloc-name. The original's second `field_0x264 == 0` test has an else that only clears mAlive (3 instructions); float literal placement.
+// FIXME: 98.26 %, missing/extra; behaviour near.
+// missing/extra + reloc-name. The original's second `field_0x264 == 0` test has an else that only clears mAlive (3 instructions); float literal placement.
 void FireRodFire_804A89F0::vfunc_0x24() {
     if (field_0x264 != 3 && field_0x264 != 4) {
         if (field_0x264 == 0) {
@@ -597,7 +600,8 @@ void FireRodFire_804A89F0::vfunc_0x24() {
     }
 }
 
-// FIXME: 98.02%. regalloc-only. Register allocation.
+// FIXME: 98.02 %, regalloc-only; behaviour clean.
+// regalloc-only. Register allocation.
 bool FireRodFire_804A89F0::fn_802BACE4() {
     if (field_0x264 != 0) {
         return false;
@@ -675,7 +679,8 @@ void FireRodFire_804A89F0::vfunc_0x58() {
     }
 }
 
-// FIXME: 91.67%. missing/extra + reloc-name. The original loads box->i.x/i.y/f.x/f.y once, after the mPos stores, and stores them to both boxes; ours lacks four of those loads. Float literal pool ordering.
+// FIXME: 91.88 %, missing/extra; behaviour drift.
+// missing/extra + reloc-name. The original loads box->i.x/i.y/f.x/f.y once, after the mPos stores, and stores them to both boxes; ours lacks four of those loads. Float literal pool ordering.
 void FireRodFire_804A89F0::fn_802BAA0C(const JGeometry::TBox2f* box) {
     f32 cx = (box->i.x - box->f.x) * 0.5f + box->f.x;
     f32 cy = (box->i.y - box->f.y) * 0.5f + box->f.y;
@@ -731,7 +736,7 @@ s32 FireRodFire_804A89F0::fn_802BA9F0() {
     return field_0x260;
 }
 
-// FIXME(shotgun): 45.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 45.65 %, missing/extra + reloc-name; behaviour drift.
 bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 ignoreIds[5] = {'TOMI', 'IPOT', 'WDRY', 'ICEB', 'NULL'};
     if (field_0x264 != 1) {
