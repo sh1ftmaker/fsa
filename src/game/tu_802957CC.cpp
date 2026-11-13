@@ -256,7 +256,7 @@ void cls_804A7AE0::vfunc_0x10() {
 // FIXME(shotgun): 81.07 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
-    if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
+    if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtilf::epsilon())) {
         return;
     }
     if (field_0x2c0 == 1) {
@@ -269,7 +269,7 @@ void cls_804A7AE0::fn_8029A974() {
     s32 dir = -1;
     if (field_0x2b9 == 0) {
         if (fn_80239108(mSerial) >= 4) {
-            if (getPlayerLayer_8023DE58(0) == field_0x4) {
+            if (field_0x4 == getPlayerLayer_8023DE58(0)) {
                 s32 r = fn_80238BC4(mSerial);
                 if (r >= 0 && r < 4) {
                     field_0x2cc = 1;
@@ -308,23 +308,28 @@ void cls_804A7AE0::fn_8029A974() {
         return;
     }
     s32 layer = field_0x4;
-    JGeometry::TBox2f view = *layerBox(layer);
+    JGeometry::TBox2f view;
+    view = *layerBox(layer);
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
     p.x += 8.0f;
     p.y += mBox.i.y;
     p.y -= 8.0f;
     p.z = 0.0f;
-    const f32 inset = -32.0f;
-    f32 minX = view.i.x - inset;
-    f32 minY = view.i.y - inset;
-    f32 maxX = view.f.x + inset;
-    f32 maxY = view.f.y + inset;
+    f32 minX = view.i.x - 32.0f;
+    f32 minY = view.i.y - 32.0f;
+    f32 maxX = view.f.x + 32.0f;
+    f32 maxY = view.f.y + 32.0f;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
+        if (!gBgRewrite_8053AC98->fn_802A1554(&p)) {
+            ok = false;
+            break;
+        }
+        s32 serial = mSerial;
+        s32 boxLayer = field_0x4;
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-        if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+        if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(boxLayer, &p, serial, NULL) == 1) {
             ok = false;
             break;
         }
