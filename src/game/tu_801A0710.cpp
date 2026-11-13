@@ -30,6 +30,7 @@ const s32 lbl_804A2BD0[5] = {1, 5, 20, 50, 100};
 const s32 lbl_804A2B90[16] = {0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0, 0, 1, 2, 0};
 
 // Remaining difference: register allocation of the lbl_804A2B90 index.
+// FIXME: 99.83 %, regalloc-only + reloc-name; behaviour clean.
 void TennisShop_804A2BF4::init() {
     field_0x248 = 0;
     for (s32 i = 0; i < 6; i++) {
@@ -189,7 +190,7 @@ static inline void startSwing(TennisShop_804A2BF4* self) {
     self->field_0x324[2] = 1.75f;
 }
 
-// FIXME(shotgun): 94.73 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.73 %, missing/extra + reloc-name; behaviour drift.
 void TennisShop_804A2BF4::fn_801A17B8() {
     JGeometry::TVec3f spawnPos(mPos.x, mPos.y, mPos.z);
     JGeometry::TVec3f talkPos = mPos;
@@ -722,7 +723,8 @@ static inline void bumpCount(s32* count) {
     }
 }
 
-// FIXME(shotgun): 92.0 %, missing/extra (rewritten against the asm: 0xE-0x11 follow the switch; the p < 0 test of the id-range check and the
+// FIXME(shotgun): 92.02 %, missing/extra; behaviour drift.
+// (rewritten against the asm: 0xE-0x11 follow the switch; the p < 0 test of the id-range check and the
 // duplicated count clamp are not reproduced exactly)
 void TennisShop_804A2BF4::fn_801A0F90() {
     bool dead = false;
@@ -910,7 +912,7 @@ void TennisShop_804A2BF4::fn_801A0F90() {
     }
 }
 
-// FIXME(shotgun): 85.9 %, missing/extra
+// FIXME(shotgun): 89.55 %, missing/extra; behaviour drift.
 void TennisShop_804A2BF4::fn_801A0BE4() {
     mPos += field_0x3c;
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
@@ -980,7 +982,7 @@ void TennisShop_804A2BF4::update() {
 
 // Not auto-inlined: draw calls fn_801A0910 / fn_801A0754 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 87.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.40 %, missing/extra; behaviour drift.
 void TennisShop_804A2BF4::fn_801A0910() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -1010,7 +1012,7 @@ void TennisShop_804A2BF4::fn_801A0910() {
     }
 }
 
-// FIXME(shotgun): 99.8 %, reloc-name
+// FIXME(shotgun): 99.91 %, reloc-name; behaviour clean.
 void TennisShop_804A2BF4::fn_801A0754() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
