@@ -11,9 +11,14 @@
 #include <float.h>
 #include "game/ActorManager.h"
 
-// The state table in the unit's .data (0x804AD30C). It is zeros in the DOL and
-// filled at runtime, so it is declared here and not defined.
-extern void (SeesawLift_804AD348::*lbl_804AD30C[5])();
+// The state table. Not const, so its initialiser is copied into it by __sinit_act_seesaw_lift_cpp.
+static void (SeesawLift_804AD348::*lbl_804AD30C[5])() = {
+    &SeesawLift_804AD348::fn_8035A210,
+    &SeesawLift_804AD348::fn_803597EC,
+    &SeesawLift_804AD348::fn_80358F98,
+    &SeesawLift_804AD348::fn_80358F98,
+    &SeesawLift_804AD348::fn_803584C0,
+};
 
 static const char* lbl_8053A1B8[2] = {"formation_lift.bti", "sand5.bti"};
 
@@ -180,12 +185,12 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 92.54 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.07 %, missing/extra + reloc-name; behaviour drift.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     bool near = false;
-    bool moved = false;
     bool all = false;
+    s32 moved = 0;
     if (field_0x246[0] && field_0x246[1] && field_0x246[2] && field_0x246[3]) {
         all = true;
     }
@@ -212,7 +217,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
                     field_0x240 = 10.0f;
                 }
             }
-            moved = true;
+            moved = 1;
         } else {
             if (!gGameRoot_8053AAF8->field_0x7e) {
                 if (field_0x240 > 0.0f) {
@@ -242,17 +247,12 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME: 76.71 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 81.39 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
-    rel.x -= mPos.x;
-    rel.y -= mPos.y;
-    rel.z -= mPos.z;
+    rel.sub(mPos);
     rel.z = 0.0f;
-    bool inside = false;
-    if (rel.x >= mBox.i.x + 7.0f && rel.y >= mBox.i.y && rel.x < mBox.f.x - 7.0f && rel.y < mBox.f.y) {
-        inside = true;
-    }
+    bool inside = rel.x >= mBox.i.x + 7.0f && rel.y >= mBox.i.y && rel.x < mBox.f.x - 7.0f && rel.y < mBox.f.y;
     if (inside) {
         f32 sinVal = JMath::sincosTable_.sinShort(field_0x230);
         f32 cosVal = JMath::sincosTable_.cosShort(field_0x230);
@@ -375,32 +375,37 @@ void SeesawLift_804AD348::update() {
     (this->*lbl_804AD30C[(field_0x90 >> 7) & 0x1F])();
 }
 
-// FIXME(shotgun): 68.81 %, missing/extra + reloc-name; behaviour drift.
-// the Euler matrix is the plain RotMatrix.h product with table sin/cos; written by hand here; the original also scales every element by a float (lbl_80542878) that is not modelled
+// Euler tilt matrix: the x rotation is table angle 0, the z rotation is the given angle.
+static inline void setTiltMtx(Mtx mtx, s16 angle) {
+    f32 sa = JMath::sincosTable_.sinShort(angle);
+    f32 ca = JMath::sincosTable_.cosShort(angle);
+    f32 sx = JMath::sincosTable_.sinShort(0);
+    f32 cx = JMath::sincosTable_.cosShort(0);
+    mtx[0][0] = (cx * cx);
+    mtx[0][1] = ((sa * sx) * cx - ca * sx);
+    mtx[0][2] = ((ca * cx) * sx + sa * sx);
+    mtx[1][0] = (cx * sx);
+    mtx[1][1] = ((sa * sx) * sx + ca * cx);
+    mtx[1][2] = ((ca * sx) * sx - sa * cx);
+    mtx[2][0] = -sx;
+    mtx[2][1] = (sa * cx);
+    mtx[2][2] = (ca * cx);
+}
+
+// FIXME: 83.28 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): the original multiplies each element by a 1.0f in memory (lbl_80542878), which folds away here; the field_0x90 & 0x7F compare is unsigned here
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
-    mtx[0][0] = 0.0f;
-    mtx[1][1] = 0.0f;
-    mtx[2][2] = 0.0f;
+    mtx[0][3] = 0.0f;
+    mtx[1][3] = 0.0f;
+    mtx[2][3] = 0.0f;
     s32 type = (field_0x90 >> 7) & 0x1F;
-    s16 angle = field_0x230;
     if (type == 4 && field_0x230 == 0) {
-        angle = field_0x23c;
+        setTiltMtx(mtx, field_0x23c);
+    } else {
+        setTiltMtx(mtx, field_0x230);
     }
-    f32 sz = JMath::sincosTable_.sinShort(angle);
-    f32 cz = JMath::sincosTable_.cosShort(angle);
-    f32 sx = JMath::sincosTable_.sinShort(0);
-    f32 cx = JMath::sincosTable_.cosShort(0);
-    mtx[0][0] = cx * cx;
-    mtx[1][0] = cx * sz;
-    mtx[2][0] = -sx;
-    mtx[0][1] = sx * sx * cz - cx * sz;
-    mtx[1][1] = sx * sx * sz + cx * cz;
-    mtx[2][1] = sx * cx;
-    mtx[0][2] = cx * cz * sx + sx * sz;
-    mtx[1][2] = cx * sz * sx - sx * cz;
-    mtx[2][2] = cx * cx;
     params.mMtx = mtx;
     params.field_0x21 = 1;
     params.field_0x1d = -2;
@@ -413,18 +418,22 @@ void SeesawLift_804AD348::draw() {
         void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', name);
         gGameRoot2_8053AB10->field_0x20->fn_802F745C(&mPos, res, &params);
     }
+    type = (field_0x90 >> 7) & 0x1F;
     if (type < 2) {
         params.field_0x1c = -1;
         params.field_0x1d = -2;
         mtx[0][0] = 1.5f;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
+        mtx[0][3] = 0.0f;
         mtx[1][0] = 0.0f;
         mtx[1][1] = 1.5f;
         mtx[1][2] = 0.0f;
+        mtx[1][3] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
         mtx[2][2] = 1.5f;
+        mtx[2][3] = 0.0f;
         params.mMtx = mtx;
         void* res = gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "otosiana_bg_s.bti");
         JGeometry::TVec3f pos(mPos.x, mPos.y, 0.0f);
