@@ -593,7 +593,7 @@ void cls_8049D83C::fn_80113B54(s32 arg) {
     }
 }
 
-// FIXME(shotgun): 88.64 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.28 %, operands + reloc-name; behaviour drift.
 void cls_8049D83C::fn_8011395C() {
     Mtx mtx;
     PSMTXTrans(mtx, mPos.x, mPos.y, mPos.z);
