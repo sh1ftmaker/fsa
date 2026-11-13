@@ -345,8 +345,7 @@ void cls_804B17A0::fn_80438C68() {
     case 0:
         if (field_0x44 == -1) {
             s32 arg = field_0x48;
-            fn_8022EA0C(0);
-            JGeometry::TVec3f* pos = getPlayerPos_8023E724(0);
+            JGeometry::TVec3f* pos = getPlayerPos_8023E724(fn_8022EA0C(0));
             s32 layer = getPlayerLayer_8023DE58(0);
             field_0x44 = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_TNGL, layer, pos, arg, -1, -1);
             field_0x5f = fn_8022ADB0();
@@ -360,9 +359,12 @@ void cls_804B17A0::fn_80438C68() {
         }
         break;
     case 1:
-        if (field_0x59 == 0) {
+        switch (field_0x59) {
+        case 0:
             field_0x58 = 2;
-        } else if (field_0x59 >= 0 && field_0x59 < 3) {
+            break;
+        case 1:
+        case 2:
             lbl_8053AED0->fn_8043D67C(0x33A, 0, lbl_80529DEC.field_0x24f);
             field_0x38++;
             field_0x58 = 3;
@@ -375,6 +377,7 @@ void cls_804B17A0::fn_80438C68() {
                     fn_802B7CD8(actor);
                 }
             }
+            break;
         }
         break;
     }
