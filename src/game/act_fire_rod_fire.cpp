@@ -736,12 +736,13 @@ s32 FireRodFire_804A89F0::fn_802BA9F0() {
     return field_0x260;
 }
 
-// FIXME(shotgun): 83.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.69 %, missing/extra + reloc-name; behaviour drift.
 bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 ignoreIds[5] = {'TOMI', 'IPOT', 'WDRY', 'ICEB', 'NULL'};
     if (field_0x264 != 1) {
         ignoreIds[3] = 'NULL';
     }
+    JGeometry::TVec3f tmp;
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, ignoreIds) == 1) {
@@ -754,7 +755,6 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         s32 cell = fn_80226AE0(pos, field_0x4);
         field_0x288 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, cell);
         if (fn_801EE3C0(field_0x288) == 1) {
-            JGeometry::TVec3f tmp;
             fn_80226CA8(cell, field_0x4, &tmp);
             tmp.x += 8.0f;
             tmp.y += 8.0f;
@@ -775,7 +775,6 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         if (field_0x288 == 0x3EB || field_0x288 == 0x34 || field_0x288 == 0x33) {
-            JGeometry::TVec3f tmp;
             fn_80226CA8(cell, field_0x4, &tmp);
             tmp.x += 8.0f;
             tmp.y += 8.0f;
@@ -784,11 +783,10 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         field_0x27c = lbl_8046CB88[field_0x288];
-        if (field_0x27c == 0 || field_0x27c == 0x61 || (field_0x27c >= 2 && field_0x27c <= 7) ||
-            field_0x27c == 0x50 || (field_0x27c >= 0x27 && field_0x27c <= 0x2F) || field_0x27c == 0x20 ||
-            (field_0x27c >= 0xC && field_0x27c <= 0xE) || (field_0x27c >= 0x39 && field_0x27c <= 0x3B) ||
-            (field_0x27c >= 0x23 && field_0x27c <= 0x24) || (field_0x27c >= 4 && field_0x27c <= 7) ||
-            (field_0x27c >= 0x18 && field_0x27c <= 0x1F)) {
+        if (field_0x27c == 0 || field_0x27c == 0x61 || (u32)(field_0x27c - 2) <= 5 || field_0x27c == 0x50 ||
+            (u32)(field_0x27c - 0x27) <= 8 || field_0x27c == 0x20 || (u32)(field_0x27c - 0xC) <= 2 ||
+            (u32)(field_0x27c - 0x39) <= 2 || (u32)(field_0x27c - 0x23) <= 1 ||
+            (field_0x27c >= 4 && field_0x27c <= 7) || (field_0x27c >= 0x18 && field_0x27c <= 0x1F)) {
             return false;
         }
         if ((field_0x27c >= 0x10 && field_0x27c <= 0x16) || field_0x27c == 0x17) {
