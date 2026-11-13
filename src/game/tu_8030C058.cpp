@@ -781,7 +781,7 @@ void Camera_804AA9E4::fn_8030CB10(const JGeometry::TBox2f* box, f64 depth) {
     field_0x4[2][0] = 0.0f;
     field_0x4[2][1] = 1.0f;
     field_0x4[2][2] = 0.0f;
-    field_0x4[2][3] = (f32)-depth;
+    field_0x4[2][3] = -(f32)depth;
     C_MTXOrtho(field_0x34, -halfH, halfH, -halfW, halfW, 0.0f, 1024.0f);
     PSMTXCopy(field_0x4, field_0xe4.mCamMtx);
     C_MTXLightOrtho(field_0xe4.mPrjMtx, halfH, -halfH, -halfW, halfW, 0.5f, 0.5f, 0.5f, 0.5f);
