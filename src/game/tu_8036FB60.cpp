@@ -441,7 +441,7 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
 }
 
 // The second state: the camera pans to the lane tile; when it has arrived the message is shown.
-// FIXME(shotgun): 88.34 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.68 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80371284() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
