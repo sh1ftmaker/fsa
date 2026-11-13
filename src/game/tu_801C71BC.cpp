@@ -116,7 +116,7 @@ void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 58.22 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.59 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
     if ((u8)arg1 == 0) {
         JGeometry::TVec3f railPos;
@@ -360,7 +360,7 @@ void ShadowLink2_804A43E8::fn_801C887C() {
     }
 }
 
-// FIXME(shotgun): 79.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 84.21 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C844C() {
     JGeometry::TVec3f pos = mPos;
     field_0x358.fn_80214244()->fn_800FE2E4(&pos, field_0x4);
@@ -458,7 +458,7 @@ void ShadowLink2_804A43E8::fn_801C844C() {
     }
 }
 
-// FIXME(shotgun): 76.87 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 77.85 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C7F98() {
     fn_801C844C();
     fn_801C8C84(0, 0);
@@ -691,7 +691,7 @@ void ShadowLink2_804A43E8::fn_801C79A0() {
     }
 }
 
-// FIXME(shotgun): 88.02 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 88.99 %, missing/extra; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C7370(u8 flag) {
     if (!(mFlags & 0x2000000)) {
         if (fn_801C5340()) {
