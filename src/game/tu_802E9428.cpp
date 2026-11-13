@@ -13,9 +13,6 @@
 #include "game/act/tu_8044B80C.h"
 #include "game/act/tu_802E9428.h"
 
-// FIXME(shotgun): not written (size 0x4A4): fn_802EAD78, a compiler-generated static-init function
-// (float tables and JAudio memory pools), nothing to write by hand.
-
 struct EndmStagePair {
     u16 mStage;
     u16 mLevel;
@@ -51,8 +48,44 @@ static const u8 lbl_8046F280_104[20] = {
 };
 
 extern u8* lbl_804AA0B8[17];
-extern JGeometry::TVec2f lbl_804D56A8[17];
-extern JGeometry::TVec2f lbl_804D5730[18];
+JGeometry::TVec2f lbl_804D56A8[17] = {
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f),
+    JGeometry::TVec2f(50.0f, 40.0f)
+};
+JGeometry::TVec2f lbl_804D5730[49] = {
+    JGeometry::TVec2f(2740.0f, 1726.0f),
+    JGeometry::TVec2f(2000.0f, 100.0f),
+    JGeometry::TVec2f(250.0f, 100.0f),
+    JGeometry::TVec2f(612.0f, 520.0f),
+    JGeometry::TVec2f(330.0f, 3286.0f),
+    JGeometry::TVec2f(1170.0f, 1728.0f),
+    JGeometry::TVec2f(1890.0f, 310.0f),
+    JGeometry::TVec2f(768.0f, 3250.0f),
+    JGeometry::TVec2f(1744.0f, 2520.0f),
+    JGeometry::TVec2f(768.0f, 2850.0f),
+    JGeometry::TVec2f(768.0f, 690.0f),
+    JGeometry::TVec2f(768.0f, 1710.0f),
+    JGeometry::TVec2f(2200.0f, 1600.0f),
+    JGeometry::TVec2f(1600.0f, 1344.0f),
+    JGeometry::TVec2f(1280.0f, 3215.0f),
+    JGeometry::TVec2f(768.0f, 3700.0f),
+    JGeometry::TVec2f(664.0f, 3704.0f)
+};
 
 // FIXME(shotgun): 99.75 %, operands + reloc-name; behaviour near.
 void UnknownENDM_804AA0FC::init() {
