@@ -270,8 +270,7 @@ void cls_804A7AE0::fn_8029A974() {
     s32 dir = -1;
     if (field_0x2b9 == 0) {
         if (fn_80239108(mSerial) >= 4) {
-            s32 layer = field_0x4;
-            if (getPlayerLayer_8023DE58(0) == layer) {
+            if (getPlayerLayer_8023DE58(0) == field_0x4) {
                 s32 r = fn_80238BC4(mSerial);
                 if (r >= 0 && r < 4) {
                     field_0x2cc = 1;
@@ -323,10 +322,9 @@ void cls_804A7AE0::fn_8029A974() {
     f32 maxX = view.f.x + inset;
     f32 maxY = view.f.y + inset;
     bool ok = true;
-    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
@@ -533,10 +531,9 @@ void cls_804A7AE0::fn_80299FB0() {
     f32 maxX = view.f.x + inset;
     f32 maxY = view.f.y + inset;
     bool ok = true;
-    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
