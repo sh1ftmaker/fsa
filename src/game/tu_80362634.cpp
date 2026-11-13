@@ -1059,8 +1059,8 @@ void cls_804ADF28::fn_80362B14() {
 // FIXME(shotgun): 91.48 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803628D4() {
     JGeometry::TVec3f savedPos = mPos;
-    SpriteParams_801F5AE0 params;
     Mtx mtx;
+    SpriteParams_801F5AE0 params;
     if ((field_0x268 & 7) >= 5) {
         static const f32 lbl_80474BB8[3] = {6.0f, 8.0f, 6.0f};
         mtx[0][0] = 1.0f;
@@ -1084,18 +1084,16 @@ void cls_804ADF28::fn_803628D4() {
     identity[0][0] = 1.0f;
     identity[0][1] = 0.0f;
     identity[0][2] = 0.0f;
-    identity[0][3] = 0.0f;
     identity[1][0] = 0.0f;
     identity[1][1] = 1.0f;
     identity[1][2] = 0.0f;
-    identity[1][3] = 0.0f;
     identity[2][0] = 0.0f;
     identity[2][1] = 0.0f;
     identity[2][2] = 1.0f;
-    identity[2][3] = 0.0f;
     params.mMtx = identity;
+    s32 frame = field_0x26c + field_0x264;
     if (mSpriteParams.mMtx == NULL) {
-        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", field_0x26c + field_0x264, NULL);
+        fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
     }
 }
 
