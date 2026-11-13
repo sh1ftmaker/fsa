@@ -8,7 +8,8 @@
 #include "game/SpriteParams.h"
 #include "JSystem/JUtility/JUTGamePad.h"
 
-// FIXME: 96.58 %. The loop: the original keeps the index in r30 and a byte
+// FIXME: 96.62 %, different; behaviour clean.
+// The loop: the original keeps the index in r30 and a byte
 // offset (mr r28, r30 after the end load, stepped by 4) for mActors[i]; ours
 // keeps the index in r28 and the offset in r30 whatever the declaration order
 // (tried: index before/after the end load, actor hoisted). The 30.0f literal is
@@ -86,6 +87,7 @@ static const s32 kShoulderLeft[2][6] = {{3, 0, 1, 2, 4, 5}, {1, 0, 2, 3, 4, 5}};
 static const s32 kShoulderRight[2][6] = {{1, 2, 3, 0, 4, 5}, {1, 0, 2, 3, 4, 5}};
 static const s32 kSpriteId[2][6] = {{0x3A, 0x3B, 0x3C, 0x39, 0x3E, 0x3E}, {0x41, 0x42, 0x39, 0x39, 0x39, 0x40}};
 
+// FIXME: 71.25 %, missing/extra; behaviour drift.
 // FIXME(shotgun): missing/extra; the tables are separate arrays here, one rodata block in the original
 void UnknownFORM_804A7BE8::update() {
     if (field_0x254 != NULL && field_0x254->mState >= 1 && field_0x254->mState <= 10) {
@@ -236,7 +238,7 @@ static inline void clampX(f32& x, f32 lo, f32 hi) {
     }
 }
 
-// FIXME(shotgun): 88 %, different + reloc-name
+// FIXME(shotgun): 88.81 %, different + reloc-name; behaviour clean.
 void UnknownFORM_804A7BE8::draw() {
     JGeometry::TBox2f box;
     JGeometry::TVec3f pos(mPos);
