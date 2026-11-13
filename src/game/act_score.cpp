@@ -141,7 +141,7 @@ static const u8 lbl_80543178[4] = {0x28, 0x50, 0xFF, 0xFF};
 // Force Gem / fairy sounds by tens digit.
 static const u32 sScoreSounds[10] = {0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C};
 
-// FIXME(shotgun): 90.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.16 %, missing/extra + reloc-name; behaviour drift.
 void Score_804AF4C0::fn_80393514() {
     if (mTimer == 90) {
         // The original copies this 12-entry table (rodata 0x80475738) to the stack and passes entry 0.
