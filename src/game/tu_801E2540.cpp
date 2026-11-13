@@ -167,17 +167,21 @@ u8 cls_804A51E4::vfunc_0x60() {
     if (other >= 0 && other != mSerial) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(other);
         if (actor != NULL) {
-            if (!(!viewLayerFlag(field_0x4) && mPos.z > 16.0f && fn_801CC8E4(actor))) {
-                if (!fn_801E1CF8()) {
+            u8 landed;
+            if (!viewLayerFlag(field_0x4) && mPos.z > 16.0f && fn_801CC8E4(actor)) {
+                landed = 0;
+            } else if (!fn_801E1CF8()) {
+                landed = 1;
+            } else {
+                JGeometry::TVec3f dir = mPos - actor->field_0x3c;
+                landed = fn_801F37AC(actor->field_0x118, &dir, 0, actor->field_0x168, -1);
+                if (landed) {
                     hit = 1;
-                } else {
-                    JGeometry::TVec3f dir = mPos - actor->field_0x3c;
-                    if (fn_801F37AC(actor->field_0x118, &dir, 0, actor->field_0x168, -1)) {
-                        hit = 1;
-                        actor->field_0x164 = 1;
-                        releaseTarget(this);
-                    }
                 }
+            }
+            if (landed) {
+                actor->field_0x164 = 1;
+                releaseTarget(this);
             }
         }
     }
