@@ -211,8 +211,13 @@ void cls_8049DD68::fn_8011CF48() {
     case 8: {
         cls_801192AC* list = fn_8011921C();
         ActorBase_804A5770** it = list->fn_8011871C(list->mBegin, 'DMSW');
-        JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-        const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mPos;
+        const JGeometry::TVec3f* pos;
+        if (it == fn_8011921C()->mEnd) {
+            JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
+            pos = &zero;
+        } else {
+            pos = &(*it)->mPos;
+        }
         fn_801CD950(&field_0x240.y, 40.0f + pos->y, 1.8f);
         JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
         gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&c, field_0x258);
