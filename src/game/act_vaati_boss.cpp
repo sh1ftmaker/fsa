@@ -709,8 +709,9 @@ void VaatiBoss_804A4958::vfunc_0x98() {
         field_0x5d1--;
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
-            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(field_0x5d2);
-            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(field_0x5d2);
+            s16 angle = field_0x5d2;
+            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(angle);
+            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(angle);
         }
     }
     switch (mState) {
@@ -731,25 +732,6 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     case 7:
         mPos.z = 500.0f;
         break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 10:
-    case 12:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17:
-    case 18:
-    case 19:
-    case 20:
-    case 21:
-    case 22:
     default: {
         f32 oldX = field_0x5bc;
         f32 oldY = field_0x5c0;
