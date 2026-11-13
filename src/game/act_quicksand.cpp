@@ -275,7 +275,7 @@ void cls_804A6270::vfunc_0x54() {
 // Not auto-inlined: vfunc_0x90 calls fn_80211EB0 and fn_80211C94 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 94.62 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.78 %, missing/extra; behaviour near.
 void cls_804A6270::fn_80211EB0() {
     if (mState != 0) {
         for (s32 i = 0; i < 4; i++) {
@@ -553,6 +553,7 @@ bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
 // outside the area or above the ground (pos->z > 0).
 // JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
 // scale match. Ours adds one frsp after the fsel.
+// FIXME: 98.64 %, missing/extra; behaviour near.
 void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= 0.0f && mState != 0) {
