@@ -163,7 +163,7 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
     field_0x234 = state;
 }
 
-// FIXME(shotgun): 90.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.44 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049DD68::fn_8011CF48() {
     switch (field_0x234) {
     case 0:
