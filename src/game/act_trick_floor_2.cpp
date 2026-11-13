@@ -75,7 +75,8 @@ static inline void fillTiles(TrickFloor2_804AA628* self, f32 x, u16 tile) {
     s32 layer = self->field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f box = *src;
+    JGeometry::TBox2f box;
+    box = *src;
     for (s32 i = 0; i < lbl_8046F788[self->mType]; i++) {
         s32 tx = (s32)(x - box.i.x);
         f32 y = self->mPos.y;
@@ -108,7 +109,7 @@ static inline void spawnDust(TrickFloor2_804AA628* self, s32 a) {
     }
 }
 
-// FIXME(shotgun): 90.85 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.43 %, different + reloc-name; behaviour clean.
 void TrickFloor2_804AA628::init() {
     mType = field_0x90 & 0xF;
     field_0x238 = (field_0x90 >> 4) & 0xF;
@@ -143,7 +144,7 @@ void TrickFloor2_804AA628::init() {
     field_0x230 = 0;
 }
 
-// FIXME(shotgun): 84.79 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.11 %, missing/extra + reloc-name; behaviour drift.
 // Finds who stands on the floor (fn_8023AF14, the 'SBAL' ball, fn_8023A97C per player), then:
 // 0 reads the tile under it, 2 waits for a rider (vfunc_0x34) and drops (tiles 6, state 3) or,
 // for types 4 / 5, waits for all four players to open (state 6), 3 sinks to 1.6384, 4 holds
