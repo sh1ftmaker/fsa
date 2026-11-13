@@ -3,6 +3,13 @@
 #include "game/ActorBase.h"
 #include <float.h>
 #include "game/act/act_thief.h"
+#include "JSystem/JAudio/JAUAudience.h"
+#include "JSystem/JAudio/System/JASTrack.h"
+#include "JSystem/JAudio/System/JASChannel.h"
+#include "JSystem/JAudio/Interface/JAISe.h"
+#include "JSystem/JAudio/Interface/JAISeq.h"
+#include "JSystem/JAudio/Interface/JAISoundChild.h"
+#include "JSystem/JAudio/Interface/JAIStream.h"
 
 // Out-of-line copy used by the repel step: pushes `a` away from `b` (2D) into *out, true when it moved.
 bool fn_801CB85C(const JGeometry::TVec2f* a, const JGeometry::TVec2f* b, JGeometry::TVec2f* out, f32 min, f32 max);
@@ -11,13 +18,13 @@ inline cls_80204638::cls_80204638() : field_0x0(0), mCount(0) {
     fn_80204ABC(true);
 }
 
-// FIXME(shotgun): 87.80 %, missing/extra; behaviour drift.
 void cls_80204638::fn_80204ABC(bool reset) {
     if (reset) {
         field_0x0 = 0;
         for (s32 i = 0; i < 10; i++) {
-            mSlots[i][0] = NULL;
-            mSlots[i][1] = NULL;
+            for (s32 j = 0; j < 2; j++) {
+                mSlots[i][j] = NULL;
+            }
         }
     }
 }
@@ -115,12 +122,18 @@ bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     return moved;
 }
 
-// FIXME(shotgun): 92.45 %, missing/extra; behaviour drift.
-// The guarded static, constructed on first use.
 extern "C" cls_80204638* fn_80204638() {
     static cls_80204638 sInstance;
     return &sInstance;
 }
 
-// FIXME(shotgun): the JAudio pool registrations (fn_80204B20, 0x80204B20) are compiler-generated
-// (__sinit) and not written.
+// Pool statics instantiated in this unit (their registration is the unit's static initializer).
+template class JASPoolAllocObject_MultiThreaded<JASTrack::TChannelMgr>;
+template class JASPoolAllocObject_MultiThreaded<JASTrack>;
+template class JASPoolAllocObject_MultiThreaded<JASChannel>;
+template class JASPoolAllocObject<JAUDopplerAudible<4> >;
+template class JASPoolAllocObject<JAUAudible<4> >;
+template class JASPoolAllocObject<JAIStream>;
+template class JASPoolAllocObject<JAISoundChild>;
+template class JASPoolAllocObject<JAISeq>;
+template class JASPoolAllocObject<JAISe>;

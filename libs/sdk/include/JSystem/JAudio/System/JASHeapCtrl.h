@@ -237,10 +237,6 @@ struct JASPoolAllocObject
         return memPool_.alloc(n);
     }
 
-    static bool isActive() {
-        return memPool_.isActive();
-    }
-
     static u32 getFreeMemCount() { return memPool_.getFreeMemCount(); }
     static u32 getTotalMemCount() { return memPool_.getTotalMemCount(); }
 
