@@ -2064,6 +2064,8 @@ public:
     void fn_803A71F0();
     // 0x803A60E4: the wobble and slide of the two arrow panes (Par01 / Par02).
     void fn_803A60E4();
+    // Rotates the pane `tag` about its centre by base + field_0x74 (inlined in fn_803A60E4).
+    void rotateArrow(u64 tag, s16 base);
     // 0x803A7280: puts the arrow and text panes back in place.
     void fn_803A7280();
     // 0x803A6608: the options screen (per-frame).
