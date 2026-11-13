@@ -57,7 +57,7 @@ void cls_804A5418::vfunc_0x10() {
 
 extern const s32 lbl_80469C40[4][2];
 
-// FIXME(shotgun): 85.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.51 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A5418::fn_801E728C(int state) {
     if (state == 1) {
         if ((mFlags & 0x4000) && !(mFlags & 0x10000)) {
