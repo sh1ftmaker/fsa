@@ -22,14 +22,13 @@ struct Tables_804A3660 {
 extern Tables_804A3660 lbl_804A3660;
 
 // 0x801B3CD0.
-// FIXME(shotgun): 100 %, matches
 cls_804A3698::~cls_804A3698() {
     lbl_8053ABE8 = 0;
     lbl_8053ABF0 = 0;
 }
 
 // 0x801B3B7C.
-// FIXME(shotgun): 97.36 %, different + reloc-name
+// FIXME(shotgun): 97.36 %, different + reloc-name; behaviour near.
 void cls_804A3698::init() {
     lbl_8053ABF0 = 0;
     field_0x80.set(-4.0f, -8.0f, 4.0f, 8.0f);
@@ -71,7 +70,7 @@ void cls_804A3698::init() {
 }
 
 // 0x801B29EC.
-// FIXME(shotgun): 89.37 %, different + reloc-name
+// FIXME(shotgun): 89.37 %, different + reloc-name; behaviour drift.
 void cls_804A3698::update() {
     s32 layer = field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
@@ -549,7 +548,6 @@ void cls_804A3698::update() {
 }
 
 // 0x801B2998.
-// FIXME(shotgun): 100 %, matches
 void cls_804A3698::draw() {
     if (field_0x308 == 0 || (field_0x308 & 2)) {
         drawSprite_801F06F0("enemy_both2_sob.bin", field_0x320 + 0x9B, NULL, 7, 1.0f, 1.0f);
@@ -557,7 +555,7 @@ void cls_804A3698::draw() {
 }
 
 // 0x801B27DC.
-// FIXME(shotgun): 73.73 %, missing/extra
+// FIXME(shotgun): 94.59 %, scheduling+regalloc; behaviour clean.
 bool cls_804A3698::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 code = fn_8022461C(pos, layer);
     s32 tile = fn_80226850(pos, layer);
