@@ -18,7 +18,7 @@ static const char* lbl_804A5760[] = {"e_gufu_1.bti", "e_gufu_2.bti", "e_gufu_3.b
 // twelve scaled matrix entries in f4-f13/f30/f31 and stores them after
 // all the loads, ours interleaves loads and stores; the .sdata2 literal order
 // follows the fsel.
-// FIXME: 37.54 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 48.94 %, missing/extra + reloc-name; behaviour near.
 void VaatiBoss_804A4958::fn_801EDD0C() {
     void* res = fn_804032E8('TIMG', lbl_804A5760[mAnim.mCel]);
     SpriteParams_801F5AE0 params;
@@ -32,7 +32,8 @@ void VaatiBoss_804A4958::fn_801EDD0C() {
         params.field_0x10.a = 0;
     }
     f32 scale = 1.0f + field_0x52c.field_0x28.value;
-    scale = __fsel(0.001f - scale, 0.001f, scale);
+    f32 minScale = 0.001f;
+    scale = __fsel(minScale - scale, minScale, scale);
     mtx[0][0] = 1.0f;
     mtx[0][1] = 0.0f;
     mtx[0][2] = 0.0f;
