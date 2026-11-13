@@ -27,7 +27,8 @@ StateFunc_804B0288 lbl_804B0168[24] = {
 
 // The three load/save results all stamp the current save file the same way.
 static inline void touchCurrentFile() {
-    lbl_8050EC80.getCurrentFile().field_0x0 = OSGetTime();
+    OSTime now = OSGetTime();
+    lbl_8050EC80.getCurrentFile().field_0x0 = now;
     SaveFile_803B950C& file = lbl_8050EC80.getCurrentFile();
     if ((file.field_0x65 & 1) == 0) {
         file.field_0x65 |= 1;
