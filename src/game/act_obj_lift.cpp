@@ -323,7 +323,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME(shotgun): 90.26 %, missing/extra; behaviour drift.
+// FIXME(shotgun): missing/extra; behaviour drift (register allocation, push magnitude not vectorized to ps).
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
     field_0x283[1] = 0;
@@ -389,14 +389,13 @@ s32 OBJLift_804ACA00::fn_80350974() {
     }
 
     for (s32 i = 0; i < 4; i++) {
-        if (field_0x283[i] == 1 && (fn_80230188(i) || fn_8022CCAC(i))) {
+        if (field_0x283[i] == 1 && (fn_80230188(i) == 1 || fn_8022CCAC(i) == 1)) {
             onLift = 1;
         }
     }
 
-    f32 dx = mPos.x - mSpawnPos.x;
-    f32 dy = mPos.y - mSpawnPos.y;
-    if (field_0x258 == 5 && count == 0 && dx * dx + dy * dy > 8.0f) {
+    if (field_0x258 == 5 && count == 0 &&
+        (mPos.x - mSpawnPos.x) * (mPos.x - mSpawnPos.x) + (mPos.y - mSpawnPos.y) * (mPos.y - mSpawnPos.y) > 8.0f) {
         field_0x250++;
         if (field_0x250 > 0xF0) {
             s32 layer = field_0x4;
