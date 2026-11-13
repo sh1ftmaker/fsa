@@ -97,14 +97,14 @@ InextinguishableFlame_804A9D28::~InextinguishableFlame_804A9D28() {
 // The state machine. States: 0 wait for the view (field_0x300), 1 search for a
 // tile, 2 spawn the grid, 3 hit, 4 spawn a BLZE actor, 5 count down, 6 wait
 // for the player's hit. The grids are walked in the order of the spawn loops.
-// Still differs: the original copies mPos once more before the state test and
-// builds a box before fn_801F2B7C; loop counter registers; case 1 tile order.
+// Still differs: an extra beq after the state 0 flag test.
 // FIXME: 91.48 %, missing/extra + reloc-name; behaviour drift.
 void InextinguishableFlame_804A9D28::update() {
+    JGeometry::TVec3f pos = mPos;
     if (mState >= 1) {
         fn_8020D58C()->addBox(mSerial);
     }
-    JGeometry::TVec3f pos = mPos;
+    pos = mPos;
     fn_801F2718('TUBO');
 
     switch (mState) {
@@ -137,7 +137,10 @@ void InextinguishableFlame_804A9D28::update() {
     }
     case 1:
         for (s32 i = 0; i < 8; i++) {
-            JGeometry::TVec3f tile(mPos.x + lbl_8046F0C8[i], mPos.y + lbl_8046F108[i], mPos.z);
+            JGeometry::TVec3f tile;
+            tile.x = mPos.x + lbl_8046F0C8[i];
+            tile.y = mPos.y + lbl_8046F108[i];
+            tile.z = mPos.z;
             if (fn_801EE3C0(fn_80226850(&tile, field_0x4)) == true) {
                 getActorManager_801F856C()->spawnActor_801F9484('BLZE', field_0x4, &tile, (field_0x98 << 4) | 0xF, -1, -1);
                 mActorId = 'BLZE';
@@ -175,8 +178,10 @@ void InextinguishableFlame_804A9D28::update() {
                         mState = 3;
                         return;
                     }
+                    JGeometry::TBox2f box(mBox);
+                    box.addPos(mPos.x, mPos.y);
                     fn_801F2B7C(field_0x114, -1, 7);
-                    JGeometry::TBox2f box(field_0x80);
+                    box = field_0x80;
                     box.addPos(mPos.x, mPos.y);
                     fn_80239914(&box, field_0x4, mSerial);
                     mPos.y += 16.0f;
