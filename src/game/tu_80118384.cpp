@@ -462,22 +462,26 @@ void cls_801192AC::fn_8011888C(ActorBase_804A5770* actor) {
     fn_801188B8(&mAllocator, &actor);
 }
 
-// FIXME(shotgun): 82.62 %, missing/extra; behaviour drift.
-// (stand-in: the original is std::find_if with a by-value
-// predicate, then the JGadget TVector erase(it, it + 1) inline: copyForward, the empty DestroyElement_
-// loop, mEnd = new end. Needs the TVector member at 0xC.)
+// by-value predicate of the std::find_if the original uses: matches an actor by its serial
+struct ActorSerialEq {
+    s32 mSerial;
+    bool operator()(ActorBase_804A5770* actor) const { return mSerial == actor->mSerial; }
+};
+
+// FIXME: erase of the found element (TVector::erase inline); still differs in the stack frame.
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
-    s32 serial = actor->mSerial;
-    ActorBase_804A5770** it;
+    ActorSerialEq pred = {actor->mSerial};
     ActorBase_804A5770** end = mEnd;
-    it = mBegin;
-    while (it != end && serial != (*it)->mSerial) {
+    ActorBase_804A5770** it = mBegin;
+    while (it != end && !pred(*it)) {
         it++;
     }
     if (it != end) {
         ActorBase_804A5770** next = it + 1;
         while (next < end) {
             *it++ = *next++;
+        }
+        for (ActorBase_804A5770** p = it; p != mEnd; p++) {
         }
         mEnd = it;
     }
