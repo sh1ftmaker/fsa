@@ -49,7 +49,7 @@ static inline u32 pairParam(u32 param, s32 layer, f32 dx, f32 dy, u32 kind) {
 // 0x80228B60. Decodes the spawn parameter (field_0x90: kind in the low 7 bits, layer, a 6-bit cell
 // offset to the destination), sets the destination (field_0x238) and the trigger box, and for the
 // paired kinds 0x19-0x1C spawns the other warp and turns this one into the matching kind.
-// FIXME(shotgun): 66.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 66.65 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::init() {
     field_0x256 = 0;
     field_0x278 = 0;
@@ -209,7 +209,7 @@ static inline bool nearZero(f32 d) {
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 77.80 %, missing/extra + reloc-name
+// FIXME(shotgun): 77.80 %, missing/extra + reloc-name; behaviour drift.
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
@@ -423,6 +423,7 @@ extern const f32 lbl_8046AC58[24]; // x shifts of the sand while the warp shakes
 
 // 0x80227CE8.
 // Remaining: original compares (field_0x90 & 0x7F) with a signed cmpwi; reloc names.
+// FIXME: 99.45 %, different + reloc-name; behaviour drift.
 void Warp_804A6DC8::draw() {
     if ((field_0x90 & 0x7F) == 0x20 && field_0x255 == 0) {
         SpriteParams_801F5AE0 params;
@@ -452,7 +453,7 @@ void Warp_804A6DC8::draw() {
 
 // 0x802278A8. Per player: the player's reaction to standing in the warp's box (by warp kind, the
 // low 7 bits of the spawn parameter): marks it, hurts it, or sends it through (fn_802317F0).
-// FIXME(shotgun): 79.60 %, missing/extra
+// FIXME(shotgun): 79.60 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
         *box = mBox;
@@ -553,7 +554,7 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
 
 // 0x80227530. Per player: runs fn_80226FC8, then marks the player on the warp and, for a player
 // that just stepped on and passes the checks, rewrites the four tiles around it and spawns the effect.
-// FIXME(shotgun): 77.69 %, missing/extra
+// FIXME(shotgun): 80.78 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
     for (s32 player = 0; player < 4; player++) {
         fn_80226FC8(player);
@@ -616,7 +617,7 @@ void Warp_804A6DC8::fn_80227530(JGeometry::TBox2f* box) {
 
 // 0x80227290. The serial of a live actor on the warp's layer (not excludeSerial, one of `ids`, within
 // maxDz in z unless the layer ignores z) whose box overlaps the warp's, or -1.
-// FIXME(shotgun): 63.62 %, missing/extra
+// FIXME(shotgun): 66.07 %, missing/extra; behaviour drift.
 s32 Warp_804A6DC8::fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial) {
     s32 found = -1;
     u8 anyZ = viewLayerFlag(field_0x4);
@@ -650,7 +651,7 @@ s32 Warp_804A6DC8::fn_80227290(f32 maxDz, const u32* ids, s32 excludeSerial) {
 
 // 0x80226FC8. Per player: finds the 'YASI' actor the player carries and, once it is moving and
 // inside the warp's box, drops it onto the pad (four tiles around the warp are rewritten).
-// FIXME(shotgun): 85.51 %, missing/extra
+// FIXME(shotgun): 90.26 %, different; behaviour drift.
 void Warp_804A6DC8::fn_80226FC8(s32 player) {
     if (field_0x255 == 1) {
         return;
