@@ -8,7 +8,7 @@
 #include <math.h>
 
 // 0x80171AF8.
-// FIXME(shotgun): 90.12 %, missing/extra + reloc-name
+// FIXME(shotgun): 90.19 %, missing/extra + reloc-name; behaviour near.
 void cls_804A0810::init() {
     field_0x94 = field_0x90 & 0xFF;
     field_0x270 = (field_0x90 >> 8) & 1;
@@ -140,7 +140,8 @@ void cls_804A0810::vfunc_0x44() {
 
 // Draws the body (frame 0x7F + field_0x258), the ten trail segments (frame 0x83, at the stored
 // positions) and, rotated by field_0x278 and scaled by field_0x27c, the shell (frame 0x82 or 0x11).
-// FIXME(shotgun): 92 %, missing/extra
+// FIXME(shotgun): 97.92 %, different; behaviour drift.
+// the sin/cos zero arguments fold to lfd doubles; regalloc
 void cls_804A0810::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -171,7 +172,9 @@ void cls_804A0810::draw() {
                 mtx[2][1] = 0.0f;
                 mtx[2][2] = 0.7f;
                 params.mMtx = mtx;
-                mPos = field_0x29c[i];
+                mPos.x = field_0x29c[i].x;
+                mPos.y = field_0x29c[i].y;
+                mPos.z = field_0x29c[i].z;
                 drawSprite_801F06F0("enemy_gc_sob.bin", 0x83, &params, 7, 1.0f, 1.0f);
             }
             mPos.x = x;
@@ -205,7 +208,9 @@ void cls_804A0810::draw() {
                 params.field_0x0[6] = field_0x274;
                 params.field_0x1d = 0;
             }
-            mPos = field_0x314;
+            mPos.x = field_0x314.x;
+            mPos.y = field_0x314.y;
+            mPos.z = field_0x314.z;
             drawSprite_801F06F0("enemy_gc_sob.bin", 0x82, &params, 7, 1.0f, 1.0f);
             mPos.x = x;
             mPos.y = y;
