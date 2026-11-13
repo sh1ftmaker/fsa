@@ -181,8 +181,8 @@ void cls_804A7EB0::draw() {
             params.field_0x1d = -1;
             s32 frame = field_0x250 + 0x10D;
             JGeometry::TVec3f pos;
-            pos.x = mPos.x + (f32)lbl_8046C658[field_0x234][i];
             pos.y = mPos.y + (f32)lbl_8046C6C8[field_0x234][i];
+            pos.x = mPos.x + (f32)lbl_8046C658[field_0x234][i];
             pos.z = mPos.z;
             if (field_0x4 < 8) {
                 void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
