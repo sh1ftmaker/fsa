@@ -48,21 +48,24 @@ void WarpCannon_8049EAE0::init() {
 void WarpCannon_8049EAE0::update() {
     switch (field_0x268) {
     case 0: {
-        JGeometry::TBox2f probe;
-        probe.i.x = mBox.i.x + mPos.x;
-        probe.i.y = mBox.i.y + (mPos.y - mPos.z);
-        probe.f.x = mBox.f.x + mPos.x;
-        probe.f.y = mBox.f.y + (mPos.y - mPos.z);
-        s32 found = -1;
-        for (s32 p = 0; p < 4; p++) {
+        JGeometry::TBox2f probe = mBox;
+        f32 dy = mPos.y - mPos.z;
+        probe.i.x += mPos.x;
+        probe.i.y += dy;
+        probe.f.x += mPos.x;
+        probe.f.y += dy;
+        s32 p;
+        for (p = 0; p < 4; p++) {
             if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p)) && fn_8023B0F4(p, &probe, field_0x4, false, 1.0f) &&
                 !fn_80230188(p) && field_0x26c < 0) {
-                found = p;
                 break;
             }
         }
-        if (found >= 0) {
-            field_0x26c = found;
+        if (p == 4) {
+            p = -1;
+        }
+        if (p >= 0) {
+            field_0x26c = p;
             fn_80130FAC(1);
         }
         bool all = true;
@@ -178,6 +181,8 @@ void WarpCannon_8049EAE0::update() {
         }
         break;
     }
+    case 8:
+        break;
     }
     mAnim.fn_801D1C18();
 }
