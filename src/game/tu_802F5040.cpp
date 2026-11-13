@@ -145,9 +145,6 @@ cls_803003A8::cls_803003A8() {}
 
 cls_8030029C::cls_8030029C() {}
 
-// FIXME: 99.92 %, reloc-name; behaviour clean.
-// Instructions identical; the two file names are @NNN strings, not
-// lbl_804711D4 / lbl_804711E4, until the unit's .rodata is emitted in order.
 TileMap_804AA858::TileMap_804AA858(JKRHeap* heap) {
     heap->getTotalFreeSize();
     for (s32 i = 0; i < 2; i++) {
@@ -1261,7 +1258,7 @@ void TileMap_804AA858::fn_802FAC10(s32 layer, s32 x, s32 y, s32 flag, u8 grey, u
     }
 }
 
-// FIXME: 98.46 %, operands; behaviour drift.
+// FIXME: 98.47 %, operands; behaviour drift.
 // Register allocation, stack slots and data offsets only (try.py
 // "operands + reloc-name"): the tables and "circle.bti" sit 0x70 / 0x1D8 too
 // early in our .rodata (fn_802FCE74's tables and fn_802F6800's five are not
@@ -2660,6 +2657,7 @@ void TileMap_804AA858::fn_802F6BBC(s32 src, s32 dst) {
     }
 }
 
+// FIXME: 49.73 %, missing/extra; behaviour near.
 u8 TileMap_804AA858::fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
                                  void* res3, SpriteParams_801F5AE0* params) {
     static const GXColor lbl_80471060[18] = {
