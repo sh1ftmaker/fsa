@@ -431,10 +431,10 @@ static inline void tickPlayer_80371284(cls_804AE4B0* self, s32 i) {
     }
     if (fn_80230188(i) || self->mState == 1) {
         if (fn_8023EFEC(i)) {
-            const JGeometry::TVec3f& pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
+            JGeometry::TVec3f pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
             fn_80230498(i, &pos, 0x2CF + self->field_0x384[i], 0xFF, -0x80, -0x80, true);
         } else {
-            const JGeometry::TVec3f& pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
+            JGeometry::TVec3f pos = self->field_0x264[self->field_0x39c] - JGeometry::TVec3f(0.0f, 0.3f, 0.0f);
             fn_80230498(i, &pos, 0x18 + self->field_0x384[i], 0xFF, -0x80, -0x80, true);
         }
     }
