@@ -308,7 +308,7 @@ struct ActorVectorDealloc {
     ActorBase_804A5770** mPointer;
 };
 
-// FIXME: 79.27 %, missing/extra; behaviour drift.
+// FIXME: 97.56 %, regalloc-only; behaviour clean.
 // FIXME(shotgun): TVector::reserve(20) inline; copy loop and empty destroy loop.
 void cls_801192AC::fn_801190E4() {
     if (mCapacity >= 20) {
@@ -463,6 +463,7 @@ struct ActorSerialEq {
     bool operator()(ActorBase_804A5770* actor) const { return mSerial == actor->mSerial; }
 };
 
+// FIXME: 90.25 %, missing/extra; behaviour near.
 // FIXME: erase of the found element (TVector::erase inline); still differs in the stack frame.
 void cls_801192AC::fn_80118798(ActorBase_804A5770* actor) {
     ActorSerialEq pred = {actor->mSerial};
