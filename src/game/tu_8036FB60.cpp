@@ -461,8 +461,8 @@ void cls_804AE4B0::fn_80371284() {
         field_0x384[1] = 0;
         field_0x384[2] = 0;
         field_0x384[3] = 0;
-        JGeometry::TVec3f pos(0.5f * (f32)(s32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)(s32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, 0x50F, field_0x4, pos, 0x22)) {
             mState = 2;
@@ -569,8 +569,8 @@ void cls_804AE4B0::fn_80370C84() {
         }
     }
     if (field_0x240 == 0) {
-        JGeometry::TVec3f pos(0.5f * (f32)(s32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)(s32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, 0x502, field_0x4, pos, 0x22)) {
             mState = 5;
@@ -623,7 +623,8 @@ void cls_804AE4B0::fn_80370764() {
             fn_80230C6C(i);
         }
     }
-    for (s32 i = 0; i < 4; i++) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
         if (fn_8023E854(i)) {
             JGeometry::TVec3f d = JGeometry::TVec3f(2232.0f, 1624.0f, 0.0f) - *getPlayerPos_8023E724(0);
             if (PSVECMag((Vec*)&d) > 2.0f) {
@@ -632,7 +633,7 @@ void cls_804AE4B0::fn_80370764() {
             break;
         }
     }
-    if (fn_8022CAF8(0) == 4) {
+    if (i == 4 && fn_8022CAF8(0) == 4) {
         fn_8022CA6C(0, 5, false);
     }
     field_0x23c++;
@@ -647,8 +648,8 @@ void cls_804AE4B0::fn_80370764() {
         field_0x240 = 2;
     } else if (field_0x398 != 0 && field_0x240 == 0 && fn_8022CAF8(0) == lbl_80474F30[field_0x394] &&
                fn_802300EC(0)) {
-        JGeometry::TVec3f pos(0.5f * (f32)(s32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)(s32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         s32 msg;
         if (field_0x394 < 3) {
