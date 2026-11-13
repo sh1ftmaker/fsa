@@ -1322,7 +1322,7 @@ void cls_804B146C::fn_80421A34(s32 player, bool force) {
     }
 }
 
-// FIXME(shotgun): 89.38 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.59 %, missing/extra; behaviour drift.
 void cls_804B146C::fn_8042165C() {
     field_0x1f0[0] = 0;
     field_0x1f0[1] = 0;
