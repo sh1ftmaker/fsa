@@ -510,7 +510,11 @@ void WingedForceGem_804AB098::draw() {
     SpriteParams_801F5AE0 params;
     s32 kind;
     if (field_0x270 == 4) {
-        kind = (field_0x278 < 3) ? 0 : 3;
+        if (field_0x278 < 3) {
+            kind = 0;
+        } else {
+            kind = 3;
+        }
     } else {
         kind = field_0x270;
     }
@@ -530,9 +534,9 @@ void WingedForceGem_804AB098::draw() {
             params.field_0x1d = fn_8023CB24(field_0x26c) + 1;
             params.field_0x1c = fn_8023CA88(field_0x26c);
         }
-        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x25c + lbl_804AB038[kind + 8], &params, -1, 1.0f,
-                            1.0f);
-        fn_803075AC(mSerial, field_0x4, &mPos, field_0x25c + lbl_804AB038[kind + 8], 0, 2, -1, true, 0, 0);
+        s32 idx = kind + 8;
+        drawSprite_801F06F0("enemy_both2_sob.bin", field_0x25c + lbl_804AB038[idx], &params, -1, 1.0f, 1.0f);
+        fn_803075AC(mSerial, field_0x4, &mPos, field_0x25c + lbl_804AB038[idx], 0, 2, -1, true, 0, 0);
         return;
     }
     JGeometry::TVec3f saved(mPos);
