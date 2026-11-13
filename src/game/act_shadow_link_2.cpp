@@ -104,8 +104,7 @@ void ShadowLink2_804A43E8::init() {
     } else if (n < 0) {
         n = 0;
     }
-    // FIXME(shotgun): field_0x524 is a cls_802157B8 here: field_0x524.fn_802157B8((u8)n) is not
-    // written until the header member has that type (other units test it as a u32).
+    field_0x524.fn_802157B8(n);
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
     mBox2.set(mBox);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
