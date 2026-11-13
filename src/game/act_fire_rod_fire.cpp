@@ -801,7 +801,8 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             return false;
         }
         u16 tile = field_0x288;
-        if (tile == 0x3A || (tile >= 0x8B && tile <= 0x8E) || tile == 0x3D) {
+        u16 tileOffset = tile - 0x8B;
+        if (tile == 0x3A || tileOffset <= 3 || tile == 0x3D) {
             return false;
         }
         if (field_0x27c == 0x25) {
