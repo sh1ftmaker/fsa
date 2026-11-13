@@ -890,7 +890,7 @@ void EnemyBase_804A4808::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME: 90.30 %, missing/extra; behaviour drift.
+// FIXME: 97.30 %, missing/extra; behaviour near.
 // Ours adds one frsp after the fsel.
 // The screen position of the actor, raised to the top of the view box.
 void EnemyBase_804A4808::fn_801CE010(JGeometry::TVec3f* out) {
