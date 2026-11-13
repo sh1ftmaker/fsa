@@ -34,7 +34,6 @@ extern u8 lbl_8053ABF8;
 s32 lbl_8053A118 = 3;
 
 // 0x801B6170.
-// FIXME(shotgun): 99.82 %, reloc-name; behaviour clean.
 void cls_804A38D4::init() {
     mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -103,7 +102,7 @@ cls_804A38D4::~cls_804A38D4() {
 }
 
 // 0x801B56A0.
-// FIXME(shotgun): 78.06 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 78.09 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A38D4::fn_801B56A0() {
     JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f pos = mPos;
@@ -263,7 +262,7 @@ void cls_804A38D4::fn_801B56A0() {
 }
 
 // 0x801B5228.
-// FIXME(shotgun): 87.96 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 89.24 %, missing/extra; behaviour drift.
 void cls_804A38D4::fn_801B5228() {
     addCalc2_801F71A4(&mPos.z, field_0x258, 0.3f, field_0x25c);
     switch (field_0x230) {
@@ -299,8 +298,8 @@ void cls_804A38D4::fn_801B5228() {
         }
         addCalc2_801F71A4(&mPos.x, x, 0.3f, field_0x25c);
         mPos.y = y;
-        f32 dz = fabs(mPos.z - field_0x258);
-        f32 dx = fabs(mPos.x - x);
+        f32 dz = std::fabs(mPos.z - field_0x258);
+        f32 dx = std::fabs(mPos.x - x);
         if (std::sqrtf(dx * dx + dz * dz) < 1.0f) {
             if (--lbl_8053A118 == 0) {
                 for (s32 i = 0; i < 4; i++) {
@@ -327,7 +326,7 @@ void cls_804A38D4::fn_801B5228() {
                         fn_80230498(i, &field_0x264[i], 0xB0, 0xFF, -0x80, -0x80, true);
                     }
                 }
-                if (fabs(mPos.z - field_0x258) < 2.0f) {
+                if (std::fabs(mPos.z - field_0x258) < 2.0f) {
                     lbl_8053A118 = 0x309;
                 }
             }
