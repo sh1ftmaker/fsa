@@ -13,7 +13,6 @@ extern const u8 lbl_80539EA8[2];
 extern s32 lbl_8049C848[4];
 s32 lbl_8049C848[4] = { 500, 300, 100, 0 };
 
-// FIXME(shotgun): 99.8 %, reloc-name
 void HammerShopMinigame_8049C858::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -37,7 +36,7 @@ void HammerShopMinigame_8049C858::init() {
     }
 }
 
-// FIXME(shotgun): 91.3 %, missing/extra
+// FIXME(shotgun): 91.30 %, missing/extra + reloc-name; behaviour clean.
 void HammerShopMinigame_8049C858::fn_801003F4() {
     s32 rank = 0;
     u8 used[4] = {0, 0, 0, 0};
@@ -83,7 +82,7 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
     }
 }
 
-// FIXME(shotgun): 86.37 %, missing/extra
+// FIXME(shotgun): 86.37 %, missing/extra; behaviour drift.
 void HammerShopMinigame_8049C858::update() {
     JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f msgPos = mPos;
@@ -390,6 +389,7 @@ void HammerShopMinigame_8049C858::update() {
     }
 }
 
+// FIXME: 62.50 %, missing/extra; behaviour drift.
 // FIXME(shotgun): register allocation differs in the unrolled score loop
 void HammerShopMinigame_8049C858::draw() {
     if (field_0x230 == 4 || field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
