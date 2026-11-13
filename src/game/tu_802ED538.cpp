@@ -30,7 +30,6 @@ void fn_802EEA24(u8 value) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 99.9 %, reloc-name
 void cls_804AA350::init() {
     mEmitter230 = NULL;
     mEmitter234 = NULL;
@@ -75,7 +74,7 @@ void cls_804AA350::init() {
     field_0x11f = 1;
 }
 
-// FIXME(shotgun): 83.7 %, missing/extra
+// FIXME(shotgun): 90.08 %, missing/extra; behaviour drift.
 void cls_804AA350::vfunc_0x10() {
     s32 count = getActorManager_801F856C()->mActorEnd;
     for (s32 i = 0; i < count; i++) {
@@ -163,7 +162,7 @@ static inline bool isSlr4(s32 slot) {
     return false;
 }
 
-// FIXME(shotgun): 79.8 %, missing/extra + reloc-name
+// FIXME(shotgun): 79.88 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AA350::update() {
     switch (field_0x24c) {
     case 0:
@@ -368,7 +367,7 @@ void cls_804AA350::update() {
     }
 }
 
-// FIXME(shotgun): 97.6 %, scheduling
+// FIXME(shotgun): 97.62 %, scheduling; behaviour clean.
 void cls_804AA350::draw() {
     if (field_0x2cc != NULL) {
         SpriteParams_801F5AE0 params;
@@ -401,6 +400,7 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
+// FIXME: 85.95 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): missing/extra + reloc-name (TUtilf::sqrt tests x > 0 in the original, not x <= 0; fn_802303FC's flag is passed as 0xFF there; field_0x4 is loaded late)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
