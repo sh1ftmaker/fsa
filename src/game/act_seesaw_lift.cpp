@@ -39,7 +39,7 @@ static inline void fillTiles(SeesawLift_804AD348* lift, u16 tile) {
     }
 }
 
-// FIXME(shotgun): 83.69 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.73 %, missing/extra; behaviour drift.
 // the tile-clearing loop start position and the box arithmetic differ (18 instructions); the two words past the 0x274 allocation (0x274, 0x278) are not stored (nor the first of its two stores to 0x26c)
 void SeesawLift_804AD348::init() {
     field_0x234 = gGameRoot_8053AAF8->field_0xa4->getResource('????', lbl_8053A1B8[field_0x90 & 0x7F]);
@@ -79,7 +79,7 @@ void SeesawLift_804AD348::init() {
     fillTiles(this, 864);
 }
 
-// FIXME: 90.79 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME: 90.92 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling differs: original hoists the field_0x4 load above the layer call
 s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     if (fn_8022D75C(player)) {
@@ -128,7 +128,7 @@ s32 SeesawLift_804AD348::fn_8035AE9C(s32 player) {
     return 0;
 }
 
-// FIXME: 90.10 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME: 90.22 %, scheduling+regalloc + reloc-name; behaviour clean.
 // FIXME(shotgun): scheduling of the player loop differs; literal names differ
 s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     if (fn_8022D75C(player)) {
@@ -174,7 +174,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 93.75 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 93.89 %, missing/extra + reloc-name; behaviour near.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     s32 moved = 0;
@@ -236,7 +236,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME: 81.39 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 81.47 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
     rel.sub(mPos);
@@ -269,7 +269,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 91.06 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.60 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -383,7 +383,7 @@ static inline void setTiltMtx(Mtx mtx, s16 angle, f32 scale) {
     mtx[2][2] = scale * (ca * cx);
 }
 
-// FIXME: 90.69 %, different + reloc-name; behaviour drift.
+// FIXME: 90.75 %, different + reloc-name; behaviour drift.
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -434,7 +434,7 @@ void SeesawLift_804AD348::draw() {
     }
 }
 
-// FIXME(shotgun): 84.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 85.37 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803597EC() {
     s32 mask = 0;
     field_0x240 = 0.0f;
@@ -535,7 +535,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
 }
 
-// FIXME(shotgun): 85.27 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 86.02 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_80358F98() {
     if (field_0x245) {
         GameRootSub20_801902C0* sub = fn_801902C0();
@@ -665,7 +665,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     }
 }
 
-// FIXME(shotgun): 80.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.34 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 > 0) {
         field_0x250--;
