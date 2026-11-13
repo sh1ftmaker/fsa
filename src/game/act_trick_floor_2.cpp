@@ -108,7 +108,7 @@ static inline void spawnDust(TrickFloor2_804AA628* self, s32 a) {
     }
 }
 
-// FIXME(shotgun): 89.66 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.85 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor2_804AA628::init() {
     mType = field_0x90 & 0xF;
     field_0x238 = (field_0x90 >> 4) & 0xF;
