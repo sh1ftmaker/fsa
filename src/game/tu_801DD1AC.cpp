@@ -210,7 +210,7 @@ extern const u8 lbl_8053F1C8; // hits before the knock-back state (tu_801D8400's
 bool cls_804A4C58::fn_801DDBE4() {
     bool hit = false;
     bool active = false;
-    if (mState == 5 || (mState >= 4 && mState < 8)) {
+    if (mState != 5 && mState >= 4 && mState < 8) {
         active = true;
     }
     if (active) {
@@ -223,14 +223,16 @@ bool cls_804A4C58::fn_801DDBE4() {
         if (serial >= 0 && serial != mSerial) {
             fn_801D9C58(5);
         }
-        mBox = saved;
+        mBox.set(saved);
     }
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial) {
             ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             bool touched = false;
-            if (other->mActorId == 'SWBM' || other->mActorId == 'FIRE') {
+            switch (other->mActorId) {
+            case 'SWBM':
+            case 'FIRE':
                 if (mState == 0x11) {
                     touched = true;
                 } else if (!(other->field_0x3c.y > 0.0f)) {
@@ -253,6 +255,7 @@ bool cls_804A4C58::fn_801DDBE4() {
                         break;
                     }
                 }
+                break;
             }
             if (touched) {
                 s32 life = mLife;
