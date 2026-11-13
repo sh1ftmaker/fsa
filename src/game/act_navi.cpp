@@ -274,7 +274,7 @@ void cls_804A6708::fn_8021E4F8() {
     field_0x2c0.y = field_0x2cc + (dx * s + dy * co);
 }
 
-// FIXME(shotgun): 86.34 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6708::fn_8021DFAC(s32 newState) {
     switch (newState) {
     case 1:
