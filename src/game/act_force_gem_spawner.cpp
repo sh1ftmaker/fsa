@@ -19,7 +19,7 @@ ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
     releaseEmitter_801EE434(mEmitter254);
 }
 
-// FIXME(shotgun): 91.6 %, scheduling + reloc-name
+// FIXME(shotgun): switch jump table is anonymous (original jumptable_804AB6B4), literal pool names differ
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
     mEmitter250 = NULL;
@@ -31,6 +31,12 @@ void ForceGemSpawner_804AB660::init() {
     field_0x240 = 11;
     field_0x23c = (field_0x90 >> 20) & 0xF;
     switch ((field_0x90 >> 16) & 0xF) {
+    case 0:
+    case 5:
+    case 6:
+    default:
+        field_0x230 = 0;
+        break;
     case 1:
         field_0x230 = 1;
         break;
@@ -48,12 +54,6 @@ void ForceGemSpawner_804AB660::init() {
     case 4:
     case 7:
         field_0x230 = 5;
-        break;
-    case 0:
-    case 5:
-    case 6:
-    default:
-        field_0x230 = 0;
         break;
     }
     if (field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
