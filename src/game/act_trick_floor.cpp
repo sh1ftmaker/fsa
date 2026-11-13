@@ -66,7 +66,9 @@ void TrickFloor_804A83A0::init() {
     if (field_0x234 >= 2) {
         f32 px = mPos.x;
         s32 layer = field_0x4;
-        const JGeometry::TBox2f view = (layer < 8) ? getGameView_802D6A9C()->mVisibleBox : getGameView_802D6A9C()->field_0xdc;
+        GameView_804A9950* gameView = getGameView_802D6A9C();
+        const JGeometry::TBox2f* src = (layer < 8) ? &gameView->mVisibleBox : &gameView->field_0xdc;
+        const JGeometry::TBox2f view = *src;
         for (s32 i = 0; i < lbl_8046C8B0[field_0x234]; i++) {
             f32 py = mPos.y;
             s32 tx = (s32)(px - view.i.x);
