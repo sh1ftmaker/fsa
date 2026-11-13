@@ -93,7 +93,7 @@ void GreatFairy_804AF338::init() {
             field_0x260 = 0x26A;
             break;
         case 9:
-            if (((gGameRoot_8053AAF8->field_0x83 >> (fn_8022F340(field_0x234) * 2)) & 3u) == 2) {
+            if (((gGameRoot_8053AAF8->field_0x83 >> (fn_8022F340(field_0x234) * 2)) & 3) == 2) {
                 field_0x260 = 0x27F;
             } else {
                 field_0x260 = 0x284;
