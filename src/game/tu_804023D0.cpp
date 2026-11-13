@@ -343,10 +343,11 @@ s32 fn_8040305C(s32 index) {
     return lbl_8048C170[index];
 }
 
-// FIXME(shotgun): 74 %, missing/extra (the original also keeps a second unread stack copy of pos and rounds z with frsp)
+// FIXME(shotgun): missing/extra (the original also keeps a second unread stack copy of pos and rounds z with frsp)
 void fn_80402FBC(s32 player, JGeometry::TVec3f pos) {
     s32 i = fn_8022F340(player);
-    lbl_80529DEC.field_0x1c4[i].set(pos.x, pos.y, pos.z);
+    JGeometry::TVec3f copy = pos;
+    lbl_80529DEC.field_0x1c4[i].set(copy);
     lbl_80529DEC.field_0x236 |= 1 << fn_8022F340(player);
 }
 
