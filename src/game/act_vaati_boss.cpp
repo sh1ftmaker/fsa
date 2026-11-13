@@ -832,7 +832,7 @@ void VaatiBoss_804A4958::fn_801D4C70() {
     bool follow = true;
     f32 tx;
     f32 ty;
-    if (mState >= 0x12 && mState < 0x15 && mState >= 10) {
+    if (mState >= 0x12 && mState < 0x15) {
         tx = field_0x5c4;
         ty = field_0x5c8;
     } else if (mState != 5 && mState >= 4 && mState < 10) {
