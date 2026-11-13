@@ -13,7 +13,6 @@ extern const u8 lbl_8053F0C4;  // 0x1E
 
 
 
-// FIXME(shotgun): 80.00 %, different + reloc-name
 void VaatiBoss_804A4958::fn_801E4790(bool big) {
     f32 s = lbl_8053F0BC;
     if (big) {
@@ -26,7 +25,6 @@ void VaatiBoss_804A4958::fn_801E4790(bool big) {
     mBox2.set(mBox);
 }
 
-// FIXME(shotgun): 98.93 %, reloc-name
 void VaatiBoss_804A4958::fn_801E4758() {
     field_0x80.i.x = -16.0f * lbl_8053F0BC;
     field_0x80.i.y = -26.0f * lbl_8053F0BC;
@@ -34,7 +32,7 @@ void VaatiBoss_804A4958::fn_801E4758() {
     field_0x80.f.y = 4.0f * lbl_8053F0BC;
 }
 
-// FIXME(shotgun): 44.77 %, different
+// FIXME(shotgun): 44.77 %, different; behaviour near.
 void VaatiBoss_804A4958::fn_801E4618(JGeometry::TBox2f* out, bool region) {
     if (region) {
         out->i.x = field_0x5e0;
@@ -58,7 +56,7 @@ void VaatiBoss_804A4958::fn_801E4618(JGeometry::TBox2f* out, bool region) {
     }
 }
 
-// FIXME(shotgun): 78.23 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.41 %, missing/extra; behaviour near.
 bool VaatiBoss_804A4958::fn_801E44CC(const JGeometry::TBox2f* area, JGeometry::TVec2f* pos, JGeometry::TVec3f* outDir) {
     JGeometry::TBox2f box;
     box.i.x = field_0x80.i.x + pos->x;
@@ -140,7 +138,7 @@ bool VaatiBoss_804A4958::fn_801E4348() {
     return result;
 }
 
-// FIXME(shotgun): 70.00 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.02 %, missing/extra; behaviour near.
 u8 VaatiBoss_804A4958::fn_801E4094() {
     u8 result = 0;
     bool stateOk = true;
@@ -206,7 +204,7 @@ u8 VaatiBoss_804A4958::fn_801E4094() {
 // vtable slot 0x5C. The bomb/player hit test: a player on the boss's layer that is inside its
 // area (and below its head) turns it towards that player; otherwise each player that hit it
 // this frame is run through fn_801F37AC.
-// FIXME(shotgun): 91.86 %, missing/extra
+// FIXME(shotgun): 91.86 %, missing/extra; behaviour drift.
 u8 VaatiBoss_804A4958::fn_801E3B2C() {
     u8 result = 0;
     bool stateOk = true;
@@ -360,7 +358,7 @@ u8 VaatiBoss_804A4958::fn_801E3A4C() {
 }
 
 // vtable slot 0x64. Pushes Vaati out of the map-free area when a player-sized box is inside.
-// FIXME(shotgun): 72.41 %, missing/extra + reloc-name
+// FIXME(shotgun): 72.41 %, missing/extra + reloc-name; behaviour clean.
 u8 VaatiBoss_804A4958::fn_801E376C() {
     u8 result = 0;
     bool stateOk = true;
@@ -405,7 +403,7 @@ u8 VaatiBoss_804A4958::fn_801E376C() {
     return result;
 }
 
-// FIXME(shotgun): 75.59 %, missing/extra
+// FIXME(shotgun): 75.59 %, missing/extra; behaviour near.
 bool VaatiBoss_804A4958::fn_801E3618(s32 layer, const JGeometry::TVec2f* pos) {
     bool outside = false;
     bool inside = true;
