@@ -133,8 +133,6 @@ void UnknownFORM_804A7BE8::update() {
             } else if (viewLayerFlag(field_0x4)) {
                 field_0x23c = 5;
             } else {
-                bool changed = false;
-                s32 dir = -1;
                 if (fn_8022C52C(field_0x90 & 3, 0x40)) {
                     if (fn_8022C9AC(field_0x90 & 3)) {
                         if (fn_8022C5EC(field_0x90 & 3, 8)) {
