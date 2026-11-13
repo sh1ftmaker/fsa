@@ -329,11 +329,13 @@ bool cls_804A4C58::fn_801D95F4() {
     JGeometry::TVec3f pos;
     if (mFlags & 0x2000) {
         pos.x = mPos.x - -30.0f;
+        pos.y = -6.0f + mPos.y;
+        pos.z = 0.0f;
     } else {
         pos.x = -30.0f + mPos.x;
+        pos.y = -6.0f + mPos.y;
+        pos.z = 0.0f;
     }
-    pos.y = -6.0f + mPos.y;
-    pos.z = 0.0f;
     s32 serial = getActorManager_801F856C()->spawnActor_801F9484('BOIB', field_0x4, &pos, 0, -1, -1);
     if (serial >= 0) {
         ActorBase_804A5770* bomb = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
@@ -342,11 +344,13 @@ bool cls_804A4C58::fn_801D95F4() {
             JGeometry::TVec3f from;
             if (mFlags & 0x2000) {
                 from.x = mPos.x - -30.0f;
+                from.y = -6.0f + mPos.y;
+                from.z = 0.0f;
             } else {
                 from.x = -30.0f + mPos.x;
+                from.y = -6.0f + mPos.y;
+                from.z = 0.0f;
             }
-            from.y = -6.0f + mPos.y;
-            from.z = 0.0f;
             s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
             s32 player = fn_801D0338(&from, angle);
             if (player >= 0) {
