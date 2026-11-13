@@ -89,7 +89,7 @@ void cls_804A03A8::fn_8016005C() {
     }
 }
 
-// FIXME(shotgun): 92.5 %, different (stack slots of the two arrays and the colour copy are ordered differently)
+// FIXME(shotgun): 94.0 %, different (stack slots of the arrays and colour copies are ordered differently; the white colour is not hoisted)
 // 0x8015F9C0
 void cls_804A03A8::fn_8015F9C0() {
     u8 active = 0;
@@ -162,10 +162,10 @@ void cls_804A03A8::fn_8015F9C0() {
                 }
                 case 5: {
                     JGeometry::TVec3f base(field_0x84[i].x, field_0x84[i].y, field_0x84[i].z + 6.0f);
-                    Vec p;
+                    JGeometry::TVec3f p;
                     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&base, true, false, &p);
                     JGeometry::TVec3f off(20.0f + field_0x84[i].x, 20.0f + field_0x84[i].y, 6.0f + field_0x84[i].z);
-                    Vec q;
+                    JGeometry::TVec3f q;
                     gGameRoot2_8053AB10->field_0x24->fn_8030C5F0(&off, true, false, &q);
                     f32 uv[4];
                     uv[0] = -256.0f;
@@ -177,9 +177,7 @@ void cls_804A03A8::fn_8015F9C0() {
                     pos[1] = p.y - 80.0f - 4.0f;
                     pos[2] = 4.0f + (80.0f + p.x);
                     pos[3] = 4.0f + (80.0f + p.y);
-                    q.x -= p.x;
-                    q.y -= p.y;
-                    q.z -= p.z;
+                    q -= p;
                     GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};
                     fn_8015F454(field_0x294, pos, uv, white, NULL, NULL, 0, 0);
                     f32 uv2[4];
