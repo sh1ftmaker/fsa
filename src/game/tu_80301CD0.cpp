@@ -1590,6 +1590,7 @@ void fn_8030361C() {
 
 // Draws one GBA sprite word on the map in the resource its kind selects, with a
 // scale (or rotation about y by `scale`) chosen by its flag bits.
+// FIXME: 95.44 %, different + reloc-name; behaviour clean.
 // FIXME: register order in the sin/cos matrix block and literal order differ.
 void fn_80302F9C(const GbaSprite_80506F88* sprite, f32 scale, u8 flag, bool set) {
     s32 x = sprite->f.field_0x3_0 << 8 | sprite->f.field_0x2;
@@ -1755,7 +1756,7 @@ static inline bool isHiddenSprite(const GbaSprite_80506F88& sprite) {
 
 // Variant of fn_803022C4.
 // 0x8030275C
-// FIXME: 81.15 %, missing/extra; behaviour drift.
+// FIXME: 81.53 %, different; behaviour drift.
 void fn_8030275C(cls_804AA858Sub11C* record, s32 player, u8 flag, bool set) {
     s32 order[4];
     s32 mask = record->mMask;
