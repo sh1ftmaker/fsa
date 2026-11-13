@@ -133,11 +133,7 @@ void WhackAMoleShop_8049C8EC::draw() {
     } else {
         mPos.y = field_0x250 + field_0x258;
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x311 + field_0x247 * 2 + field_0x246, NULL, 0, 1.0f, 1.0f);
-        switch (field_0x230) {
-        case 5:
-        case 6:
-        case 7:
-        case 8:
+        if (field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7 || field_0x230 == 8) {
             lbl_8053AF18->field_0x30 = field_0x23c / 60;
             lbl_8053AF18->field_0x31 = (u8)((f32)(field_0x23c % 60) / 0.6f);
             lbl_8053AF18->field_0x32 |= 0x10;
@@ -145,7 +141,6 @@ void WhackAMoleShop_8049C8EC::draw() {
                 lbl_8053AF18->field_0x32 |= 1 << i;
                 lbl_8053AF18->field_0x2c[i] = (u8)field_0x260[i];
             }
-            break;
         }
     }
 }
