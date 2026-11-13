@@ -124,7 +124,7 @@ static inline s32 exchangeInitialPacket_80300E1C(GbaClient_803007D0* client, u32
     return 0;
 }
 
-// FIXME(shotgun): 71.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 71.32 %, missing/extra + reloc-name; behaviour drift.
 void* fn_80300E1C(void* arg) {
     GbaClient_803007D0* client = static_cast<GbaClient_803007D0*>(arg);
     OSMessage msg;
@@ -443,7 +443,7 @@ void* fn_80300E1C(void* arg) {
 // The client's message callback: syncs the client's packet with the port's
 // shared one (lbl_804D6AB8[port]), posts 5 (new), 4 or 3 (changed) to the
 // client's queue, and exchanges a tick word with the GBA.
-// FIXME(shotgun): 99.5 %, regalloc-only
+// FIXME(shotgun): 99.47 %, regalloc-only; behaviour clean.
 void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
     BOOL changed = TRUE;
     BOOL resent = FALSE;
@@ -548,7 +548,8 @@ void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
 // Loads the client program, patches its header (the tick at 0xC8, the disc's
 // game code at 0xAC and the header checksum at 0xBD) and starts one client
 // thread per port.
-// FIXME(shotgun): 89.3 %, missing/extra (the port loop's register use)
+// FIXME(shotgun): 89.26 %, missing/extra + reloc-name; behaviour near.
+// (the port loop's register use)
 void fn_803007D0() {
     lbl_8053ACC4 = DVDGetCurrentDiskID();
     GBAInit();
@@ -586,7 +587,6 @@ void fn_803007D0() {
     }
 }
 
-// FIXME(shotgun): 100 %
 void fn_803007A0() {
     lbl_8053ACB8->unmount();
 }
