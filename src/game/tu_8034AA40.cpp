@@ -168,7 +168,7 @@ void cls_804AC8C0::update() {
 }
 
 // 0x8034AFE8.
-// FIXME(shotgun): 82.08 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.12 %, reloc-name; behaviour clean.
 void cls_804AC8C0::draw() {
     const char* name;
     s32 frame;
