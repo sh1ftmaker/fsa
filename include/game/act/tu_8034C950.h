@@ -24,8 +24,7 @@ public:
     /* 0x25C */ u8 field_0x25c[4];
     /* 0x260 */ Elem_80200A84 field_0x260[8];
     /* 0x320 */ Elem_80200A80 field_0x320[4];
-    /* 0x370 */ u8 field_0x370;
-    /* 0x371 */ u8 field_0x371[3];
+    /* 0x370 */ s32 field_0x370;
     /* 0x374 */ s32 field_0x374;
     /* 0x378 */ s32 field_0x378; // timer for vfunc_0x4C (fn_801F132C)
     /* 0x37C */ s32 field_0x37c;

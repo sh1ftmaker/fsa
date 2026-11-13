@@ -62,10 +62,10 @@ void cls_804AC950::init() {
     field_0x380[2] = 0;
 }
 
-// FIXME(shotgun): 89.9 %, missing/extra
+// FIXME(shotgun): float register assignment differs
 void cls_804AC950::vfunc_0x10() {
-    u16 tile = fn_80226850(&mPos, field_0x4);
-    if ((u16)(tile - 0x64) <= 3 || (u16)(tile - 0x2C2) <= 1 || tile == 0x2D2 || tile == 0x2D3) {
+    s32 tile = fn_80226850(&mPos, field_0x4);
+    if ((u32)(tile - 0x64) <= 3 || (u32)(tile - 0x2C2) <= 1 || tile == 0x2D2 || tile == 0x2D3) {
         field_0x380[0] = 1;
         field_0x380[5] = 1;
     }
@@ -99,9 +99,7 @@ void cls_804AC950::vfunc_0x10() {
             }
             field_0x380[4] = 1;
             field_0x260[field_0x374].field_0x0 = actor->mActorId;
-            field_0x260[field_0x374].field_0x4.x = actor->mSpawnPos.x;
-            field_0x260[field_0x374].field_0x4.y = actor->mSpawnPos.y;
-            field_0x260[field_0x374].field_0x4.z = actor->mSpawnPos.z;
+            field_0x260[field_0x374].field_0x4 = actor->mSpawnPos;
             field_0x260[field_0x374].field_0x10 = actor->field_0x90;
             field_0x260[field_0x374].field_0x14 = actor->field_0x16c;
             actor->mAlive = false;
