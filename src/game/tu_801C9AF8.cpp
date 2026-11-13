@@ -463,6 +463,7 @@ bool ShadowLink2_804A43E8::fn_801C9EB8() {
 
 // Moves the actor along the map; lifts the z-offset into the ground plane for the sweep when the
 // actor is in the air (state 0x1C) and lands it when it touches ground.
+// FIXME: 98.31 %, missing/extra; behaviour near.
 // FIXME(shotgun): the airborne test is materialised as a bool in the original (mfcr/extrwi).
 u8 ShadowLink2_804A43E8::fn_801C9CB0() {
     u8 hit = 0;
