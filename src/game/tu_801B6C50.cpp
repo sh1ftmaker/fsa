@@ -27,10 +27,13 @@ static inline void takeCamera() {
     }
 }
 
+// auto_inline off: the original's cls_804A39DC::init calls fn_801B7550 out of line (bl at 0x801B7430).
+#pragma auto_inline off
 // 0x801B7550.
 u8 fn_801B7550(void) {
     return gGameRoot2_8053AB10->field_0x2c->field_0xc;
 }
+#pragma auto_inline reset
 
 // 0x801B73B8.
 // FIXME(shotgun): 76.79 %, missing/extra + reloc-name
