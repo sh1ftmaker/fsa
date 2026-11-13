@@ -24,7 +24,7 @@ static inline void rotateArrowPane(J2DPane* pane, f32 angle) {
     pane->rotate(0.5f * w, 0.5f * h, J2DROTATE_Z, angle);
 }
 
-// FIXME(shotgun): 91.91 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.91 %, missing/extra + reloc-name; behaviour drift.
 cls_804B16A8::cls_804B16A8() {
     mScreen = new J2DScreen;
     if (gGameRoot_8053AAF8->field_0x7f == 1) {
@@ -117,7 +117,7 @@ cls_804B16A8::~cls_804B16A8() {
     field_0x34 = NULL;
 }
 
-// FIXME(shotgun): 91.99 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.99 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B16A8::fn_8043670C(u8 arg) {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Tq01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
@@ -223,7 +223,7 @@ void cls_804B16A8::fn_8043670C(u8 arg) {
     }
 }
 
-// FIXME(shotgun): 97.14 %, different
+// FIXME(shotgun): 97.14 %, different; behaviour near.
 s32 cls_804B16A8::fn_804366B8() {
     (this->*lbl_804B1690[field_0x6b])();
     return field_0x6b == 2;
@@ -334,7 +334,7 @@ void cls_804B16A8::fn_804361A8() {
     fn_80435E20();
 }
 
-// FIXME(shotgun): 97.48 %, missing/extra
+// FIXME(shotgun): 97.48 %, missing/extra; behaviour drift.
 void cls_804B16A8::fn_80435E20() {
     if (field_0x60 == 0) {
         field_0x5e--;
@@ -386,7 +386,7 @@ void cls_804B16A8::fn_80435E20() {
     }
 }
 
-// FIXME(shotgun): 27.21 %, missing/extra
+// FIXME(shotgun): 27.21 %, missing/extra; behaviour drift.
 void cls_804B16A8::fn_80434724() {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Ta01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
@@ -517,7 +517,7 @@ void cls_804B16A8::fn_80434724() {
     field_0x60 = 0;
 }
 
-// FIXME(shotgun): 58.96 %, missing/extra
+// FIXME(shotgun): 99.83 %, operands; behaviour near.
 void cls_804B16A8::fn_80434370() {
     f32 fontSizeW = ((J2DTextBox*)mScreen->search('Ta01'))->mFontSize.x;
     f32 cellW = lbl_8053AD78->mFont->getWidth();
