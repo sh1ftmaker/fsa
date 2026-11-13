@@ -27,10 +27,11 @@ struct SaveSector_803BACF8 {
         const u16* halfwords = (const u16*)this;
         u32 sum = 0;
         u16 inv = 0;
-        for (int i = 0; i < 0xFFE; i++) {
-            u16 val = *halfwords++;
-            sum += val;
-            inv += ~val;
+        for (int i = 0; i < 0xFFE; i += 2) {
+            sum += halfwords[i];
+            inv += ~halfwords[i];
+            sum += halfwords[i + 1];
+            inv += ~halfwords[i + 1];
         }
         return (sum << 16) | inv;
     }
@@ -72,7 +73,7 @@ static inline bool isCardStatusValid(CARDFileInfo* file) {
            CARDGetIconSpeed(&stat, 7) == CARD_STAT_SPEED_END;
 }
 
-// FIXME: 40.10 %, missing/extra; behaviour drift.
+// FIXME: 81.78 %, missing/extra; behaviour near.
 s32 fn_803BBF08(CARDFileInfo* file, void* src, void* bodySrc, u32 size, u32 bodySize) {
     snprintf((char*)(lbl_805222C0 + 0x1C00), 0x20, "Four Swords Adventures");
     OSCalendarTime cal;
