@@ -702,7 +702,7 @@ void VaatiBoss_804A4958::vfunc_0x9C(u8 mapHit) {
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
 // Original reloads field_0x5bc/0x5c0 in each case body and interleaves the sin/cos stores; layout differs.
-// FIXME: 93.45 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 95.70 %, missing/extra + reloc-name; behaviour drift.
 void VaatiBoss_804A4958::vfunc_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
@@ -710,8 +710,10 @@ void VaatiBoss_804A4958::vfunc_0x98() {
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
             s16 angle = field_0x5d2;
-            field_0x3c.x = 1.4f * JMath::sincosTable_.sinShort(angle);
-            field_0x3c.y = 1.4f * JMath::sincosTable_.cosShort(angle);
+            f32 sx = JMath::sincosTable_.sinShort(angle);
+            f32 cy = JMath::sincosTable_.cosShort(angle);
+            field_0x3c.x = 1.4f * sx;
+            field_0x3c.y = 1.4f * cy;
         }
     }
     switch (mState) {
@@ -792,7 +794,7 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     fn_801E4A18(&field_0x52c.field_0x28);
 }
 
-// FIXME(shotgun): 74.69 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 78.45 %, missing/extra + reloc-name; behaviour drift.
 // (the follow flag and target selection are shaped differently; the 0x5EC/0x5F4 pairs are copied into a TVec3f temp because the original passes the field address itself)
 void VaatiBoss_804A4958::fn_801D4C70() {
     switch (mState) {
@@ -826,48 +828,36 @@ void VaatiBoss_804A4958::fn_801D4C70() {
         field_0x3c.y = 4.0f * JMASCos(field_0x5d2);
         return;
     }
-    f32 dx = 0.0f;
-    f32 dy = 0.0f;
+    JGeometry::TVec2f d(0.0f, 0.0f);
     bool follow = true;
     f32 tx;
     f32 ty;
-    bool toPlayer = true;
-    if (mState >= 10) {
-        if (mState < 0x15 && mState >= 0x12) {
-            toPlayer = false;
-        }
-    } else if (mState != 5 && mState >= 4) {
-        follow = false;
-        toPlayer = false;
-    }
-    if (toPlayer) {
-        if (field_0x5b0 >= 0) {
-            const JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x5b0);
-            tx = p->x;
-            ty = p->y;
-        } else {
-            tx = field_0x5bc;
-            ty = field_0x5c0;
-        }
-    } else if (follow) {
+    if (mState >= 0x12 && mState < 0x15) {
         tx = field_0x5c4;
         ty = field_0x5c8;
+    } else if (mState != 5 && mState >= 4 && mState < 10) {
+        follow = false;
+    } else if (field_0x5b0 >= 0) {
+        const JGeometry::TVec3f* p = getPlayerPos_8023E724(field_0x5b0);
+        tx = p->x;
+        ty = p->y;
+    } else {
+        tx = field_0x5bc;
+        ty = field_0x5c0;
     }
     if (follow) {
-        JGeometry::TVec2f d(tx - mPos.x, ty - mPos.y);
+        d.set(tx - mPos.x, ty - mPos.y);
         d.normalize();
-        dx = d.x;
-        dy = d.y;
         if (mState == 0x12) {
-            dx *= -2.0f;
-            dy *= -2.0f;
+            d.x *= -2.0f;
+            d.y *= -2.0f;
         } else {
-            dx *= mSpeed;
-            dy *= mSpeed;
+            d.x *= mSpeed;
+            d.y *= mSpeed;
         }
     }
-    addCalc2_801F71A4(&field_0x3c.x, dx, 0.3f, 1.0f);
-    addCalc2_801F71A4(&field_0x3c.y, dy, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.x, d.x, 0.3f, 1.0f);
+    addCalc2_801F71A4(&field_0x3c.y, d.y, 0.3f, 1.0f);
 }
 
 // FIXME(shotgun): 99.39 %, reloc-name; behaviour clean.
