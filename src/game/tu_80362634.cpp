@@ -696,7 +696,6 @@ void cls_804ADF28::fn_80363F7C() {
 
 // FIXME(shotgun): 94.00 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80363880() {
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     s32 slot = field_0x24c;
     if (slot >= 0) {
         ActorBase_804A5770* owl = getActorManager_801F856C()->mActors[slot];
@@ -712,8 +711,8 @@ void cls_804ADF28::fn_80363880() {
                 target.z = 0.0f;
                 if (PSVECDistance(&mPos, &target) >= 10.0f) {
                     field_0x240 = (s16)(JMath::atanTable_.atan2_(target.y - mPos.y, target.x - mPos.x) * 10430.378f);
-                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                    field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
                 }
                 u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
                 if (angle >= 0x2000 && angle < 0x6000) {
@@ -739,14 +738,12 @@ void cls_804ADF28::fn_80363880() {
         for (s32 i = 0; i < end; i++) {
             EndingOwl_804ADF28* actor = static_cast<EndingOwl_804ADF28*>(getActorManager_801F856C()->mActors[i]);
             if (actor != NULL && actor->mActorId == ACTOR_EOWL && actor->mAlive == true && actor->field_0x278 == 0) {
-                if (PSVECDistance(&mPos, &actor->mPos) >= 100.0f) {
-                    break;
-                }
-                field_0x24c = i;
+                if (PSVECDistance(&mPos, &actor->mPos) < 100.0f) {
+                    field_0x24c = i;
                 JGeometry::TVec3f target = actor->mPos;
                 field_0x240 = (s16)(JMath::atanTable_.atan2_(actor->mPos.y - mPos.y, actor->mPos.x - mPos.x) * 10430.378f);
-                field_0x3c.x = 0.8f * sincos.cosShort(field_0x240);
-                field_0x3c.y = 0.8f * sincos.sinShort(field_0x240);
+                field_0x3c.x = 0.8f * JMath::sincosTable_.cosShort(field_0x240);
+                field_0x3c.y = 0.8f * JMath::sincosTable_.sinShort(field_0x240);
                 u16 angle = (s32)(JMath::atanTable_.atan2_(field_0x3c.y, field_0x3c.x) * 10430.378f);
                 if (angle >= 0x2000 && angle < 0x6000) {
                     field_0x23c = 0;
@@ -763,6 +760,7 @@ void cls_804ADF28::fn_80363880() {
                 field_0x25c = field_0x270[0];
                 field_0x264 = field_0x274[0];
                 field_0x258 = 0;
+                }
                 break;
             }
         }
@@ -783,16 +781,16 @@ void cls_804ADF28::fn_80363880() {
                     } else {
                         field_0x240 -= 0x1000;
                     }
-                    field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                    field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                    field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                    field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
                     field_0x248 = 0x40;
                 }
             }
             if (PSVECDistance(&mPos, &field_0x27c[0]) >= 60.0f) {
                 field_0x248 = 0x80;
                 field_0x240 = (s16)(JMath::atanTable_.atan2_(field_0x27c[0].y - mPos.y, field_0x27c[0].x - mPos.x) * 10430.378f);
-                field_0x3c.x = 0.5f * sincos.cosShort(field_0x240);
-                field_0x3c.y = 0.5f * sincos.sinShort(field_0x240);
+                field_0x3c.x = 0.5f * JMath::sincosTable_.cosShort(field_0x240);
+                field_0x3c.y = 0.5f * JMath::sincosTable_.sinShort(field_0x240);
             }
         }
     }
