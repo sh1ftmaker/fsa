@@ -48,7 +48,7 @@ void cls_804A9BC8::init() {
 // The enemy map's rows: u16 offsets per direction (0x28.., 6/4/2/0, ...), in units of 8.
 extern const u16 lbl_8046E9D8[4][4]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME: 90.00 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 90.72 %, missing/extra + reloc-name; behaviour near.
 // FIXME(shotgun): one instr short; float literals not split into this unit (lbl_805411B8/BC), loop index in r29 not r30
 void cls_804A9BC8::update() {
     s32 layer = field_0x4;
