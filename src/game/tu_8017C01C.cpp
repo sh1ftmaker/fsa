@@ -36,7 +36,8 @@ void fn_8017ECE8(JGeometry::TVec2f* v, f32 x, f32 y) {
     v->set(x, y);
 }
 
-// FIXME: 89. The original stores the result's own register (1) to field_0x178; ours loads
+// FIXME: 89.00 %, missing/extra; behaviour clean.
+// The original stores the result's own register (1) to field_0x178; ours loads
 // the constant twice (li r0 and li r4).
 // Sets the camera's field_0x178 flag unless field_0x179 is set.
 u8 fn_8017ECC0() {
@@ -49,7 +50,8 @@ u8 fn_8017ECC0() {
     return result;
 }
 
-// FIXME: 93.55. The original stores the box corners in the order f.x, i.x, f.y, i.y (ours
+// FIXME: 93.55 %, missing/extra + reloc-name; behaviour clean.
+// The original stores the box corners in the order f.x, i.x, f.y, i.y (ours
 // i.x, i.y, f.x, f.y) and keeps the constant 1 of field_0x840 in the result's register.
 // Fixes the camera on pos (both corners of its box) with `value`, once.
 u8 fn_8017EC70(const JGeometry::TVec3f* pos, f32 value) {
@@ -92,7 +94,8 @@ bool fn_8017EB94(const JGeometry::TBox2f* box) {
     return result;
 }
 
-// FIXME: 83.75. The original keeps the constant 1 (stb 0x7f4) in r4 and copies it to the result
+// FIXME: 83.75 %, missing/extra; behaviour clean.
+// The original keeps the constant 1 (stb 0x7f4) in r4 and copies it to the result
 // (mr r5, r4), and stores the 0 for field_0x7f6 from the result's zero register; ours loads
 // separate constants.
 // Starts a scripted camera move (mode 4) to pos unless one is already set.
@@ -143,7 +146,8 @@ void fn_8017EAB4(JPABaseEmitter* emitter) {
     emitter->becomeInvalidEmitter();
 }
 
-// FIXME(shotgun): 57.97 %, missing/extra + reloc-name. The original hoists the float constants and the stmw prologue differently.
+// FIXME(shotgun): 59.36 %, missing/extra + reloc-name; behaviour near.
+// The original hoists the float constants and the stmw prologue differently.
 void cls_804A1318::init() {
     field_0x94 = (field_0x90 >> 4) & 0xF;
     field_0x90 &= 0xF;
@@ -241,6 +245,7 @@ void cls_804A1318::init() {
         field_0x290 = 0.0f;
         getGameView_802D6A9C()->fn_802D7440(false);
         // fall through
+    case 1:
     default:
         mBox.i.x = -16.0f;
         mBox.i.y = -8.0f;
@@ -257,7 +262,7 @@ void cls_804A1318::init() {
     }
 }
 
-// FIXME(shotgun): 99.74 %, regalloc-only + reloc-name.
+// FIXME(shotgun): 99.74 %, regalloc-only + reloc-name; behaviour clean.
 cls_804A1318::~cls_804A1318() {
     for (int i = 0; i < 4; i++) {
         releaseEmitter_801EE434(mEmitters2bc[i]);
@@ -282,7 +287,7 @@ cls_804A1318::~cls_804A1318() {
     }
 }
 
-// FIXME(shotgun): 86.52 %, missing/extra + reloc-name.
+// FIXME(shotgun): 87.35 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A1318::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -292,10 +297,10 @@ void cls_804A1318::draw() {
     mtx[2][3] = 0.0f;
     params.field_0x1f = 0;
     params.field_0x2d = 1;
+    f32 scaleX = 0.0f;
+    f32 scaleY = 0.0f;
     if (field_0x90 == 0 || field_0x90 == 1) {
         mPos.z = 0.0f;
-        f32 scaleX = 0.0f;
-        f32 scaleY = 0.0f;
         void* res;
         switch (field_0x27c) {
         case 0:
