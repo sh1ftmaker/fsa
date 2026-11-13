@@ -71,9 +71,7 @@ void StrangeBlock_804AC2D8::init() {
             vfunc_0x30(0xFF, true);
         }
     }
-    field_0x238[0] = mPos.x;
-    field_0x238[1] = mPos.y;
-    field_0x238[2] = mPos.z;
+    field_0x238 = mPos;
     field_0x270 = 1;
     if (field_0x25c == 0 || field_0x25c == 2) {
         field_0x270 = 0;
@@ -111,21 +109,19 @@ void StrangeBlock_804AC2D8::update() {
         if (PSVECDistance(&mPos, (const Vec*)&field_0x238) >= reach) {
             if (mPos.x <= mSpawnPos.x + 11.5f && mPos.x >= mSpawnPos.x - 11.5f) {
                 mPos.x = mSpawnPos.x;
-            } else if (mPos.x < field_0x238[0]) {
-                mPos.x = field_0x238[0] - (reach + 0.1f);
+            } else if (mPos.x < field_0x238.x) {
+                mPos.x = field_0x238.x - (reach + 0.1f);
             } else {
-                mPos.x = field_0x238[0] + (reach + 0.1f);
+                mPos.x = field_0x238.x + (reach + 0.1f);
             }
             if (mPos.y <= mSpawnPos.y + 11.5f && mPos.y >= mSpawnPos.y - 11.5f) {
                 mPos.y = mSpawnPos.y;
-            } else if (mPos.y < field_0x238[1]) {
-                mPos.y = field_0x238[1] - (reach + 0.1f);
+            } else if (mPos.y < field_0x238.y) {
+                mPos.y = field_0x238.y - (reach + 0.1f);
             } else {
-                mPos.y = field_0x238[1] + (reach + 0.1f);
+                mPos.y = field_0x238.y + (reach + 0.1f);
             }
-            field_0x238[0] = mPos.x;
-            field_0x238[1] = mPos.y;
-            field_0x238[2] = mPos.z;
+            field_0x238 = mPos;
             field_0x3c.x = 0.0f;
             field_0x3c.y = 0.0f;
             field_0x3c.z = 0.0f;
@@ -285,9 +281,9 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 if (field_0x271 == 1) {
                     field_0x271 = 0;
                 } else {
-                    field_0x238[0] = mPos.x;
-                    field_0x238[1] = mPos.y;
-                    field_0x238[2] = mPos.z;
+                    field_0x238.x = mPos.x;
+                    field_0x238.y = mPos.y;
+                    field_0x238.z = mPos.z;
                 }
                 startSound_801F0E34(0x30004, 0);
                 field_0x272 = 1;
@@ -332,9 +328,9 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             } else if (mPos.y < mSpawnPos.y) {
                 field_0x3c.y = speed;
             }
-            field_0x238[0] = mPos.x;
-            field_0x238[1] = mPos.y;
-            field_0x238[2] = mPos.z;
+            field_0x238.x = mPos.x;
+            field_0x238.y = mPos.y;
+            field_0x238.z = mPos.z;
             startSound_801F0E34(0x30004, 0);
         } else {
             field_0x248--;
