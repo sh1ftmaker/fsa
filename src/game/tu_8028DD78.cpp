@@ -79,7 +79,7 @@ static inline s32 field4(u32 f) {
     return (f & 0x80) ? (s32)((f >> 4) & 7) - 8 : (s32)((f >> 4) & 7);
 }
 
-// FIXME(shotgun): 85.94 %, missing/extra + reloc-name
+// FIXME(shotgun): 85.94 %, missing/extra + reloc-name; behaviour drift.
 // The four-player gate sequence: 0 waits until every player stands in mBox (on this layer),
 // then lines them up (fn_8028DDD8) at 16-unit spacing; 1 fades field_0x268 out and walks them
 // half a unit per frame for 64 (40) frames; 2 sends them 384 units on (kinds 0 / 1) or to the
@@ -424,7 +424,7 @@ void cls_804A7A68::draw() {}
 
 // 0x8028DDD8. Orders the players for the four marker slots: out[] gets the player indices
 // sorted by their x (y for the vertical variants 6 and 7), grouped by team for two players.
-// FIXME(shotgun): 92.25 %, missing/extra
+// FIXME(shotgun): 97.34 %, missing/extra; behaviour drift.
 void cls_804A7A68::fn_8028DDD8(s32* out) {
     f32 key[4];
     for (s32 i = 0; i < 4; i++) {
