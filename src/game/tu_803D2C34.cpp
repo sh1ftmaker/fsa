@@ -362,7 +362,7 @@ static inline f32 paneH(PaneCtrl_804AF86C* c) {
     return c->mPane->getHeight();
 }
 
-// FIXME(shotgun): 88.81 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 96.98 %, missing/extra; behaviour near.
 void cls_804B0288::fn_803D49A4() {
     f32 w0 = field_0x2c[0]->field_0x18;
     f32 wide = paneW(field_0x2c[0]);
@@ -371,30 +371,21 @@ void cls_804B0288::fn_803D49A4() {
     field_0x2c[2]->moveFromCentre_80402E08(-(0.5f * (paneW(field_0x2c[2]) - field_0x2c[2]->field_0x18)), 0.5f * (paneH(field_0x2c[2]) - field_0x2c[2]->field_0x1c));
     field_0x2c[3]->moveFromCentre_80402E08(0.5f * (paneW(field_0x2c[3]) - field_0x2c[3]->field_0x18), 0.5f * (paneH(field_0x2c[3]) - field_0x2c[3]->field_0x1c));
     if (wide / w0 < 1.0f) {
-        PaneCtrl_804AF86C* top = field_0x2c[4];
-        top->fn_80402CE0((2.0f * (field_0x2c[0]->field_0x18 - paneW(field_0x2c[0])) + top->field_0x18) / top->field_0x18, top->field_0x1c);
-        top->moveFromCentre_80402E08(0.0f, 0.0f);
-        PaneCtrl_804AF86C* bottom = field_0x2c[5];
-        bottom->fn_80402CE0((2.0f * (field_0x2c[1]->field_0x18 - paneW(field_0x2c[1])) + bottom->field_0x18) / bottom->field_0x18,
-                            bottom->field_0x1c);
-        bottom->moveFromCentre_80402E08(0.0f, 0.0f);
-        PaneCtrl_804AF86C* left = field_0x2c[6];
-        left->fn_80402CE0((paneW(field_0x2c[0]) + paneW(field_0x2c[1])) / left->field_0x18,
-                          (2.0f * (field_0x2c[2]->field_0x1c - paneH(field_0x2c[2])) + left->field_0x1c) / left->field_0x1c);
-        left->moveFromCentre_80402E08(0.0f, 0.0f);
-        PaneCtrl_804AF86C* right = field_0x2c[7];
-        right->fn_80402CE0((paneW(field_0x2c[2]) + paneW(field_0x2c[3])) / right->field_0x18,
-                           (2.0f * (field_0x2c[3]->field_0x1c - paneH(field_0x2c[3])) + right->field_0x1c) / right->field_0x1c);
-        right->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x2c[4]->fn_80402CE0((2.0f * (field_0x2c[0]->field_0x18 - paneW(field_0x2c[0])) + field_0x2c[4]->field_0x18) / field_0x2c[4]->field_0x18, field_0x2c[4]->field_0x1c);
+        field_0x2c[4]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x2c[5]->fn_80402CE0((2.0f * (field_0x2c[1]->field_0x18 - paneW(field_0x2c[1])) + field_0x2c[5]->field_0x18) / field_0x2c[5]->field_0x18, field_0x2c[5]->field_0x1c);
+        field_0x2c[5]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x2c[6]->fn_80402CE0((paneW(field_0x2c[0]) + paneW(field_0x2c[1])) / field_0x2c[6]->field_0x18,
+                                   (2.0f * (field_0x2c[2]->field_0x1c - paneH(field_0x2c[2])) + field_0x2c[6]->field_0x1c) / field_0x2c[6]->field_0x1c);
+        field_0x2c[6]->moveFromCentre_80402E08(0.0f, 0.0f);
+        field_0x2c[7]->fn_80402CE0((paneW(field_0x2c[2]) + paneW(field_0x2c[3])) / field_0x2c[7]->field_0x18,
+                                   (2.0f * (field_0x2c[3]->field_0x1c - paneH(field_0x2c[3])) + field_0x2c[7]->field_0x1c) / field_0x2c[7]->field_0x1c);
+        field_0x2c[7]->moveFromCentre_80402E08(0.0f, 0.0f);
     } else {
-        PaneCtrl_804AF86C* top = field_0x2c[4];
-        top->moveFromCentre_80402E08(-(0.5f * (paneW(top) - top->field_0x18) + (paneW(field_0x2c[0]) - field_0x2c[0]->field_0x18)), 0.0f);
-        PaneCtrl_804AF86C* bottom = field_0x2c[5];
-        bottom->moveFromCentre_80402E08(0.5f * (paneW(bottom) - bottom->field_0x18) + (paneW(field_0x2c[1]) - field_0x2c[1]->field_0x18), 0.0f);
-        PaneCtrl_804AF86C* left = field_0x2c[6];
-        left->moveFromCentre_80402E08(0.0f, -(0.5f * (paneH(left) - left->field_0x1c) + (paneH(field_0x2c[2]) - field_0x2c[2]->field_0x1c)));
-        PaneCtrl_804AF86C* right = field_0x2c[7];
-        right->moveFromCentre_80402E08(0.0f, 0.5f * (paneH(right) - right->field_0x1c) + (paneH(field_0x2c[3]) - field_0x2c[3]->field_0x1c));
+        field_0x2c[4]->moveFromCentre_80402E08(-(0.5f * (paneW(field_0x2c[4]) - field_0x2c[4]->field_0x18) + (paneW(field_0x2c[0]) - field_0x2c[0]->field_0x18)), 0.0f);
+        field_0x2c[5]->moveFromCentre_80402E08(0.5f * (paneW(field_0x2c[5]) - field_0x2c[5]->field_0x18) + (paneW(field_0x2c[1]) - field_0x2c[1]->field_0x18), 0.0f);
+        field_0x2c[6]->moveFromCentre_80402E08(0.0f, -(0.5f * (paneH(field_0x2c[6]) - field_0x2c[6]->field_0x1c) + (paneH(field_0x2c[2]) - field_0x2c[2]->field_0x1c)));
+        field_0x2c[7]->moveFromCentre_80402E08(0.0f, 0.5f * (paneH(field_0x2c[7]) - field_0x2c[7]->field_0x1c) + (paneH(field_0x2c[3]) - field_0x2c[3]->field_0x1c));
     }
 }
 
