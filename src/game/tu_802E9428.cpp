@@ -504,12 +504,12 @@ void UnknownENDM_804AA0FC::fn_802E94F4() {
     gGameRoot2_8053AB10->field_0x24->fn_8030C7C4(&focus, (f32)(s32)field_0x270);
 }
 
-// FIXME(shotgun): 93.7 %, missing/extra
+// FIXME: 99.81 %, reloc-name only: the 2^52 float-conversion constant is @954 in ours, lbl_805412F0 in the original
 bool UnknownENDM_804AA0FC::fn_802E948C(f32 target, s32 frames) {
     if (field_0x270 == target) {
         return false;
     }
-    f32 step = fabs(field_0x270 - target) / (f32)frames;
+    f32 step = __fabsf(field_0x270 - target) / (f32)frames;
     if (field_0x270 < target) {
         field_0x278 = step;
     } else {
