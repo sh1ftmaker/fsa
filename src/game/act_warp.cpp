@@ -422,13 +422,12 @@ void Warp_804A6DC8::update() {
 extern const f32 lbl_8046AC58[24]; // x shifts of the sand while the warp shakes
 
 // 0x80227CE8.
-// FIXME(shotgun): 90.15 %, missing/extra + reloc-name
+// Remaining: original compares (field_0x90 & 0x7F) with a signed cmpwi; reloc names.
 void Warp_804A6DC8::draw() {
     if ((field_0x90 & 0x7F) == 0x20 && field_0x255 == 0) {
         SpriteParams_801F5AE0 params;
         JGeometry::TVec3f saved = mPos;
-        mPos.x += -16.0f;
-        mPos.y += -16.0f;
+        mPos += JGeometry::TVec3f(-16.0f, -16.0f, 0.0f);
         if (field_0x256 == 1 && field_0x278 >= 0) {
             mPos.x += lbl_8046AC58[field_0x278];
             field_0x278++;
