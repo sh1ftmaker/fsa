@@ -87,7 +87,7 @@ struct {
 };
 s32 lbl_8053A210[2] = {0, 1}; // state 5
 
-// FIXME(shotgun): 92.66 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.18 %, missing/extra; behaviour drift.
 void cls_804B0478::update() {
     switch (mState) {
     case 0:
