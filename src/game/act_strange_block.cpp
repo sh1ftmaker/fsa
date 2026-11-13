@@ -83,7 +83,7 @@ void StrangeBlock_804AC2D8::init() {
 
 // 0x8033DA78. States of field_0x234: 0 the block waits to be pushed or slides, 1 a player's
 // message is open, then back to 0.
-// FIXME(shotgun): 91.18 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.00 %, missing/extra + reloc-name; behaviour near.
 void StrangeBlock_804AC2D8::update() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
@@ -229,6 +229,7 @@ void StrangeBlock_804AC2D8::update() {
 
 // 0x8033D4CC. Called when the block is idle: pushes it one step when a player has been
 // shoving it long enough, or lets it slide back to its spawn position.
+// FIXME: 96.66 %, different + reloc-name; behaviour clean.
 // FIXME(shotgun): stack slot order and literal pool names differ.
 void StrangeBlock_804AC2D8::fn_8033D4CC() {
     s32 pushers = fn_80239108(mSerial);
