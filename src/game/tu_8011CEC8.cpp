@@ -192,10 +192,11 @@ void cls_8049DD68::fn_8011CF48() {
     case 6: {
         if (fn_8011921C()->field_0x8 >= lbl_80464BBC[6] + 20) {
             f32 d = (f32)(lbl_80464BBC[7] - 75 - fn_8011921C()->field_0x8);
+            f32 spawnY = mSpawnPos.y;
             if (d < FLT_EPSILON) {
-                field_0x240.y = mSpawnPos.y;
+                field_0x240.y = spawnY;
             } else {
-                field_0x240.y += (1.0f / d) * (mSpawnPos.y - field_0x240.y);
+                field_0x240.y += (1.0f / d) * (spawnY - field_0x240.y);
             }
         }
         JGeometry::TVec2f c(field_0x240.x, field_0x240.y);
