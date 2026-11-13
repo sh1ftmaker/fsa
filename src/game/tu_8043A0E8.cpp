@@ -790,7 +790,7 @@ void cls_804B1920::fn_8043CDA0() {
     }
 }
 
-// FIXME(shotgun): 81.77 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 86.81 %, missing/extra; behaviour clean.
 bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale) {
     if (field_0x252 < 10) {
         field_0x118[field_0x252] = x - 0.5f * (19.0f * (digits % 2) * scale) - 16.0f * (digits >> 1) * scale;
