@@ -14,12 +14,12 @@
 // Sparkle effect ids, indexed by a random 0-4 (update).
 static const u16 lbl_80474EC0[5] = {0x56E, 0x570, 0x56D, 0x571, 0x56F};
 
-// FIXME(shotgun): 83.8 %, different
+// FIXME(shotgun): 83.77 %, different; behaviour near.
 Link2Ending_804AE338::~Link2Ending_804AE338() {
     fn_8036E544();
 }
 
-// FIXME(shotgun): 67.0 %, missing/extra
+// FIXME(shotgun): 73.21 %, different + reloc-name; behaviour clean.
 void Link2Ending_804AE338::init() {
     field_0x230 = 0;
     field_0x234 = 0;
@@ -92,7 +92,7 @@ void Link2Ending_804AE338::init() {
     }
 }
 
-// FIXME(shotgun): 88.8 %, missing/extra
+// FIXME(shotgun): 88.73 %, missing/extra + reloc-name; behaviour drift.
 void Link2Ending_804AE338::update() {
     if (field_0x234 != 0) {
         field_0x234--;
@@ -294,7 +294,7 @@ inline bool Link2Ending_804AE338::spawnSparkles2(JGeometry::TVec3f pos, s32 kind
 
 void Link2Ending_804AE338::draw() {}
 
-// FIXME(shotgun): 68.6 %, missing/extra
+// FIXME(shotgun): 68.58 %, missing/extra; behaviour near.
 void Link2Ending_804AE338::fn_8036E544() {
     for (s32 i = 0; i < 20; i++) {
         if (field_0x258[i] != NULL) {
