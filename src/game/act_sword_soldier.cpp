@@ -37,6 +37,7 @@ static struct {
 // A random float in [0, 1) from the game's RNG. Called from 10 units.
 // The instructions match; its 1.0f only pairs with lbl_8053D25C once the
 // unit's earlier functions put 0.0f (lbl_8053D258) first in .sdata2.
+// FIXME: 99.72 %, reloc-name; behaviour clean.
 f32 fn_80154744() {
     return gGameRoot_8053AAF8->mRandom.get_ufloat_1();
 }
@@ -67,7 +68,8 @@ u8 fn_80154698() {
     return getGameView_802D6A9C()->fn_802DCD0C();
 }
 
-// FIXME: 99.67. The instructions match; only the 10430.378f relocation differs
+// FIXME: 99.67 %, reloc-name; behaviour clean.
+// The instructions match; only the 10430.378f relocation differs
 // (lbl_8053D310 in the original; the unit's .sdata2 isn't laid out yet).
 s32 fn_8015465C(f32 y, f32 x) {
     return JMath::atanTable_.atan2_(y, x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
@@ -117,7 +119,8 @@ void fn_80154558(JGeometry::TVec2f* a, const JGeometry::TVec2f* b) {
     a->add(*b);
 }
 
-// FIXME: 99.58. The instructions match; only the 0.5f relocation differs
+// FIXME: 99.58 %, reloc-name; behaviour clean.
+// The instructions match; only the 0.5f relocation differs
 // (lbl_8053D2B0 in the original; the unit's .sdata2 isn't laid out yet).
 void fn_80154528(const JGeometry::TBox2f* box, JGeometry::TVec2f* out) {
     out->x = box->f.x + (box->i.x - box->f.x) * 0.5f;
@@ -183,6 +186,7 @@ ActorBase_804A5770* fn_8015445C(s32 serial) {
     return getActorManager_801F856C()->findActorBySerial_801F666C(serial);
 }
 
+// FIXME: 99.74 %, reloc-name; behaviour clean.
 // FIXME: the instructions match; its four constants (0.0f, .5, 3.0, 0.0)
 // only pair with lbl_8053D258 / lbl_8053D2F8-lbl_8053D308 once the unit's
 // .sdata2 is laid out in the original order. std::sqrtf out of line; 13
@@ -208,7 +212,7 @@ s32 fn_80154248(u32 id, s32 layer, const JGeometry::TVec3f* pos, u32 arg) {
     return getActorManager_801F856C()->fn_801F8544(id, layer, pos, arg);
 }
 
-// FIXME(shotgun): 99.15 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.35 %, different + reloc-name; behaviour near.
 void SwordSoldier_8049FCA0::init() {
     mBox.set(-8.0f, -4.0f, 8.0f, 8.0f);
     mBox2.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -370,7 +374,7 @@ void SwordSoldier_8049FCA0::init() {
     }
 }
 
-// FIXME(shotgun): 99.53 %, regalloc-only
+// FIXME(shotgun): 99.53 %, regalloc-only; behaviour clean.
 void SwordSoldier_8049FCA0::vfunc_0x44() {
     lbl_8053AB44 = 1;
     field_0xb8 = 1;
@@ -411,7 +415,7 @@ void SwordSoldier_8049FCA0::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 93.16 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.16 %, missing/extra + reloc-name; behaviour near.
 SwordSoldier_8049FCA0::~SwordSoldier_8049FCA0() {
     if (mLife <= 0) {
         if (field_0x288 == 1 || field_0x288 == 3) {
@@ -439,6 +443,7 @@ SwordSoldier_8049FCA0::~SwordSoldier_8049FCA0() {
     }
 }
 
+// FIXME: 99.84 %, reloc-name; behaviour clean.
 // FIXME(shotgun): literal reloc names (lbl_ vs @NNN) still differ
 bool SwordSoldier_8049FCA0::vfunc_0x54() {
     if (viewLayerFlag(field_0x4)) {
@@ -475,7 +480,7 @@ bool SwordSoldier_8049FCA0::vfunc_0x54() {
     return false;
 }
 
-// FIXME(shotgun): 93.61 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.61 %, missing/extra + reloc-name; behaviour drift.
 void SwordSoldier_8049FCA0::update() {
     JGeometry::TBox2f boxD8;
     fn_801546F4(&boxD8, &field_0x80);
@@ -1679,7 +1684,7 @@ void SwordSoldier_8049FCA0::update() {
     }
 }
 
-// FIXME(shotgun): 92.50 %, missing/extra + reloc-name
+// FIXME(shotgun): 92.50 %, missing/extra + reloc-name; behaviour drift.
 void SwordSoldier_8049FCA0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
