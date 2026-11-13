@@ -343,7 +343,10 @@ bool cls_804A4C58::fn_801DD410() {
     }
     s32 outFlag;
     if (active) {
-        JGeometry::TBox2f saved = mBox;
+        f32 sx0 = mBox.i.x;
+        f32 sy0 = mBox.i.y;
+        f32 sx1 = mBox.f.x;
+        f32 sy1 = mBox.f.y;
         mBox.i.x = -40.0f;
         mBox.i.y = -16.0f;
         mBox.f.x = 40.0f;
@@ -351,10 +354,16 @@ bool cls_804A4C58::fn_801DD410() {
         if (fn_801F285C(NULL, &outFlag, true, -1) >= 0) {
             fn_801D9C58(5);
         }
-        mBox = saved;
+        mBox.i.x = sx0;
+        mBox.i.y = sy0;
+        mBox.f.x = sx1;
+        mBox.f.y = sy1;
     }
     if (mState == 0x11) {
-        JGeometry::TBox2f saved = mBox;
+        f32 sx0 = mBox.i.x;
+        f32 sy0 = mBox.i.y;
+        f32 sx1 = mBox.f.x;
+        f32 sy1 = mBox.f.y;
         mBox.i.x = -20.0f;
         mBox.i.y = -26.0f;
         mBox.f.x = 22.0f;
@@ -390,11 +399,14 @@ bool cls_804A4C58::fn_801DD410() {
             }
             fn_801D9C58(0x13);
         }
-        mBox = saved;
+        mBox.i.x = sx0;
+        mBox.i.y = sy0;
+        mBox.f.x = sx1;
+        mBox.f.y = sy1;
         if (!hit && mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
             for (s32 i = 0; i < 4; i++) {
                 if (i == fn_801F285C(NULL, &outFlag, true, i)) {
-                    if (playerTouches(this, i) && fn_801F37AC(0, getPlayerPos_8023E724(i), fn_8023B6CC(i), outFlag, i)) {
+                    if (playerTouches(this, i) && fn_801F37AC(fn_8023B6CC(i), getPlayerPos_8023E724(i), 0, outFlag, i)) {
                         hit = true;
                     }
                 }
