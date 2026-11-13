@@ -274,26 +274,20 @@ void Score_804AF4C0::fn_80391F58() {
 void Score_804AF4C0::fn_80391D44() {
     s32 n = fn_8023BC38(mPlayer) / 60 + 1;
     if (n < 10) {
-        Vec pos;
-        pos.x = mPos.x;
-        pos.y = mPos.y;
-        pos.z = mPos.z;
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, n, &pos,
                                       JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
     } else {
-        Vec pos;
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
         pos.x = mPos.x - 10.0f;
-        pos.y = mPos.y;
-        pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 1, &pos,
                                       JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
+        pos.set(mPos.x, mPos.y, mPos.z);
         pos.x = mPos.x + 10.0f;
-        pos.y = mPos.y;
-        pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 0, &pos,
                                       JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
