@@ -81,6 +81,9 @@ void ShadowLink2_804A43E8::fn_801C9420(JGeometry::TVec2f* dir) {
     dir->y *= 8.0f;
 }
 
+// Not auto-inlined: fn_801C8C84 calls fn_801C9234 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME: 80.20 %, scheduling+regalloc; behaviour clean.
 // FIXME(shotgun): register order and scheduling differ; lbl_ constant reloc-name
 void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
@@ -111,6 +114,7 @@ void ShadowLink2_804A43E8::fn_801C9234(JGeometry::TVec2f* out) {
     out->x = mPos.x + dir.x;
     out->y = mPos.y + dir.y;
 }
+#pragma auto_inline reset
 
 // FIXME(shotgun): 58.22 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
@@ -149,13 +153,15 @@ void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
             u8 start = field_0x358.fn_80214244()->field_0x3;
             field_0x358.fn_80214244()->fn_800FD818(1);
             u8 next = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* a = field_0x358.fn_80214244();
+            if (start < a->field_0x2) {
+                a->field_0x3 = start;
             }
             field_0x358.fn_80214244()->fn_800FD818(-1);
             u8 prev = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* b = field_0x358.fn_80214244();
+            if (start < b->field_0x2) {
+                b->field_0x3 = start;
             }
             u8 opt[2];
             opt[0] = prev;
@@ -192,13 +198,15 @@ void ShadowLink2_804A43E8::fn_801C8C84(s32 arg1, s32 arg2) {
             u8 start = field_0x358.fn_80214244()->field_0x3;
             field_0x358.fn_80214244()->fn_800FD818(1);
             u8 next = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* a = field_0x358.fn_80214244();
+            if (start < a->field_0x2) {
+                a->field_0x3 = start;
             }
             field_0x358.fn_80214244()->fn_800FD818(-1);
             u8 prev = field_0x358.fn_80214244()->field_0x3;
-            if (start < field_0x358.fn_80214244()->field_0x2) {
-                field_0x358.fn_80214244()->field_0x3 = start;
+            cls_800FE3EC* b = field_0x358.fn_80214244();
+            if (start < b->field_0x2) {
+                b->field_0x3 = start;
             }
             u8 opt[3];
             opt[0] = prev;
