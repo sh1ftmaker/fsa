@@ -221,10 +221,12 @@ static const JASDsp::FxlineConfig_ lbl_80491600[4] = {
 };
 
 // 0x8045A0E4
-// FIXME(shotgun): 100 %
+// Not auto-inlined: fn_80459AE4 calls fn_8045A0E4 out of line in the original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 void fn_8045A0E4(int count) {
     JASPoolAllocObject<JAUDopplerAudible<4> >::newMemPool(count);
 }
+#pragma auto_inline reset
 
 // 0x8045A0D8
 u8 fn_8045A0D8() {
@@ -266,7 +268,7 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
     field_0x2c = new (heap, 0) JASAudioReseter();
     field_0x30 = new (heap, 0) JAUSoundMgr();
     field_0x34 = &field_0x30->getSeMgr();
-    // FIXME(shotgun): field_0x38 = &field_0x30->mSeqMgr not written (mSeqMgr is private in libs/sdk/include/JSystem/JAudio/JAUSoundMgr.h)
+    field_0x38 = &field_0x30->getSeqMgr();
     field_0x3c = new (heap, 0) cls_804B2074();
     field_0x3c->setting_._04 = lbl_8053A22C;
     field_0x3c->setting_._08 = lbl_8053A230;
@@ -318,8 +320,8 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
         field_0x18[i] = new ActorSoundObj_804578F4(NULL, heap, 4);
     }
     field_0x28 = new ActorSoundObj_804578F4(NULL, heap, 1);
+    field_0x40 = new (heap, 0) GameAudio::CustomSoundTable();
 
-    // FIXME(shotgun): field_0x40 = new (heap, 0) GameAudio::CustomSoundTable() not written (ctor / mSoundTable private in libs/sdk/include/Inagaki/GameSoundTable.h)
     JKRArchive* seqArc = (JKRArchive*)seqData;
     if (seqArc == NULL) {
         seqArc = JKRArchive::mount(lbl_8053A24C, JKRArchive::MOUNT_ARAM, heap, JKRArchive::MOUNT_DIRECTION_HEAD);
@@ -338,8 +340,8 @@ void AudioMgr_8045A080::fn_80459AE4(JKRSolidHeap* heap, u32 audioMemSize, void* 
         loader.load(lbl_8053A244);
     }
     field_0x34->setSeqDataMgr(field_0x44->sectionHeapData_.seSeqDataMgr_);
+    field_0x40->mSoundTable = field_0x44->getSoundTable();
     // FIXME(shotgun): field_0x38->setSeqDataMgr(field_0x44) not written (JAISeqDataMgr is a private base of JAUSectionHeap in libs/sdk/include/JSystem/JAudio/JAUSectionHeap.h)
-    // FIXME(shotgun): field_0x40->mSoundTable = &field_0x44->getSoundTable() not written (mSoundTable is private in GameSoundTable.h)
     field_0x4c = 1.0f;
     field_0x50 = 1.0f;
     field_0x54 = 1.0f;
