@@ -7,7 +7,7 @@
 #include "std/math.h"
 
 // 0x801A6160.
-// FIXME(shotgun): 96.9 %, different
+// FIXME(shotgun): 96.89 %, different; behaviour drift.
 s32 ActorBase_804A5770::fn_801A6160() {
     s32 result = 0;
     JGeometry::TBox2f box = mBox2;
@@ -89,7 +89,7 @@ s32 fn_801A6108(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 // spawns (0x230), whose classes are not declared yet.
 
 // 0x801A4FB4.
-// FIXME(shotgun): 97.1 %, missing/extra
+// FIXME(shotgun): 97.06 %, missing/extra; behaviour clean.
 s32 ActorBase_804A5770::fn_801A4FB4() {
     s32 kind = (field_0xb0 >> 12) & 0xF;
     if (kind == 0) {
@@ -165,7 +165,7 @@ s32 fn_801A4F5C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 // (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // 0x801A4D74.
-// FIXME(shotgun): 83.7 %, missing/extra
+// FIXME(shotgun): 83.66 %, missing/extra; behaviour near.
 s32 ActorBase_804A5770::fn_801A4D74(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos) {
     s32 kind = (field_0xb0 >> 8) & 0xF;
     if (kind == 0) {
@@ -216,7 +216,8 @@ s32 fn_801A4D1C(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 } // extern "C"
 
 // 0x801A4754.
-// FIXME(shotgun): 84.6 %, missing/extra. The actor fn_8023B22C(player) names (the player's field_0xb18, a
+// FIXME(shotgun): 84.20 %, missing/extra; behaviour drift.
+// The actor fn_8023B22C(player) names (the player's field_0xb18, a
 // BOME actor) has an s32 at 0x254 that this function reads and writes (kind 6, cases 1/4 and 8);
 // that class is not declared yet, so those accesses are not written.
 s32 ActorBase_804A5770::fn_801A4754(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos) {
@@ -368,7 +369,7 @@ s32 fn_801A46FC(s32 serial, const JGeometry::TBox2f* box, JGeometry::TVec2f* pos
 } // extern "C"
 
 // 0x801A41D8.
-// FIXME(shotgun): 95.8 %, missing/extra
+// FIXME(shotgun): 95.80 %, missing/extra; behaviour drift.
 s32 ActorBase_804A5770::fn_801A41D8(const JGeometry::TBox2f* box, JGeometry::TVec2f* pos) {
     s32 player = fn_8023AD54(box, field_0x4, pos);
     if (player < 0) {
