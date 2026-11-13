@@ -27,7 +27,7 @@ extern s32 lbl_8053AB30;
 extern s32 lbl_8053AB34;
 extern s32 lbl_8053AB38;
 
-// FIXME(shotgun): 84.18 %, missing/extra + reloc-name.
+// FIXME(shotgun): 84.26 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049F6C8::init() {
     field_0x80.i.x = -8.0f;
     field_0x80.i.y = -8.0f;
@@ -141,7 +141,7 @@ void cls_8049F6C8::init() {
     }
 }
 
-// FIXME(shotgun): 85.20 %, missing/extra + reloc-name.
+// FIXME(shotgun): 92.31 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049F6C8::fn_8014A2CC(s32 flag) {
     s32 base = 0;
     if (field_0x274 == 1) {
@@ -198,7 +198,7 @@ void cls_8049F6C8::fn_8014A2CC(s32 flag) {
     field_0x2c0[0].z = field_0x3d8[0].z;
 }
 
-// FIXME(shotgun): 83.42 %, missing/extra + reloc-name.
+// FIXME(shotgun): 89.95 %, missing/extra; behaviour near.
 bool cls_8049F6C8::fn_80149FDC() {
     if (field_0x250 == 0) {
         return true;
@@ -251,7 +251,7 @@ bool cls_8049F6C8::fn_80149FDC() {
     return false;
 }
 
-// FIXME(shotgun): 97.37 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.42 %, missing/extra; behaviour drift.
 bool cls_8049F6C8::fn_80149AEC() {
     u8 hit = 0;
     if (field_0x240 != 0 || field_0x24c != 0 || field_0x250 != 0) {
@@ -352,7 +352,7 @@ bool cls_8049F6C8::fn_80149AEC() {
     return true;
 }
 
-// FIXME(shotgun): 97.82 %, different.
+// FIXME(shotgun): 97.82 %, different; behaviour drift.
 cls_8049F6C8::~cls_8049F6C8() {
     for (s32 i = 0; i < 10; i++) {
         releaseEmitter_801EE434(mEmitters798[i]);
@@ -402,7 +402,7 @@ static inline cls_8049F6C8* findDigdogger(s32 serial) {
     return static_cast<cls_8049F6C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
 }
 
-// FIXME(shotgun): 94.99 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.99 %, missing/extra + reloc-name; behaviour drift.
 void cls_8049F6C8::update() {
     // The copy of the velocity is never read, as in the original (0x8014827C).
     JGeometry::TVec3f vel = field_0x3c;
@@ -816,7 +816,7 @@ void cls_8049F6C8::update() {
     }
 }
 
-// FIXME(shotgun): 88.64 %, missing/extra + reloc-name.
+// FIXME(shotgun): 88.64 %, missing/extra + reloc-name; behaviour near.
 void cls_8049F6C8::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
