@@ -27,10 +27,11 @@ struct SaveSector_803BACF8 {
         const u16* halfwords = (const u16*)this;
         u32 sum = 0;
         u16 inv = 0;
-        for (int i = 0; i < 0xFFE; i++) {
-            u16 val = *halfwords++;
-            sum += val;
-            inv += ~val;
+        for (int i = 0; i < 0xFFE; i += 2) {
+            sum += halfwords[i];
+            inv += ~halfwords[i];
+            sum += halfwords[i + 1];
+            inv += ~halfwords[i + 1];
         }
         return (sum << 16) | inv;
     }
