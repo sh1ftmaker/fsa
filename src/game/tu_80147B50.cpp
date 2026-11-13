@@ -149,7 +149,7 @@ void cls_8049F6C8::fn_8014A2CC(s32 flag) {
     }
     if (flag == 0) {
         for (s32 i = 78; i >= 0; i--) {
-            field_0x3d8[i + 1].set(field_0x3d8[i]);
+            field_0x3d8[i + 1] = field_0x3d8[i];
             field_0x338[i + 1] = field_0x338[i];
         }
     } else {
