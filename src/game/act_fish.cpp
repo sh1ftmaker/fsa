@@ -39,7 +39,7 @@ void Fish_804AC658::init() {
     field_0x270 = -1;
     fn_801F6758(&mPos, field_0x4, 0.0f);
     s32 count = field_0x90;
-    if (field_0x90 != 0) {
+    if (count != 0) {
         u16 tiles[0x2C9];
         s32 layer = field_0x4;
         GameView_804A9950* view = getGameView_802D6A9C();
@@ -68,7 +68,10 @@ void Fish_804AC658::init() {
             }
             xi++;
         }
-        if (n != 0) {
+        if (n == 0) {
+            return;
+        }
+        {
             s32 spawned = 0;
             while (spawned < count) {
                 s32 idx = (s32)(n * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
@@ -88,17 +91,17 @@ void Fish_804AC658::init() {
                     spawned++;
                 }
             }
-            field_0x250 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-            field_0x252 = field_0x250 + 0x4000;
-            field_0x24c = 0;
-            field_0x250 = 0;
-            field_0x25c = 0.0f;
-            field_0x258 = 0.0f;
-            field_0x254 = 0.0f;
-            field_0x260 = 0.3f;
-            field_0x230 = 0;
         }
     }
+    field_0x250 = (s16)(65536.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+    field_0x252 = field_0x250 + 0x4000;
+    field_0x24c = 0;
+    field_0x250 = 0;
+    field_0x25c = 0.0f;
+    field_0x258 = 0.0f;
+    field_0x254 = 0.0f;
+    field_0x260 = 0.3f;
+    field_0x230 = 0;
 }
 
 bool Fish_804AC658::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
