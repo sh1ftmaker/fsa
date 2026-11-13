@@ -253,7 +253,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 81.57 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 81.07 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
@@ -308,7 +308,7 @@ void cls_804A7AE0::fn_8029A974() {
         return;
     }
     s32 layer = field_0x4;
-    const JGeometry::TBox2f* view = layerBox(layer);
+    JGeometry::TBox2f view = *layerBox(layer);
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
     p.x += 8.0f;
@@ -316,10 +316,10 @@ void cls_804A7AE0::fn_8029A974() {
     p.y -= 8.0f;
     p.z = 0.0f;
     const f32 inset = -32.0f;
-    f32 minX = view->i.x - inset;
-    f32 minY = view->i.y - inset;
-    f32 maxX = view->f.x + inset;
-    f32 maxY = view->f.y + inset;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -461,8 +461,7 @@ void cls_804A7AE0::fn_8029A494() {
 // FIXME(shotgun): 81.50 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
-    bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
-    if (!still) {
+    if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         return;
     }
     if (field_0x2c0 == 1) {
@@ -1778,7 +1777,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 71.52 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 72.82 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
@@ -1788,8 +1787,7 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
     mBox.i.y = -44.0f;
     mBox.f.x = 44.0f;
     mBox.f.y = 44.0f;
-    GameView_804A9950* view = getGameView_802D6A9C();
-    const JGeometry::TBox2f* src = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
+    const JGeometry::TBox2f* src = field_0x4 < 8 ? &getGameView_802D6A9C()->mVisibleBox : &getGameView_802D6A9C()->field_0xdc;
     JGeometry::TBox2f view_box = *src;
     view_box.i.x -= 32.0f;
     view_box.i.y -= 32.0f;
