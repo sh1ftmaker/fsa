@@ -79,7 +79,7 @@ void Camera_804AA9E4::fn_8030E5BC() {
 // The per-frame update: picks the table entry for the pending request (flags 0x178-0x17B), lets
 // fn_8030CD18 work out the target box and depth, blends towards it while a transition is armed,
 // sets the view (fn_8030CB10) and the zoom, and tells the audio manager where the camera is.
-// FIXME(shotgun): 90.19 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.70 %, operands + reloc-name; behaviour clean.
 // (audio center construction)
 void Camera_804AA9E4::fn_8030E154() {
     JGeometry::TBox2f box = field_0x154;
