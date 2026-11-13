@@ -517,11 +517,11 @@ void cls_804A6270::fn_802110A8() {
                 field_0x3c.y = step.y;
             }
         }
-        if (field_0x388 >= 0) {
+        if (field_0x38c >= 0) {
             if (!(field_0x3c.squared() <= 32.0f * JGeometry::TUtilf::epsilon())) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x388);
+                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(field_0x38c);
                 if (actor != NULL) {
-                    actor->mPos += field_0x3c;
+                    actor->mPos = actor->mPos + field_0x3c;
                 }
             }
         }
