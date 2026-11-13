@@ -44,11 +44,10 @@ void Icicle_8049CFC8::init() {
     }
 }
 
-// FIXME: 70.13%. MWCC inlines fn_8010B284 (defined above, in address order)
-// into case 0, where the original calls it. Without the inlining (91.85 %) the
-// rest is register and stack-slot allocation in the box tests of cases 0 and 1
-// (the original keeps the `found` flags in r0 and r30, and its box copies are
-// laid out differently), plus the order of the fn_801CC640 call block.
+// FIXME: 91.98%. Same calls and constants as the original; the rest is register
+// and stack-slot allocation (the original keeps the `found` flags in r0 and r30,
+// and its box copies are laid out differently), plus the order of the fn_801CC640
+// call block.
 void Icicle_8049CFC8::update() {
     ActorBase_804A5770::update();
     switch (field_0x230) {
@@ -264,6 +263,9 @@ bool Icicle_8049CFC8::fn_8010B40C(s32 state) {
 
 // FIXME: 97.59%. Same instructions in a different register and schedule for the
 // `blocked` flag and the j loop.
+// Not auto-inlined: update calls fn_8010B284 out of line in the original
+// (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 bool Icicle_8049CFC8::fn_8010B284() {
     JGeometry::TVec3f playerPos;
     JGeometry::TVec3f probe = mPos;
@@ -292,9 +294,10 @@ bool Icicle_8049CFC8::fn_8010B284() {
     }
     return false;
 }
+#pragma auto_inline reset
 
-// Dead-stripped in the original (update inlines it): its literals 0.1f, 0.5f
-// and 9.8f lead the unit's .sdata2 pool, ahead of fn_8010B284's
+// Its literals 0.1f, 0.5f and 9.8f lead the unit's .sdata2 pool, ahead of
+// fn_8010B284's
 // (docs/RULES_CARD.md, literals before their first visible use (3)).
 void Icicle_8049CFC8::fall() {
     field_0x23c += 0.1f;
