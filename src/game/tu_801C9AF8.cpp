@@ -279,7 +279,7 @@ bool ShadowLink2_804A43E8::fn_801CA564() {
 }
 
 // Whether something hurts the actor through its hit box: the hit box of player attacks.
-// FIXME(shotgun): 78.03 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): register allocation and stack slots differ; early returns are laid out differently.
 u8 ShadowLink2_804A43E8::fn_801CA274() {
     if (field_0x564 == 3) {
         return 0;
@@ -290,7 +290,7 @@ u8 ShadowLink2_804A43E8::fn_801CA274() {
     } else {
         mask = 1 << field_0x560;
     }
-    if (mHitBox.mBox.f.x - mHitBox.mBox.i.x <= 0.0f || mHitBox.mBox.f.y - mHitBox.mBox.i.y <= 0.0f) {
+    if (!(mHitBox.mBox.f.x - mHitBox.mBox.i.x > 0.0f && mHitBox.mBox.f.y - mHitBox.mBox.i.y > 0.0f)) {
         return 0;
     }
     u8 hits = mHitBox.fn_8021693C(mask);
@@ -305,7 +305,7 @@ u8 ShadowLink2_804A43E8::fn_801CA274() {
                     f32 dy = mPos.y - getPlayerPos_8023E724(i)->y;
                     f32 dx = mPos.x - getPlayerPos_8023E724(i)->x;
                     f32 sq = dx * dx + dy * dy;
-                    if (sq > 32.0f * FLT_EPSILON) {
+                    if (!(sq <= 32.0f * FLT_EPSILON)) {
                         f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
                         dx *= norm;
                         dy *= norm;
@@ -321,8 +321,15 @@ u8 ShadowLink2_804A43E8::fn_801CA274() {
             }
         }
     }
-    JGeometry::TBox2f saved = mBox;
-    mBox = mHitBox.mBox;
+    JGeometry::TBox2f saved;
+    saved.i.x = mBox.i.x;
+    saved.i.y = mBox.i.y;
+    saved.f.x = mBox.f.x;
+    saved.f.y = mBox.f.y;
+    mBox.i.x = mHitBox.mBox.i.x;
+    mBox.i.y = mHitBox.mBox.i.y;
+    mBox.f.x = mHitBox.mBox.f.x;
+    mBox.f.y = mHitBox.mBox.f.y;
     u8 result;
     if (mask == 0) {
         result = 0;
@@ -354,7 +361,10 @@ u8 ShadowLink2_804A43E8::fn_801CA274() {
             }
         }
     }
-    mBox = saved;
+    mBox.i.x = saved.i.x;
+    mBox.i.y = saved.i.y;
+    mBox.f.x = saved.f.x;
+    mBox.f.y = saved.f.y;
     return result;
 }
 
