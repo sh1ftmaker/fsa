@@ -81,9 +81,10 @@ Hinox_8049F9B4::~Hinox_8049F9B4() {
         f32 x = mPos.x;
         f32 y = mPos.y;
         f32 z = mPos.z;
-        mPos.x = getPlayerPos_8023E724(field_0x254)->x;
-        mPos.y = getPlayerPos_8023E724(field_0x254)->y;
-        mPos.z = getPlayerPos_8023E724(field_0x254)->z;
+        JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(field_0x254);
+        mPos.x = playerPos->x;
+        mPos.y = playerPos->y;
+        mPos.z = playerPos->z;
         if (fn_801F2618(NULL, false)) {
             f32 angle = JMath::atanTable_.atan2_(x - mPos.x, y - mPos.y) * 10430.378f;
             dir.x = 3.0f * JMath::sincosTable_.sinShort((s16)(s32)angle);
@@ -98,7 +99,8 @@ Hinox_8049F9B4::~Hinox_8049F9B4() {
     if (serial >= 0) {
         ActorBase_804A5770* held = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
         if (held != NULL) {
-            held->field_0x3c.set(0.0f, 0.0f, 3.0f);
+            held->field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
+            held->field_0x3c.z = 3.0f;
             field_0x250 = -1;
             startSound_801F0E34(0x40008, 0);
         }
