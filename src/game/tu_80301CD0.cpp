@@ -831,8 +831,8 @@ void cls_804AA8B8::fn_80306A94(s32 player) {
 // Copies a record's sprite words into the half of the player's sprite table
 // its mode selects, hides the rest of that half and the kind-2 sprites below
 // 0x45 of the other half.
-// FIXME(shotgun): 92.58 %, different; behaviour drift.
-// (the loop bound is loaded inside the loop in ours)
+// FIXME(shotgun): 99.10 %, scheduling+regalloc; behaviour clean.
+// register allocation only.
 void fn_803068D0(cls_804AA858Sub11C* record) {
     if (record->mValid == 0) {
         return;
@@ -841,8 +841,10 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
     GbaSprite_80506F88* sprites = lbl_80506F88[fn_8022F340(record->mPlayer)][0];
     GbaSprite_80506F88* dst = sprites + half * 19;
     s32 i;
-    for (i = 0; i < lbl_80541618[record->field_0x3_0] - 7; i++) {
-        dst[i].mWord = record->field_0x18[i].mWord;
+    GbaSprite_80506F88* src = record->field_0x18;
+    u32 index = record->field_0x3_0;
+    for (i = 0; i < lbl_80541618[index] - 7; i++) {
+        dst[i].mWord = src[i].mWord;
     }
     for (; i < 19; i++) {
         dst[i].f.field_0x3_0 = 1;
@@ -861,12 +863,13 @@ void fn_803068D0(cls_804AA858Sub11C* record) {
 // sprites (lbl_80504A38), timer 5 down to 0, at most `max` of them and four of
 // kind 4 or more; every sprite it looks at is marked for removal. Returns the
 // count written.
-// FIXME(shotgun): 77.53 %, missing/extra; behaviour drift.
-// (the original tests mode 11 as a bool, cntlzw)
+// FIXME(shotgun): 85.53 %, missing/extra; behaviour drift.
+// the original repeats the sprite step before each
+// early `continue` (shared i++ block), and compares x unsigned (cmplwi) but shifts it signed.
 s32 fn_803066F0(s32 unused, s32 player, s32 max) {
+    GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 count = 0;
     s32 big = 0;
-    GbaSprite_80506F88* dst = lbl_80506DE8[player].field_0x18;
     s32 slot = fn_8022EA0C(player);
     for (s32 timer = 5; timer >= 0; timer--) {
         cls_803099FC* sprite = lbl_80504A38[player];
@@ -875,7 +878,7 @@ s32 fn_803066F0(s32 unused, s32 player, s32 max) {
                 continue;
             }
             if (sprite->mLayer != getPlayerLayer_8023DE58(slot) ||
-                ((gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 != 0) &&
+                ((gGameRoot_8053AAF8->field_0x4c == 11 || gGameRoot_8053AAF8->field_0x88 != 0) &&
                  sprite->field_0x23 == 0)) {
                 sprite->mRemove = 1;
                 continue;
