@@ -137,7 +137,7 @@ bool fn_801CD8E4(f32* value, f32 target, f32 factor, f32 threshold) {
 
 // Moves *cur toward *target by `factor` of the way, the step clamped between minStep and
 // maxStep; true once the point is on the target.
-// FIXME(shotgun): 85.76 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 84.16 %, missing/extra; behaviour drift.
 bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 factor, f32 minStep, f32 maxStep) {
     if (factor > 1.0f) {
         factor = 1.0f;
@@ -211,7 +211,7 @@ s32 fn_801CD580(s32 except) {
 }
 
 // A random integer in [0, 4) other than a and b.
-// FIXME(shotgun): 69.26 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 98.59 %, different; behaviour clean.
 s32 fn_801CD398(s32 a, s32 b) {
     if (a == b) {
         s32 choices[4];
