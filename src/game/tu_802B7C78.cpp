@@ -311,7 +311,7 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
             arg3 = 4;
         }
         if (fn_8023F264(field_0x298) == true && !fn_80236B50(field_0x298)) {
-            u8 hit = fn_801F2B7C(damage, -1, arg3);
+            s32 hit = fn_801F2B7C(damage, -1, arg3);
             if (hit) {
                 startSound_801F0E34(0x40041, 0);
                 field_0x244 = 140;
