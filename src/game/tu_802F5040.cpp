@@ -2660,8 +2660,6 @@ void TileMap_804AA858::fn_802F6BBC(s32 src, s32 dst) {
     }
 }
 
-// FIXME(shotgun): 49.6 %, TileMap_804AA858
-#ifdef NONMATCHING
 u8 TileMap_804AA858::fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 frame, void* image,
                                  void* res3, SpriteParams_801F5AE0* params) {
     static const GXColor sColorMul[18] = {
@@ -2738,7 +2736,6 @@ u8 TileMap_804AA858::fn_802F6800(const JGeometry::TVec3f* pos, void* res, s32 fr
     }
     return result;
 }
-#endif
 
 // The same for field_0xc220 (drawn by fn_802FF3F0), clearing byte 0x21.
 // The u8 return with a bool local gives the original's final clrlwi (both bool and both u8 measured as different).
