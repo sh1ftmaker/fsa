@@ -21,7 +21,8 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
 
-// FIXME: 99.95%. Everything matches except the 0.0f literal: this unit's
+// FIXME: 99.95 %, reloc-name; behaviour clean.
+// Everything matches except the 0.0f literal: this unit's
 // .sdata2 literal order puts it at another offset than lbl_8053C228.
 Cloud_8049CBE0::Cloud_8049CBE0()
     : field_0x344(0.0f), field_0x348(0.0f), field_0x34c(0.0f), field_0x350(0.0f), field_0x354(0),
@@ -32,7 +33,7 @@ Cloud_8049CBE0::Cloud_8049CBE0()
     }
 }
 
-// FIXME(shotgun): 88.48 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.85 %, missing/extra + reloc-name; behaviour drift.
 // 0x80105A34.
 void Cloud_8049CBE0::init() {
     ActorBase_804A5770::init();
@@ -69,15 +70,15 @@ void Cloud_8049CBE0::init() {
         mBox.f.y = 22.0f;
         break;
     }
-    mBox2 = mBox;
-    field_0x80 = mBox;
+    mBox2.set(mBox);
+    field_0x80.set(mBox);
     mSprite.fn_801D2608(lbl_80539EC0, 1);
     mSprite.startAnim_801D22DC(0, 2, false);
     mSprite.fn_801D1F14(0.0f);
 }
 
 // 0x801056E4.
-// FIXME(shotgun): 88.35 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.40 %, missing/extra + reloc-name; behaviour drift.
 void Cloud_8049CBE0::update() {
     ActorBase_804A5770::update();
     s32 layer = field_0x4;
@@ -117,7 +118,7 @@ void Cloud_8049CBE0::update() {
             field_0x3c.y = step.y;
             field_0x3c.z = step.z;
             mPos.add(field_0x3c);
-            if (result != 0 && mRail.fn_800FE21C(0xFF)) {
+            if (result != 0 && mRail.fn_800FE21C(0xFF) != 0) {
                 field_0x360 = 0;
                 field_0x3c.set(0.0f, 0.0f, 0.0f);
                 field_0x370 = 2;
@@ -141,8 +142,6 @@ void Cloud_8049CBE0::update() {
     mSprite.fn_801D1C18();
 }
 
-// FIXME(shotgun): 99.86 %, reloc-name
-// 0x80105654.
 void Cloud_8049CBE0::draw() {
     ActorBase_804A5770::draw();
     mParams.field_0x1d = -1;
@@ -160,7 +159,8 @@ void Cloud_8049CBE0::draw() {
 // Whether `player` is in the cloud: on the cloud's layer, either its box
 // (moved to the cloud's position) overlaps the player's, or one of eight
 // points around the player falls in mBox.
-// FIXME: 94.45%. In the layer branch the original keeps box.i.x and mPos.x in
+// FIXME: 94.45 %, missing/extra + reloc-name; behaviour clean.
+// In the layer branch the original keeps box.i.x and mPos.x in
 // other FPRs and reloads box.i.y and box.f.y from the stack, where ours
 // reuses the registers; the eight-point loop matches.
 bool Cloud_8049CBE0::fn_801053E8(s32 player) {
