@@ -533,7 +533,7 @@ void cls_804AE4B0::fn_8037100C() {
     }
 }
 
-// FIXME(shotgun): 50.75 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.62 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370C84() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -615,7 +615,7 @@ void cls_804AE4B0::fn_80370A7C() {
     }
 }
 
-// FIXME(shotgun): 90.04 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.19 %, different + reloc-name; behaviour drift.
 void cls_804AE4B0::fn_80370764() {
     fn_803703C8();
     for (s32 i = 0; i < 4; i++) {
