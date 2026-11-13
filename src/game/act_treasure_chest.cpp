@@ -13,6 +13,7 @@
 #include "game/tu_803B8C74.h"
 #include "game/act/act_liftable_item.h"
 #include "game/act/act_treasure_chest.h"
+#include "game/StageFlag.h"
 
 // FIXME: 99.63 %. Only the literal relocations differ (lbl_805413B8 vs @474,
 // lbl_805413C0 vs @476 and the other sdata2 floats): the data split, not code.
@@ -180,14 +181,10 @@ void TreasureChest_804AA178::update() {
 
 void TreasureChest_804AA178::draw() {}
 
-// FIXME: 94.63 %. Two instructions too many. The stage-table lookup puts the
-// row address and the bit in other registers than the original (slwi/addi
-// order, lwz 0x10 base), the table flag is tested as a bool (clrlwi.) where the
-// original tests a 0/1 word (cmpwi 0), and the flags live in r30/r31 where
-// the original uses r26/r27 (stmw r27 vs stmw r26).
+// Differs only in register numbers (result/limit/owner do not share r26).
 bool TreasureChest_804AA178::vfunc_0x54() {
-    bool ok = false;
     bool result = false;
+    bool ok = false;
     if (gGameRoot_8053AAF8->field_0x7e == 1) {
         if (fn_802308E0(field_0x240) == true) {
             ok = true;
@@ -198,18 +195,7 @@ bool TreasureChest_804AA178::vfunc_0x54() {
     }
     if (ok == true) {
         if (gGameRoot_8053AAF8->field_0x7e == 1) {
-            // Stage bit: the current save file (lbl_8050EC80.mCurrentFile), stage 0x118
-            // (0-7) and 0x11C (0-3) the bit.
-            bool open = false;
-            s32 stage = lbl_80529DEC.field_0x118;
-            s32 sub = lbl_80529DEC.field_0x11c;
-            if (stage < 0 || stage > 7) {
-                open = false;
-            } else if (sub < 0 || sub > 3) {
-                open = false;
-            } else {
-                open = (lbl_8050EC80.getCurrentFile().mFlags & (1 << (sub + stage * 4))) != 0;
-            }
+            BOOL open = isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c);
             if (open && (field_0x234 <= 2 || field_0x234 == 0x2F)) {
                 s32 count = gGameRoot_8053AAF8->fn_80138A30();
                 if (getActorManager_801F856C()->fn_801F6058(count - 1) == field_0x240) {
@@ -232,7 +218,8 @@ bool TreasureChest_804AA178::vfunc_0x54() {
             at.x = pos.x + 1.0f;
             at.y = pos.y - 12.0f;
             at.z = pos.z;
-            if (field_0x234 >= 0x30) {
+            s32 kind = field_0x234;
+            if (kind >= 0x30) {
                 if (gGameRoot_8053AAF8->field_0x7e == 1) {
                     if (fn_8022F514(i) == true) {
                         if (field_0x248 == fn_8022F3DC(i)) {
@@ -258,10 +245,10 @@ bool TreasureChest_804AA178::vfunc_0x54() {
                         }
                     }
                 } else {
-                    if (field_0x240 == i) {
-                        u32 code = field_0x234 + (i << 24) + (field_0x240 << 26);
+                    s32 owner = field_0x240;
+                    if (i == owner) {
                         s32 layer = getPlayerLayer_8023DE58(i);
-                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, code, -1, -1);
+                        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_IMUP, layer, &at, kind + (i << 24) + (owner << 26), -1, -1);
                     } else {
                         u32 code = field_0x234 + (i << 24) + (field_0x240 << 26) + 0x10000000;
                         s32 layer = getPlayerLayer_8023DE58(i);
