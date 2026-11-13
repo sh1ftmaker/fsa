@@ -2154,9 +2154,9 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x194 = 0;
     field_0x196 = 0;
     field_0x1a2 = 0;
-    field_0x98 = 0.0f;
-    field_0x9c = 0.0f;
-    field_0xa0 = 0.0f;
+    field_0x98.x = 0.0f;
+    field_0x98.y = 0.0f;
+    field_0x98.z = 0.0f;
     field_0x1ab[0] = 0;
     field_0x2ab[0] = 0;
     field_0x3ab[0] = 0;
@@ -2752,11 +2752,11 @@ void cls_804AF5A0::fn_8039499C(bool flag) {
             field_0x3b0 = 0;
         }
         if (flag) {
-            screen->search('ROOT')->move(field_0x11c + field_0x98, lbl_8050DB0C.field_0x30[3] + (field_0x120 + field_0x9c));
+            screen->search('ROOT')->move(field_0x11c + field_0x98.x, lbl_8050DB0C.field_0x30[3] + (field_0x120 + field_0x98.y));
         } else {
-            field_0x98 = 0.0f;
-            field_0x9c = 0.0f;
-            field_0xa0 = 0.0f;
+            field_0x98.x = 0.0f;
+            field_0x98.y = 0.0f;
+            field_0x98.z = 0.0f;
             screen->search('ROOT')->move(field_0x11c, field_0x120);
         }
         f32 offset = 0.5f * ((3.0f - field_0x164) * tm01->getLineSpace());
@@ -2786,8 +2786,8 @@ void cls_804AF5A0::fn_8039499C(bool flag) {
         // The pictures placed in the text (cls_804AF72C::fn_8039CDF8).
         for (int i = 0; i < 12; i++) {
             if (field_0x68[i]->field_0x8 != 0xFF) {
-                f32 px = field_0x68[i]->field_0x0 + ((field_0x98 + x) + tm01->getBounds()->i.x);
-                f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x68[i]->field_0x4 * tm01->getLineSpace();
+                f32 px = field_0x68[i]->field_0x0 + ((field_0x98.x + x) + tm01->getBounds()->i.x);
+                f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + field_0x68[i]->field_0x4 * tm01->getLineSpace();
                 if (field_0x164 == 1) {
                     py -= 26.0f;
                 } else if (field_0x164 == 2) {
@@ -2832,23 +2832,23 @@ void cls_804AF5A0::fn_8039499C(bool flag) {
             }
             if (field_0x1a1 == 0) {
                 if (field_0x164 == 2) {
-                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace() - 13.0f;
-                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                    f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98.x + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
                 } else if (field_0x164 == 3) {
-                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace();
-                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                    f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + field_0x130[field_0x168] * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (field_0x124[field_0x168] + ((field_0x98.x + x) + tm01->getBounds()->i.x)), py, 19.2f, 19.2f * 1.5f, false, false, false);
                 }
             } else {
                 line = field_0x130[field_0x168];
                 if (line == 0.0f) {
-                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 30.0f;
-                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                    f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 30.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98.x + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
                 } else if (line == 1.0f) {
-                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 13.0f;
-                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                    f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace() - 13.0f;
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98.x + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
                 } else if (line == 2.0f) {
-                    f32 py = (offset + ((field_0x9c + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace();
-                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98 + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
+                    f32 py = (offset + ((field_0x98.y + y) + tm01->getBounds()->i.y)) + line * tm01->getLineSpace();
+                    field_0x5c->draw(ox + (dx + (field_0x124[field_0x168] + ((field_0x98.x + x) + tm01->getBounds()->i.x))), py, 19.2f, 19.2f * 1.5f, false, false, false);
                 }
             }
             field_0x198--;
@@ -2902,8 +2902,8 @@ void cls_804AF5A0::fn_80394690() {
         }
         strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->getStringPtr(), line1);
         strcpy(static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->getStringPtr(), line2);
-        field_0x20[3]->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset));
-        field_0x20[3]->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x9c + offset)));
+        field_0x20[3]->search('Tm01')->move(field_0xd8, lbl_8050DB0C.field_0x30[3] + (field_0x98.y + offset));
+        field_0x20[3]->search('Tm02')->move(field_0xd8 + field_0xe0, field_0xe4 + (lbl_8050DB0C.field_0x30[3] + (field_0x98.y + offset)));
         gGameRoot2_8053AB10->fn_8013B490();
         field_0x20[3]->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
     }

@@ -102,9 +102,7 @@ public:
         /* 0x8 */ u8 field_0x8;
     }; // Size: 0xC
     /* 0x068 */ Entry_0x68* field_0x68[12];
-    /* 0x098 */ f32 field_0x98;
-    /* 0x09C */ f32 field_0x9c;
-    /* 0x0A0 */ f32 field_0xa0;
+    /* 0x098 */ JGeometry::TVec3f field_0x98;
     // The position handed to the constructor's cls_804B20F8 (by pointer).
     /* 0x0A4 */ JGeometry::TVec3f field_0xa4;
     // 'Tm01''s line space as loaded; fn_803944EC stores its scale in 0xB4.
