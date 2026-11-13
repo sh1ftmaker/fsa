@@ -133,24 +133,14 @@ void cls_8049DD68::fn_8011D1B8(s32 state) {
         for (s32 i = 0; i < 4; i++) {
             cls_801192AC* area = fn_8011921C();
             ActorBase_804A5770** it = area->fn_8011871C(area->mBegin, ACTOR_DMLK);
-            const JGeometry::TVec3f* pos;
-            if (it == fn_8011921C()->mEnd) {
-                JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-                pos = &zero;
-            } else {
-                pos = &(*it)->mSpawnPos;
-            }
+            JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
+            const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mSpawnPos;
             fn_80230498(i, pos, 0x3F, 0, -0x80, -0x80, true);
         }
         cls_801192AC* area = fn_8011921C();
         ActorBase_804A5770** it = area->fn_8011871C(area->mBegin, ACTOR_DMLK);
-        const JGeometry::TVec3f* pos;
-        if (it == fn_8011921C()->mEnd) {
-            JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
-            pos = &zero;
-        } else {
-            pos = &(*it)->mSpawnPos;
-        }
+        JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
+        const JGeometry::TVec3f* pos = it == fn_8011921C()->mEnd ? &zero : &(*it)->mSpawnPos;
         spawnEmitter_8013CC50(field_0x4, pos, 0x33F, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, pos, 0x340, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, pos, 0x341, 0, 0, NULL, NULL, true, 1.0f);
