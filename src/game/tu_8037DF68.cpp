@@ -1514,10 +1514,8 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
                     }
                 } else if (p[4] == 0x2E) {
                     if (a >= 1 && a <= 4) {
-                        u8 taking = isPlayerBitSet(gGameRoot_8053AAF8, a - 1);
-                        if (taking) {
-                            u32 bits = (gGameRoot_8053AAF8->field_0x83 >> shift) & 3;
-                            if (bits == 1) {
+                        if (isPlayerBitSet(gGameRoot_8053AAF8, a - 1)) {
+                            if (((gGameRoot_8053AAF8->field_0x83 >> shift) & 3) == 1) {
                                 if (getPlayerLayer_8023DE58(a - 1) >= 8) {
                                     fn_80230E1C(a - 1, false);
                                 }
