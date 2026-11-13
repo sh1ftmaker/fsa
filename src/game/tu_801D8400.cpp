@@ -276,7 +276,7 @@ void cls_804A4C58::fn_801D9960() {
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;
             s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
             f32 diff = (s16)(angle - heading);
-            if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
+            if (0.000030517578f * __fabsf(diff) <= 0.3f) {
                 target = player;
             }
         }
