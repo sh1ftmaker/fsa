@@ -66,7 +66,8 @@ static inline bool canOpen(s32 window) {
 
 cls_804AF32C::~cls_804AF32C() {}
 
-// FIXME: 98.8. One instruction more: the font resource goes through r0 into a saved
+// FIXME: 99.11 %, missing/extra; behaviour clean.
+// One instruction more: the font resource goes through r0 into a saved
 // register (mr r0, r3; mr r28, r0) where the original keeps it in r30 directly
 // (act_giant_bomb has the same two-mr getResource shape).
 MessageManager_804AF070::MessageManager_804AF070() {
@@ -138,7 +139,8 @@ void fn_8038D870() {
     lbl_8053AD78->field_0xe4 = 0;
 }
 
-// FIXME: 98.8. Two opcodes: the original loads the constant 0 stored into
+// FIXME: 98.83 %, different; behaviour clean.
+// Two opcodes: the original loads the constant 0 stored into
 // field_0xe4 by the second press loop with li (r30); ours copies the loop
 // index register (mr r30, r29).
 void fn_8038D570() {
@@ -194,7 +196,8 @@ void fn_8038D570() {
     lbl_8053AD78->field_0xe8 = 0;
 }
 
-// FIXME: 99.3. Regalloc only: the manager pointer and the window index sit in r5 / r4
+// FIXME: 99.30 %, regalloc-only; behaviour clean.
+// Regalloc only: the manager pointer and the window index sit in r5 / r4
 // in the original, r4 / r5 here.
 // Draws the open windows in the order they were opened (field_0xfc), then the
 // text box when field_0xe4 is set.
@@ -224,7 +227,8 @@ static inline bool openById(s32 window, s32 player, u32 msg, s32 serial, JGeomet
     return lbl_8053AD78->fn_8038A42C(window, player, fn_803846BC(msg), serial, pos, flags);
 }
 
-// FIXME(shotgun): 96.02 %, missing/extra (scheduling of the id lookups)
+// FIXME(shotgun): 96.02 %, missing/extra + reloc-name; behaviour clean.
+// (scheduling of the id lookups)
 // fn_8038AD24 for a message id: msg is looked up in the INF1 entries, mapped, and turned back
 // into its id; the no-position fallback is fn_8038C60C.
 bool fn_8038C678(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f pos, u32 flags) {
@@ -320,7 +324,8 @@ bool MessageManager_804AF070::fn_8038C60C(s32 player, s32 actor, u32 msg, s32 se
     return fn_8038A984(player, actor, msg, serial, flags);
 }
 
-// FIXME(shotgun): 98.92 %, regalloc (the 0x2F branch)
+// FIXME(shotgun): 98.92 %, missing/extra + reloc-name; behaviour clean.
+// regalloc (the 0x2F branch)
 bool fn_8038BD08(s32 player, u32 msg, s32 layer, JGeometry::TVec3f pos, u32 flags) {
     s32 window = windowIndex(player);
     if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
@@ -384,7 +389,8 @@ bool fn_8038BD08(s32 player, u32 msg, s32 layer, JGeometry::TVec3f pos, u32 flag
         return lbl_8053AD78->fn_8038B8A8(window, player, msg, flags);
 }
 
-// FIXME: 99.98. Regalloc only: the second fn_8037EC98 call passes the flags register
+// FIXME: 99.98 %, regalloc-only; behaviour clean.
+// Regalloc only: the second fn_8037EC98 call passes the flags register
 // (r29) in the original; ours reuses the option-bits copy (r30).
 bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 flags) {
     if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
@@ -416,7 +422,8 @@ bool MessageManager_804AF070::fn_8038B8A8(s32 player, s32 actor, s32 value, u32 
     return false;
 }
 
-// FIXME(shotgun): 98.64 %, regalloc + scheduling (the halfword flags copy)
+// FIXME(shotgun): 98.64 %, missing/extra + reloc-name; behaviour clean.
+// regalloc + scheduling (the halfword flags copy)
 bool fn_8038AD24(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f pos, u32 flags) {
     s32 window = windowIndex(player);
     if (gGameRoot_8053AAF8->field_0x7f == 0 && !(flags & 0x2000)) {
@@ -496,7 +503,8 @@ bool fn_8038AD24(s32 player, u32 msg, s32 serial, s32 layer, JGeometry::TVec3f p
     return lbl_8053AD78->fn_8038A984(window, player, msg, serial, flags);
 }
 
-// FIXME: 99.7. Regalloc only: the flags parameter is r30 and the option bits r31 in the
+// FIXME: 99.68 %, regalloc-only; behaviour clean.
+// Regalloc only: the flags parameter is r30 and the option bits r31 in the
 // original, the other way round here.
 bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 serial, u32 flags) {
     if (fn_8037F1E4(player) == 0 && !fn_80303750(player) && fn_8022C8EC(player)) {
@@ -534,7 +542,8 @@ bool MessageManager_804AF070::fn_8038A984(s32 player, s32 actor, s32 value, s32 
     return false;
 }
 
-// FIXME: 99.7. Regalloc only: the actor parameter, the option bits and the flags sit in
+// FIXME: 99.65 %, regalloc-only; behaviour clean.
+// Regalloc only: the actor parameter, the option bits and the flags sit in
 // r29 / r30 / r28 in the original, r30 / r29 / r29 here.
 bool MessageManager_804AF070::fn_8038A42C(s32 player, s32 actor, s32 value, s32 serial, JGeometry::TVec3f pos, u32 flags) {
     if (fn_8037F1E4(player) == 0) {
@@ -650,7 +659,8 @@ bool fn_80389BF0(s32 player, s32 value) {
     return false;
 }
 
-// FIXME: 97.7. One instruction more than the original (an mr copying the
+// FIXME: 97.69 %, missing/extra; behaviour drift.
+// One instruction more than the original (an mr copying the
 // loop index before the fn_8022FA80 call) and the registers shifted by one.
 bool MessageManager_804AF070::fn_80389964(s32 exclude, u32 msg, u32 flags) {
     u8 ready[4];
@@ -686,7 +696,8 @@ bool MessageManager_804AF070::fn_80389964(s32 exclude, u32 msg, u32 flags) {
     return false;
 }
 
-// FIXME: 99.3. One instruction fewer: the original copies player into r31 (mr r31, r26)
+// FIXME: 99.30 %, missing/extra; behaviour clean.
+// One instruction fewer: the original copies player into r31 (mr r31, r26)
 // before the loop reuses r26 as the index; ours keeps player in place.
 void MessageManager_804AF070::fn_803895EC(s32 player, s32 arg, bool a, bool b) {
     s32 mapped = windowIndex(player);
@@ -812,7 +823,8 @@ static inline bool releasePlayers(s32 player) {
     return true;
 }
 
-// FIXME(shotgun): 99.39 %, missing/extra (a bit test as rlwinm. not extrwi.)
+// FIXME(shotgun): 99.39 %, missing/extra; behaviour clean.
+// (a bit test as rlwinm. not extrwi.)
 // Ends the player's message at once, whatever state the window is in: true when it is idle
 // or closed now (options 8 / 0x80), else the box is sent to its last page (state 5 / 8, with
 // field_0x42 set) and false.
@@ -905,7 +917,8 @@ static inline void pageSound(s32 window) {
     }
 }
 
-// FIXME(shotgun): 99.51 %, missing/extra (the field_0xe7 bit test is materialised as a bool in the original)
+// FIXME(shotgun): 99.51 %, missing/extra; behaviour near.
+// (the field_0xe7 bit test is materialised as a bool in the original)
 // Steps the player's window while it shows a page (state 5 / 8): returns true once the
 // window is done (bit of field_0xe7, after the countdown field_0xf0 of two frames). On the
 // last page a press (or option 0x20 / the processor's countdown) finishes it; otherwise a
@@ -972,7 +985,8 @@ bool fn_803865B8(s32 player) {
     return false;
 }
 
-// FIXME(shotgun): 98.79 %, missing/extra (one bit test as rlwinm. not extrwi.)
+// FIXME(shotgun): 98.79 %, missing/extra; behaviour clean.
+// (one bit test as rlwinm. not extrwi.)
 // Whether the player's window is done: idle, or in state 5 / 8 with nothing left to show
 // (field_0x40 clear); it is then closed (option 0x1000 resets it at once).
 bool fn_80385960(s32 player) {
@@ -1026,7 +1040,8 @@ static inline bool releaseSerial(u16 opt, s32 player, s32 serial) {
     return fn_8022FB1C(player, serial);
 }
 
-// FIXME(shotgun): 97.43 %, missing/extra (releaseSerial branch shape)
+// FIXME(shotgun): 97.43 %, missing/extra; behaviour near.
+// (releaseSerial branch shape)
 // fn_80385960 for a window an actor `serial` speaks in: once the actor (and, without option 4,
 // the players) let go, the window closes and fn_803895EC releases the waiting windows.
 bool fn_80384C58(s32 player, s32 serial) {
@@ -1123,7 +1138,7 @@ u16 fn_803846A4(s32 index) {
 }
 
 // The condition commands of a message are byte streams: their operands are unaligned words.
-// FIXME(shotgun): 81.85 %, missing/extra + reloc-name
+// FIXME(shotgun): 81.94 %, missing/extra + reloc-name; behaviour drift.
 // Follows the conditional-message commands (0x1A size 2, the twelve commands fn_80383E2C finds)
 // from message msg for the player window `window`: each command picks one of its operands as the
 // next message id (by a key or other holdable the player carries, a random draw, the player
@@ -1388,7 +1403,8 @@ u32 fn_80383EB0(s32 window, u32 msg) {
     }
 }
 
-// FIXME: 99.1. Regalloc only (r3 / r5 / r6 rotated); the jump table's name waits
+// FIXME: 99.55 %, regalloc-only; behaviour drift.
+// Regalloc only (r3 / r5 / r6 rotated); the jump table's name waits
 // on the unit's .data (jumptable_804AF0CC is the third of six).
 const char* fn_80383E2C(u32 index, u8* out) {
     MessageFile_804AF070* bmg = lbl_8053AD78->mBmg;
@@ -1449,7 +1465,7 @@ static inline void flushLine(char* out, const char* line, s32 lines, f32 cur, f3
     strcat(out, line);
 }
 
-// FIXME(shotgun): 83.26 %, missing/extra + reloc-name
+// FIXME(shotgun): 83.26 %, missing/extra + reloc-name; behaviour drift.
 // The text of message msg for the box, line by line, each line centred in `width` (the widths are
 // scaled by `scale`); `a` is the player number the 0x1A size 3 commands write and `b` a number of up to
 // four digits. Returns the number of lines.
@@ -1549,7 +1565,8 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
     return lines;
 }
 
-// FIXME: 95.1. Structurally close (one instruction fewer, registers shifted): the
+// FIXME: 95.16 %, missing/extra; behaviour near.
+// Structurally close (one instruction fewer, registers shifted): the
 // text address is summed as (offset + inf1) + 8 + size where the original adds
 // size + offset, then 8, then inf1 (as in fn_80383E2C); the loop's first
 // character test reuses the condition's extsb. where the original sign-extends
@@ -1671,7 +1688,7 @@ static inline void centreLine(char* out, f32 width) {
     }
 }
 
-// FIXME(shotgun): 87.31 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.82 %, missing/extra + reloc-name; behaviour drift.
 // The same text copy as getMessageText_803832BC, with every line centred by a "\x1BCR[n]" prefix
 // (the widths of the lines are measured first). Returns the widest line. out2 / out3 are written
 // (the header declares them const to keep the mangled name the caller's unit expects).
@@ -1788,7 +1805,7 @@ f32 fn_80382B48(char* out, u32 msg, s32 value, const char* out2c, const char* ou
                     strcat(out, two);
                 }
                 pos += 2;
-                code |= (u8)text[pos - 1];
+                code |= (u8)p[1];
             } else {
                 two[0] = c;
                 two[1] = 0;
@@ -2322,7 +2339,8 @@ bool fn_8037EC98(s32 player, u16 flags) {
     return true;
 }
 
-// FIXME: 97.4. Regalloc only: the loop's index registers and the two half-size floats are swapped (r28 / r29, f30 / f31).
+// FIXME: 97.41 %, regalloc-only; behaviour clean.
+// Regalloc only: the loop's index registers and the two half-size floats are swapped (r28 / r29, f30 / f31).
 void fn_8037EB4C() {
     for (s32 i = 0; i < 4; i++) {
         MessageWindow_804AF490* window = lbl_8053AD78->mWindows[i];
@@ -2359,7 +2377,8 @@ void fn_8037E8D4(s32 player) {
     lbl_8053AD78->field_0xe8 |= (u8)(1 << windowIndex(player));
 }
 
-// FIXME: 97.2. Scheduling only: the original restores r31 after the result is
+// FIXME: 97.22 %, scheduling; behaviour clean.
+// Scheduling only: the original restores r31 after the result is
 // computed (lwz r31 / lwz r0 after the srwi); ours restores r31 before it.
 BOOL fn_8037E7AC(s32 player) {
     return (lbl_8053AD78->field_0xe8 & (u8)(1 << windowIndex(player))) != 0;
@@ -2389,7 +2408,8 @@ bool fn_8037E4BC() {
     return false;
 }
 
-// FIXME(shotgun): 96.69 %, scheduling (the original stores 0x44 / 0x48 late, after the halfwords)
+// FIXME(shotgun): 96.69 %, scheduling; behaviour clean.
+// (the original stores 0x44 / 0x48 late, after the halfwords)
 cls_804AF32C::cls_804AF32C() {
     field_0x4 = 0;
     field_0x5 = 0;
