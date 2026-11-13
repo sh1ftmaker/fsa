@@ -253,7 +253,7 @@ void cls_804A7AE0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 80.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.91 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -269,14 +269,15 @@ void cls_804A7AE0::fn_8029A974() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        s32 r;
-        if (fn_80239108(mSerial) >= 4 && getPlayerLayer_8023DE58(0) == field_0x4 &&
-            (r = fn_80238BC4(mSerial), r >= 0 && r < 4)) {
-            field_0x2cc = 1;
-        } else {
-            r = -1;
+        if (fn_80239108(mSerial) >= 4) {
+            if (getPlayerLayer_8023DE58(0) == field_0x4) {
+                s32 r = fn_80238BC4(mSerial);
+                if (r >= 0 && r < 4) {
+                    field_0x2cc = 1;
+                    dir = r;
+                }
+            }
         }
-        dir = r;
         if (dir == -1) {
             JGeometry::TBox2f box;
             box.i.x = field_0x80.i.x;
@@ -291,22 +292,17 @@ void cls_804A7AE0::fn_8029A974() {
                 s32 q = fn_8023885C(mSerial);
                 if (q >= 0 && q < 4) {
                     if (q == 0) {
-                        r = 1;
+                        dir = 1;
                     } else if (q == 1) {
-                        r = 0;
+                        dir = 0;
                     } else if (q == 2) {
-                        r = 3;
+                        dir = 3;
                     } else if (q == 3) {
-                        r = 2;
+                        dir = 2;
                     }
                     field_0x2cc = -1;
-                } else {
-                    r = -1;
                 }
-            } else {
-                r = -1;
             }
-            dir = r;
         }
     }
     if (dir != 3) {
@@ -320,10 +316,11 @@ void cls_804A7AE0::fn_8029A974() {
     p.y += mBox.i.y;
     p.y -= 8.0f;
     p.z = 0.0f;
-    f32 minX = view.i.x + 32.0f;
-    f32 minY = view.i.y + 32.0f;
-    f32 maxX = view.f.x - 32.0f;
-    f32 maxY = view.f.y - 32.0f;
+    const f32 inset = -32.0f;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
@@ -461,7 +458,7 @@ void cls_804A7AE0::fn_8029A494() {
     }
 }
 
-// FIXME(shotgun): 80.83 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 79.85 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_80299FB0() {
     bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
@@ -528,10 +525,11 @@ void cls_804A7AE0::fn_80299FB0() {
     p.y += mBox.i.y;
     p.y += 8.0f;
     p.z = 0.0f;
-    f32 minX = view.i.x + 32.0f;
-    f32 minY = view.i.y + 32.0f;
-    f32 maxX = view.f.x - 32.0f;
-    f32 maxY = view.f.y - 32.0f;
+    const f32 inset = -32.0f;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
@@ -1784,7 +1782,7 @@ void cls_804A7AE0::vfunc_0x24() {
     field_0x2bb = 1;
 }
 
-// FIXME(shotgun): 65.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 70.37 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A7AE0::fn_802957CC(u8 dir) {
     JGeometry::TVec3f oldPos = mPos;
     bool ok = true;
@@ -1796,8 +1794,7 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
     mBox.f.y = 44.0f;
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = field_0x4 < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f view_box;
-    view_box = *src;
+    JGeometry::TBox2f view_box = *src;
     view_box.i.x -= 32.0f;
     view_box.i.y -= 32.0f;
     view_box.f.x += 32.0f;
@@ -1814,8 +1811,12 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
         p.y += mBox.i.y;
         p.y += 8.0f;
         for (s32 i = 0; i < 6; i++) {
-            if (!gBgRewrite_8053AC98->fn_802A1490(&p) ||
-                fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            if (!gBgRewrite_8053AC98->fn_802A1490(&p)) {
+                ok = false;
+                break;
+            }
+            CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+            if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
                 ok = false;
                 break;
             }
@@ -1853,9 +1854,13 @@ bool cls_804A7AE0::fn_802957CC(u8 dir) {
                 q.x += lbl_8046C298[dir][0];
                 q.y += lbl_8046C298[dir][1];
                 q.z += lbl_8046C298[dir][2];
-                if (!gBgRewrite_8053AC98->fn_802A1490(&q) ||
-                    fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &q, mSerial, NULL)) {
+                if (!gBgRewrite_8053AC98->fn_802A1490(&q)) {
                     ok = false;
+                } else {
+                    CollisionBoxes_8020D58C* boxes = fn_8020D58C();
+                    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &q, mSerial, NULL)) {
+                        ok = false;
+                    }
                 }
             }
         }
