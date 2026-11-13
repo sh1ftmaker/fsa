@@ -33,8 +33,6 @@ static const s16* lbl_804A3BB8[16] = {
 
 Gibdo_804A3BF8::Gibdo_804A3BF8() {}
 
-// FIXME: 99.45 %. Only the relocations of the sdata2 literals differ
-// (lbl_8053EB94 and friends are @NNN here; a data split of the literal pool).
 void Gibdo_804A3BF8::init() {
     EnemyBase_804A4808::init();
     if (field_0x90 == 1) {
@@ -53,7 +51,8 @@ void Gibdo_804A3BF8::init() {
     mAnim.fn_801D1D60();
 }
 
-// FIXME(shotgun): 81.72 %, missing/extra: the original keeps fewer values live (saves r30-r31 only)
+// FIXME(shotgun): 81.72 %, missing/extra; behaviour drift.
+// the original keeps fewer values live (saves r30-r31 only)
 // and its jump table is named jumptable_804A3D24.
 void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     mFlags &= ~0x8000;
@@ -175,7 +174,8 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     mState = mode;
 }
 
-// FIXME: 96.73 %. The original reloads mFlags before clearing 0x8000 (lwz after
+// FIXME: 96.86 %, missing/extra; behaviour drift.
+// The original reloads mFlags before clearing 0x8000 (lwz after
 // the timer compare); ours reuses the first load. The two jump tables
 // (jumptable_804A3C9C, jumptable_804A3CE4) and the 120.0f / 0.1f literals are
 // @NNN here (reloc-name, a data split).
@@ -308,7 +308,6 @@ void Gibdo_804A3BF8::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 100.00 %, matched
 void Gibdo_804A3BF8::vfunc_0x24() {
     if (mFlags & 0x4000) {
         ActorBase_804A5770::vfunc_0x24();
