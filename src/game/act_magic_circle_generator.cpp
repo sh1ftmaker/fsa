@@ -63,7 +63,8 @@ void MagicCircleGenerator_804A9FB0::update() {
         field_0x80.i.y = -9.0f;
         field_0x80.f.x = 9.0f;
         field_0x80.f.y = 9.0f;
-        JGeometry::TBox2f probe(field_0x80);
+        JGeometry::TBox2f probe;
+        probe = field_0x80;
         probe.i.x += mPos.x;
         probe.i.y += mPos.y;
         probe.f.x += mPos.x;
