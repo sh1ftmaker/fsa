@@ -12,6 +12,7 @@
 #include "game/EmitterDelete.h"
 #include "game/EnemyBase.h"
 #include "game/GameGlobals.h"
+#include "game/GameMath.h"
 #include "game/Player.h"
 #include "game/act/act_bombchu.h"
 #include "game/act/tu_801688AC.h"
@@ -144,11 +145,12 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
         factor = 0.0f;
     }
     JGeometry::TVec2f d(target->x - cur->x, target->y - cur->y);
-    f32 len = d.length();
+    f32 sq = square(d.x) + square(d.y);
+    f32 len = JGeometry::TUtilf::sqrt(sq);
     if (len > 0.0f) {
         f32 step = len * factor;
         if (step < minStep) {
-            f32 f = (1.0f / len) * minStep;
+            f32 f = minStep * (1.0f / len);
             if (f > 1.0f) {
                 f = 1.0f;
             } else if (f < factor) {
@@ -156,7 +158,7 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
             }
             factor = f;
         } else if (step > maxStep) {
-            f32 f = (1.0f / len) * maxStep;
+            f32 f = maxStep * (1.0f / len);
             if (f > factor) {
                 f = factor;
             } else if (f < 0.0f) {
@@ -174,11 +176,7 @@ bool fn_801CD754(JGeometry::TVec2f* cur, const JGeometry::TVec2f* target, f32 fa
         }
         cur->y = factor * (target->y - cur->y) + cur->y;
     }
-    bool arrived = false;
-    if (cur->x == target->x && cur->y == target->y) {
-        arrived = true;
-    }
-    return arrived;
+    return !(cur->x == target->x && cur->y == target->y);
 }
 
 // Catmull-Rom spline through p1 (t = 0) and p2 (t = 1), with p0 and p3 as
