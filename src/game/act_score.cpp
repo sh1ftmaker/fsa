@@ -290,7 +290,7 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, n, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
     } else {
         Vec pos;
@@ -299,14 +299,14 @@ void Score_804AF4C0::fn_80391D44() {
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 1, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
         pos.x = mPos.x + 10.0f;
         pos.y = mPos.y;
         pos.z = mPos.z;
         if (field_0x4 < 8) {
             lbl_8053AF50->fn_80455770(0.5f, 0, &pos,
-                                      JUtility::TColor(lbl_80543180[mPlayer], lbl_8054317C[mPlayer], lbl_80543184[mPlayer], 255));
+                                      JUtility::TColor(lbl_8054317C[mPlayer], lbl_80543180[mPlayer], lbl_80543184[mPlayer], 255));
         }
     }
 }
