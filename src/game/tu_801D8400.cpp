@@ -334,12 +334,12 @@ bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
     if (mFlags & 0x2000) {
-        pos.x = mPos.x - -30.0f;
         pos.y = -6.0f + mPos.y;
+        pos.x = mPos.x - -30.0f;
         pos.z = 0.0f;
     } else {
-        pos.x = -30.0f + mPos.x;
         pos.y = -6.0f + mPos.y;
+        pos.x = -30.0f + mPos.x;
         pos.z = 0.0f;
     }
     s32 serial = getActorManager_801F856C()->spawnActor_801F9484('BOIB', field_0x4, &pos, 0, -1, -1);
@@ -349,12 +349,12 @@ bool cls_804A4C58::fn_801D95F4() {
             s32 target = -1;
             JGeometry::TVec3f from;
             if (mFlags & 0x2000) {
-                from.x = mPos.x - -30.0f;
                 from.y = -6.0f + mPos.y;
+                from.x = mPos.x - -30.0f;
                 from.z = 0.0f;
             } else {
-                from.x = -30.0f + mPos.x;
                 from.y = -6.0f + mPos.y;
+                from.x = -30.0f + mPos.x;
                 from.z = 0.0f;
             }
             s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
@@ -363,35 +363,34 @@ bool cls_804A4C58::fn_801D95F4() {
                 f32 dy = getPlayerPos_8023E724(player)->y - from.y;
                 f32 dx = getPlayerPos_8023E724(player)->x - from.x;
                 s32 heading = (s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
-                s16 diff = heading - angle;
-                if (0.000030517578f * std::fabsf(diff) <= 0.3f) {
+                f32 diff = (s16)(angle - heading);
+                if (0.000030517578f * __fabsf(diff) <= 0.3f) {
                     target = player;
                 }
             }
-            f32 vx;
-            f32 vy;
+            JGeometry::TVec2f dir;
             if (target >= 0) {
                 f32 dy = getPlayerPos_8023E724(target)->y - pos.y;
                 f32 dx = getPlayerPos_8023E724(target)->x - pos.x;
-                JGeometry::TVec2f dir(dx, dy);
-                if (dir.normalize() == 0.0f) {
+                dir.set(dx, dy);
+                if (dir.squared() <= JGeometry::TUtilf::epsilon()) {
                     dir.x = 1.0f;
                     dir.y = 0.0f;
+                } else {
+                    dir.normalize();
                 }
-                vx = dir.x;
-                vy = dir.y;
             } else {
                 s32 facing = (mFlags & 0x2000) ? 0x2000 : -0x2000;
                 f32 s = JMath::sincosTable_.sinShort(-facing);
                 f32 c = JMath::sincosTable_.cosShort(-facing);
-                vx = 0.0f * c - 1.0f * s;
-                vy = 0.0f * s + 1.0f * c;
+                JGeometry::TVec2f base(0.0f, 1.0f);
+                dir.set(base.x * c - base.y * s, base.x * s + base.y * c);
             }
             s16 jitter = fn_801CD664(0xE39) - 0x71C;
             f32 s = JMath::sincosTable_.sinShort(-jitter);
             f32 c = JMath::sincosTable_.cosShort(-jitter);
-            JGeometry::TVec3f vel((vx * c - vy * s) * 2.4f, (vx * s + vy * c) * 2.4f, 0.0f);
-            bomb->field_0x3c.set(vel);
+            JGeometry::TVec3f vel((dir.x * c - dir.y * s) * 2.4f, (dir.x * s + dir.y * c) * 2.4f, 0.0f);
+            bomb->field_0x3c = vel;
             spawned = true;
         }
     }
