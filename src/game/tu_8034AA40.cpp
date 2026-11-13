@@ -14,7 +14,9 @@
 
 // .rodata 0x804720E8: the start timers (state kinds 0, 1 use words 0 and the .sdata2 pair
 // {20, 15}), the frame indices by facing and sub-state (16 words), and the frames of kind 1 (8).
-static const s32 lbl_804720E8[28] = {10, 7, 10, 7, 1, 0, 2, 0, 4, 3, 5, 3, 7, 6, 8, 6, 10, 9, 11, 9, 0, 1, 2, 3, 4, 5, 6, 7};
+static const s32 lbl_804720E8[4] = {10, 7, 10, 7};
+static const s32 lbl_804720F8[4][4] = {{1, 0, 2, 0}, {4, 3, 5, 3}, {7, 6, 8, 6}, {10, 9, 11, 9}};
+static const s32 lbl_80472138[4][2] = {{0, 1}, {2, 3}, {4, 5}, {6, 7}};
 
 // 0x8034C464.
 // FIXME(shotgun): 96.25 %, missing/extra + reloc-name; behaviour drift.
@@ -173,11 +175,11 @@ void cls_804AC8C0::draw() {
     switch (field_0x244) {
     case 0:
         name = "enemy_both2_sob.bin";
-        frame = lbl_804720E8[4 + field_0x23c * 4 + field_0x238] + 0x218;
+        frame = lbl_804720F8[field_0x23c][field_0x238] + 0x218;
         break;
     case 1:
         name = "enemy_gc_sob.bin";
-        frame = lbl_804720E8[20 + field_0x23c * 2 + field_0x238] + 0x2E6;
+        frame = lbl_80472138[field_0x23c][field_0x238] + 0x2E6;
         break;
     }
     drawSprite_801F06F0(name, frame, NULL, 0, 1.0f, 1.0f);
