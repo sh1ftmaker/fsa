@@ -1237,11 +1237,12 @@ void StoneArrghusChildPuff_8049C678::fn_800F8BAC() {
     if (parent->mSlotUsed[mIndex] != 0) {
         f32 off;
         s16 ang;
-        s32 k = (parent->mSlot >> 1) + 1;
         if (mIndex == 0) {
+            s32 k = (parent->mSlot >> 1) + 1;
             ang = parent->mAngleA;
             off = 20.0f + (f32)(k * 20);
         } else {
+            s32 k = (parent->mSlot >> 1) + 1;
             ang = parent->mAngleB;
             off = (f32)(k * -20) - 20.0f;
         }
