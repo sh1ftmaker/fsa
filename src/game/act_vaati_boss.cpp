@@ -703,13 +703,17 @@ void VaatiBoss_804A4958::vfunc_0x98() {
         field_0x5d1--;
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
-            s16 angle = field_0x5d2;
-            field_0x3c.x = 1.4f * JMASSin(angle);
-            field_0x3c.y = 1.4f * JMASCos(angle);
+            field_0x3c.x = 1.4f * JMASSin(field_0x5d2);
+            field_0x3c.y = 1.4f * JMASCos(field_0x5d2);
         }
     }
     switch (mState) {
     case 0:
+    case 0xB:
+    case 0x17:
+    case 0x18:
+    case 0x19:
+    case 0x1A:
         break;
     case 6:
         if (mFlags & 1) {
@@ -721,32 +725,6 @@ void VaatiBoss_804A4958::vfunc_0x98() {
     case 7:
         mPos.z = 500.0f;
         break;
-    case 0xB:
-        break;
-    case 0x17:
-    case 0x18:
-    case 0x19:
-    case 0x1A:
-        break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 5:
-    case 8:
-    case 9:
-    case 0xA:
-    case 0xC:
-    case 0xD:
-    case 0xE:
-    case 0xF:
-    case 0x10:
-    case 0x11:
-    case 0x12:
-    case 0x13:
-    case 0x14:
-    case 0x15:
-    case 0x16:
     default: {
         f32 oldX = field_0x5bc;
         f32 oldY = field_0x5c0;
@@ -836,9 +814,8 @@ void VaatiBoss_804A4958::fn_801D4C70() {
     }
     }
     if (field_0x5d1 != 0) {
-        s16 angle = field_0x5d2;
-        field_0x3c.x = 4.0f * JMASSin(angle);
-        field_0x3c.y = 4.0f * JMASCos(angle);
+        field_0x3c.x = 4.0f * JMASSin(field_0x5d2);
+        field_0x3c.y = 4.0f * JMASCos(field_0x5d2);
         return;
     }
     f32 dx = 0.0f;
