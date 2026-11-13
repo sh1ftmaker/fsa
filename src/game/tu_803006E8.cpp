@@ -592,7 +592,6 @@ void fn_803007A0() {
 }
 
 // The 8-bit check value of a 16-bit word (a CRC over two bytes, then eight clock-out steps).
-// FIXME(shotgun): 40.7 %, missing/extra: the eight clock-out steps are unrolled by our build, the original keeps a loop
 u8 fn_803006E8(u32 data) {
     u32 crc = 0;
     for (u32 mask = 0x80; mask != 0; mask >>= 1) {
@@ -620,11 +619,13 @@ u8 fn_803006E8(u32 data) {
             crc ^= 0xCD;
         }
     }
-    for (u32 i = 0; i < 8; i++) {
+    u32 i = 0;
+    do {
         crc <<= 1;
         if (crc & 0x100) {
             crc ^= 0xCD;
         }
-    }
+        i++;
+    } while (i < 8);
     return crc;
 }
