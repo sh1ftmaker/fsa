@@ -333,7 +333,7 @@ bool OBJLift_804ACA00::fn_80351020(s32 player) {
 // 0x803506E0.
 #pragma auto_inline reset
 
-// FIXME(shotgun): 88.24 %, different; behaviour drift.
+// FIXME(shotgun): 90.26 %, missing/extra; behaviour drift.
 s32 OBJLift_804ACA00::fn_80350974() {
     field_0x283[0] = 0;
     field_0x283[1] = 0;
@@ -447,17 +447,9 @@ s32 OBJLift_804ACA00::fn_80350974() {
     for (s32 i = 0; i < 4; i++) {
         if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f && field_0x288 == 0) {
             if (push.x * push.x + push.y * push.y + push.z * push.z > 32.0f * FLT_EPSILON) {
-                bool apply = false;
-                if (!fn_8022F478(i)) {
-                    apply = true;
-                } else {
-                    if (field_0x283[fn_8022F3DC(i)] == 1 && (fn_8022CAF8(i) == 5 || fn_8022CAF8(i) == 4)) {
-                        apply = true;
-                    } else if (fn_80235580(i)) {
-                        apply = true;
-                    }
-                }
-                if (apply) {
+                if (!fn_8022F478(i) ||
+                    (field_0x283[fn_8022F3DC(i)] == 1 && (fn_8022CAF8(i) == 5 || fn_8022CAF8(i) == 4)) ||
+                    fn_80235580(i)) {
                     if (field_0x289 == 1 && field_0x258 != 5 && field_0x258 != 0xC &&
                         !(field_0x258 >= 6 && field_0x258 <= 9)) {
                         fn_8023DEDC(i, &push);
