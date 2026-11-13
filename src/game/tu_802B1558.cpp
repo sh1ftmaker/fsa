@@ -22,7 +22,8 @@ void cls_804A8578::fn_802B1EB0() {}
 
 // Copies the save region to 0x80700000, the area main registers with
 // OSSetSaveRegion (see GameState.h), so it survives the reset.
-// FIXME: 87.54 %. Same unrolled loop (mtctr 2, eight byte copies twice per
+// FIXME: 87.54 %, missing/extra; behaviour drift.
+// Same unrolled loop (mtctr 2, eight byte copies twice per
 // pass); the original re-adds the index to the GameState base for every
 // source pass (add r4, r5, r12), ours steps a source pointer by 0x10, and the
 // registers differ.
@@ -96,7 +97,7 @@ static inline void copySaveRegion() {
     }
 }
 
-// FIXME(shotgun): 92.8 %, missing/extra
+// FIXME(shotgun): 92.83 %, missing/extra; behaviour drift.
 // 0x802B1BE0
 void cls_804A8578::fn_802B1BE0(s32 reset, u32 code, bool menu) {
     __PADDisableRecalibration(FALSE);
@@ -109,7 +110,7 @@ void cls_804A8578::fn_802B1BE0(s32 reset, u32 code, bool menu) {
     }
 }
 
-// FIXME(shotgun): 89.8 %, missing/extra
+// FIXME(shotgun): 91.46 %, missing/extra; behaviour drift.
 // 0x802B1610
 void cls_804A8578::fn_802B1610(s32 port, void* arg) {
     if (lbl_80529DEC.mSaveRegion.f.field_0x9 != 0) {
@@ -128,7 +129,7 @@ void cls_804A8578::fn_802B1610(s32 port, void* arg) {
         }
         lbl_80529DEC.mSaveRegion.f.field_0xb = 1;
         lbl_8053ACA8->field_0x6 = 1;
-        if ((u8)port <= 3) {
+        if (port >= 0 && port <= 3) {
             lbl_80529DEC.mSaveRegion.f.field_0xc = port;
             lbl_8053ACA8->field_0x7 = port;
         } else {
@@ -184,7 +185,7 @@ void cls_804A8578::fn_802B1610(s32 port, void* arg) {
     copySaveRegion();
 }
 
-// FIXME(shotgun): 99.5 %, regalloc-only
+// FIXME(shotgun): 99.46 %, regalloc-only; behaviour clean.
 // 0x802B1558
 void cls_804A8578::fn_802B1558() {
     shutdownForReset();
