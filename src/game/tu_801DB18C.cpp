@@ -185,19 +185,27 @@ void cls_804A4EE8::fn_801DB6C8() {
         f32 px = player->x;
         f32 py = player->y;
         JGeometry::TVec2f away(mSearchPos.x - px, mSearchPos.y - py);
-        away.normalize();
-        tx = px + away.x * mRadius + field_0x2b4;
-        ty = py + away.y * mRadius + field_0x2b8;
+        if (away.squared() <= JGeometry::TUtil<f32>::epsilon()) {
+            away.set(0.0f, -1.0f);
+        } else {
+            away.normalize();
+        }
+        away.x *= mRadius;
+        away.y *= mRadius;
+        tx = px + away.x + field_0x2b4;
+        ty = py + away.y + field_0x2b8;
     }
     JGeometry::TVec2f d(tx - mSearchPos.x, ty - mSearchPos.y);
-    f32 len = d.length();
-    f32 step = field_0x2e0;
-    if (len < step) {
-        step = len;
+    if (d.squared() > JGeometry::TUtil<f32>::epsilon()) {
+        f32 len = d.length();
+        f32 step = field_0x2e0;
+        if (len < step) {
+            step = len;
+        }
+        d.normalize();
+        mSearchPos.x += d.x * step;
+        mSearchPos.y += d.y * step;
     }
-    d.normalize();
-    mSearchPos.x += d.x * step;
-    mSearchPos.y += d.y * step;
     if (mFlags & 0x2000) {
         mAngle -= mAngleSpeed;
     } else {
