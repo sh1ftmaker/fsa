@@ -186,7 +186,7 @@ void cls_804AC8C0::draw() {
 // The counts per stage (.rodata 0x80472158, whose strings follow).
 static const s32 lbl_80472158[3] = {10, 5, 1};
 
-// FIXME(shotgun): 77.78 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 81.53 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AC8C0::fn_8034ACF4() {
     JGeometry::TBox2f box(9.0f, -7.0f, 103.0f, 87.0f);
     box.i.x += mPos.x;
