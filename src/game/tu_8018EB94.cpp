@@ -14,8 +14,8 @@ s32 lbl_80539FE0[2] = {3, 5};
 
 
 // FIXME(shotgun): 88.04 %, missing/extra + reloc-name; behaviour drift.
-// the 0x2d0 loop unrolls by 5 (the original by 10, ctr 2)
-// and the random/sin part allocates f-registers differently.
+// the original addresses the 0x2d0 array off the this pointer (mr r5, r3) and has no
+// inner compare; the random/sin part allocates f-registers differently.
 void cls_804A1FA0::init() {
     field_0x80.i.x = -6.0f;
     field_0x80.i.y = -6.0f;
@@ -40,8 +40,10 @@ void cls_804A1FA0::init() {
     field_0x288[4].set(mPos);
     field_0x288[5].set(mPos);
     JGeometry::TVec3f* p = field_0x2d0;
-    for (s32 i = 0; i < 20; i++, p++) {
-        p->set(mPos);
+    for (s32 i = 0; i < 2; i++, p += 10) {
+        for (s32 j = 0; j < 10; j++) {
+            p[j].set(mPos);
+        }
     }
     mEmitters[0] = NULL;
     mEmitters[1] = NULL;
@@ -72,14 +74,14 @@ void cls_804A1FA0::init() {
     s16 angle = (s32)(4000.0f * (f32)field_0x98);
     field_0x27c = field_0x278 * JMath::sincosTable_.sinShort(angle);
     field_0x280 = field_0x278 * JMath::sincosTable_.cosShort((s32)(4000.0f * (f32)field_0x98));
-    field_0x288[4].set(mPos);
+    field_0x288[3].set(mPos);
     angle = (s32)(4000.0f * (f32)((field_0x98 - 2) & 0xF));
+    field_0x288[3].x += 6.0f * JMath::sincosTable_.sinShort(angle);
+    field_0x288[3].y += 6.0f * JMath::sincosTable_.cosShort(angle);
+    field_0x288[4].set(mPos);
+    angle = (s32)(4000.0f * (f32)((field_0x98 + 2) & 0xF));
     field_0x288[4].x += 6.0f * JMath::sincosTable_.sinShort(angle);
     field_0x288[4].y += 6.0f * JMath::sincosTable_.cosShort(angle);
-    field_0x288[5].set(mPos);
-    angle = (s32)(4000.0f * (f32)((field_0x98 + 2) & 0xF));
-    field_0x288[5].x += 6.0f * JMath::sincosTable_.sinShort(angle);
-    field_0x288[5].y += 6.0f * JMath::sincosTable_.cosShort(angle);
 }
 
 // Destructor at 0x8018FB24.
