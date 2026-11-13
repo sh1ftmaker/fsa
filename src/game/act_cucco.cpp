@@ -99,7 +99,7 @@ void Cucco_804AB8C0::init() {
             }
         }
     }
-    field_0x2a4[2] = 0;
+    field_0x2a8 = 0;
     field_0x2b8.x = 0.0f;
     field_0x2b8.y = 0.0f;
     field_0x2b8.z = 0.0f;
@@ -128,7 +128,7 @@ void Cucco_804AB8C0::init() {
         } else {
             field_0x98 = 1;
         }
-        field_0x2a4[2] = 1;
+        field_0x2a8 = 1;
         field_0x230 = 7;
         break;
     }
@@ -291,8 +291,8 @@ void Cucco_804AB8C0::fn_80332A60() {
 
 // FIXME(shotgun): 91.77 %, missing/extra + reloc-name
 void Cucco_804AB8C0::fn_803324A8() {
-    f32 outDist = 0.0f;
     s32 outDir = -1;
+    f32 outDist = 0.0f;
     u16 outAngle = 0;
     if (field_0x290 == 6 && field_0x230 == 0 && mPos.z < 8.0f && field_0x284 <= 0) {
         fn_801EEC98(mSerial, NULL, &outDir, &outDist, NULL, 0, 0);
