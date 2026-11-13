@@ -594,7 +594,7 @@ void ForceGem_804AB6D8::update() {
 }
 
 // 0x8032BFB0.
-// FIXME(shotgun): 93.62 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 93.96 %, missing/extra + reloc-name; behaviour near.
 // literal table offsets, register order.
 void ForceGem_804AB6D8::draw() {
     s32 state = field_0x230;
