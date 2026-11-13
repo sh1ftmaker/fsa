@@ -351,27 +351,31 @@ s32 OBJLift_804ACA00::fn_80350974() {
     JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
     for (s32 i = 0; i < 4; i++) {
         if (field_0x258 == 4) {
-            JGeometry::TBox2f saved = field_0x80;
+            JGeometry::TBox2f saved;
+            saved.set(field_0x80);
             for (s32 j = 0; j < 4; j++) {
-                field_0x80 = lbl_8050ADF8[j];
-                field_0x283[i] = fn_80351020(i);
-                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                field_0x80.set(lbl_8050ADF8[j]);
+                bool hit = fn_80351020(i);
+                field_0x283[i] = hit;
+                if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                     count++;
                     break;
                 }
             }
-            field_0x80 = saved;
+            field_0x80.set(saved);
         } else if (field_0x258 >= 0x10 && field_0x258 <= 0x14) {
-            JGeometry::TBox2f saved = field_0x80;
+            JGeometry::TBox2f saved;
+            saved.set(field_0x80);
             for (s32 j = 0; j < 2; j++) {
-                field_0x80 = lbl_8050AE38[(field_0x258 - 0x10) * 2 + j];
-                field_0x283[i] = fn_80351020(i);
-                if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+                field_0x80.set(lbl_8050AE38[(field_0x258 - 0x10) * 2 + j]);
+                bool hit = fn_80351020(i);
+                field_0x283[i] = hit;
+                if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                     count++;
                     break;
                 }
             }
-            field_0x80 = saved;
+            field_0x80.set(saved);
         } else if (field_0x258 >= 6 && field_0x258 <= 9) {
             bool hit = fn_80351020(i);
             field_0x283[i] = hit;
@@ -379,8 +383,9 @@ s32 OBJLift_804ACA00::fn_80350974() {
                 field_0x280 = hit;
             }
         } else {
-            field_0x283[i] = fn_80351020(i);
-            if (field_0x283[i] == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
+            bool hit = fn_80351020(i);
+            field_0x283[i] = hit;
+            if (hit == 1 && getPlayerPos_8023E724(i)->z <= 0.0f) {
                 count++;
             }
         }
@@ -403,32 +408,28 @@ s32 OBJLift_804ACA00::fn_80350974() {
         }
     }
 
-    if (field_0x258 == 5 && count == 0) {
-        f32 dx = mPos.x - mSpawnPos.x;
-        f32 dy = mPos.y - mSpawnPos.y;
-        if (dx * dx + dy * dy > 8.0f) {
-            field_0x250++;
-            if (field_0x250 > 0xF0) {
-                s32 layer = field_0x4;
-                if (layer >= 8) {
-                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
-                    field_0x28c = 1.0f;
-                } else {
-                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-                }
-                mPos = mSpawnPos;
-                field_0x28c = 0.0f;
-                layer = field_0x4;
-                if (layer >= 8) {
-                    getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
-                    field_0x28c = 1.0f;
-                } else {
-                    spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
-                }
-                startSound_801F0E34(0x30003, 0);
+    f32 dx = mPos.x - mSpawnPos.x;
+    f32 dy = mPos.y - mSpawnPos.y;
+    if (field_0x258 == 5 && count == 0 && dx * dx + dy * dy > 8.0f) {
+        field_0x250++;
+        if (field_0x250 > 0xF0) {
+            s32 layer = field_0x4;
+            if (layer >= 8) {
+                getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                field_0x28c = 1.0f;
+            } else {
+                spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
             }
-        } else {
-            field_0x250 = 0;
+            mPos = mSpawnPos;
+            field_0x28c = 0.0f;
+            layer = field_0x4;
+            if (layer >= 8) {
+                getActorManager_801F856C()->spawnActor_801F9484('KMRI', layer, &mPos, 0x83, -1, -1);
+                field_0x28c = 1.0f;
+            } else {
+                spawnEmitter_8013CC50(layer, &mPos, 0x503, 1, 0, NULL, NULL, true, 2.0f);
+            }
+            startSound_801F0E34(0x30003, 0);
         }
     } else {
         field_0x250 = 0;
@@ -584,7 +585,8 @@ s32 OBJLift_804ACA00::fn_80350530() {
 // Still differs: the second loop's index is computed with one counter register; the original keeps a separate one.
 // FIXME: 95.24 %, missing/extra; behaviour near.
 u8 OBJLift_804ACA00::fn_803502CC() {
-    JGeometry::TBox2f saved = field_0x80;
+    JGeometry::TBox2f saved;
+    saved.set(field_0x80);
     if (field_0x258 == 4) {
         for (s32 i = 0; i < 4; i++) {
             field_0x80.set(lbl_8050ADF8[i]);
