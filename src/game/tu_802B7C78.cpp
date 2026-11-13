@@ -304,7 +304,10 @@ void ReaperShinigami_804A886C::fn_802B7D1C(s32 idx, s32 arg) {
         s32 arg3 = 0x12;
         if (gGameRoot_8053AAF8->field_0x7f == 0) {
             s32 n = fn_80237774(field_0x298);
-            damage = n > 1 ? n - 1 : 0;
+            damage = 0;
+            if (n > 1) {
+                damage = n - 1;
+            }
             arg3 = 4;
         }
         if (fn_8023F264(field_0x298) == true && !fn_80236B50(field_0x298)) {
