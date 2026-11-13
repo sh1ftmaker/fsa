@@ -313,45 +313,37 @@ void PlayerEffect_804A6E20::update() {
     }
 }
 
+static inline void drawShadow(s32 layer, const JGeometry::TVec3f* pos, s32 frame, SpriteParams_801F5AE0* params) {
+    if (layer < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
+        gGameRoot2_8053AB10->field_0x20->fn_802F86CC(pos, res, frame, params, 1.0f, 1.0f);
+    }
+}
+
 // 0x802297FC.
 // FIXME(shotgun): 86.05 %, missing/extra + reloc-name
 void PlayerEffect_804A6E20::draw() {
     SpriteParams_801F5AE0 params;
     switch ((field_0x90 >> 2) & 0x3F) {
     case 0:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 1:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, false, 0, 0);
         break;
     case 2:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 3:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 4:
     case 14:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 6:
@@ -360,38 +352,23 @@ void PlayerEffect_804A6E20::draw() {
     case 9:
         params.field_0x1c = 2;
         params.field_0x2d = 1;
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, &params, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, &params);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 10:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 11:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 12:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     case 13:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_both2_sob.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, field_0x234, NULL, 1.0f, 1.0f);
-        }
+        drawShadow(field_0x4, &mPos, field_0x234, NULL);
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x234, 0, 1, -1, true, 0, 0);
         break;
     }
