@@ -73,7 +73,6 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
     case 2: {
         mSpeed = 0.0f;
         mTargetSpeed = 0.0f;
-        s32 dir = field_0x98;
         s32 kind;
         switch (mAnim.mAnim) {
         case 0:
@@ -98,6 +97,7 @@ void Gibdo_804A3BF8::fn_801B9DD4(s32 mode) {
             kind = 3;
             break;
         }
+        s32 dir = field_0x98;
         s32 anim = 8;
         switch (kind) {
         case 0:
