@@ -150,6 +150,7 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 }
 
 // 0x801B2000.
+// FIXME: 84.33 %, missing/extra + reloc-name; behaviour near.
 // FIXME: operands differ: fn_802303FC's original call passes 0xFF for its bool flag (we pass true); loop pointer and layer registers differ.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
