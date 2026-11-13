@@ -979,15 +979,18 @@ void OBJLift_804ACA00::draw() {
         return;
     }
     if (field_0x250 > 0x78) {
-        s32 phase = field_0x250 % 40;
         if (field_0x4 < 8) {
+            s32 phase = field_0x250 % 40;
             if (phase > 20) {
                 alpha = (s32)(255.0f * (((f32)phase - 20.0f) / 20.0f));
             } else {
                 alpha = (s32)(255.0f * ((20.0f - (f32)phase) / 20.0f));
             }
-        } else if (phase < 20) {
-            return;
+        } else {
+            s32 phase = field_0x250 % 40;
+            if (phase < 20) {
+                return;
+            }
         }
     }
     SpriteParams_801F5AE0 params;
@@ -995,9 +998,8 @@ void OBJLift_804ACA00::draw() {
     PSMTXIdentity(mtx);
     params.field_0x10.a = alpha;
     params.field_0x20 = 0;
-    f32 scale = field_0x28c;
     if (field_0x258 == 0xB) {
-        f32 big = 1.5f * scale;
+        f32 big = 1.5f * field_0x28c;
         mtx[0][0] = big;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
@@ -1008,15 +1010,15 @@ void OBJLift_804ACA00::draw() {
         mtx[2][1] = 0.0f;
         mtx[2][2] = big;
     } else if (field_0x258 == 0x11) {
-        mtx[0][0] = -scale;
+        mtx[0][0] = -field_0x28c;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
         mtx[1][0] = 0.0f;
-        mtx[1][1] = scale;
+        mtx[1][1] = field_0x28c;
         mtx[1][2] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
-        mtx[2][2] = scale;
+        mtx[2][2] = field_0x28c;
     } else if (field_0x258 == 0x13) {
         // Euler rotation (0, 270 deg, 0) from sincosTable_ entries (the original reads them
         // at run time: table index 0 and index 1536).
@@ -1026,29 +1028,29 @@ void OBJLift_804ACA00::draw() {
         f32 cy = JMath::sincosTable_.cosShort(-0x4000);
         f32 sz = sx;
         f32 cz = cx;
-        mtx[0][0] = scale * (cy * cz);
-        mtx[1][0] = scale * (cy * sz);
-        mtx[2][0] = scale * -sy;
-        mtx[0][1] = scale * (sx * sy * cz - cx * sz);
-        mtx[1][1] = scale * (sx * sy * sz + cx * cz);
-        mtx[2][1] = scale * (sx * cy);
-        mtx[0][2] = scale * (cx * cz * sy + sx * sz);
-        mtx[1][2] = scale * (cx * sz * sy - sx * cz);
-        mtx[2][2] = scale * (cx * cy);
+        mtx[0][0] = field_0x28c * (cy * cz);
+        mtx[1][0] = field_0x28c * (cy * sz);
+        mtx[2][0] = field_0x28c * -sy;
+        mtx[0][1] = field_0x28c * (sx * sy * cz - cx * sz);
+        mtx[1][1] = field_0x28c * (sx * sy * sz + cx * cz);
+        mtx[2][1] = field_0x28c * (sx * cy);
+        mtx[0][2] = field_0x28c * (cx * cz * sy + sx * sz);
+        mtx[1][2] = field_0x28c * (cx * sz * sy - sx * cz);
+        mtx[2][2] = field_0x28c * (cx * cy);
     } else if (field_0x258 == 5) {
-        f32 angle = 2.0f * (3.14f * (1.0f - scale));
+        f32 angle = 2.0f * (3.14f * (1.0f - field_0x28c));
         JGeometry::TVec3f rot(angle, angle, 0.0f);
-        setRotScaleMtx(mtx, rot, scale);
+        setRotScaleMtx(mtx, rot, field_0x28c);
     } else {
-        mtx[0][0] = scale;
+        mtx[0][0] = field_0x28c;
         mtx[0][1] = 0.0f;
         mtx[0][2] = 0.0f;
         mtx[1][0] = 0.0f;
-        mtx[1][1] = scale;
+        mtx[1][1] = field_0x28c;
         mtx[1][2] = 0.0f;
         mtx[2][0] = 0.0f;
         mtx[2][1] = 0.0f;
-        mtx[2][2] = scale;
+        mtx[2][2] = field_0x28c;
     }
     params.mMtx = mtx;
     params.field_0x21 = 1;
