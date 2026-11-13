@@ -133,7 +133,7 @@ void Cloud_8049CBE0::update() {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && !(getPlayerPos_8023E724(i)->z > 0.0f)) {
+        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && getPlayerPos_8023E724(i)->z <= 0.0f) {
             JGeometry::TVec3f d = mPos - mPrevPos;
             fn_8023DF68(i, &d);
         }
