@@ -140,7 +140,10 @@ void cls_804A5418::vfunc_0x90(u8 mapHit) {
 u8 cls_804A5418::vfunc_0x60() {
     s32 skip = -1;
     if (mState == 0 && field_0x2ac == -1) {
-        JGeometry::TBox2f saved = mBox;
+        f32 savedIx = mBox.i.x;
+        f32 savedIy = mBox.i.y;
+        f32 savedFx = mBox.f.x;
+        f32 savedFy = mBox.f.y;
         f32 cx = fn_80210B34(field_0x98);
         f32 cy = fn_80210AF8(field_0x98);
         mBox.i.x = cx - 1.0f;
@@ -157,18 +160,19 @@ u8 cls_804A5418::vfunc_0x60() {
         if (skip >= 0) {
             fn_801E728C(1);
         }
-        mBox = saved;
+        mBox.i.x = savedIx;
+        mBox.i.y = savedIy;
+        mBox.f.x = savedFx;
+        mBox.f.y = savedFy;
     }
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
         s32 serial = getActorManager_801F856C()->fn_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial && serial != skip) {
             ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {
-                if (other->mActorId == ACTOR_FIRE) {
-                    if (((FireRodFire_804A89F0*)other)->fn_802BA9F8() == 1) {
-                        if (mState == 0) {
-                            fn_801E728C(2);
-                        }
+                if (other->mActorId == ACTOR_FIRE && ((FireRodFire_804A89F0*)other)->fn_802BA9F8() == 1) {
+                    if (mState == 0) {
+                        fn_801E728C(2);
                     }
                 } else if (other->mActorId == 'SWBM') {
                     fn_801CB538(field_0x4, &other->mPos, 0, 0);
