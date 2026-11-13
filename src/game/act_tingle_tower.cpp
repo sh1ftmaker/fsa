@@ -44,10 +44,10 @@ inline void cls_804AAD60::updateFacing() {
         field_0x274 = 20;
         JGeometry::TVec3f dir;
         f32 dist;
-        if (field_0x254 >= 0 && getPlayerLayer_8023DE58(field_0x254) == getField_0x4()) {
-            fn_801EE558(&dir, &dist, field_0x254 + 1);
-        } else {
+        if (field_0x254 < 0 || getPlayerLayer_8023DE58(field_0x254) != getField_0x4()) {
             fn_801EE558(&dir, &dist, 0);
+        } else {
+            fn_801EE558(&dir, &dist, field_0x254 + 1);
         }
         if (dist < 80.0f) {
             u32 angle = (u16)(JMath::atanTable_.atan2_(-dir.x, -dir.y) *
