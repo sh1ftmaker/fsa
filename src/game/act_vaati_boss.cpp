@@ -814,8 +814,9 @@ void VaatiBoss_804A4958::fn_801D4C70() {
     }
     }
     if (field_0x5d1 != 0) {
-        field_0x3c.x = 4.0f * JMASSin(field_0x5d2);
-        field_0x3c.y = 4.0f * JMASCos(field_0x5d2);
+        s16 angle = field_0x5d2;
+        field_0x3c.x = 4.0f * JMASSin(angle);
+        field_0x3c.y = 4.0f * JMASCos(angle);
         return;
     }
     f32 dx = 0.0f;
