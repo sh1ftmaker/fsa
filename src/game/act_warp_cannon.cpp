@@ -12,6 +12,7 @@
 static const s16 lbl_80465120[] = {0, 3, 1, 2, 2, 2, 3, 3, 4, 3, 5, 3, -1, -1};
 static const s16* lbl_80539F48[] = {lbl_80465120, NULL};
 
+// FIXME: 99.85 %, reloc-name; behaviour clean.
 WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
     field_0x268 = 0;
     field_0x26c = -1;
@@ -28,6 +29,7 @@ WarpCannon_8049EAE0::WarpCannon_8049EAE0() {
 
 WarpCannon_8049EAE0::~WarpCannon_8049EAE0() {}
 
+// FIXME: 99.66 %, reloc-name; behaviour clean.
 void WarpCannon_8049EAE0::init() {
     field_0x274 = field_0x90 >> 8 & 0xFF;
     field_0x270 = field_0x90 >> 16 & 0xFF;
@@ -44,25 +46,29 @@ void WarpCannon_8049EAE0::init() {
     field_0x28c = mPos.z;
 }
 
-// FIXME(shotgun): 91.2 %, missing/extra: a few instructions (state 0 probe loop, shared statics @NNN)
+// FIXME(shotgun): 95.09 %, missing/extra + reloc-name; behaviour drift.
+// a few instructions (state 0 probe loop, shared statics @NNN)
 void WarpCannon_8049EAE0::update() {
     switch (field_0x268) {
     case 0: {
-        JGeometry::TBox2f probe;
-        probe.i.x = mBox.i.x + mPos.x;
-        probe.i.y = mBox.i.y + (mPos.y - mPos.z);
-        probe.f.x = mBox.f.x + mPos.x;
-        probe.f.y = mBox.f.y + (mPos.y - mPos.z);
-        s32 found = -1;
-        for (s32 p = 0; p < 4; p++) {
+        JGeometry::TBox2f probe = mBox;
+        f32 dy = mPos.y - mPos.z;
+        probe.i.x += mPos.x;
+        probe.i.y += dy;
+        probe.f.x += mPos.x;
+        probe.f.y += dy;
+        s32 p;
+        for (p = 0; p < 4; p++) {
             if ((gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << p)) && fn_8023B0F4(p, &probe, field_0x4, false, 1.0f) &&
                 !fn_80230188(p) && field_0x26c < 0) {
-                found = p;
                 break;
             }
         }
-        if (found >= 0) {
-            field_0x26c = found;
+        if (p == 4) {
+            p = -1;
+        }
+        if (p >= 0) {
+            field_0x26c = p;
             fn_80130FAC(1);
         }
         bool all = true;
@@ -178,11 +184,14 @@ void WarpCannon_8049EAE0::update() {
         }
         break;
     }
+    case 8:
+        break;
     }
     mAnim.fn_801D1C18();
 }
 
-// FIXME: 99.90 %. Only the .sdata2 offsets of its literals differ: the
+// FIXME: 99.90 %, reloc-name; behaviour clean.
+// Only the .sdata2 offsets of its literals differ: the
 // original's pool (0x8053CCA0) also holds update()'s, which isn't written yet.
 void WarpCannon_8049EAE0::draw() {
     SpriteParams_801F5AE0 params;
@@ -205,7 +214,8 @@ void WarpCannon_8049EAE0::draw() {
                 1.0f, 1.0f);
 }
 
-// FIXME: 95.15 %. The loop over fn_80230360 is the same, but after it the
+// FIXME: 95.24 %, missing/extra + reloc-name; behaviour drift.
+// The loop over fn_80230360 is the same, but after it the
 // original falls through into the field_0x278 store on its own `cmpwi 4; blt`,
 // where ours compares i again (cmpwi; bne): 3 extra instructions. The switch's
 // jump table is the compiler's (@NNN) where the original names
