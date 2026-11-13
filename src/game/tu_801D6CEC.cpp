@@ -181,22 +181,14 @@ void cls_801D7730::fn_801D70BC(const JGeometry::TVec3f* pos, s32 player) {
             f32 vx;
             f32 vy;
             if (player >= 0 && player < 4) {
-                f32 dx = getPlayerPos_8023E724(player)->x - a->mPos.x;
-                f32 dy = getPlayerPos_8023E724(player)->y - a->mPos.y;
-                f32 sq = dx * dx + dy * dy;
-                if (sq <= 32.0f * JGeometry::TUtil<f32>::epsilon()) {
-                    dx = 1.0f;
-                    dy = 0.0f;
-                } else {
-                    f32 norm = JGeometry::TUtil<f32>::inv_sqrt(sq);
-                    dx *= norm;
-                    dy *= norm;
-                }
+                JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - a->mPos.x,
+                                    getPlayerPos_8023E724(player)->y - a->mPos.y);
+                d.normalize();
                 s16 ang = -(s16)(fn_801CD664(0xE39) - 0x71C);
                 f32 s = JMath::sincosTable_.sinShort(ang);
                 f32 c = JMath::sincosTable_.cosShort(ang);
-                vx = dx * c - dy * s;
-                vy = dx * s + dy * c;
+                vx = d.x * c - d.y * s;
+                vy = d.x * s + d.y * c;
             } else {
                 s16 ang = fn_801CD664(0x10000);
                 vx = JMath::sincosTable_.sinShort(ang);
