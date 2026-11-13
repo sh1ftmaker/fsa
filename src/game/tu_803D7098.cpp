@@ -14,7 +14,7 @@ extern const u64 lbl_80476F80[];
 extern const u64 lbl_80477180[];
 extern const u64 lbl_80477408[];
 
-// FIXME(shotgun): 95 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.54 %, missing/extra; behaviour drift.
 cls_804B03D8::cls_804B03D8() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     lbl_8053ADC0 = this;
@@ -88,7 +88,6 @@ cls_804B03D8::cls_804B03D8() {
     field_0x81 = 0;
 }
 
-// FIXME(shotgun): 100 %, matches
 cls_804B03D8::~cls_804B03D8() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     if (field_0x4c[0] != NULL) {
@@ -129,7 +128,7 @@ cls_804B03D8::~cls_804B03D8() {
 
 // Resets the screen for a new round: shows the rows of the players that take part and slides the
 // remaining panes out of view.
-// FIXME(shotgun): 73 %, missing/extra + reloc-name
+// FIXME(shotgun): 73.28 %, missing/extra + reloc-name; behaviour drift.
 void cls_804B03D8::fn_803D87C0() {
     lbl_8053AEC0->fn_804310CC();
     for (s32 i = 0; i < 3; i++) {
@@ -221,7 +220,6 @@ void cls_804B03D8::fn_803D8718() {
     }
 }
 
-// FIXME(shotgun): 99.40 %, reloc-name
 void cls_804B03D8::fn_803D8670() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x4->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
@@ -230,7 +228,8 @@ void cls_804B03D8::fn_803D8670() {
     field_0x1c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
 }
 
-// FIXME(shotgun): 95.73 %, missing/extra (one more saved register: the bounce step)
+// FIXME(shotgun): 96.27 %, missing/extra; behaviour near.
+// (one more saved register: the bounce step)
 void cls_804B03D8::fn_803D8364() {
     f32 bounce;
     f32 alpha;
@@ -283,14 +282,13 @@ void cls_804B03D8::fn_803D8364() {
     }
 }
 
-// FIXME(shotgun): 99.50 %, reloc-name
 void cls_804B03D8::fn_803D82EC() {
     gGameRoot2_8053AB10->fn_8013B490();
     field_0x1c->setAlpha(field_0x77);
     field_0x1c->draw(0.0f, 0.0f, 800.0f, 640.0f, false, false, false);
 }
 
-// FIXME(shotgun): 93.36 %
+// FIXME(shotgun): 93.36 %, missing/extra; behaviour drift.
 void cls_804B03D8::fn_803D75B0() {
     if (field_0x80 == 1) {
         lbl_8053AEC0->fn_80431174(field_0x78);
@@ -483,12 +481,12 @@ void cls_804B03D8::fn_803D75B0() {
 
 // Slides the panes in (the first frames of the screen); once all four have arrived, places the
 // cursor (field_0x44) over the pane of the selected row.
-// FIXME(shotgun): 88 %, missing/extra + reloc-name
+// FIXME(shotgun): 95.44 %, different + reloc-name; behaviour clean.
 void cls_804B03D8::fn_803D7098() {
-    bool a = false;
-    bool b = false;
-    bool c = false;
-    bool d = false;
+    u8 a = false;
+    u8 b = false;
+    u8 c = false;
+    u8 d = false;
     field_0x60++;
     if (field_0x60 > 4) {
         a = field_0x30->fn_80402940(0x16, 0, -200.0f, 0.0f);
@@ -533,7 +531,7 @@ void cls_804B03D8::fn_803D7098() {
                 f32 y0 = field_0x4->search(lbl_80477408[0])->getBounds()->i.y +
                          field_0x4->search(lbl_80477180[0])->getBounds()->i.y;
                 f32 y1 = field_0x4->search(lbl_80477408[field_0x68])->getBounds()->i.y +
-                         field_0x4->search(lbl_80477180[k * 16 + j])->getBounds()->i.y;
+                         field_0x4->search(lbl_80477180[field_0x68 * 16 + field_0x6a])->getBounds()->i.y;
                 f32 y2 = field_0x8->search('P0kak00')->getBounds()->i.y;
                 f32 y3 = field_0x4->search('Ndata03')->getBounds()->i.y +
                          field_0x4->search(lbl_80477408[0])->getBounds()->i.y;
