@@ -246,12 +246,12 @@ void cls_804AE088::fn_8036AC58(s32 arg) {
     SpriteParams_801F5AE0 params;
     s32 frame;
     if (field_0x23c != 5 || field_0x240 < 0x1E || field_0x240 >= 0x21) {
-        if (field_0x240 == 0x1C || (field_0x240 == 0x1D || field_0x240 == 0x1E) || (field_0x240 == 0x21 || field_0x240 == 0x22) || field_0x240 == 0x23) {
+        if (field_0x240 == 0x1C || field_0x240 == 0x1D || field_0x240 == 0x1E || field_0x240 == 0x21 || field_0x240 == 0x22 || field_0x240 == 0x23) {
             frame = field_0x264 + 0x1B3;
             if (mSpriteParams.mMtx == NULL) {
                 fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
             }
-} else {
+        } else {
             frame = arg + field_0x318.mCel;
             if (mSpriteParams.mMtx == NULL) {
                 fn_801EF830(field_0x4, &mPos, &params, 7, "enemy_gc_sob.bin", frame, NULL);
@@ -269,14 +269,14 @@ void cls_804AE088::fn_8036AC58(s32 arg) {
         params.field_0x10.b = 0xFF;
         params.field_0x10.a = 0xFF - field_0x24c;
     }
-    if (field_0x240 == 0x1C || (field_0x240 == 0x1D || field_0x240 == 0x1E) || (field_0x240 == 0x21 || field_0x240 == 0x22) || field_0x240 == 0x23) {
+    if (field_0x240 == 0x1C || field_0x240 == 0x1D || field_0x240 == 0x1E || field_0x240 == 0x21 || field_0x240 == 0x22 || field_0x240 == 0x23) {
         frame = field_0x264 + 0x1B3;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F86CC(&mPos, res, frame, &params, 1.0f, 1.0f);
         }
         fn_803075AC(mSerial, field_0x4, &mPos, field_0x264 + 0x1B3, 0, 1, -1, false, 0, 0);
-} else {
+    } else {
         frame = arg + field_0x318.mCel;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SOB ', "enemy_gc_sob.bin");
