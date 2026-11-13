@@ -175,7 +175,8 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
-// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 96.18 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): the original swaps r29/r30 for player/loop index.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -258,22 +259,22 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
         break;
     case 0x3D: {
         u16 angle;
-        s32 dir;
         f32 dist;
         s32 other;
+        s32 dir;
         fn_801EEC98(mSerial, &angle, &dir, &dist, &other, 0, 2);
-        if (dir >= 0 && dist <= 80.0f && dir >= 0) {
+        if (dir >= 0 && !(dist > 80.0f) && dir >= 0) {
             field_0x98 = dir;
             if (dir + 6 != mAnim0.mAnim) {
                 mAnim0.startAnim_801D22DC(dir + 6, 2, false);
                 mAnim0.fn_801D1F14(0.0f);
             }
         }
-        JGeometry::TBox2f box2;
-        box2.i.x = mBox.i.x + mPos.x;
-        box2.i.y = mBox.i.y + mPos.y;
-        box2.f.x = mBox.f.x + mPos.x;
-        box2.f.y = mBox.f.y + mPos.y;
+        JGeometry::TBox2f box2 = mBox;
+        box2.i.x += mPos.x;
+        box2.i.y += mPos.y;
+        box2.f.x += mPos.x;
+        box2.f.y += mPos.y;
         fn_8022FEB8(&box2, field_0x4, mSerial, true, false);
         s32 player = fn_8022FD8C(mSerial);
         if (player >= 0) {
@@ -284,7 +285,8 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
             } else if (!fn_8023F264(player)) {
                 player = -1;
             } else {
-                JGeometry::TVec3f at(mPos.x, mPos.y + -10.0f, mPos.z);
+                JGeometry::TVec3f at = mPos;
+                at.y += -10.0f;
                 if (!fn_8038AD24(player, 0x2D2, mSerial, field_0x4, at, 0x20)) {
                     player = -1;
                 } else {
