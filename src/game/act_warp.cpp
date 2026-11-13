@@ -456,25 +456,27 @@ void Warp_804A6DC8::draw() {
 // low 7 bits of the spawn parameter): marks it, hurts it, or sends it through (fn_802317F0).
 // FIXME(shotgun): 79.60 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
+    s32 kind;
     for (s32 player = 0; player < 4; player++) {
-        *box = mBox;
-        box->addPos(JGeometry::TVec2<f32>(mPos.x, mPos.y));
+        box->set(mBox.i.x + mPos.x, mBox.i.y + mPos.y, mBox.f.x + mPos.x, mBox.f.y + mPos.y);
         if (!fn_8022D75C(player) && fn_8022D534(player)) {
             field_0x234[player] = 1;
             continue;
         }
-        if ((field_0x90 & 0x7F) == 0x10) {
+        kind = field_0x90 & 0x7F;
+        if (kind == 0x10) {
             return;
         }
         if (fn_8022F514(player)) {
-            u32 kind = field_0x90 & 0x7F;
-            if (kind <= 3 || kind == 0x17 || kind == 0x18) {
+            kind = field_0x90 & 0x7F;
+            if (kind == 0 || (kind >= 1 && kind <= 3) || kind == 0x17 || kind == 0x18) {
                 if (fn_8023B0F4(player, box, field_0x4, false, 8.0f)) {
                     fn_802381B8(player);
                 }
             }
         }
-        if ((field_0x90 & 0x7F) == 0x13) {
+        kind = field_0x90 & 0x7F;
+        if (kind == 0x13) {
             if (!fn_80234E30(player)) {
                 continue;
             }
@@ -485,7 +487,7 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
             }
         }
         if (fn_8023B0F4(player, box, field_0x4, false, 8.0f)) {
-            u32 kind = field_0x90 & 0x7F;
+            kind = field_0x90 & 0x7F;
             bool pass = false;
             if (kind == 0x15 || kind == 0x23) {
                 s32 layer = field_0x4;
@@ -510,7 +512,7 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
                     continue;
                 }
             }
-            if (fn_8022F478(player) && (field_0x90 & 0x7F) != 4) {
+            if (fn_8022F478(player) && kind != 4) {
                 continue;
             }
             kind = field_0x90 & 0x7F;
@@ -522,7 +524,8 @@ void Warp_804A6DC8::fn_802278A8(JGeometry::TBox2f* box) {
             if (!fn_802317F0(player, warpLayer(field_0x90), &mPos, &field_0x238, field_0x90 & 0x7F)) {
                 continue;
             }
-            if ((field_0x90 & 0x7F) != 4 || !fn_8022F514(player)) {
+            kind = field_0x90 & 0x7F;
+            if (kind != 4 || !fn_8022F514(player)) {
                 continue;
             }
             s32 layer = getPlayerLayer_8023DE58(player);
