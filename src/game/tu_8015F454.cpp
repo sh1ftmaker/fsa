@@ -25,7 +25,8 @@ cls_804A03A8::~cls_804A03A8() {
     delete field_0x290;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name (the 32 zeros are stored straight-line, as in the original)
+// FIXME(shotgun): 99.87 %, reloc-name; behaviour clean.
+// (the 32 zeros are stored straight-line, as in the original)
 // 0x801601E0
 void cls_804A03A8::fn_801601E0() {
     field_0x204[0] = 0;
@@ -65,7 +66,7 @@ void cls_804A03A8::fn_801601E0() {
     field_0x28c = 0.0f;
 }
 
-// FIXME(shotgun): 98.6 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
 // 0x8016005C
 void cls_804A03A8::fn_8016005C() {
     for (s32 i = 0; i < 0x20; i++) {
@@ -89,7 +90,8 @@ void cls_804A03A8::fn_8016005C() {
     }
 }
 
-// FIXME(shotgun): 94.0 %, different (stack slots of the arrays and colour copies are ordered differently; the white colour is not hoisted)
+// FIXME(shotgun): 93.99 %, missing/extra + reloc-name; behaviour near.
+// (stack slots of the arrays and colour copies are ordered differently; the white colour is not hoisted)
 // 0x8015F9C0
 void cls_804A03A8::fn_8015F9C0() {
     u8 active = 0;
@@ -241,7 +243,7 @@ u8 cls_804A03A8::fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode) 
     return placed;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name
+// FIXME(shotgun): 99.88 %, reloc-name; behaviour clean.
 // 0x8015F454
 void fn_8015F454(JUTTexture* tex, const f32* pos, const f32* uv, GXColor color, const GXColorS10* color2,
                  JUTTexture* mask, u8 mirror, u8 blend) {
