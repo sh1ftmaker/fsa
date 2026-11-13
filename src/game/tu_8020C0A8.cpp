@@ -18,7 +18,7 @@ cls_804A5F40::cls_804A5F40() {
     field_0x2ae = 0;
 }
 
-// FIXME(shotgun): 84.42 %, missing/extra + reloc-name.
+// FIXME(shotgun): 84.42 %, missing/extra + reloc-name; behaviour clean.
 void cls_804A5F40::init() {
     EnemyBase_804A4808::init();
     if (field_0x90 & 1) {
@@ -57,7 +57,7 @@ void cls_804A5F40::init() {
     }
 }
 
-// FIXME(shotgun): 94.95 %, missing/extra + reloc-name.
+// FIXME(shotgun): 94.95 %, missing/extra + reloc-name; behaviour clean.
 void cls_804A5F40::fn_8020C6E8() {
     s32 nearest = -1;
     if (mFlags & 0x2000) {
@@ -111,7 +111,7 @@ void cls_804A5F40::fn_8020C6E8() {
     }
 }
 
-// FIXME(shotgun): 99.27 %, missing/extra + reloc-name.
+// FIXME(shotgun): 99.27 %, missing/extra + reloc-name; behaviour near.
 void cls_804A5F40::vfunc_0x90(u8 mapHit) {
     fn_8020C6E8();
     switch (mState) {
@@ -188,10 +188,15 @@ void cls_804A5F40::vfunc_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 68.48 %, missing/extra.
+// FIXME: 98.04 %, regalloc-only; behaviour clean.
+// FIXME(shotgun): register allocation differs (f0/f1/f2 assignment).
 void cls_804A5F40::vfunc_0x88() {
-    field_0x3c.x = JMath::sincosTable_.sinShort(field_0x2ae) * mSpeed;
-    field_0x3c.y = JMath::sincosTable_.cosShort(field_0x2ae) * mSpeed;
+    f32 sinV = JMath::sincosTable_.sinShort(field_0x2ae);
+    f32 cosV = JMath::sincosTable_.cosShort(field_0x2ae);
+    f32 x = sinV * mSpeed;
+    f32 y = cosV * mSpeed;
+    field_0x3c.x = x;
+    field_0x3c.y = y;
     vfunc_0x84();
 }
 
@@ -203,7 +208,7 @@ void cls_804A5F40::vfunc_0x98() {
     }
 }
 
-// FIXME(shotgun): 89.12 %, missing/extra.
+// FIXME(shotgun): 89.12 %, missing/extra; behaviour clean.
 bool cls_804A5F40::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     const u32* ignoreIds = NULL;
     if (mFlags & 7) {
@@ -220,7 +225,7 @@ bool cls_804A5F40::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return result;
 }
 
-// FIXME(shotgun): 99.81 %, reloc-name.
+// FIXME(shotgun): 99.81 %, reloc-name; behaviour clean.
 void cls_804A5F40::draw() {
     SpriteParams_801F5AE0 params;
     params.field_0x0[2] = 4;
