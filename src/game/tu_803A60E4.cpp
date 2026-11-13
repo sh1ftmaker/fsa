@@ -17,7 +17,7 @@ inline void cls_804AF860::rotateArrow(u64 tag, s16 base) {
 
 // Fonts, texts and the arrows' base angles of the options screen: the constructor of the
 // object at 0x804AF860 (0x84 bytes).
-// FIXME(shotgun): 86.46 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.32 %, missing/extra + reloc-name; behaviour drift.
 cls_804AF860::cls_804AF860() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     field_0x4 = new J2DScreen;
@@ -115,7 +115,7 @@ cls_804AF860::~cls_804AF860() {
 }
 
 // 0x803A7280.
-// FIXME(shotgun): 76.81 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 96.36 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF860::fn_803A7280() {
     field_0x64 = 0;
     field_0x68 = 0;
@@ -281,7 +281,7 @@ s32 fn_803A65EC() {
 }
 
 // 0x803A60E4.
-// FIXME(shotgun): 51.26 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.79 %, missing/extra + reloc-name; behaviour clean.
 void cls_804AF860::fn_803A60E4() {
     if (field_0x6e == 0) {
         if (--field_0x6c > 0) {
