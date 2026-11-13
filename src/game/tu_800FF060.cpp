@@ -390,14 +390,16 @@ void HammerShopMinigame_8049C858::update() {
     }
 }
 
-// FIXME(shotgun): 55.5 %, missing/extra (54 more instrs; loop unroll differs)
+// FIXME(shotgun): register allocation differs in the unrolled score loop
 void HammerShopMinigame_8049C858::draw() {
     if (field_0x230 == 4 || field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7) {
         s32 count = gGameRoot_8053AAF8->fn_80138A30();
         for (s32 i = 0; i < count; i++) {
             lbl_8053AF00->field_0x30 |= (u8)(1 << i);
-            lbl_8053AF00->field_0x2c[i] = field_0x250[i] / 60;
-            lbl_8053AF00->field_0x28[i] = (f32)(field_0x250[i] % 60) / 0.6f;
+            s32 score = field_0x250[i];
+            s32 minutes = score / 60;
+            lbl_8053AF00->field_0x2c[i] = minutes;
+            lbl_8053AF00->field_0x28[i] = (f32)(score - minutes * 60) / 0.6f;
         }
         lbl_8053AF00->field_0x30 |= (u8)(1 << (field_0x240 + 4));
         if (field_0x230 == 4) {
