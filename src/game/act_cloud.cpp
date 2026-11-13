@@ -78,7 +78,7 @@ void Cloud_8049CBE0::init() {
 }
 
 // 0x801056E4.
-// FIXME(shotgun): 88.40 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.16 %, missing/extra + reloc-name; behaviour near.
 void Cloud_8049CBE0::update() {
     ActorBase_804A5770::update();
     s32 layer = field_0x4;
