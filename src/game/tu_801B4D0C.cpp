@@ -34,7 +34,7 @@ extern u8 lbl_8053ABF8;
 s32 lbl_8053A118 = 3;
 
 // 0x801B6170.
-// FIXME(shotgun): 85.49 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.82 %, reloc-name; behaviour clean.
 void cls_804A38D4::init() {
     mBox.set(-12.0f, -12.0f, 12.0f, 12.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -47,7 +47,7 @@ void cls_804A38D4::init() {
     for (s32 i = 0; i < 3; i++) {
         mEmitters294[i] = NULL;
     }
-    for (s32 i = 0; i < 20; i++) {
+    for (u32 i = 0; i < 20; i++) {
         mEmitters2A0[i] = NULL;
     }
     lbl_8053ABF8 = 0;
@@ -57,10 +57,11 @@ void cls_804A38D4::init() {
     if (field_0x250 == 0 && field_0x254 == 0) {
         JGeometry::TBox2f box;
         box = getGameView_802D6A9C()->mVisibleBox;
-        JGeometry::TVec3f pos = mPos;
+        JGeometry::TVec3f pos;
+        pos.set(mPos);
         pos.x = box.i.x + 0.5f * (box.f.x - box.i.x);
         pos.y = box.i.y + 0.5f * (box.f.y - box.i.y);
-        pos = mPos;
+        pos.set(mPos);
         pos.x += 96.0f;
         pos.y += -32.0f;
         for (s32 i = 0; i < 20; i++) {
