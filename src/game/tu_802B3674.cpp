@@ -19,7 +19,7 @@ u8 lbl_8053A1A0[8] = {10, 60, 80, 100, 210, 0, 0, 0};
 // (JPABaseEmitter in include/JSystem/JParticle/JPAEmitter.h has mEmitterRot (s16) at 0x24..0x29
 // and mVolumeType at 0x2A, so no float field at 0x28 is identifiable; the two stfs are
 // omitted, a behaviour difference until the real field is known).
-// FIXME(shotgun): 88.00 %, missing/extra + reloc-name
+// FIXME(shotgun): 88.07 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A8638::init() {
     field_0x234 = NULL;
     field_0x238 = NULL;
@@ -272,7 +272,7 @@ void cls_804A8638::vfunc_0x10() {
     fn_8013A884(&color);
 }
 
-// FIXME(shotgun): 87.08 %, missing/extra
+// FIXME(shotgun): 87.08 %, missing/extra; behaviour near.
 cls_804A8638::~cls_804A8638() {
     fn_8016A3AC()->field_0x1ee = 0;
     if (field_0x234 != NULL) {
@@ -291,7 +291,7 @@ cls_804A8638::~cls_804A8638() {
 // GameRootSub24_8016A3AC's 0x1E0 and 0x1E8 floats are not declared in GameGlobals.h (only 0x1E4 is),
 // and JPABaseEmitter's 0x28 float / 0xF4 status word differ from include/JSystem/JParticle/JPAEmitter.h,
 // so those stores are omitted or call JPA's methods.
-// FIXME(shotgun): 94.06 %, missing/extra
+// FIXME(shotgun): 94.06 %, missing/extra; behaviour drift.
 void cls_804A8638::update() {
     bool paused = false;
     if ((gGameRoot_8053AAF8->field_0x7f != 0 &&
@@ -897,7 +897,7 @@ void cls_804A8638::update() {
 void cls_804A8638::draw() {}
 
 // 0x802B3A48.
-// FIXME(shotgun): 84.07 %, missing/extra
+// FIXME(shotgun): 84.07 %, missing/extra; behaviour clean.
 void cls_804A8638::fn_802B3A48() {
     fn_8016A3AC()->field_0x1ee = 0;
     if (field_0x234 != NULL) {
