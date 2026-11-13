@@ -364,13 +364,15 @@ void ShadowLink2_804A43E8::fn_801C844C() {
         u8 start = field_0x358.fn_80214244()->field_0x3;
         field_0x358.fn_80214244()->fn_800FD818(1);
         u8 next = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        cls_800FE3EC* rail = field_0x358.fn_80214244();
+        if (start < rail->field_0x2) {
+            rail->field_0x3 = start;
         }
         field_0x358.fn_80214244()->fn_800FD818(-1);
         u8 prev = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        rail = field_0x358.fn_80214244();
+        if (start < rail->field_0x2) {
+            rail->field_0x3 = start;
         }
         u8 opt[2];
         opt[0] = prev;
@@ -389,8 +391,9 @@ void ShadowLink2_804A43E8::fn_801C844C() {
                 pick = opt[1];
             }
         }
-        if (pick < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = pick;
+        rail = field_0x358.fn_80214244();
+        if (pick < rail->field_0x2) {
+            rail->field_0x3 = pick;
         }
     }
     if (mFlags & 0x200000) {
@@ -404,13 +407,15 @@ void ShadowLink2_804A43E8::fn_801C844C() {
         u8 start = field_0x358.fn_80214244()->field_0x3;
         field_0x358.fn_80214244()->fn_800FD818(1);
         u8 next = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        cls_800FE3EC* rail = field_0x358.fn_80214244();
+        if (start < rail->field_0x2) {
+            rail->field_0x3 = start;
         }
         field_0x358.fn_80214244()->fn_800FD818(-1);
         u8 prev = field_0x358.fn_80214244()->field_0x3;
-        if (start < field_0x358.fn_80214244()->field_0x2) {
-            field_0x358.fn_80214244()->field_0x3 = start;
+        rail = field_0x358.fn_80214244();
+        if (start < rail->field_0x2) {
+            rail->field_0x3 = start;
         }
         u8 opt[2];
         opt[1] = prev;
@@ -422,8 +427,9 @@ void ShadowLink2_804A43E8::fn_801C844C() {
                 JGeometry::TVec3f copy1 = p1;
                 if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &copy1, field_0x4)) {
                     u8 pick = opt[1];
-                    if (pick < field_0x358.fn_80214244()->field_0x2) {
-                        field_0x358.fn_80214244()->field_0x3 = pick;
+                    rail = field_0x358.fn_80214244();
+                    if (pick < rail->field_0x2) {
+                        rail->field_0x3 = pick;
                     }
                 }
             }
@@ -434,8 +440,9 @@ void ShadowLink2_804A43E8::fn_801C844C() {
                 JGeometry::TVec3f copy0 = p0;
                 if (!fn_801CF888((const JGeometry::TVec2f*)&mPos, &copy0, field_0x4)) {
                     u8 pick = opt[0];
-                    if (pick < field_0x358.fn_80214244()->field_0x2) {
-                        field_0x358.fn_80214244()->field_0x3 = pick;
+                    rail = field_0x358.fn_80214244();
+                    if (pick < rail->field_0x2) {
+                        rail->field_0x3 = pick;
                     }
                 }
             }
