@@ -91,7 +91,7 @@ void OctorokRock_8049F5D8::update() {
     u8 blocked = 0;
     mPos += field_0x3c;
     facing = field_0x98;
-    // FIXME: 94.2 %. The original compares field_0x90 signed (cmpwi) in the
+    // FIXME: The original compares field_0x90 signed (cmpwi) in the
     // state 0 tests and the final switch, unsigned elsewhere; the tail's `li 0`
     // and the sprite target's register (r29 here, r30) differ too.
     switch (field_0x230) {
@@ -163,7 +163,8 @@ void OctorokRock_8049F5D8::update() {
         break;
     case 2:
         if (field_0x90 == 1 && (field_0x238 & 1) == 0) {
-            field_0x240 = (field_0x240 + 1) & 3;
+            field_0x240++;
+            field_0x240 &= 3;
             field_0x98 = lbl_8049F548[field_0x240];
         }
         field_0x248 -= 10;
@@ -246,7 +247,8 @@ void OctorokRock_8049F5D8::update() {
     case 4:
         if (field_0x238 == 0) {
             field_0x238 = 3;
-            field_0x24c = (field_0x24c + 1) & 3;
+            field_0x24c++;
+            field_0x24c &= 3;
         }
         break;
     case 1:
