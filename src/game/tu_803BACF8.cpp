@@ -424,7 +424,7 @@ s32 fn_803BAE68(CARDFileInfo* file) {
 }
 
 // True when the checksum words of the save file match its first 0xC0 bytes.
-// FIXME(shotgun): 43.57 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 60.55 %, missing/extra; behaviour clean.
 // (our unrolled checksum loop needs more registers)
 bool fn_803BADAC(SaveFile_803B950C* file) {
     u32 sum = 0;
