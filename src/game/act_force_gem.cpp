@@ -269,11 +269,11 @@ bool ForceGem_804AB6D8::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     u32 skipIds[2] = {'TOMI', 'NULL'};
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
-    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, skipIds)) {
+    if (boxes->mLists[boxes->field_0x1].fn_8020D6AC(layer, pos, serial, skipIds) == 1) {
         return true;
     }
-    u8 result;
-    u16 code = fn_8022461C(pos, layer);
+    bool result;
+    s32 code = fn_8022461C(pos, layer);
     if (code == 0x3B || code == 0x23) {
         result = false;
     } else {
