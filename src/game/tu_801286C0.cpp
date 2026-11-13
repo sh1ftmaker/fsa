@@ -170,8 +170,7 @@ void cls_8049E500::fn_80128728(int state) {
         gAudioMgr_8053AF80->fn_80458F9C(0x3C);
         fn_80119DD0()->field_0x1 = 0;
         GameView_804A9950* view = getGameView_802D6A9C();
-        JGeometry::TBox2f box;
-        box = view->mVisibleBox;
+        JGeometry::TBox2f box = view->mVisibleBox;
         JGeometry::TVec3f pos(0.5f * (box.f.x - box.i.x) + box.i.x, 0.5f * (box.f.y - box.i.y) + box.i.y, 0.0f);
         spawnEmitter_8013CC50(field_0x4, &pos, 0x33C, 1, 2, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &pos, 0x33D, 1, 2, NULL, NULL, true, 1.0f);
