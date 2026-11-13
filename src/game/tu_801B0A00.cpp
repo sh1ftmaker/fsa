@@ -10,7 +10,7 @@
 static const s32 lbl_804A35A0[3] = {2, 1, 0};
 
 // 0x801B2394.
-// FIXME(shotgun): 83.35 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.89 %, reloc-name; behaviour clean.
 void cls_804A35AC::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -150,6 +150,7 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 }
 
 // 0x801B2000.
+// FIXME: 82.28 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): operands differ: fn_802303FC's original call passes 0xFF for its bool flag; register choice for mPos.y differs.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
