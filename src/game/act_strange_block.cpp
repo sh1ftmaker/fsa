@@ -83,13 +83,13 @@ void StrangeBlock_804AC2D8::init() {
 
 // 0x8033DA78. States of field_0x234: 0 the block waits to be pushed or slides, 1 a player's
 // message is open, then back to 0.
-// FIXME(shotgun): 83.02 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.18 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::update() {
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x;
-    box.i.y = mBox.i.y + mPos.y;
-    box.f.x = mBox.f.x + mPos.x;
-    box.f.y = mBox.f.y + mPos.y;
+    JGeometry::TBox2f box(mBox);
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
     fn_80239914(&box, field_0x4, mSerial);
     if (field_0x25c != 0 && field_0x25c != 2) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -142,11 +142,11 @@ void StrangeBlock_804AC2D8::update() {
                 field_0x248 = 30;
             }
         } else if (field_0x265) {
-            JGeometry::TBox2f talkBox;
-            talkBox.i.x = mBox.i.x + mPos.x;
-            talkBox.i.y = mBox.i.y + mPos.y;
-            talkBox.f.x = mBox.f.x + mPos.x;
-            talkBox.f.y = mBox.f.y + mPos.y;
+            JGeometry::TBox2f talkBox(mBox);
+            talkBox.i.x += mPos.x;
+            talkBox.i.y += mPos.y;
+            talkBox.f.x += mPos.x;
+            talkBox.f.y += mPos.y;
             if (field_0x25c == 0 || field_0x25c == 2) {
                 fn_8022FEB8(&talkBox, field_0x4, mSerial, true, false);
                 field_0x258 = fn_8022FD8C(mSerial);
@@ -165,30 +165,25 @@ void StrangeBlock_804AC2D8::update() {
             if (field_0x244 > 0) {
                 field_0x244--;
             } else if (field_0x244 == 0) {
-                f32 sq = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-                if (sq <= 32.0f * FLT_EPSILON) {
+                if (field_0x3c.isZero()) {
                     fn_8033D4CC();
                 } else {
                     JGeometry::TVec3f saved = field_0x3c;
-                    bool keep = true;
-                    if (field_0x260 == 2 && reach == 19.9f &&
-                        PSVECDistance(&mPos, (const Vec*)&field_0x238) >= 8.0f && field_0x26c != 0 &&
-                        !fn_8033D264(field_0x26c - 1)) {
-                        keep = false;
-                    } else {
+                    if (!(field_0x260 == 2 && reach == 19.9f &&
+                          PSVECDistance(&mPos, (const Vec*)&field_0x238) >= 8.0f && field_0x26c != 0 &&
+                          !fn_8033D264(field_0x26c - 1))) {
                         field_0x3c = saved;
-                    }
-                    if (keep == false) {
+                    } else {
                         field_0x244 = 8;
                         field_0x271 = 1;
                     }
                 }
             } else if (field_0x244 < 0) {
-                JGeometry::TBox2f talkBox;
-                talkBox.i.x = mBox.i.x + mPos.x;
-                talkBox.i.y = mBox.i.y + mPos.y;
-                talkBox.f.x = mBox.f.x + mPos.x;
-                talkBox.f.y = mBox.f.y + mPos.y;
+                JGeometry::TBox2f talkBox(mBox);
+                talkBox.i.x += mPos.x;
+                talkBox.i.y += mPos.y;
+                talkBox.f.x += mPos.x;
+                talkBox.f.y += mPos.y;
                 if (field_0x25c == 0 || field_0x25c == 2) {
                     fn_8022FEB8(&talkBox, field_0x4, mSerial, true, false);
                     field_0x258 = fn_8022FD8C(mSerial);
@@ -220,7 +215,8 @@ void StrangeBlock_804AC2D8::update() {
         if (field_0x25c == 0 || field_0x25c == 2) {
             field_0x24c--;
             if (field_0x24c <= 0) {
-                field_0x250 = (field_0x250 + 1) & 3;
+                field_0x250++;
+                field_0x250 &= 3;
                 field_0x24c = lbl_804ABC80[field_0x250];
             }
         }
@@ -229,7 +225,7 @@ void StrangeBlock_804AC2D8::update() {
 
 // 0x8033D4CC. Called when the block is idle: pushes it one step when a player has been
 // shoving it long enough, or lets it slide back to its spawn position.
-// FIXME(shotgun): 76.67 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
 void StrangeBlock_804AC2D8::fn_8033D4CC() {
     s32 pushers = fn_80239108(mSerial);
     if (pushers >= field_0x260) {
@@ -258,7 +254,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
             }
             if (dir >= 0 && dir < 4) {
                 fn_80238E08(mSerial);
-                f32 speed = 0.0f;
+                f32 speed;
                 switch (field_0x25c) {
                 case 0:
                 case 1:
@@ -275,9 +271,7 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 field_0x3c.x = lbl_804AC2A8[dir * 3];
                 field_0x3c.y = lbl_804AC2A8[dir * 3 + 1];
                 field_0x3c.z = lbl_804AC2A8[dir * 3 + 2];
-                field_0x3c.x *= speed;
-                field_0x3c.y *= speed;
-                field_0x3c.z *= speed;
+                field_0x3c.scale(speed);
                 if (field_0x271 == 1) {
                     field_0x271 = 0;
                 } else {
@@ -289,17 +283,15 @@ void StrangeBlock_804AC2D8::fn_8033D4CC() {
                 field_0x272 = 1;
             }
             if (field_0x25c == 4) {
-                s32 id;
                 if (dir == 0) {
-                    id = 0x31A;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31A, 1, 1, NULL, NULL, true, 1.0f);
                 } else if (dir == 1) {
-                    id = 0x31B;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31B, 1, 1, NULL, NULL, true, 1.0f);
                 } else if (dir == 2) {
-                    id = 0x31C;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x31C, 1, 1, NULL, NULL, true, 1.0f);
                 } else {
-                    id = 0x319;
+                    field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x319, 1, 1, NULL, NULL, true, 1.0f);
                 }
-                field_0x230 = spawnEmitter_8013CC50(field_0x4, &mPos, id, 1, 1, NULL, NULL, true, 1.0f);
             }
         }
     } else if (((field_0x90 >> 16) & 1) && PSVECDistance(&mPos, &mSpawnPos) > 1.0f) {
