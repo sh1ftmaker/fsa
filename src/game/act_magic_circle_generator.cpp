@@ -55,7 +55,8 @@ MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
     }
 }
 
-// FIXME(shotgun): 84.4 %, missing/extra: the box temporaries and the key-search loop are scheduled differently
+// FIXME(shotgun): 84.73 %, missing/extra; behaviour near.
+// the box temporaries and the key-search loop are scheduled differently
 void MagicCircleGenerator_804A9FB0::update() {
     switch (field_0x244) {
     case 0: {
@@ -208,7 +209,8 @@ void MagicCircleGenerator_804A9FB0::update() {
     }
 }
 
-// FIXME(shotgun): 87.2 %, missing/extra: sqrtf's expansion (the original calls the guarded software form) and the emitter alpha stores
+// FIXME(shotgun): 87.24 %, missing/extra + reloc-name; behaviour near.
+// sqrtf's expansion (the original calls the guarded software form) and the emitter alpha stores
 void MagicCircleGenerator_804A9FB0::fn_802E80A0() {
     s32 bestSerial = -1;
     s32 bestDist = -1;
@@ -262,7 +264,8 @@ void MagicCircleGenerator_804A9FB0::fn_802E80A0() {
     }
 }
 
-// FIXME: 93.51 %. The -20.0f / 20.0f literals are @508 / @509, not
+// FIXME: 93.51 %, missing/extra; behaviour clean.
+// The -20.0f / 20.0f literals are @508 / @509, not
 // lbl_80541260 / lbl_80541264 (data split), and the search keeps its loop
 // value in r29 where the original has li r28, -1 (r28 = previous serial).
 bool MagicCircleGenerator_804A9FB0::fn_802E7DB8() {
