@@ -914,7 +914,7 @@ void cls_804ADF28::fn_80363360() {
 
 void cls_804ADF28::fn_8036335C() {}
 
-// FIXME(shotgun): 88.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.13 %, missing/extra + reloc-name; behaviour drift.
 void cls_804ADF28::fn_80362C44() {
     s32 skip = 0;
     JGeometry::TVec3f pos = mPos;
