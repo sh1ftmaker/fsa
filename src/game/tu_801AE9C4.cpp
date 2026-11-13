@@ -21,7 +21,8 @@ static const char* lbl_804A33D0[] = {
 static u32 lbl_804A33B8[] = {'OKTA', 'PEAC', 'STAL'};
 static u32 lbl_804A33C4[] = {0, 0, 2};
 
-// FIXME: 83.46 %. The (6, 5) early return is `cmpwi r4,5; bne; blr` in the
+// FIXME: 98.70 %, missing/extra; behaviour drift.
+// The (6, 5) early return is `cmpwi r4,5; bne; blr` in the
 // original; ours is `cmpwi r4,5; beqlr`, one instruction fewer. The
 // jump table and the sdata2 literals differ only by @NNN names (data split).
 void OkameSan_804A3448::fn_801AF7D0(s32 state) {
@@ -52,14 +53,14 @@ void OkameSan_804A3448::fn_801AF7D0(s32 state) {
             field_0x278 = -16.0f;
         }
         break;
-    case 2:
-        field_0x254 = 8;
-        break;
     case 3:
         field_0x280 = 0.0f;
         field_0x27c = 0.0f;
         field_0x278 = 0.0f;
         field_0x254 = 0x18;
+        break;
+    case 2:
+        field_0x254 = 8;
         break;
     case 4:
         field_0x254 = 0xC;
@@ -72,14 +73,14 @@ void OkameSan_804A3448::fn_801AF7D0(s32 state) {
             field_0x27c = -16.0f;
         }
         break;
-    case 6:
-        field_0x254 = 0x14;
-        break;
     case 7:
         field_0x280 = 0.0f;
         field_0x27c = 0.0f;
         field_0x278 = 0.0f;
         field_0x254 = 0x1B;
+        break;
+    case 6:
+        field_0x254 = 0x14;
         break;
     }
 
@@ -137,7 +138,8 @@ void OkameSan_804A3448::fn_801AF678() {
     }
 }
 
-// FIXME: 99.13 %. scheduling+regalloc: the loop's float locals sit in other
+// FIXME: 99.58 %, scheduling+regalloc; behaviour drift.
+// scheduling+regalloc: the loop's float locals sit in other
 // registers than the original's (box i.x in f29 where it has f31, mPos.x in
 // f31 where it has f27); the same instructions otherwise. The sdata2
 // literals and the jump table differ only by @NNN names (data split).
@@ -220,7 +222,6 @@ void OkameSan_804A3448::fn_801AF1EC() {
     }
 }
 
-// FIXME: 99.90 %. The sdata2 literals differ only by @NNN names (data split).
 void OkameSan_804A3448::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -270,7 +271,7 @@ void OkameSan_804A3448::init() {
     }
 }
 
-// FIXME(shotgun): 95.44 %, missing/extra
+// FIXME(shotgun): 95.44 %, missing/extra; behaviour drift.
 void OkameSan_804A3448::update() {
     if (fn_801F3D94(1)) {
         fn_801F2618(NULL, false);
