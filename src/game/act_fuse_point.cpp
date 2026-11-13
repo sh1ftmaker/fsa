@@ -12,7 +12,8 @@ f32 fn_80210AF8(s32 dir);
 
 FusePoint_804A54C0::FusePoint_804A54C0() {}
 
-// FIXME(shotgun): 48.60 %, missing/extra. The mask of the sub-kind (cntlzw trick) and the TVec2 view of mPos are written plainly.
+// FIXME(shotgun): 79.60 %, missing/extra; behaviour drift.
+// The mask of the sub-kind (cntlzw trick) and the TVec2 view of mPos are written plainly.
 void FusePoint_804A54C0::init() {
     EnemyBase_804A4808::init();
     if ((field_0x90 >> 23) & 1) {
