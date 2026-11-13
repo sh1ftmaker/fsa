@@ -19,7 +19,8 @@ ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
     releaseEmitter_801EE434(mEmitter254);
 }
 
-// FIXME(shotgun): 91.6 %, scheduling + reloc-name
+// FIXME: 99.93 %, reloc-name; behaviour drift.
+// FIXME(shotgun): switch jump table is anonymous (original jumptable_804AB6B4), literal pool names differ
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
     mEmitter250 = NULL;
@@ -31,6 +32,12 @@ void ForceGemSpawner_804AB660::init() {
     field_0x240 = 11;
     field_0x23c = (field_0x90 >> 20) & 0xF;
     switch ((field_0x90 >> 16) & 0xF) {
+    case 0:
+    case 5:
+    case 6:
+    default:
+        field_0x230 = 0;
+        break;
     case 1:
         field_0x230 = 1;
         break;
@@ -49,12 +56,6 @@ void ForceGemSpawner_804AB660::init() {
     case 7:
         field_0x230 = 5;
         break;
-    case 0:
-    case 5:
-    case 6:
-    default:
-        field_0x230 = 0;
-        break;
     }
     if (field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
         if (vfunc_0x34()) {
@@ -63,7 +64,7 @@ void ForceGemSpawner_804AB660::init() {
     }
 }
 
-// FIXME(shotgun): 76.59 %, missing/extra + reloc-name
+// FIXME(shotgun): 78.82 %, scheduling+regalloc + reloc-name; behaviour clean.
 // Drops a Force Gem ('RUPY') next to the actor with serial `serial` and throws it: along `angle`
 // (plus some random spread) when `flag` is set, otherwise in a random direction.
 void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
@@ -89,16 +90,18 @@ void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
         f32 vx = 2.0f * JMASSin(angle);
         f32 vy = 2.0f * JMASCos(angle);
         f32 vz = 3.0f + 3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-        gem->field_0x3c.set(vx, vy, vz);
+        JGeometry::TVec3f vel(vx, vy, vz);
+        gem->field_0x3c = vel;
     } else {
         f32 vz = 3.0f + 3.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         f32 vy = 2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
         f32 vx = 2.0f - 4.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-        gem->field_0x3c.set(vx, vy, vz);
+        JGeometry::TVec3f vel(vx, vy, vz);
+        gem->field_0x3c = vel;
     }
 }
 
-// FIXME(shotgun): 51.38 %, missing/extra + reloc-name
+// FIXME(shotgun): 82.59 %, missing/extra + reloc-name; behaviour drift.
 void ForceGemSpawner_804AB660::update() {
     switch (field_0x230) {
     case 0: {
