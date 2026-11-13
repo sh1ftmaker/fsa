@@ -1012,18 +1012,19 @@ bool ForceGem_804AB6D8::fn_8032B0A4() {
 
 // FIXME(shotgun): 81.84 %, missing/extra + reloc-name; behaviour drift.
 void ForceGem_804AB6D8::fn_8032ABE0() {
-    if (!(field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 2 || field_0x230 == 6 || field_0x230 == 9 ||
+    if (!(field_0x230 == 0 || field_0x230 == 6 || field_0x230 == 1 || field_0x230 == 2 || field_0x230 == 9 ||
           field_0x230 == 0xd)) {
         return;
     }
     if (field_0x94 != 2) {
         u8 mode = gGameRoot_8053AAF8->field_0x7e;
-        if (mode == 1) {
-            if (field_0x24c <= 0x3d4) {
+        if (mode != 1 || field_0x24c > 0x3d4) {
+            if (mode != 0) {
                 return;
             }
-        } else if (mode != 0 || field_0x24c > 0x320) {
-            return;
+            if (field_0x24c > 0x320) {
+                return;
+            }
         }
     }
     JGeometry::TVec2f pos(mPos.x, mPos.y);
@@ -1032,8 +1033,10 @@ void ForceGem_804AB6D8::fn_8032ABE0() {
     s32 found = -1;
     for (s32 i = 0; i < 4; i++) {
         if (fn_8023B0F4(i, &box, field_0x4, false, mPos.z) == true) {
-            if ((mPos.z <= 6.0f || field_0x94 == 2) && fn_80230188(i) != true && fn_80234ECC(i) != true &&
-                fn_8023EA28(i) != true) {
+            if (mPos.z > 6.0f && field_0x94 != 2) {
+                continue;
+            }
+            if (fn_80230188(i) != true && fn_80234ECC(i) != true && fn_8023EA28(i) != true) {
                 found = i;
                 break;
             }
@@ -1049,15 +1052,19 @@ void ForceGem_804AB6D8::fn_8032ABE0() {
             }
         }
     }
-    if (found < 0 || fn_80234C5C(found)) {
+    if (found < 0) {
         return;
     }
-    if (field_0x94 == 0x23) {
+    if (fn_80234C5C(found)) {
+        return;
+    }
+    if (field_0x94 == 0x23 || fn_8022B7C4(found)) {
+        if (field_0x94 != 0x23) {
+            return;
+        }
         if (fn_8022B7C4(found) != true) {
             return;
         }
-    } else if (fn_8022B7C4(found)) {
-        return;
     }
     field_0x238 = 1.0f;
     s32 other = found;
@@ -1070,24 +1077,26 @@ void ForceGem_804AB6D8::fn_8032ABE0() {
         getGameView_802D6A9C()->fn_802D7F84(0, true);
     }
     if (field_0x268 >= 4) {
-        if (fn_8023ED8C(found) || fn_8023EBB8(found) || fn_80233DA4(found)) {
+        if (!(fn_8023ED8C(found) || fn_8023EBB8(found) || fn_80233DA4(found))) {
+            if (fn_802308E0(found) == true) {
+                JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(found);
+                JGeometry::TVec3f spawnPos(playerPos.x, playerPos.y - 12.0f, playerPos.z);
+                if (fn_80233E40(found)) {
+                    fn_80230498(found, &playerPos, 0x336, 0xff, -128, -128, true);
+                } else {
+                    fn_80230498(found, &playerPos, 0xed, 0xff, -128, -128, true);
+                }
+                getActorManager_801F856C()->spawnActor_801F9484('IMUP', field_0x4, &spawnPos,
+                                                               (found << 24) + (found << 26) + 0xA00000 + field_0x268, -1, -1);
+                fn_801F3668();
+            }
+        } else {
             lbl_8053AED0->fn_8043D874(found, lbl_804719D8[field_0x268], 0);
             field_0x94 = 1;
             field_0x264 = found;
             field_0x230 = 3;
             field_0x274 = 0;
             field_0xb0 = 0;
-        } else if (fn_802308E0(found) == true) {
-            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(found);
-            JGeometry::TVec3f spawnPos(playerPos.x, playerPos.y - 12.0f, playerPos.z);
-            if (fn_80233E40(found)) {
-                fn_80230498(found, &playerPos, 0x336, 0xff, -128, -128, true);
-            } else {
-                fn_80230498(found, &playerPos, 0xed, 0xff, -128, -128, true);
-            }
-            getActorManager_801F856C()->spawnActor_801F9484('IMUP', field_0x4, &spawnPos,
-                                                           (found << 24) + (found << 26) + 0xA00000 + field_0x268, -1, -1);
-            fn_801F3668();
         }
     } else {
         fn_80230FD0(other, 0x20011);
