@@ -439,7 +439,7 @@ SwordSoldier_8049FCA0::~SwordSoldier_8049FCA0() {
     }
 }
 
-// FIXME(shotgun): 92.59 %, missing/extra + reloc-name
+// FIXME(shotgun): literal reloc names (lbl_ vs @NNN) still differ
 bool SwordSoldier_8049FCA0::vfunc_0x54() {
     if (viewLayerFlag(field_0x4)) {
         return false;
@@ -457,8 +457,8 @@ bool SwordSoldier_8049FCA0::vfunc_0x54() {
     field_0x2b8.y = (f32)((s32)field_0x2b8.y & 0xFFF8);
     field_0x2b8.x += -12.0f * JMath::sincosTable_.sinShort((s16)fn_801F6874(field_0x98));
     field_0x2b8.y += -12.0f * JMath::sincosTable_.cosShort((s16)fn_801F6874(field_0x98));
-    u16 tile = fn_8022461C(&field_0x2b8, field_0x4);
-    if ((u16)(tile - 2) <= 1 || tile == 0xE) {
+    s32 tile = fn_8022461C(&field_0x2b8, field_0x4);
+    if ((u32)(tile - 2) <= 1 || tile == 0xE) {
         field_0x250 = 10000;
         mLife = 200;
         field_0x280 = 0;
