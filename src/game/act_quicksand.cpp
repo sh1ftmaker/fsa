@@ -551,10 +551,9 @@ bool cls_804A6270::fn_80211000(const JGeometry::TVec3f* pos) const {
 // The push-out vector for a position in the quicksand: towards the middle
 // (in x and y), as long as the distance less 2 but at most field_0x3a4; zero
 // outside the area or above the ground (pos->z > 0).
-// FIXME: 91.1 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
-// scale match. The original picks the length with one fsel
-// (push - field_0x3a4 >= 0) where ours compares and branches (an explicit
-// `push - field_0x3a4 >= 0.0f` gave 88.9 %).
+// FIXME: 92.2 %. JMAFastSqrt, normalize (isZero, TUtilf::inv_sqrt) and
+// scale match. The original picks the length with one fsel on
+// (push - field_0x3a4) where ours compares and branches.
 void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* out) const {
     out->set(0.0f, 0.0f, 0.0f);
     if (pos->z <= 0.0f && mState != 0) {
@@ -566,7 +565,7 @@ void cls_804A6270::fn_80210E90(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
                 out->z = 0.0f;
                 out->normalize();
                 f32 push = dist - 2.0f;
-                out->scale(push >= field_0x3a4 ? field_0x3a4 : push);
+                out->scale(push < field_0x3a4 ? push : field_0x3a4);
             }
         }
     }
