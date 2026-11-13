@@ -1,3 +1,4 @@
+#include "game/PlayerBit.h"
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameMode.h"
@@ -1465,7 +1466,7 @@ static inline void flushLine(char* out, const char* line, s32 lines, f32 cur, f3
     strcat(out, line);
 }
 
-// FIXME(shotgun): 83.26 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.28 %, missing/extra + reloc-name; behaviour drift.
 // The text of message msg for the box, line by line, each line centred in `width` (the widths are
 // scaled by `scale`); `a` is the player number the 0x1A size 3 commands write and `b` a number of up to
 // four digits. Returns the number of lines.
@@ -1479,7 +1480,6 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
     f32 cur = 0.0f;
     u8 part = 0;
     s32 number = b;
-    u8 playerBit = 1 << (a - 1);
     s32 shift = (a - 1) * 2;
     lbl_8053AD78->field_0x5c[0] = 0.0f;
     lbl_8053AD78->field_0x5c[2] = 0.0f;
@@ -1514,7 +1514,7 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
                     }
                 } else if (p[4] == 0x2E) {
                     if (a >= 1 && a <= 4) {
-                        if (gGameRoot_8053AAF8->mPlayerMask & playerBit) {
+                        if (isPlayerBitSet(gGameRoot_8053AAF8, a - 1)) {
                             if (((gGameRoot_8053AAF8->field_0x83 >> shift) & 3) == 1) {
                                 if (getPlayerLayer_8023DE58(a - 1) >= 8) {
                                     fn_80230E1C(a - 1, false);
@@ -1525,8 +1525,9 @@ s32 fn_803837A4(char* out, u32 msg, s32 a, s32 b, f32 width, f32 scale) {
                 }
             } else if (p[2] == 3) {
                 if (p[4] == 0) {
-                    line[len++] = a + '0';
-                    cur += lbl_8053AD78->mFont->JUTFont::getWidth(a + '0');
+                    s32 digit = a + '0';
+                    line[len++] = digit;
+                    cur += lbl_8053AD78->mFont->JUTFont::getWidth(digit);
                     cur += fn_8037F580(p[5], a, line, &len, 1.0f);
                 } else if (p[4] == 2) {
                     bool started = false;
