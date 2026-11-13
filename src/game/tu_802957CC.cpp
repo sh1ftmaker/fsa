@@ -255,6 +255,49 @@ void cls_804A7AE0::vfunc_0x10() {
 
 // FIXME(shotgun): 81.57 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
+inline s32 cls_804A7AE0::selectDirFromPlayer() {
+    if (fn_80239108(mSerial) >= 4) {
+        if (field_0x4 == getPlayerLayer_8023DE58(0)) {
+            s32 r = fn_80238BC4(mSerial);
+            if (r >= 0 && r < 4) {
+                field_0x2cc = 1;
+                return r;
+            }
+        }
+    }
+    return -1;
+}
+
+inline s32 cls_804A7AE0::selectDirFromBox() {
+    JGeometry::TBox2f box;
+    box.i.x = field_0x80.i.x;
+    box.i.y = field_0x80.i.y;
+    box.f.x = field_0x80.f.x;
+    box.f.y = field_0x80.f.y;
+    box.i.x += mPos.x;
+    box.f.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.y += mPos.y;
+    if (fn_80239470(&box, field_0x4, mSerial) >= 0 && fn_80238A68(mSerial) >= 4) {
+        s32 q = fn_8023885C(mSerial);
+        if (q >= 0 && q < 4) {
+            s32 d = -1;
+            if (q == 0) {
+                d = 1;
+            } else if (q == 1) {
+                d = 0;
+            } else if (q == 2) {
+                d = 3;
+            } else if (q == 3) {
+                d = 2;
+            }
+            field_0x2cc = -1;
+            return d;
+        }
+    }
+    return -1;
+}
+
 void cls_804A7AE0::fn_8029A974() {
     if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         return;
@@ -268,47 +311,16 @@ void cls_804A7AE0::fn_8029A974() {
     }
     s32 dir = -1;
     if (field_0x2b9 == 0) {
-        if (fn_80239108(mSerial) >= 4) {
-            if (getPlayerLayer_8023DE58(0) == field_0x4) {
-                s32 r = fn_80238BC4(mSerial);
-                if (r >= 0 && r < 4) {
-                    field_0x2cc = 1;
-                    dir = r;
-                }
-            }
-        }
+        dir = selectDirFromPlayer();
         if (dir == -1) {
-            JGeometry::TBox2f box;
-            box.i.x = field_0x80.i.x;
-            box.i.y = field_0x80.i.y;
-            box.f.x = field_0x80.f.x;
-            box.f.y = field_0x80.f.y;
-            box.i.x += mPos.x;
-            box.f.x += mPos.x;
-            box.i.y += mPos.y;
-            box.f.y += mPos.y;
-            if (fn_80239470(&box, field_0x4, mSerial) >= 0 && fn_80238A68(mSerial) >= 4) {
-                s32 q = fn_8023885C(mSerial);
-                if (q >= 0 && q < 4) {
-                    if (q == 0) {
-                        dir = 1;
-                    } else if (q == 1) {
-                        dir = 0;
-                    } else if (q == 2) {
-                        dir = 3;
-                    } else if (q == 3) {
-                        dir = 2;
-                    }
-                    field_0x2cc = -1;
-                }
-            }
+            dir = selectDirFromBox();
         }
     }
     if (dir != 3) {
         return;
     }
     s32 layer = field_0x4;
-    const JGeometry::TBox2f* view = layerBox(layer);
+    JGeometry::TBox2f view = *layerBox(layer);
     JGeometry::TVec3f p = mPos;
     p.x += mBox.i.x;
     p.x += 8.0f;
@@ -316,10 +328,10 @@ void cls_804A7AE0::fn_8029A974() {
     p.y -= 8.0f;
     p.z = 0.0f;
     const f32 inset = -32.0f;
-    f32 minX = view->i.x - inset;
-    f32 minY = view->i.y - inset;
-    f32 maxX = view->f.x + inset;
-    f32 maxY = view->f.y + inset;
+    f32 minX = view.i.x - inset;
+    f32 minY = view.i.y - inset;
+    f32 maxX = view.f.x + inset;
+    f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
