@@ -569,8 +569,8 @@ void cls_804AE4B0::fn_80370C84() {
         }
     }
     if (field_0x240 == 0) {
-        JGeometry::TVec3f pos(0.5f * (f32)JUTVideo::sManager->getFbWidth(),
-                              0.5f * (f32)JUTVideo::sManager->getEfbHeight(), 0.0f);
+        JGeometry::TVec3f pos(0.5f * (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                              0.5f * (f32)(s32)JUTVideo::sManager->getEfbHeight(), 0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         if (fn_8038BD08(0, 0x502, field_0x4, pos, 0x22)) {
             mState = 5;
