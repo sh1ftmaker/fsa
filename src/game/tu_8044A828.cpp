@@ -84,7 +84,8 @@ void cls_804B1D00::fn_8044AF90() {
     mScreen->draw(0.0f, 0.0f, gGameRoot2_8053AB10->field_0x10);
 }
 
-// FIXME: 90.50 %. Register allocation in the digit blocks: the original's
+// FIXME: 88.11 %, missing/extra + reloc-name; behaviour drift.
+// Register allocation in the digit blocks: the original's
 // hundreds index comes from the same mulhw result (r7) as the tens, and it
 // saves r27-r31 where ours saves r26-r31 (our hundreds lives in r29 across
 // the first fn_804030C4 call). The tens of field_0x13 and units of field_0x12
