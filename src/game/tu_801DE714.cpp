@@ -609,7 +609,7 @@ void cls_804A51E4::fn_801E0CF4() {
             }
         }
     } else {
-        if ((mFlags & 0x4000) && fabs(field_0x2c4.x - mPos.x) < 0.1f && fabs(field_0x2c4.y - mPos.y) < 0.1f) {
+        if ((mFlags & 0x4000) && __fabsf(field_0x2c4.x - mPos.x) < 0.1f && __fabsf(field_0x2c4.y - mPos.y) < 0.1f) {
             fn_801E1594(0);
             return;
         }
