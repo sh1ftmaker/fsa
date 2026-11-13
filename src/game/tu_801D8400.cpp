@@ -43,7 +43,7 @@ cls_804A4C58::~cls_804A4C58() {
     getGameView_802D6A9C()->fn_802D7440(true);
 }
 
-// FIXME(shotgun): 58.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 59.02 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::init() {
     EnemyBase_804A4808::init();
     mBox.i.x = 1.0f;
@@ -106,7 +106,7 @@ void cls_804A4C58::vfunc_0x54() {
     gAudioMgr_8053AF80->fn_80458F9C(60);
 }
 
-// FIXME(shotgun): 97.91 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.94 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9C58(int state) {
     field_0x336 = 0;
     if (mState == 0x11) {
@@ -243,7 +243,7 @@ void cls_804A4C58::fn_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 75.93 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 75.96 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4C58::fn_801D9960() {
     if (field_0x33c != 0) {
         field_0x33c--;
@@ -306,7 +306,7 @@ void cls_804A4C58::fn_801D9960() {
     }
 }
 
-// FIXME(shotgun): 71.70 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 71.73 %, missing/extra + reloc-name; behaviour drift.
 bool cls_804A4C58::fn_801D95F4() {
     bool spawned = false;
     JGeometry::TVec3f pos;
@@ -729,27 +729,33 @@ void cls_804A4C58::vfunc_0x80() {
     EnemyBase_804A4808::vfunc_0x80();
 }
 
-#ifdef NONMATCHING
-// FIXME(shotgun): 81.04 %, missing/extra + reloc-name.
+// FIXME: 99.65 %, regalloc-only; behaviour clean.
 void cls_804A4C58::vfunc_0x88() {
-    if (mState >= 0xB && mState < 0xF) {
-        f32 dx = field_0x2d4[field_0x334].x - mPos.x;
-        f32 dy = field_0x2d4[field_0x334].y - mPos.y;
-        JGeometry::TVec2f dir(dx, dy);
+    switch (mState) {
+    case 0xB: case 0xC: case 0xD: case 0xE: {
+        JGeometry::TVec2f dir(field_0x2d4[field_0x334].x - mPos.x, field_0x2d4[field_0x334].y - mPos.y);
         dir.normalize();
-        addCalc2_801F71A4(&field_0x3c.x, dir.x * mSpeed, 0.3f, 1.0f);
-        addCalc2_801F71A4(&field_0x3c.y, dir.y * mSpeed, 0.3f, 1.0f);
-    } else {
+        dir.scale(mSpeed);
+        addCalc2_801F71A4(&field_0x3c.x, dir.x, 0.3f, 1.0f);
+        addCalc2_801F71A4(&field_0x3c.y, dir.y, 0.3f, 1.0f);
+        break;
+    }
+    default:
+    {
         field_0x3c.x = 0.0f;
-        if (mState == 0x10 || mState == 8) {
-            field_0x3c.y += std::fabsf(lbl_8053EFB8);
-        } else {
+        switch (mState) {
+        case 0x10:
+        case 8:
+            field_0x3c.y += __fabsf(lbl_8053EFB8);
+            break;
+        default:
             field_0x3c.y = 0.0f;
+            break;
         }
+    }
     }
     field_0x3c.z = 0.0f;
 }
-#endif
 
 
 // FIXME: 77.38 %, missing/extra; behaviour drift.
@@ -828,7 +834,6 @@ void cls_804A4C58::vfunc_0x74() {
 }
 
 // Vtable slot 0xA0 (0x801D84E4), the last slot of the vtable.
-// FIXME: 99.90 %, reloc-name; behaviour clean.
 void cls_804A4C58::vfunc_0xA0() {
     if (mState == 0) {
         return;
@@ -856,8 +861,7 @@ void cls_804A4C58::vfunc_0xA0() {
 
 void cls_804A4C58::vfunc_0x24() {}
 
-#ifdef NONMATCHING
-// FIXME(shotgun): 94.55 %, scheduling+regalloc + reloc-name.
+// FIXME: 95.11 %, scheduling+regalloc; behaviour clean.
 void cls_804A4C58::update() {
     if (vfunc_0x2C(0.0f, -16.0f, 50.0f)) {
         Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
@@ -873,7 +877,6 @@ void cls_804A4C58::update() {
         EnemyBase_804A4808::update();
     }
 }
-#endif
 
 void cls_804A4C58::fn_801D8400() {
     if (mState < 8) {
