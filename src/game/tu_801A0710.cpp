@@ -912,7 +912,7 @@ void TennisShop_804A2BF4::fn_801A0F90() {
     }
 }
 
-// FIXME(shotgun): 89.55 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 99.94 %, scheduling+regalloc; behaviour clean.
 void TennisShop_804A2BF4::fn_801A0BE4() {
     mPos += field_0x3c;
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
