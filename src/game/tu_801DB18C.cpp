@@ -9,7 +9,6 @@
 extern const s16* lbl_8053A148[]; // the animation table (.sdata, this unit)
 extern const char lbl_80469AA4[]; // "enemy_both_sob.bin"
 
-// FIXME(shotgun): 99.86 %, reloc-name; behaviour clean.
 cls_804A4EE8::cls_804A4EE8() {
     mTargetPlayer = -1;
     field_0x2ac = 0;
@@ -38,7 +37,7 @@ cls_804A4EE8::~cls_804A4EE8() {
     }
 }
 
-// FIXME(shotgun): 97.81 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 97.92 %, missing/extra; behaviour clean.
 void cls_804A4EE8::init() {
     EnemyBase_804A4808::init();
     mBox.set(-8.0f, -16.0f, 8.0f, 8.0f);
@@ -79,7 +78,7 @@ void cls_804A4EE8::init() {
     }
 }
 
-// FIXME(shotgun): 76.72 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 76.89 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A4EE8::fn_801DB9CC() {
     if (fn_801CD664(2) == 0) {
         mFlags &= ~0x2000;
@@ -164,7 +163,7 @@ void cls_804A4EE8::fn_801DB950(s32 state) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 84.97 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.29 %, missing/extra; behaviour drift.
 void cls_804A4EE8::fn_801DB6C8() {
     if (field_0x16c == -1) {
         JGeometry::TVec3f p;
@@ -185,19 +184,27 @@ void cls_804A4EE8::fn_801DB6C8() {
         f32 px = player->x;
         f32 py = player->y;
         JGeometry::TVec2f away(mSearchPos.x - px, mSearchPos.y - py);
-        away.normalize();
-        tx = px + away.x * mRadius + field_0x2b4;
-        ty = py + away.y * mRadius + field_0x2b8;
+        if (away.squared() <= JGeometry::TUtil<f32>::epsilon()) {
+            away.set(0.0f, -1.0f);
+        } else {
+            away.normalize();
+        }
+        away.x *= mRadius;
+        away.y *= mRadius;
+        tx = px + away.x + field_0x2b4;
+        ty = py + away.y + field_0x2b8;
     }
     JGeometry::TVec2f d(tx - mSearchPos.x, ty - mSearchPos.y);
-    f32 len = d.length();
-    f32 step = field_0x2e0;
-    if (len < step) {
-        step = len;
+    if (d.squared() > JGeometry::TUtil<f32>::epsilon()) {
+        f32 len = d.length();
+        f32 step = field_0x2e0;
+        if (len < step) {
+            step = len;
+        }
+        d.normalize();
+        mSearchPos.x += d.x * step;
+        mSearchPos.y += d.y * step;
     }
-    d.normalize();
-    mSearchPos.x += d.x * step;
-    mSearchPos.y += d.y * step;
     if (mFlags & 0x2000) {
         mAngle -= mAngleSpeed;
     } else {
