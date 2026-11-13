@@ -660,12 +660,10 @@ void Warp_804A6DC8::fn_80226FC8(s32 player) {
         field_0x27c[player] = NULL;
         return;
     }
-    f32 speed = carried->field_0x3c.x * carried->field_0x3c.x + carried->field_0x3c.y * carried->field_0x3c.y +
-                carried->field_0x3c.z * carried->field_0x3c.z;
-    if (speed <= 32.0f * FLT_EPSILON) {
+    if (carried->field_0x3c.squared() <= 32.0f * FLT_EPSILON) {
         return;
     }
-    if (carried->mPos.z >= 4.0f) {
+    if (!(carried->mPos.z < 4.0f)) {
         return;
     }
     JGeometry::TVec3f rel = carried->mPos - mPos;
@@ -676,7 +674,7 @@ void Warp_804A6DC8::fn_80226FC8(s32 player) {
     if (!inside) {
         return;
     }
-    carried->vfunc_0x48();
+    field_0x27c[player]->vfunc_0x48();
     field_0x27c[player] = NULL;
     JGeometry::TVec3f p0(mPos.x - 8.0f, mPos.y - 8.0f, 0.0f);
     gBgRewrite_8053AC98->fn_802A3948(&p0, player, field_0x4, 0xC);
