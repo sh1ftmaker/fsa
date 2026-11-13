@@ -222,13 +222,22 @@ void GameState_804B0FE0::fn_80403680() {
     field_0x252 = 0;
 }
 
-// FIXME(shotgun): 55.71 %, missing/extra; behaviour drift.
+static inline BOOL isFileFlagSet(s32 file, s32 stage, s32 sub) {
+    if (stage < 0 || stage > 7) {
+        return FALSE;
+    }
+    if (sub < 0 || sub > 3) {
+        return FALSE;
+    }
+    return ((1 << (stage * 4 + sub)) & lbl_8050EC80.getFile(file).mFlags) ? TRUE : FALSE;
+}
+
 void GameState_804B0FE0::fn_80403514() {
     field_0x118 = 0;
     field_0x11c = 0;
     for (s32 stage = 0; stage < 8; stage++) {
         for (s32 sub = 0; sub < 4; sub++) {
-            if (isStageFlagSet(stage, sub) == FALSE) {
+            if (isFileFlagSet(lbl_8050EC80.mCurrentFile, stage, sub) == FALSE) {
                 field_0x118 = stage;
                 field_0x11c = sub;
                 if ((field_0x118 == 0 && field_0x11c == 2) || (field_0x118 == 1 && field_0x11c == 2) ||
