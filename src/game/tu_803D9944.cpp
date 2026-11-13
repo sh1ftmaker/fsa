@@ -288,16 +288,16 @@ void cls_804B0478::draw() {
     if (fn_80237060(0) >= 2) {
         base = 0x364;
     }
-    if (field_0x90 == 0) {
+    if ((s32)field_0x90 == 0) {
         f32 x = mPos.x;
         f32 y = mPos.y;
         f32 z = mPos.z;
         for (int i = 0; i < 4; i++) {
             if (getPlayerLayer_8023DE58(i) >= 8) {
+                s32 id = base + field_0x24c;
                 mPos.x = field_0x260[i].x;
                 mPos.y = field_0x260[i].y;
                 mPos.z = field_0x260[i].z;
-                s32 id = base + field_0x24c;
                 fn_803075AC(i - 0x22b, getPlayerLayer_8023DE58(i), &mPos, id, false, 2, -1, true, 0, 1);
             }
         }
