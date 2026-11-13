@@ -21,7 +21,7 @@ extern const f32 lbl_80463678[];
 
 Boulder_8049C4C0::~Boulder_8049C4C0() {}
 
-// FIXME(shotgun): 97.48 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.58 %, missing/extra + reloc-name; behaviour drift.
 void Boulder_8049C4C0::init() {
     field_0x23c = 0;
     field_0x231 = 0;
@@ -97,7 +97,7 @@ void Boulder_8049C4C0::init() {
     }
 }
 
-// FIXME(shotgun): 93.17 %, missing/extra + reloc-name
+// FIXME(shotgun): 98.18 %, missing/extra + reloc-name; behaviour clean.
 void Boulder_8049C4C0::fn_800F5E08() {
     if (field_0x240 != 0) {
         field_0x244++;
@@ -198,7 +198,7 @@ void Boulder_8049C4C0::fn_800F5E08() {
     }
 }
 
-// FIXME(shotgun): 94.65 %, missing/extra + reloc-name
+// FIXME(shotgun): 94.65 %, missing/extra + reloc-name; behaviour drift.
 void Boulder_8049C4C0::fn_800F555C() {
     JGeometry::TBox2f box(mPos.x - 16.0f, mPos.y - 16.0f, mPos.x + 16.0f, mPos.y + 16.0f);
     bool anyPlayer = false;
@@ -401,7 +401,7 @@ void Boulder_8049C4C0::fn_800F555C() {
     }
 }
 
-// FIXME(shotgun): 97 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.61 %, missing/extra + reloc-name; behaviour near.
 void Boulder_8049C4C0::update() {
     switch (field_0x230) {
     case 0:
@@ -454,7 +454,7 @@ void Boulder_8049C4C0::update() {
     }
 }
 
-// FIXME(shotgun): 92 %, scheduling+regalloc
+// FIXME(shotgun): 91.96 %, scheduling+regalloc; behaviour clean.
 bool Boulder_8049C4C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 code = fn_8022461C(pos, layer);
     if (code == 3 || code == 0xE || code == 2) {
@@ -463,7 +463,7 @@ bool Boulder_8049C4C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return fn_802265DC(pos, layer, false);
 }
 
-// FIXME(shotgun): 94.68 %, different + reloc-name
+// FIXME(shotgun): 97.40 %, missing/extra + reloc-name; behaviour drift.
 void Boulder_8049C4C0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -578,7 +578,6 @@ void Boulder_8049C4C0::draw() {
     mPos.set(savedPos);
 }
 
-// FIXME(shotgun): 99 %, reloc-name
 void BoulderSpawner_8049C46C::init() {
     field_0x230 = field_0x90;
     if (field_0x230 == 2) {
@@ -590,7 +589,7 @@ void BoulderSpawner_8049C46C::init() {
     }
 }
 
-// FIXME(shotgun): 97.47 %, missing/extra
+// FIXME(shotgun): 97.47 %, missing/extra; behaviour near.
 void BoulderSpawner_8049C46C::update() {
     if (field_0x234 == 0) {
         switch (field_0x230) {
