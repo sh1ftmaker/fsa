@@ -47,12 +47,13 @@ void cls_804A9BC8::init() {
 // The enemy map's rows: u16 offsets per direction (0x28.., 6/4/2/0, ...), in units of 8.
 extern const u16 lbl_8046E9D8[4][4]; // FIXME(shotgun): not defined in the source yet (unit .rodata)
 
-// FIXME(shotgun): 76.8 %, missing/extra + reloc-name (loop structure / rodata table extern)
+// FIXME(shotgun): one instr short; float literals not split into this unit (lbl_805411B8/BC), loop index in r29 not r30
 void cls_804A9BC8::update() {
     s32 layer = field_0x4;
     GameView_804A9950* view = getGameView_802D6A9C();
     const JGeometry::TBox2f* src = layer < 8 ? &view->mVisibleBox : &view->field_0xdc;
-    JGeometry::TBox2f box = *src;
+    JGeometry::TBox2f box;
+    box = *src;
     s32 offset = 0;
     bool done = false;
     switch (field_0x230) {
@@ -127,16 +128,19 @@ void cls_804A9BC8::update() {
                     spawnLayer = entry[4] + 7;
                     originX = originY;
                 }
-                JGeometry::TVec3f pos;
                 if (field_0x23c < 2) {
+                    JGeometry::TVec3f pos;
                     pos.y = 8.0f * (f32)lbl_8046E9D8[field_0x23c][field_0x240] + originY;
                     pos.x = 8.0f * (f32)(u16)entry[5] + originX;
+                    pos.z = 0.0f;
+                    lbl_804D4768[lbl_8053ACB0] = getActorManager_801F856C()->spawnActor_801F9484(tag, spawnLayer, &pos, arg, 0, -1);
                 } else {
+                    JGeometry::TVec3f pos;
                     pos.x = 8.0f * (f32)lbl_8046E9D8[field_0x23c][field_0x240] + originX;
                     pos.y = 8.0f * (f32)(u16)entry[6] + originY;
+                    pos.z = 0.0f;
+                    lbl_804D4768[lbl_8053ACB0] = getActorManager_801F856C()->spawnActor_801F9484(tag, spawnLayer, &pos, arg, 0, -1);
                 }
-                pos.z = 0.0f;
-                lbl_804D4768[lbl_8053ACB0] = getActorManager_801F856C()->spawnActor_801F9484(tag, spawnLayer, &pos, arg, 0, -1);
                 if (lbl_804D4768[lbl_8053ACB0] >= 0) {
                     lbl_8053ACB0++;
                     if (lbl_8053ACB0 >= 0x50) {
