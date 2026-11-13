@@ -66,7 +66,7 @@ public:
     void fn_800FD818(s32 dir);
     bool fn_800FD4C0(u8 a, u8 b);
     s32 fn_800FE25C(u8 index);
-    u8 fn_800FE21C(u8 index);
+    u32 fn_800FE21C(u8 index);
     // RailBase.cpp (0x800FD998): the step of an arc from `pos` to the rail point `index` (0xFF: the
     // current one), step `step` of `steps` (steps 0: the straight difference); act_searchlight calls it.
     JGeometry::TVec3f fn_800FD998(JGeometry::TVec3f pos, s32 step, s32 steps, u8 index);

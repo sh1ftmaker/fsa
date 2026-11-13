@@ -95,8 +95,7 @@ void Cloud_8049CBE0::update() {
     switch (field_0x370) {
     case 0:
         if (field_0x354 > 0) {
-            JGeometry::TVec3f pos = mPos;
-            mRail.fn_800FE3EC(field_0x354, pos, field_0x4);
+            mRail.fn_800FE3EC(field_0x354, mPos, field_0x4);
             if (field_0x354 > 0 && field_0x364 > 0) {
                 u8 count = mRail.fn_800FD894(-1, NULL, 0);
                 if (field_0x364 <= count && (u8)field_0x364 < mRail.field_0x2) {
@@ -134,7 +133,7 @@ void Cloud_8049CBE0::update() {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && getPlayerPos_8023E724(i)->z <= 0.0f) {
+        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && !(getPlayerPos_8023E724(i)->z > 0.0f)) {
             JGeometry::TVec3f d = mPos - mPrevPos;
             fn_8023DF68(i, &d);
         }
