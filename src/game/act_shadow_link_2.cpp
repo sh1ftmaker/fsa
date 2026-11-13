@@ -71,7 +71,7 @@ u32 fn_801C5660(u32 a, u32 b, u32 c, u32 d, u32 e) {
 }
 
 // 0x801C544C.
-// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 96.76 %, scheduling+regalloc + reloc-name; behaviour clean.
 void ShadowLink2_804A43E8::init() {
     EnemyBase_804A4808::init();
     field_0x94 = fn_801C0D70()->fn_801C14A8(mSerial);
@@ -104,8 +104,7 @@ void ShadowLink2_804A43E8::init() {
     } else if (n < 0) {
         n = 0;
     }
-    // FIXME(shotgun): field_0x524 is a cls_802157B8 here: field_0x524.fn_802157B8((u8)n) is not
-    // written until the header member has that type (other units test it as a u32).
+    field_0x524.fn_802157B8(n);
     mBox.set(1.0f, 1.0f, -1.0f, -1.0f);
     mBox2.set(mBox);
     field_0x80.set(1.0f, 1.0f, -1.0f, -1.0f);
