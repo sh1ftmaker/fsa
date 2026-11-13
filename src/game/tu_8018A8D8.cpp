@@ -82,12 +82,12 @@ void cls_804A1E50::fn_8018E894(s32 value) {
     field_0x234 = value;
 }
 
-// FIXME(shotgun): 92.72 %, different + reloc-name.
+// FIXME(shotgun): 92.81 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804A1E50::init() {
-    mBox2.i.x = -8.0f;
-    mBox2.i.y = -8.0f;
-    mBox2.f.x = 8.0f;
-    mBox2.f.y = 8.0f;
+    field_0x80.i.x = -8.0f;
+    field_0x80.i.y = -8.0f;
+    field_0x80.f.x = 8.0f;
+    field_0x80.f.y = 8.0f;
     field_0x26c = field_0x90 & 1;
     field_0x24c = 0;
     field_0x250 = 0;
@@ -105,7 +105,9 @@ void cls_804A1E50::init() {
         field_0x2e8[i] = 0;
         field_0x2f8[i].set(mPos);
     }
-    lbl_804C18B8.set(0.0f, 0.0f, 0.0f);
+    lbl_804C18B8.z = 0.0f;
+    lbl_804C18B8.y = 0.0f;
+    lbl_804C18B8.x = 0.0f;
     lbl_80539FC8 = -1;
     field_0x270 = 0;
     field_0x264 = 0;
@@ -117,7 +119,9 @@ void cls_804A1E50::init() {
     field_0x2ac.z = 0.0f;
     field_0x2ac.y = 0.0f;
     field_0x2ac.x = 0.0f;
-    field_0x3c.set(0.0f, 0.0f, 0.0f);
+    field_0x3c.z = 0.0f;
+    field_0x3c.y = 0.0f;
+    field_0x3c.x = 0.0f;
     field_0x2a0.set(mPos);
     field_0x2c4[0].set(mPos);
     field_0x2c4[1].set(mPos);
@@ -162,7 +166,7 @@ void cls_804A1E50::init() {
     }
 }
 
-// FIXME(shotgun): 97.85 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.85 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A1E50::fn_8018E30C(s32 anim) {
     JGeometry::TVec3f pos(mPos.x - 3.0f, mPos.y, mPos.z);
     if (field_0x26c == 1) {
@@ -239,7 +243,7 @@ void cls_804A1E50::fn_8018E30C(s32 anim) {
     field_0x234 = lbl_804A1B70[field_0x270 + field_0x264];
 }
 
-// FIXME(shotgun): 94.02 %, scheduling+regalloc + reloc-name.
+// FIXME(shotgun): 99.81 %, regalloc-only + reloc-name; behaviour drift.
 void cls_804A1E50::fn_8018DFCC() {
     f32 x = mPos.x - 3.0f;
     f32 y = mPos.y;
@@ -263,12 +267,15 @@ void cls_804A1E50::fn_8018DFCC() {
             field_0x264 = 0;
         }
         break;
-    case 1:
-    case 10:
+    case 3:
+    case 5:
+    case 11:
         field_0x264++;
         if (field_0x264 > 7) {
-            if (field_0x268 == 1) {
-                fn_8018E30C(2);
+            if (field_0x268 == 3) {
+                fn_8018E30C(4);
+            } else if (field_0x268 == 5) {
+                fn_8018E30C(6);
             } else {
                 field_0x264 = 7;
             }
@@ -286,15 +293,12 @@ void cls_804A1E50::fn_8018DFCC() {
         field_0x264++;
         field_0x264 &= 3;
         break;
-    case 3:
-    case 5:
-    case 11:
+    case 1:
+    case 10:
         field_0x264++;
         if (field_0x264 > 7) {
-            if (field_0x268 == 3) {
-                fn_8018E30C(4);
-            } else if (field_0x268 == 5) {
-                fn_8018E30C(6);
+            if (field_0x268 == 1) {
+                fn_8018E30C(2);
             } else {
                 field_0x264 = 7;
             }
@@ -346,9 +350,12 @@ void cls_804A1E50::fn_8018DFCC() {
     field_0x234 = lbl_804A1B70[field_0x270 + field_0x264];
 }
 
-// FIXME(shotgun): 92.00 %, missing/extra + reloc-name.
+// FIXME(shotgun): 97.24 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A1E50::fn_8018DC70(s32 mode) {
-    if (field_0x26c == 1 || field_0x27a != 1) {
+    if (field_0x26c == 1) {
+        return;
+    }
+    if (field_0x27a != 1) {
         return;
     }
     JGeometry::TVec3f push(0.0f, 0.0f, 0.0f);
@@ -368,24 +375,28 @@ void cls_804A1E50::fn_8018DC70(s32 mode) {
         if (mode != 3 && !(getPlayerPos_8023E724(i)->y > mPos.y)) {
             continue;
         }
-        f32 py = mPos.y - 32.0f;
         f32 px = mPos.x;
+        f32 py = mPos.y - 32.0f;
         f32 dx = getPlayerPos_8023E724(i)->x - px;
         f32 dy = getPlayerPos_8023E724(i)->y - py;
-        s32 angle = (u16)(s32)(JMath::atanTable_.atan2_(dx, dy) * 10430.378f);
+        u16 angle = JMath::atanTable_.atan2_(dx, dy) * 10430.378f;
         if (mode != 1 && angle >= 0x2000 && angle < 0xE000) {
             continue;
         }
-        if (mode == 3) {
+        switch (mode) {
+        case 3:
             angle += 0x8000;
             push.x = 3.5f;
             push.y = 3.5f;
-        } else if (mode == 1) {
+            break;
+        case 1:
             push.x = 2.0f;
             push.y = 2.0f;
-        } else {
+            break;
+        default:
             push.x = 3.0f;
             push.y = 3.0f;
+            break;
         }
         if (mode == 0 || mode == 1) {
             ActorBase_804A5770* fires[ACTOR_MANAGER_MAX_ACTORS];
@@ -418,7 +429,7 @@ void cls_804A1E50::fn_8018DC70(s32 mode) {
     }
 }
 
-// FIXME(shotgun): 96.41 %, missing/extra + reloc-name.
+// FIXME(shotgun): 96.41 %, missing/extra + reloc-name; behaviour clean.
 bool cls_804A1E50::fn_8018DA6C() {
     if (field_0x27b == 1) {
         return false;
@@ -464,7 +475,7 @@ cls_804A1E50::~cls_804A1E50() {
     }
 }
 
-// FIXME(shotgun): 97.29 %, missing/extra + reloc-name
+// FIXME(shotgun): 97.29 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A1E50::update() {
     JGeometry::TBox2f box50;
     fn_8017EC5C(&box50, -30.0f, -30.0f, 30.0f, 30.0f);
@@ -1458,7 +1469,7 @@ void cls_804A1E50::update() {
 }
 
 
-// FIXME(shotgun): 87.03 %, missing/extra + reloc-name
+// FIXME(shotgun): 87.03 %, missing/extra + reloc-name; behaviour near.
 void cls_804A1E50::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
