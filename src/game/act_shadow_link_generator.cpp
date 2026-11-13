@@ -169,7 +169,7 @@ void ShadowLinkGenerator_804A4310::update() {
                     deleteEmitter(&mEmitters2[i]);
                 }
             } else {
-                u8 alpha = (s32)(0.008333334f * (f32)field_0x2ac * 255.0f);
+                s32 alpha = (s32)(0.008333334f * (f32)field_0x2ac * 255.0f);
                 for (s32 i = 0; i < 5; i++) {
                     if (mEmitters2[i] != NULL) {
                         mEmitters2[i]->setGlobalAlpha(alpha);
