@@ -204,7 +204,7 @@ void Cucco_804AB8C0::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 87.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 90.89 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::fn_80332A60() {
     if (fn_801F3D94(true) == 0 && field_0x284 <= 0 && !field_0xc4) {
         field_0xb0 = 0x41302;
@@ -704,7 +704,7 @@ bool Cucco_804AB8C0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return blocked;
 }
 
-// FIXME(shotgun): 88.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.10 %, missing/extra + reloc-name; behaviour drift.
 void Cucco_804AB8C0::update() {
     if (field_0x230 == 2) {
         if (fn_8022F9E4(field_0x25c, mSerial, false, false) == 1) {
