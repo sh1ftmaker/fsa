@@ -256,8 +256,7 @@ void cls_804A7AE0::vfunc_0x10() {
 // FIXME(shotgun): 79.91 %, missing/extra + reloc-name; behaviour drift.
 // same shape as fn_80299AD0 (direction/serial selection and the doubled 32 * epsilon constant)
 void cls_804A7AE0::fn_8029A974() {
-    bool still = field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon();
-    if (!still) {
+    if (!(field_0x250.squared() <= 32.0f * JGeometry::TUtil<f32>::epsilon())) {
         return;
     }
     if (field_0x2c0 == 1) {
@@ -323,8 +322,9 @@ void cls_804A7AE0::fn_8029A974() {
     f32 maxY = view.f.y + inset;
     bool ok = true;
     for (s32 k = 0; k < 6; k++) {
+        CollisionBoxes_8020D58C* boxes = fn_8020D58C();
         if (!gBgRewrite_8053AC98->fn_802A1554(&p) ||
-            fn_8020D58C()->mLists[fn_8020D58C()->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
+            boxes->mLists[boxes->field_0x1].fn_8020D6AC(field_0x4, &p, mSerial, NULL)) {
             ok = false;
             break;
         }
