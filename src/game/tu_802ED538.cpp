@@ -400,7 +400,7 @@ void cls_804AA350::fn_802ED7D8() {
     field_0x24c++;
 }
 
-// FIXME: 85.95 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 82.43 %, missing/extra + reloc-name; behaviour drift.
 // FIXME(shotgun): missing/extra + reloc-name (TUtilf::sqrt tests x > 0 in the original, not x <= 0; fn_802303FC's flag is passed as 0xFF there; field_0x4 is loaded late)
 bool cls_804AA350::fn_802ED538() {
     bool result = true;
