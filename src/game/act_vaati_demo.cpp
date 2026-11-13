@@ -403,7 +403,7 @@ void cls_8049D940::fn_80115BC4(const JGeometry::TVec3f* pos, JGeometry::TVec3f* 
 // Not auto-inlined: update calls fn_80115A7C out of line in the original (docs/INLINING.md, pragma
 // rule 1).
 #pragma auto_inline off
-// FIXME: 94.39 %, missing/extra; behaviour drift.
+// FIXME: 94.45 %, missing/extra; behaviour drift.
 // The original's branch to the fn_8023DFF4 arm is laid out at the
 // end of the loop body with the fn_80230498 arm falling through, and it
 // converts the 255 argument from a float at run time (fctiwz of 255.0f);
