@@ -32,9 +32,27 @@ void Link2Ending_804AE338::init() {
     field_0x2A8 = NULL;
     field_0x2AC = 0;
     field_0x2B0 = 0;
-    for (s32 i = 0; i < 20; i++) {
-        field_0x258[i] = NULL;
-    }
+    // The original stores these 20 slots unrolled, not as a loop.
+    field_0x258[0] = NULL;
+    field_0x258[1] = NULL;
+    field_0x258[2] = NULL;
+    field_0x258[3] = NULL;
+    field_0x258[4] = NULL;
+    field_0x258[5] = NULL;
+    field_0x258[6] = NULL;
+    field_0x258[7] = NULL;
+    field_0x258[8] = NULL;
+    field_0x258[9] = NULL;
+    field_0x258[10] = NULL;
+    field_0x258[11] = NULL;
+    field_0x258[12] = NULL;
+    field_0x258[13] = NULL;
+    field_0x258[14] = NULL;
+    field_0x258[15] = NULL;
+    field_0x258[16] = NULL;
+    field_0x258[17] = NULL;
+    field_0x258[18] = NULL;
+    field_0x258[19] = NULL;
     field_0x2B4 = 0;
     field_0x254 = NULL;
     field_0x250 = NULL;
@@ -52,8 +70,8 @@ void Link2Ending_804AE338::init() {
         fn_80230498(i, &mPos, 0, 0, -0x80, -0x80, true);
     }
     JGeometry::TVec3f pos;
-    pos.z = 0.0f;
     pos.y = 384.0f * (s32)(mPos.y / 384.0f) + 192.0f;
+    pos.z = 0.0f;
     pos.x = 512.0f * (s32)(mPos.x * 0.001953125f) + 256.0f;
     field_0x2A8 = spawnEmitter_8013CC50(field_0x4, &pos, 0x274, 0, 0, NULL, NULL, true, 1.0f);
     s32 end = getActorManager_801F856C()->mActorEnd;
