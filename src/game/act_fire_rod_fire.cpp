@@ -749,73 +749,73 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
         return true;
     }
     if (field_0x264 != 3 && field_0x264 != 4) {
-        if (field_0x254 != 0) {
-            return false;
-        }
-        s32 cell = fn_80226AE0(pos, field_0x4);
-        field_0x288 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, cell);
-        if (fn_801EE3C0(field_0x288) == 1) {
-            fn_80226CA8(cell, field_0x4, &tmp);
-            tmp.x += 8.0f;
-            tmp.y += 8.0f;
-            JGeometry::TVec3f spawnPos(tmp);
-            vfunc_0x54(&spawnPos, false);
-            field_0x254 = 5;
-            field_0x291 = 1;
-            return true;
-        }
-        field_0x291 = 0;
-        if (field_0x288 >= 0x140 && field_0x288 <= 0x15F) {
-            field_0x254 = 0x10;
-            if (field_0x290 == 0) {
-                field_0x290 = 1;
-            } else {
-                field_0x290 = 0;
+        if (field_0x254 == 0) {
+            s32 cell = fn_80226AE0(pos, field_0x4);
+            field_0x288 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(field_0x4, cell);
+            if (fn_801EE3C0(field_0x288) == 1) {
+                fn_80226CA8(cell, field_0x4, &tmp);
+                tmp.x += 8.0f;
+                tmp.y += 8.0f;
+                JGeometry::TVec3f spawnPos(tmp);
+                vfunc_0x54(&spawnPos, false);
+                field_0x254 = 5;
+                field_0x291 = 1;
+                return true;
             }
-            return false;
-        }
-        if (field_0x288 == 0x3EB || field_0x288 == 0x34 || field_0x288 == 0x33) {
-            fn_80226CA8(cell, field_0x4, &tmp);
-            tmp.x += 8.0f;
-            tmp.y += 8.0f;
-            JGeometry::TVec3f spawnPos(tmp);
-            vfunc_0x54(&spawnPos, true);
-            return false;
-        }
-        field_0x27c = lbl_8046CB88[field_0x288];
-        if (field_0x27c == 0 || field_0x27c == 0x61 || (u32)(field_0x27c - 2) <= 5 || field_0x27c == 0x50 ||
-            (u32)(field_0x27c - 0x27) <= 8 || field_0x27c == 0x20 || (u32)(field_0x27c - 0xC) <= 2 ||
-            (u32)(field_0x27c - 0x39) <= 2 || (u32)(field_0x27c - 0x23) <= 1 ||
-            (field_0x27c >= 4 && field_0x27c <= 7) || (field_0x27c >= 0x18 && field_0x27c <= 0x1F)) {
-            return false;
-        }
-        if ((field_0x27c >= 0x10 && field_0x27c <= 0x16) || field_0x27c == 0x17) {
-            field_0x254 = 0x10;
-            if (field_0x290 == 0) {
-                field_0x290 = 1;
-            } else {
-                field_0x290 = 0;
-            }
-            return false;
-        }
-        u16 tile = field_0x288;
-        u16 tileOffset = tile - 0x8B;
-        if (tile == 0x3A || tileOffset <= 3 || tile == 0x3D) {
-            return false;
-        }
-        if (field_0x27c == 0x25) {
-            return getGameView_802D6A9C()->field_0x171 == 0;
-        }
-        if (field_0x27c == 0x26) {
-            return getGameView_802D6A9C()->field_0x171 == 1;
-        }
-        if (field_0x27c == 0x22) {
-            if (getGameView_802D6A9C()->field_0x170 != 1) {
+            field_0x291 = 0;
+            if (field_0x288 >= 0x140 && field_0x288 <= 0x15F) {
+                field_0x254 = 0x10;
+                if (field_0x290 == 0) {
+                    field_0x290 = 1;
+                } else {
+                    field_0x290 = 0;
+                }
                 return false;
             }
+            if (field_0x288 == 0x3EB || field_0x288 == 0x34 || field_0x288 == 0x33) {
+                fn_80226CA8(cell, field_0x4, &tmp);
+                tmp.x += 8.0f;
+                tmp.y += 8.0f;
+                JGeometry::TVec3f spawnPos(tmp);
+                vfunc_0x54(&spawnPos, true);
+                return false;
+            }
+            field_0x27c = lbl_8046CB88[field_0x288];
+            if (field_0x27c == 0 || field_0x27c == 0x61 || (u32)(field_0x27c - 2) <= 5 || field_0x27c == 0x50 ||
+                (u32)(field_0x27c - 0x27) <= 8 || field_0x27c == 0x20 || (u32)(field_0x27c - 0xC) <= 2 ||
+                (u32)(field_0x27c - 0x39) <= 2 || (u32)(field_0x27c - 0x23) <= 1 ||
+                (field_0x27c >= 4 && field_0x27c <= 7) || (field_0x27c >= 0x18 && field_0x27c <= 0x1F)) {
+                return false;
+            }
+            if ((u32)(field_0x27c - 0x10) <= 6 || field_0x27c == 0x17) {
+                field_0x254 = 0x10;
+                if (field_0x290 == 0) {
+                    field_0x290 = 1;
+                } else {
+                    field_0x290 = 0;
+                }
+                return false;
+            }
+            u16 tile = field_0x288;
+            u16 tileOffset = tile - 0x8B;
+            if (tile == 0x3A || tileOffset <= 3 || tile == 0x3D) {
+                return false;
+            }
+            if (field_0x27c == 0x25) {
+                return getGameView_802D6A9C()->field_0x171 == 0;
+            }
+            if (field_0x27c == 0x26) {
+                return getGameView_802D6A9C()->field_0x171 == 1;
+            }
+            if (field_0x27c == 0x22) {
+                if (getGameView_802D6A9C()->field_0x170 != 1) {
+                    return false;
+                }
+            }
+            if (field_0x290 == 0) {
+                return true;
         }
-        if (field_0x290 == 0) {
-            return true;
+        return false;
         }
         return false;
     }
