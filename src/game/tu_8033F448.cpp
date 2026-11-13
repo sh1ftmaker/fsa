@@ -14,7 +14,7 @@ void cls_804AC388::init() {
     field_0x23c = false;
 }
 
-// FIXME: 88.95 %, missing/extra; behaviour drift.
+// FIXME: 91.71 %, missing/extra; behaviour drift.
 // Three differences remain. (1) The original builds the
 // fn_80238548 position as an 8-byte stack object (x, y copied from the player
 // at 0x8/0xC, then +0.1 and -0.1; fn_80238548 reads only x and y), while a
@@ -40,7 +40,9 @@ void cls_804AC388::update() {
                 if (fn_8023F264(i) && getPlayerLayer_8023DE58(i) < 8 && !fn_80230188(i) &&
                     !fn_8022F478(i) && !fn_80236D14(i)) {
                     JGeometry::TVec3f* player = getPlayerPos_8023E724(i);
-                    JGeometry::TVec2f pos(player->x, player->y);
+                    JGeometry::TVec2f pos;
+                    pos.x = player->x;
+                    pos.y = player->y;
                     pos.x += 0.1f;
                     pos.y -= 0.1f;
                     fn_80238548(i, 1, &pos, 1);
