@@ -256,8 +256,11 @@ void cls_801D7730::fn_801D6E20(const JGeometry::TVec3f* pos) {
         }
         field_0x54 += field_0x56;
         break;
+    case 0:
+    case 4:
+        break;
     }
-    if (field_0x44 >= 2 && field_0x44 < 4) {
+    if (field_0x44 < 4 && field_0x44 >= 2) {
         for (s32 i = 0; i < 16; i++) {
             s32 serial = field_0x0[i];
             if (serial >= 0) {
