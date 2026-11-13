@@ -79,7 +79,8 @@ void GiantBomb_804AC588::init() {
     mEmitter268 = NULL;
 }
 
-// FIXME: 99.40 %. Only the register of the loop counter differs (r26 in the original) and the .sdata2 reloc names.
+// FIXME: 99.67 %, regalloc-only; behaviour clean.
+// Only the register of the loop counter differs (r26 in the original) and the .sdata2 reloc names.
 void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
     getGameView_802D6A9C()->fn_802D79E8(layer, 16.0f, 0.0f, false);
     gGameRoot_8053AAF8->fn_80134DE4(3, 0);
@@ -122,7 +123,7 @@ void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // 0x80342850.
-// FIXME(shotgun): 89.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 89.30 %, missing/extra + reloc-name; behaviour drift.
 void GiantBomb_804AC588::update() {
     JGeometry::TVec2f pos2(mPos.x, mPos.y);
     JGeometry::TBox2f box = mBox;
@@ -313,7 +314,8 @@ void GiantBomb_804AC588::update() {
     }
 }
 
-// FIXME: 98.45 %. Two extra `mr` around the getResource results and the float registers of the matrix scale (scheduling).
+// FIXME: 98.74 %, missing/extra; behaviour clean.
+// Two extra `mr` around the getResource results and the float registers of the matrix scale (scheduling).
 void GiantBomb_804AC588::draw() {
     if (mState == 2 || mState == 7) {
         return;
@@ -383,7 +385,8 @@ void GiantBomb_804AC588::draw() {
     }
 }
 
-// FIXME(shotgun): 48.0 %, missing/extra (the SpriteParams copy is field-wise in the original, one block per branch)
+// FIXME(shotgun): 53.42 %, missing/extra; behaviour clean.
+// (the SpriteParams copy is field-wise in the original, one block per branch)
 void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s32 flags, f32 offsetX, f32 offsetY,
                                     f32 offsetZ) {
     if (field_0x4 != 0) {
@@ -398,15 +401,17 @@ void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s3
             sp = *params;
         }
         s32 total = field_0xdc;
-        if (field_0xd8 > total - 25 || total < 25) {
+        s32 excess = total - 25;
+        if (field_0xd8 > excess || total < 25) {
+            s32 delta;
             if (total < 25) {
-                sp.field_0x14.r += field_0xd8 * 150 / total;
+                delta = field_0xd8 * 150 / total;
             } else {
-                sp.field_0x14.r += (field_0xd8 - (total - 25)) * 150 / 25;
+                delta = (field_0xd8 - excess) * 150 / 25;
             }
+            sp.field_0x14.r += delta;
         }
-        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-        if (speed2 > 1.0f) {
+        if (field_0x3c.squared() > 1.0f) {
             sp.field_0x30 = 8;
         }
     } else if (field_0x238 > 0) {
@@ -414,8 +419,7 @@ void GiantBomb_804AC588::vfunc_0x54(void* res, SpriteParams_801F5AE0* params, s3
             sp = *params;
         }
         sp.field_0x14.r += field_0x238 * 150 / 15;
-        f32 speed2 = field_0x3c.x * field_0x3c.x + field_0x3c.y * field_0x3c.y + field_0x3c.z * field_0x3c.z;
-        if (speed2 > 1.0f) {
+        if (field_0x3c.squared() > 1.0f) {
             sp.field_0x30 = 8;
         }
     } else {
