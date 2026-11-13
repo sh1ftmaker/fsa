@@ -158,7 +158,7 @@ void StrangeBlock_804AC2D8::update() {
                 field_0x258 = fn_8022FD8C(mSerial);
                 if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                     fn_802300EC(field_0x258)) {
-                                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
+                        if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                         field_0x234 = 1;
                         field_0x254 = fn_80230CFC(field_0x258);
                         field_0x254 = field_0x254 ^ 1;
@@ -194,7 +194,7 @@ void StrangeBlock_804AC2D8::update() {
                     field_0x258 = fn_8022FD8C(mSerial);
                     if (field_0x258 >= 0 && getPlayerPos_8023E724(field_0x258)->z == 0.0f &&
                         fn_802300EC(field_0x258)) {
-                                                if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
+                            if (fn_8038C678(field_0x258, field_0x268, mSerial, field_0x4, mPos, 0)) {
                             field_0x234 = 1;
                             field_0x254 = fn_80230CFC(field_0x258);
                             field_0x254 = field_0x254 ^ 1;
