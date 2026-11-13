@@ -349,10 +349,12 @@ void cls_804A9C20::update() {
 }
 
 // 0x802E2998.
-// FIXME(shotgun): 88.18 %, missing/extra + reloc-name
+// FIXME(shotgun): reloc-name only (string literal placement)
 void cls_804A9C20::draw() {
     if (field_0x230 <= 3) {
-        JGeometry::TVec3f saved = mPos;
+        f32 savedX = mPos.x;
+        f32 savedY = mPos.y;
+        f32 savedZ = mPos.z;
         for (s32 i = 0; i < 4; i++) {
             mPos = field_0x258[i];
             if (field_0x288[i] == 1) {
@@ -361,7 +363,9 @@ void cls_804A9C20::draw() {
                 drawSprite_801F06F0("enemy_gc_sob.bin", 0x25B, NULL, 7, 1.0f, 1.0f);
             }
         }
-        mPos = saved;
+        mPos.x = savedX;
+        mPos.y = savedY;
+        mPos.z = savedZ;
     }
     if (field_0x238 == 5) {
         SpriteParams_801F5AE0 params;
