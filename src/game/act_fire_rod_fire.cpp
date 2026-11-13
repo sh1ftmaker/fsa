@@ -814,8 +814,7 @@ bool FireRodFire_804A89F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
             }
             if (field_0x290 == 0) {
                 return true;
-        }
-        return false;
+            }
         }
         return false;
     }
