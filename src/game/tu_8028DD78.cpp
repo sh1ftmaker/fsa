@@ -442,18 +442,15 @@ void cls_804A7A68::fn_8028DDD8(s32* out) {
             if (fn_8022E970(0) > 1) {
                 for (s32 i = 0; i < 4; i++) {
                     if (fn_8022F514(i) && fn_8022F340(i) == 0) {
-                        out[n] = i;
-                        n++;
+                        out[n++] = i;
                     }
                 }
             }
-            out[n] = 1;
-            n++;
+            out[n++] = 1;
             if (fn_8022E970(1) > 1) {
                 for (s32 i = 0; i < 4; i++) {
                     if (fn_8022F514(i) && fn_8022F340(i) == 1) {
-                        out[n] = i;
-                        n++;
+                        out[n++] = i;
                     }
                 }
             }
@@ -462,18 +459,15 @@ void cls_804A7A68::fn_8028DDD8(s32* out) {
             if (fn_8022E970(1) > 1) {
                 for (s32 i = 0; i < 4; i++) {
                     if (fn_8022F514(i) && fn_8022F340(i) == 1) {
-                        out[n] = i;
-                        n++;
+                        out[n++] = i;
                     }
                 }
             }
-            out[n] = 0;
-            n++;
+            out[n++] = 0;
             if (fn_8022E970(0) > 1) {
                 for (s32 i = 0; i < 4; i++) {
                     if (fn_8022F514(i) && fn_8022F340(i) == 0) {
-                        out[n] = i;
-                        n++;
+                        out[n++] = i;
                     }
                 }
             }
