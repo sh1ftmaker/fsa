@@ -147,7 +147,6 @@ void cls_804A9BC8::update() {
                     lbl_8053ACB0++;
                     if (lbl_8053ACB0 >= 0x50) {
                         fn_801F3668();
-                        field_0x230 = 0;
                         break;
                     }
                 }
@@ -155,9 +154,9 @@ void cls_804A9BC8::update() {
                     continue;
                 }
             }
-            field_0x230 = 0;
             break;
         }
+        field_0x230 = 0;
         break;
     case 2:
         if ((field_0x90 >> 27) == 0 || vfunc_0x34() == true) {
