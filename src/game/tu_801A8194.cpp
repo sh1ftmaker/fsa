@@ -210,7 +210,7 @@ void cls_804A2EC0::update() {
     }
 }
 
-// FIXME(shotgun): 75.3 %, missing/extra: the trail loop and the scale/alpha updates are scheduled differently
+// FIXME(shotgun): missing/extra: the original keeps the saved position in f28-f30 and reloads it after the trail loop's stores; the instruction schedule differs
 void cls_804A2EC0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -220,21 +220,27 @@ void cls_804A2EC0::draw() {
     if (field_0x258 == 0 && (field_0x90 >> 27) != 0 && !vfunc_0x34()) {
         return;
     }
-    f32 scale = field_0x26c;
-    mtx[0][0] = scale;
+    params.field_0x0[4] = 3;
+    params.field_0x1d = 2;
+    mtx[0][0] = field_0x26c;
     mtx[0][1] = 0.0f;
     mtx[0][2] = 0.0f;
     mtx[1][0] = 0.0f;
-    mtx[1][1] = scale;
+    mtx[1][1] = field_0x26c;
     mtx[1][2] = 0.0f;
     mtx[2][0] = 0.0f;
     mtx[2][1] = 0.0f;
-    mtx[2][2] = scale;
+    mtx[2][2] = field_0x26c;
     params.mMtx = mtx;
     fn_801F02BC("enemy_both2_sob.bin", field_0x260 + 0x155, &params, 7, 0, false, 1.0f, 1.0f);
+    f32 scale = field_0x26c;
     f32 alpha = field_0x274;
     s32 frame = field_0x260;
-    JGeometry::TVec3f saved = mPos;
+    params.field_0x0[4] = 5;
+    params.field_0x1d = 1;
+    f32 savedX = mPos.x;
+    f32 savedY = mPos.y;
+    f32 savedZ = mPos.z;
     for (s32 i = 1; i < 40; i++) {
         if (field_0x294[i].z != 0.0f) {
             scale *= 0.95f;
@@ -259,11 +265,15 @@ void cls_804A2EC0::draw() {
             if (frame < 0) {
                 frame = 2;
             }
-            mPos = field_0x294[i];
+            mPos.x = field_0x294[i].x;
+            mPos.y = field_0x294[i].y;
+            mPos.z = field_0x294[i].z;
             fn_801F02BC("enemy_both2_sob.bin", frame + 0x155, &params, 7, 0, false, 1.0f, 1.0f);
         }
     }
-    mPos = saved;
+    mPos.x = savedX;
+    mPos.y = savedY;
+    mPos.z = savedZ;
 }
 
 cls_804A2EC0::~cls_804A2EC0() {}
