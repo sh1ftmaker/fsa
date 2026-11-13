@@ -152,8 +152,11 @@ void Camera_804AA9E4::fn_8030E154() {
         }
         fn_8030CB10(&target, depth);
         field_0x858 = (f32)(s32)JUTVideo::sManager->getFbWidth() / (target.f.x - target.i.x);
+        JGeometry::TVec3f a(target.f.x, target.i.y, depth);
+        JGeometry::TVec3f b(target.i.x, target.i.y, depth);
         JGeometry::TVec3f center;
-        center.set(0.5f * (target.i.x + target.f.x), 0.5f * (target.i.y + target.f.y), 0.5f * (depth + depth));
+        center.add(a, b);
+        center.scale(0.5f);
         gAudioMgr_8053AF80->fn_80459624(&center, field_0x4, 0);
     }
     field_0x7f0 = 0;
