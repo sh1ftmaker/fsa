@@ -203,7 +203,7 @@ void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
     GXTexCoord2f32(s0, 1.0f);
 }
 
-// FIXME: 90.97 %, missing/extra; behaviour drift.
+// FIXME: 91.74 %, missing/extra; behaviour drift.
 // Three fewer-instruction spots: the original converts the
 // "outlines" / "sprites" tests to bool through a byte (clrlwi, neg, or, srwi)
 // where ours keeps the compare result; the rest is the same code, registers
