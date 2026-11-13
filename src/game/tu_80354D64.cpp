@@ -521,9 +521,8 @@ bool Log_804ACD70::fn_80354D64(u8 dir) {
         for (s32 i = 0; i < 4; i++) {
             if (fn_8023B0F4(i, &box, field_0x4, false, 0.0f)) {
                 JGeometry::TVec3f p(*getPlayerPos_8023E724(i));
-                p.x += lbl_80472320[dir][0];
-                p.y += lbl_80472320[dir][1];
-                p.z += lbl_80472320[dir][2];
+                JGeometry::TVec3f off(lbl_80472320[dir][0], lbl_80472320[dir][1], lbl_80472320[dir][2]);
+                p += off;
                 if (vfunc_0x4C(field_0x4, &p) == 1) {
                     ok = false;
                 }
