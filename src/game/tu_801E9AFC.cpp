@@ -210,8 +210,8 @@ void cls_801E9AFC::fn_801EA108(const JGeometry::TVec2f* pos, s16 angle, f32 z) {
 // shifted.
 void cls_801E9AFC::fn_801E9C74() {
     u8 both = getGameView_802D6A9C()->fn_802DCD0C();
-    bool outlines;
-    bool sprites;
+    u8 outlines;
+    u8 sprites;
     if (both) {
         outlines = field_0x0[0].hasSlots() || field_0x0[1].hasSlots();
         sprites = outlines || field_0x0[0].hasSerials() || field_0x0[1].hasSerials();
