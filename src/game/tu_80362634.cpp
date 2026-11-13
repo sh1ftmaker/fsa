@@ -535,7 +535,7 @@ void cls_804ADF28::fn_803645B4() {
     }
 }
 
-// FIXME(shotgun): 94.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.87 %, missing/extra + reloc-name; behaviour clean.
 void cls_804ADF28::fn_80364340() {
     if (field_0x248 == 0) {
         JGeometry::TVec3f oldPos = mPos;
@@ -579,6 +579,7 @@ void cls_804ADF28::fn_80364340() {
     }
 }
 
+// FIXME: 95.96 %, missing/extra + reloc-name; behaviour near.
 // FIXME(shotgun): the original divides by (6.283184f * dist) with fres (estimate), we emit fdivs; literal names differ.
 void cls_804ADF28::fn_80363FFC() {
     s32 tileX;
@@ -1061,7 +1062,7 @@ void cls_804ADF28::fn_80362B14() {
     }
 }
 
-// FIXME(shotgun): 91.48 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.01 %, operands + reloc-name; behaviour drift.
 void cls_804ADF28::fn_803628D4() {
     JGeometry::TVec3f savedPos = mPos;
     Mtx mtx;
