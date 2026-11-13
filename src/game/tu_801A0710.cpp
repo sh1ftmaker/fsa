@@ -993,7 +993,7 @@ void TennisShop_804A2BF4::update() {
 
 // Not auto-inlined: draw calls fn_801A0910 / fn_801A0754 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME(shotgun): 87.40 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 93.61 %, scheduling+regalloc; behaviour clean.
 void TennisShop_804A2BF4::fn_801A0910() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -1017,8 +1017,9 @@ void TennisShop_804A2BF4::fn_801A0910() {
     if (field_0x2c4 >= 0) {
         lbl_8053AF28->field_0x10 = (u8)field_0x26c;
         lbl_8053AF28->field_0x14 |= 1;
-        lbl_8053AF28->field_0x12 = field_0x2c4 / 60;
-        lbl_8053AF28->field_0x13 = (s32)(100.0f * (f32)(field_0x2c4 % 60) / 60.0f);
+        s32 frames = field_0x2c4;
+        lbl_8053AF28->field_0x12 = frames / 60;
+        lbl_8053AF28->field_0x13 = (s32)(100.0f * (f32)(frames % 60) / 60.0f);
         lbl_8053AF28->field_0x14 |= 2;
     }
 }
