@@ -294,11 +294,7 @@ public:
     /* 0x20 */ virtual void draw();
     /* 0x44 */ virtual void vfunc_0x44();
     /* 0x230 */ s32 field_0x230; // state (0-3)
-    /* 0x234 */ s32 field_0x234;
-    /* 0x238 */ s32 field_0x238;
-    /* 0x23C */ s32 field_0x23c;
-    /* 0x240 */ s32 field_0x240;
-    /* 0x244 */ s32 field_0x244;
+    /* 0x234 */ s32 mTimers[5]; // update counts all five down to 0
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c;
     /* 0x250 */ s32 field_0x250;
@@ -321,7 +317,7 @@ public:
     /* 0x290 */ f32 field_0x290[3];
     /* 0x29C */ JGeometry::TVec3f field_0x29c[10];
     /* 0x314 */ JGeometry::TVec3f field_0x314; // the shell's draw position
-    /* 0x320 */ u8 field_0x320[0x32C - 0x320]; // not yet known
+    /* 0x320 */ JGeometry::TVec3f field_0x320; // the shell's target position
     /* 0x32C */ f32 field_0x32c[3]; // copy of mPos made by init
 }; // Size: 0x338
 
