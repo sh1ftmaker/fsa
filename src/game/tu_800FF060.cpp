@@ -84,9 +84,9 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
 
 // FIXME(shotgun): 86.37 %, missing/extra; behaviour drift.
 void HammerShopMinigame_8049C858::update() {
-    JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
+    JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f focus = mPos;
     box.i.x += mPos.x;
     box.f.x += mPos.x;
@@ -116,11 +116,11 @@ void HammerShopMinigame_8049C858::update() {
                 fn_801EE558(&dir, &dist, field_0x240 + 1);
                 if (dist < 100.0f) {
                     u32 angle = (u16)(s32)(JMath::atanTable_.atan2_(-dir.x, -dir.y) * 10430.378f);
-                    if (angle < 0x2000 || angle >= 0xE000) {
+                    if (!(angle >= 0x2000 && angle < 0xE000)) {
                         field_0x235 = 3;
-                    } else if (angle < 0x6000) {
+                    } else if (angle >= 0x2000 && angle < 0x6000) {
                         field_0x235 = 1;
-                    } else if (angle <= 0xA000) {
+                    } else if (angle >= 0x6000 && angle <= 0xA000) {
                         field_0x235 = 2;
                     } else {
                         field_0x235 = 0;
@@ -134,7 +134,9 @@ void HammerShopMinigame_8049C858::update() {
         if (cam->field_0x7f5 == 0) {
             cam->field_0x7f4 = 1;
             cam->field_0x7f8 = 4;
-            cam->field_0x7fc = focus;
+            cam->field_0x7fc.x = focus.x;
+            cam->field_0x7fc.y = focus.y;
+            cam->field_0x7fc.z = focus.z;
             cam->field_0x7f6 = 0;
         }
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
@@ -178,7 +180,9 @@ void HammerShopMinigame_8049C858::update() {
         if (cam->field_0x7f5 == 0) {
             cam->field_0x7f4 = 1;
             cam->field_0x7f8 = 4;
-            cam->field_0x7fc = focus;
+            cam->field_0x7fc.x = focus.x;
+            cam->field_0x7fc.y = focus.y;
+            cam->field_0x7fc.z = focus.z;
             cam->field_0x7f6 = 0;
         }
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
@@ -194,7 +198,9 @@ void HammerShopMinigame_8049C858::update() {
         if (cam->field_0x7f5 == 0) {
             cam->field_0x7f4 = 1;
             cam->field_0x7f8 = 4;
-            cam->field_0x7fc = focus;
+            cam->field_0x7fc.x = focus.x;
+            cam->field_0x7fc.y = focus.y;
+            cam->field_0x7fc.z = focus.z;
             cam->field_0x7f6 = 0;
         }
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
@@ -290,7 +296,7 @@ void HammerShopMinigame_8049C858::update() {
     case 5:
         gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
         field_0x248++;
-        if (field_0x248 > 50 & getActorManager_801F856C()->fn_801F68E0() == 1) {
+        if (field_0x248 > 50 && getActorManager_801F856C()->fn_801F68E0() == 1) {
             field_0x240 = fn_8022EA0C(field_0x240);
             fn_8022FE80(field_0x240, getPlayerLayer_8023DE58(field_0x240), mSerial, false, false);
             if (fn_8022FD8C(mSerial) >= 0) {
@@ -367,11 +373,11 @@ void HammerShopMinigame_8049C858::update() {
             fn_801EE558(&dir, &dist, field_0x240 + 1);
             if (dist < 100.0f) {
                 u32 angle = (u16)(s32)(JMath::atanTable_.atan2_(-dir.x, -dir.y) * 10430.378f);
-                if (angle < 0x2000 || angle >= 0xE000) {
+                if (!(angle >= 0x2000 && angle < 0xE000)) {
                     field_0x235 = 3;
-                } else if (angle < 0x6000) {
+                } else if (angle >= 0x2000 && angle < 0x6000) {
                     field_0x235 = 1;
-                } else if (angle <= 0xA000) {
+                } else if (angle >= 0x6000 && angle <= 0xA000) {
                     field_0x235 = 2;
                 } else {
                     field_0x235 = 0;
