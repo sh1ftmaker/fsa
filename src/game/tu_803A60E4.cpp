@@ -17,7 +17,7 @@ inline void cls_804AF860::rotateArrow(u64 tag, s16 base) {
 
 // Fonts, texts and the arrows' base angles of the options screen: the constructor of the
 // object at 0x804AF860 (0x84 bytes).
-// FIXME(shotgun): 94.32 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.11 %, missing/extra; behaviour near.
 cls_804AF860::cls_804AF860() {
     lbl_80529DEC.mHeap->getTotalFreeSize();
     field_0x4 = new J2DScreen;
@@ -84,12 +84,10 @@ cls_804AF860::cls_804AF860() {
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
-    field_0x76 = 0;
     field_0x79 = 0;
     field_0x7a = 10;
     field_0x7b = 0xFF;
     field_0x7c = 0xC0;
-    field_0x80 = 5;
     lbl_8053AD90 = this;
 }
 
@@ -115,11 +113,10 @@ cls_804AF860::~cls_804AF860() {
 }
 
 // 0x803A7280.
-// FIXME(shotgun): 96.36 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME(shotgun): 95.10 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804AF860::fn_803A7280() {
     field_0x64 = 0;
     field_0x68 = 0;
-    field_0x76 = 0;
     field_0x8->moveFromCentre_80402E08(0.0f, -448.0f);
     field_0x8->field_0x22 = 0;
     for (s32 i = 0; i < 6; i++) {
@@ -153,6 +150,7 @@ void cls_804AF860::fn_803A7280() {
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
+    field_0x76 = 0;
     field_0x79 = 0;
     field_0x7a = 10;
     field_0x7b = 0xFF;
@@ -171,14 +169,14 @@ void cls_804AF860::fn_803A71F0() {
 // 0x803A6608. The options screen: left / right choose the arrow, up / down step the pane
 // offsets, the sound mode and the rumble setting toggle with messages 0x98 / 0x99 and
 // 0x38 / 0x39; the six cursor panes blink on a random timer.
-// FIXME(shotgun): 43.27 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.91 %, missing/extra + reloc-name; behaviour near.
 // (the blink block's show / hide pattern of the six panes is approximate)
 void cls_804AF860::fn_803A6608() {
     field_0x80 = 5;
     if (!field_0x76) {
-        bool a = false;
-        bool b = false;
-        bool c = false;
+        u8 a = 0;
+        u8 b = 0;
+        u8 c = 0;
         field_0x68++;
         if (field_0x68 > 0) {
             a = field_0x8->fn_80402940(0x16, 0, -448.0f, 0.0f);
@@ -260,15 +258,80 @@ void cls_804AF860::fn_803A6608() {
                 OSSetSoundMode(1);
             }
         } else {
-            // FIXME(shotgun): the rumble row (field_0x64 != 0, 0x803A6B0C-0x803A6DE0) is not written
+            // rumble row
+            if (field_0x78 == 1) {
+                field_0x78 = 0;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x39, 0, NULL, NULL);
+                if (lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) {
+                    gGameRoot_8053AAF8->fn_80134CC0(0);
+                }
+            } else {
+                field_0x78 = 1;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x38, 0, NULL, NULL);
+                if (lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) {
+                    gGameRoot_8053AAF8->fn_80134CC0(30);
+                }
+            }
+        }
+    } else if (lbl_8053AD30->fn_80309A9C(2, 1)) {
+        gAudioMgr_8053AF80->fn_80458880(0x26, -1);
+        field_0x6e = 1;
+        if (field_0x64 == 0) {
+            if (field_0x77 == 1) {
+                field_0x77 = 0;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x99, 0, NULL, NULL);
+                gAudioMgr_8053AF80->fn_804594E4(0);
+                gAudioMgr_8053AF80->fn_80458880(0x43, -1);
+                OSSetSoundMode(0);
+            } else {
+                field_0x77 = 1;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tso02'))->getStringPtr(), 0x98, 0, NULL, NULL);
+                gAudioMgr_8053AF80->fn_804594E4(1);
+                gAudioMgr_8053AF80->fn_80458880(0x43, -1);
+                OSSetSoundMode(1);
+            }
+        } else {
+            // rumble row
+            if (field_0x78 == 1) {
+                field_0x78 = 0;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x39, 0, NULL, NULL);
+                if (lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) {
+                    gGameRoot_8053AAF8->fn_80134CC0(0);
+                }
+            } else {
+                field_0x78 = 1;
+                getMessageText_803832BC(((J2DTextBox*)field_0x4->search('Tsi02'))->getStringPtr(), 0x38, 0, NULL, NULL);
+                if (lbl_8053AD30->fn_8030A388(getPlayerInputSlot_8030AAF4(0))) {
+                    gGameRoot_8053AAF8->fn_80134CC0(30);
+                }
+            }
         }
     }
-    // FIXME(shotgun): the remaining button press (0x803A6B0C onward) is not written
     field_0x6a--;
     if (field_0x6a <= 0) {
         field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
-        // FIXME(shotgun): the blink of the cursor panes Pocur01-06 (0x803A6E78-0x803A71CC, which
-        // panes are shown or hidden) is not written
+        if (field_0x4->search('Pocur01')->isVisible()) {
+            field_0x4->search('Pocur01')->hide();
+            field_0x4->search('Pocur02')->hide();
+            field_0x4->search('Pocur03')->show();
+            field_0x4->search('Pocur04')->show();
+            field_0x4->search('Pocur05')->hide();
+            field_0x4->search('Pocur06')->hide();
+        } else if (field_0x4->search('Pocur03')->isVisible()) {
+            field_0x4->search('Pocur01')->hide();
+            field_0x4->search('Pocur02')->hide();
+            field_0x4->search('Pocur03')->hide();
+            field_0x4->search('Pocur04')->hide();
+            field_0x4->search('Pocur05')->show();
+            field_0x4->search('Pocur06')->show();
+        } else {
+            field_0x4->search('Pocur01')->show();
+            field_0x4->search('Pocur02')->show();
+            field_0x4->search('Pocur03')->hide();
+            field_0x4->search('Pocur04')->hide();
+            field_0x4->search('Pocur05')->hide();
+            field_0x4->search('Pocur06')->hide();
+        }
     }
     fn_803A60E4();
 }
