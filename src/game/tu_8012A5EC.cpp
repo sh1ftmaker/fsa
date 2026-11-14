@@ -309,7 +309,7 @@ void cls_8049E770::fn_8012BC40() {
     }
 }
 
-// FIXME(shotgun): 84.44 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 97.96 %, different + reloc-name; behaviour drift.
 void cls_8049E770::fn_8012B218() {
     static JGeometry::TVec3f lbl_804BD7C0[4] = {
         JGeometry::TVec3f(-113.0f, 382.0f, 50.0f),
