@@ -121,7 +121,7 @@ static inline void shiftBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& box
 }
 
 // 0x802E2C28.
-// FIXME(shotgun): 49.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 68.00 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A9C20::update() {
     if (field_0x230 < 1) {
         field_0x248++;
