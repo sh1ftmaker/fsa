@@ -982,7 +982,7 @@ s32 getPlayerInputSlot_8030AAF4(s32 player);
 // stores 2 at 0x1F0 + player); its size and the rest are unknown.
 class cls_804B1920 {
 public:
-    cls_804B1920(); // fn_8043F504 (game/tu_8043A0E8.cpp, not written yet)
+    cls_804B1920(); // fn_8043F504 (game/tu_8043A0E8.cpp)
     // Virtual destructor first: the vtable pointer goes where it is declared.
     virtual ~cls_804B1920(); // owner game/tu_8043A0E8.cpp (not written yet)
     // 0x8043D39C / 0x8043DB58 (tu_8043A0E8.cpp, not written yet): GameRoot's
@@ -1041,7 +1041,7 @@ public:
     /* 0x1C8 */ f32 field_0x1c8;
     /* 0x1CC */ f32 field_0x1cc;
     /* 0x1D0 */ s32 field_0x1d0[4]; // its kind (1-4: field_0x280[0-3])
-    /* 0x1E0 */ u8 pad_0x1e0[0x1F0 - 0x1E0];
+    /* 0x1E0 */ s32 field_0x1e0[4]; // per player, 1 at construction
     /* 0x1F0 */ u8 field_0x1f0[4]; // per player
     /* 0x1F4 */ u8 field_0x1f4[5][10]; // fn_8043CB24: digit i of slot j (0xFF = blank)
     /* 0x226 */ u8 field_0x226[10];    // its digit count
