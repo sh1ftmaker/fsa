@@ -51,7 +51,7 @@ void fn_80301A88(OSAlarm* alarm, OSContext* context) {
     OSResumeThread(static_cast<GbaAlarm_80301A88*>(alarm)->mThread);
 }
 
-static inline void sleepMs_80300E1C(s64 ms) {
+static inline void sleepMs_80300E1C(u32 ms) {
     GbaAlarm_80301A88 alarm;
     OSCreateAlarm(&alarm);
     alarm.mThread = OSGetCurrentThread();
@@ -124,7 +124,7 @@ static inline s32 exchangeInitialPacket_80300E1C(GbaClient_803007D0* client, u32
     return 0;
 }
 
-// FIXME(shotgun): 71.32 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 72.52 %, missing/extra + reloc-name; behaviour drift.
 void* fn_80300E1C(void* arg) {
     GbaClient_803007D0* client = static_cast<GbaClient_803007D0*>(arg);
     OSMessage msg;
