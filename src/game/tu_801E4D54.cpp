@@ -196,10 +196,10 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                 ActorBase_804A5770* act = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (act == NULL) {
                     e->fn_801D7874();
-                e->field_0x4 = 0;
+                    e->field_0x4 = 0;
                 } else if (!act->mAlive || act->field_0x4 != field_0x4 || act->field_0x94 == 1 || act->field_0x90 != 0) {
                     e->fn_801D7874();
-                e->field_0x4 = 0;
+                    e->field_0x4 = 0;
                 } else {
                     s32 j;
                     for (j = 0; j < count; j++) {
@@ -209,7 +209,7 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                     }
                     if (j >= count) {
                         e->fn_801D7874();
-                e->field_0x4 = 0;
+                        e->field_0x4 = 0;
                     }
                 }
             }
