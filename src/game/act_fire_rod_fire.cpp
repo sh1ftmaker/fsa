@@ -325,30 +325,7 @@ void FireRodFire_804A89F0::update() {
             mPos += field_0x3c;
         }
         field_0x248 = mPos;
-        if (field_0x264 == 2 || (field_0x264 >= 3 && field_0x264 <= 5)) {
-            s32 hitPlayer = -1;
-            if (field_0x264 == 3 || field_0x264 == 4) {
-                hitPlayer = fn_80239A74(&box, field_0x4, field_0x98, false, false);
-            }
-            if ((field_0x264 == 3 || field_0x264 == 4) && hitPlayer >= 0) {
-                spawnEmitter_8013CC50(field_0x4, &mPos, 0x19D, 0, 0, NULL, NULL, true, field_0x28c);
-                fn_80230FD0(hitPlayer, 0x20050);
-                field_0x25c = 5;
-                field_0x238 = 5;
-            } else if (field_0x264 != 5 && field_0x293 == 0) {
-                fn_801F2B7C(-100, -1, true);
-            }
-            if (fn_801F2618(NULL, false)) {
-                if (field_0x264 == 3 || field_0x264 == 4) {
-                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x19D, 0, 0, NULL, NULL, true, field_0x28c);
-                    startSound_801F0E34(0x3002E, 0);
-                    vfunc_0x24();
-                } else {
-                    field_0x25c = 5;
-                    field_0x238 = 5;
-                }
-            }
-        } else {
+        if (field_0x264 != 2 && (field_0x264 < 3 || field_0x264 > 5)) {
             s32 dmg = field_0x114;
             if (gGameRoot_8053AAF8->field_0x7f == 1) {
                 dmg = 0;
@@ -394,6 +371,29 @@ void FireRodFire_804A89F0::update() {
                         }
                         mPos = field_0x248;
                     }
+                }
+            }
+        } else {
+            s32 hitPlayer = -1;
+            if (field_0x264 == 3 || field_0x264 == 4) {
+                hitPlayer = fn_80239A74(&box, field_0x4, field_0x98, false, false);
+            }
+            if ((field_0x264 == 3 || field_0x264 == 4) && hitPlayer >= 0) {
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x19D, 0, 0, NULL, NULL, true, field_0x28c);
+                fn_80230FD0(hitPlayer, 0x20050);
+                field_0x25c = 5;
+                field_0x238 = 5;
+            } else if (field_0x264 != 5 && field_0x293 == 0) {
+                fn_801F2B7C(-100, -1, true);
+            }
+            if (fn_801F2618(NULL, false)) {
+                if (field_0x264 == 3 || field_0x264 == 4) {
+                    spawnEmitter_8013CC50(field_0x4, &mPos, 0x19D, 0, 0, NULL, NULL, true, field_0x28c);
+                    startSound_801F0E34(0x3002E, 0);
+                    vfunc_0x24();
+                } else {
+                    field_0x25c = 5;
+                    field_0x238 = 5;
                 }
             }
         }
