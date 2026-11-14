@@ -346,8 +346,7 @@ void cls_8049E770::fn_8012B218() {
         }
         if (field_0x250 == 0) {
             for (s32 i = 0; i < 4; i++) {
-                field_0x2f8[i].x = 0.0f;
-                field_0x2f8[i].y = 0.0f;
+                field_0x2f8[i].zero();
                 field_0x2f8[i].z = -0.2f;
                 JGeometry::TVec3f base(field_0x3f8, field_0x3f4, 0.0f);
                 field_0x2c8[i] = lbl_804BD7C0[i] + base;
@@ -365,12 +364,18 @@ void cls_8049E770::fn_8012B218() {
                 field_0x234++;
                 field_0x250 = 390;
                 for (s32 i = 0; i < 4; i++) {
-                    releaseEmitter_801EE434(field_0x328[0][i]);
-                    field_0x328[0][i] = NULL;
-                    releaseEmitter_801EE434(field_0x328[1][i]);
-                    field_0x328[1][i] = NULL;
-                    releaseEmitter_801EE434(field_0x328[2][i]);
-                    field_0x328[2][i] = NULL;
+                    if (field_0x328[0][i] != NULL) {
+                        field_0x328[0][i]->setStatus(0x100);
+                        field_0x328[0][i] = NULL;
+                    }
+                    if (field_0x328[1][i] != NULL) {
+                        field_0x328[1][i]->setStatus(0x100);
+                        field_0x328[1][i] = NULL;
+                    }
+                    if (field_0x328[2][i] != NULL) {
+                        field_0x328[2][i]->setStatus(0x100);
+                        field_0x328[2][i] = NULL;
+                    }
                 }
                 s32 id0 = 0x3B4;
                 s32 id1 = 0x3B5;
@@ -391,12 +396,18 @@ void cls_8049E770::fn_8012B218() {
             fn_80119DD0()->fn_80119998(150, 0, 2, 0, 1, 150, 0);
         } else if (field_0x250 == 210) {
             for (s32 i = 0; i < 4; i++) {
-                releaseEmitter_801EE434(field_0x358[0][i]);
-                field_0x358[0][i] = NULL;
-                releaseEmitter_801EE434(field_0x358[1][i]);
-                field_0x358[1][i] = NULL;
-                releaseEmitter_801EE434(field_0x358[2][i]);
-                field_0x358[2][i] = NULL;
+                if (field_0x358[0][i] != NULL) {
+                    field_0x358[0][i]->setStatus(0x100);
+                    field_0x358[0][i] = NULL;
+                }
+                if (field_0x358[1][i] != NULL) {
+                    field_0x358[1][i]->setStatus(0x100);
+                    field_0x358[1][i] = NULL;
+                }
+                if (field_0x358[2][i] != NULL) {
+                    field_0x358[2][i]->setStatus(0x100);
+                    field_0x358[2][i] = NULL;
+                }
             }
             s32 id0 = 0x461;
             s32 id1 = 0x462;
