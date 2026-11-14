@@ -56,7 +56,7 @@ static inline void setScaleMtx(Mtx m, f32 s) {
     m[2][2] = s;
 }
 
-// FIXME(shotgun): 92.76 %, different + reloc-name; behaviour clean.
+// FIXME(shotgun): 92.81 %, different; behaviour clean.
 void ChiefSoldier_804A0B90::fn_801752D8() {
     if (field_0x4 >= 8 && field_0x23c == 1 && lbl_80529DEC.field_0x118 == 6) {
         s32 gone = 0;
@@ -101,7 +101,7 @@ void ChiefSoldier_804A0B90::fn_801752D8() {
     }
 }
 
-// FIXME(shotgun): 86.13 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 86.16 %, missing/extra; behaviour drift.
 void ChiefSoldier_804A0B90::fn_80175024() {
     if (getType() == 6) {
         return;
@@ -178,7 +178,7 @@ void ChiefSoldier_804A0B90::fn_80175024() {
     }
 }
 
-// FIXME(shotgun): 97.59 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 97.81 %, missing/extra + reloc-name; behaviour near.
 void ChiefSoldier_804A0B90::init() {
     mBox.i.x = -12.0f;
     mBox.i.y = -20.0f;
@@ -316,7 +316,7 @@ void ChiefSoldier_804A0B90::init() {
     }
 }
 
-// FIXME(shotgun): 82.25 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.32 %, missing/extra + reloc-name; behaviour drift.
 void ChiefSoldier_804A0B90::fn_801746DC() {
     if (field_0x29c != field_0x2a0) {
         field_0x2a0 = field_0x29c;
@@ -464,7 +464,7 @@ void ChiefSoldier_804A0B90::vfunc_0x44() {
     }
 }
 
-// FIXME(shotgun): 91.66 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 91.69 %, missing/extra; behaviour near.
 void ChiefSoldier_804A0B90::fn_80174220() {
     s32 dir = field_0x98;
     s32 index = dir;
@@ -528,6 +528,7 @@ void ChiefSoldier_804A0B90::fn_80174220() {
     mPos.z = z;
 }
 
+// FIXME: 99.59 %, missing/extra + reloc-name; behaviour near.
 void ChiefSoldier_804A0B90::update() {
     u16 angle = 0;
     s32 dir = 0;
