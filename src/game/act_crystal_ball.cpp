@@ -902,7 +902,7 @@ void CrystalBall_804AB308::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, frame + 0x90, 0, 2, -1, held, 0, 0);
 }
 
-// FIXME(shotgun): 94.68 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.67 %, missing/extra + reloc-name; behaviour drift.
 // item switch / spawn sequences are laid out differently
 void CrystalBall_804AB308::vfunc_0x24() {
     s32 code = fn_8022461C(&mPos, field_0x4);
@@ -1058,16 +1058,14 @@ void CrystalBall_804AB308::vfunc_0x24() {
             break;
         }
         }
-        fn_801F3668();
         break;
     }
     case 2:
         mPos.z = 0.0f;
         getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LSTI, field_0x4, &mPos, field_0x294 | 0x180 | ((field_0x298 & 3) << 22), -1, -1);
-        fn_801F3668();
         break;
     default:
-        fn_801F3668();
         break;
     }
+    fn_801F3668();
 }
