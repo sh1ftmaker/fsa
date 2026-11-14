@@ -175,7 +175,7 @@ void NPCLaunchedByThwomp2_804AD1C8::init() {
     field_0x194 = 1;
 }
 
-// FIXME: 91.07 %, missing/extra; behaviour drift.
+// FIXME: 96.05 %, different; behaviour near.
 // Stack frame size (0x80 vs 0x70) and float temporary layout in inlined launch(), plus switch dispatch ordering in updateAnim().
 void NPCLaunchedByThwomp2_804AD1C8::update() {
     JGeometry::TBox2f box = mBox;
