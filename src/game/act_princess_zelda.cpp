@@ -186,7 +186,7 @@ inline bool cls_8049CEE0::stepRail() {
     return false;
 }
 
-// FIXME: 94.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 97.45 %, missing/extra + reloc-name; behaviour drift.
 // missing/extra + reloc-name: ours has 4 fewer instrs (919 vs 923); some argument setups before calls are scheduled differently and one comparison compiles to an extra cror.
 void cls_8049CEE0::update() {
     ActorBase_804A5770::update();
