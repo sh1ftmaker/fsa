@@ -1991,9 +1991,6 @@ void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMas
     *outMask = fn_802D7AC4(layer);
 }
 
-// FIXME: fn_802D3D48 is not written yet.
-
-
 bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     u32 word = bit / 32;
     if (!set) {
@@ -2001,6 +1998,257 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     }
     getGameView_802D6A9C()->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
     return true;
+}
+
+// Reads the stage's map CSV: the start screen, the stage settings (field_0x34-0x58) and
+// the per-screen values of field_0x60 (one row per line up to "end"; 'N' skips a cell).
+// The second variant (gGameRoot_8053AAF8->field_0x7f clear) reads one line of map500.csv.
+// Still differs: the 0xFF fill keeps an inner-loop guard (li 0; cmpwi 10) the original lacks, and the
+// map500 line skip is not rotated with a guard as in the original.
+void GameView_804A9950::fn_802D3D48() {
+    getGameView_802D6A9C()->field_0x1328c = 0;
+    for (s32 row = 0; row < 10; row++) {
+        for (s32 col = 0; col < 10; col++) {
+            field_0x60[row][col] = 0xFF;
+        }
+    }
+    s32 i = 0;
+    s32 col = 0;
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        const u8* str;
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
+            str = (const u8*)fn_80403328(lbl_804A9710[field_0x4][field_0x8]);
+        } else {
+            str = (const u8*)fn_80403328(lbl_804A9830[field_0x4][field_0x8]);
+        }
+        while (true) {
+            if (str[i] == (u8)',') {
+                break;
+            }
+            i++;
+        }
+        field_0x14 = str[i + 1] - '0';
+        field_0xc = field_0x14;
+        field_0x18 = str[i + 3] - '0';
+        field_0x10 = field_0x18;
+        i += 5;
+        field_0x34 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x34 == 0) {
+                field_0x34 = 0;
+            } else if (field_0x34 == 1) {
+                field_0x34 = 10;
+            } else if (field_0x34 == 2) {
+                field_0x34 = 20;
+            } else {
+                field_0x34 = 30;
+            }
+            field_0x34 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        field_0x38 = field_0x34;
+        field_0x3c = str[i + 2] - '0';
+        i += 4;
+        field_0x40 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x40 == 0) {
+                field_0x40 = 0;
+            } else if (field_0x40 == 1) {
+                field_0x40 = 10;
+            } else if (field_0x40 == 2) {
+                field_0x40 = 20;
+            } else {
+                field_0x40 = 30;
+            }
+            field_0x40 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        i += 2;
+        field_0x44 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x44 == 0) {
+                field_0x44 = 0;
+            } else if (field_0x44 == 1) {
+                field_0x44 = 10;
+            } else if (field_0x44 == 2) {
+                field_0x44 = 20;
+            } else {
+                field_0x44 = 30;
+            }
+            field_0x44 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        // Both branches store 0, as in the original.
+        if (!fn_802DEBF8()) {
+            field_0x48 = 0;
+        } else {
+            field_0x48 = 0;
+        }
+        field_0x4c = 1;
+        i += 2;
+        field_0x50 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x50 == 0) {
+                field_0x50 = 0;
+            } else if (field_0x50 == 1) {
+                field_0x50 = 10;
+            }
+            field_0x50 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        field_0x54 = str[i + 2] - '0';
+        if (field_0x54 < 2 || field_0x54 >= 8) {
+            field_0x54 = 5;
+        }
+        i += 4;
+        field_0x58 = str[i] - '0';
+        while (true) {
+            if (str[i] == (u8)'\r' && str[i + 1] == (u8)'\n') {
+                i += 2;
+                break;
+            }
+            i++;
+        }
+        s32 row = 0;
+        while (true) {
+            if (str[i] == 'e' && str[i + 1] == 'n' && str[i + 2] == 'd') {
+                return;
+            }
+            if (str[i] == (u8)'\r' && str[i + 1] == (u8)'\n') {
+                col = 0;
+                i += 2;
+                row++;
+            } else if (str[i] == (u8)',') {
+                i++;
+            } else if (str[i] == 'N') {
+                col++;
+                i += 4;
+            } else {
+                u8 value = str[i] - '0';
+                if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+                    value = (value <= 9 ? (u8)(value * 10) : 0) + (u8)(str[i + 1] - '0');
+                    i++;
+                }
+                i++;
+                field_0x60[row][col] = value;
+                col++;
+            }
+        }
+    } else {
+        gGameRoot_8053AAF8->fn_80134DC0();
+        s32 players = 0;
+        for (s32 p = 0; p < 4; p++) {
+            if (isPlayerBitSet(gGameRoot_8053AAF8, p) == 1) {
+                players++;
+            }
+        }
+        s32 controllers = 0;
+        for (s32 p = 0; p < players; p++) {
+            u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (p * 2)) & 3;
+            if (mode == 2) {
+                controllers++;
+            }
+        }
+        s32 line = field_0x4 * 4 + field_0x8;
+        const u8* str;
+        if (controllers != 0) {
+            str = (const u8*)fn_80403328("map500_ctrl.csv");
+        } else {
+            str = (const u8*)fn_80403328("map500.csv");
+        }
+        field_0x14 = 1;
+        field_0x18 = 1;
+        s32 pos = 0;
+        s32 lines = 0;
+        while (line != lines) {
+            while (true) {
+                if (str[pos] == (u8)'\r' && str[pos + 1] == (u8)'\n') {
+                    pos += 2;
+                    lines++;
+                    break;
+                }
+                pos++;
+            }
+        }
+        u8 value = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (value == 0) {
+                value = 0;
+            } else if (value == 1) {
+                value = 10;
+            } else if (value == 2) {
+                value = 20;
+            } else {
+                value = 30;
+            }
+            value += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x60[1][1] = value;
+        pos += 2;
+        field_0x34 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x34 == 0) {
+                field_0x34 = 0;
+            } else if (field_0x34 == 1) {
+                field_0x34 = 10;
+            } else if (field_0x34 == 2) {
+                field_0x34 = 20;
+            } else {
+                field_0x34 = 30;
+            }
+            field_0x34 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x38 = field_0x34;
+        field_0x3c = str[pos + 2] - '0';
+        pos += 4;
+        field_0x40 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x40 == 0) {
+                field_0x40 = 0;
+            } else if (field_0x40 == 1) {
+                field_0x40 = 10;
+            } else if (field_0x40 == 2) {
+                field_0x40 = 20;
+            } else {
+                field_0x40 = 30;
+            }
+            field_0x40 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        pos += 2;
+        field_0x48 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x48 == 0) {
+                field_0x48 = 0;
+            } else if (field_0x48 == 1) {
+                field_0x48 = 10;
+            }
+            field_0x48 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        pos += 2;
+        field_0x50 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x50 == 0) {
+                field_0x50 = 0;
+            } else if (field_0x50 == 1) {
+                field_0x50 = 10;
+            }
+            field_0x50 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x4c = str[pos + 2] - '0';
+        if (field_0x4c != 1 && field_0x4c != 2) {
+            field_0x4c = 1;
+        }
+        field_0x54 = str[pos + 4] - '0';
+        if (field_0x54 < 2 || field_0x54 >= 8) {
+            field_0x54 = 5;
+        }
+        field_0x58 = str[pos + 6] - '0';
+    }
 }
 
 // FIXME: 99.48 %, missing/extra; behaviour clean.
