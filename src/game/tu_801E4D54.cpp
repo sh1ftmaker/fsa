@@ -39,9 +39,9 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
                 v = *dir;
                 v.normalize();
                 v.scale(2.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 1.5f;
+                field_0x308[i].vel.x = v.x;
+                field_0x308[i].vel.y = v.y;
+                field_0x308[i].vel.z = 1.5f;
                 field_0x308[i].field_0x5 = 1;
                 return;
             } else {
@@ -55,9 +55,9 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
                     v.normalize();
                 }
                 v.scale(4.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 3.0f;
+                field_0x308[i].vel.x = v.x;
+                field_0x308[i].vel.y = v.y;
+                field_0x308[i].vel.z = 3.0f;
             }
             field_0x308[i].field_0x5 = 1;
             return;
@@ -188,16 +188,19 @@ void VaatiBoss_804A4958::fn_801E4D88() {
         if (field_0x308[i].field_0x4 != 0) {
             s32 serial = field_0x308[i].field_0x0;
             if (serial < 0) {
-                field_0x308[i].fn_801D7874();
-                field_0x308[i].field_0x4 = 0;
+                cls_801D6A58* e = &field_0x308[i];
+ e->fn_801D7874();
+                e->field_0x4 = 0;
             } else {
                 ActorBase_804A5770* act = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (act == NULL) {
-                    field_0x308[i].fn_801D7874();
-                    field_0x308[i].field_0x4 = 0;
+                    cls_801D6A58* e = &field_0x308[i];
+ e->fn_801D7874();
+                    e->field_0x4 = 0;
                 } else if (!act->mAlive || act->field_0x4 != field_0x4 || act->field_0x94 == 1 || act->field_0x90 != 0) {
-                    field_0x308[i].fn_801D7874();
-                    field_0x308[i].field_0x4 = 0;
+                    cls_801D6A58* e = &field_0x308[i];
+ e->fn_801D7874();
+                    e->field_0x4 = 0;
                 } else {
                     s32 j;
                     for (j = 0; j < count; j++) {
@@ -206,8 +209,9 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                         }
                     }
                     if (j >= count) {
-                        field_0x308[i].fn_801D7874();
-                        field_0x308[i].field_0x4 = 0;
+                        cls_801D6A58* e = &field_0x308[i];
+ e->fn_801D7874();
+                        e->field_0x4 = 0;
                     }
                 }
             }
@@ -227,13 +231,12 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                     cls_801D6A58* entry = &field_0x308[j];
                     entry->fn_801D7830();
                     JGeometry::TVec3f p = actor->mPos;
-                    JGeometry::TVec3f vel(entry->field_0x8, entry->field_0xc, entry->field_0x10);
-                    p += vel;
+                    p += entry->vel;
                     if (p.z < 0.0f) {
-                        entry->field_0x8 = 0.0f;
-                        entry->field_0xc = 0.0f;
+                        entry->vel.x = 0.0f;
+                        entry->vel.y = 0.0f;
                         p.z = 0.0f;
-                        entry->field_0x10 = 0.0f;
+                        entry->vel.z = 0.0f;
                     }
                     actor->mPos = p;
                     break;
