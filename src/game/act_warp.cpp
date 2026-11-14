@@ -203,13 +203,12 @@ extern const u32 lbl_8046ABE8[28]; // 'NULL'-ended actor id lists: [0] pushed, [
 
 // Whether the bomb-flower rests: flagged, or its velocity is within 32 * FLT_EPSILON of field_0x364.
 static inline bool bomeAtRest(cls_804A0738* b) {
-    f32 eps = 32.0f * FLT_EPSILON;
     bool rest = false;
     if (b->field_0x230 == 1) {
         rest = true;
     } else {
         JGeometry::TVec3f ref(b->field_0x364[0], b->field_0x364[1], b->field_0x364[2]);
-        if (epsilonEquals(b->field_0x3c, ref, eps)) {
+        if (epsilonEquals(b->field_0x3c, ref, 32.0f * FLT_EPSILON)) {
             rest = true;
         }
     }
@@ -219,7 +218,7 @@ static inline bool bomeAtRest(cls_804A0738* b) {
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 87.86 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 88.35 %, missing/extra + reloc-name; behaviour drift.
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
