@@ -8,12 +8,13 @@
 #include "game/act/act_trick_floor.h"
 
 // Tile rows / columns the kind lays down at init (rodata, in this unit).
-extern const s32 lbl_8046C8B0[7];
-extern const s32 lbl_8046C8CC[7];
-extern const f32 lbl_8046C908[7];
-extern const f32 lbl_8046C924[7];
-extern const f32 lbl_8046C940[7];
-extern const f32 lbl_8046C95C[7];
+static const s32 lbl_8046C8B0[7] = {4, 4, 6, 4, 6, 6, 4};
+static const s32 lbl_8046C8CC[7] = {4, 4, 5, 5, 6, 6, 4};
+static const u16 lbl_8046C8E8[16] = {0x1B0, 0x1B0, 0x1B0, 0x1B0, 0x1B0, 0x1D8, 0x1DA, 0x1B0, 0x1B0, 0x1D9, 0x1DB, 0x1B0, 0x1B0, 0x1B0, 0x1B0, 0x1B0};
+static const f32 lbl_8046C908[7] = {32.0f, 32.0f, 48.0f, 32.0f, 64.0f, 64.0f, 32.0f};
+static const f32 lbl_8046C924[7] = {32.0f, 32.0f, 40.0f, 40.0f, 64.0f, 64.0f, 32.0f};
+static const f32 lbl_8046C940[7] = {1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f};
+static const f32 lbl_8046C95C[7] = {1.0f, 1.0f, 1.3f, 1.3f, 1.0f, 1.0f, 1.0f};
 
 // FIXME(shotgun): 98.05 %, operands + reloc-name; behaviour clean.
 void TrickFloor_804A83A0::init() {
@@ -223,7 +224,7 @@ static inline void setRotMtx(Mtx mtx, f32 rx, f32 ry, f32 rz) {
     mtx[2][2] = cx * cy;
 }
 
-// FIXME(shotgun): 78.29 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.99 %, missing/extra + reloc-name; behaviour drift.
 void TrickFloor_804A83A0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -260,6 +261,12 @@ void TrickFloor_804A83A0::draw() {
     params.mMtx = mtx;
 
     switch (field_0x234) {
+    default:
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
+        }
+        break;
     case 1:
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_left_smp.bin");
@@ -291,12 +298,6 @@ void TrickFloor_804A83A0::draw() {
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
         }
         break;
-    default:
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&mPos, res, &params);
-        }
-        break;
     }
 
     mtx[0][3] = 0.0f;
@@ -309,15 +310,20 @@ void TrickFloor_804A83A0::draw() {
     }
     params.mMtx = mtx;
 
-    const JMath::TSinCosTable<11, f32>& sincos = JMath::sincosTable_;
     switch (field_0x234) {
-    case 1: {
-        f32 s = sincos.sinRadian(field_0x248);
-        f32 a = -field_0x248;
-        if (a < 0.0f) {
-            a = -a;
+    default: {
+        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
+        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        if (field_0x4 < 8) {
+            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
+            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
         }
-        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        break;
+    }
+    case 1: {
+        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
+        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
         JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_right_smp.bin");
@@ -326,12 +332,8 @@ void TrickFloor_804A83A0::draw() {
         break;
     }
     case 2: {
-        f32 s = sincos.sinRadian(field_0x248);
-        f32 a = -field_0x248;
-        if (a < 0.0f) {
-            a = -a;
-        }
-        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
+        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
         JGeometry::TVec3f pos((mPos.x + 96.0f) - 48.0f * c, 48.0f * s + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "house_right_smp.bin");
@@ -371,29 +373,11 @@ void TrickFloor_804A83A0::draw() {
         }
         break;
     case 6: {
-        f32 s = sincos.sinRadian(field_0x248);
-        f32 a = -field_0x248;
-        if (a < 0.0f) {
-            a = -a;
-        }
-        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
+        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
+        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
         JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "field_smp.bin");
-            gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
-        }
-        break;
-    }
-    default: {
-        f32 s = sincos.sinRadian(field_0x248);
-        f32 a = -field_0x248;
-        if (a < 0.0f) {
-            a = -a;
-        }
-        f32 c = sincos.mTable[(u16)(a * 325.9493f) & 0x7FF].second;
-        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
-        if (field_0x4 < 8) {
-            void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
         }
         break;
