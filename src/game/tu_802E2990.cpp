@@ -205,9 +205,7 @@ void cls_804A9C20::update() {
                     }
                 }
                 field_0x80.set(-10.0f, -10.0f, 10.0f, 10.0f);
-                area = field_0x80;
-                JGeometry::TVec2f shift(mPos.x, mPos.y);
-                area.addPos(shift);
+                shiftBox(&area, field_0x80, mPos);
                 fn_80239914(&area, field_0x4, mSerial);
                 if (field_0x2b8[i] != 0) {
                     switch (field_0x238) {
@@ -342,8 +340,8 @@ void cls_804A9C20::update() {
         startSound_801F0E34(0x30038, 0);
     }
     mPos.x = savedX;
-                mPos.y = savedY;
-                mPos.z = savedZ;
+    mPos.y = savedY;
+    mPos.z = savedZ;
     JGeometry::TVec3f focus(mPos.x + lbl_8046EA10.focus[field_0x238].x,
                             mPos.y + lbl_8046EA10.focus[field_0x238].y, mPos.z);
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
