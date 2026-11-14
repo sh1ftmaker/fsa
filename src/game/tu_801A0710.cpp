@@ -723,14 +723,12 @@ static inline void bumpCount(s32* count) {
     }
 }
 
-// FIXME(shotgun): 92.02 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 93.71 %, missing/extra; behaviour drift.
 // (rewritten against the asm: 0xE-0x11 follow the switch; the p < 0 test of the id-range check and the
 // duplicated count clamp are not reproduced exactly)
 void TennisShop_804A2BF4::fn_801A0F90() {
     bool dead = false;
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos.add(field_0x3c);
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     switch (field_0x230) {
     case 0xE:
