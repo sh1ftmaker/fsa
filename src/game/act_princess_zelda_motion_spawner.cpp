@@ -8,8 +8,6 @@
 #include "std/math.h"
 #include "game/act/act_princess_zelda_motion_spawner.h"
 
-// FIXME: 99.8 %. Code identical; only the float literal relocations differ
-// (this unit's .sdata2 literals are not split to match yet).
 void PrincessZeldaMotionObjectSpawner_804A375C::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -67,7 +65,8 @@ static inline void setViewBit(s32 bit) {
 // Message ids by the spawner's bits 8-11 (field_0x258).
 static const u32 lbl_804A3740[] = {0x2D6, 0x2F0, 0x2F1, 0x2F3, 0x2F7, 0x2F8, 0x2F9};
 
-// FIXME(shotgun): 46.46 %, missing/extra. States 6-8 and the camera setup at the start of state 9 are not written
+// FIXME(shotgun): 89.76 %, missing/extra + reloc-name; behaviour drift.
+// States 6-8 and the camera setup at the start of state 9 are not written
 void PrincessZeldaMotionObjectSpawner_804A375C::update() {
     s32 dir = -1;
     f32 dist = 0.0f;
