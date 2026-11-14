@@ -312,10 +312,7 @@ void TrickFloor_804A83A0::draw() {
 
     switch (field_0x234) {
     default: {
-        JGeometry::TVec3f pos;
-        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
-        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
-        pos.z = mPos.z;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248), 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
@@ -323,10 +320,7 @@ void TrickFloor_804A83A0::draw() {
         break;
     }
     case 1: {
-        JGeometry::TVec3f pos;
-        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
-        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
-        pos.z = mPos.z;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248), 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_right_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
@@ -334,9 +328,7 @@ void TrickFloor_804A83A0::draw() {
         break;
     }
     case 2: {
-        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
-        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
-        JGeometry::TVec3f pos((mPos.x + 96.0f) - 48.0f * c, 48.0f * s + mPos.y, mPos.z);
+        JGeometry::TVec3f pos((mPos.x + 96.0f) - 48.0f * JMath::sincosTable_.cosRadian(-field_0x248), 48.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "house_right_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
@@ -375,10 +367,7 @@ void TrickFloor_804A83A0::draw() {
         }
         break;
     case 6: {
-        JGeometry::TVec3f pos;
-        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
-        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
-        pos.z = mPos.z;
+        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248), 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y, mPos.z);
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "field_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
