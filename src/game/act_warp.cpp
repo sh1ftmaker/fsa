@@ -203,13 +203,12 @@ extern const u32 lbl_8046ABE8[28]; // 'NULL'-ended actor id lists: [0] pushed, [
 
 // Whether the bomb-flower rests: flagged, or its velocity is within 32 * FLT_EPSILON of field_0x364.
 static inline bool bomeAtRest(cls_804A0738* b) {
-    f32 eps = 32.0f * FLT_EPSILON;
     bool rest = false;
     if (b->field_0x230 == 1) {
         rest = true;
     } else {
         JGeometry::TVec3f ref(b->field_0x364[0], b->field_0x364[1], b->field_0x364[2]);
-        if (epsilonEquals(b->field_0x3c, ref, eps)) {
+        if (epsilonEquals(b->field_0x3c, ref, 32.0f * FLT_EPSILON)) {
             rest = true;
         }
     }
