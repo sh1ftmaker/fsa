@@ -19,8 +19,6 @@ ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
     releaseEmitter_801EE434(mEmitter254);
 }
 
-// FIXME: 99.93 %, reloc-name; behaviour drift.
-// FIXME(shotgun): switch jump table is anonymous (original jumptable_804AB6B4), literal pool names differ
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
     mEmitter250 = NULL;
@@ -64,7 +62,7 @@ void ForceGemSpawner_804AB660::init() {
     }
 }
 
-// FIXME(shotgun): 78.82 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME(shotgun): 78.99 %, scheduling+regalloc + reloc-name; behaviour clean.
 // Drops a Force Gem ('RUPY') next to the actor with serial `serial` and throws it: along `angle`
 // (plus some random spread) when `flag` is set, otherwise in a random direction.
 void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
@@ -101,7 +99,7 @@ void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
     }
 }
 
-// FIXME(shotgun): 82.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.04 %, missing/extra + reloc-name; behaviour near.
 void ForceGemSpawner_804AB660::update() {
     switch (field_0x230) {
     case 0: {
