@@ -839,6 +839,129 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
     return false;
 }
 
+void cls_804B1920::fn_8043BB84() {
+    static JUtility::TColor lbl_8052C5D8[6] = {
+        JUtility::TColor(0xFF, 0xD2, 0x00, 0xFF),
+        JUtility::TColor(0xB4, 0xFF, 0x00, 0xFF),
+        JUtility::TColor(0xFA, 0x64, 0x32, 0xFF),
+        JUtility::TColor(0x6E, 0xE1, 0xF0, 0xFF),
+        JUtility::TColor(0xE1, 0x82, 0xFF, 0xFF),
+        JUtility::TColor(0xFF, 0xFF, 0xFF, 0xFF),
+    };
+    if (field_0x252 != 0) {
+        for (s32 i = 0; i < field_0x252; i++) {
+            f32 alpha = field_0x244[i] / 255.0f;
+            gGameRoot2_8053AB10->fn_8013B490();
+            for (s32 j = 0; j < 5; j++) {
+                switch (field_0x1f4[j][i]) {
+            case 0:
+                field_0x258[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[0]->setAlpha(200.0f * alpha);
+                field_0x258[0]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[0]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[0]->setAlpha(field_0x244[i]);
+                field_0x258[0]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 1:
+                field_0x258[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[1]->setAlpha(200.0f * alpha);
+                field_0x258[1]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[1]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[1]->setAlpha(field_0x244[i]);
+                field_0x258[1]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 2:
+                field_0x258[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[2]->setAlpha(200.0f * alpha);
+                field_0x258[2]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[2]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[2]->setAlpha(field_0x244[i]);
+                field_0x258[2]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 3:
+                field_0x258[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[3]->setAlpha(200.0f * alpha);
+                field_0x258[3]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[3]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[3]->setAlpha(field_0x244[i]);
+                field_0x258[3]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 4:
+                field_0x258[4]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[4]->setAlpha(200.0f * alpha);
+                field_0x258[4]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[4]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[4]->setAlpha(field_0x244[i]);
+                field_0x258[4]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 5:
+                field_0x258[5]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[5]->setAlpha(200.0f * alpha);
+                field_0x258[5]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[5]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[5]->setAlpha(field_0x244[i]);
+                field_0x258[5]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 6:
+                field_0x258[6]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[6]->setAlpha(200.0f * alpha);
+                field_0x258[6]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[6]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[6]->setAlpha(field_0x244[i]);
+                field_0x258[6]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 7:
+                field_0x258[7]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[7]->setAlpha(200.0f * alpha);
+                field_0x258[7]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[7]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[7]->setAlpha(field_0x244[i]);
+                field_0x258[7]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 8:
+                field_0x258[8]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[8]->setAlpha(200.0f * alpha);
+                field_0x258[8]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[8]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[8]->setAlpha(field_0x244[i]);
+                field_0x258[8]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+            case 9:
+                field_0x258[9]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), JUtility::TColor(0, 0, 0, 0xFF));
+                field_0x258[9]->setAlpha(200.0f * alpha);
+                field_0x258[9]->draw(3.0f + field_0x118[i], 3.0f + field_0x140[i], 19.0f * field_0x168[i],
+                                     19.0f * field_0x168[i], false, false, false);
+                field_0x258[9]->setBlackWhite(JUtility::TColor(0, 0, 0, 0), lbl_8052C5D8[field_0x23a[i]]);
+                field_0x258[9]->setAlpha(field_0x244[i]);
+                field_0x258[9]->draw(field_0x118[i], field_0x140[i], 19.0f * field_0x168[i], 19.0f * field_0x168[i],
+                                     false, false, false);
+                break;
+                }
+                field_0x118[i] += 16.0f * field_0x168[i];
+            }
+        }
+        field_0x252 = 0;
+    }
+}
+
 // FIXME: 99.96 %, reloc-name; behaviour drift.
 void cls_804B1920::fn_8043ACE4() {
     // Built once, never read.
