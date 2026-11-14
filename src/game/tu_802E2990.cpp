@@ -112,14 +112,16 @@ cls_804A9C20::~cls_804A9C20() {
 
 // The hit box `box` (relative to mPos) the actor shifts to mPos and hands to fn_80239914.
 static inline void shiftBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& box, const JGeometry::TVec3f& pos) {
-    out->i.x = box.i.x + pos.x;
-    out->i.y = box.i.y + pos.y;
-    out->f.x = box.f.x + pos.x;
-    out->f.y = box.f.y + pos.y;
+    JGeometry::TVec2f p(pos.x, pos.y);
+    out->set(box);
+    out->i.x += p.x;
+    out->i.y += p.y;
+    out->f.x += p.x;
+    out->f.y += p.y;
 }
 
 // 0x802E2C28.
-// FIXME(shotgun): 49.01 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 68.00 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A9C20::update() {
     if (field_0x230 < 1) {
         field_0x248++;
@@ -127,48 +129,8 @@ void cls_804A9C20::update() {
     mPos.x = field_0x24c[0];
     mPos.y = field_0x24c[1];
     mPos.z = field_0x24c[2];
-    JGeometry::TVec3f savedPos = mPos;
+    JGeometry::TVec3f savedPos(mPos.x, mPos.y, mPos.z);
     switch (field_0x230) {
-    case 1:
-        field_0x234--;
-        if (field_0x234 == 0) {
-            field_0x230 = 4;
-            field_0x234 = 100;
-        }
-        break;
-    case 4:
-        field_0x234--;
-        if (field_0x234 == 0) {
-            if (field_0x238 != 5) {
-                mPos = savedPos;
-                s32 kind = 0;
-                if (field_0x248 < 0x258) {
-                    if (gGameRoot_8053AAF8->field_0x7e == 1) {
-                        kind = 2;
-                    } else {
-                        kind = 1;
-                    }
-                }
-                if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
-                    fn_801F34DC();
-                } else {
-                    kind = 0;
-                }
-                if (!(getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 3)) {
-                    getActorManager_801F856C()->spawnActor_801F9484(
-                        'GOAL', field_0x4, &mPos, (kind << 17) + ((field_0x238 + 1) << 12) + 2, -1, -1);
-                }
-                mAlive = false;
-            } else {
-                field_0x230 = 5;
-            }
-        } else if (field_0x234 == 0x3C) {
-            fn_801F0D20(3);
-        }
-        break;
-    case 3:
-    case 5:
-        break;
     case 2:
         field_0x2c4--;
         if (field_0x2c4 == 0) {
@@ -329,6 +291,46 @@ void cls_804A9C20::update() {
                 field_0x234 = 20;
             }
         }
+        break;
+    case 1:
+        field_0x234--;
+        if (field_0x234 == 0) {
+            field_0x230 = 4;
+            field_0x234 = 100;
+        }
+        break;
+    case 4:
+        field_0x234--;
+        if (field_0x234 == 0) {
+            if (field_0x238 != 5) {
+                mPos = savedPos;
+                s32 kind = 0;
+                if (field_0x248 < 0x258) {
+                    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+                        kind = 2;
+                    } else {
+                        kind = 1;
+                    }
+                }
+                if (!getGameView_802D6A9C()->fn_802D75BC(field_0x16c)) {
+                    fn_801F34DC();
+                } else {
+                    kind = 0;
+                }
+                if (!(getGameView_802D6A9C()->field_0x4 == 7 && getGameView_802D6A9C()->field_0x8 == 3)) {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'GOAL', field_0x4, &mPos, (kind << 17) + ((field_0x238 + 1) << 12) + 2, -1, -1);
+                }
+                mAlive = false;
+            } else {
+                field_0x230 = 5;
+            }
+        } else if (field_0x234 == 0x3C) {
+            fn_801F0D20(3);
+        }
+        break;
+    case 3:
+    case 5:
         break;
     default:
         break;
