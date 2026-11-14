@@ -23,13 +23,16 @@ struct ArrowTables_804A0530 {
     s32 turn[4];             // next direction when the arrow spins after a hit
     s32 frame[4][8];         // sprite frame by direction and spin step
 };
-extern const ArrowTables_804A0530 lbl_804A0530;
+ArrowTables_804A0530 lbl_804A0530 = {
+    {{12.0f, 0.0f}, {-12.0f, 0.0f}, {0.5f, 12.0f}, {0.5f, -12.0f}},
+    {0, 2, 1, 3},
+    {{8, 9, 8, 9, 4, 8, 4, 0}, {10, 11, 10, 11, 5, 11, 5, 0}, {12, 13, 12, 13, 6, 12, 6, 0}, {14, 15, 14, 15, 7, 14, 7, 0}}};
 
 // Frees an emitter the arrow owns (the status/frame stores of the original are in
 // the shared JPA emitter code): FIXME(shotgun) stores 1 into the emitter word 0x24 as well.
 static inline void freeEmitter(JPABaseEmitter** emitter) {
     if (*emitter != NULL) {
-        (*emitter)->setStatus(1);
+        (*emitter)->becomeInvalidEmitter();
         *emitter = NULL;
     }
 } // ids of the actors the arrow flies through (rodata)
@@ -215,7 +218,7 @@ ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
 }
 
 // 0x80165730. States: 0 flying, 1 spinning away after a hit, 2/3 burning up, 4 caught by a flame.
-// FIXME(shotgun): 89.48 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.10 %, missing/extra + reloc-name; behaviour near.
 void ArrowPlayer_804A05E0::update() {
     if (field_0x94 == 3) {
         JGeometry::TBox2f box;
@@ -261,7 +264,10 @@ void ArrowPlayer_804A05E0::update() {
             field_0x260 = 1;
         }
         if (mEmitters[0] != NULL) {
-            JGeometry::TVec3f p = mPos;
+            JGeometry::TVec3f p;
+            p.x = mPos.x;
+            p.y = mPos.y;
+            p.z = mPos.z;
             p.x += lbl_804A0530.emitterOffset[field_0x98][0];
             p.y += lbl_804A0530.emitterOffset[field_0x98][1];
             setEmitterPos_8013CB44(mEmitters[0], &p, 0, 2, true);
@@ -354,10 +360,8 @@ void ArrowPlayer_804A05E0::update() {
         }
         {
             JGeometry::TBox2f box;
-            box.i.x = mBox.i.x + mPos.x;
-            box.i.y = mBox.i.y + mPos.y;
-            box.f.x = mBox.f.x + mPos.x;
-            box.f.y = mBox.f.y + mPos.y;
+            box.set(mBox);
+            box.addPos(mPos.x, mPos.y);
             if (field_0x274 == 0) {
                 for (s32 i = 0; i < 4; i++) {
                     if (fn_8023F264(i) && !fn_8022E438(i, field_0x90) && fn_8023B190(i, &box, field_0x4)) {
