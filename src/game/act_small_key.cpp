@@ -381,22 +381,22 @@ void SmallKey_804A8CD8::update() {
                 JGeometry::TVec3f* p = fn_8023A478(i);
                 f32 dx = p->x - mPos.x;
                 f32 dy = p->y - mPos.y;
-                if (!(dx * dx + dy * dy > 5184.0f)) {
+                if (dx * dx + dy * dy <= 5184.0f) {
                     switch (fn_8023A240() ^ 1) {
                     case 0:
-                        field_0x3c = JGeometry::TVec3f(2.0f, 0.0f, 3.0f);
+                        field_0x3c.set(2.0f, 0.0f, 3.0f);
                         break;
                     case 1:
-                        field_0x3c = JGeometry::TVec3f(-2.0f, 0.0f, 3.0f);
+                        field_0x3c.set(-2.0f, 0.0f, 3.0f);
                         break;
                     case 2:
-                        field_0x3c = JGeometry::TVec3f(0.0f, 2.0f, 3.0f);
+                        field_0x3c.set(0.0f, 2.0f, 3.0f);
                         break;
                     case 3:
-                        field_0x3c = JGeometry::TVec3f(0.0f, -2.0f, 3.0f);
+                        field_0x3c.set(0.0f, -2.0f, 3.0f);
                         break;
                     default:
-                        field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 3.0f);
+                        field_0x3c.set(0.0f, 0.0f, 3.0f);
                         break;
                     }
                     field_0xb0 = 0x20000;
@@ -513,7 +513,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
             continue;
         }
         s32 kind = field_0x280;
-        if (kind == 5 || kind == 3 || kind == 4) {
+        if (kind == 3 || kind == 4 || kind == 5) {
             getActorManager_801F856C()->spawnActor_801F9484('TKRA', field_0x4, &mPos,
                                                             0x210 + kind + (i << 12), -1, -1);
             JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
