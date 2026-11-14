@@ -95,7 +95,7 @@ static inline void focusCamera(const JGeometry::TVec3f& pos) {
     if (cam->field_0x7f5 == 0) {
         cam->field_0x7f4 = 1;
         cam->field_0x7f8 = 4;
-        cam->field_0x7fc = pos;
+        cam->field_0x7fc.set(pos);
         cam->field_0x7f6 = 0;
     }
 }
@@ -107,11 +107,11 @@ static inline void faceTowards(WhackAMoleShop_8049C8EC* shop, s32 player) {
     shop->fn_801EE558(&dir, &dist, player + 1);
     if (dist < 100.0f) {
         u32 angle = (u16)(s32)(JMath::atanTable_.atan2_(-dir.x, -dir.y) * 10430.378f);
-        if (angle < 0x2000 || angle >= 0xE000) {
+        if (!(angle >= 0x2000 && angle < 0xE000)) {
             shop->field_0x247 = 3;
-        } else if (angle < 0x6000) {
+        } else if (angle >= 0x2000 && angle < 0x6000) {
             shop->field_0x247 = 1;
-        } else if (angle <= 0xA000) {
+        } else if (angle >= 0x6000 && angle <= 0xA000) {
             shop->field_0x247 = 2;
         } else {
             shop->field_0x247 = 0;
@@ -148,12 +148,12 @@ void WhackAMoleShop_8049C8EC::draw() {
     }
 }
 
-// FIXME(shotgun): 89.17 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.73 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
-    JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
     JGeometry::TVec3f focus = mPos;
+    JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
     box.f.x += mPos.x;
     box.i.y += mPos.y;
@@ -360,13 +360,17 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
             } else {
                 s32 best = -1;
                 for (s32 i = 0; i < 4; i++) {
-                    if (best < (u16)field_0x268[i]) {
-                        best = (u16)field_0x268[i];
+                    if (best < field_0x268[i]) {
+                        best = field_0x268[i];
                     }
                 }
                 if (best != 0) {
                     for (s32 i = 0; i < field_0x244; i++) {
-                        getGameView_802D6A9C()->fn_802D7844(best == (u16)field_0x268[i], i);
+                        if (best == field_0x268[i]) {
+                            getGameView_802D6A9C()->fn_802D7844(1, i);
+                        } else {
+                            getGameView_802D6A9C()->fn_802D7844(0, i);
+                        }
                     }
                 }
             }
@@ -468,7 +472,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 96.83 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 97.43 %, missing/extra + reloc-name; behaviour near.
 void WhackAMoleShop_8049C8EC::vfunc_0x44() {
     s32 player = field_0x10c;
     if (player < 0) {

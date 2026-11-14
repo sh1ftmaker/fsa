@@ -35,7 +35,7 @@ public:
     /* 0x258 */ f32 field_0x258;
     /* 0x25C */ u8 field_0x25c[4];
     /* 0x260 */ u16 field_0x260[4];
-    /* 0x268 */ s16 field_0x268[4];
+    /* 0x268 */ u16 field_0x268[4];
     /* 0x270 */ s32 field_0x270[4]; // fn_802373EC of each player (fn_80100D28 state 1)
     /* 0x280 */ s32 field_0x280[4]; // fn_8023725C of each player
     /* 0x290 */ WhackAMoleShop_8049C8EC* field_0x290; // the shop whose scores are counted (vfunc_0x44)
