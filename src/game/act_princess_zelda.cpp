@@ -200,9 +200,7 @@ void cls_8049CEE0::update() {
     box.f.y += mPos.y;
 
     bool canHit = true;
-    if (field_0x328 >= 8 || field_0x328 <= 4) {
-        canHit = false;
-    } else if (field_0x2f8 != 0) {
+    if (field_0x328 >= 8 || field_0x328 <= 4 || field_0x2f8 != 0) {
         canHit = false;
     }
     if (canHit) {
@@ -271,7 +269,7 @@ void cls_8049CEE0::update() {
             f32 dist;
             s32 unk;
             fn_801EEC98(mSerial, &angle, &dir, &dist, &unk, 0, 1);
-            if (dir >= 0 && !(dist > 64.0f)) {
+            if (dir >= 0 && dist <= 64.0f) {
                 if (field_0x328 == 1) {
                     if (dir >= 0 && dir + 5 != mSpriteAnim.mAnim) {
                         mSpriteAnim.startAnim_801D22DC(dir + 5, 2, false);
