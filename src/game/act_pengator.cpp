@@ -64,7 +64,7 @@ void Pengator_804A1888::vfunc_0x18() {
     ActorBase_804A5770::vfunc_0x18();
 }
 
-// FIXME: 94.13 %, different + reloc-name; behaviour drift.
+// FIXME: 96.97 %, missing/extra + reloc-name; behaviour drift.
 // What differs: (1) the (field_0x98 & 2) test's branch layout
 // (the original falls through into the y check, we branch to it), so the
 // near-check blocks shuffle; (2) the case 2 velocity stores are ordered
