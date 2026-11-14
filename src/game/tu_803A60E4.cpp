@@ -84,12 +84,10 @@ cls_804AF860::cls_804AF860() {
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
-    field_0x76 = 0;
     field_0x79 = 0;
     field_0x7a = 10;
     field_0x7b = 0xFF;
     field_0x7c = 0xC0;
-    field_0x80 = 5;
     lbl_8053AD90 = this;
 }
 
@@ -119,7 +117,6 @@ cls_804AF860::~cls_804AF860() {
 void cls_804AF860::fn_803A7280() {
     field_0x64 = 0;
     field_0x68 = 0;
-    field_0x76 = 0;
     field_0x8->moveFromCentre_80402E08(0.0f, -448.0f);
     field_0x8->field_0x22 = 0;
     for (s32 i = 0; i < 6; i++) {
@@ -153,6 +150,7 @@ void cls_804AF860::fn_803A7280() {
     field_0x6a = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6c = (s32)(11.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 10;
     field_0x6e = 0;
+    field_0x76 = 0;
     field_0x79 = 0;
     field_0x7a = 10;
     field_0x7b = 0xFF;
@@ -174,7 +172,6 @@ void cls_804AF860::fn_803A71F0() {
 // FIXME(shotgun): 43.27 %, missing/extra + reloc-name; behaviour drift.
 // (the blink block's show / hide pattern of the six panes is approximate)
 void cls_804AF860::fn_803A6608() {
-    field_0x80 = 5;
     if (!field_0x76) {
         bool a = false;
         bool b = false;
