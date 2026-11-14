@@ -187,10 +187,9 @@ void CaneOfSomariaBlock_804AA9F0::update() {
     }
     case 3: {
         mPos.add(field_0x3c);
-        box = mBox;
+        box.set(mBox);
         box.addPos(mPos.x, mPos.y);
-        JGeometry::TBox2f here = mBox;
-        here.addPos(mPos.x, mPos.y);
+        JGeometry::TBox2f here = box;
         for (s32 i = 0; i < 4; i++) {
             if (field_0x246[i] == 1) {
                 if (!fn_8022DB04(i) || fn_80238CB4(i) == mSerial) {
