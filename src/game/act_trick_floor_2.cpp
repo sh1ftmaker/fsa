@@ -356,7 +356,7 @@ void TrickFloor2_804AA628::update() {
     }
 }
 
-// FIXME(shotgun): 90.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.61 %, missing/extra + reloc-name; behaviour drift.
 // The hole picture "otosiana_bg_s.bti" under the floor (scaled per type), then the floor's two
 // halves tilted by field_0x248 (the left one about its edge, the right one mirrored); types 4 / 5
 // draw the ground or the house instead while falling.
