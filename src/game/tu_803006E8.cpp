@@ -51,7 +51,7 @@ void fn_80301A88(OSAlarm* alarm, OSContext* context) {
     OSResumeThread(static_cast<GbaAlarm_80301A88*>(alarm)->mThread);
 }
 
-static inline void sleepMs_80300E1C(s64 ms) {
+static inline void sleepMs_80300E1C(u32 ms) {
     GbaAlarm_80301A88 alarm;
     OSCreateAlarm(&alarm);
     alarm.mThread = OSGetCurrentThread();
