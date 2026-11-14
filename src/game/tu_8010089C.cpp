@@ -148,7 +148,7 @@ void WhackAMoleShop_8049C8EC::draw() {
     }
 }
 
-// FIXME(shotgun): 89.17 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.73 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
@@ -472,7 +472,7 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
     spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 96.83 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 97.43 %, missing/extra + reloc-name; behaviour near.
 void WhackAMoleShop_8049C8EC::vfunc_0x44() {
     s32 player = field_0x10c;
     if (player < 0) {
