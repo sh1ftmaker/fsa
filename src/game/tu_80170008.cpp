@@ -146,9 +146,9 @@ void cls_804A0810::vfunc_0x44() {
 
 // 0x801704A0.
 void cls_804A0810::update() {
-    static s32 sFrames[4] = {0, 1, 2, 1};
-    static s32 sDurations[4] = {10, 2, 10, 10};
-    static f32 sOffsets[3][2] = {{-8.0f, 1.0f}, {-9.0f, 2.0f}, {-9.0f, 4.0f}};
+    static s32 lbl_804A07D8[4] = {0, 1, 2, 1};
+    static s32 lbl_804A07E8[4] = {10, 2, 10, 10};
+    static f32 lbl_804A07F8[3][2] = {{-8.0f, 1.0f}, {-9.0f, 2.0f}, {-9.0f, 4.0f}};
     u16 angle = 0;
     f32 dist = 0.0f;
     s32 player = 0;
@@ -183,8 +183,8 @@ void cls_804A0810::update() {
     }
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&mPos);
     field_0x278 += 0.2f;
-    f32 ox = sOffsets[field_0x258][0];
-    f32 oy = sOffsets[field_0x258][1];
+    f32 ox = lbl_804A07F8[field_0x258][0];
+    f32 oy = lbl_804A07F8[field_0x258][1];
     if (field_0x260 == 0) {
         field_0x314.x = mPos.x;
         field_0x314.y = mPos.y;
@@ -552,8 +552,8 @@ void cls_804A0810::update() {
         if (mTimers[1] == 0) {
             field_0x248++;
             field_0x248 &= 3;
-            mTimers[1] = sDurations[field_0x248];
-            field_0x258 = sFrames[field_0x248];
+            mTimers[1] = lbl_804A07E8[field_0x248];
+            field_0x258 = lbl_804A07D8[field_0x248];
         }
     }
     for (s32 i = 0; i < 5; i++) {
