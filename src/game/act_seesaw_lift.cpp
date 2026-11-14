@@ -174,7 +174,7 @@ s32 SeesawLift_804AD348::fn_8035AC84(s32 player) {
     return 0;
 }
 
-// FIXME(shotgun): 93.89 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 93.86 %, missing/extra + reloc-name; behaviour near.
 // the branches on field_0x240
 void SeesawLift_804AD348::fn_8035AA54() {
     s32 moved = 0;
@@ -236,7 +236,7 @@ void SeesawLift_804AD348::fn_8035AA54() {
 // Not auto-inlined: fn_8035AC84 and fn_8035AE9C call fn_8035A860 out of line in the
 // original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
-// FIXME: 81.47 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 81.55 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
     JGeometry::TVec3f rel = *getPlayerPos_8023E724(player);
     rel.sub(mPos);
@@ -269,7 +269,7 @@ void SeesawLift_804AD348::fn_8035A860(f32 weight, s32 player) {
 }
 #pragma auto_inline reset
 
-// FIXME(shotgun): 95.42 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.49 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_8035A210() {
     field_0x240 = 0.0f;
     for (s32 p = 0; p < 4; p++) {
@@ -382,7 +382,7 @@ static inline void setTiltMtx(Mtx mtx, s16 angle, f32 scale) {
     mtx[2][2] = scale * (ca * cx);
 }
 
-// FIXME: 90.75 %, different + reloc-name; behaviour drift.
+// FIXME: 90.77 %, different + reloc-name; behaviour drift.
 void SeesawLift_804AD348::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -433,7 +433,7 @@ void SeesawLift_804AD348::draw() {
     }
 }
 
-// FIXME(shotgun): 86.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 86.75 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803597EC() {
     s32 mask = 0;
     field_0x240 = 0.0f;
@@ -533,7 +533,7 @@ void SeesawLift_804AD348::fn_803597EC() {
     }
 }
 
-// FIXME(shotgun): 87.74 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.30 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_80358F98() {
     if (field_0x245) {
         GameRootSub20_801902C0* sub = fn_801902C0();
@@ -664,7 +664,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     }
 }
 
-// FIXME(shotgun): 81.84 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 82.33 %, missing/extra + reloc-name; behaviour drift.
 void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 > 0) {
         field_0x250--;
