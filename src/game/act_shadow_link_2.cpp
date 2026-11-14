@@ -1,6 +1,7 @@
 #include "game/GameAudio.h"
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
+#include "game/ViewLayer.h"
 #include "game/ActorManager.h"
 #include "game/Player.h"
 #include "game/BgRewrite.h"
@@ -856,15 +857,20 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
         break;
     case 0xE:
     case 0xF:
-        if (mStateTimer >= field_0x250) {
-            // FIXME(shotgun): field_0x5a4 not typed in header
+        if (mStateTimer >= field_0x250 && fn_801D05F8(&mPos, field_0x5a4) >= 0) {
             if (field_0x59c == 0) {
                 field_0x4ec.fn_80214E50();
                 field_0x59c = 0x3C;
             }
             fn_801C3B7C(0x11);
         } else {
-            field_0x33c = field_0x550.fn_80217374(field_0x33c);
+            bool hit = fn_801CD2F8(field_0x4);
+            if ((!hit && mStateTimer >= field_0x5a0) || (hit && mStateTimer >= field_0x5a2)) {
+                fn_801C3B7C(0x11);
+                fn_801C8BC4(0);
+            } else {
+                field_0x33c = field_0x550.fn_80217374(field_0x33c);
+            }
         }
         break;
     case 0x10:
@@ -896,9 +902,10 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     case 0x14:
         if (field_0x340.mIndex == 7) {
             mFlags &= ~0x100;
-            if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
+            if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2 = mBox;
+                mBox2.i = mBox.i;
+                mBox2.f = mBox.f;
             }
         }
         if (mStateTimer > 1 && mPos.z <= 0.0f) {
@@ -931,10 +938,14 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
                 JGeometry::TVec3f savedPos = mPos;
                 s32 savedLayer = field_0x4;
                 field_0x4 = field_0x57c;
-                mPos = field_0x580;
+                mPos.x = field_0x580.x;
+                mPos.y = field_0x580.y;
+                mPos.z = field_0x580.z;
                 s32 p = fn_801D05F8(&mPos, 60.0f);
                 field_0x4 = savedLayer;
-                mPos = savedPos;
+                mPos.x = savedPos.x;
+                mPos.y = savedPos.y;
+                mPos.z = savedPos.z;
                 if (p >= 0) {
                     fn_801C3B7C(0x1E);
                 } else {
@@ -956,9 +967,10 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     case 0x1C:
         if (field_0x340.mIndex == 7) {
             mFlags &= ~0x100;
-            if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
+            if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2 = mBox;
+                mBox2.i = mBox.i;
+                mBox2.f = mBox.f;
             }
         }
         if (mStateTimer > 1 && fn_801D0DD4()) {
@@ -1054,7 +1066,11 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
         break;
     case 0x2C: {
         s32 prev = field_0x560;
-        // FIXME(shotgun): field_0x548 is cls_802153A8 (fn_802153A8() and cur at +1), not typed in header
+        if (field_0x548.fn_802153A8()) {
+            startSound_801F0E34(0x400BF, 0);
+            fn_801C3B7C(0x2D);
+        }
+        field_0x560 = field_0x548.cur;
         if (mState == 0x2C && prev != field_0x560 && field_0x560 >= 0 && field_0x560 <= 3) {
             startSound_801F0E34(lbl_80469450[field_0x560], 0);
         }
