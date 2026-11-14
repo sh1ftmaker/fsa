@@ -487,6 +487,7 @@ static inline void setCameraBoxPos(cls_8049DB90* self, f32 x, f32 y) {
     setCameraBox(self);
 }
 
+// FIXME: 94.53 %, scheduling+regalloc; behaviour clean.
 void cls_8049DB90::fn_8011B3F0() {
     Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
     if (cam->field_0x179 == 0) {
