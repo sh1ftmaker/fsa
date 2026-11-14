@@ -19,8 +19,6 @@ ForceGemSpawner_804AB660::~ForceGemSpawner_804AB660() {
     releaseEmitter_801EE434(mEmitter254);
 }
 
-// FIXME: 99.93 %, reloc-name; behaviour drift.
-// FIXME(shotgun): switch jump table is anonymous (original jumptable_804AB6B4), literal pool names differ
 void ForceGemSpawner_804AB660::init() {
     mEmitter24c = NULL;
     mEmitter250 = NULL;
@@ -64,7 +62,7 @@ void ForceGemSpawner_804AB660::init() {
     }
 }
 
-// FIXME(shotgun): 78.82 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME(shotgun): 78.99 %, scheduling+regalloc + reloc-name; behaviour clean.
 // Drops a Force Gem ('RUPY') next to the actor with serial `serial` and throws it: along `angle`
 // (plus some random spread) when `flag` is set, otherwise in a random direction.
 void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
@@ -101,7 +99,7 @@ void fn_8032A4FC(s32 serial, s32 angle, bool flag) {
     }
 }
 
-// FIXME(shotgun): 82.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 84.04 %, missing/extra + reloc-name; behaviour near.
 void ForceGemSpawner_804AB660::update() {
     switch (field_0x230) {
     case 0: {
@@ -135,7 +133,7 @@ void ForceGemSpawner_804AB660::update() {
             if (gem == NULL) {
                 continue;
             }
-            u32 mode = (field_0x90 >> 16) & 0xF;
+            s32 mode = (field_0x90 >> 16) & 0xF;
             if (mode == 0) {
                 if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
                     f32 vz = (0.5f * field_0x23c + 1.0f) *
@@ -144,13 +142,13 @@ void ForceGemSpawner_804AB660::update() {
                              (1.0f - 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                     f32 vx = (0.5f * field_0x23c + 1.0f) *
                              (1.0f - 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-                    gem->field_0x3c.set(vx, vy, vz);
+                    gem->field_0x3c = JGeometry::TVec3f(vx, vy, vz);
                 } else {
                     f32 vy = (0.5f * field_0x23c + 1.0f) *
-                             (-2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 2.0f);
+                             -(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 2.0f);
                     f32 vx = (0.5f * field_0x23c + 1.0f) *
                              (1.0f - 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-                    gem->field_0x3c.set(vx, vy, 0.0f);
+                    gem->field_0x3c = JGeometry::TVec3f(vx, vy, 0.0f);
                 }
             } else if (mode == 6) {
                 if (getGameView_802D6A9C()->field_0x131df[field_0x4] == 0) {
@@ -162,14 +160,14 @@ void ForceGemSpawner_804AB660::update() {
                     vx *= scale;
                     vy *= scale;
                     f32 vz = scale * (2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 2.0f);
-                    gem->field_0x3c.set(vx, vy, vz);
+                    gem->field_0x3c = JGeometry::TVec3f(vx, vy, vz);
                 } else {
                     s32 s = 1 - 2 * ((s32)(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) == 0);
                     f32 vy = (0.5f * field_0x23c + 1.0f) *
-                             (-2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() - 2.0f);
+                             -(2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 2.0f);
                     f32 vx = (0.5f * field_0x23c + 1.0f) *
                              ((f32)s * (0.7f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.8f));
-                    gem->field_0x3c.set(vx, vy, 0.0f);
+                    gem->field_0x3c = JGeometry::TVec3f(vx, vy, 0.0f);
                 }
             } else {
                 s32 ang = (s32)((f32)baseAngle + (8192.0f - 16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()));
@@ -298,7 +296,7 @@ void ForceGemSpawner_804AB660::update() {
                 f32 vz = 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 2.0f;
                 f32 vy = 1.0f - 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
                 f32 vx = 1.0f - 2.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1();
-                gem->field_0x3c.set(vx, vy, vz);
+                gem->field_0x3c = JGeometry::TVec3f(vx, vy, vz);
             }
         }
         fn_801F3668();
