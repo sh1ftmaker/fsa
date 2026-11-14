@@ -19,6 +19,13 @@
 #include "JSystem/JUtility/JUTVideo.h"
 #include "JSystem/JParticle/JPAEmitter.h"
 #include "JSystem/JMath/JMath.h"
+#include "game/Camera.h"
+#include "game/GameState.h"
+#include "game/Message.h"
+#include "game/Player.h"
+#include "game/StageFlag.h"
+#include "game/EnemyBase.h"
+#include "game/act/act_navi_maiden_crystal.h"
 
 // FIXME(shotgun): not written, .rodata tables lbl_80474C38 (string),
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
@@ -391,6 +398,212 @@ void cls_804AE088::fn_8036A65C() {
             deleteEmitter(&field_0x3d4[i]);
             deleteEmitter(&field_0x39c[i]);
         }
+    }
+}
+
+// Keeps the camera on the box (x, y0)-(x, y1) unless a scripted move is running.
+static inline void setCameraBox(f32 x, f32 y0, f32 y1) {
+    gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
+    Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+    if (camera->field_0x7f5 == 0) {
+        camera->field_0x7f4 = 1;
+        camera->field_0x7f8 = 5;
+        camera->field_0x808.set(x, y0, x, y1);
+        camera->field_0x7f6 = 0;
+    }
+}
+
+// differs: register choice for the camera box and the message position.
+void cls_804AE088::fn_80369DDC() {
+    if (field_0x258 != 0) {
+        field_0x258--;
+    }
+    if (field_0x26c != 0) {
+        field_0x26c--;
+        if (field_0x26c == 0 && field_0x398 != NULL) {
+            field_0x398->becomeInvalidEmitter();
+            field_0x398 = NULL;
+        }
+    }
+    cls_8049D140::update();
+    if (isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c) && field_0x240 >= 5 &&
+        field_0x240 <= 13) {
+        gGameRoot_8053AAF8->field_0x85 = 2;
+        if (lbl_8053AD30->fn_80309C4C(0x1000, -1) != 0) {
+            field_0x240 = 13;
+            fn_80387494(0);
+            fn_8011921C()->fn_801183BC();
+            if (mNaviActor != NULL) {
+                mNaviActor->fn_803676CC();
+                mNaviActor->fn_801F3668();
+                mNaviActor = NULL;
+            }
+        }
+    }
+    if (field_0x240 <= 5 && fn_8016A3AC()->field_0x1ef == 0 && field_0x398 == NULL) {
+        field_0x398 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54C, 0, 1, NULL, NULL, true, 1.0f);
+    }
+    JGeometry::TVec3f pos;
+    JGeometry::TVec3f camPos;
+    if (field_0x240 >= 2 && field_0x240 != 0x11) {
+        if (field_0x240 >= 3 && field_0x240 < 0xE) {
+            cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
+            if (obj->field_0x284 == 0) {
+                obj->field_0x284 = 1;
+                obj->field_0x28c = 0.05f;
+            }
+        }
+        pos.set(mPos);
+        pos.y += 16.0f + ((mSpawnPos.y - mPos.y) - 32.0f);
+        if (field_0x240 == 5) {
+            pos.y += 28.0f;
+        }
+        if (field_0x240 >= 8 && field_0x240 < 10) {
+            pos.y += 28.0f;
+        }
+        if (field_0x240 >= 3) {
+            setCameraBox(pos.x, pos.y - 105.0f, 105.0f + pos.y);
+        } else {
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            if (camera->field_0x7f5 == 0) {
+                camera->field_0x7f4 = 1;
+                camera->field_0x7f8 = 4;
+                camera->field_0x7fc.set(pos);
+                camera->field_0x7f6 = 0;
+            }
+        }
+    }
+    switch (field_0x240) {
+    case 0:
+        gAudioMgr_8053AF80->fn_80458FF0(0x100001B, false, 0);
+        vfunc_0x60(1);
+        break;
+    case 3:
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+            fn_80230498(i, &playerPos, fn_8023CBC0(i), 0, -128, -128, true);
+        }
+        if (fn_8011921C()->field_0x8 == 0x1B8) {
+            gAudioMgr_8053AF80->fn_80458F9C(60);
+        }
+        break;
+    case 4:
+        fn_801CD950(&field_0x284, 0.02f, 0.0004f);
+        fn_801CD950(&field_0x27c, 0.15f, 0.01f);
+        mPos.y -= field_0x27c;
+        if (mPos.y <= mSpawnPos.y - 48.0f) {
+            mPos.y = mSpawnPos.y - 48.0f;
+        }
+        field_0x24c += 2;
+        if (field_0x24c >= 0xE1) {
+            field_0x24c = 0xE1;
+        }
+        break;
+    case 5:
+        field_0x24c = 0xE1;
+        if (field_0x258 != 0) {
+            if (field_0x258 == 1) {
+                pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                        (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+                pos.y += -16.0f;
+                fn_8022FE80(0, field_0x4, mSerial, true, false);
+                if (fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62)) {
+                    field_0x268++;
+                    fn_8011921C()->fn_80118454();
+                }
+            }
+        } else {
+            fn_8022FE80(0, field_0x4, mSerial, true, false);
+            if (fn_803865B8(0)) {
+                fn_80388EEC(0);
+                vfunc_0x60(6);
+            }
+        }
+        break;
+    case 6: {
+        field_0x24c = 0xE1;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        camPos.x = -camera->field_0x4[0][3];
+        camPos.y = -camera->field_0x4[1][3];
+        camPos.z = 0.0f;
+        if (PSVECDistance(&pos, &camPos) < 0.1f) {
+            vfunc_0x60(7);
+        }
+        break;
+    }
+    case 7:
+        field_0x24c = 0xE1;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            vfunc_0x60(8);
+        }
+        break;
+    case 8: {
+        field_0x24c = 0xE1;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        camPos.x = -camera->field_0x4[0][3];
+        camPos.y = -camera->field_0x4[1][3];
+        camPos.z = 0.0f;
+        if (PSVECDistance(&pos, &camPos) < 0.1f) {
+            vfunc_0x60(9);
+            mNaviActor->mState = 2;
+        }
+        break;
+    }
+    case 9:
+        field_0x24c = 0xE1;
+        break;
+    case 10: {
+        field_0x24c = 0xE1;
+        Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+        camPos.x = -camera->field_0x4[0][3];
+        camPos.y = -camera->field_0x4[1][3];
+        camPos.z = 0.0f;
+        if (PSVECDistance(&pos, &camPos) >= 0.1f) {
+            break;
+        }
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            vfunc_0x60(0xB);
+            mNaviActor->mState = 6;
+        }
+        break;
+    }
+    case 11:
+        field_0x24c = 0xE1;
+        break;
+    case 12:
+        field_0x24c = 0xE1;
+        if (field_0x258 == 0) {
+            vfunc_0x60(0xD);
+        }
+        break;
+    case 13:
+        field_0x24c = 0xE1;
+        if (fn_8011921C()->field_0x1 == 0) {
+            fn_801CD950(&field_0x284, 0.0f, -0.0002f);
+        }
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 14:
+    case 15:
+    case 16:
+    case 17:
+        break;
+    }
+    if (field_0x237 != 0) {
+        field_0x280 += field_0x284;
+    }
+    field_0x318.fn_801D1C18();
+    if (field_0x234 != 0) {
+        fn_8036AA60();
     }
 }
 
