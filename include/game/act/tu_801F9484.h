@@ -468,7 +468,9 @@ public:
     /* 0x25A */ u8 field_0x25a[2]; // not yet known
     /* 0x25C */ f32 field_0x25c;
     /* 0x260 */ f32 field_0x260;
-    /* 0x264 */ f32 field_0x264[9]; // three positions copied from mPos by init
+    /* 0x264 */ JGeometry::TVec3f field_0x264; // init: mPos; the camera target of the later states
+    /* 0x270 */ JGeometry::TVec3f field_0x270; // init: mPos; update state 10 stores mPos
+    /* 0x27C */ JGeometry::TVec3f field_0x27c; // init: mPos; the two emitters' position
     /* 0x288 */ JGeometry::TVec3f field_0x288[4];
     /* 0x2B8 */ JPABaseEmitter* mEmitters[2];
 }; // Size: 0x2C0
