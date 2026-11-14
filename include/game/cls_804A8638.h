@@ -13,7 +13,7 @@ class ActorSoundObj_804578F4;
 
 class cls_804A8638 : public ActorBase_804A5770 {
 public:
-    cls_804A8638() : field_0x2dc(-1) {}
+    cls_804A8638() {}
     // 0x802B51C0 (vtable slot 0x08): the emitters, then the sound object.
     /* 0x08 */ virtual ~cls_804A8638();
     // 0x802B5360 (slot 0x0C): decodes field_0x90 and starts the preset.
@@ -76,7 +76,7 @@ public:
     /* 0x2D0 */ u8 field_0x2d0[6]; // the saved fog bytes (fn_8016A3AC's 0x1EC..0x1F1)
     /* 0x2D6 */ u8 field_0x2d6[2];
     /* 0x2D8 */ s32 field_0x2d8; // low nibble of field_0x90: the preset
-    /* 0x2DC */ s32 field_0x2dc;
+    /* 0x2DC */ JUtility::TColor field_0x2dc;
     /* 0x2E0 */ s32 field_0x2e0;
     /* 0x2E4 */ s32 field_0x2e4;
     /* 0x2E8 */ s32 field_0x2e8;

@@ -135,19 +135,27 @@ void cls_804A8638::init() {
             field_0x24c = 20;
             field_0x250 = 20;
             getGameView_802D6A9C()->fn_802D6BF8(0);
+        } else if (field_0x288 == 2) {
+            field_0x2e0 = 0x9F;
+            field_0x2e4 = 0xAF;
+            field_0x2e8 = 0xFF;
+            field_0x2c0[0] = 10.0f;
+            field_0x2c0[1] = 30.0f;
+            field_0x2c0[2] = 0.17f;
+            field_0x2c0[3] = 0.5f;
+            field_0x24c = fn_801CD664(100);
+            field_0x250 = 0;
+            field_0x234 = spawnEmitter_8013CC50(field_0x4, &field_0x254, 0x3A1, 1, 0, NULL, NULL, true, 1.0f);
+            field_0x238 = spawnEmitter_8013CC50(field_0x4, &field_0x254, 0x3A2, 1, 0, NULL, NULL, true, 1.0f);
+            getGameView_802D6A9C()->fn_802D6BF8(1);
+            vfunc_0x60();
         } else {
-            if (field_0x288 == 2) {
-                field_0x2e0 = 0x9F;
-                field_0x2e4 = 0xAF;
-                field_0x2e8 = 0xFF;
-            } else {
-                field_0x2f0 = 0x9F;
-                field_0x2e0 = 0x9F;
-                field_0x2f4 = 0xAF;
-                field_0x2e4 = 0xAF;
-                field_0x2f8 = 0xFF;
-                field_0x2e8 = 0xFF;
-            }
+            field_0x2f0 = 0x9F;
+            field_0x2e0 = 0x9F;
+            field_0x2f4 = 0xAF;
+            field_0x2e4 = 0xAF;
+            field_0x2f8 = 0xFF;
+            field_0x2e8 = 0xFF;
             field_0x2c0[0] = 10.0f;
             field_0x2c0[1] = 30.0f;
             field_0x2c0[2] = 0.17f;
@@ -168,12 +176,11 @@ void cls_804A8638::init() {
         mEmitter->becomeInvalidEmitter();
         mEmitter = NULL;
     }
-    JUtility::TColor fog = fn_8018330C();
-    field_0x2dc = fog.toUInt32();
-    field_0x2e0 = fog.r;
-    field_0x2e4 = fog.g;
-    field_0x2e8 = fog.b;
-    field_0x2ec = fog.a;
+    field_0x2dc = fn_8018330C();
+    field_0x2e0 = field_0x2dc.toUInt32() >> 24;
+    field_0x2e4 = (field_0x2dc.toUInt32() >> 16) & 0xFF;
+    field_0x2e8 = (field_0x2dc.toUInt32() >> 8) & 0xFF;
+    field_0x2ec = field_0x2dc.toUInt32() & 0xFF;
     field_0x300 = 0xFF;
     field_0x304 = 0xFF;
     field_0x308 = 0xFF;
