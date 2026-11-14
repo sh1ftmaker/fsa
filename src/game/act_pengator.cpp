@@ -64,7 +64,7 @@ void Pengator_804A1888::vfunc_0x18() {
     ActorBase_804A5770::vfunc_0x18();
 }
 
-// FIXME: 94.13 %, different + reloc-name; behaviour drift.
+// FIXME: 96.97 %, missing/extra + reloc-name; behaviour drift.
 // What differs: (1) the (field_0x98 & 2) test's branch layout
 // (the original falls through into the y check, we branch to it), so the
 // near-check blocks shuffle; (2) the case 2 velocity stores are ordered
@@ -126,29 +126,39 @@ void Pengator_804A1888::update() {
             }
         }
         if (moved || field_0x238 == 0) {
+            u8 flag = moved;
             if (moved || tile != 0x50) {
                 field_0x3c.z = 0.0f;
                 field_0x3c.y = 0.0f;
                 field_0x3c.x = 0.0f;
             }
             field_0x238 = (s32)(100.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x32;
-            u8 flag = moved;
             if (!moved) {
-                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() >= 0.7f) {
+                if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f) {
+                    if (outDir != -1) {
+                        if (field_0x98 == outDir) {
+                            break;
+                        }
+                        field_0x98 = outDir;
+                    }
+                } else {
                     field_0x234 = 8;
                     flag = 1;
-                } else if (outDir != -1) {
-                    if (field_0x98 == outDir) {
-                        break;
-                    }
-                    field_0x98 = outDir;
                 }
             }
             if (flag) {
-                if (field_0x98 & 2) {
-                    field_0x98 = (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 0 : 1;
+                if (!(field_0x98 & 2)) {
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                        field_0x98 = 2;
+                    } else {
+                        field_0x98 = 3;
+                    }
                 } else {
-                    field_0x98 = (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) ? 2 : 3;
+                    if (gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.5f) {
+                        field_0x98 = 0;
+                    } else {
+                        field_0x98 = 1;
+                    }
                 }
             }
         }
@@ -177,7 +187,8 @@ void Pengator_804A1888::update() {
         if (field_0x234 == 0) {
             field_0x24c = lbl_804A1808[field_0x98 * 4 + field_0x240];
             field_0x234 = lbl_804A1848[field_0x98 * 4 + field_0x240];
-            field_0x240 = (field_0x240 + 1) & 3;
+            field_0x240++;
+            field_0x240 &= 3;
         }
         break;
     case 2:
