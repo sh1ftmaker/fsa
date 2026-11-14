@@ -124,7 +124,7 @@ static inline s32 exchangeInitialPacket_80300E1C(GbaClient_803007D0* client, u32
     return 0;
 }
 
-// FIXME(shotgun): 71.32 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 72.52 %, missing/extra + reloc-name; behaviour drift.
 void* fn_80300E1C(void* arg) {
     GbaClient_803007D0* client = static_cast<GbaClient_803007D0*>(arg);
     OSMessage msg;
