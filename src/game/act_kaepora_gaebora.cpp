@@ -310,15 +310,23 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
         break;
     case 3: {
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
+        JGeometry::TBox2f hit;
+        hit.i.x = mPos.x - 8.0f;
+        hit.i.y = mPos.y - 8.0f;
+        hit.f.x = mPos.x + 8.0f;
+        hit.f.y = mPos.y + 8.0f;
         bool found = false;
         for (s32 i = 0; i < 4; i++) {
             if (fn_801D0B44(i)) {
-                s32 slot = fn_8022F514(i) ? getPlayerInputSlot_8030AAF4(fn_8022F3DC(i)) : getPlayerInputSlot_8030AAF4(i);
+                s32 slot = getPlayerInputSlot_8030AAF4(fn_8022F514(i) ? fn_8022F3DC(i) : i);
                 if (lbl_8053AD30->fn_80309D6C(slot, 0x100)) {
-                    s32 dir = fn_80230CFC(i);
-                    JGeometry::TVec2f p(lbl_8046A640[dir][0] + getPlayerPos_8023E724(i)->x,
-                                        lbl_8046A640[dir][1] + getPlayerPos_8023E724(i)->y);
-                    if (containsPoint(box, p)) {
+                    JGeometry::TVec2f p;
+                    p.y = lbl_8046A640[fn_80230CFC(i)][1];
+                    p.x = lbl_8046A640[fn_80230CFC(i)][0];
+                    const JGeometry::TVec3f* pp = getPlayerPos_8023E724(i);
+                    p.x += pp->x;
+                    p.y += pp->y;
+                    if (containsPoint(hit, p)) {
                         found = true;
                         break;
                     }
