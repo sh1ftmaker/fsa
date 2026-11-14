@@ -274,10 +274,7 @@ extern const f32 lbl_8046A640[4][2]; // x, y offsets (about +-16) by facing, .ro
 void cls_804A6550::vfunc_0x90(u8 mapHit) {
     JGeometry::TBox2f box;
     if (mState == 3) {
-        box.i.x = mPos.x - 8.0f;
-        box.i.y = mPos.y - 8.0f;
-        box.f.x = mPos.x + 8.0f;
-        box.f.y = mPos.y + 8.0f;
+        box.set(mPos.x - 8.0f, mPos.y - 8.0f, mPos.x + 8.0f, mPos.y + 8.0f);
     } else {
         fn_801F31C4(&box);
     }
@@ -286,8 +283,7 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
         field_0x2b8 = 0;
         fn_8022FE80(field_0x2b8, field_0x4, mSerial, false, false);
         if (field_0x2b8 == fn_8022FD8C(mSerial)) {
-            JGeometry::TVec3f pos(0.0f, -10.0f, 0.0f);
-            if (fn_8038BD08(field_0x2b8, 0x150, field_0x4, pos, 2)) {
+            if (fn_8038BD08(field_0x2b8, 0x150, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 2)) {
                 fn_80219AFC(1);
             }
         }
@@ -311,10 +307,7 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
     case 3: {
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
         JGeometry::TBox2f hit;
-        hit.i.x = mPos.x - 8.0f;
-        hit.i.y = mPos.y - 8.0f;
-        hit.f.x = mPos.x + 8.0f;
-        hit.f.y = mPos.y + 8.0f;
+        hit.set(mPos.x - 8.0f, mPos.y - 8.0f, mPos.x + 8.0f, mPos.y + 8.0f);
         bool found = false;
         for (s32 i = 0; i < 4; i++) {
             if (fn_801D0B44(i)) {
@@ -374,8 +367,7 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
             fn_8022FEB8(&box, field_0x4, mSerial, true, false);
             field_0x2b8 = fn_8022FD8C(mSerial);
             if (field_0x2b8 >= 0) {
-                JGeometry::TVec3f pos(0.0f, -10.0f, 0.0f);
-                if (fn_8038C678(field_0x2b8, field_0x2a8, mSerial, field_0x4, pos, 0)) {
+                if (fn_8038C678(field_0x2b8, field_0x2a8, mSerial, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0)) {
                     fn_80219AFC(7);
                 }
             }
@@ -394,8 +386,7 @@ void cls_804A6550::vfunc_0x90(u8 mapHit) {
     case 8:
         fn_8022FE80(field_0x2b8, field_0x4, mSerial, false, false);
         if (field_0x2b8 == fn_8022FD8C(mSerial)) {
-            JGeometry::TVec3f pos(0.0f, -10.0f, 0.0f);
-            if (fn_8038C678(field_0x2b8, field_0x2a8, mSerial, field_0x4, pos, 0x4002)) {
+            if (fn_8038C678(field_0x2b8, field_0x2a8, mSerial, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4002)) {
                 if (mFlags & 0x10000) {
                     gGameRoot_8053AAF8->fn_80138B7C();
                     s32 count = gGameRoot_8053AAF8->fn_80138A30();
