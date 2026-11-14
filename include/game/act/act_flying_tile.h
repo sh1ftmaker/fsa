@@ -19,6 +19,13 @@ public:
     // Drops the contents (a Force Gem, fairy or heart, by field_0x260) at the tile's position.
     void fn_80339820();
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
+    // The tile's place in the flying order while it waits (states 0 and 4), else 0xFFF.
+    s32 getOrder() const {
+        if (field_0x230 == 0 || field_0x230 == 4) {
+            return field_0x248;
+        }
+        return 0xFFF;
+    }
     /* 0x230 */ s32 field_0x230; // state (0 and 4 count in vfunc_0x10's scan)
     /* 0x234 */ s16 field_0x234;
     /* 0x236 */ u8 field_0x236[2];
