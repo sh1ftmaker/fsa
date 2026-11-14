@@ -1685,51 +1685,58 @@ extern const GXRenderModeObj lbl_8048C17C;
 // after that getter). Owner: game/tu_8016A2B4.cpp (not written yet). Only
 // the bytes act_environment_control_2 writes are declared.
 struct GameRootSub24_8016A3AC {
-    GameRootSub24_8016A3AC(JKRHeap* heap); // fn_8016F0BC (not written yet)
-    // Unknown pointers: 0x30, 0x38, 0x54, 0x68.
-    /* 0x000 */ JKRHeap* field_0x0; // destroyed by the destructor
-    // The J3DModels below (0x4 ... 0xEC) are passed to fn_8016A7DC.
-    /* 0x004 */ struct J3DModel* field_0x4;
-    /* 0x008 */ u8 field_0x8[0xC - 0x8];
-    /* 0x00C */ struct J3DModel* field_0xc;
-    /* 0x010 */ u8 field_0x10[0x14 - 0x10];
-    /* 0x014 */ struct J3DModel* field_0x14;
-    /* 0x018 */ u8 field_0x18[0x1C - 0x18];
-    /* 0x01C */ struct J3DModel* field_0x1c;
-    /* 0x020 */ u8 field_0x20[0x28 - 0x20];
-    /* 0x028 */ struct J3DModel* field_0x28;
-    /* 0x02C */ u8 field_0x2c[0x30 - 0x2C];
-    /* 0x030 */ void* field_0x30;
-    /* 0x034 */ struct J3DModel* field_0x34;
-    /* 0x038 */ void* field_0x38;
-    // Six models, placed by fn_8016B0B0 (loop over i < 6).
+    GameRootSub24_8016A3AC(JKRHeap* heap); // 0x8016F0BC
+    /* 0x000 */ JKRSolidHeap* field_0x0; // destroyed by the destructor
+    // The models and their animations, loaded by the constructor with fn_8016A3BC.
+    // The J3DModels (0x4 ... 0xEC) are passed to fn_8016A7DC.
+    /* 0x004 */ struct J3DModel* field_0x4;               // yougan
+    /* 0x008 */ struct J3DAnmTextureSRTKey* field_0x8;
+    /* 0x00C */ struct J3DModel* field_0xc;               // doku_yougan
+    /* 0x010 */ struct J3DAnmTextureSRTKey* field_0x10;
+    /* 0x014 */ struct J3DModel* field_0x14;              // yami_yougan
+    /* 0x018 */ struct J3DAnmTextureSRTKey* field_0x18;
+    /* 0x01C */ struct J3DModel* field_0x1c;              // moya
+    /* 0x020 */ struct J3DAnmTextureSRTKey* field_0x20;
+    /* 0x024 */ struct J3DAnmTevRegKey* field_0x24;
+    /* 0x028 */ struct J3DModel* field_0x28;              // darkFilter00
+    /* 0x02C */ struct J3DAnmTextureSRTKey* field_0x2c;
+    /* 0x030 */ struct J3DAnmTevRegKey* field_0x30;
+    /* 0x034 */ struct J3DModel* field_0x34;              // mekakusi
+    /* 0x038 */ struct J3DAnmTextureSRTKey* field_0x38;
+    // Six cloud models (w_kumo .. w_kumo5), placed by fn_8016B0B0 (loop over i < 6).
     /* 0x03C */ struct J3DModel* field_0x3c[6];
-    // The texture-SRT and TEV-register animations fn_8016DCEC passes to fn_8016D398.
-    /* 0x054 */ struct J3DAnmTextureSRTKey* field_0x54;
-    /* 0x058 */ u8 field_0x58[0x68 - 0x58];
-    /* 0x068 */ void* field_0x68;
-    /* 0x06C */ struct J3DAnmTevRegKey* field_0x6c;
-    /* 0x070 */ u8 field_0x70[0x84 - 0x70];
-    /* 0x084 */ struct J3DModel* field_0x84;
-    /* 0x088 */ u8 field_0x88[0x90 - 0x88];
-    /* 0x090 */ struct J3DModel* field_0x90;
-    /* 0x094 */ u8 field_0x94[0x9C - 0x94];
-    /* 0x09C */ struct J3DModel* field_0x9c;
-    /* 0x0A0 */ u8 field_0xa0[0xA8 - 0xA0];
-    /* 0x0A8 */ struct J3DModel* field_0xa8;
-    /* 0x0AC */ u8 field_0xac[0xB4 - 0xAC];
-    /* 0x0B4 */ struct J3DModel* field_0xb4;
-    /* 0x0B8 */ u8 field_0xb8[0xC0 - 0xB8];
-    /* 0x0C0 */ struct J3DModel* field_0xc0;
-    /* 0x0C4 */ u8 field_0xc4[0xCC - 0xC4];
-    /* 0x0CC */ struct J3DModel* field_0xcc;
-    /* 0x0D0 */ u8 field_0xd0[0xD4 - 0xD0];
-    /* 0x0D4 */ struct J3DModel* field_0xd4;
-    /* 0x0D8 */ u8 field_0xd8[0xE0 - 0xD8];
-    /* 0x0E0 */ struct J3DModel* field_0xe0;
-    /* 0x0E4 */ u8 field_0xe4[0xEC - 0xE4];
+    // Their texture-SRT and TEV-register animations; fn_8016DCEC passes them to fn_8016D398.
+    /* 0x054 */ struct J3DAnmTextureSRTKey* field_0x54[6];
+    /* 0x06C */ struct J3DAnmTevRegKey* field_0x6c[6];
+    /* 0x084 */ struct J3DModel* field_0x84;              // forestFilter00
+    /* 0x088 */ struct J3DAnmTextureSRTKey* field_0x88;
+    /* 0x08C */ struct J3DAnmTevRegKey* field_0x8c;
+    /* 0x090 */ struct J3DModel* field_0x90;              // fogFilter00
+    /* 0x094 */ struct J3DAnmTextureSRTKey* field_0x94;
+    /* 0x098 */ struct J3DAnmTevRegKey* field_0x98;
+    /* 0x09C */ struct J3DModel* field_0x9c;              // cloudShadowFilter00
+    /* 0x0A0 */ struct J3DAnmTextureSRTKey* field_0xa0;
+    /* 0x0A4 */ struct J3DAnmTevRegKey* field_0xa4;
+    /* 0x0A8 */ struct J3DModel* field_0xa8;              // poisonSwamp00
+    /* 0x0AC */ struct J3DAnmTextureSRTKey* field_0xac;
+    /* 0x0B0 */ struct J3DAnmTevRegKey* field_0xb0;
+    /* 0x0B4 */ struct J3DModel* field_0xb4;              // blackCloudFilter
+    /* 0x0B8 */ struct J3DAnmTextureSRTKey* field_0xb8;
+    /* 0x0BC */ struct J3DAnmTevRegKey* field_0xbc;
+    /* 0x0C0 */ struct J3DModel* field_0xc0;              // morningLight00
+    /* 0x0C4 */ struct J3DAnmTextureSRTKey* field_0xc4;
+    /* 0x0C8 */ struct J3DAnmTevRegKey* field_0xc8;
+    /* 0x0CC */ struct J3DModel* field_0xcc;              // nagarekumo
+    /* 0x0D0 */ struct J3DAnmTextureSRTKey* field_0xd0;
+    /* 0x0D4 */ struct J3DModel* field_0xd4;              // darkFog00
+    /* 0x0D8 */ struct J3DAnmTextureSRTKey* field_0xd8;
+    /* 0x0DC */ struct J3DAnmTevRegKey* field_0xdc;
+    /* 0x0E0 */ struct J3DModel* field_0xe0;              // moya_red
+    /* 0x0E4 */ struct J3DAnmTextureSRTKey* field_0xe4;
+    /* 0x0E8 */ struct J3DAnmTevRegKey* field_0xe8;
+    // The first of yuka_2 / 4 / 6 / 7 / 8 found (yuka_6 with its btk).
     /* 0x0EC */ struct J3DModel* field_0xec;
-    /* 0x0F0 */ u8 field_0xf0[0xF4 - 0xF0];
+    /* 0x0F0 */ struct J3DAnmTextureSRTKey* field_0xf0;
     // The full-screen backdrop texture fn_8016ADE0 draws.
     /* 0x0F4 */ struct JUTTexture* field_0xf4;
     // The destructor deletes 0xF4-0x120.
@@ -1837,7 +1844,8 @@ struct GameRootSub24_8016A3AC {
     // 0x8016DCEC: in the isGameModeSet() modes (not mode 0xB), while
     // field_0x1cf is set, runs fn_8016D398 with the camera matrix.
     void fn_8016DCEC();
-    // 0x8016DE30 (game/tu_8016A2B4.cpp, not written yet): called by GameRootSub04's fn_80139D9C.
+    // 0x8016DE30 (game/tu_8016A2B4.cpp): per-frame update of the backdrop emitters and animation
+    // frames; called by GameRootSub04's fn_80139D9C.
     void fn_8016DE30();
 
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its
