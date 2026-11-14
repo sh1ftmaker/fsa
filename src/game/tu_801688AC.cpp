@@ -173,8 +173,7 @@ void cls_804A0738::update() {
             d.set(pp->x - mPos.x, pp->y - mPos.y);
             if (d.x * d.x + d.y * d.y < 240.0f) {
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                mPos.x = pp->x;
-                mPos.y = pp->y;
+                mPos = *pp;
                 mPos.z = 0.0f;
                 mAlive = false;
                 break;
@@ -260,8 +259,7 @@ void cls_804A0738::update() {
                     mAlive = false;
                 } else if (d.x * d.x + d.y * d.y < 240.0f) {
                     const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                    mPos.x = pp->x;
-                    mPos.y = pp->y;
+                    mPos = *pp;
                     mPos.z = 0.0f;
                     field_0x260 = 1;
                 } else {
