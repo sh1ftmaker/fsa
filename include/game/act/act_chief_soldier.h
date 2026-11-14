@@ -40,7 +40,7 @@ public:
     s32 getType() const { return field_0x90 & 0xFF; }
 
     /* 0x0C */ virtual void init();   // fn_80174B44
-    /* 0x14 */ virtual void update(); // fn_80172DC4, not written yet
+    /* 0x14 */ virtual void update(); // 0x80172DC4
     // 0x801746DC: steps the animation selected by field_0x29c.
     void fn_801746DC();
     // 0x80174220: places the hit box for the heading and damages / grabs the players in it.
