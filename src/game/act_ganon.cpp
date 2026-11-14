@@ -1656,7 +1656,9 @@ void Ganon_804A25F0::draw() {
     if (field_0x90 == 31) {
         return;
     }
-    JGeometry::TVec3f savedPos = mPos;
+    f32 savedX = mPos.x;
+    f32 savedY = mPos.y;
+    f32 savedZ = mPos.z;
     if (field_0x90 != 0) {
         if (field_0x90 == 30) {
             params.field_0x1f = 0;
@@ -1666,7 +1668,7 @@ void Ganon_804A25F0::draw() {
             mtx[2][3] = 0.0f;
             JGeometry::TVec3f rot(0.0f, (f32)field_0x2b4 / -10430.228f, 0.0f);
             setRotScaleMtx(mtx, rot, 1.4f);
-            void* res = fn_804032E8('GNON', "boss_butag_yari_mawashi_01.bti");
+            void* res = fn_804032E8('GANO', "boss_butag_yari_mawashi_01.bti");
             params.mMtx = mtx;
             params.field_0x30 = -1;
             params.field_0x10.a = (u8)field_0x2b0;
@@ -1679,7 +1681,7 @@ void Ganon_804A25F0::draw() {
         mPos.z = 0.0f;
         params.field_0x10.set(0, 0, 0, 100);
         params.field_0x1d = -2;
-        ResTIMG* res1 = static_cast<ResTIMG*>(fn_804032E8('GNON', lbl_804A2398[field_0x284]));
+        ResTIMG* res1 = static_cast<ResTIMG*>(fn_804032E8('GANO', lbl_804A2398[field_0x284]));
         fn_801EFD34(res1, &params, -1, 0.0f, 0.0f, 0.0f);
         JUTTexture tex1(res1, 0);
         f32 offX = 0.5f * -(f32)tex1.getWidth();
@@ -1691,7 +1693,7 @@ void Ganon_804A25F0::draw() {
             mtx[2][3] = 0.0f;
             JGeometry::TVec3f rot(0.0f, (f32)field_0x2b4 / -10430.228f, 0.0f);
             setRotScaleMtx(mtx, rot, 1.4f);
-            res2 = static_cast<ResTIMG*>(fn_804032E8('GNON', "boss_butag_yari_mawashi_01.bti"));
+            res2 = static_cast<ResTIMG*>(fn_804032E8('GANO', "boss_butag_yari_mawashi_01.bti"));
         } else {
             mtx[0][0] = field_0x2d0.x;
             mtx[1][0] = 0.0f;
@@ -1702,7 +1704,7 @@ void Ganon_804A25F0::draw() {
             mtx[0][2] = 0.0f;
             mtx[1][2] = 0.0f;
             mtx[2][2] = field_0x2d0.y;
-            res2 = static_cast<ResTIMG*>(fn_804032E8('GNON', lbl_804A2484[field_0x288]));
+            res2 = static_cast<ResTIMG*>(fn_804032E8('GANO', lbl_804A2484[field_0x288]));
         }
         params.mMtx = mtx;
         params.field_0x10.set(0, 0, 0, 100);
@@ -1719,7 +1721,9 @@ void Ganon_804A25F0::draw() {
             fn_801EFD34(res2, &params, -1, offX, 0.0f, -offY);
         }
     }
-    mPos = savedPos;
+    mPos.x = savedX;
+    mPos.y = savedY;
+    mPos.z = savedZ;
     params.field_0x1d = 3;
     params.field_0x1f = 0;
     mtx[0][0] = field_0x54.x;
@@ -1739,7 +1743,7 @@ void Ganon_804A25F0::draw() {
     } else {
         params.field_0x30 = 17;
     }
-    ResTIMG* res3 = static_cast<ResTIMG*>(fn_804032E8('GNON', lbl_804A2398[field_0x284]));
+    ResTIMG* res3 = static_cast<ResTIMG*>(fn_804032E8('GANO', lbl_804A2398[field_0x284]));
     fn_801EFD34(res3, &params, -1, 0.0f, 0.0f, 0.0f);
     JUTTexture tex3(res3, 0);
     f32 offX2 = 0.5f * -(f32)tex3.getWidth();
@@ -1751,7 +1755,7 @@ void Ganon_804A25F0::draw() {
         mtx[2][3] = 0.0f;
         JGeometry::TVec3f rot(0.0f, (f32)field_0x2b4 / -10430.228f, 0.0f);
         setRotScaleMtx3(mtx, rot, 1.4f * field_0x2d0.x, 1.4f * field_0x2d0.y, 1.4f * field_0x2d0.y);
-        res4 = static_cast<ResTIMG*>(fn_804032E8('GNON', "boss_butag_yari_mawashi_01.bti"));
+        res4 = static_cast<ResTIMG*>(fn_804032E8('GANO', "boss_butag_yari_mawashi_01.bti"));
     } else {
         mtx[0][0] = field_0x2d0.x;
         mtx[1][0] = 0.0f;
@@ -1762,7 +1766,7 @@ void Ganon_804A25F0::draw() {
         mtx[0][2] = 0.0f;
         mtx[1][2] = 0.0f;
         mtx[2][2] = field_0x2d0.y;
-        res4 = static_cast<ResTIMG*>(fn_804032E8('GNON', lbl_804A2484[field_0x288]));
+        res4 = static_cast<ResTIMG*>(fn_804032E8('GANO', lbl_804A2484[field_0x288]));
     }
     params.mMtx = mtx;
     params.field_0x30 = -1;
