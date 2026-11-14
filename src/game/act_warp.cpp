@@ -73,7 +73,7 @@ void Warp_804A6DC8::init() {
     f32 destY = destBox->i.y;
     s32 myLayer = field_0x4;
     JGeometry::TBox2f* myBox = layerBox(myLayer);
-    u32 kind0 = field_0x90 & 0x7F;
+    s32 kind0 = field_0x90 & 0x7F;
     if ((kind0 == 6 || kind0 == 4 || kind0 == 0x20 || kind0 == 0x24) && ((field_0x90 >> 13) & 0x1F8) == 0 &&
         ((field_0x90 >> 5) & 0x1F8) == 0)
     {
@@ -85,7 +85,7 @@ void Warp_804A6DC8::init() {
         field_0x238.y = (f32)((field_0x90 >> 5) & 0x1F8) + destY;
         field_0x238.z = 0.0f;
     }
-    u32 kind = field_0x90 & 0x7F;
+    s32 kind = field_0x90 & 0x7F;
     if (kind == 0x19) {
         s32 spawnLayer = warpLayer(field_0x90);
         u32 param = pairParam(field_0x90, field_0x4, (s32)(mPos.x - myBox->i.x), (s32)(mPos.y - myBox->i.y), 1);
