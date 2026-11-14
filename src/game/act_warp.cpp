@@ -235,7 +235,8 @@ void Warp_804A6DC8::update() {
     } else {
         field_0x278 = -1;
     }
-    if ((field_0x90 & 0x7F) == 0x20) {
+    s32 kind = field_0x90 & 0x7F;
+    if (kind == 0x20) {
         for (s32 i = 0; i < 4; i++) {
             if (fn_802373EC(i) == 1 && fn_8023A51C(i)) {
                 JGeometry::TVec3f pos = *fn_8023A478(i);
@@ -260,7 +261,7 @@ void Warp_804A6DC8::update() {
     if ((field_0x90 >> 27) != 0 && !vfunc_0x34()) {
         return;
     }
-    JGeometry::TBox2f box(mBox);
+    JGeometry::TBox2f box(mBox.i, mBox.f);
     JGeometry::TVec2f at(mPos.x, mPos.y);
     u16 tile = fn_802265FC((const JGeometry::TVec3f*)&at, field_0x4);
     if (tile == 1 || tile == 0x21) {
@@ -275,9 +276,10 @@ void Warp_804A6DC8::update() {
         }
     }
     box.addPos(at);
-    if ((field_0x90 & 0x7F) == 0x20) {
+    kind = field_0x90 & 0x7F;
+    if (kind == 0x20) {
         fn_80227530(&box);
-    } else if ((field_0x90 & 0x7F) == 0x24) {
+    } else if (kind == 0x24) {
         for (s32 i = 0; i < 4; i++) {
             if (gGameRoot_8053AAF8->field_0x7e && !fn_8022C8EC(i)) {
                 if (getPlayerLayer_8023DE58(i) != warpLayer(field_0x90)) {
@@ -300,7 +302,7 @@ void Warp_804A6DC8::update() {
     if (destTile == 0x19C || destTile == 0x19D) {
         return;
     }
-    s32 kind = field_0x90 & 0x7F;
+    kind = field_0x90 & 0x7F;
     s32 serial;
     if (kind == 4 || kind == 0x20 || kind == 0x24) {
         serial = fn_801F26CC(lbl_8046ABE8 + 17);
