@@ -113,14 +113,12 @@ cls_804A9C20::~cls_804A9C20() {
 // The hit box `box` (relative to mPos) the actor shifts to mPos and hands to fn_80239914.
 static inline void shiftBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& box, const JGeometry::TVec3f& pos) {
     out->set(box);
-    out->i.x += pos.x;
-    out->i.y += pos.y;
-    out->f.x += pos.x;
-    out->f.y += pos.y;
+    JGeometry::TVec2f shift(pos.x, pos.y);
+    out->addPos(shift);
 }
 
 // 0x802E2C28.
-// FIXME(shotgun): 70.67 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 83.82 %, missing/extra; behaviour drift.
 void cls_804A9C20::update() {
     if (field_0x230 < 1) {
         field_0x248++;
@@ -128,7 +126,9 @@ void cls_804A9C20::update() {
     mPos.x = field_0x24c[0];
     mPos.y = field_0x24c[1];
     mPos.z = field_0x24c[2];
-    JGeometry::TVec3f savedPos = mPos;
+    f32 savedX = mPos.x;
+    f32 savedY = mPos.y;
+    f32 savedZ = mPos.z;
     switch (field_0x230) {
     case 2:
         field_0x2c4--;
@@ -213,10 +213,10 @@ void cls_804A9C20::update() {
                         if (i < 3) {
                             if (i != 1) {
                                 for (s32 j = 0; j < 3; j++) {
-                                    mBox = lbl_8046EA10.hurtMode4[i][j];
+                                    mBox.set(lbl_8046EA10.hurtMode4[i][j]);
                                     shiftBox(&area, mBox, mPos);
                                     if (!fn_801F2B7C(field_0x114, -1, 4)) {
-                                        field_0x80 = lbl_8046EA10.attackMode4[i][j];
+                                        field_0x80.set(lbl_8046EA10.attackMode4[i][j]);
                                         shiftBox(&area, field_0x80, mPos);
                                         fn_80239914(&area, field_0x4, mSerial);
                                     }
@@ -234,10 +234,10 @@ void cls_804A9C20::update() {
                         break;
                     case 1:
                         for (s32 j = 0; j < 3; j++) {
-                            mBox = lbl_8046EA10.hurtMode1[i][j];
+                            mBox.set(lbl_8046EA10.hurtMode1[i][j]);
                             shiftBox(&area, mBox, mPos);
                             if (!fn_801F2B7C(field_0x114, -1, 0x1A)) {
-                                field_0x80 = lbl_8046EA10.attackMode1[i][j];
+                                field_0x80.set(lbl_8046EA10.attackMode1[i][j]);
                                 shiftBox(&area, field_0x80, mPos);
                                 fn_80239914(&area, field_0x4, mSerial);
                             }
@@ -246,10 +246,10 @@ void cls_804A9C20::update() {
                     case 5:
                         break;
                     default:
-                        mBox = lbl_8046EA10.hurtDefault[field_0x238][i];
+                        mBox.set(lbl_8046EA10.hurtDefault[field_0x238][i]);
                         shiftBox(&area, mBox, mPos);
                         if (!fn_801F2B7C(field_0x114, -1, 0x1A)) {
-                            field_0x80 = lbl_8046EA10.attackDefault[field_0x238][i];
+                            field_0x80.set(lbl_8046EA10.attackDefault[field_0x238][i]);
                             shiftBox(&area, field_0x80, mPos);
                             fn_80239914(&area, field_0x4, mSerial);
                         }
@@ -302,7 +302,9 @@ void cls_804A9C20::update() {
         field_0x234--;
         if (field_0x234 == 0) {
             if (field_0x238 != 5) {
-                mPos = savedPos;
+                mPos.x = savedX;
+                mPos.y = savedY;
+                mPos.z = savedZ;
                 s32 kind = 0;
                 if (field_0x248 < 0x258) {
                     if (gGameRoot_8053AAF8->field_0x7e == 1) {
@@ -337,7 +339,9 @@ void cls_804A9C20::update() {
     if (field_0x230 < 4) {
         startSound_801F0E34(0x30038, 0);
     }
-    mPos = savedPos;
+    mPos.x = savedX;
+    mPos.y = savedY;
+    mPos.z = savedZ;
     JGeometry::TVec3f focus(mPos.x + lbl_8046EA10.focus[field_0x238].x,
                             mPos.y + lbl_8046EA10.focus[field_0x238].y, mPos.z);
     gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&focus);
