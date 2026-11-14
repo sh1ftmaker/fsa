@@ -513,9 +513,9 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
             continue;
         }
         s32 kind = field_0x280;
-        if (kind == 3 || kind == 4 || kind == 5) {
+        if (kind == 5 || kind == 3 || kind == 4) {
             getActorManager_801F856C()->spawnActor_801F9484('TKRA', field_0x4, &mPos,
-                                                            kind + (i << 12) + 0x210, -1, -1);
+                                                            0x210 + kind + (i << 12), -1, -1);
             JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
             s32 layer = field_0x238;
             getGameView_802D6A9C()->fn_802D6C10(pos, layer);
@@ -536,7 +536,11 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
     if (field_0x240 != 2) {
         return;
     }
-    u16 code = fn_80226850(&mPos, field_0x4 + (field_0x4 < 8 ? 1 : 8));
+    s32 step = 1;
+    if (field_0x4 >= 8) {
+        step = 8;
+    }
+    u16 code = fn_80226850(&mPos, field_0x4 + step);
     if (code != 0 && code != 0x39) {
         field_0x2ad = 0x80;
         field_0x2ac = 2;
