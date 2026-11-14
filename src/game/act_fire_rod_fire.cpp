@@ -325,10 +325,6 @@ void FireRodFire_804A89F0::update() {
             mPos += field_0x3c;
         }
         field_0x248 = mPos;
-        s32 dmg = field_0x114;
-        if (gGameRoot_8053AAF8->field_0x7f == 1) {
-            dmg = 0;
-        }
         if (field_0x264 == 2 || (field_0x264 >= 3 && field_0x264 <= 5)) {
             s32 hitPlayer = -1;
             if (field_0x264 == 3 || field_0x264 == 4) {
@@ -353,13 +349,11 @@ void FireRodFire_804A89F0::update() {
                 }
             }
         } else {
-            bool skip = false;
-            if (field_0x264 == 1) {
-                if (fn_8022CCAC(field_0x260) || fn_80230188(field_0x260)) {
-                    skip = true;
-                }
+            s32 dmg = field_0x114;
+            if (gGameRoot_8053AAF8->field_0x7f == 1) {
+                dmg = 0;
             }
-            if (!skip) {
+            if (field_0x264 != 1 || (!fn_8022CCAC(field_0x260) && !fn_80230188(field_0x260))) {
                 if (fn_801F2B7C(dmg, field_0x260, 0x16) || fn_801F2B20(5)) {
                     if (field_0x264 == 0) {
                         if (field_0x4 < 8) {
