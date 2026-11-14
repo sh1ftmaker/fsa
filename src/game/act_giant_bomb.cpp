@@ -125,8 +125,8 @@ void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
 // 0x80342850.
 // FIXME(shotgun): 89.30 %, missing/extra + reloc-name; behaviour drift.
 void GiantBomb_804AC588::update() {
-    JGeometry::TVec2f pos2(mPos.x, mPos.y);
     JGeometry::TBox2f box = mBox;
+    JGeometry::TVec2f pos2(mPos.x, mPos.y);
     box.addPos(pos2);
     mLife = 10000;
     if (mState == 4) {
@@ -136,14 +136,14 @@ void GiantBomb_804AC588::update() {
         mTimer--;
     }
     if (mState != 2) {
-        Vec corner0;
-        Vec corner1;
-        corner0.x = mPos.x + mBox.i.x;
-        corner0.y = mPos.y + mBox.i.y;
-        corner0.z = mPos.z;
-        corner1.x = mPos.x + mBox.f.x;
-        corner1.y = mPos.y + mBox.f.y;
-        corner1.z = mPos.z;
+        JGeometry::TVec3f corner0;
+        JGeometry::TVec3f corner1;
+        corner0 = mPos;
+        corner1 = mPos;
+        corner0.x += mBox.i.x;
+        corner0.y += mBox.i.y;
+        corner1.x += mBox.f.x;
+        corner1.y += mBox.f.y;
         lbl_8053AED0->fn_8043E398(&corner0, &corner1);
     }
     if (mState == 6 && mTimer > 0) {
@@ -285,8 +285,9 @@ void GiantBomb_804AC588::update() {
         }
         break;
     case 7:
+        JGeometry::TVec2f off(-mPos.x, -mPos.y);
         mBox = getGameView_802D6A9C()->mVisibleBox;
-        mBox.addPos(-mPos.x, -mPos.y);
+        mBox.addPos(off);
         fn_801F2B20(5);
         if (mTimer <= 0) {
             if (field_0x24c == 1 && getGameView_802D6A9C()->field_0x4 == 1 &&
