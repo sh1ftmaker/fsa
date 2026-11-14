@@ -714,7 +714,7 @@ void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
 }
 
 // 0x801C2ED4.
-// FIXME(shotgun): 81.62 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.53 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     if (mapHit) {
         if (vfunc_0x4C(field_0x4, &mPos)) {
