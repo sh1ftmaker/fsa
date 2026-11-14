@@ -224,7 +224,7 @@ static inline void setRotMtx(Mtx mtx, f32 rx, f32 ry, f32 rz) {
     mtx[2][2] = cx * cy;
 }
 
-// FIXME(shotgun): 92.17 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 97.42 %, missing/extra; behaviour clean.
 void TrickFloor_804A83A0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
