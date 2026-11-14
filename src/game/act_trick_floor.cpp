@@ -16,7 +16,7 @@ static const f32 lbl_8046C924[7] = {32.0f, 32.0f, 40.0f, 40.0f, 64.0f, 64.0f, 32
 static const f32 lbl_8046C940[7] = {1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f};
 static const f32 lbl_8046C95C[7] = {1.0f, 1.0f, 1.3f, 1.3f, 1.0f, 1.0f, 1.0f};
 
-// FIXME(shotgun): 98.05 %, operands + reloc-name; behaviour clean.
+// FIXME(shotgun): 98.13 %, operands + reloc-name; behaviour clean.
 void TrickFloor_804A83A0::init() {
     field_0x234 = field_0x90 & 0x7F;
     field_0x238 = (field_0x90 >> 7) & 0x1F;
@@ -224,7 +224,7 @@ static inline void setRotMtx(Mtx mtx, f32 rx, f32 ry, f32 rz) {
     mtx[2][2] = cx * cy;
 }
 
-// FIXME(shotgun): 91.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.17 %, missing/extra; behaviour drift.
 void TrickFloor_804A83A0::draw() {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
