@@ -10,7 +10,7 @@
 #include "game/GameGlobals.h"
 #include "game/act/act_flying_tile.h"
 
-// FIXME(shotgun): 99 %, scheduling + reloc-name
+// FIXME(shotgun): 99.98 %, scheduling; behaviour drift.
 void FlyingTile_804AC100::init() {
     field_0x244 = field_0x90 & 0x7FF;
     field_0x250 = (field_0x90 >> 11) & 0x1F;
@@ -99,7 +99,6 @@ void FlyingTile_804AC100::init() {
     }
 }
 
-// FIXME(shotgun): 100 %, matches
 void FlyingTile_804AC100::vfunc_0x10() {
     s32 serial = -1;
     s32 best = 0;
@@ -134,7 +133,7 @@ void FlyingTile_804AC100::vfunc_0x10() {
     }
 }
 
-// FIXME(shotgun): 95 %, missing/extra
+// FIXME(shotgun): 95.55 %, missing/extra; behaviour drift.
 bool FlyingTile_804AC100::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 serial = mSerial;
     CollisionBoxes_8020D58C* boxes = fn_8020D58C();
@@ -176,6 +175,7 @@ bool FlyingTile_804AC100::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return true;
 }
 
+// FIXME: 93.76 %, missing/extra; behaviour drift.
 void FlyingTile_804AC100::update() {
     u16 angle = 0;
     u8 hitWall = 0;
@@ -535,6 +535,7 @@ static inline void rotY(Mtx mtx, s16 angle) {
     mtx[0][1] = 0.0f;
 }
 
+// FIXME: 98.50 %, scheduling+regalloc; behaviour drift.
 void FlyingTile_804AC100::draw() {
     SpriteParams_801F5AE0 params;
     Mtx rot;
@@ -641,7 +642,7 @@ void FlyingTile_804AC100::draw() {
     }
 }
 
-// FIXME(shotgun): 86 %, missing/extra
+// FIXME(shotgun): 86.42 %, missing/extra; behaviour near.
 void FlyingTile_804AC100::fn_80339820() {
     JGeometry::TVec3f pos = mPos;
     pos.y -= pos.z;
