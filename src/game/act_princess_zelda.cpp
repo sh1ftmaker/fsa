@@ -200,7 +200,9 @@ void cls_8049CEE0::update() {
     box.f.y += mPos.y;
 
     bool canHit = true;
-    if (field_0x328 >= 8 || field_0x328 <= 4 || field_0x2f8 != 0) {
+    if (field_0x328 >= 8 || field_0x328 <= 4) {
+        canHit = false;
+    } else if (field_0x2f8 != 0) {
         canHit = false;
     }
     if (canHit) {
@@ -221,15 +223,13 @@ void cls_8049CEE0::update() {
 
         fn_8022FEB8(&searchBox, field_0x4, mSerial, false, false);
         s32 player = fn_8022FD8C(mSerial);
-        if (player >= 0) {
-            if (!(gGameRoot_8053AAF8->mPlayerMask & (1 << player))) {
-                player = -1;
-            } else if (!fn_8022C5EC(player, 0x120)) {
-                player = -1;
-            } else if (!fn_8038AD24(player, 0x170, mSerial, field_0x4, mPos, 0x20)) {
-                player = -1;
-            }
-        } else {
+        if (player < 0) {
+            player = -1;
+        } else if (!(gGameRoot_8053AAF8->mPlayerMask & (1 << player))) {
+            player = -1;
+        } else if (!fn_8022C5EC(player, 0x120)) {
+            player = -1;
+        } else if (!talk(player, 0x170, mSerial, field_0x4, mPos, 0x20)) {
             player = -1;
         }
         if (player >= 0) {
@@ -259,7 +259,7 @@ void cls_8049CEE0::update() {
             if (field_0x328 == 1) {
                 fn_8022FE80(0, field_0x4, mSerial, false, false);
                 if (fn_8022FD8C(mSerial) >= 0) {
-                    if (fn_8038AD24(0, 0x170, mSerial, field_0x4, mPos, 0x28)) {
+                    if (talk(0, 0x170, mSerial, field_0x4, mPos, 0x28)) {
                         lbl_8053AA81 = 0;
                         fn_801096C8(4);
                     }
@@ -271,7 +271,7 @@ void cls_8049CEE0::update() {
             f32 dist;
             s32 unk;
             fn_801EEC98(mSerial, &angle, &dir, &dist, &unk, 0, 1);
-            if (dir >= 0 && dist <= 64.0f) {
+            if (dir >= 0 && !(dist > 64.0f)) {
                 if (field_0x328 == 1) {
                     if (dir >= 0 && dir + 5 != mSpriteAnim.mAnim) {
                         mSpriteAnim.startAnim_801D22DC(dir + 5, 2, false);
@@ -284,7 +284,7 @@ void cls_8049CEE0::update() {
                 fn_8022FEB8(&box, field_0x4, mSerial, true, false);
                 s32 player = fn_8022FD8C(mSerial);
                 if (player >= 0 && !fn_8022F514(player)) {
-                    if (fn_8038AD24(player, 0x230, mSerial, field_0x4, mPos, 0x28)) {
+                    if (talk(player, 0x230, mSerial, field_0x4, mPos, 0x28)) {
                         field_0x300 = player;
                         fn_801096C8(2);
                     }
@@ -513,7 +513,7 @@ void cls_8049CEE0::update() {
         fn_8022FEB8(&box, field_0x4, mSerial, true, false);
         field_0x31c = fn_8022FD8C(mSerial);
         if (field_0x31c >= 0 && (gGameRoot_8053AAF8->mPlayerMask & (1 << field_0x31c))) {
-            if (fn_8038AD24(field_0x31c, 0x16E, mSerial, field_0x4, mPos, 0x28)) {
+            if (talk(field_0x31c, 0x16E, mSerial, field_0x4, mPos, 0x28)) {
                 fn_801096C8(17);
             }
         }
