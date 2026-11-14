@@ -65,7 +65,7 @@ static inline void setViewBit(s32 bit) {
 // Message ids by the spawner's bits 8-11 (field_0x258).
 static const u32 lbl_804A3740[] = {0x2D6, 0x2F0, 0x2F1, 0x2F3, 0x2F7, 0x2F8, 0x2F9};
 
-// FIXME(shotgun): 89.76 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 89.77 %, missing/extra + reloc-name; behaviour drift.
 // States 6-8 and the camera setup at the start of state 9 are not written
 void PrincessZeldaMotionObjectSpawner_804A375C::update() {
     s32 dir = -1;
