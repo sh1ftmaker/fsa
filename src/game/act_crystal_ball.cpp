@@ -748,7 +748,7 @@ void CrystalBall_804AB308::draw() {
 
 // FIXME(shotgun): 82.2 %, missing/extra: item switch / spawn sequences are laid out differently
 void CrystalBall_804AB308::vfunc_0x24() {
-    u16 code = fn_8022461C(&mPos, field_0x4);
+    s32 code = fn_8022461C(&mPos, field_0x4);
     if (code == 3 && mPos.z < 0.1f) {
         field_0x2b8.x = 8.0f + (f32)((s32)mPos.x & 0xFFF0);
         field_0x2b8.y = 8.0f + (f32)((s32)mPos.y & 0xFFF0);
