@@ -198,7 +198,7 @@ void Boulder_8049C4C0::fn_800F5E08() {
     }
 }
 
-// FIXME(shotgun): 94.65 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.66 %, missing/extra + reloc-name; behaviour drift.
 void Boulder_8049C4C0::fn_800F555C() {
     JGeometry::TBox2f box(mPos.x - 16.0f, mPos.y - 16.0f, mPos.x + 16.0f, mPos.y + 16.0f);
     s32 anyPlayer = 0;
