@@ -148,7 +148,7 @@ void WhackAMoleShop_8049C8EC::draw() {
     }
 }
 
-// FIXME(shotgun): 94.73 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.46 %, missing/extra + reloc-name; behaviour drift.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
@@ -359,7 +359,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
                 }
             } else {
                 s32 best = -1;
-                for (s32 i = 0; i < 4; i++) {
+                for (s32 i = 0; i < field_0x244; i++) {
                     if (best < field_0x268[i]) {
                         best = field_0x268[i];
                     }
