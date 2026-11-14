@@ -26,6 +26,8 @@
 #include "game/StageFlag.h"
 #include "game/EnemyBase.h"
 #include "game/act/act_navi_maiden_crystal.h"
+#include "game/cls_804A8638.h"
+#include "game/cls_804AE9B0.h"
 
 // FIXME(shotgun): not written, .rodata tables lbl_80474C38 (string),
 // lbl_80474C68 (0x1E0 table), lbl_80474E48 (two filenames) and the .sdata/.sdata2 anim tables are not
@@ -238,6 +240,301 @@ void cls_804AE088::vfunc_0x54() {
     vfunc_0x60(arg);
 }
 
+// Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
+extern const s32 lbl_80474C68[120];
+
+static const s32 lbl_80474C8C[3] = {0, 0xC9, 0x191};
+static const s32 lbl_80474CB0[5] = {0x1E, 0x37, 0x0A, 0x2D, 0x3C};
+static const u16 lbl_80474D00[7] = {0x2AB, 0x2AC, 0x2AD, 0x2C4, 0x2C5, 0x2C7, 0x2C6};
+static const u16 lbl_80474D10[7] = {0x2C8, 0x2CD, 0x2CA, 0x2C9, 0x2CC, 0x2CB, 0x2CE};
+static const u16 lbl_80474D20[7] = {0x30B, 0x310, 0x30D, 0x30C, 0x30F, 0x30E, 0x311};
+static const u16 lbl_80474D30[7] = {0x2AF, 0x2BE, 0x2B5, 0x2B2, 0x2BB, 0x2B8, 0x2C1};
+static const u16 lbl_80474D40[7] = {0x2B0, 0x2BF, 0x2B6, 0x2B3, 0x2BC, 0x2B9, 0x2C2};
+static const u16 lbl_80474D50[7] = {0x2B1, 0x2C0, 0x2B7, 0x2B4, 0x2BD, 0x2BA, 0x2C3};
+static const u16 lbl_80474D60[6] = {0x53A, 0x53B, 0x53C, 0x53D, 0x53E, 0x53F};
+
+// differs: the original reads every table at an offset from one base (lbl_80474C38); the tables
+// here are copies of parts of lbl_80474C68.
+void cls_804AE088::vfunc_0x60(s32 arg) {
+    JGeometry::TVec3f pos;
+    switch (arg) {
+    case 2:
+        field_0x238 = 0;
+        for (s32 i = 0; i < 5; i++) {
+            field_0x384[i]->becomeInvalidEmitter();
+            field_0x384[i] = NULL;
+        }
+        break;
+    case 3: {
+        field_0x238 = 1;
+        field_0x244 = 1;
+        field_0x254 = lbl_80474C8C[1];
+        field_0x378[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AE, 0, 1, NULL, NULL, true, 0.5f);
+        field_0x378[1] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D30[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x378[2] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D40[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x358 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D50[field_0x23c], 0, 1, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D5, 0);
+        s32 count = getActorManager_801F856C()->mActorEnd;
+        for (s32 i = 0; i < count; i++) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == ACTOR_SWEV) {
+                static_cast<cls_804A8638*>(actor)->fn_802B3A3C();
+                break;
+            }
+        }
+        break;
+    }
+    case 4:
+        switch (field_0x23c) {
+        case 6:
+            gAudioMgr_8053AF80->fn_80458FF0(0x100000F, false, 0);
+            break;
+        default:
+            gAudioMgr_8053AF80->fn_80458FF0(0x100001C, false, 0);
+            break;
+        }
+        field_0x237 = 1;
+        break;
+    case 5: {
+        JGeometry::TVec3f pos = mPos + JGeometry::TVec3f(0.0f, 160.0f, 20.0f);
+        field_0x25c = getActorManager_801F856C()->spawnActor_801F9484(ACTOR_DNAV, field_0x4, &pos, 0, -1, -1);
+        mNaviActor = static_cast<Navi54MaidenCrystalCutscene_804ADFE8*>(
+            getActorManager_801F856C()->findActorBySerial_801F666C(field_0x25c));
+        field_0x258 = 0x3C;
+        break;
+    }
+    case 7: {
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+        field_0x268++;
+        mNaviActor->field_0x230 = 1;
+        break;
+    }
+    case 9: {
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, field_0x25c, true, false);
+        fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+        field_0x268++;
+        break;
+    }
+    case 10: {
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+        field_0x268++;
+        break;
+    }
+    case 13: {
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+        field_0x268++;
+        break;
+    }
+    case 12:
+        field_0x258 = 0x96;
+        break;
+    case 14:
+        field_0x237 = 0;
+        for (s32 i = 0; i < 7; i++) {
+            field_0x35c[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D00[i], 0, 1, NULL, NULL, true, 0.5f);
+        }
+        field_0x2f0 = 300;
+        startSound_801F0E34(0x30082, 0);
+        field_0x350 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D10[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x354 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D20[field_0x23c], 0, 1, NULL, NULL, true, 1.0f);
+        field_0x26c = 400;
+        break;
+    case 15:
+        field_0x234 = 0;
+        field_0x236 = 1;
+        break;
+    case 16: {
+        field_0x236 = 0;
+        fn_80119DD0()->fn_80119998(0xB4, 0, 0, 0, 1, 0, 0);
+        field_0x24c = 1;
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+            fn_80230498(i, &playerPos, fn_8023CBC0(i), 0xFF, -128, -128, true);
+        }
+        fn_8036A65C();
+        JGeometry::TVec3f pos;
+        pos.set(mSpawnPos);
+        pos.z += 20.0f;
+        getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CRNV, field_0x4, &pos, field_0x23c, -1, -1);
+        break;
+    }
+    case 17: {
+        field_0x24c = 0;
+        fn_801F3668();
+        s32 bit = field_0x248;
+        if (bit > 0) {
+            getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+            lbl_8053AD70->fn_8037AD00(4);
+        }
+        break;
+    }
+    case 21:
+        field_0x238 = 0;
+        for (s32 i = 0; i < 5; i++) {
+            field_0x384[i]->becomeInvalidEmitter();
+            field_0x384[i] = NULL;
+        }
+        break;
+    case 22: {
+        field_0x238 = 1;
+        field_0x244 = 1;
+        field_0x254 = lbl_80474C8C[1];
+        field_0x378[0] = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AE, 0, 1, NULL, NULL, true, 0.5f);
+        field_0x378[1] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D30[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x378[2] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D40[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x358 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D50[field_0x23c], 0, 1, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400D5, 0);
+        s32 count = getActorManager_801F856C()->mActorEnd;
+        for (s32 i = 0; i < count; i++) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+            if (actor != NULL && actor->mActorId == ACTOR_SWEV) {
+                static_cast<cls_804A8638*>(actor)->fn_802B3A3C();
+                break;
+            }
+        }
+        break;
+    }
+    case 23:
+        switch (field_0x23c) {
+        case 6:
+            gAudioMgr_8053AF80->fn_80458FF0(0x100000F, false, 0);
+            break;
+        default:
+            gAudioMgr_8053AF80->fn_80458FF0(0x100001C, false, 0);
+            break;
+        }
+        field_0x237 = 1;
+        break;
+    case 24: {
+        if (field_0x398 == NULL) {
+            field_0x398 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54C, 0, 1, NULL, NULL, true, 1.0f);
+        }
+        JGeometry::TVec3f pos;
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62)) {
+            field_0x268++;
+            fn_8011921C()->fn_80118454();
+        }
+        break;
+    }
+    case 25:
+        for (s32 i = 0; i < 5; i++) {
+            field_0x294[i] = lbl_80474CB0[i] + 0x46;
+        }
+        break;
+    case 26:
+        field_0x237 = 0;
+        for (s32 i = 0; i < 7; i++) {
+            field_0x35c[i] = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D00[i], 0, 1, NULL, NULL, true, 0.5f);
+        }
+        field_0x2f0 = 300;
+        startSound_801F0E34(0x30082, 0);
+        field_0x350 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D10[field_0x23c], 0, 1, NULL, NULL, true, 0.5f);
+        field_0x354 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_80474D20[field_0x23c], 0, 1, NULL, NULL, true, 1.0f);
+        field_0x26c = 400;
+        break;
+    case 27:
+        field_0x234 = 0;
+        field_0x236 = 1;
+        break;
+    case 28:
+        field_0x24c = 1;
+        fn_80119DD0()->fn_80119998(0xB4, 0, 0, 0, 1, 0, 0);
+        fn_8036A65C();
+        mPos += JGeometry::TVec3f(0.0f, 16.0f, 0.0f);
+        field_0x258 = 0xB4;
+        for (s32 i = 0; i < 5; i++) {
+            deleteEmitter(&field_0x3bc[i]);
+            deleteEmitter(&field_0x3d4[i]);
+        }
+        break;
+    case 29:
+        field_0x258 = 0xAA;
+        break;
+    case 31: {
+        field_0x264 = 0;
+        JGeometry::TVec3f pos = mPos;
+        pos.y += 16.0f;
+        pos.z = 0.0f;
+        field_0x288 = 0.0f;
+        field_0x28c = 0;
+        for (s32 i = 0; i < 6; i++) {
+            field_0x39c[i] = spawnEmitter_8013CC50(field_0x4, &pos, lbl_80474D60[i], 0, 1, NULL, NULL, true, 1.0f);
+            field_0x39c[i]->setGlobalAlpha(field_0x288);
+        }
+        field_0x3b4[0] = spawnEmitter_8013CC50(field_0x4, &pos, 0x540, 0, 1, NULL, NULL, true, 1.0f);
+        field_0x3b4[1] = spawnEmitter_8013CC50(field_0x4, &pos, 0x541, 0, 1, NULL, NULL, true, 1.0f);
+        field_0x258 = 0x96;
+        gAudioMgr_8053AF80->fn_8045873C(1);
+        break;
+    }
+    case 32:
+        fn_80119DD0()->fn_80119998(0x96, 0, 1, 0, 0, 0x32, 0);
+        field_0x258 = 0xB9;
+        startSound_801F0E34(0x40041, 0);
+        break;
+    case 33:
+        fn_80119DD0()->fn_80119998(0x96, 0, 0, 0, 0, 0x19, 0);
+        field_0x24c = 1;
+        field_0x2f4->fn_802E2990(0xFF);
+        for (s32 i = 0; i < 6; i++) {
+            deleteEmitterKeep(&field_0x39c[i]);
+            field_0x39c[i] = NULL;
+        }
+        field_0x264 = 10;
+        gAudioMgr_8053AF80->fn_8045873C(0);
+        break;
+    case 34: {
+        pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+        pos.y += -16.0f;
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+        field_0x268++;
+        break;
+    }
+    case 35:
+        field_0x258 = 0x78;
+        break;
+    case 36:
+        field_0x258 = 0xF0;
+        field_0x2a8[5] = mPos;
+        break;
+    case 37:
+        field_0x258 = 0xF0;
+        break;
+    case 38: {
+        field_0x24c = 0;
+        fn_801F3668();
+        s32 bit = field_0x248;
+        if (bit > 0) {
+            getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+            lbl_8053AD70->fn_8037AD00(5);
+        }
+        break;
+    }
+    }
+    field_0x240 = arg;
+}
+
 s32 cls_804AE088::vfunc_0x5C() {
     s32 s = field_0x240;
     if (s == 0x11 || s == 0x26)
@@ -292,9 +589,6 @@ void cls_804AE088::fn_8036AC58(s32 arg) {
         fn_803075AC(mSerial, field_0x4, &mPos, arg + field_0x318.mCel, 0, 1, -1, false, 0, 0);
     }
 }
-
-// Table lbl_80474C68 (0x1E0 bytes) is read by the original; its definition is not written yet.
-extern const s32 lbl_80474C68[120];
 
 // FIXME: 75.80 %, missing/extra + reloc-name; behaviour drift.
 // the original keeps lbl_80474C38 in a register as table base (we index lbl_80474C68).
