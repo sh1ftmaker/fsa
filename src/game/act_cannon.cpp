@@ -53,6 +53,7 @@ static inline void swing(Cannon_8049CCF0* c) {
     }
 }
 
+// FIXME: 94.98 %, missing/extra + reloc-name; behaviour drift.
 void Cannon_8049CCF0::update() {
     if (vfunc_0x3C()) {
         if (field_0x274 == 0 || field_0x274 == 1) {
@@ -210,6 +211,7 @@ void Cannon_8049CCF0::update() {
     mAnim.fn_801D1C18();
 }
 
+// FIXME: 98.23 %, missing/extra + reloc-name; behaviour clean.
 bool Cannon_8049CCF0::fn_80107360() {
     if (field_0x274 != 2) {
         return false;
@@ -258,6 +260,7 @@ void Cannon_8049CCF0::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, mAnim.mCel + 0x14C, false, 1, -1, 0, 0, 0);
 }
 
+// FIXME: 98.75 %, reloc-name; behaviour clean.
 f32 Cannon_8049CCF0::fn_801080B8() const {
     if (field_0x4 == 0) {
         return 8.0f;
@@ -270,6 +273,7 @@ f32 Cannon_8049CCF0::fn_801080B8() const {
 
 Cannon_8049CCF0::~Cannon_8049CCF0() {}
 
+// FIXME: 99.69 %, reloc-name; behaviour clean.
 void Cannon_8049CCF0::init() {
     if ((field_0x90 & 0xF) == 1) {
         field_0x274 = 1;
@@ -297,6 +301,7 @@ void Cannon_8049CCF0::init() {
     }
 }
 
+// FIXME: 99.85 %, reloc-name; behaviour clean.
 Cannon_8049CCF0::Cannon_8049CCF0() {
     field_0x268 = 1;
     field_0x269 = 0;
