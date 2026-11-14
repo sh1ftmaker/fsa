@@ -166,7 +166,7 @@ void Fish_804AC658::update() {
     case 0: {
         field_0x260 = 0.007f;
         field_0x250 += (s32)(8192.0f - 16384.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
-        f32 speed = 0.4f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 1.0f);
+        f32 speed = 0.4f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.4f;
         field_0x3c.x = speed * JMath::sincosTable_.sinShort(field_0x250);
         field_0x3c.y = speed * JMath::sincosTable_.cosShort(field_0x250);
         field_0x238 = (s32)(75.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x41;
@@ -174,13 +174,13 @@ void Fish_804AC658::update() {
     }
     case 1:
         if (hit) {
+            s32 angle = field_0x250 + 0x4000;
+            field_0x3c.z = 0.0f;
+            field_0x3c.y = 0.0f;
+            field_0x3c.x = 0.0f;
             f32 savedX = mPos.x;
             f32 savedY = mPos.y;
             f32 savedZ = mPos.z;
-            u16 angle = field_0x250 + 0x4000;
-            field_0x3c.x = 0.0f;
-            field_0x3c.y = 0.0f;
-            field_0x3c.z = 0.0f;
             for (s32 i = 0; i < 15; i++) {
                 mPos.x = savedX;
                 mPos.y = savedY;
@@ -197,7 +197,7 @@ void Fish_804AC658::update() {
             mPos.x = savedX;
             mPos.y = savedY;
             mPos.z = savedZ;
-            f32 speed = 0.4f * (gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 1.0f);
+            f32 speed = 0.4f * gGameRoot_8053AAF8->mRandom.get_ufloat_1() + 0.4f;
             field_0x3c.x = speed * JMath::sincosTable_.sinShort(field_0x250);
             field_0x3c.y = speed * JMath::sincosTable_.cosShort(field_0x250);
         } else {
@@ -257,7 +257,6 @@ void Fish_804AC658::update() {
                     field_0x250 = field_0x268;
                     field_0x234 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
                 }
-                swimVelocity(this, 1.5f);
             } else if (hitDir.y != 0.0f) {
                 field_0x234 = (s32)(8.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 8;
                 if (field_0x240 == 0) {
@@ -279,10 +278,8 @@ void Fish_804AC658::update() {
                     field_0x250 = field_0x268;
                     field_0x234 = (s32)(20.0f * gGameRoot_8053AAF8->mRandom.get_ufloat_1()) + 0x14;
                 }
-                swimVelocity(this, 1.5f);
-            } else {
-                swimVelocity(this, 1.5f);
             }
+            swimVelocity(this, 1.5f);
         } else {
             field_0x252 = field_0x250 + 0x4000;
             if (!hit && field_0x234 == 0) {
