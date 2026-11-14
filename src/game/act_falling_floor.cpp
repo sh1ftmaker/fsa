@@ -32,7 +32,7 @@ void FallingFloor_804A9078::init() {
 
 // 0x802CCF14. FLYK: a floor tile that crumbles once a player stands on it (state 0 / 5), then
 // falls away and is replaced by the pit tile; state 8 only restores the tile under a player.
-// FIXME(shotgun): 88.61 %, missing/extra + reloc-name
+// FIXME(shotgun): 99.34 %, different; behaviour drift.
 void FallingFloor_804A9078::update() {
     JGeometry::TVec2f pos2d;
     pos2d.set(mPos.x, mPos.y);
