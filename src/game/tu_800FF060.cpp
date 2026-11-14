@@ -82,7 +82,7 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
     }
 }
 
-// FIXME(shotgun): 90.94 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.00 %, missing/extra; behaviour drift.
 void HammerShopMinigame_8049C858::update() {
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
