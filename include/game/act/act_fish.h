@@ -18,7 +18,7 @@ public:
     /* 0x4C */ virtual bool vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos);
     // 0x80346330: finds the player the fish swims away from (field_0x270, with its heading in
     // field_0x268 / field_0x26c and distance in field_0x264); true when there is one.
-    bool fn_80346330();
+    s32 fn_80346330();
     /* 0x230 */ s32 field_0x230;
     /* 0x234 */ s32 field_0x234;
     /* 0x238 */ s32 field_0x238;
@@ -27,7 +27,7 @@ public:
     /* 0x244 */ s32 field_0x244;
     /* 0x248 */ s32 field_0x248;
     /* 0x24C */ s32 field_0x24c; // sprite frame offset
-    /* 0x250 */ s16 field_0x250;
+    /* 0x250 */ u16 field_0x250;
     /* 0x252 */ u16 field_0x252; // heading angle (draw)
     /* 0x254 */ f32 field_0x254;
     /* 0x258 */ f32 field_0x258;
