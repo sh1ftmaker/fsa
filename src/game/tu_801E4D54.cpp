@@ -179,7 +179,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
     }
 }
 
-// FIXME: 93.78 %, missing/extra; behaviour drift.
+// FIXME: 93.97 %, missing/extra; behaviour drift.
 // FIXME(shotgun): written from asm
 void VaatiBoss_804A4958::fn_801E4D88() {
     ActorBase_804A5770* actors[ACTOR_MANAGER_MAX_ACTORS];
