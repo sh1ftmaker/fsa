@@ -70,7 +70,7 @@ static inline s32 findOwner(Cannon_8049CCF0* c, const JGeometry::TBox2f* box) {
     return -1;
 }
 
-// FIXME: 94.98 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 95.54 %, missing/extra + reloc-name; behaviour drift.
 void Cannon_8049CCF0::update() {
     if (vfunc_0x3C()) {
         if (field_0x274 == 0 || field_0x274 == 1) {
