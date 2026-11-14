@@ -813,8 +813,9 @@ void TennisShop_804A2BF4::fn_801A0F90() {
                     field_0x3c.x = speed * JMath::sincosTable_.sinShort(angle);
                     field_0x3c.y = speed * JMath::sincosTable_.cosShort(angle);
                     field_0x238[1] = 30;
-                    if (field_0x320 >= 0) {
-                        TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x320));
+                    s32 serial = field_0x320;
+                    if (serial >= 0) {
+                        TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
                         if (shop != NULL) {
                             bumpCount(&shop->field_0x24c[2]);
                             bumpCount(&shop->field_0x26c);
@@ -826,8 +827,10 @@ void TennisShop_804A2BF4::fn_801A0F90() {
                 } else {
                     dead = true;
                 }
-            } else if (field_0x320 >= 0) {
-                TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x320));
+            } else {
+                s32 serial = field_0x320;
+                if (serial >= 0) {
+                TennisShop_804A2BF4* shop = static_cast<TennisShop_804A2BF4*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
                 if (shop != NULL) {
                     field_0x248 = 0;
                     field_0x264 = 4;
@@ -848,8 +851,9 @@ void TennisShop_804A2BF4::fn_801A0F90() {
                 } else {
                     dead = true;
                 }
-            } else {
-                dead = true;
+                } else {
+                    dead = true;
+                }
             }
         }
         break;
