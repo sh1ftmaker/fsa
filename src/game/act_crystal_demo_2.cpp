@@ -34,7 +34,7 @@
 // declared: nothing compiled here reads them yet.
 // FIXME(shotgun): not written: init, vfunc_0x60 (jumptable_804AE184),
 // fn_8036AC58, fn_8036A65C, fn_80369DDC (jumptable_804AE13C),
-// fn_80368CD8 (jumptable_804AE0EC), fn_80368660, fn_803683AC, fn_80368198.
+// fn_80368660, fn_803683AC, fn_80368198.
 
 // Functions are listed in descending address order (highest first, lowest last).
 
@@ -891,6 +891,326 @@ void cls_804AE088::fn_80369DDC() {
     case 16:
     case 17:
         break;
+    }
+    if (field_0x237 != 0) {
+        field_0x280 += field_0x284;
+    }
+    field_0x318.fn_801D1C18();
+    if (field_0x234 != 0) {
+        fn_8036AA60();
+    }
+}
+
+static const u16 lbl_80474D6C[5] = {0x335, 0x32F, 0x331, 0x337, 0x32D};
+static const u16 lbl_80474D78[5] = {0x336, 0x330, 0x332, 0x338, 0x32E};
+static const u8 lbl_80474D84[5][3] = {
+    {0xFF, 0x41, 0x37}, {0x1E, 0xA0, 0xBE}, {0x4B, 0xFF, 0x2D}, {0xC8, 0xA0, 0x28}, {0x2D, 0x78, 0xFF},
+};
+static const s32 lbl_80474D94[6] = {0x96, 0x64, 0x46, 0x78, 0x55, 0x3C};
+static const s32 lbl_80474DAC[6] = {0x55, 0x78, 0x46, 0x64, 0x96, 0x3C};
+static const u16 lbl_80474E1C[6] = {0x28, 0x22, 0x24, 0x2A, 0x20, 0x26};
+static const u16 lbl_80474E28[6] = {0x29, 0x23, 0x25, 0x2B, 0x21, 0x27};
+static const u8 lbl_80474E34[6][3] = {
+    {0xFF, 0x41, 0x37}, {0x1E, 0xA0, 0xBE}, {0x4B, 0xFF, 0x2D},
+    {0xC8, 0xA0, 0x28}, {0x2D, 0x78, 0xFF}, {0xDC, 0x1E, 0xDC},
+};
+
+// differs: the original reads every table at an offset from one base (lbl_80474C38).
+void cls_804AE088::fn_80368CD8() {
+    if (field_0x258 != 0) {
+        field_0x258--;
+    }
+    if (field_0x26c != 0) {
+        field_0x26c--;
+        if (field_0x26c == 0 && field_0x398 != NULL) {
+            field_0x398->becomeInvalidEmitter();
+            field_0x398 = NULL;
+        }
+    }
+    if (field_0x274 != 0) {
+        field_0x274--;
+    }
+    if (field_0x28c >= 0) {
+        field_0x28c++;
+        if (field_0x28c >= 0x96 && field_0x288 < 255.0f) {
+            field_0x288 += 1.0f;
+            if (field_0x288 >= 255.0f) {
+                field_0x288 = 255.0f;
+            }
+            for (s32 i = 0; i < 6; i++) {
+                if (field_0x39c[i] != NULL) {
+                    field_0x39c[i]->setGlobalAlpha(field_0x288);
+                }
+            }
+        }
+    }
+    cls_8049D140::update();
+    if (isStageFlagSet(lbl_80529DEC.field_0x118, lbl_80529DEC.field_0x11c) && field_0x270 == 0 &&
+        field_0x240 >= 0x18 && field_0x240 <= 0x23) {
+        gGameRoot_8053AAF8->field_0x85 = 2;
+        if (lbl_8053AD30->fn_80309C4C(0x1000, -1) != 0) {
+            field_0x270 = 1;
+            field_0x290 = 0.0f;
+            fn_80387494(0);
+            fn_80119DD0()->fn_80119958();
+            field_0x274 = 0x100;
+        }
+    }
+    if (field_0x240 <= 0x18 && fn_8016A3AC()->field_0x1ef == 0 && field_0x398 == NULL) {
+        field_0x398 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x54C, 0, 1, NULL, NULL, true, 1.0f);
+    }
+    JGeometry::TVec3f pos;
+    if (field_0x240 >= 0x15 && field_0x240 != 0x26) {
+        if ((field_0x240 >= 0x16 && field_0x240 < 0x1A) || (field_0x240 >= 0x1C && field_0x240 < 0x24)) {
+            if (field_0x270 == 0 || field_0x274 >= 0x80) {
+                cls_804A03A8* obj = gGameRoot2_8053AB10->field_0x30;
+                if (obj->field_0x284 == 0) {
+                    obj->field_0x284 = 1;
+                    obj->field_0x28c = 0.05f;
+                }
+            }
+        }
+        pos.set(mPos);
+        pos.y += 16.0f + ((mSpawnPos.y - mPos.y) - 32.0f);
+        if (field_0x240 >= 0x1C) {
+            if (field_0x240 <= 0x20) {
+                pos.y += 16.0f;
+            } else {
+                pos.y += 32.0f;
+            }
+        }
+        if (field_0x240 >= 0x16) {
+            setCameraBox(pos.x, pos.y - 105.0f, 105.0f + pos.y);
+        } else {
+            gGameRoot2_8053AB10->field_0x24->addFocusPoint_8030C210(&pos);
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            if (camera->field_0x7f5 == 0) {
+                camera->field_0x7f4 = 1;
+                camera->field_0x7f8 = 4;
+                camera->field_0x7fc.set(pos);
+                camera->field_0x7f6 = 0;
+            }
+        }
+    }
+    if (field_0x270 != 1) {
+        switch (field_0x240) {
+        case 0x13:
+            gAudioMgr_8053AF80->fn_80458FF0(0x100001B, false, 0);
+            vfunc_0x60(0x14);
+            break;
+        case 0x16:
+            for (s32 i = 0; i < 4; i++) {
+                JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
+                fn_80230498(i, &playerPos, fn_8023CBC0(i), 0, -128, -128, true);
+            }
+            if (fn_8011921C()->field_0x8 == 0x1B8) {
+                gAudioMgr_8053AF80->fn_80458F9C(60);
+            }
+            break;
+        case 0x17:
+            fn_801CD950(&field_0x284, 0.02f, 0.0004f);
+            fn_801CD950(&field_0x27c, 0.15f, 0.01f);
+            mPos.y -= field_0x27c;
+            if (mPos.y <= mSpawnPos.y - 48.0f) {
+                mPos.y = mSpawnPos.y - 48.0f;
+            }
+            field_0x24c += 2;
+            if (field_0x24c >= 0xE1) {
+                field_0x24c = 0xE1;
+            }
+            break;
+        case 0x18:
+            field_0x24c = 0xE1;
+            if (fn_8011921C()->field_0x1 == 0) {
+                fn_801CD950(&field_0x284, 0.0f, -0.0002f);
+            }
+            fn_8022FE80(0, field_0x4, mSerial, true, false);
+            if (fn_803865B8(0)) {
+                fn_80388EEC(0);
+                vfunc_0x60(0x19);
+                field_0x25c = 0;
+                field_0x260 = 0;
+                field_0x264 = 0;
+            }
+            break;
+        case 0x19:
+            for (s32 i = 0; i < 5; i++) {
+                if (field_0x294[i] != 0) {
+                    field_0x294[i]--;
+                    if (field_0x294[i] == 0) {
+                        const JGeometry::TVec3f& p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        field_0x3bc[i] = spawnEmitter_8013CC50(field_0x4, &p, 0x32C, 0, -1, NULL, NULL, true, 1.0f);
+                        const JGeometry::TVec3f& q = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                        field_0x3d4[i] = spawnEmitter_8013CC50(field_0x4, &q, 0x184, 0, -1, NULL, NULL, true, 1.0f);
+                        if (field_0x3bc[i] != NULL) {
+                            field_0x3bc[i]->setGlobalEnvColor(lbl_80474D84[i][0], lbl_80474D84[i][1],
+                                                              lbl_80474D84[i][2]);
+                        }
+                    }
+                }
+                if (field_0x294[i] == 0x28) {
+                    const JGeometry::TVec3f& p = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                    field_0x3ec[i] = spawnEmitter_8013CC50(field_0x4, &p, lbl_80474D6C[i], 1, 0, NULL, NULL, true, 1.0f);
+                    const JGeometry::TVec3f& q = field_0x2a8[i] + JGeometry::TVec3f(0.0f, 0.0f, 20.0f);
+                    field_0x400[i] = spawnEmitter_8013CC50(field_0x4, &q, lbl_80474D78[i], 1, 0, NULL, NULL, true, 1.0f);
+                    startSound_801F0E34(0x400D9, 0);
+                }
+            }
+            if ((field_0x294[0] | field_0x294[1] | field_0x294[2] | field_0x294[3] | field_0x294[4]) == 0) {
+                fn_8011921C()->fn_801183BC();
+            }
+            break;
+        case 0x1C:
+            if (field_0x258 == 1) {
+                fn_8011921C()->fn_80118454();
+            } else if (field_0x258 == 0) {
+                vfunc_0x60(0x1D);
+            }
+            break;
+        case 0x1D:
+            if (field_0x258 == 50) {
+                pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                        (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+                pos.y += -16.0f;
+                fn_8022FE80(0, field_0x4, mSerial, true, false);
+                fn_8038BD08(0, 0x848, field_0x4, pos, 0x62);
+            } else if (field_0x258 == 49) {
+                fn_8022FE80(0, field_0x4, mSerial, true, false);
+                if (!fn_803865B8(0)) {
+                    field_0x258++;
+                } else {
+                    fn_80388EEC(0);
+                }
+            } else if (field_0x258 == 15) {
+            } else if (field_0x258 == 0) {
+                vfunc_0x60(0x1E);
+            }
+            break;
+        case 0x1E:
+            if (field_0x250 < 315.0f) {
+                field_0x250 += 1.0f;
+            } else {
+                vfunc_0x60(0x1F);
+            }
+            field_0x24c = field_0x250;
+            if (field_0x24c >= 0x100) {
+                field_0x24c = 0xFF;
+            }
+            field_0x2f4->fn_802E2990(0xFF - field_0x24c);
+            break;
+        case 0x1F:
+            if (field_0x258 != 0) {
+                if (field_0x258 == 1) {
+                    pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                            (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+                    pos.y += -16.0f;
+                    fn_8022FE80(0, field_0x4, mSerial, true, false);
+                    fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+                    field_0x268++;
+                }
+            } else {
+                fn_8022FE80(0, field_0x4, mSerial, true, false);
+                if (fn_803865B8(0)) {
+                    fn_80388EEC(0);
+                    vfunc_0x60(0x20);
+                }
+            }
+            break;
+        case 0x20:
+            if (field_0x258 == 0) {
+                vfunc_0x60(0x21);
+            }
+            break;
+        case 0x21:
+            if (fn_80119DD0()->field_0x0 == 0) {
+                vfunc_0x60(0x22);
+            }
+            break;
+        case 0x22:
+            fn_8022FE80(0, field_0x4, mSerial, true, false);
+            if (fn_803865B8(0)) {
+                fn_80388EEC(0);
+                vfunc_0x60(0x23);
+            }
+            break;
+        case 0x23:
+            if (field_0x258 != 0) {
+                if (field_0x258 == 1) {
+                    pos.set((s32)JUTVideo::getManager()->getFbWidth() * 0.5f,
+                            (s32)JUTVideo::getManager()->getEfbHeight() * 0.5f, 0.0f);
+                    pos.y += -16.0f;
+                    fn_8022FE80(0, field_0x4, mSerial, true, false);
+                    fn_8038BD08(0, lbl_80474C68[field_0x268], field_0x4, pos, 0x62);
+                    field_0x268++;
+                }
+            } else {
+                fn_8022FE80(0, field_0x4, mSerial, true, false);
+                if (fn_803865B8(0)) {
+                    fn_80388EEC(0);
+                    vfunc_0x60(0x24);
+                }
+            }
+            break;
+        case 0x24:
+            for (s32 i = 0; i < 6; i++) {
+                if (field_0x258 == lbl_80474D94[i]) {
+                    field_0x2f8[i] = 1;
+                    JGeometry::TVec3f p = field_0x2a8[i];
+                    p.z += 6.0f;
+                    spawnEmitter_8013CC50(field_0x4, &p, lbl_80474E1C[i], 0, 0, NULL, NULL, true, 1.0f);
+                    p.z += 7.0f;
+                    spawnEmitter_8013CC50(field_0x4, &p, lbl_80474E28[i], 0, 0, NULL, NULL, true, 1.0f);
+                    startSound_801F0E34(0x400D9, 0);
+                    field_0x2a8[i].z = 16.0f;
+                } else if (field_0x258 == lbl_80474D94[i] - 0x28) {
+                    field_0x2f8[i] = 2;
+                    field_0x3bc[i] = spawnEmitter_8013CC50(field_0x4, &field_0x2a8[i], 0x32C, 0, -1, NULL, NULL, true, 1.0f);
+                    field_0x3d4[i] = spawnEmitter_8013CC50(field_0x4, &field_0x2a8[i], 0x184, 0, -1, NULL, NULL, true, 1.0f);
+                    if (field_0x3bc[i] != NULL) {
+                        field_0x3bc[i]->setGlobalEnvColor(lbl_80474E34[i][0], lbl_80474E34[i][1],
+                                                          lbl_80474E34[i][2]);
+                    }
+                }
+            }
+            if (field_0x258 == 0) {
+                vfunc_0x60(0x25);
+            }
+            break;
+        case 0x25: {
+            s32 count = 0;
+            for (s32 i = 0; i < 6; i++) {
+                if (field_0x258 == lbl_80474DAC[i]) {
+                    field_0x2f8[i] = 3;
+                }
+                if (field_0x2f8[i] == 3) {
+                    field_0x2a8[i].z += 1.5f;
+                }
+                if (field_0x3bc[i] != NULL) {
+                    setEmitterPos_8013CB44(field_0x3bc[i], &field_0x2a8[i], 0, -1, true);
+                }
+                if (field_0x3d4[i] != NULL) {
+                    setEmitterPos_8013CB44(field_0x3d4[i], &field_0x2a8[i], 0, -1, true);
+                }
+                if (field_0x2f8[i] != 4 && field_0x2a8[i].z >= 255.0f) {
+                    field_0x2f8[i] = 4;
+                    deleteEmitter(&field_0x3bc[i]);
+                }
+                if (field_0x2f8[i] == 4) {
+                    count++;
+                }
+            }
+            if (count >= 6) {
+                fn_8011921C()->fn_801183BC();
+            }
+            break;
+        }
+        case 0x26:
+            fn_80119DD0()->fn_80119998(0x78, 0, 0, 0, 1, 0, 0);
+            break;
+        }
+    }
+    if (field_0x270 == 1) {
+        fn_80368198();
     }
     if (field_0x237 != 0) {
         field_0x280 += field_0x284;
