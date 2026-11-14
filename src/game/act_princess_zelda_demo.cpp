@@ -780,6 +780,234 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
 }
 #pragma auto_inline reset
 
+static const s32 lbl_8053C548[] = { 0x232, 0x4B0 };
+
+// The centre of the camera's visible box, at z 0.
+static inline void setCenter(JGeometry::TVec3f& pos, JGeometry::TBox2f box) {
+    pos.x = box.f.x + 0.5f * (box.i.x - box.f.x);
+    pos.y = box.f.y + 0.5f * (box.i.y - box.f.y);
+    pos.z = 0.0f;
+}
+
+// Enters demo state `arg` (3-0x25) of the second scene set.
+void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
+    switch (arg) {
+    case 3:
+        fn_8011921C()->field_0x2 = 1;
+        lbl_8053AED0->fn_8043A450(0, 3);
+        break;
+    case 4:
+        mAnim0.startAnim_801D22DC(2, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 5:
+        mAnim0.startAnim_801D22DC(8, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, lbl_8053C548[field_0x234], field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 6:
+        field_0x278 = -40.0f;
+        break;
+    case 7:
+        mAnim0.startAnim_801D22DC(0xE, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x233, field_0x4, JGeometry::TVec3f(0.0f, -226.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 8:
+        mAnim0.startAnim_801D22DC(0xC, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        field_0x278 = -25.0f;
+        break;
+    case 9:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x234, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 10:
+        mAnim0.startAnim_801D22DC(0xD, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        break;
+    case 11:
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        field_0x2e8.set(0.0f, -0.7f, 0.0f);
+        field_0x2dc.set(*getPlayerPos_8023E724(0));
+        field_0x2dc.y -= 300.0f;
+        break;
+    case 12:
+        fn_80119DD0()->fn_80119998(0x5A, 0, 2, 0, 0, 0x3C, 0);
+        break;
+    case 13:
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x244, field_0x248);
+        getGameView_802D6A9C()->fn_802DA8DC();
+        break;
+    case 14: {
+        fn_8011921C()->field_0x2 = 1;
+        JGeometry::TVec3f start = mSpawnPos;
+        JGeometry::TVec3f target = *getPlayerPos_8023E724(0);
+        target.y += 32.0f;
+        start.y += 16.0f;
+        for (int i = 0; i < 4; i++) {
+            fn_80230498(i, &target, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
+        }
+        JGeometry::TVec3f pos = target;
+        pos.y -= 16.0f;
+        mPos.set(pos);
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - target;
+        field_0x2e8 = JGeometry::TVec3f(d.x / 240.0f, d.y / 240.0f, d.z / 240.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 16: {
+        JGeometry::TVec3f pos = *fn_8023E604(0);
+        pos.y -= 32.0f;
+        mPos.set(pos);
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        JGeometry::TVec3f start = mSpawnPos;
+        JGeometry::TVec3f target = *fn_8023E604(0);
+        start.y += 16.0f;
+        target.y -= 16.0f;
+        for (int i = 0; i < 4; i++) {
+            fn_80230498(i, &target, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
+        }
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - target;
+        field_0x2e8 = JGeometry::TVec3f(d.x / 110.0f, d.y / 110.0f, d.z / 110.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 17:
+        mAnim0.startAnim_801D22DC(8, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(1.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x4B0, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 18: {
+        JGeometry::TVec3f start = mPos;
+        start.y += 48.0f;
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - *getPlayerPos_8023E724(0);
+        field_0x2e8 = JGeometry::TVec3f(d.x / 60.0f, d.y / 60.0f, d.z / 60.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 19:
+        fn_8011921C()->fn_801183BC();
+        mAnim0.startAnim_801D22DC(0xF, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        fn_8011921C()->field_0x2 = 1;
+        gAudioMgr_8053AF80->fn_80458FF0(0x100001B, false, 0);
+        break;
+    case 21:
+        field_0x364 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x309, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x368 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x30A, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E1, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E2, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E3, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x36c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2EA, 0, 0, NULL, NULL, true, 1.0f);
+        mAnim0.startAnim_801D22DC(0x15, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 22:
+        mAnim0.startAnim_801D22DC(0x14, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 23:
+        if (field_0x364 != NULL) {
+            JPABaseEmitter* emitter = field_0x364;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x364 = NULL;
+        }
+        if (field_0x368 != NULL) {
+            JPABaseEmitter* emitter = field_0x368;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x368 = NULL;
+        }
+        if (field_0x36c != NULL) {
+            JPABaseEmitter* emitter = field_0x36c;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x36c = NULL;
+        }
+        mAnim0.startAnim_801D22DC(0x18, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 25:
+        mAnim0.startAnim_801D22DC(0x16, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 26:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x239, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 28: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
+        mAnim0.startAnim_801D22DC(0xD, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    }
+    case 30: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
+        break;
+    }
+    case 31:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x4B1, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 33: {
+        gAudioMgr_8053AF80->fn_80458FF0(0x100002B, true, 0);
+        startSound_801F0E34(0x40071, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC1, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC2, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC3, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC4, 0, 0, NULL, NULL, true, 1.0f);
+        JGeometry::TVec3f pos;
+        setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0xC5, 0, 0, NULL, NULL, true, 1.0f);
+        break;
+    }
+    case 34:
+        field_0x230 = 1;
+        break;
+    case 0x3E: // the first scene set's last state
+        break;
+    }
+}
+
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
 // FIXME(shotgun): 96.11 %, missing/extra + reloc-name; behaviour drift.

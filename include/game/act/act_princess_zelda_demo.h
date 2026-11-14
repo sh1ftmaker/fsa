@@ -61,7 +61,9 @@ public:
     /* 0x288 */ JGeometry::TVec3f field_0x288[6];
     // A copy of mPos, taken at the end of vfunc_0x10.
     /* 0x2D0 */ JGeometry::TVec3f field_0x2d0;
-    /* 0x2DC */ u8 field_0x2dc[0x18]; // not yet known
+    // A start position and the per-frame step towards it (fn_8010E7E8).
+    /* 0x2DC */ JGeometry::TVec3f field_0x2dc;
+    /* 0x2E8 */ JGeometry::TVec3f field_0x2e8;
     // Two sprite animations; the first one's mAnim (0x2FC) is the animation
     // index that draw() compares against.
     /* 0x2F4 */ SpriteAnim_801D267C mAnim0;
