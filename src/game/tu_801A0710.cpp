@@ -716,6 +716,14 @@ static inline s32 highestPlayer(s32 mask) {
     return p;
 }
 
+static inline s32 playerIdInRange(s32 player) {
+    if (player < 0) {
+        return -1;
+    }
+    u16 id = fn_8023CBC0(player);
+    return id >= 0x43 && id < 0x6F;
+}
+
 static inline void bumpCount(s32* count) {
     (*count)++;
     if (*count > 999) {
@@ -779,8 +787,7 @@ void TennisShop_804A2BF4::fn_801A0F90() {
             break;
         }
         if (field_0x264 == field_0x278 || field_0x264 == fn_8022F3DC(field_0x278)) {
-            u16 id = fn_8023CBC0(field_0x278);
-            if (id >= 0x43 && id < 0x6F) {
+            if (playerIdInRange(field_0x278)) {
                 break;
             }
             f32 speed = lbl_8053A0F8[0];
