@@ -698,8 +698,25 @@ void cls_804B146C::fn_80424148(s32 player, bool force) {
         lbl_8053AED0->field_0xdc &= ~(u8)(1 << player);
     }
     u8 bit = (u8)(1 << player);
-    if ((field_0x25d & bit) && !(lbl_8053AED0->field_0xdc & bit) &&
-        gGameRoot2_8053AB10->field_0x30->field_0x284 == 0 && gGameRoot_8053AAF8->field_0x85 == 0) {
+    if (!(field_0x25d & bit) || (lbl_8053AED0->field_0xdc & bit) ||
+        gGameRoot2_8053AB10->field_0x30->field_0x284 != 0 || gGameRoot_8053AAF8->field_0x85 != 0) {
+        if (field_0x108[player] > 0.1f) {
+            field_0x108[player] -= 0.1f;
+        } else {
+            field_0x108[player] = 0.0f;
+        }
+        if (field_0x128[player] > 0.1f) {
+            field_0x128[player] -= 0.1f;
+        } else {
+            field_0x128[player] = 0.0f;
+        }
+        if (field_0x138[player] > 0.1f) {
+            field_0x138[player] -= 0.1f;
+        } else {
+            field_0x138[player] = 0.0f;
+        }
+        gGameRoot2_8053AB10->field_0x20->field_0x217[player] = 1;
+    } else {
         if (lbl_80529DEC.field_0xd8[player] == 0) {
             if (field_0x108[player] > 0.6f) {
                 field_0x108[player] -= 0.1f;
@@ -758,23 +775,6 @@ void cls_804B146C::fn_80424148(s32 player, bool force) {
                 field_0x138[player] = 1.0f;
             }
         }
-    } else {
-        if (field_0x108[player] > 0.1f) {
-            field_0x108[player] -= 0.1f;
-        } else {
-            field_0x108[player] = 0.0f;
-        }
-        if (field_0x128[player] > 0.1f) {
-            field_0x128[player] -= 0.1f;
-        } else {
-            field_0x128[player] = 0.0f;
-        }
-        if (field_0x138[player] > 0.1f) {
-            field_0x138[player] -= 0.1f;
-        } else {
-            field_0x138[player] = 0.0f;
-        }
-        gGameRoot2_8053AB10->field_0x20->field_0x217[player] = 1;
     }
     if (prevA == field_0x108[player] && prevB == field_0x128[player] && prevC == field_0x138[player] && !force) {
         return;
