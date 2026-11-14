@@ -90,6 +90,23 @@ TIERS = {"haiku": ("claude-haiku-5-5", "Claude Haiku 5.5"),
          "sonnet": ("claude-sonnet-5-5", "Claude Sonnet 5.5"),
          "opus": ("claude-opus-5-5", "Claude Opus 5.5")}
 ORDER = ["haiku", "sonnet", "opus"]
+# Gemini through Antigravity's `agy` CLI (free quota): the same three rungs, owner's equivalences
+# (2026-11-14): Hydrogen ~ Sonnet, Carbon ~ Opus; Hydrogen at low effort takes the bottom rung.
+GEMINI = {"hydrogen-low": ("gemini-4-hydrogen-low", "Gemini 4 Hydrogen (via Antigravity)", "haiku"),
+          "hydrogen": ("gemini-4-hydrogen-medium", "Gemini 4 Hydrogen (via Antigravity)", "sonnet"),
+          "carbon": ("gemini-4-carbon-medium", "Gemini 4 Carbon (via Antigravity)", "opus")}
+TIER_NAMES = ORDER + list(GEMINI)
+
+
+def canon(tier):
+    """The Claude rung a tier stands on (tier logic, escalation and review run on these)."""
+    return GEMINI[tier][2] if tier in GEMINI else tier
+
+
+def trailer(tier):
+    if tier in GEMINI:
+        return f"Co-Authored-By: {GEMINI[tier][1]} <noreply@google.com>"
+    return f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"
 LANES = ["write", "structure", "match"]
 MISSING = 10 ** 6
 FLOOR = 40.0  # a newly written function below this is guesswork
@@ -242,10 +259,10 @@ def tier_index(size, hist, lane="write"):
     after max_kept() kept sessions that still left it open."""
     t = start_tier(size, lane)
     for tier, verdict in hist:
-        i = ORDER.index(tier)
+        i = ORDER.index(canon(tier))
         if i >= t and verdict != "ACCEPT":
             t = i + 1
-    while t < len(ORDER) and sum(1 for tier, v in hist if tier == ORDER[t] and v == "ACCEPT") >= max_kept(size):
+    while t < len(ORDER) and sum(1 for tier, v in hist if canon(tier) == ORDER[t] and v == "ACCEPT") >= max_kept(size):
         t += 1
     return t
 
@@ -319,7 +336,7 @@ def eligible(fns, unit, tier, lanes, lo, hi, hist):
         lane = lane_of(e)
         if lane == "write" and LIBRARY.match(e.get("demangled", "")):
             continue
-        if lane in lanes and lo <= e["size"] <= hi and (ANY_TIER or tier_index(e["size"], hist.get((unit, n), []), lane) == ORDER.index(tier)):
+        if lane in lanes and lo <= e["size"] <= hi and (ANY_TIER or tier_index(e["size"], hist.get((unit, n), []), lane) == ORDER.index(canon(tier))):
             out.append((LANES.index(lane), e["size"], n))
     return [n for _, _, n in sorted(out)]
 
@@ -841,6 +858,8 @@ def limits(size):
 
 
 def run_session(wt, tier, system, packet, turns, timeout, tag, tools="Bash,Read,Edit,Write", effort=None):
+    if tier in GEMINI:
+        return run_gemini(wt, tier, system, packet, timeout, tag)
     settings = LOGS / "sandbox.json"
     settings.write_text(json.dumps(SANDBOX))
     cmd = ["claude", "-p", "--model", TIERS[tier][0], "--output-format", "stream-json", "--verbose",
@@ -891,6 +910,56 @@ def run_session(wt, tier, system, packet, turns, timeout, tag, tools="Bash,Read,
             "out": u.get("output_tokens", 0), "cost": result.get("total_cost_usd") or 0.0,
             "secs": int(time.time() - t0), "timed_out": timed_out,
             "denials": len(result.get("permission_denials") or []), "text": result.get("result") or ""}
+
+
+def run_gemini(wt, tier, system, packet, timeout, tag):
+    """A Gemini session through `agy`, inside bubblewrap: the whole filesystem read-only except the
+    worker's worktree, /tmp and agy's own state; credentials hidden. agy has no sandbox of its own
+    (tested: its --sandbox let a session write outside its folder) and no turn limit, so the clock
+    is the limit. Compiles go through the broker as for Claude sessions."""
+    wt = Path(wt)
+    home = Path.home()
+    masks = [a for d in (".ssh", ".aws", ".gnupg", ".claude", ".config") if (home / d).is_dir()
+             for a in ("--tmpfs", str(home / d))]
+    cmd = (["bwrap", "--ro-bind", "/", "/", "--dev", "/dev", "--proc", "/proc", "--bind", "/tmp", "/tmp",
+            "--bind", str(wt), str(wt), "--bind", str(home / ".gemini"), str(home / ".gemini")] + masks
+           + ["--chdir", str(wt), "agy", "-p", f"{system}\n\n# Your task\n\n{packet}", "--model", GEMINI[tier][0],
+              "--dangerously-skip-permissions", "--print-timeout", f"{max(60, timeout - 30)}s", "--output-format", "json"])
+    head0 = head(wt)
+    t0 = time.time()
+    stop = threading.Event()
+    broker = threading.Thread(target=BR.serve, args=(wt, stop), daemon=True)
+    broker.start()
+    try:
+        r = subprocess.run(cmd, cwd=wt, capture_output=True, text=True, timeout=timeout, stdin=subprocess.DEVNULL)
+        out, err, timed_out = r.stdout, r.stderr, False
+    except subprocess.TimeoutExpired as e:
+        out = e.stdout.decode(errors="replace") if isinstance(e.stdout, bytes) else (e.stdout or "")
+        err, timed_out = "timeout", True
+    finally:
+        stop.set()
+        broker.join(timeout=1600)
+    if head(wt) != head0:  # cannot happen inside bwrap (.git is read-only); never let a commit hide a change
+        sh(["git", "reset", "-q", "--soft", head0], wt)
+        sh(["git", "reset", "-q"], wt)
+    try:
+        res = json.loads(out.strip().splitlines()[-1]) if out.strip() else {}
+    except ValueError:
+        res = {}
+    text = res.get("response") or ""
+    if res.get("status") not in (None, "SUCCESS") or not res:
+        blob = (out + err).lower()
+        if any(k in blob for k in ("quota", "resource_exhausted", "rate limit", "resets in", "exhausted")):
+            HALT.touch()
+            notify("FSA grind: Gemini quota", f"{tier}: quota reached, workers stopping")
+    u = res.get("usage") or {}
+    d = LOGS / "sessions"
+    d.mkdir(parents=True, exist_ok=True)
+    (d / f"{tag}.packet.txt").write_text(packet)
+    (d / f"{tag}.stream.jsonl").write_text(out + ("\n# stderr\n" + err[-4000:] if err.strip() else ""))
+    return {"turns": res.get("num_turns", 0), "in": u.get("input_tokens", 0), "cache_write": 0,
+            "cache_read": u.get("cache_read_tokens", 0), "out": u.get("output_tokens", 0) + u.get("thinking_tokens", 0),
+            "cost": 0.0, "secs": int(time.time() - t0), "timed_out": timed_out, "denials": 0, "text": text}
 
 
 def stats_of(s):
@@ -1006,7 +1075,8 @@ def integrate(wt, branch, unit):
 
 # The reviewer is never weaker than the author and never below sonnet. (Pilot: an opus review of two sonnet
 # changes cost more than writing them; sonnet and haiku reviewers both caught a planted trick.)
-REVIEW_TIER = {"haiku": "sonnet", "sonnet": "sonnet", "opus": "opus"}
+REVIEW_TIER = {"haiku": "sonnet", "sonnet": "sonnet", "opus": "opus",
+               "hydrogen-low": "carbon", "hydrogen": "carbon", "carbon": "carbon"}  # Gemini work: a Carbon reviewer
 REVIEW_SYSTEM = """You are the adversarial reviewer of a decompilation project: The Legend of Zelda: Four Swords Adventures (GameCube), C++ that Metrowerks GC/2.6 must compile back to the original code. The repository in your working directory is a private copy with the changes applied.
 
 The authors are other models. Scripts reward them for two numbers: objdiff's match % and a behaviour fingerprint that counts a function's calls, constants, compares, field accesses, immediates and operations against the original. The scripts already proved that every change builds, that no function got worse and that some regex style rules hold. They cannot see intent. Assume each author may have gamed the numbers. You never saw the author's reasoning: judge only the diff against the original assembly.
@@ -1080,7 +1150,7 @@ def run_review(wt, owner, unit, base_head, first, changes, args):
     ACCEPT, FIXED (it repaired the change in the source itself) or REJECT (nothing honest to save).
     The script removes rejected changes, applies the reviewer's repairs if the unit still stands
     better than at its start, and returns the changes that survive."""
-    tier = args.review_tier or REVIEW_TIER[max((c["tier"] for c in changes), key=ORDER.index)]
+    tier = args.review_tier or REVIEW_TIER[max((c["tier"] for c in changes), key=lambda t: ORDER.index(canon(t)))]
     tag = f"{datetime.datetime.now():%m%d-%H%M%S}_review-{tier}_{Path(unit).stem}"
     (wt / "build/grind/task.json").write_text(json.dumps({"unit": unit, "fn": None, "addr": None, "base": first}))
     s = run_session(wt, tier, REVIEW_SYSTEM, review_packet(wt, unit, changes), 10 + 6 * len(changes), 2700, tag,
@@ -1125,7 +1195,7 @@ def run_review(wt, owner, unit, base_head, first, changes, args):
                 "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
             what = "; ".join(f"{c['fn'].split('__')[0] or c['fn']}: {verdict(c)[1]}" for c in fixed)[:600]
             sh(["git", "commit", "-qm", f"{unit[:-4]}: repaired in review\n\n{what}\n\n"
-                f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+                + trailer(tier)], wt, check=True)
             nfixed = len(fixed)
             for c in fixed:  # what the function measures after the repair (a repair may give back the author's gain)
                 f0, f1 = first["functions"].get(c["fn"]), (rev or {}).get("functions", {}).get(c["fn"])
@@ -1192,7 +1262,7 @@ def attempt(wt, owner, tier, unit, base, fn, names, args, notes, seq):
     sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
         "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
     sh(["git", "commit", "-qm", f"{unit[:-4]}: {desc} ({lane} lane, grind)\n\n"
-        f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+        + trailer(tier)], wt, check=True)
     log(row + ["ACCEPT", desc] + stats_of(s))
     old, new = by_addr(base), by_addr(ev)
     fns = [x["name"] for a, x in new.items()
@@ -1345,7 +1415,7 @@ def cmd_rejudge(args):
         sh(["git", "add", "-A", "--", "src", "include", "libs", "config/G4SE01/symbols.txt",
             "config/G4SE01/splits.txt", "config/G4SE01/gen_game.tsv"], wt)
         sh(["git", "commit", "-qm", f"{unit[:-4]}: {desc} ({lane_of(e)} lane, grind)\n\n"
-            f"Co-Authored-By: {TIERS[tier][1]} <noreply@anthropic.com>"], wt, check=True)
+            + trailer(tier)], wt, check=True)
         old, new = by_addr(base), by_addr(ev)
         fns = [x["name"] for a, x in new.items() if a not in old or abs(x["pct"] - old[a]["pct"]) > EPS or x["score"] != old[a]["score"]]
         changes = [{"id": "c1", "sha": head(wt), "tier": tier, "lane": lane_of(e), "fn": fn, "fns": fns, "size": e["size"], "desc": desc}]
@@ -1521,7 +1591,7 @@ def cmd_status(_):
     tricked = {(r["unit"], r["fn"], r["tier"]) for r in rows if r["verdict"] == "TRICK"}
     print(f"{'tier':7} {'lane':10} {'sessions':>8} {'kept':>5} {'to 100%':>7} {'turns':>6} {'ctx/turn':>8} {'out':>7} {'cost':>8} {'$/kept':>7}")
     order = LANES + ["file"]
-    keys = sorted({(r["tier"], r["lane"]) for r in sess}, key=lambda k: (ORDER.index(k[0]), order.index(k[1])))
+    keys = sorted({(r["tier"], r["lane"]) for r in sess}, key=lambda k: (ORDER.index(canon(k[0])), k[0], order.index(k[1])))
     for k in keys + [None]:
         rs = [r for r in sess if k is None or (r["tier"], r["lane"]) == k]
         if not rs:
@@ -1570,8 +1640,8 @@ def main():
     p = sub.add_parser("status"); p.set_defaults(fn=cmd_status)
     p = sub.add_parser("rejudge")
     p.add_argument("n", type=int); p.add_argument("unit"); p.add_argument("function"); p.add_argument("patch")
-    p.add_argument("--tier", choices=ORDER, required=True, help="the tier that wrote the patch")
-    p.add_argument("--review-tier", choices=ORDER)
+    p.add_argument("--tier", choices=TIER_NAMES, required=True, help="the tier that wrote the patch")
+    p.add_argument("--review-tier", choices=TIER_NAMES)
     p.set_defaults(fn=cmd_rejudge)
     p = sub.add_parser("publish")
     p.add_argument("--every", type=int, default=0, help="repeat every N seconds until the workers are gone and nothing is new")
@@ -1582,7 +1652,7 @@ def main():
     p.set_defaults(fn=cmd_watch)
     p = sub.add_parser("worker")
     p.add_argument("n", type=int)
-    p.add_argument("--tier", choices=ORDER, required=True)
+    p.add_argument("--tier", choices=TIER_NAMES, required=True)
     p.add_argument("--mode", choices=["function", "file"], default="function")
     p.add_argument("--lanes", default="write,structure", help="write,structure (default: structure first) and/or match")
     p.add_argument("--min-size", type=int, default=0)
@@ -1600,7 +1670,7 @@ def main():
     p.add_argument("--ignore-stop", action="store_true", help="run to the end whatever the usage watchdog says (owner-approved runs only)")
     p.add_argument("--any-tier", action="store_true", help="experiment: take functions whatever tier they are at")
     p.add_argument("--ledger", default="ledger.tsv", help="experiment: log to this file in g2-logs instead")
-    p.add_argument("--review-tier", choices=ORDER, help="reviewer model (default: one tier above the author)")
+    p.add_argument("--review-tier", choices=TIER_NAMES, help="reviewer model (default: one tier above the author)")
     p.add_argument("--usage-stop", type=float, default=0.85, help="stop all workers at this weekly utilization (0 = off)")
     p.set_defaults(fn=cmd_worker)
     args = ap.parse_args()
