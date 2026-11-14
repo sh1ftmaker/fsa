@@ -219,10 +219,8 @@ ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
 void ArrowPlayer_804A05E0::update() {
     if (field_0x94 == 3) {
         JGeometry::TBox2f box;
-        box.i.x = mBox.i.x + mPos.x;
-        box.i.y = mBox.i.y + mPos.y;
-        box.f.x = mBox.f.x + mPos.x;
-        box.f.y = mBox.f.y + mPos.y;
+        box.set(mBox);
+        box.addPos(mPos.x, mPos.y);
         for (s32 i = 0; i < 4; i++) {
             if (fn_8023F264(i) && !fn_8022E438(i, field_0x90) && fn_8023B190(i, &box, field_0x4)) {
                 fn_8022E1A0(i, mSerial);
