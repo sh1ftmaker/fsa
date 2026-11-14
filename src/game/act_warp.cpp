@@ -281,7 +281,8 @@ void Warp_804A6DC8::update() {
     box.addPos(at);
     kind = field_0x90 & 0x7F;
     if (kind == 0x20) {
-        fn_80227530(&box);
+        JGeometry::TBox2f arg = box;
+        fn_80227530(&arg);
     } else if (kind == 0x24) {
         for (s32 i = 0; i < 4; i++) {
             if (gGameRoot_8053AAF8->field_0x7e && !fn_8022C8EC(i)) {
@@ -299,9 +300,10 @@ void Warp_804A6DC8::update() {
             }
         }
     } else {
-        fn_802278A8(&box);
+        JGeometry::TBox2f arg = box;
+        fn_802278A8(&arg);
     }
-    u16 destTile = fn_80226850(&field_0x238, warpLayer(field_0x90));
+    s32 destTile = fn_80226850(&field_0x238, warpLayer(field_0x90));
     if (destTile == 0x19C || destTile == 0x19D) {
         return;
     }
