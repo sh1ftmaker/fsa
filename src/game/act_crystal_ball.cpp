@@ -902,7 +902,7 @@ void CrystalBall_804AB308::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, frame + 0x90, 0, 2, -1, held, 0, 0);
 }
 
-// FIXME(shotgun): 84.19 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.68 %, missing/extra + reloc-name; behaviour drift.
 // item switch / spawn sequences are laid out differently
 void CrystalBall_804AB308::vfunc_0x24() {
     s32 code = fn_8022461C(&mPos, field_0x4);
