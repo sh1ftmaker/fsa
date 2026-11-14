@@ -53,6 +53,23 @@ static inline void swing(Cannon_8049CCF0* c) {
     }
 }
 
+// Returns the first player that can take the cannon, or -1.
+static inline s32 findOwner(Cannon_8049CCF0* c, const JGeometry::TBox2f* box) {
+    for (s32 i = 0; i < 4; i++) {
+        u8 bit = 1 << i;
+        if ((gGameRoot_8053AAF8->mPlayerMask & bit) != 0 || fn_8022CAF8(i) == 4) {
+            if (fn_8023B0F4(i, box, c->field_0x4, false, 1000.0f)) {
+                if (c->field_0x26c < 0) {
+                    if (fn_8023162C(i, c->mSerial)) {
+                        return i;
+                    }
+                }
+            }
+        }
+    }
+    return -1;
+}
+
 // FIXME: 94.98 %, missing/extra + reloc-name; behaviour drift.
 void Cannon_8049CCF0::update() {
     if (vfunc_0x3C()) {
@@ -73,19 +90,7 @@ void Cannon_8049CCF0::update() {
         JGeometry::TBox2f box(mBox);
         JGeometry::TVec2f p(mPos.x, mPos.y - mPos.z);
         box.addPos(p);
-        s32 owner;
-        for (owner = 0; owner < 4; owner++) {
-            u8 bit = 1 << owner;
-            if ((gGameRoot_8053AAF8->mPlayerMask & bit) != 0 || fn_8022CAF8(owner) == 4) {
-                if (fn_8023B0F4(owner, &box, field_0x4, false, 1000.0f) && field_0x26c < 0 &&
-                    fn_8023162C(owner, mSerial)) {
-                    break;
-                }
-            }
-        }
-        if (owner >= 4) {
-            owner = -1;
-        }
+        s32 owner = findOwner(this, &box);
         if (owner >= 0) {
             field_0x26c = owner;
             field_0x278 = field_0x274;
@@ -125,7 +130,7 @@ void Cannon_8049CCF0::update() {
         if (field_0x270 >= 180 && field_0x270 < 300) {
             s16 a = (field_0x270 - 180) * (field_0x270 - 180) / 6;
             f32 sinv = JMath::sincosTable_.sinDegree(a);
-            mPos.y = mHomePos.y + (f32)(12 * ((200 - (field_0x270 - 180)) / 100) + 2) * sinv;
+            mPos.y = mHomePos.y + (f32)(12 * ((200 - (field_0x270 - 180)) / 200) + 2) * sinv;
         } else if (field_0x270 >= 300) {
             fn_80231590(field_0x26c, mSerial);
         }
