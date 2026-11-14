@@ -201,16 +201,16 @@ void Boulder_8049C4C0::fn_800F5E08() {
 // FIXME(shotgun): 94.65 %, missing/extra + reloc-name; behaviour drift.
 void Boulder_8049C4C0::fn_800F555C() {
     JGeometry::TBox2f box(mPos.x - 16.0f, mPos.y - 16.0f, mPos.x + 16.0f, mPos.y + 16.0f);
-    bool anyPlayer = false;
+    s32 anyPlayer = 0;
     for (s32 i = 0; i < 4; i++) {
         if (field_0x4 == getPlayerLayer_8023DE58(i)) {
-            anyPlayer = true;
+            anyPlayer = 1;
         }
     }
     if (field_0x240 == 0) {
         fn_80239914(&box, field_0x4, mSerial);
         s32 pushers = fn_80239108(mSerial);
-        s32 dir = 0;
+        s32 dir;
         if (pushers >= 2) {
             dir = fn_80238BC4(mSerial);
             if (dir >= 0 && dir < 4) {
@@ -280,7 +280,7 @@ void Boulder_8049C4C0::fn_800F555C() {
             }
             fn_801F2B7C(2, -1, 6);
         }
-        u16 code = fn_8022461C(&mPos, field_0x4);
+        s32 code = fn_8022461C(&mPos, field_0x4);
         if (code == 3 || code == 0xE || code == 2) {
             JGeometry::TVec3f zero(0.0f, 0.0f, 0.0f);
             fn_800F82CC(&field_0x3c, &zero, 0.22f);
