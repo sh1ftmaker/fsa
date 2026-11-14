@@ -688,7 +688,7 @@ s32 fn_803074A4(s32 kind, s32 id) {
 // words sorted by kind, the layer's mask word and the checksum.
 // Still differs: the original has the checksum loop twice (branch on the queue head entry's mUsed).
 // 0x80306A94
-// FIXME: 85.19 %, missing/extra; behaviour drift.
+// FIXME: 93.93 %, missing/extra; behaviour drift.
 void cls_804AA8B8::fn_80306A94(s32 player) {
     if (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << player)) {
         lbl_80506DE8[player].mKind = 5;
