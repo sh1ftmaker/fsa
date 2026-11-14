@@ -356,7 +356,7 @@ void TrickFloor2_804AA628::update() {
     }
 }
 
-// FIXME(shotgun): 90.59 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.61 %, missing/extra + reloc-name; behaviour drift.
 // The hole picture "otosiana_bg_s.bti" under the floor (scaled per type), then the floor's two
 // halves tilted by field_0x248 (the left one about its edge, the right one mirrored); types 4 / 5
 // draw the ground or the house instead while falling.
@@ -387,8 +387,7 @@ void TrickFloor2_804AA628::draw() {
     m[0][3] = 0.0f;
     m[1][3] = 0.0f;
     m[2][3] = 0.0f;
-    f32 angle = field_0x248;
-    setRotMtx(m, JGeometry::TVec3f(0.0f, angle, 0.0f));
+    setRotMtx(m, JGeometry::TVec3f(0.0f, field_0x248, 0.0f));
     sp.field_0x1c = -1;
     sp.field_0x1d = -1;
     sp.field_0x21 = 1;
@@ -419,11 +418,10 @@ void TrickFloor2_804AA628::draw() {
     m[1][3] = 0.0f;
     m[2][3] = 0.0f;
     if (mType == 3 || mType == 4 || mType == 5) {
-        angle = 3.1415927f - field_0x248;
+        setRotMtx(m, JGeometry::TVec3f(0.0f, 3.1415927f - field_0x248, 0.0f));
     } else {
-        angle = -field_0x248;
+        setRotMtx(m, JGeometry::TVec3f(0.0f, -field_0x248, 0.0f));
     }
-    setRotMtx(m, JGeometry::TVec3f(0.0f, angle, 0.0f));
     sp.mMtx = m;
     switch (mType) {
     case 0: {
