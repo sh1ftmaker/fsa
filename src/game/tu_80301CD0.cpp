@@ -821,10 +821,18 @@ void cls_804AA8B8::fn_80306A94(s32 player) {
         }
     }
     u8 sum = 0;
-    u8* bytes = (u8*)&record->mSprites[0];
-    s32 size = lbl_80541618[lbl_8053AD08] * 4;
-    for (s32 k = 8; k < size; k++) {
-        sum += *bytes++;
+    if (lbl_804FBC18[player][lbl_80504A18[player]].mUsed == 0) {
+        u8* bytes = (u8*)&record->mSprites[0];
+        s32 size = lbl_80541618[lbl_8053AD08] * 4;
+        for (s32 k = 8; k < size; k++) {
+            sum += *bytes++;
+        }
+    } else {
+        u8* bytes = (u8*)&record->mSprites[0];
+        s32 size = lbl_80541618[lbl_8053AD08] * 4;
+        for (s32 k = 8; k < size; k++) {
+            sum += *bytes++;
+        }
     }
     record->field_0x0 = sum;
 }
