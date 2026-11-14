@@ -70,7 +70,7 @@ void CaneOfSomariaBlock_804AA9F0::init() {
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
 }
 
-// FIXME(shotgun): 93.39 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.75 %, missing/extra + reloc-name; behaviour drift.
 // Lands on an OBJLift in state 0xB (taking over its 'SMRI' passenger), then: 0 spawns (two
 // emitters), 1 waits 20 frames, 2 idles (tracks which players are clear of it, gets pushed by
 // fn_80238BC4's direction or picked up through fn_8022F9E4), 3 slides one push, 4 is carried,
