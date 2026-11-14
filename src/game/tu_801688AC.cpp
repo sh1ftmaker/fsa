@@ -96,7 +96,7 @@ static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f& d, bool fa
 // The |dx|, |dy| <= 16 tests and the other fabs conditions were re-checked against the full asm.
 // 0x80169030. A chaser: it follows the trail of positions the player recorded, then the
 // player, and is caught by the player (state 1) or lost when it leaves the room.
-// FIXME(shotgun): 79.73 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.63 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0738::update() {
     s32 target = field_0x90;
     if (fn_8022F478(field_0x90) == 1 && fn_8022F514(field_0x90) == 1) {
