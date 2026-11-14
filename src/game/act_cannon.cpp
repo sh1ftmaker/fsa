@@ -82,7 +82,7 @@ void Cannon_8049CCF0::update() {
                 }
             }
         }
-        if (owner == 4) {
+        if (owner >= 4) {
             owner = -1;
         }
         if (owner >= 0) {
