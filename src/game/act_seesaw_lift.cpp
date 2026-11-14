@@ -692,27 +692,29 @@ void SeesawLift_804AD348::fn_803584C0() {
             JGeometry::TBox2f box;
             fn_801F317C(&box);
             f32 centerY = mPos.y;
-            f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+            f32 c = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
             box.i.y = (box.i.y - centerY) * c + centerY;
             box.f.y = (box.f.y - centerY) * c + centerY;
             JGeometry::TVec2f out;
+            s8 side;
             if (fn_8023AAF8(p, &box, field_0x4, &out)) {
                 f32 d = centerY - out.y;
                 if (field_0x24e && d == 0.0f) {
                     d = 0.1f;
                 }
-                if (!field_0x24e && __fabs(d) <= 8.0f) {
+                if (!field_0x24e && __fabsf(d) <= 8.0f) {
                     d = 0.0f;
                 }
                 field_0x240 += 20.0f * d;
                 if (d >= 0.0f) {
-                    field_0x24a[p] = 1;
+                    side = 1;
                 } else {
-                    field_0x24a[p] = -1;
+                    side = -1;
                 }
             } else {
-                field_0x24a[p] = 0;
+                side = 0;
             }
+            field_0x24a[p] = side;
             ActorBase_804A5770* carried = field_0x25c[p];
             if (carried == NULL) {
                 if (fn_8023EFEC(p) && fn_8023EEB4(p) == 'YASI') {
@@ -722,8 +724,9 @@ void SeesawLift_804AD348::fn_803584C0() {
                 field_0x25c[p] = NULL;
             } else if (field_0x230 == 0) {
                 JGeometry::TVec3f& vel = carried->field_0x3c;
-                if (vel.x * vel.x + vel.y * vel.y + vel.z * vel.z > 32.0f * FLT_EPSILON && carried->mPos.z + vel.z < 1.0f) {
-                    JGeometry::TVec3f diff(carried->mPos.x - mPos.x, carried->mPos.y - mPos.y, carried->mPos.z - mPos.z);
+                if (!(vel.squared() <= 32.0f * FLT_EPSILON) && carried->mPos.z + vel.z < 1.0f) {
+                    JGeometry::TVec3f diff;
+                    diff.sub(carried->mPos, mPos);
                     if (diff.x >= mBox.i.x && diff.y >= mBox.i.y && diff.x < mBox.f.x && diff.y < mBox.f.y) {
                         carried->vfunc_0x48();
                         field_0x25c[p] = NULL;
@@ -741,7 +744,13 @@ void SeesawLift_804AD348::fn_803584C0() {
     if (field_0x250 == -1) {
         for (s32 i = 0; i < 4; i++) {
             if (field_0x246[i] != 0) {
-                if (field_0x246[0] == 0 || field_0x246[1] == 0 || field_0x246[2] == 0 || field_0x246[3] == 0) {
+                if (field_0x246[0] == 0) {
+                    field_0x250 = 6;
+                } else if (field_0x246[1] == 0) {
+                    field_0x250 = 6;
+                } else if (field_0x246[2] == 0) {
+                    field_0x250 = 6;
+                } else if (field_0x246[3] == 0) {
                     field_0x250 = 6;
                 }
             }
