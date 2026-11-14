@@ -27,8 +27,20 @@ extern const s32 lbl_804A0AF8[];
 extern const f32 lbl_804A0B10[][4];
 extern const u8 lbl_80539F78[];
 
-// Per heading (field_0x98): the frame update() shows when the chief bumps into a wall.
-s32 lbl_804A0920[4] = {6, 9, 3, 0};
+// Starts with the per-heading (field_0x98) frame shown when the chief bumps into a wall.
+s32 lbl_804A0920[78] = {
+    6, 9, 3, 0, 8, 12, 8, 12,
+    12, 13, 14, 13, 12, 15, 16, 15,
+    17, 18, 19, 18, 17, 20, 21, 20,
+    22, 23, 24, 23, 22, 25, 26, 25,
+    27, 28, 29, 28, 27, 30, 31, 30,
+    15, 5, 5, 3, 15, 5, 5, 3,
+    33, 32, 33, 34, 35, 36, 38, 37,
+    38, 39, 40, 41, 43, 42, 43, 44,
+    45, 46, 49, 47, 48, 49, 50, 51,
+    3, 30, 2, 2, 2, 5,
+};
+
 
 
 // Sets the 3x3 part of m to a uniform scale; the translation column is the caller's.
@@ -484,9 +496,8 @@ void ChiefSoldier_804A0B90::fn_80174220() {
         }
         mLife = 10000;
         fn_801EF510();
-        s32 player;
         for (s32 i = 0; i < 4; i++) {
-            player = fn_801F285C(NULL, NULL, true, i);
+            s32 player = fn_801F285C(NULL, NULL, true, i);
             if (player < 0) {
                 continue;
             }
@@ -547,9 +558,8 @@ void ChiefSoldier_804A0B90::update() {
         field_0x250 = 60;
     }
     if (field_0x230 != 8 && field_0x230 != 9 && field_0xd8 == 0) {
-        s32 player;
         for (s32 i = 0; i < 4; i++) {
-            player = fn_801F285C(NULL, NULL, true, i);
+            s32 player = fn_801F285C(NULL, NULL, true, i);
             if (field_0x94 != 0) {
                 player = field_0x94 - 1;
             }
@@ -657,9 +667,8 @@ void ChiefSoldier_804A0B90::update() {
                         }
                         field_0x238 = -1;
                         if (field_0x4 >= 8 && field_0x23c == 1) {
-                            s32 keese;
                             for (s32 i = 0; i < 4; i++) {
-                                keese = field_0x2c0[i];
+                                s32 keese = field_0x2c0[i];
                                 if (keese >= 0) {
                                     ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(keese);
                                     startSound_801F0E34(0x4008D, 0);
