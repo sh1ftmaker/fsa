@@ -902,7 +902,7 @@ void CrystalBall_804AB308::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, frame + 0x90, 0, 2, -1, held, 0, 0);
 }
 
-// FIXME(shotgun): 84.19 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 94.68 %, missing/extra + reloc-name; behaviour drift.
 // item switch / spawn sequences are laid out differently
 void CrystalBall_804AB308::vfunc_0x24() {
     s32 code = fn_8022461C(&mPos, field_0x4);
@@ -911,24 +911,25 @@ void CrystalBall_804AB308::vfunc_0x24() {
         field_0x2b8.y = 8.0f + (f32)((s32)mPos.y & 0xFFF0);
         field_0x2a8 = 1;
         mPos.z = 0.0f;
-        field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
+        field_0x3c.set(0.0f, 0.0f, 0.0f);
         return;
     }
     if (code == 0xE && mPos.z < 0.1f) {
         fn_802DEB58();
         if (fn_802DE9A0()) {
             startSound_801F0E34(0x5005F, 0);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 2.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 2.0f);
-            fn_801F3668();
         } else {
             field_0x2b8.x = 8.0f + (f32)((s32)mPos.x & 0xFFF0);
             field_0x2b8.y = 8.0f + (f32)((s32)mPos.y & 0xFFF0);
             field_0x2a8 = 1;
             field_0x2ac = 1;
             mPos.z = 0.0f;
-            field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 0.0f);
+            field_0x3c.set(0.0f, 0.0f, 0.0f);
+            return;
         }
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2A9, -1, 1, NULL, NULL, true, 2.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2AA, 0, 0, NULL, NULL, true, 2.0f);
+        fn_801F3668();
         return;
     }
     if ((code == 0xD && mPos.z < 0.1f) || code == 0x3B) {
