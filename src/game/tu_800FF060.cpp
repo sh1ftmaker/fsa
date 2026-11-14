@@ -86,8 +86,8 @@ void HammerShopMinigame_8049C858::fn_801003F4() {
 void HammerShopMinigame_8049C858::update() {
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
-    JGeometry::TBox2f box = mBox;
     JGeometry::TVec3f focus = mPos;
+    JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
     box.f.x += mPos.x;
     box.i.y += mPos.y;
@@ -148,7 +148,7 @@ void HammerShopMinigame_8049C858::update() {
                     field_0x230 = 2;
                     field_0x248 = 0;
                 } else {
-                    field_0x284 = (s32)((f32)gGameRoot_8053AAF8->fn_80138A30() * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+                    field_0x284 = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * (f32)gGameRoot_8053AAF8->fn_80138A30());
                     if (field_0x284 == 4) {
                         field_0x284 = 3;
                     }
