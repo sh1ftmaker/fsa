@@ -4,6 +4,7 @@
 #include "game/ActorBase.h"
 #include "game/SpriteAnim.h"
 #include "game/RailBase.h"
+#include "game/Message.h"
 
 // The ZLDA actor ("Princess Zelda", docs/names/actors.tsv, high confidence):
 // spawned by spawnActor_801F9484 (0x8010AFC4). Named after its vtable, 0x8049CEE0.
@@ -19,6 +20,11 @@ public:
     bool fn_801096C8(s32 state);
     bool fn_80109AE0(JGeometry::TVec3f* outPos);
     bool stepRail();
+
+    // fn_8038AD24 takes the position by value; serial and layer are loaded before that copy.
+    bool talk(u32 player, u32 msg, s32 serial, s32 layer, const JGeometry::TVec3f& pos, u32 flags) {
+        return fn_8038AD24(player, msg, serial, layer, pos, flags);
+    }
 
     /* 0x230 */ cls_800FE3EC mRail;
     /* 0x2F8 */ u8 field_0x2f8;
