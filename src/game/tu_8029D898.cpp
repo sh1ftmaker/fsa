@@ -8,6 +8,7 @@
 #include "game/Map.h"
 #include "game/Player.h"
 #include "game/PlayerBit.h"
+#include "game/cls_804AE9B0.h"
 
 BgRewrite_804A7C98::BgRewrite_804A7C98() {
     gBgRewrite_8053AC98 = this;
@@ -364,6 +365,191 @@ void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
             break;
         }
     }
+}
+
+// Regalloc: the original keeps tile and layer + layerOffset extended in one register each.
+bool BgRewrite_804A7C98::fn_802A0800(s32 player, s32 layer) {
+    s32 leader = player;
+    if (fn_8022F514(player)) {
+        leader = fn_8022F3DC(player);
+    }
+    JGeometry::TVec3f pos = *getPlayerPos_8023E724(player);
+    u8 layerOffset = 8;
+    if (layer < 8) {
+        layerOffset = 1;
+    }
+    s32 item = fn_802373EC(leader);
+    u16 tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer + layerOffset, field_0x20);
+    if (tile == 0xE) {
+        return false;
+    }
+    if (player != fn_8022EA0C(player)) {
+        return false;
+    }
+    if (tile != 0 || item != 0) {
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
+            if (!fn_802308E0(leader)) {
+                return false;
+            }
+        } else {
+            if (!fn_8023077C()) {
+                return false;
+            }
+            lbl_8053AD70->fn_8037AE30();
+        }
+    }
+    switch (item) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+        fn_8029EC84(field_0x20, layer, layerOffset, 0xE, 0xE);
+        if (tile == 0) {
+            getActorManager_801F856C()->spawnActor_801F9484(
+                'ITMS', layer, &pos, (field_0x20 << 16) + (player << 12) + (layerOffset << 8) + item + 0x10, -1, -1);
+        } else {
+            getActorManager_801F856C()->spawnActor_801F9484(
+                'ITMS', layer, &pos, (field_0x20 << 16) + (player << 12) + (layerOffset << 8) + item, -1, -1);
+        }
+        break;
+    case 0:
+        fn_8029EC84(field_0x20, layer, layerOffset, 0, 0);
+        break;
+    }
+    JGeometry::TVec3f effectPos(1.0f + pos.x, pos.y - 12.0f, pos.z);
+    s32 kind;
+    s32 code;
+    switch (tile) {
+    case 0x28:
+        kind = 1;
+        code = 0x30;
+        break;
+    case 0x29:
+        kind = 2;
+        code = 0x31;
+        break;
+    case 0x2A:
+        kind = 3;
+        code = 0x32;
+        break;
+    case 0x2B:
+        kind = 4;
+        code = 0x33;
+        break;
+    case 0x2C:
+        kind = 5;
+        code = 0x34;
+        break;
+    case 0x2D:
+        kind = 6;
+        code = 0x35;
+        break;
+    case 0x2E:
+        kind = 7;
+        code = 0x36;
+        break;
+    case 0x2F:
+        kind = 8;
+        code = 0x37;
+        break;
+    case 0xB0:
+        kind = 9;
+        code = 0x38;
+        break;
+    case 0xB1:
+        kind = 10;
+        code = 0x39;
+        break;
+    case 0xB2:
+        kind = 11;
+        code = 0x1000A;
+        break;
+    case 0xB3:
+        kind = 12;
+        code = 0x1000B;
+        break;
+    case 0x100F:
+        kind = 13;
+        code = 0x1000C;
+        break;
+    case 0:
+    default:
+        kind = 0;
+        break;
+    }
+    if (kind == 0) {
+        if (item != 0) {
+            fn_80230FD0(player, 0x2002C);
+            fn_802372F8(player, 0, 1);
+            if (gGameRoot_8053AAF8->field_0x7e == 1) {
+                for (s32 i = 0; i < 4; i++) {
+                    if (fn_8022F514(i) == true && leader == fn_8022F3DC(i)) {
+                        getActorManager_801F856C()->spawnActor_801F9484(
+                            'DMYK', getPlayerLayer_8023DE58(i), &effectPos, (player << 16) + (i << 12) + 0xD5, -1, -1);
+                    } else if (i == leader) {
+                        getActorManager_801F856C()->spawnActor_801F9484(
+                            'DMYK', getPlayerLayer_8023DE58(i), &effectPos, (player << 16) + (i << 12) + 0xD5, -1, -1);
+                    }
+                }
+            } else {
+                for (s32 i = 0; i < 4; i++) {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'DMYK', getPlayerLayer_8023DE58(i), &effectPos, (player << 16) + (i << 12) + 0xD5, -1, -1);
+                }
+            }
+        } else {
+            gAudioMgr_8053AF80->fn_80458880(6, -1);
+        }
+        return false;
+    }
+    if (gGameRoot_8053AAF8->field_0x7e == 1) {
+        for (s32 i = 0; i < 4; i++) {
+            pos = *getPlayerPos_8023E724(i);
+            effectPos.set(1.0f + pos.x, pos.y - 12.0f, pos.z);
+            if (fn_8022F514(i) == true && leader == fn_8022F3DC(i)) {
+                if (i == player) {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x10000000), -1, -1);
+                } else {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x30000000), -1, -1);
+                }
+                fn_80230498(i, &pos, 0xE9, 0xFF, -0x80, -0x80, true);
+            } else if (i == leader) {
+                if (i == player) {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x10000000), -1, -1);
+                } else {
+                    getActorManager_801F856C()->spawnActor_801F9484(
+                        'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x30000000), -1, -1);
+                }
+                fn_80230498(i, &pos, 0xE9, 0xFF, -0x80, -0x80, true);
+            }
+        }
+    } else {
+        for (s32 i = 0; i < 4; i++) {
+            pos = *getPlayerPos_8023E724(i);
+            effectPos.set(1.0f + pos.x, pos.y - 12.0f, pos.z);
+            if (i == player) {
+                getActorManager_801F856C()->spawnActor_801F9484(
+                    'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x10000000), -1, -1);
+            } else {
+                getActorManager_801F856C()->spawnActor_801F9484(
+                    'IMUP', getPlayerLayer_8023DE58(i), &effectPos, code + ((i << 24) + (player << 26) + 0x30000000), -1, -1);
+            }
+            fn_80230498(i, &pos, 0xE9, 0xFF, -0x80, -0x80, true);
+        }
+    }
+    return true;
 }
 
 // FIXME(shotgun): 97.83 %, missing/extra; behaviour drift.
