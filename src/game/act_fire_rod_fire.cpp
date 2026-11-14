@@ -233,7 +233,7 @@ FireRodFire_804A89F0::~FireRodFire_804A89F0() {
     }
 }
 
-// FIXME(shotgun): 72.10 %, different; behaviour drift.
+// FIXME(shotgun): 99.11 %, different; behaviour drift.
 void FireRodFire_804A89F0::update() {
     switch (field_0x238) {
     case 0: {
