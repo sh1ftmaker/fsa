@@ -51,7 +51,8 @@ void WarpPillar_804AC0A8::init() {
     mBox.f.y = 15.0f;
 }
 
-// FIXME: 94.3 %. Register allocation differs (this in r28 and the loop
+// FIXME: 95.66 %, missing/extra; behaviour near.
+// Register allocation differs (this in r28 and the loop
 // counter in r27 in the original), `order` is copied from a .rodata table
 // instead of stored with li 0-3, the bubble-sort swap goes through a stack
 // temporary in the original, the owner test branches the other way, and the
@@ -138,16 +139,18 @@ void WarpPillar_804AC0A8::update() {
                     field_0x258 = getPlayerPos_8023E724(i)->y;
                 }
             }
-            s32 order[4] = {0, 1, 2, 3};
+            s32 order[4];
+            for (s32 k = 0; k < 4; k++) {
+                order[k] = k;
+            }
             for (s32 n = 4; n > 0; n--) {
-                s32* cur = &order[1];
-                for (s32 j = 1; j < n; j++, cur++) {
-                    JGeometry::TVec3f a(*getPlayerPos_8023E724(cur[-1]));
-                    JGeometry::TVec3f b(*getPlayerPos_8023E724(*cur));
+                for (s32 j = 1; j < n; j++) {
+                    JGeometry::TVec3f a(*getPlayerPos_8023E724(order[j - 1]));
+                    JGeometry::TVec3f b(*getPlayerPos_8023E724(order[j]));
                     if (a.x > b.x) {
-                        s32 tmp = cur[-1];
-                        cur[-1] = *cur;
-                        *cur = tmp;
+                        s32 tmp = order[j - 1];
+                        order[j - 1] = order[j];
+                        order[j] = tmp;
                     }
                 }
             }
