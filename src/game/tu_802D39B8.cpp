@@ -6,6 +6,7 @@
 // it fully), and fn_802D46D8 match; no function changes for the worse.
 
 #include "game/GameAudio.h"
+#include "game/BgRewrite.h"
 #include "game/ActorBase.h"
 #include "game/ActorId.h"
 #include "game/ActorManager.h"
@@ -43,6 +44,13 @@ static const f32 lbl_8046E148[4][3] = {
 
 // The switch actors fn_802D8328 spawns before the rest of a screen's actors.
 static const u32 lbl_8046E178[6] = {'CKSW', 'ONOF', 'OFFS', 'GLBS', 'LCLS', 'SWT4'};
+
+// The two tile codes fn_802D4CCC writes for a screen's slot kind (fn_802DED40).
+static const u16 lbl_8046E190[15][2] = {
+    {0x0000, 0x0000}, {0x0000, 0x0000}, {0x0018, 0x0028}, {0x0019, 0x0029}, {0x001A, 0x002A},
+    {0x001B, 0x002B}, {0x001C, 0x002C}, {0x001D, 0x002D}, {0x001E, 0x002E}, {0x001F, 0x002F},
+    {0x00A0, 0x00B0}, {0x00A1, 0x00B1}, {0x00A2, 0x00B2}, {0x00A3, 0x00B3}, {0x0FFF, 0x100F},
+};
 
 // Bit masks, most significant bit first: bit n of a word list is
 // list[n / 32] & lbl_8046E1CC[n % 32].
@@ -278,6 +286,9 @@ bool fn_802DEDFC(const s32* dir) {
 }
 
 // The view's fn_802D7B34 / fn_802D7BE8 as free functions (forwards).
+// Not auto-inlined: fn_802D4CCC calls fn_802DED40 and fn_802DEC40 out of line in the
+// original (docs/INLINING.md, pragma rule 1).
+#pragma auto_inline off
 // FIXME(shotgun): 78.00 %, missing/extra; behaviour near.
 // (view reload after __shl2i)
 s32 fn_802DED40(s32 layer, s32 slot) {
@@ -289,6 +300,7 @@ s32 fn_802DED40(s32 layer, s32 slot) {
 void fn_802DEC40(s32 layer, s32 slot, u32 value) {
     getGameView_802D6A9C()->fn_802D7BE8(layer, slot, value);
 }
+#pragma auto_inline reset
 
 bool fn_802DEBF8(void) {
     if (gGameRoot_8053AAF8->field_0x7f == 0) {
@@ -1194,7 +1206,7 @@ static inline TileMap_804AA858* getTileMap() {
     return gGameRoot2_8053AB10->field_0x20;
 }
 
-// FIXME: 98.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 98.27 %, missing/extra + reloc-name; behaviour near.
 // Structurally close: the target builds the resource type with 'M   ' in a
 // register (lis/addi 0x4D202020, add, then subi 0x20 for the last ' '); ours folds the
 // constant (addis/addi 0x2000) and adds it first; the inlined fn_802DEBA0 reloads the view
@@ -1414,8 +1426,6 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
     field_0xec = 50;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean.
-// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8228(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1433,8 +1443,6 @@ const char* GameView_804A9950::fn_802D8228(s32 layer) {
     return NULL;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean.
-// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8128(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1884,6 +1892,543 @@ GameView_804A9950* getGameView_802D6A9C(void) {
     return gGameRoot_8053AAF8->field_0x4->mView;
 }
 
+// Scans a layer's tile grid (0x800 cells): records the cells of the screen's switchable
+// tiles in field_0x2948 and, where the screen's mask (fn_802D7AC4) has their bit set,
+// rewrites them to their other state; layer 8 and up also handle the two-cell and
+// multi-cell pieces. Layers below 8 then copy the "bg_tenso_sch.bin" tiles.
+// FIXME: 92.13 %, missing/extra; behaviour near.
+void GameView_804A9950::fn_802D4CCC(s32 layer) {
+    u64 mask = getGameView_802D6A9C()->fn_802D7AC4(layer);
+    field_0x131b8[layer] = 0;
+    field_0x131df[layer] = 0;
+    s32 n = 0;
+    u64 bit = 1;
+    s32 i = 0;
+    if (layer < 8) {
+        for (s32 cell = 0; cell < 0x800; cell++) {
+            u16 tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, cell);
+            if (tile == 0x17 || tile == 0x16) {
+                u16 kind = fn_802DED40(layer + 1, n);
+                getGameView_802D6A9C()->field_0x2948[0][0x3c - n * 4] = cell;
+                if (kind == 0) {
+                    u16 under = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer + 1, cell);
+                    switch (under) {
+                    case 0x28:
+                    case 0x29:
+                    case 0x2a:
+                    case 0x2b:
+                    case 0x2c:
+                    case 0x2d:
+                    case 0x2e:
+                    case 0x2f:
+                        fn_802DEC40(layer, n, under - 0x26);
+                        n++;
+                        break;
+                    case 0xb0:
+                    case 0xb1:
+                    case 0xb2:
+                    case 0xb3:
+                    case 0x100f:
+                        fn_802DEC40(layer, n, under - 0xa6);
+                        n++;
+                        break;
+                    case 0:
+                        fn_802DEC40(layer, n, 1);
+                        n++;
+                        break;
+                    }
+                } else {
+                    gBgRewrite_8053AC98->fn_8029EC84(cell, layer, 1, lbl_8046E190[kind][0], lbl_8046E190[kind][1]);
+                    n++;
+                }
+            } else if (tile == 0x30 || tile == 0x10 || tile == 0xaa || tile == 0x68 || tile == 0x19c ||
+                       tile == 0x19d || (tile >= 0x22 && tile <= 0x25) || tile == 0x80 || tile == 0x81 ||
+                       tile == 0xe5 || tile == 0x9b || tile == 0xfa || tile == 0x3eb || tile == 0xdc ||
+                       tile == 0xdd) {
+                getGameView_802D6A9C()->field_0x2948[0][i] = cell;
+                if (tile == 0xfa) {
+                    getGameView_802D6A9C()->field_0x2948[0][i] = cell;
+                }
+                if ((mask & bit) != 0) {
+                    switch (tile) {
+                    case 0x30:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x10);
+                        break;
+                    case 0xaa:
+                        gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0xbc, 0xbd);
+                        break;
+                    case 0x68:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x12);
+                        break;
+                    case 0x19c:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19e);
+                        break;
+                    case 0x19d:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19f);
+                        break;
+                    case 0x80:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9e);
+                        break;
+                    case 0x81:
+                    case 0xe5:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9d);
+                        break;
+                    case 0x9b: {
+                        s32 up = cell - 0x10;
+                        if ((cell & 0x100) != (up & 0x100)) {
+                            up = cell - 0x110;
+                        }
+                        gBgRewrite_8053AC98->fn_8029DF80(up, layer, 0x6e, 0x6f, 0x7e, 0x7f);
+                        break;
+                    }
+                    case 0xfa:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x5a);
+                        break;
+                    case 0xdc:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9e);
+                        break;
+                    case 0xdd:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x20);
+                        break;
+                    case 0x3eb:
+                        gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x3e0);
+                        break;
+                    }
+                }
+                bit <<= 1;
+                i++;
+            } else if (lbl_8046CB88[tile] == 2 || lbl_8046CB88[tile] == 0x3b) {
+                field_0x131df[layer] = 1;
+            }
+        }
+        gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+            gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x180, 0, 0x40, 0xc0);
+        if (getGameView_802D6A9C()->field_0x171 == 0) {
+            gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+                gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x2c0, 0, 0x5c0, 0x40);
+            gGameRoot2_8053AB10->field_0x20->fn_802FA160(
+                gGameRoot_8053AAF8->field_0xa4->getResource('SCH ', "bg_tenso_sch.bin"), 0x300, 0, 0x7c0, 0x40);
+        }
+    } else {
+        s32 slot = layer - 7;
+        for (s32 cell = 0; cell < 0x800; cell++) {
+            u16 tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, cell);
+            if (tile == 0x17 || tile == 0x16) {
+                u16 kind = fn_802DED40(layer, n);
+                getGameView_802D6A9C()->field_0x2948[slot][0x3c - n * 4] = cell;
+                if (kind == 0) {
+                    u16 under = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer + 8, cell);
+                    switch (under) {
+                    case 0x28:
+                    case 0x29:
+                    case 0x2a:
+                    case 0x2b:
+                    case 0x2c:
+                    case 0x2d:
+                    case 0x2e:
+                    case 0x2f:
+                        fn_802DEC40(layer, n, under - 0x26);
+                        n++;
+                        break;
+                    case 0xb0:
+                    case 0xb1:
+                    case 0xb2:
+                    case 0xb3:
+                    case 0x100f:
+                        fn_802DEC40(layer, n, under - 0xa6);
+                        n++;
+                        break;
+                    case 0:
+                        fn_802DEC40(layer, n, 1);
+                        n++;
+                        break;
+                    }
+                } else {
+                    gBgRewrite_8053AC98->fn_8029EC84(cell, layer, 8, lbl_8046E190[kind][0], lbl_8046E190[kind][1]);
+                    n++;
+                }
+            } else if (tile == 0x26 || tile == 0x27 || tile == 0x36 || tile == 0x37) {
+                getGameView_802D6A9C()->field_0x2948[slot][i] = cell;
+                s32 other;
+                if (tile == 0x26) {
+                    s32 up = cell - 0x10;
+                    if ((cell & 0x100) != (up & 0x100)) {
+                        other = cell - 0x110;
+                    } else {
+                        other = up;
+                    }
+                } else if (tile == 0x27) {
+                    s32 down = cell + 0x10;
+                    if ((cell & 0x100) != (down & 0x100)) {
+                        other = cell + 0x110;
+                    } else {
+                        other = down;
+                    }
+                } else if (tile == 0x36) {
+                    if ((cell & 0xF) == 0) {
+                        other = cell - 0xF1;
+                    } else {
+                        other = cell - 1;
+                    }
+                } else {
+                    s32 right = cell + 1;
+                    if ((right & 0xF) == 0) {
+                        other = cell + 0xF1;
+                    } else {
+                        other = right;
+                    }
+                }
+                getGameView_802D6A9C()->field_0x2948[slot][i + 1] = other;
+                if ((mask & bit) != 0) {
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(
+                        layer, cell, gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, other));
+                    gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, other, 0x20);
+                }
+                bit <<= 2;
+                i += 2;
+            } else if ((tile >= 0x12 && tile <= 0x15) || (tile >= 0x50 && tile <= 0x52) ||
+                       (tile >= 0x21 && tile <= 0x25) || tile == 0x30 || tile == 0x10 || tile == 0xaa ||
+                       (tile >= 0x40 && tile <= 0x44) || (tile >= 0x45 && tile <= 0x49) || tile == 0x4e ||
+                       tile == 0x4f || tile == 0x99 || tile == 0x9a || tile == 0x76 || tile == 0x3a ||
+                       tile == 0xbf || tile == 0xac || tile == 0x3ec || tile == 0xb8 || tile == 0x80 ||
+                       tile == 0x81 || tile == 0xdc || tile == 0xdd || tile == 0x1 || tile == 0x2 ||
+                       (tile >= 0xea && tile <= 0xec) || tile == 0x2e0 || tile == 0x2f0 || tile == 0x2e2 ||
+                       tile == 0x2e3 || tile == 0x300 || tile == 0x348 || tile == 0x358 || tile == 0x34a ||
+                       tile == 0x34b || tile == 0x302 || tile == 0x303 || tile == 0x304 || tile == 0x314 ||
+                       tile == 0x306 || tile == 0x307 || tile == 0x308 || tile == 0x309 || tile == 0x30a ||
+                       tile == 0x318 || tile == 0x319 || tile == 0x31a || tile == 0x330 || tile == 0x322 ||
+                       tile == 0x325 || tile == 0x326 || tile == 0x30c || tile == 0x30d || tile == 0x30e ||
+                       tile == 0x30f || tile == 0x310 || tile == 0x31e || tile == 0x31f || tile == 0x3a8 ||
+                       tile == 0x3b8 || tile == 0x3aa || tile == 0x3ab || tile == 0x390 || tile == 0x382 ||
+                       tile == 0x385 || tile == 0x386 || tile == 0x68 || tile == 0x6a || tile == 0x6b ||
+                       tile == 0xae || tile == 0xf9 || tile == 0xfa || tile == 0x74 || tile == 0x75 ||
+                       tile == 0x146 || tile == 0x19c || tile == 0x19d || tile == 0x5f || tile == 0x38 ||
+                       (tile >= 0x70 && tile <= 0x72)) {
+                s32 skip = 0;
+                s32 up = cell - 0x10;
+                if ((cell & 0x100) != (up & 0x100)) {
+                    up = cell - 0x110;
+                }
+                s32 left = (cell & 0xF) != 0 ? cell - 1 : cell - 0xF1;
+                s32 down = cell + 0x10;
+                if ((cell & 0x100) != (down & 0x100)) {
+                    down = cell + 0x110;
+                }
+                s32 down2 = down + 0x10;
+                if ((down & 0x100) != (down2 & 0x100)) {
+                    down2 = down + 0x110;
+                }
+                s32 right = ((cell + 1) & 0xF) != 0 ? cell + 1 : cell + 0xF1;
+                s32 right2 = ((right + 1) & 0xF) != 0 ? right + 1 : right + 0xF1;
+                u16 upTile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, up);
+                u16 downTile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, down);
+                u16 leftTile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, left);
+                u16 rightTile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, right);
+                u16 down2Tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, down2);
+                u16 right2Tile = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, right2);
+                if (tile == 0x300) {
+                    if (leftTile != 0x30a) skip = 1;
+                } else if (tile == 0x310) {
+                    if (leftTile != 0x31a) skip = 1;
+                } else if (tile == 0x302) {
+                    if (upTile != 0x30c) skip = 1;
+                } else if (tile == 0x303) {
+                    if (upTile != 0x30d) skip = 1;
+                } else if (tile == 0x30a) {
+                    if (right2Tile != 0x300) skip = 1;
+                } else if (tile == 0x31a) {
+                    if (right2Tile != 0x310) skip = 1;
+                } else if (tile == 0x30c) {
+                    if (down2Tile != 0x302) skip = 1;
+                } else if (tile == 0x30d) {
+                    if (down2Tile != 0x303) skip = 1;
+                } else if (tile == 0x304) {
+                    if (leftTile != 0x30a) skip = 1;
+                } else if (tile == 0x314) {
+                    if (leftTile != 0x31a) skip = 1;
+                } else if (tile == 0x306) {
+                    if (upTile != 0x30c) skip = 1;
+                } else if (tile == 0x307) {
+                    if (upTile != 0x30d) skip = 1;
+                } else if (tile == 0x308) {
+                    if (leftTile != 0x30a) skip = 1;
+                } else if (tile == 0x318) {
+                    if (leftTile != 0x31a) skip = 1;
+                } else if (tile == 0x309) {
+                    if (upTile != 0x30c) skip = 1;
+                } else if (tile == 0x319) {
+                    if (upTile != 0x30d) skip = 1;
+                } else if (tile == 0x330) {
+                    if (rightTile != 0x331) skip = 1;
+                } else if (tile == 0x322) {
+                    if (rightTile != 0x323) skip = 1;
+                } else if (tile == 0x325) {
+                    if (downTile != 0x335) skip = 1;
+                } else if (tile == 0x326) {
+                    if (downTile != 0x336) skip = 1;
+                } else if (tile == 0x30e) {
+                    if (leftTile != 0x330) skip = 1;
+                } else if (tile == 0x31e) {
+                    if (leftTile != 0x322) skip = 1;
+                } else if (tile == 0x30f) {
+                    if (upTile != 0x325) skip = 1;
+                } else if (tile == 0x31f) {
+                    if (upTile != 0x326) skip = 1;
+                }
+                if (skip == 0) {
+                    u8 step = layer >= 8 ? 8 : 1;
+                    getGameView_802D6A9C()->field_0x2948[slot][i] = cell;
+                    if ((mask & bit) != 0) {
+                        switch (tile) {
+                        case 0x6b:
+                        case 0x70:
+                        case 0x75:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x79);
+                            break;
+                        case 0x68:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x12);
+                            break;
+                        case 0x6a:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x50);
+                            break;
+                        case 0x71:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x7b);
+                            break;
+                        case 0x72:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x7c);
+                            break;
+                        case 0x5f:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x83);
+                            break;
+                        case 0xfa:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x5a);
+                            break;
+                        case 0x74:
+                        case 0x146:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x7d);
+                            break;
+                        case 0xae:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0xaf);
+                            break;
+                        case 0x19c:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19e);
+                            break;
+                        case 0x19d:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x19f);
+                            break;
+                        case 0x30:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x10);
+                            break;
+                        case 0x10:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x10);
+                            break;
+                        case 0xaa:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0xbc, 0xbd);
+                            break;
+                        case 0x40:
+                        case 0x42:
+                        case 0x44:
+                        case 0x4e:
+                        case 0x4f:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x11);
+                            break;
+                        case 0x43:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x50);
+                            break;
+                        case 0x45:
+                        case 0x47:
+                        case 0x49:
+                        case 0x99:
+                        case 0x9a:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x15);
+                            break;
+                        case 0x46:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x14);
+                            break;
+                        case 0x48:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x52);
+                            break;
+                        case 0x1:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x3e0);
+                            break;
+                        case 0x20:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x20);
+                            break;
+                        case 0x12:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x13);
+                            break;
+                        case 0x14:
+                        case 0x52:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x15);
+                            break;
+                        case 0x50:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x51);
+                            break;
+                        case 0x76:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x77);
+                            break;
+                        case 0x3a:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x3b);
+                            break;
+                        case 0x3f:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x3e);
+                            break;
+                        case 0xbf:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0xbe);
+                            break;
+                        case 0xac:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x35);
+                            break;
+                        case 0x2:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0xb8);
+                            break;
+                        case 0x81:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9d);
+                            break;
+                        case 0x80:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9e);
+                            break;
+                        case 0xdc:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x9e);
+                            break;
+                        case 0xdd:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x20);
+                            break;
+                        case 0xea:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x252);
+                            break;
+                        case 0xeb:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x253);
+                            break;
+                        case 0xec:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x254);
+                            break;
+                        case 0xf9:
+                            gGameRoot2_8053AB10->field_0x20->fn_802F9974(layer, cell, 0x25b);
+                            break;
+                        case 0x2e0:
+                        case 0x348:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x350, 0x351);
+                            break;
+                        case 0x2f0:
+                        case 0x358:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x342, 0x343);
+                            break;
+                        case 0x2e2:
+                        case 0x34a:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x345, 0x355);
+                            break;
+                        case 0x2e3:
+                        case 0x34b:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x346, 0x356);
+                            break;
+                        case 0x300:
+                        case 0x304:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 0, 0x2ea, 0x2ee, 0x2ee, 0x2eb);
+                            break;
+                        case 0x310:
+                        case 0x314:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 0, 0x2fa, 0x2fe, 0x2fe, 0x2fb);
+                            break;
+                        case 0x302:
+                        case 0x306:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 2, 0x2ec, 0x2ef, 0x2ef, 0x2fc);
+                            break;
+                        case 0x303:
+                        case 0x307:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 2, 0x2ed, 0x2ff, 0x2ff, 0x2fd);
+                            break;
+                        case 0x308:
+                        case 0x30a:
+                            gBgRewrite_8053AC98->fn_8029DB2C(layer, cell, 0, 0x2ea, 0x2ee, 0x2ee, 0x2ee, 0x2ee, 0x2eb);
+                            break;
+                        case 0x318:
+                        case 0x31a:
+                            gBgRewrite_8053AC98->fn_8029DB2C(layer, cell, 0, 0x2fa, 0x2fe, 0x2fe, 0x2fe, 0x2fe, 0x2fb);
+                            break;
+                        case 0x309:
+                        case 0x30c:
+                            gBgRewrite_8053AC98->fn_8029DB2C(layer, cell, 2, 0x2ec, 0x2ef, 0x2ef, 0x2ef, 0x2ef, 0x2fc);
+                            break;
+                        case 0x319:
+                        case 0x30d:
+                            gBgRewrite_8053AC98->fn_8029DB2C(layer, cell, 2, 0x2ed, 0x2ff, 0x2ff, 0x2ff, 0x2ff, 0x2fd);
+                            break;
+                        case 0x330:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x338, 0x339);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, up, 0, 0x328, 0x329);
+                            break;
+                        case 0x322:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x32a, 0x32b);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, down, 0, 0x33a, 0x33b);
+                            break;
+                        case 0x325:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x32d, 0x33d);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, left, 1, 0x32c, 0x33c);
+                            break;
+                        case 0x326:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x32e, 0x33e);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, right, 1, 0x32f, 0x33f);
+                            break;
+                        case 0x30e:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 0, 0x2ca, 0x2ce, 0x2ce, 0x2cb);
+                            gBgRewrite_8053AC98->fn_8029DD50(layer + step, up, 0, 0x2c4, 0x2c5, 0x2c5, 0x2c6);
+                            break;
+                        case 0x31e:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 0, 0x2da, 0x2de, 0x2de, 0x2db);
+                            gBgRewrite_8053AC98->fn_8029DD50(layer + step, down, 0, 0x2d4, 0x2d5, 0x2d5, 0x2d6);
+                            break;
+                        case 0x30f:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 1, 0x2cc, 0x2cf, 0x2cf, 0x2dc);
+                            gBgRewrite_8053AC98->fn_8029DD50(layer + step, left, 1, 0x2c7, 0x2c8, 0x2c8, 0x2c9);
+                            break;
+                        case 0x31f:
+                            gBgRewrite_8053AC98->fn_8029DD50(layer, cell, 1, 0x2cd, 0x2df, 0x2df, 0x2dd);
+                            gBgRewrite_8053AC98->fn_8029DD50(layer + step, right, 1, 0x2d7, 0x2d8, 0x2d8, 0x2d9);
+                            break;
+                        case 0x3a8:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x3b0, 0x3b1);
+                            break;
+                        case 0x3b8:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x3a2, 0x3a3);
+                            break;
+                        case 0x3aa:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x3a5, 0x3b5);
+                            break;
+                        case 0x3ab:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x3a6, 0x3b6);
+                            break;
+                        case 0x390:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x398, 0x399);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, up, 0, 0x388, 0x389);
+                            break;
+                        case 0x382:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 0, 0x38a, 0x38b);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, down, 0, 0x39a, 0x39b);
+                            break;
+                        case 0x385:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x38d, 0x39d);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, left, 1, 0x38c, 0x39c);
+                            break;
+                        case 0x386:
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer, cell, 1, 0x38e, 0x39e);
+                            gBgRewrite_8053AC98->fn_8029DEBC(layer + step, right, 1, 0x38f, 0x39f);
+                            break;
+                        default:
+                            getGameView_802D6A9C()->fn_802D7D00(layer, i, false);
+                            break;
+                        }
+                    }
+                    bit <<= 1;
+                    i++;
+                }
+            } else if (lbl_8046CB88[tile] == 2 || lbl_8046CB88[tile] == 0x3b) {
+                field_0x131df[layer] = 1;
+            }
+        }
+    }
+}
+
 // FIXME: 94.79 %, scheduling+regalloc; behaviour clean.
 // Scheduling and regalloc: the target adds the view to i * 2 before the slot
 // row (view + i * 2 + 0x2948, then lhzx with slot << 7); ours adds the row and i first and
@@ -1991,9 +2536,6 @@ void GameView_804A9950::fn_802D4768(s32 layer, u16 id, s64* outSlot, u64* outMas
     *outMask = fn_802D7AC4(layer);
 }
 
-// FIXME: fn_802D3D48 is not written yet.
-
-
 bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     u32 word = bit / 32;
     if (!set) {
@@ -2001,6 +2543,258 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
     }
     getGameView_802D6A9C()->field_0x2d48[index][word] |= lbl_8046E1CC[bit % 32];
     return true;
+}
+
+// Reads the stage's map CSV: the start screen, the stage settings (field_0x34-0x58) and
+// the per-screen values of field_0x60 (one row per line up to "end"; 'N' skips a cell).
+// The second variant (gGameRoot_8053AAF8->field_0x7f clear) reads one line of map500.csv.
+// Still differs: the 0xFF fill keeps an inner-loop guard (li 0; cmpwi 10) the original lacks, and the
+// map500 line skip is not rotated with a guard as in the original.
+// FIXME: 97.51 %, missing/extra; behaviour drift.
+void GameView_804A9950::fn_802D3D48() {
+    getGameView_802D6A9C()->field_0x1328c = 0;
+    for (s32 row = 0; row < 10; row++) {
+        for (s32 col = 0; col < 10; col++) {
+            field_0x60[row][col] = 0xFF;
+        }
+    }
+    s32 i = 0;
+    s32 col = 0;
+    if (gGameRoot_8053AAF8->field_0x7f == 1) {
+        const u8* str;
+        if (gGameRoot_8053AAF8->field_0x7e == 1) {
+            str = (const u8*)fn_80403328(lbl_804A9710[field_0x4][field_0x8]);
+        } else {
+            str = (const u8*)fn_80403328(lbl_804A9830[field_0x4][field_0x8]);
+        }
+        while (true) {
+            if (str[i] == (u8)',') {
+                break;
+            }
+            i++;
+        }
+        field_0x14 = str[i + 1] - '0';
+        field_0xc = field_0x14;
+        field_0x18 = str[i + 3] - '0';
+        field_0x10 = field_0x18;
+        i += 5;
+        field_0x34 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x34 == 0) {
+                field_0x34 = 0;
+            } else if (field_0x34 == 1) {
+                field_0x34 = 10;
+            } else if (field_0x34 == 2) {
+                field_0x34 = 20;
+            } else {
+                field_0x34 = 30;
+            }
+            field_0x34 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        field_0x38 = field_0x34;
+        field_0x3c = str[i + 2] - '0';
+        i += 4;
+        field_0x40 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x40 == 0) {
+                field_0x40 = 0;
+            } else if (field_0x40 == 1) {
+                field_0x40 = 10;
+            } else if (field_0x40 == 2) {
+                field_0x40 = 20;
+            } else {
+                field_0x40 = 30;
+            }
+            field_0x40 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        i += 2;
+        field_0x44 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x44 == 0) {
+                field_0x44 = 0;
+            } else if (field_0x44 == 1) {
+                field_0x44 = 10;
+            } else if (field_0x44 == 2) {
+                field_0x44 = 20;
+            } else {
+                field_0x44 = 30;
+            }
+            field_0x44 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        // Both branches store 0, as in the original.
+        if (!fn_802DEBF8()) {
+            field_0x48 = 0;
+        } else {
+            field_0x48 = 0;
+        }
+        field_0x4c = 1;
+        i += 2;
+        field_0x50 = str[i] - '0';
+        if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+            if (field_0x50 == 0) {
+                field_0x50 = 0;
+            } else if (field_0x50 == 1) {
+                field_0x50 = 10;
+            }
+            field_0x50 += (u8)(str[i + 1] - '0');
+            i++;
+        }
+        field_0x54 = str[i + 2] - '0';
+        if (field_0x54 < 2 || field_0x54 >= 8) {
+            field_0x54 = 5;
+        }
+        i += 4;
+        field_0x58 = str[i] - '0';
+        while (true) {
+            if (str[i] == (u8)'\r' && str[i + 1] == (u8)'\n') {
+                i += 2;
+                break;
+            }
+            i++;
+        }
+        s32 row = 0;
+        while (true) {
+            if (str[i] == 'e' && str[i + 1] == 'n' && str[i + 2] == 'd') {
+                return;
+            }
+            if (str[i] == (u8)'\r' && str[i + 1] == (u8)'\n') {
+                col = 0;
+                i += 2;
+                row++;
+            } else if (str[i] == (u8)',') {
+                i++;
+            } else if (str[i] == 'N') {
+                col++;
+                i += 4;
+            } else {
+                u8 value = str[i] - '0';
+                if (str[i + 1] != (u8)',' && str[i + 1] != (u8)'\r') {
+                    value = (value <= 9 ? (u8)(value * 10) : 0) + (u8)(str[i + 1] - '0');
+                    i++;
+                }
+                i++;
+                field_0x60[row][col] = value;
+                col++;
+            }
+        }
+    } else {
+        gGameRoot_8053AAF8->fn_80134DC0();
+        s32 players = 0;
+        for (s32 p = 0; p < 4; p++) {
+            if (isPlayerBitSet(gGameRoot_8053AAF8, p) == 1) {
+                players++;
+            }
+        }
+        s32 controllers = 0;
+        for (s32 p = 0; p < players; p++) {
+            u32 mode = (gGameRoot_8053AAF8->field_0x83 >> (p * 2)) & 3;
+            if (mode == 2) {
+                controllers++;
+            }
+        }
+        s32 line = field_0x4 * 4 + field_0x8;
+        const u8* str;
+        if (controllers != 0) {
+            str = (const u8*)fn_80403328("map500_ctrl.csv");
+        } else {
+            str = (const u8*)fn_80403328("map500.csv");
+        }
+        field_0x14 = 1;
+        field_0x18 = 1;
+        s32 pos = 0;
+        s32 lines = 0;
+        while (line != lines) {
+            while (true) {
+                if (str[pos] == (u8)'\r' && str[pos + 1] == (u8)'\n') {
+                    pos += 2;
+                    lines++;
+                    break;
+                }
+                pos++;
+            }
+        }
+        u8 value = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (value == 0) {
+                value = 0;
+            } else if (value == 1) {
+                value = 10;
+            } else if (value == 2) {
+                value = 20;
+            } else {
+                value = 30;
+            }
+            value += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x60[1][1] = value;
+        pos += 2;
+        field_0x34 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x34 == 0) {
+                field_0x34 = 0;
+            } else if (field_0x34 == 1) {
+                field_0x34 = 10;
+            } else if (field_0x34 == 2) {
+                field_0x34 = 20;
+            } else {
+                field_0x34 = 30;
+            }
+            field_0x34 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x38 = field_0x34;
+        field_0x3c = str[pos + 2] - '0';
+        pos += 4;
+        field_0x40 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x40 == 0) {
+                field_0x40 = 0;
+            } else if (field_0x40 == 1) {
+                field_0x40 = 10;
+            } else if (field_0x40 == 2) {
+                field_0x40 = 20;
+            } else {
+                field_0x40 = 30;
+            }
+            field_0x40 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        pos += 2;
+        field_0x48 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x48 == 0) {
+                field_0x48 = 0;
+            } else if (field_0x48 == 1) {
+                field_0x48 = 10;
+            }
+            field_0x48 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        pos += 2;
+        field_0x50 = str[pos] - '0';
+        if (str[pos + 1] != (u8)',' && str[pos + 1] != (u8)'\r') {
+            if (field_0x50 == 0) {
+                field_0x50 = 0;
+            } else if (field_0x50 == 1) {
+                field_0x50 = 10;
+            }
+            field_0x50 += (u8)(str[pos + 1] - '0');
+            pos++;
+        }
+        field_0x4c = str[pos + 2] - '0';
+        if (field_0x4c != 1 && field_0x4c != 2) {
+            field_0x4c = 1;
+        }
+        field_0x54 = str[pos + 4] - '0';
+        if (field_0x54 < 2 || field_0x54 >= 8) {
+            field_0x54 = 5;
+        }
+        field_0x58 = str[pos + 6] - '0';
+    }
 }
 
 // FIXME: 99.48 %, missing/extra; behaviour clean.
