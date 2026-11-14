@@ -179,26 +179,27 @@ void VaatiBoss_804A4958::fn_801E5754() {
     }
 }
 
-// FIXME: 93.78 %, missing/extra; behaviour drift.
+// FIXME: 93.97 %, missing/extra; behaviour drift.
 // FIXME(shotgun): written from asm
 void VaatiBoss_804A4958::fn_801E4D88() {
     ActorBase_804A5770* actors[ACTOR_MANAGER_MAX_ACTORS];
     s32 count = getActorManager_801F856C()->fn_801F7818('HBMB', field_0x4, actors, -1);
 
     for (s32 i = 0; i < 0x10; i++) {
-        if (field_0x308[i].field_0x4 != 0) {
-            s32 serial = field_0x308[i].field_0x0;
+        cls_801D6A58* e = &field_0x308[i];
+        if (e->field_0x4 != 0) {
+            s32 serial = e->field_0x0;
             if (serial < 0) {
-                field_0x308[i].fn_801D7874();
-                field_0x308[i].field_0x4 = 0;
+                e->fn_801D7874();
+                e->field_0x4 = 0;
             } else {
                 ActorBase_804A5770* act = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (act == NULL) {
-                    field_0x308[i].fn_801D7874();
-                    field_0x308[i].field_0x4 = 0;
+                    e->fn_801D7874();
+                    e->field_0x4 = 0;
                 } else if (!act->mAlive || act->field_0x4 != field_0x4 || act->field_0x94 == 1 || act->field_0x90 != 0) {
-                    field_0x308[i].fn_801D7874();
-                    field_0x308[i].field_0x4 = 0;
+                    e->fn_801D7874();
+                    e->field_0x4 = 0;
                 } else {
                     s32 j;
                     for (j = 0; j < count; j++) {
@@ -207,8 +208,8 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                         }
                     }
                     if (j >= count) {
-                        field_0x308[i].fn_801D7874();
-                        field_0x308[i].field_0x4 = 0;
+                        e->fn_801D7874();
+                        e->field_0x4 = 0;
                     }
                 }
             }
