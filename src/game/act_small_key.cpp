@@ -179,7 +179,7 @@ void SmallKey_804A8CD8::update() {
                    (!fn_802DE764(1, 1, 2) || field_0x4 != 10 || getPlayerLayer_8023DE58(field_0x23c) != 8)) {
             cont = false;
         } else {
-            mPos = *getPlayerPos_8023E724(field_0x23c);
+            mPos.set(*getPlayerPos_8023E724(field_0x23c));
             field_0x4 = getPlayerLayer_8023DE58(field_0x23c);
             field_0x240 = 5;
             field_0x3c.z = 0.0f;
@@ -276,7 +276,7 @@ void SmallKey_804A8CD8::update() {
         if (field_0xc4 != 0) {
             field_0xb0 = 0;
             field_0x294 = 0;
-            mPos = *fn_8023E7B0(field_0xc8);
+            mPos.set(*fn_8023E7B0(field_0xc8));
             field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
             field_0x2ad = fn_8023BCD4(field_0xc8);
             field_0x290 = field_0xc8;
@@ -335,7 +335,7 @@ void SmallKey_804A8CD8::update() {
         if (field_0x28c >= 0) {
             field_0x244 = getActorManager_801F856C()->mActors[field_0x28c];
             if (field_0x244 != NULL) {
-                field_0x248 = field_0x244->mPos;
+                field_0x248.set(field_0x244->mPos);
                 s32 otherLayer = field_0x244->field_0x4;
                 if (otherLayer < 8 && field_0x4 == 8) {
                     JGeometry::TBox2f viewBox = (otherLayer < 8)
@@ -344,7 +344,7 @@ void SmallKey_804A8CD8::update() {
                     field_0x248.x = field_0x244->mPos.x - viewBox.i.x;
                     field_0x248.y = field_0x244->mPos.y - viewBox.i.y;
                 }
-                mPos = field_0x248;
+                mPos.set(field_0x248);
             } else {
                 fn_801F0D20(3);
                 field_0x28c = -1;
@@ -381,22 +381,22 @@ void SmallKey_804A8CD8::update() {
                 JGeometry::TVec3f* p = fn_8023A478(i);
                 f32 dx = p->x - mPos.x;
                 f32 dy = p->y - mPos.y;
-                if (dx * dx + dy * dy <= 5184.0f) {
+                if (!(dx * dx + dy * dy > 5184.0f)) {
                     switch (fn_8023A240() ^ 1) {
                     case 0:
-                        field_0x3c.set(2.0f, 0.0f, 3.0f);
+                        field_0x3c = JGeometry::TVec3f(2.0f, 0.0f, 3.0f);
                         break;
                     case 1:
-                        field_0x3c.set(-2.0f, 0.0f, 3.0f);
+                        field_0x3c = JGeometry::TVec3f(-2.0f, 0.0f, 3.0f);
                         break;
                     case 2:
-                        field_0x3c.set(0.0f, 2.0f, 3.0f);
+                        field_0x3c = JGeometry::TVec3f(0.0f, 2.0f, 3.0f);
                         break;
                     case 3:
-                        field_0x3c.set(0.0f, -2.0f, 3.0f);
+                        field_0x3c = JGeometry::TVec3f(0.0f, -2.0f, 3.0f);
                         break;
                     default:
-                        field_0x3c.set(0.0f, 0.0f, 3.0f);
+                        field_0x3c = JGeometry::TVec3f(0.0f, 0.0f, 3.0f);
                         break;
                     }
                     field_0xb0 = 0x20000;
@@ -415,7 +415,7 @@ void SmallKey_804A8CD8::update() {
         field_0xb0 = 0;
         field_0x294 = 0;
         if (field_0xcc != 0) {
-            mPos = *getPlayerPos_8023E724(field_0xd0);
+            mPos.set(*getPlayerPos_8023E724(field_0xd0));
             field_0x4 = getPlayerLayer_8023DE58(field_0xd0);
             field_0x2ad = fn_8023BCD4(field_0xd0);
             if (gGameRoot_8053AAF8->fn_80138A30() == 1 && field_0x29c >= 1 &&
@@ -785,7 +785,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
                 if (field_0x27c == 2) {
                     field_0x27c = 3;
                 }
-                mPos = field_0x248;
+                mPos.set(field_0x248);
                 u32 value = (field_0x23c << 30) | (field_0x2b5 << 29) | ((field_0x280 << 24) & 0x1F000000) |
                             (field_0x4 & 0xFF);
                 if (!getGameView_802D6A9C()->fn_802DCD0C()) {
@@ -805,7 +805,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
                 field_0x3c.x *= -0.5f;
                 if ((wall.x > 0.0f && mPos.x <= field_0x248.x) ||
                     (wall.x < 0.0f && mPos.x >= field_0x248.x)) {
-                    mPos = field_0x248;
+                    mPos.set(field_0x248);
                 }
             }
             return;
