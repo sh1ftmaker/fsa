@@ -161,7 +161,7 @@ static inline void notifySlr4(s32 slot, u8 arg) {
     }
 }
 
-// FIXME(shotgun): 83.31 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 91.38 %, missing/extra; behaviour drift.
 void cls_804AA350::update() {
     switch (field_0x24c) {
     case 0:
@@ -219,11 +219,12 @@ void cls_804AA350::update() {
         armFlag();
         field_0x250--;
         if (field_0x250 <= 0) {
+            s32 type = field_0x254;
             stopEmitter(mEmitter230);
-            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[field_0x254][0], 0, -1, NULL, NULL, true, 1.0f);
-            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[field_0x254][1], 0, -1, NULL, NULL, true, 1.0f);
-            mEmitter238 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[field_0x254][2], 0, -1, NULL, NULL, true, 1.0f);
-            mEmitter23c = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[field_0x254][3], 0, -1, NULL, NULL, true, 1.0f);
+            mEmitter230 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[type][0], 0, -1, NULL, NULL, true, 1.0f);
+            mEmitter234 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[type][1], 0, -1, NULL, NULL, true, 1.0f);
+            mEmitter238 = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[type][2], 0, -1, NULL, NULL, true, 1.0f);
+            mEmitter23c = spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5C8[type][3], 0, -1, NULL, NULL, true, 1.0f);
             field_0x250 = 180;
             field_0x24c++;
             startSound_801F0E34(0x5005A, 0);
@@ -277,9 +278,10 @@ void cls_804AA350::update() {
         break;
     case 9:
         if (field_0x277) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[field_0x254 * 3], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[field_0x254 * 3 + 1], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[field_0x254 * 3 + 2], 0, 0, NULL, NULL, true, 1.0f);
+            s32 type = field_0x254;
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[type * 3], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[type * 3 + 1], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F544[type * 3 + 2], 0, 0, NULL, NULL, true, 1.0f);
             startSound_801F0E34(0x50058, 0);
             field_0x250 = 0x78;
             field_0x24c = 10;
@@ -288,8 +290,9 @@ void cls_804AA350::update() {
     case 10:
         field_0x250--;
         if (field_0x250 <= 0) {
-            mEmitter240 = spawnEmitter_8013CC50(field_0x4, &field_0x268, lbl_8046F55C[field_0x254 * 3], 0, 0, NULL, NULL, true, 1.0f);
-            mEmitter244 = spawnEmitter_8013CC50(field_0x4, &field_0x268, lbl_8046F55C[field_0x254 * 3 + 1], 0, 0, NULL, NULL, true, 1.0f);
+            s32 type = field_0x254;
+            mEmitter240 = spawnEmitter_8013CC50(field_0x4, &field_0x268, lbl_8046F55C[type * 3], 0, 0, NULL, NULL, true, 1.0f);
+            mEmitter244 = spawnEmitter_8013CC50(field_0x4, &field_0x268, lbl_8046F55C[type * 3 + 1], 0, 0, NULL, NULL, true, 1.0f);
             field_0x2cc = fn_804032E8('TIMG', lbl_804AA340[field_0x254]);
             field_0x3c.z = 0.3f;
             field_0x24c++;
@@ -312,11 +315,12 @@ void cls_804AA350::update() {
         break;
     case 12:
         if (field_0x278) {
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[field_0x254 * 5], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[field_0x254 * 5 + 1], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[field_0x254 * 5 + 2], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[field_0x254 * 5 + 3], 0, 0, NULL, NULL, true, 1.0f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[field_0x254 * 5 + 4], 0, 0, NULL, NULL, true, 1.0f);
+            s32 type = field_0x254;
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[type * 5], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[type * 5 + 1], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[type * 5 + 2], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[type * 5 + 3], 0, 0, NULL, NULL, true, 1.0f);
+            spawnEmitter_8013CC50(field_0x4, &mPos, lbl_8046F5E8[type * 5 + 4], 0, 0, NULL, NULL, true, 1.0f);
             startSound_801F0E34(0x5006F, 0);
             field_0x24c = 13;
             field_0x250 = 180;
