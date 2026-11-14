@@ -9,6 +9,7 @@
 #include "game/Player.h"
 #include "game/PlayerBit.h"
 #include "game/cls_804AE9B0.h"
+#include "game/act/act_grass.h"
 
 BgRewrite_804A7C98::BgRewrite_804A7C98() {
     gBgRewrite_8053AC98 = this;
@@ -188,6 +189,169 @@ bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s
         result = false;
     }
     return result;
+}
+
+void BgRewrite_804A7C98::fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, s32 a, s32 b) {
+    JGeometry::TVec2f p(pos->x, pos->y);
+    field_0x20 = fn_80226BC4(&p, layer);
+    field_0x24 = gGameRoot2_8053AB10->field_0x20->fn_802F9908(layer, field_0x20);
+    s32 bit = fn_80226AE0(pos, layer);
+    if (field_0x24 == 0x69) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7A);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+        gAudioMgr_8053AF80->fn_80458880(3, -1);
+    } else if (field_0x24 == 0x68) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x12);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else if (field_0x24 == 0x6A) {
+        gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x50);
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+    } else if (field_0x24 == 0x70 || field_0x24 == 0x75 || field_0x24 == 0x6B) {
+        if (a == 0x10000) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x5A);
+            if (!getGameView_802D6A9C()->fn_802D6AC4(bit)) {
+                s32 serial;
+                if (field_0x24 == 0x6B) {
+                    serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 3, -1, -1);
+                } else {
+                    serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a, -1, -1);
+                }
+                Grass_804A92D0* grass =
+                    (Grass_804A92D0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (grass != NULL) {
+                    grass->fn_802CEC10();
+                }
+                getGameView_802D6A9C()->fn_802D6B24(bit, true);
+            }
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x79);
+            s32 serial;
+            if (field_0x24 == 0x70) {
+                serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a, -1, -1);
+            } else if (field_0x24 == 0x75) {
+                serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 1, -1, -1);
+            } else if (field_0x24 == 0x6B) {
+                if (getGameView_802D6A9C()->fn_802D6AC4(bit)) {
+                    serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 4, -1, -1);
+                } else {
+                    serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 3, -1, -1);
+                    getGameView_802D6A9C()->fn_802D6B24(bit, true);
+                }
+            }
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->vfunc_0x24();
+            }
+        }
+    } else if (field_0x24 == 0x74) {
+        if (a == 0x10000) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x5A);
+            if (!getGameView_802D6A9C()->fn_802D6AC4(bit)) {
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 0x100000, -1, -1);
+                Grass_804A92D0* grass =
+                    (Grass_804A92D0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (grass != NULL) {
+                    grass->fn_802CEC10();
+                }
+                getGameView_802D6A9C()->fn_802D6B24(bit, true);
+            }
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7D);
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 0x100000, -1, -1);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->vfunc_0x24();
+            }
+        }
+    } else if (field_0x24 == 0x146) {
+        if (a == 0x10000) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x147);
+            if (!getGameView_802D6A9C()->fn_802D6AC4(bit)) {
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 0x100000, -1, -1);
+                Grass_804A92D0* grass =
+                    (Grass_804A92D0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (grass != NULL) {
+                    grass->fn_802CEC10();
+                }
+                getGameView_802D6A9C()->fn_802D6B24(bit, true);
+            }
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7D);
+            s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 0x100000, -1, -1);
+            ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+            if (actor != NULL) {
+                actor->vfunc_0x24();
+            }
+        }
+    } else if (field_0x24 == 0xFA) {
+        if (a == 0x10000) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x5A);
+            if (!getGameView_802D6A9C()->fn_802D6AC4(bit)) {
+                s32 serial = getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, pos, a + 0x200000, -1, -1);
+                Grass_804A92D0* grass =
+                    (Grass_804A92D0*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                if (grass != NULL) {
+                    grass->fn_802CEC10();
+                }
+                getGameView_802D6A9C()->fn_802D6B24(bit, true);
+            }
+        } else if (!getGameView_802D6A9C()->fn_802D72BC(bit)) {
+            getGameView_802D6A9C()->fn_802D7310(bit, true);
+            JGeometry::TVec3f spawnPos;
+            fn_80226CA8(bit, layer, &spawnPos);
+            spawnPos.x += 8.0f;
+            spawnPos.y += 8.0f;
+            getActorManager_801F856C()->spawnActor_801F9484('GRAS', layer, &spawnPos, a + 0x200000, -1, -1);
+        }
+    } else if (field_0x24 == 0x71) {
+        if (a == 0) {
+            // both outcomes write 0x7B in the original
+            if (fn_802353AC(player)) {
+                gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7B);
+            } else {
+                gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x7B);
+            }
+        } else {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x5A);
+        }
+        s32 serial = getActorManager_801F856C()->spawnActor_801F9484('BORD', layer, pos, 0, -1, -1);
+        ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        if (actor != NULL) {
+            actor->vfunc_0x24();
+        }
+        spawnEmitter_8013CC50(layer, pos, 0x24A, 1, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(layer, pos, 0x24B, 1, 0, NULL, NULL, true, 1.0f);
+    }
+    fn_802A3164(pos, player, layer);
+    if (b != 0) {
+        if (field_0x24 == 0xEA) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x252);
+            fn_80230FD0(player, 0x30006);
+        } else if (field_0x24 == 0xEB) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x253);
+            fn_80230FD0(player, 0x30006);
+        } else if (field_0x24 == 0xEC) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x254);
+            fn_80230FD0(player, 0x30006);
+        } else if (field_0x24 == 0xF9) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x25B);
+            fn_80230FD0(player, 0x30006);
+        } else if (field_0x24 == 0x159 && a == 0x10000) {
+            gBgRewrite_8053AC98->fn_802A3948(pos, 0, layer, 0x5A);
+        }
+    }
 }
 
 // FIXME(shotgun): 99.81 %, regalloc-only; behaviour clean.
