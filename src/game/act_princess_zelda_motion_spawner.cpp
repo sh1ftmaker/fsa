@@ -150,12 +150,13 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
     }
         // fall through
     case 5:
-        if (getActorManager_801F856C()->fn_801F68E0() != 0) {
-            for (s32 i = 0; i < 4; i++) {
-                fn_80230C6C(i);
-            }
-            mState = 6;
+        if (getActorManager_801F856C()->fn_801F68E0() == 0) {
+            break;
         }
+        for (s32 i = 0; i < 4; i++) {
+            fn_80230C6C(i);
+        }
+        mState = 6;
         // fall through
     case 6: {
         Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
