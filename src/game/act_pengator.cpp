@@ -24,7 +24,8 @@ static inline void hitReaction(Pengator_804A1888* self) {
     self->fn_801F2618(NULL, false);
 }
 
-// FIXME: 99.00 %. Regalloc only: the zero literal of the 0x234-0x248 stores
+// FIXME: 99.00 %, regalloc-only; behaviour clean.
+// Regalloc only: the zero literal of the 0x234-0x248 stores
 // is in r7 in the original and r8 here (it swaps with the gGameRoot_8053AAF8
 // pointer loaded after it).
 void Pengator_804A1888::init() {
@@ -63,7 +64,8 @@ void Pengator_804A1888::vfunc_0x18() {
     ActorBase_804A5770::vfunc_0x18();
 }
 
-// FIXME: 93.01 %. What differs: (1) the (field_0x98 & 2) test's branch layout
+// FIXME: 94.13 %, different + reloc-name; behaviour drift.
+// What differs: (1) the (field_0x98 & 2) test's branch layout
 // (the original falls through into the y check, we branch to it), so the
 // near-check blocks shuffle; (2) the case 2 velocity stores are ordered
 // differently (0x254 reloaded, 0.3f and 5.0f hoisted above the stores); (3)
