@@ -51,7 +51,8 @@ void WarpPillar_804AC0A8::init() {
     mBox.f.y = 15.0f;
 }
 
-// FIXME: 94.3 %. Register allocation differs (this in r28 and the loop
+// FIXME: 95.66 %, missing/extra; behaviour near.
+// Register allocation differs (this in r28 and the loop
 // counter in r27 in the original), `order` is copied from a .rodata table
 // instead of stored with li 0-3, the bubble-sort swap goes through a stack
 // temporary in the original, the owner test branches the other way, and the
