@@ -1206,7 +1206,7 @@ static inline TileMap_804AA858* getTileMap() {
     return gGameRoot2_8053AB10->field_0x20;
 }
 
-// FIXME: 98.23 %, missing/extra + reloc-name; behaviour drift.
+// FIXME: 98.27 %, missing/extra + reloc-name; behaviour near.
 // Structurally close: the target builds the resource type with 'M   ' in a
 // register (lis/addi 0x4D202020, add, then subi 0x20 for the last ' '); ours folds the
 // constant (addis/addi 0x2000) and adds it first; the inlined fn_802DEBA0 reloads the view
@@ -1426,8 +1426,6 @@ void GameView_804A9950::fn_802D8328(bool reset, bool flag) {
     field_0xec = 50;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean.
-// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8228(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1445,8 +1443,6 @@ const char* GameView_804A9950::fn_802D8228(s32 layer) {
     return NULL;
 }
 
-// FIXME: 99.84 %, reloc-name; behaviour clean.
-// Reloc-name only: the format string waits for the unit's .rodata to be written.
 const char* GameView_804A9950::fn_802D8128(s32 layer) {
     s32 col = field_0x14;
     if (col >= 0 && col < 10) {
@@ -1900,6 +1896,7 @@ GameView_804A9950* getGameView_802D6A9C(void) {
 // tiles in field_0x2948 and, where the screen's mask (fn_802D7AC4) has their bit set,
 // rewrites them to their other state; layer 8 and up also handle the two-cell and
 // multi-cell pieces. Layers below 8 then copy the "bg_tenso_sch.bin" tiles.
+// FIXME: 92.13 %, missing/extra; behaviour near.
 void GameView_804A9950::fn_802D4CCC(s32 layer) {
     u64 mask = getGameView_802D6A9C()->fn_802D7AC4(layer);
     field_0x131b8[layer] = 0;
@@ -2553,6 +2550,7 @@ bool GameView_804A9950::fn_802D46D8(s32 index, u32 bit, bool set) {
 // The second variant (gGameRoot_8053AAF8->field_0x7f clear) reads one line of map500.csv.
 // Still differs: the 0xFF fill keeps an inner-loop guard (li 0; cmpwi 10) the original lacks, and the
 // map500 line skip is not rotated with a guard as in the original.
+// FIXME: 97.51 %, missing/extra; behaviour drift.
 void GameView_804A9950::fn_802D3D48() {
     getGameView_802D6A9C()->field_0x1328c = 0;
     for (s32 row = 0; row < 10; row++) {
