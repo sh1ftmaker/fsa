@@ -1844,7 +1844,8 @@ struct GameRootSub24_8016A3AC {
     // 0x8016DCEC: in the isGameModeSet() modes (not mode 0xB), while
     // field_0x1cf is set, runs fn_8016D398 with the camera matrix.
     void fn_8016DCEC();
-    // 0x8016DE30 (game/tu_8016A2B4.cpp, not written yet): called by GameRootSub04's fn_80139D9C.
+    // 0x8016DE30 (game/tu_8016A2B4.cpp): per-frame update of the backdrop emitters and animation
+    // frames; called by GameRootSub04's fn_80139D9C.
     void fn_8016DE30();
 
     // game/tu_8016A2B4.cpp (0x8016DA6C, not written yet). Takes `this` as its

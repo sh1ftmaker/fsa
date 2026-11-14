@@ -19,6 +19,8 @@
 #include "JSystem/J3D/J3DSys.h"
 #include "JSystem/JKernel/JKRArchive.h"
 #include "game/GameState.h"
+#include "game/GameView.h"
+#include "game/Player.h"
 
 // The colours of the backdrop GX setups (the user of each in the comment;
 // none of the three users is written yet). File-scope objects: they come
@@ -344,6 +346,209 @@ void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entrie
     }
 }
 #endif
+
+// Still differs: the stack slots of the first two zero vectors are swapped.
+void GameRootSub24_8016A3AC::fn_8016DE30() {
+    if (isGameModeSet()) {
+        if (field_0x1d2) {
+            if (field_0x128 == NULL) {
+                JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+                field_0x128 = spawnEmitter_8013CC50(0, &pos, 0x543, 0, 0, NULL, NULL, true, 1.0f);
+            }
+            if (field_0x12c == NULL) {
+                JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+                field_0x12c = spawnEmitter_8013CC50(0, &pos, 0x544, 0, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            if (field_0x128 != NULL) {
+                JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+                manager->forceDeleteEmitter(field_0x128);
+                field_0x128 = NULL;
+            }
+            if (field_0x12c != NULL) {
+                JPAEmitterManager* manager = getEffectSystem_8013C824()->mEmitterManager;
+                manager->forceDeleteEmitter(field_0x12c);
+                field_0x12c = NULL;
+            }
+        }
+
+        if (field_0x1d1) {
+            TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
+            JGeometry::TVec3f pos = map->field_0x2368;
+            pos.x += 0.5f * (8.0f * map->field_0x2380);
+            pos.y += 0.5f * (8.0f * map->field_0x2384);
+            if (field_0x130 != NULL) {
+                field_0x130->setGlobalTranslation(pos);
+                field_0x134->setGlobalTranslation(pos);
+            } else {
+                field_0x130 = spawnEmitter_8013CC50(0, &pos, 0x222, 0, 0, NULL, NULL, true, 1.0f);
+                field_0x134 = spawnEmitter_8013CC50(0, &pos, 0x223, 0, 0, NULL, NULL, true, 1.0f);
+            }
+        } else {
+            if (field_0x130 != NULL) {
+                field_0x130->becomeInvalidEmitter();
+                field_0x130 = NULL;
+            }
+            if (field_0x134 != NULL) {
+                field_0x134->becomeInvalidEmitter();
+                field_0x134 = NULL;
+            }
+        }
+
+        if (field_0x1c4 && (getGameView_802D6A9C()->fn_802DCD0C() || !field_0x1bc)) {
+            TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
+            Camera_804AA9E4* camera = gGameRoot2_8053AB10->field_0x24;
+            f32 camX = -camera->field_0x4[0][3];
+            f32 camY = -camera->field_0x4[1][3];
+            f32 halfX = 0.5f * camX;
+            f32 halfY = 0.5f * camY;
+            f32 width = 8.0f * map->field_0x2380;
+            f32 height = 8.0f * map->field_0x2384;
+            JGeometry::TVec3f pos(width * (s32)(halfX / width) + (camX - halfX),
+                                  height * (s32)(halfY / height) + (camY - halfY), 0.0f);
+            if (field_0x138 != NULL) {
+                setEmitterPos_8013CB44(field_0x138, &pos, -1, 0, true);
+            } else {
+                field_0x138 = spawnEmitter_8013CC50(0, &pos, 0x2a8, -1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else if (field_0x138 != NULL) {
+            field_0x138->becomeInvalidEmitter();
+            field_0x138 = NULL;
+        }
+
+        if (field_0x1d3) {
+            TileMap_804AA858* map = gGameRoot2_8053AB10->field_0x20;
+            JGeometry::TVec3f pos = map->field_0x2368;
+            pos.x += 0.5f * (8.0f * map->field_0x2380);
+            pos.y += 0.5f * (8.0f * map->field_0x2384);
+            if (field_0x13c != NULL) {
+                setEmitterPos_8013CB44(field_0x13c, &pos, -1, 0, true);
+            } else {
+                field_0x13c = spawnEmitter_8013CC50(0, &pos, 0x385, -1, 0, NULL, NULL, true, 1.0f);
+            }
+        } else if (field_0x13c != NULL) {
+            field_0x13c->becomeInvalidEmitter();
+            field_0x13c = NULL;
+        }
+
+        field_0x1c0++;
+    }
+
+    if ((!isGameModeSet() || !getGameView_802D6A9C()->fn_802DCD0C()) && gGameRoot_8053AAF8->field_0x94 == 0 &&
+        gGameRoot_8053AAF8->field_0x96 == 0 &&
+        (!gGameRoot_8053AAF8->field_0x7f ||
+         (!fn_80239D38() && !(gGameRoot_8053AAF8->field_0x4c == 11 ? true : gGameRoot_8053AAF8->field_0x88 == 2))) &&
+        lbl_80529DEC.field_0x240 == 0 && lbl_8053AEC8->field_0x5d == 0) {
+        field_0x1c4 = 0;
+        field_0x1c5 = 0;
+        field_0x1c6 = 0;
+        field_0x1c7 = 0;
+        field_0x1c8 = 0;
+        field_0x1c9 = 0;
+        field_0x1ca = 0;
+        field_0x1cb[0] = 0;
+        field_0x1cb[1] = 0;
+        field_0x1cb[2] = 0;
+        field_0x1cb[3] = 0;
+        field_0x1cf = 0;
+        field_0x1d1 = 0;
+        field_0x1d2 = 0;
+        field_0x1d3 = 0;
+        field_0x1dc = 0;
+        field_0x1dd = 0;
+    }
+
+    field_0x1bc = getGameView_802D6A9C()->fn_802DCD0C();
+
+    if (isGameModeSet()) {
+        s32 frame = field_0x1c0;
+        if (!field_0x1ee) {
+            if (field_0x124 != NULL) {
+                field_0x124->becomeInvalidEmitter();
+                field_0x124 = NULL;
+            }
+        } else if (field_0x124 == NULL) {
+            JGeometry::TVec3f pos(0.0f, 0.0f, 0.0f);
+            field_0x124 = spawnEmitter_8013CC50(0, &pos, 0x54b, 0, 0, NULL, NULL, true, 1.0f);
+        }
+
+        if (field_0x8 != NULL) {
+            field_0x8->setFrame((f32)(frame % field_0x8->getTotalFrameCount()));
+        }
+        if (field_0x10 != NULL) {
+            field_0x10->setFrame((f32)(frame % field_0x10->getTotalFrameCount()));
+        }
+        if (field_0x18 != NULL) {
+            field_0x18->setFrame((f32)(frame % field_0x18->getTotalFrameCount()));
+        }
+        if (field_0x20 != NULL) {
+            field_0x20->setFrame((f32)(frame % field_0x20->getTotalFrameCount()));
+            field_0x24->setFrame((f32)(field_0x1ed * 120 / 255 + 1));
+        }
+        if (field_0x2c != NULL) {
+            field_0x2c->setFrame((f32)(frame % field_0x2c->getTotalFrameCount()));
+            field_0x30->setFrame((f32)(field_0x1ef * 100 / 255));
+        }
+        if (field_0x38 != NULL) {
+            field_0x38->setFrame((f32)(frame % field_0x38->getTotalFrameCount()));
+        }
+        if (field_0x88 != NULL) {
+            field_0x88->setFrame((f32)(frame % field_0x88->getTotalFrameCount()));
+            field_0x8c->setFrame(100.0f);
+        }
+        if (field_0x94 != NULL) {
+            field_0x94->setFrame((f32)(frame % field_0x94->getTotalFrameCount()));
+            field_0x98->setFrame((f32)(field_0x1f1 * 100 / 255));
+        }
+        if (field_0xa0 != NULL) {
+            field_0xa0->setFrame((f32)(frame % field_0xa0->getTotalFrameCount()));
+            field_0xa4->setFrame((f32)(field_0x1f2 * 100 / 255));
+        }
+        if (field_0xac != NULL) {
+            field_0xac->setFrame((f32)(frame % field_0xac->getTotalFrameCount()));
+            field_0xb0->setFrame((f32)(frame % field_0xb0->getTotalFrameCount()));
+        }
+        if (field_0xb8 != NULL) {
+            field_0xb8->setFrame((f32)(frame % field_0xb8->getTotalFrameCount()));
+            field_0xbc->setFrame((f32)(field_0x1f3 * 100 / 255));
+        }
+        if (field_0xc4 != NULL) {
+            s32 minX = 0x200;
+            s32 alpha = 100 - gGameRoot2_8053AB10->field_0x2c->field_0xc * 100 / 255;
+            for (s32 i = 0; i < 4; i++) {
+                if (fn_8023F264(i)) {
+                    s32 x = (s32)getPlayerPos_8023E724(i)->x & 0x1ff;
+                    if (minX > x) {
+                        minX = x;
+                    }
+                }
+            }
+            if (field_0x1d8 > minX) {
+                field_0x1d8 = field_0x1d8 - 4 >= minX ? field_0x1d8 - 4 : minX;
+            }
+            if (field_0x1d8 > 0) {
+                s32 v = (256 - field_0x1d8) * 100 / 256;
+                alpha = v >= alpha ? v : alpha;
+            }
+            field_0xc4->setFrame((f32)(frame % field_0xc4->getTotalFrameCount()));
+            field_0xc8->setFrame((f32)alpha);
+        }
+        if (field_0xd0 != NULL) {
+            field_0xd0->setFrame((f32)(frame % field_0xd0->getTotalFrameCount()));
+        }
+        if (field_0xd8 != NULL) {
+            field_0xd8->setFrame((f32)(frame % field_0xd8->getTotalFrameCount()));
+            field_0xdc->setFrame((f32)(field_0x1f4 * 100 / 255));
+        }
+        if (field_0xe4 != NULL) {
+            field_0xe4->setFrame((f32)(frame % field_0xe4->getTotalFrameCount()));
+            field_0xe8->setFrame((f32)(field_0x1f5 * 100 / 255));
+        }
+        if (field_0xf0 != NULL) {
+            field_0xf0->setFrame((f32)(frame % field_0xf0->getTotalFrameCount()));
+        }
+    }
+}
 
 void GameRootSub24_8016A3AC::fn_8016DCEC() {
     if (isGameModeSet() && field_0x1cf && gGameRoot_8053AAF8->field_0x4c != 0xB) {
