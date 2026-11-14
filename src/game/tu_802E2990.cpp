@@ -112,12 +112,11 @@ cls_804A9C20::~cls_804A9C20() {
 
 // The hit box `box` (relative to mPos) the actor shifts to mPos and hands to fn_80239914.
 static inline void shiftBox(JGeometry::TBox2f* out, const JGeometry::TBox2f& box, const JGeometry::TVec3f& pos) {
-    JGeometry::TVec2f p(pos.x, pos.y);
     out->set(box);
-    out->i.x += p.x;
-    out->i.y += p.y;
-    out->f.x += p.x;
-    out->f.y += p.y;
+    out->i.x += pos.x;
+    out->i.y += pos.y;
+    out->f.x += pos.x;
+    out->f.y += pos.y;
 }
 
 // 0x802E2C28.
@@ -129,7 +128,7 @@ void cls_804A9C20::update() {
     mPos.x = field_0x24c[0];
     mPos.y = field_0x24c[1];
     mPos.z = field_0x24c[2];
-    JGeometry::TVec3f savedPos(mPos.x, mPos.y, mPos.z);
+    JGeometry::TVec3f savedPos = mPos;
     switch (field_0x230) {
     case 2:
         field_0x2c4--;
