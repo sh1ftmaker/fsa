@@ -904,8 +904,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             mFlags &= ~0x100;
             if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2.i = mBox.i;
-                mBox2.f = mBox.f;
+                mBox2 = mBox;
             }
         }
         if (mStateTimer > 1 && mPos.z <= 0.0f) {
@@ -938,14 +937,10 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
                 JGeometry::TVec3f savedPos = mPos;
                 s32 savedLayer = field_0x4;
                 field_0x4 = field_0x57c;
-                mPos.x = field_0x580.x;
-                mPos.y = field_0x580.y;
-                mPos.z = field_0x580.z;
+                mPos = field_0x580;
                 s32 p = fn_801D05F8(&mPos, 60.0f);
                 field_0x4 = savedLayer;
-                mPos.x = savedPos.x;
-                mPos.y = savedPos.y;
-                mPos.z = savedPos.z;
+                mPos = savedPos;
                 if (p >= 0) {
                     fn_801C3B7C(0x1E);
                 } else {
@@ -969,8 +964,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             mFlags &= ~0x100;
             if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2.i = mBox.i;
-                mBox2.f = mBox.f;
+                mBox2 = mBox;
             }
         }
         if (mStateTimer > 1 && fn_801D0DD4()) {
