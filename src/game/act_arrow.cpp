@@ -218,7 +218,7 @@ ArrowPlayer_804A05E0::~ArrowPlayer_804A05E0() {
 }
 
 // 0x80165730. States: 0 flying, 1 spinning away after a hit, 2/3 burning up, 4 caught by a flame.
-// FIXME(shotgun): 89.48 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 92.10 %, missing/extra + reloc-name; behaviour near.
 void ArrowPlayer_804A05E0::update() {
     if (field_0x94 == 3) {
         JGeometry::TBox2f box;
