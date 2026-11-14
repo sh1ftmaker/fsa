@@ -68,6 +68,7 @@ extern const s16* lbl_8049D1A0[26];
 extern const s16* lbl_80539EF8[2];
 // The scenario keys of the demo (rodata 0x80464550).
 extern const s32 lbl_80464550[];
+static const s32 lbl_8053C548[] = { 0x232, 0x4B0 };
 
 // FIXME(shotgun): 98.61 %, missing/extra + reloc-name; behaviour clean.
 void PrincessZeldaDemo_8049D208::init() {
@@ -170,6 +171,343 @@ static inline void camBox(f32 x, f32 y0, f32 y1) {
         cam->field_0x808.f.x = x;
         cam->field_0x808.f.y = y1;
         cam->field_0x7f6 = 0;
+    }
+}
+
+// The demo states of the first two scene sets (field_0x234 0 and 1): keeps the maiden's box
+// registered, steers the camera (fn_80110454) and runs the state's step.
+// FIXME: 97.28 %, missing/extra + reloc-name; behaviour drift.
+void PrincessZeldaDemo_8049D208::fn_80110E9C() {
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
+    if (field_0x238 == 1 || field_0x238 == 2) {
+        fn_80239914(&box, field_0x4, mSerial);
+    }
+    fn_80110454();
+    switch (field_0x238) {
+    case 1: {
+        gAudioMgr_8053AF80->fn_80458FF0(0x100000E, false, 0);
+        if (field_0x234 == 1) {
+            fn_8011921C()->fn_801186B0(1);
+            break;
+        }
+        if (field_0x234 == 0) {
+            fn_8011921C()->fn_801186B0(0);
+            break;
+        }
+        bool talkFlag = false;
+        if (field_0x234 != 1) {
+            u16 angle;
+            f32 dist;
+            s32 other;
+            s32 dir;
+            fn_801EEC98(mSerial, &angle, &dir, &dist, &other, 0, 2);
+            if (dir >= 0 && !(dist > 80.0f) && dir >= 0) {
+                field_0x98 = dir;
+                if (dir + 6 != mAnim0.mAnim) {
+                    mAnim0.startAnim_801D22DC(dir + 6, 2, false);
+                    mAnim0.fn_801D1F14(0.0f);
+                }
+            }
+        } else {
+            talkFlag = true;
+        }
+        u32 msg = lbl_8053C548[field_0x234];
+        JGeometry::TBox2f box2 = mBox;
+        box2.i.x += mPos.x;
+        box2.i.y += mPos.y;
+        box2.f.x += mPos.x;
+        box2.f.y += mPos.y;
+        fn_8022FEB8(&box2, field_0x4, mSerial, true, talkFlag);
+        s32 player = fn_8022FD8C(mSerial);
+        if (player < 0 || player >= 4) {
+            player = -1;
+        } else if (!fn_802300EC(player)) {
+            player = -1;
+        } else if (!fn_8023F264(player)) {
+            player = -1;
+        } else {
+            JGeometry::TVec3f at = mPos;
+            at.y += -10.0f;
+            if (!fn_8038AD24(player, msg, mSerial, field_0x4, at, 0x20)) {
+                player = -1;
+            } else {
+                field_0x23c = player;
+                mAnim0.startAnim_801D22DC(fn_801CD354(fn_80230CFC(field_0x23c)) + 6, 2, false);
+                mAnim0.fn_801D1F14(0.0f);
+                for (s32 i = 0; i < 4; i++) {
+                    fn_80230C6C(i);
+                }
+            }
+        }
+        if (player >= 0) {
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(2);
+                break;
+            case 2:
+                fn_8010E2D4(2);
+                break;
+            }
+            field_0x238 = 2;
+        }
+        break;
+    }
+    case 2:
+        fn_8022FF8C(field_0x23c, &box, field_0x4, mSerial, true, false);
+        if (fn_80388CAC(field_0x23c, mSerial)) {
+            field_0x23c = -1;
+            switch (field_0x234) {
+            case 1:
+                break;
+            case 0:
+                switch (field_0x234) {
+                case 0:
+                case 1:
+                    fn_8010E7E8(0xD);
+                    break;
+                case 2:
+                    fn_8010E2D4(0xD);
+                    break;
+                }
+                field_0x238 = 0xD;
+                switch (field_0x234) {
+                case 0:
+                case 1:
+                    fn_8010E7E8(0x3E);
+                    break;
+                case 2:
+                    fn_8010E2D4(0x3E);
+                    break;
+                }
+                field_0x238 = 0x3E;
+                break;
+            default:
+                switch (field_0x234) {
+                case 0:
+                case 1:
+                    fn_8010E7E8(1);
+                    break;
+                case 2:
+                    fn_8010E2D4(1);
+                    break;
+                }
+                field_0x238 = 1;
+                break;
+            }
+        }
+        break;
+    case 4:
+        mAnim0.mFrameCtrl.setRate(1.0f);
+        if (fn_801CD950(&mPos.y, getPlayerPos_8023E724(0)->y - 24.0f, 0.7f) == 0) {
+            mAnim0.startAnim_801D22DC(2, 2, false);
+            mAnim0.fn_801D1F14(0.0f);
+            mAnim0.mFrameCtrl.setRate(1.0f);
+        }
+        break;
+    case 5:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 7:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 9:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 11:
+        fn_801CD950(&mPos.y, getPlayerPos_8023E724(0)->y - 300.0f, 0.7f);
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.y <= field_0x2dc.y) {
+                pos.y = field_0x2dc.y;
+                fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            } else {
+                pos += field_0x2e8;
+                fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        break;
+    case 12:
+        fn_801CD950(&mPos.y, getPlayerPos_8023E724(0)->y - 300.0f, 0.7f);
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.y <= field_0x2dc.y) {
+                pos.y = field_0x2dc.y;
+                fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            } else {
+                pos += field_0x2e8;
+                fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        break;
+    case 14:
+        if (fn_8011921C()->field_0x8 >= 30) {
+            for (s32 i = 0; i < 4; i++) {
+                JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+                if (pos.y <= field_0x2dc.y) {
+                    pos.y = field_0x2dc.y;
+                    fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+                } else {
+                    pos += field_0x2e8;
+                    fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+                }
+            }
+            mPos += field_0x2e8;
+        }
+        break;
+    case 15:
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.y <= field_0x2dc.y) {
+                pos.y = field_0x2dc.y;
+                fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            } else {
+                pos += field_0x2e8;
+                fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        mPos += field_0x2e8;
+        break;
+    case 16:
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.y <= field_0x2dc.y) {
+                pos.y = field_0x2dc.y;
+                fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            } else {
+                pos += field_0x2e8;
+                fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        mPos += field_0x2e8;
+        if (mPos.y <= mSpawnPos.y) {
+            mPos.y = mSpawnPos.y;
+            mAnim0.startAnim_801D22DC(2, 2, false);
+            mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 17:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 18:
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            if (pos.y >= field_0x2dc.y) {
+                pos.y = field_0x2dc.y;
+                fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+            } else {
+                pos += field_0x2e8;
+                fn_80230498(i, &pos, mAnim1.mCel, 0xFF, -0x80, -0x80, true);
+            }
+        }
+        break;
+    case 21:
+        if (mAnim0.fn_801D208C()) {
+            mAnim0.startAnim_801D22DC(0x13, 2, false);
+            mAnim0.fn_801D1F14(0.0f);
+        }
+        break;
+    case 26:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+            gAudioMgr_8053AF80->fn_80458FF0(0x100001F, true, 0);
+        }
+        break;
+    case 31:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        if (fn_803865B8(0)) {
+            fn_80388EEC(0);
+            fn_8011921C()->fn_801183BC();
+        }
+        break;
+    case 32:
+        switch (field_0x260[0]) {
+        case 0:
+        case 90:
+        case 110:
+        case 130:
+            switch (mAnim0.mAnim) {
+            case 9:
+            case 11:
+            case 13:
+                mAnim0.startAnim_801D22DC(10, 0, false);
+                break;
+            default:
+                mAnim0.startAnim_801D22DC(11, 0, false);
+                break;
+            }
+            mAnim0.fn_801D1F14(0.0f);
+            break;
+        }
+        field_0x260[0]++;
+        break;
+    case 33: {
+        f32 dz = 2.0f - 0.2f * (fn_8011921C()->field_0x8 - lbl_80464550[33]);
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            pos.z += dz;
+            if (pos.z <= 0.0f) {
+                pos.z = 0.0f;
+            } else {
+                pos.y += 2.0f;
+            }
+            fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+        }
+        break;
+    }
+    case 35: {
+        field_0x268[0] += 0.04f;
+        fn_801CD950(&field_0x268[1], 2.0f, 0.05f);
+        s16 angle = (s32)(JMath::atanTable_.atan2_(field_0x27c.x - mPos.x, field_0x27c.y - mPos.y) *
+                          10430.378f);
+        field_0x3c.x = field_0x268[1] * JMath::sincosTable_.sinShort(angle);
+        field_0x3c.y = field_0x268[1] * JMath::sincosTable_.cosShort(angle);
+        s32 doneX = fn_801CD950(&mPos.x, field_0x27c.x, field_0x3c.x);
+        s32 doneY = fn_801CD950(&mPos.y, field_0x27c.y, field_0x3c.y);
+        fn_801CD950(&field_0x270, 0.05f, -0.005f);
+        bool arrived = doneX == 0 && doneY == 0;
+        if (arrived) {
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(0x24);
+                break;
+            case 2:
+                fn_8010E2D4(0x24);
+                break;
+            }
+            field_0x238 = 0x24;
+        }
+        break;
+    }
+    case 36:
+        fn_801CD950(&field_0x270, 0.0f, -0.02f);
+        break;
+    case 62:
+        mDrawEnabled = false;
+        break;
     }
 }
 
@@ -779,6 +1117,233 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
     field_0x238 = arg;
 }
 #pragma auto_inline reset
+
+// The centre of the camera's visible box, at z 0.
+static inline void setCenter(JGeometry::TVec3f& pos, JGeometry::TBox2f box) {
+    pos.x = box.f.x + 0.5f * (box.i.x - box.f.x);
+    pos.y = box.f.y + 0.5f * (box.i.y - box.f.y);
+    pos.z = 0.0f;
+}
+
+// Enters demo state `arg` (3-0x25) of the second scene set.
+// FIXME: 96.84 %, missing/extra + reloc-name; behaviour drift.
+void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
+    switch (arg) {
+    case 3:
+        fn_8011921C()->field_0x2 = 1;
+        lbl_8053AED0->fn_8043A450(0, 3);
+        break;
+    case 4:
+        mAnim0.startAnim_801D22DC(2, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 5:
+        mAnim0.startAnim_801D22DC(8, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, lbl_8053C548[field_0x234], field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 6:
+        field_0x278 = -40.0f;
+        break;
+    case 7:
+        mAnim0.startAnim_801D22DC(0xE, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x233, field_0x4, JGeometry::TVec3f(0.0f, -226.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 8:
+        mAnim0.startAnim_801D22DC(0xC, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        field_0x278 = -25.0f;
+        break;
+    case 9:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x234, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 10:
+        mAnim0.startAnim_801D22DC(0xD, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        break;
+    case 11:
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        field_0x2e8.set(0.0f, -0.7f, 0.0f);
+        field_0x2dc.set(*getPlayerPos_8023E724(0));
+        field_0x2dc.y -= 300.0f;
+        break;
+    case 12:
+        fn_80119DD0()->fn_80119998(0x5A, 0, 2, 0, 0, 0x3C, 0);
+        break;
+    case 13:
+        getGameView_802D6A9C()->fn_802D9FF4(field_0x244, field_0x248);
+        getGameView_802D6A9C()->fn_802DA8DC();
+        break;
+    case 14: {
+        fn_8011921C()->field_0x2 = 1;
+        JGeometry::TVec3f start = mSpawnPos;
+        JGeometry::TVec3f target = *getPlayerPos_8023E724(0);
+        target.y += 32.0f;
+        start.y += 16.0f;
+        for (int i = 0; i < 4; i++) {
+            fn_80230498(i, &target, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
+        }
+        JGeometry::TVec3f pos = target;
+        pos.y -= 16.0f;
+        mPos.set(pos);
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - target;
+        field_0x2e8 = JGeometry::TVec3f(d.x / 240.0f, d.y / 240.0f, d.z / 240.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 16: {
+        JGeometry::TVec3f pos = *fn_8023E604(0);
+        pos.y -= 32.0f;
+        mPos.set(pos);
+        mAnim0.startAnim_801D22DC(3, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(0.5f);
+        JGeometry::TVec3f start = mSpawnPos;
+        JGeometry::TVec3f target = *fn_8023E604(0);
+        start.y += 16.0f;
+        target.y -= 16.0f;
+        for (int i = 0; i < 4; i++) {
+            fn_80230498(i, &target, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
+        }
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - target;
+        field_0x2e8 = JGeometry::TVec3f(d.x / 110.0f, d.y / 110.0f, d.z / 110.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 17:
+        mAnim0.startAnim_801D22DC(8, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        mAnim0.mFrameCtrl.setRate(1.0f);
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x4B0, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 18: {
+        JGeometry::TVec3f start = mPos;
+        start.y += 48.0f;
+        field_0x2dc = start;
+        JGeometry::TVec3f d = start - *getPlayerPos_8023E724(0);
+        field_0x2e8 = JGeometry::TVec3f(d.x / 60.0f, d.y / 60.0f, d.z / 60.0f);
+        mAnim1.startAnim_801D22DC(0, 2, false);
+        mAnim1.fn_801D1F14(0.0f);
+        break;
+    }
+    case 19:
+        fn_8011921C()->fn_801183BC();
+        mAnim0.startAnim_801D22DC(0xF, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        fn_8011921C()->field_0x2 = 1;
+        gAudioMgr_8053AF80->fn_80458FF0(0x100001B, false, 0);
+        break;
+    case 21:
+        field_0x364 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x309, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x368 = spawnEmitter_8013CC50(field_0x4, &mPos, 0x30A, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E1, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E2, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0x2E3, 0, 0, NULL, NULL, true, 1.0f);
+        field_0x36c = spawnEmitter_8013CC50(field_0x4, &mPos, 0x2EA, 0, 0, NULL, NULL, true, 1.0f);
+        mAnim0.startAnim_801D22DC(0x15, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 22:
+        mAnim0.startAnim_801D22DC(0x14, 2, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 23:
+        if (field_0x364 != NULL) {
+            JPABaseEmitter* emitter = field_0x364;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x364 = NULL;
+        }
+        if (field_0x368 != NULL) {
+            JPABaseEmitter* emitter = field_0x368;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x368 = NULL;
+        }
+        if (field_0x36c != NULL) {
+            JPABaseEmitter* emitter = field_0x36c;
+            emitter->stopCreateParticle();
+            emitter->mMaxFrame = 1;
+            field_0x36c = NULL;
+        }
+        mAnim0.startAnim_801D22DC(0x18, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 25:
+        mAnim0.startAnim_801D22DC(0x16, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    case 26:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x239, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 28: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
+        mAnim0.startAnim_801D22DC(0xD, 0, false);
+        mAnim0.fn_801D1F14(0.0f);
+        break;
+    }
+    case 30: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
+        break;
+    }
+    case 31:
+        fn_8022FE80(0, field_0x4, mSerial, true, false);
+        fn_8022FD8C(mSerial);
+        fn_8038BD08(0, 0x4B1, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
+        fn_8011921C()->fn_80118454();
+        break;
+    case 33: {
+        gAudioMgr_8053AF80->fn_80458FF0(0x100002B, true, 0);
+        startSound_801F0E34(0x40071, 0);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC1, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC2, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC3, 0, 0, NULL, NULL, true, 1.0f);
+        spawnEmitter_8013CC50(field_0x4, &mPos, 0xC4, 0, 0, NULL, NULL, true, 1.0f);
+        JGeometry::TVec3f pos;
+        setCenter(pos, getGameView_802D6A9C()->mVisibleBox);
+        spawnEmitter_8013CC50(field_0x4, &pos, 0xC5, 0, 0, NULL, NULL, true, 1.0f);
+        break;
+    }
+    case 34:
+        field_0x230 = 1;
+        break;
+    case 0x3E: // the first scene set's last state
+        break;
+    }
+}
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
