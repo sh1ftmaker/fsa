@@ -202,7 +202,7 @@ void SmallKey_804A8CD8::update() {
     if (field_0xc4 != 0 || (field_0xcc != 0 && field_0xd0 != 0)) {
         s32 row = getGameView_802D6A9C()->field_0x18;
         s32 col = getGameView_802D6A9C()->field_0x14;
-        field_0x2a8 = (row & 0xFF) | ((col << 8) & 0xFF00);
+        field_0x2a8 = ((col << 8) & 0xFF00) | (row & 0xFF);
     } else {
         field_0x2a8 = 0xFFFF;
     }
@@ -231,7 +231,7 @@ void SmallKey_804A8CD8::update() {
             if (!getGameView_802D6A9C()->fn_802DCD0C()) {
                 s32 row = getGameView_802D6A9C()->field_0x18;
                 s32 col = getGameView_802D6A9C()->field_0x14;
-                value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+                value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
             } else {
                 value = field_0x2aa << 8;
             }
@@ -469,7 +469,7 @@ void SmallKey_804A8CD8::update() {
             if (!getGameView_802D6A9C()->fn_802DCD0C()) {
                 s32 row = getGameView_802D6A9C()->field_0x18;
                 s32 col = getGameView_802D6A9C()->field_0x14;
-                value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+                value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
             } else {
                 value = field_0x2aa << 8;
             }
@@ -639,7 +639,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
         if (!getGameView_802D6A9C()->fn_802DCD0C()) {
             s32 row = getGameView_802D6A9C()->field_0x18;
             s32 col = getGameView_802D6A9C()->field_0x14;
-            value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+            value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
         } else {
             value = field_0x2aa << 8;
         }
@@ -786,7 +786,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
                 if (!getGameView_802D6A9C()->fn_802DCD0C()) {
                     s32 row = getGameView_802D6A9C()->field_0x18;
                     s32 col = getGameView_802D6A9C()->field_0x14;
-                    value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+                    value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
                 } else {
                     value = field_0x2aa << 8;
                 }
@@ -816,7 +816,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
         if (!getGameView_802D6A9C()->fn_802DCD0C()) {
             s32 row = getGameView_802D6A9C()->field_0x18;
             s32 col = getGameView_802D6A9C()->field_0x14;
-            value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+            value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
         } else {
             value = field_0x2aa << 8;
         }
@@ -952,7 +952,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
         if (!getGameView_802D6A9C()->fn_802DCD0C()) {
             s32 row = getGameView_802D6A9C()->field_0x18;
             s32 col = getGameView_802D6A9C()->field_0x14;
-            value |= ((row & 0xFF) << 8) | ((col << 16) & 0xFF0000);
+            value |= ((col << 16) & 0xFF0000) | ((row & 0xFF) << 8);
         } else {
             value = field_0x2aa << 8;
         }
