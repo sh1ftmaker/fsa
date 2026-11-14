@@ -14,7 +14,7 @@
 #include "std/math.h"
 
 // 0x80171AF8.
-// FIXME(shotgun): 90.19 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 90.23 %, missing/extra + reloc-name; behaviour near.
 void cls_804A0810::init() {
     field_0x94 = field_0x90 & 0xFF;
     field_0x270 = (field_0x90 >> 8) & 1;
@@ -145,6 +145,7 @@ void cls_804A0810::vfunc_0x44() {
 }
 
 // 0x801704A0.
+// FIXME: 99.27 %, missing/extra + reloc-name; behaviour near.
 void cls_804A0810::update() {
     static s32 lbl_804A07D8[4] = {0, 1, 2, 1};
     static s32 lbl_804A07E8[4] = {10, 2, 10, 10};
