@@ -714,7 +714,7 @@ void ShadowLink2_804A43E8::fn_801C3B7C(int state) {
 }
 
 // 0x801C2ED4.
-// FIXME(shotgun): 87.53 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.84 %, missing/extra + reloc-name; behaviour drift.
 void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     if (mapHit) {
         if (vfunc_0x4C(field_0x4, &mPos)) {
@@ -865,7 +865,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             fn_801C3B7C(0x11);
         } else {
             bool hit = fn_801CD2F8(field_0x4);
-            if ((!hit && mStateTimer >= field_0x5a0) || (hit && mStateTimer >= field_0x5a2)) {
+            if ((!hit && mStateTimer >= field_0x5a0) || (hit == 1 && mStateTimer >= field_0x5a2)) {
                 fn_801C3B7C(0x11);
                 fn_801C8BC4(0);
             } else {
@@ -904,7 +904,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             mFlags &= ~0x100;
             if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2 = mBox;
+                mBox2.set(mBox);
             }
         }
         if (mStateTimer > 1 && mPos.z <= 0.0f) {
@@ -937,10 +937,14 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
                 JGeometry::TVec3f savedPos = mPos;
                 s32 savedLayer = field_0x4;
                 field_0x4 = field_0x57c;
-                mPos = field_0x580;
+                mPos.x = field_0x580.x;
+                mPos.y = field_0x580.y;
+                mPos.z = field_0x580.z;
                 s32 p = fn_801D05F8(&mPos, 60.0f);
                 field_0x4 = savedLayer;
-                mPos = savedPos;
+                mPos.x = savedPos.x;
+                mPos.y = savedPos.y;
+                mPos.z = savedPos.z;
                 if (p >= 0) {
                     fn_801C3B7C(0x1E);
                 } else {
@@ -964,7 +968,7 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             mFlags &= ~0x100;
             if (viewLayerFlag(field_0x4) == 0) {
                 mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
-                mBox2 = mBox;
+                mBox2.set(mBox);
             }
         }
         if (mStateTimer > 1 && fn_801D0DD4()) {
@@ -1002,19 +1006,6 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
             fn_801C3B7C(0x1B);
         }
         break;
-    case 0x20:
-    case 0x27:
-    case 0x28:
-        if (mStateTimer >= field_0x250) {
-            if ((field_0x524.field_0x0 & 8) && field_0x597 == 0 && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f &&
-                fn_801D183C(64.0f)) {
-                fn_801C3B7C(0x22);
-            } else {
-                field_0x597 = 0x3C;
-                fn_801C3B7C(0x1B);
-            }
-        }
-        break;
     case 0x21:
         if ((mFlags & 0x04000000) && mStateTimer % 4 == 0) {
             field_0x33c += 0x4000;
@@ -1030,6 +1021,19 @@ void ShadowLink2_804A43E8::vfunc_0x90(u8 mapHit) {
     case 0x25:
     case 0x26:
         fn_801C6A4C();
+        break;
+    case 0x20:
+    case 0x27:
+    case 0x28:
+        if (mStateTimer >= field_0x250) {
+            if ((field_0x524.field_0x0 & 8) && field_0x597 == 0 && gGameRoot_8053AAF8->mRandom.get_ufloat_1() < 0.7f &&
+                fn_801D183C(64.0f)) {
+                fn_801C3B7C(0x22);
+            } else {
+                field_0x597 = 0x3C;
+                fn_801C3B7C(0x1B);
+            }
+        }
         break;
     case 0x29:
         if (mStateTimer >= 0xA0) {
