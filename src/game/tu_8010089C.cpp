@@ -325,9 +325,9 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
                 u32 msg;
                 if (field_0x260[field_0x234] >= 40) {
                     msg = 0x323;
-                } else if (field_0x260[field_0x234] >= 20) {
+                } else if (field_0x260[field_0x234] >= 20 && field_0x260[field_0x234] < 40) {
                     msg = 0x324;
-                } else if (field_0x260[field_0x234] >= 1) {
+                } else if (field_0x260[field_0x234] >= 1 && field_0x260[field_0x234] < 20) {
                     msg = 0x325;
                 } else {
                     msg = 0x31E;
@@ -359,7 +359,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
                 }
             } else {
                 s32 best = -1;
-                for (s32 i = 0; i < 4; i++) {
+                for (s32 i = 0; i < field_0x244; i++) {
                     if (best < field_0x268[i]) {
                         best = field_0x268[i];
                     }
