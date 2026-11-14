@@ -109,10 +109,10 @@ public:
     // 0xc/0x14/0x1c = 0.
     void fn_802A3D80();
     // 10 units. Spreads fire over burnable tiles (see above). Callers pass
-    // &mPos, a player (-1, or a word field), the layer, a u32 (spawnActor_801F9484 argument) and an s32
+    // &mPos, a player (-1, or a word field), the layer, an s32 (spawnActor_801F9484 argument; compared with cmpwi) and an s32
     // (0, 0 in tu_801BEDBC and tu_802233A4, 1, 1 in
     // act_spreading_fire); types from the body.
-    void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, u32 a, s32 b);
+    void fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, s32 a, s32 b);
     // 1 unit (tu_802957CC); body unwritten (tu_8029D898).
     void fn_802A1050(const JGeometry::TVec3f* pos);
     // 1 unit (tu_80256C74, the dig of state 0x47 at frame 12). Reads the map tile
