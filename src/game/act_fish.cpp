@@ -12,7 +12,7 @@
 #include "game/SpriteParams.h"
 #include "game/act/act_fish.h"
 
-// FIXME: 97.72 %, different + reloc-name; behaviour drift.
+// FIXME: 97.91 %, different + reloc-name; behaviour drift.
 // FIXME(shotgun): different + reloc-name (register order and literal placement in the spawn loop)
 void Fish_804AC658::init() {
     u32 param = field_0x90;
@@ -114,7 +114,7 @@ bool Fish_804AC658::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 }
 
 // FIXME(shotgun): 95.63 %, different + reloc-name; behaviour clean.
-bool Fish_804AC658::fn_80346330() {
+s32 Fish_804AC658::fn_80346330() {
     field_0x264 = 0.0f;
     field_0x268 = 0;
     field_0x26c = -1;
@@ -153,17 +153,15 @@ static inline void swimVelocity(Fish_804AC658* fish, f32 speed) {
     fish->field_0x3c.z = fish->field_0x25c;
 }
 
-// FIXME(shotgun): 83.70 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.80 %, missing/extra + reloc-name; behaviour drift.
 // (states follow the asm's switch (0 falls into 1, 2 into 3); the hit-avoid branch of state 1 and the wall-bounce
 // heading draws of state 5 are the asm's, written with plain field stores; the original's vector-add temporaries are not matched)
 void Fish_804AC658::update() {
     addCalc2_801F71A4(&field_0x3c.x, field_0x254, 0.1f, field_0x260);
     addCalc2_801F71A4(&field_0x3c.y, field_0x258, 0.1f, field_0x260);
-    mPos.x += field_0x3c.x;
-    mPos.y += field_0x3c.y;
-    mPos.z += field_0x3c.z;
+    mPos += field_0x3c;
     JGeometry::TVec3f hitDir(0.0f, 0.0f, 0.0f);
-    bool hit = fn_801F2618(&hitDir, false);
+    u8 hit = fn_801F2618(&hitDir, false);
     switch (field_0x230) {
     case 0: {
         field_0x260 = 0.007f;
@@ -187,8 +185,8 @@ void Fish_804AC658::update() {
                 mPos.x = savedX;
                 mPos.y = savedY;
                 mPos.z = savedZ;
-                mPos.x += 16.0f * JMath::sincosTable_.sinShort(angle);
-                mPos.y += 16.0f * JMath::sincosTable_.cosShort(angle);
+                JGeometry::TVec3f step(16.0f * JMath::sincosTable_.sinShort(angle), 16.0f * JMath::sincosTable_.cosShort(angle), 0.0f);
+                mPos += step;
                 if (fn_802265DC(&mPos, field_0x4, false)) {
                     break;
                 }
