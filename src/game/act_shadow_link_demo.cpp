@@ -471,13 +471,23 @@ static inline void setCameraBox(cls_8049DB90* self) {
     if (cam->field_0x7f5 == 0) {
         cam->field_0x7f4 = 1;
         cam->field_0x7f8 = 5;
-        cam->field_0x808.set(self->field_0x250, self->field_0x254, self->field_0x258, self->field_0x25c);
+        cam->field_0x808.i.x = self->field_0x250;
+        cam->field_0x808.i.y = self->field_0x254;
+        cam->field_0x808.f.x = self->field_0x258;
+        cam->field_0x808.f.y = self->field_0x25c;
         cam->field_0x7f6 = 0;
     }
 }
 
-// FIXME(shotgun): 5.55 %, missing/extra (gated: its literals drop __ct__ from 100 % to 99.83 %)
-#ifdef NONMATCHING
+static inline void setCameraBoxPos(cls_8049DB90* self, f32 x, f32 y) {
+    self->field_0x250 = x - 64.0f;
+    self->field_0x254 = y - 32.0f;
+    self->field_0x258 = 64.0f + x;
+    self->field_0x25c = 32.0f + y;
+    setCameraBox(self);
+}
+
+// FIXME: 94.53 %, scheduling+regalloc; behaviour clean.
 void cls_8049DB90::fn_8011B3F0() {
     Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
     if (cam->field_0x179 == 0) {
@@ -485,41 +495,11 @@ void cls_8049DB90::fn_8011B3F0() {
         cam->field_0x179 = 0;
     }
     switch (field_0x238) {
-    case 1:
-    case 2:
-    case 3:
-        field_0x250 = mPos.x - 64.0f;
-        field_0x254 = mPos.y - 32.0f;
-        field_0x258 = 64.0f + mPos.x;
-        field_0x25c = 32.0f + mPos.y;
-        setCameraBox(this);
-        break;
-    case 4:
-    case 5: {
-        JGeometry::TVec3f p(mPos);
-        p.y += field_0x248;
-        fn_801CD950(&field_0x248, 32.0f, 0.8f);
-        field_0x250 = p.x - 64.0f;
-        field_0x254 = p.y - 32.0f;
-        field_0x258 = 64.0f + p.x;
-        field_0x25c = 32.0f + p.y;
-        setCameraBox(this);
-        break;
-    }
-    case 6: {
-        JGeometry::TVec3f p(mPos);
-        p.y += field_0x248;
-        fn_801CD950(&field_0x248, 0.0f, 0.8f);
-        field_0x250 = p.x - 64.0f;
-        field_0x254 = p.y - 32.0f;
-        field_0x258 = 64.0f + p.x;
-        field_0x25c = 32.0f + p.y;
-        setCameraBox(this);
-        break;
-    }
     case 7: {
         s32 diff = fn_8011921C()->field_0x8 - lbl_80464AF8[7];
-        if (diff >= 0xB4) {
+        if (diff < 0xB4) {
+            setCameraBox(this);
+        } else {
             if (diff > 0x19A && diff != 0) {
                 fn_801CD950(&field_0x244, 0.0f, -0.007f);
             } else {
@@ -527,8 +507,28 @@ void cls_8049DB90::fn_8011B3F0() {
             }
             fn_801CD950(&field_0x254, (mPos.y - 32.0f) - 24.0f, -field_0x244);
             fn_801CD950(&field_0x25c, (32.0f + mPos.y) + 24.0f, field_0x244);
+            setCameraBox(this);
         }
-        setCameraBox(this);
+        break;
+    }
+    case 1:
+    case 2:
+    case 3:
+        setCameraBoxPos(this, mPos.x, mPos.y);
+        break;
+    case 4:
+    case 5: {
+        JGeometry::TVec3f p(mPos);
+        p.y += field_0x248;
+        fn_801CD950(&field_0x248, 32.0f, 0.8f);
+        setCameraBoxPos(this, p.x, p.y);
+        break;
+    }
+    case 6: {
+        JGeometry::TVec3f p(mPos);
+        p.y += field_0x248;
+        fn_801CD950(&field_0x248, 0.0f, 0.8f);
+        setCameraBoxPos(this, p.x, p.y);
         break;
     }
     case 8: {
@@ -559,6 +559,5 @@ void cls_8049DB90::fn_8011B3F0() {
         break;
     }
 }
-#endif
 
 cls_8049DB90::~cls_8049DB90() {}
