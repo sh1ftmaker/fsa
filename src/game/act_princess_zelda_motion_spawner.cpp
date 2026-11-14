@@ -5,10 +5,9 @@
 #include "game/Message.h"
 #include "game/Player.h"
 #include "JSystem/JMath/JMath.h"
+#include "std/math.h"
 #include "game/act/act_princess_zelda_motion_spawner.h"
 
-// FIXME: 99.8 %. Code identical; only the float literal relocations differ
-// (this unit's .sdata2 literals are not split to match yet).
 void PrincessZeldaMotionObjectSpawner_804A375C::init() {
     mBox.i.x = -8.0f;
     mBox.i.y = -8.0f;
@@ -57,20 +56,25 @@ void PrincessZeldaMotionObjectSpawner_804A375C::init() {
     }
 }
 
+static inline void setViewBit(s32 bit) {
+    if (bit != 0) {
+        getGameView_802D6A9C()->fn_802D8050(bit, true, 0xFF);
+    }
+}
+
 // Message ids by the spawner's bits 8-11 (field_0x258).
 static const u32 lbl_804A3740[] = {0x2D6, 0x2F0, 0x2F1, 0x2F3, 0x2F7, 0x2F8, 0x2F9};
 
-// FIXME(shotgun): 46.46 %, missing/extra. States 6-8 and the camera setup at the start of state 9 are not written
+// FIXME(shotgun): 89.76 %, missing/extra + reloc-name; behaviour drift.
+// States 6-8 and the camera setup at the start of state 9 are not written
 void PrincessZeldaMotionObjectSpawner_804A375C::update() {
-    f32 dist = 0.0f;
     s32 dir = -1;
+    f32 dist = 0.0f;
     switch (mState) {
     case 0:
         if (field_0x25c != 0) {
             if (vfunc_0x34()) {
-                if (field_0x254 != 0) {
-                    getGameView_802D6A9C()->fn_802D8050(field_0x254, true, 0xFF);
-                }
+                setViewBit(field_0x254);
                 field_0x94 = 1;
             } else {
                 field_0x94 = 0;
@@ -97,9 +101,7 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
     case 2:
         if (field_0x25c != 0) {
             if (!vfunc_0x34()) {
-                if (field_0x254 != 0) {
-                    getGameView_802D6A9C()->fn_802D8050(field_0x254, true, 0xFF);
-                }
+                setViewBit(field_0x254);
                 field_0x94 = 1;
             } else {
                 field_0x94 = 0;
@@ -130,8 +132,7 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
                     !fn_80230188(i) && !fn_8022DCD8(i) && !fn_80236B50(i) && !fn_8022D534(i)) {
                     f32 dx = getPlayerPos_8023E724(i)->x - mPos.x;
                     f32 dy = getPlayerPos_8023E724(i)->y - mPos.y;
-                    JGeometry::TVec2f d(dx, dy);
-                    if (d.length() < 64.0f) {
+                    if (std::sqrtf(dx * dx + dy * dy) < 64.0f) {
                         count++;
                     }
                 }
@@ -141,9 +142,7 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
             }
         }
         if (field_0x258 == 0) {
-            if (field_0x254 != 0) {
-                getGameView_802D6A9C()->fn_802D8050(field_0x254, true, 0xFF);
-            }
+            setViewBit(field_0x254);
             mAlive = false;
             break;
         }
@@ -157,10 +156,103 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
             }
             mState = 6;
         }
-        // FIXME(shotgun): states 6-8 not written (state 5 falls through into state 6 in the asm)
+        // fall through
+    case 6: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+        pos.y -= 8.0f;
+        if (cam->field_0x840 == 0) {
+            cam->field_0x840 = 1;
+            cam->field_0x844.set(pos.x, pos.y, pos.x, pos.y);
+            cam->field_0x854 = 1.0f;
+            cam->field_0x1d4 = -1.0f;
+            cam->field_0x1d8 = -1.0f;
+        }
+        cls_804A03A8* spot = gGameRoot2_8053AB10->field_0x30;
+        if (spot->field_0x284 == 0) {
+            spot->field_0x284 = 1;
+            spot->field_0x28c = 0.05f;
+        }
+        JGeometry::TBox2f box;
+        box.set(-64.0f, -64.0f, 64.0f, 64.0f);
+        box.addPos(mHomePos.x, mHomePos.y);
+        fn_8022FEB8(&box, field_0x4, mSerial, false, false);
+        field_0x248 = fn_8022FD8C(mSerial);
+        if (field_0x248 < 0) {
+            field_0x248 = 0;
+        }
+        pos.set(0.0f, 0.0f, 0.0f);
+        pos.y = -10.0f;
+        if (fn_8038AD24(field_0x248, lbl_804A3740[field_0x258], mSerial, field_0x4, pos, 0x4102)) {
+            mState = 7;
+        }
         break;
-    case 9:
-        // FIXME(shotgun): camera/focus setup before the timer check not written (asm 0x801B486C-0x801B491C)
+    }
+    case 7: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+        pos.y -= 8.0f;
+        if (cam->field_0x840 == 0) {
+            cam->field_0x840 = 1;
+            cam->field_0x844.set(pos.x, pos.y, pos.x, pos.y);
+            cam->field_0x854 = 1.0f;
+            cam->field_0x1d4 = -1.0f;
+            cam->field_0x1d8 = -1.0f;
+        }
+        cls_804A03A8* spot = gGameRoot2_8053AB10->field_0x30;
+        if (spot->field_0x284 == 0) {
+            spot->field_0x284 = 1;
+            spot->field_0x28c = 0.05f;
+        }
+        fn_8022FE80(field_0x248, field_0x4, mSerial, false, false);
+        if (fn_80388CAC(field_0x248, mSerial)) {
+            if (mKind == 3) {
+                getActorManager_801F856C()->fn_801F6884();
+                setViewBit(field_0x254);
+                mAlive = false;
+            } else {
+                field_0x234 = 90;
+                mState = 8;
+            }
+        }
+        break;
+    }
+    case 8:
+        if (field_0x234 != 0) {
+            getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
+            fn_801F0D20(0x50);
+            if (field_0x234 == 1) {
+                vfunc_0x30(0xFF, true);
+            }
+        } else if (!vfunc_0x34()) {
+            getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
+            fn_801F0D20(0x50);
+            getActorManager_801F856C()->fn_801F6884();
+            setViewBit(field_0x254);
+            fn_80119DD0()->fn_80119998(200, 0, 2, 0, 0, 100, 0);
+            startSound_801F0E34(0x400B7, 0);
+            for (s32 i = 0; i < 4; i++) {
+                fn_80230FD0(i, 0x10003);
+            }
+            field_0x234 = 200;
+            mState = 9;
+        }
+        break;
+    case 9: {
+        Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
+        if (cam->field_0x7f5 == 0) {
+            cam->field_0x7f4 = 1;
+            cam->field_0x7f8 = 4;
+            cam->field_0x7fc.set(mPos.x, mPos.y, mPos.z);
+            cam->field_0x7f6 = 0;
+        }
+        cls_804A03A8* spot = gGameRoot2_8053AB10->field_0x30;
+        if (spot->field_0x284 == 0) {
+            spot->field_0x284 = 1;
+            spot->field_0x28c = 0.05f;
+        }
+        getGameView_802D6A9C()->fn_802D79E8(field_0x4, 4.0f, 0.0f, false);
+        fn_801F0D20(0x50);
         if (field_0x234 == 0) {
             for (s32 i = 0; i < 4; i++) {
                 if (fn_8023F264(i) && field_0x4 == getPlayerLayer_8023DE58(i)) {
@@ -170,6 +262,9 @@ void PrincessZeldaMotionObjectSpawner_804A375C::update() {
             getGameView_802D6A9C()->fn_802D9FF4(0, 9);
             getGameView_802D6A9C()->fn_802DBD60();
         }
+        break;
+    }
+    case 10:
         break;
     }
     if (field_0x234 > 0) {
