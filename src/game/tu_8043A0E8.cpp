@@ -102,6 +102,7 @@ void fn_804408F0(JGeometry::TVec3f* pos) {
 }
 
 // Differs only in the two setFont calls: the original loads lbl_8053AD78->mFont before the search.
+// FIXME: 98.97 %, missing/extra; behaviour clean.
 cls_804B1920::cls_804B1920() {
     lbl_8053AED0 = this;
     lbl_80529DEC.field_0x24a = 0;
@@ -444,7 +445,7 @@ void cls_804B1920::fn_8043EDE8(s32 arg) {
     field_0xe4 = 30;
 }
 
-// FIXME(shotgun): 99.20 %, regalloc-only + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.23 %, regalloc-only + reloc-name; behaviour drift.
 void cls_804B1920::fn_8043E80C(u32 digit, u8 alpha, u32 top, u32 bottom, f32 x, f32 y, f32 scale) {
     f32 sx;
     f32 sy;
@@ -527,7 +528,7 @@ void cls_804B1920::fn_8043E7CC(JGeometry::TVec3f pos) {
     fn_80440928(screen.x, screen.y);
 }
 
-// FIXME(shotgun): 98.74 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 98.72 %, missing/extra + reloc-name; behaviour clean.
 // (the cx / cy and box bounds live in fewer float registers)
 void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     Vec screenA;
@@ -553,7 +554,7 @@ void cls_804B1920::fn_8043E398(const Vec* a, const Vec* b) {
     }
 }
 
-// FIXME(shotgun): 99.25 %, scheduling+regalloc + reloc-name; behaviour clean.
+// FIXME(shotgun): 99.23 %, scheduling+regalloc + reloc-name; behaviour clean.
 void cls_804B1920::fn_8043DF8C(f32 x, f32 y) {
     Vec screenOrigin;
     Vec screenUnit;
@@ -870,7 +871,7 @@ void cls_804B1920::fn_8043D39C() {
     }
 }
 
-// FIXME: 99.06 %, scheduling+regalloc; behaviour clean.
+// FIXME: 99.04 %, scheduling+regalloc + reloc-name; behaviour clean.
 // The original loads field_0x70[0]->field_0x18 (f1) before the 0xFC / 0x100 words for
 // fn_803837A4 (ours after them, in r7); the 1.0 / 16.0 / 100.0 / 13.0 literals sit early in our .sdata2 pool because fn_8043A638..fn_8043CB24 (the earlier first uses) are unwritten.
 void cls_804B1920::fn_8043D034() {
@@ -986,7 +987,7 @@ void cls_804B1920::fn_8043CDA0() {
     }
 }
 
-// FIXME(shotgun): 86.81 %, missing/extra; behaviour clean.
+// FIXME(shotgun): 86.75 %, missing/extra + reloc-name; behaviour clean.
 bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag, f32 x, f32 y, f32 scale) {
     if (field_0x252 < 10) {
         field_0x118[field_0x252] = x - 0.5f * (19.0f * (digits % 2) * scale) - 16.0f * (digits >> 1) * scale;
@@ -1038,6 +1039,7 @@ bool cls_804B1920::fn_8043CB24(s32 value, u8 arg2, u8 arg3, u8 digits, bool flag
     return false;
 }
 
+// FIXME: 99.89 %, reloc-name; behaviour drift.
 void cls_804B1920::fn_8043BB84() {
     static JUtility::TColor lbl_8052C5D8[6] = {
         JUtility::TColor(0xFF, 0xD2, 0x00, 0xFF),
@@ -1161,7 +1163,7 @@ void cls_804B1920::fn_8043BB84() {
     }
 }
 
-// FIXME: 99.96 %, reloc-name; behaviour drift.
+// FIXME: 99.99 %, reloc-name; behaviour drift.
 void cls_804B1920::fn_8043ACE4() {
     // Built once, never read.
     static JUtility::TColor lbl_8052C5F0[4] = {
