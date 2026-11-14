@@ -312,9 +312,10 @@ void TrickFloor_804A83A0::draw() {
 
     switch (field_0x234) {
     default: {
-        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
-        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
-        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        JGeometry::TVec3f pos;
+        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
+        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
+        pos.z = mPos.z;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "floor_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
@@ -322,9 +323,10 @@ void TrickFloor_804A83A0::draw() {
         break;
     }
     case 1: {
-        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
-        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
-        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        JGeometry::TVec3f pos;
+        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
+        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
+        pos.z = mPos.z;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "mastersword_right_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
@@ -373,9 +375,10 @@ void TrickFloor_804A83A0::draw() {
         }
         break;
     case 6: {
-        f32 s = JMath::sincosTable_.sinRadian(field_0x248);
-        f32 c = JMath::sincosTable_.cosRadian(-field_0x248);
-        JGeometry::TVec3f pos((mPos.x + 64.0f) - 32.0f * c, 32.0f * s + mPos.y, mPos.z);
+        JGeometry::TVec3f pos;
+        pos.y = 32.0f * JMath::sincosTable_.sinRadian(field_0x248) + mPos.y;
+        pos.x = (mPos.x + 64.0f) - 32.0f * JMath::sincosTable_.cosRadian(-field_0x248);
+        pos.z = mPos.z;
         if (field_0x4 < 8) {
             void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', "field_smp.bin");
             gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(&pos, res, &params);
