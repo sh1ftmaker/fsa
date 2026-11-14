@@ -270,7 +270,7 @@ void cls_804A6550::fn_80219AFC(s32 state) {
 
 extern const f32 lbl_8046A640[4][2]; // x, y offsets (about +-16) by facing, .rodata of this unit
 
-// FIXME(shotgun): 92.37 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.12 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A6550::vfunc_0x90(u8 mapHit) {
     JGeometry::TBox2f box;
     if (mState == 3) {
