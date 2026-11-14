@@ -19,7 +19,7 @@ u8 lbl_8053A1A0[8] = {10, 60, 80, 100, 210, 0, 0, 0};
 // (JPABaseEmitter in include/JSystem/JParticle/JPAEmitter.h has mEmitterRot (s16) at 0x24..0x29
 // and mVolumeType at 0x2A, so no float field at 0x28 is identifiable; the two stfs are
 // omitted, a behaviour difference until the real field is known).
-// FIXME(shotgun): 88.07 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 95.64 %, missing/extra; behaviour drift.
 void cls_804A8638::init() {
     field_0x234 = NULL;
     field_0x238 = NULL;
