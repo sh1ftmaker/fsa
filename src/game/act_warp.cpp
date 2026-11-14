@@ -49,7 +49,7 @@ static inline u32 pairParam(u32 param, s32 enc, s32 dx, s32 dy, u32 kind) {
 // 0x80228B60. Decodes the spawn parameter (field_0x90: kind in the low 7 bits, layer, a 6-bit cell
 // offset to the destination), sets the destination (field_0x238) and the trigger box, and for the
 // paired kinds 0x19-0x1C spawns the other warp and turns this one into the matching kind.
-// FIXME(shotgun): 72.46 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 87.70 %, missing/extra; behaviour drift.
 void Warp_804A6DC8::init() {
     field_0x256 = 0;
     field_0x278 = 0;
@@ -213,7 +213,7 @@ static inline bool nearZero(f32 d) {
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 84.45 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.43 %, missing/extra + reloc-name; behaviour drift.
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
