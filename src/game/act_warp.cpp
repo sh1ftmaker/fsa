@@ -219,7 +219,7 @@ static inline bool bomeAtRest(cls_804A0738* b) {
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 87.43 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.86 %, missing/extra + reloc-name; behaviour drift.
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
