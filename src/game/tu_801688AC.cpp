@@ -96,7 +96,7 @@ static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f& d, bool fa
 // The |dx|, |dy| <= 16 tests and the other fabs conditions were re-checked against the full asm.
 // 0x80169030. A chaser: it follows the trail of positions the player recorded, then the
 // player, and is caught by the player (state 1) or lost when it leaves the room.
-// FIXME(shotgun): 79.73 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 80.63 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0738::update() {
     s32 target = field_0x90;
     if (fn_8022F478(field_0x90) == 1 && fn_8022F514(field_0x90) == 1) {
@@ -173,8 +173,7 @@ void cls_804A0738::update() {
             d.set(pp->x - mPos.x, pp->y - mPos.y);
             if (d.x * d.x + d.y * d.y < 240.0f) {
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                mPos.x = pp->x;
-                mPos.y = pp->y;
+                mPos = *pp;
                 mPos.z = 0.0f;
                 mAlive = false;
                 break;
@@ -260,8 +259,7 @@ void cls_804A0738::update() {
                     mAlive = false;
                 } else if (d.x * d.x + d.y * d.y < 240.0f) {
                     const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                    mPos.x = pp->x;
-                    mPos.y = pp->y;
+                    mPos = *pp;
                     mPos.z = 0.0f;
                     field_0x260 = 1;
                 } else {
