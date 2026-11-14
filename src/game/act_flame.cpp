@@ -258,9 +258,10 @@ extern JGeometry::TVec2f lbl_804A0310[4]; // the emitter offset from mPos
 // 0x8015DF7C.
 // FIXME(shotgun): 85.15 %, missing/extra
 void Flame_804A0330::fn_8015DF7C() {
+    JGeometry::TVec2f pos2(mPos.x, mPos.y);
     JGeometry::TBox2f box;
     box.set(mBox);
-    box.addPos(mPos.x, mPos.y);
+    box.addPos(pos2);
     if (field_0x254 != 0) {
         s32 player = fn_8023B004(&box, field_0x4);
         if (player >= 0) {
@@ -299,7 +300,7 @@ void Flame_804A0330::fn_8015DF7C() {
                         field_0x80.f.y *= 1.5f;
                     }
                     box = field_0x80;
-                    box.addPos(mPos.x, mPos.y);
+                    box.addPos(pos2);
                     fn_80239914(&box, field_0x4, mSerial);
                 }
             }
@@ -312,7 +313,7 @@ void Flame_804A0330::fn_8015DF7C() {
                 field_0x80.set(-14.0f, -14.0f, 14.0f, 20.0f);
             }
             box = mBox;
-            box.addPos(mPos.x, mPos.y);
+            box.addPos(pos2);
             fn_801F2B20(5);
             if (!fn_801F2B7C(field_0x114, -1, 9)) {
                 for (s32 i = 0; i < 4; i++) {
@@ -353,20 +354,21 @@ void Flame_804A0330::fn_8015DF7C() {
                 mEmitters[0]->becomeInvalidEmitter();
             }
             if (mEmitters[1] == NULL) {
-                u16 id;
                 if (mEmitters[0] != NULL) {
-                    id = 0x1AD;
+                    u16 id = 0x1AD;
                     if (field_0x25c == 1) {
                         id = 0x253;
                     }
+                    mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &pos, id, 1, 1, NULL, NULL, true,
+                                                         0.5f * field_0x258 + 1.0f);
                 } else {
-                    id = 0x1AE;
+                    u16 id = 0x1AE;
                     if (field_0x25c == 1) {
                         id = 0x253;
                     }
+                    mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &pos, id, 1, 1, NULL, NULL, true,
+                                                         0.5f * field_0x258 + 1.0f);
                 }
-                mEmitters[1] = spawnEmitter_8013CC50(field_0x4, &pos, id, 1, 1, NULL, NULL, true,
-                                                     0.5f * field_0x258 + 1.0f);
             }
             mEmitters[0] = NULL;
             if (mEmitters[1] != NULL) {
