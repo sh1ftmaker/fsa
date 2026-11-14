@@ -153,7 +153,7 @@ static inline void swimVelocity(Fish_804AC658* fish, f32 speed) {
     fish->field_0x3c.z = fish->field_0x25c;
 }
 
-// FIXME(shotgun): 91.80 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 98.64 %, missing/extra + reloc-name; behaviour clean.
 // (states follow the asm's switch (0 falls into 1, 2 into 3); the hit-avoid branch of state 1 and the wall-bounce
 // heading draws of state 5 are the asm's, written with plain field stores; the original's vector-add temporaries are not matched)
 void Fish_804AC658::update() {
