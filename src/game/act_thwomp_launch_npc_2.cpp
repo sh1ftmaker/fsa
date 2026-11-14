@@ -249,7 +249,7 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
     case 3:
         if (mPos.z > 0.0f) {
             field_0x3c.z -= field_0x260;
-        } else if (field_0x3c.z < 0.0f) {
+        } else if (mPos.z <= 0.0f && field_0x3c.z < 0.0f) {
             mPos.z = 0.0f;
             field_0x23c = ((field_0x90 >> 16) & 3) * 70 + 30;
             mPos = field_0x278;
@@ -305,11 +305,11 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
 // Compiled between draw (unwritten, see below) and update, it pools 40.0f / 4.0f / 0.2f before update's 2.0f
 // as in the original (docs/RULES_CARD.md (3)).
 void NPCLaunchedByThwomp2_804AD1C8::launch() {
-    f32 dy = field_0x278.y - mPos.y;
-    f32 dx = field_0x278.x - mPos.x;
-    field_0x3c.x = dx / 40.0f;
-    field_0x3c.y = dy / 40.0f;
-    field_0x3c.z = 4.0f;
+    field_0x3c = JGeometry::TVec3f(
+        (field_0x278.x - mPos.x) / 40.0f,
+        (field_0x278.y - mPos.y) / 40.0f,
+        4.0f
+    );
     field_0x260 = 0.2f;
     field_0x230 = 3;
 }
@@ -410,7 +410,10 @@ inline void NPCLaunchedByThwomp2_804AD1C8::updateAnim() {
     field_0x234--;
     if (field_0x234 <= 0) {
         field_0x238++;
-        if (field_0x250 >= 0 && field_0x250 < 3) {
+        switch (field_0x250) {
+        case 0:
+        case 1:
+        case 2:
             if (field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
                 field_0x238 &= 1;
                 field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays0[field_0x238];
@@ -418,7 +421,10 @@ inline void NPCLaunchedByThwomp2_804AD1C8::updateAnim() {
                 field_0x238 &= 3;
                 field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays1[field_0x238];
             }
-        } else if ((field_0x250 >= 3 && field_0x250 < 5) || field_0x250 == 10) {
+            break;
+        case 3:
+        case 4:
+        case 10:
             if (field_0x230 == 0 || field_0x230 == 1 || field_0x230 == 3 || field_0x230 == 4) {
                 field_0x238 &= 1;
                 field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays0[field_0x238];
@@ -426,6 +432,7 @@ inline void NPCLaunchedByThwomp2_804AD1C8::updateAnim() {
                 field_0x238 &= 1;
                 field_0x234 = lbl_80472390.animInfo[field_0x250].animDelays1[field_0x238];
             }
+            break;
         }
 
         if (field_0x238 == 0) {
