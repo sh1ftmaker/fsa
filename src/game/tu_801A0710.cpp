@@ -731,7 +731,7 @@ static inline void bumpCount(s32* count) {
     }
 }
 
-// FIXME(shotgun): 93.71 %, missing/extra; behaviour drift.
+// FIXME(shotgun): 94.96 %, missing/extra; behaviour drift.
 // (rewritten against the asm: 0xE-0x11 follow the switch; the p < 0 test of the id-range check and the
 // duplicated count clamp are not reproduced exactly)
 void TennisShop_804A2BF4::fn_801A0F90() {
