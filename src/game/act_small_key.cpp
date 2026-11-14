@@ -161,7 +161,7 @@ void SmallKey_804A8CD8::fn_802C5284() {
 }
 
 // 0x802C4498.
-// FIXME(shotgun): 88.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.22 %, missing/extra + reloc-name; behaviour drift.
 void SmallKey_804A8CD8::update() {
     field_0x2ad = 0xFF;
     field_0x2ac = 0;
@@ -481,7 +481,7 @@ void SmallKey_804A8CD8::update() {
     }
 }
 
-// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.14 %, missing/extra + reloc-name; behaviour drift.
 // The key on the floor: kind 6 slides with friction; a player touching it picks it up
 // (kinds 3-5 spawn a 'TKRA' instead), players walking into it push it (field_0x2ae the
 // direction), pits and water drop it; keeps its place registered with the view.
@@ -688,7 +688,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
 }
 
 // 0x802C2C30.
-// FIXME(shotgun): 91.68 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 92.95 %, missing/extra + reloc-name; behaviour near.
 void SmallKey_804A8CD8::fn_802C2C30() {
     fn_802C24A8();
     if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
