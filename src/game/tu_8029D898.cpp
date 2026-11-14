@@ -191,6 +191,7 @@ bool BgRewrite_804A7C98::fn_802A3164(const JGeometry::TVec3f* pos, s32 player, s
     return result;
 }
 
+// FIXME: 98.55 %, missing/extra + reloc-name; behaviour near.
 void BgRewrite_804A7C98::fn_802A20F0(const JGeometry::TVec3f* pos, s32 player, s32 layer, s32 a, s32 b) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -381,7 +382,7 @@ bool BgRewrite_804A7C98::fn_802A1D44(const JGeometry::TVec3f* pos, s32 player, s
     return result;
 }
 
-// FIXME(shotgun): 99.38 %, missing/extra + reloc-name; behaviour clean.
+// FIXME(shotgun): 99.41 %, missing/extra; behaviour clean.
 // 1 fewer insn (literal pool order)
 s32 BgRewrite_804A7C98::fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s32 layer) {
     JGeometry::TVec2f p(pos->x, pos->y);
@@ -433,7 +434,7 @@ s32 BgRewrite_804A7C98::fn_802A1844(const JGeometry::TVec3f* pos, s32 player, s3
     return 0;
 }
 
-// FIXME(shotgun): 99.50 %, regalloc-only + reloc-name; behaviour clean.
+// FIXME(shotgun): 99.59 %, regalloc-only; behaviour clean.
 bool BgRewrite_804A7C98::fn_802A1688(const JGeometry::TVec3f* pos, s32 layer, u32 tag) {
     JGeometry::TVec2f p(pos->x, pos->y);
     field_0x20 = fn_80226BC4(&p, layer);
@@ -487,7 +488,7 @@ bool BgRewrite_804A7C98::fn_802A1490(const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME(shotgun): 99.04 %, different + reloc-name; behaviour drift.
+// FIXME(shotgun): 99.08 %, different; behaviour drift.
 // 3 opcodes differ (literal pool order)
 void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
     JGeometry::TVec2f p(pos->x, pos->y);
@@ -532,6 +533,7 @@ void BgRewrite_804A7C98::fn_802A1050(const JGeometry::TVec3f* pos) {
 }
 
 // Regalloc: the original keeps tile and layer + layerOffset extended in one register each.
+// FIXME: 90.64 %, missing/extra; behaviour drift.
 bool BgRewrite_804A7C98::fn_802A0800(s32 player, s32 layer) {
     s32 leader = player;
     if (fn_8022F514(player)) {
@@ -862,6 +864,7 @@ bool BgRewrite_804A7C98::fn_802A01F0(const JGeometry::TVec3f* pos, s32 player, s
 }
 
 // Register copies differ (the original keeps layer, cell and the spawned serial twice).
+// FIXME: 98.17 %, missing/extra + reloc-name; behaviour clean.
 u8 BgRewrite_804A7C98::fn_8029EDB8(const JGeometry::TVec3f* pos, s32 player, s32 layer, JGeometry::TVec3f* out) {
     u8 result = 0;
     if (pos->z < 19.0f) {
