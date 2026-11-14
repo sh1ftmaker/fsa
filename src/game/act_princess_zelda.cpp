@@ -289,6 +289,8 @@ void cls_8049CEE0::update() {
                 }
                 break;
             }
+            case 1:
+                break;
             }
         }
         break;
