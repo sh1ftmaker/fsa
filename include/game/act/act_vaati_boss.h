@@ -40,9 +40,7 @@ struct cls_801D6A58 {
     /* 0x00 */ s32 field_0x0;
     /* 0x04 */ u8 field_0x4;
     /* 0x05 */ u8 field_0x5;
-    /* 0x08 */ f32 field_0x8;
-    /* 0x0C */ f32 field_0xc;
-    /* 0x10 */ f32 field_0x10;
+    /* 0x08 */ JGeometry::TVec3f vel;
 }; // Size: 0x14
 
 // The shake offset at 0x52c of Vaati: three DampedSine_801E4A18

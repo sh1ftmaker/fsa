@@ -17,17 +17,15 @@ void cls_801D6A58::fn_801D7874() {
     field_0x0 = -1;
     field_0x4 = 0;
     field_0x5 = 0;
-    field_0x8 = 0.0f;
-    field_0xc = 0.0f;
-    field_0x10 = 0.0f;
+    vel.set(0.0f, 0.0f, 0.0f);
 }
 
 void cls_801D6A58::fn_801D7830() {
-    field_0x8 *= 0.97f;
-    field_0xc *= 0.97f;
-    field_0x10 += -0.2f;
-    if (field_0x10 < -4.0f) {
-        field_0x10 = -4.0f;
+    vel.x *= 0.97f;
+    vel.y *= 0.97f;
+    vel.z += -0.2f;
+    if (vel.z < -4.0f) {
+        vel.z = -4.0f;
     }
 }
 

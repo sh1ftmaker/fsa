@@ -39,9 +39,9 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
                 v = *dir;
                 v.normalize();
                 v.scale(2.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 1.5f;
+                field_0x308[i].vel.x = v.x;
+                field_0x308[i].vel.y = v.y;
+                field_0x308[i].vel.z = 1.5f;
                 field_0x308[i].field_0x5 = 1;
                 return;
             } else {
@@ -55,9 +55,9 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
                     v.normalize();
                 }
                 v.scale(4.0f);
-                field_0x308[i].field_0x8 = v.x;
-                field_0x308[i].field_0xc = v.y;
-                field_0x308[i].field_0x10 = 3.0f;
+                field_0x308[i].vel.x = v.x;
+                field_0x308[i].vel.y = v.y;
+                field_0x308[i].vel.z = 3.0f;
             }
             field_0x308[i].field_0x5 = 1;
             return;
@@ -65,8 +65,8 @@ void VaatiBoss_804A4958::fn_801E5BA8(const ActorBase_804A5770* actor, const JGeo
     }
 }
 
-// FIXME(shotgun): 99 %, different
-// FIXME: 98.83 %. The loop counter and element pointer take other registers (the
+// FIXME(shotgun): 98.83 %, missing/extra; behaviour near.
+// The loop counter and element pointer take other registers (the
 // original: counter r30, element r28; the layer is read through getField_0x4(),
 // before getPlayerLayer_8023DE58, as the original), and the original tests the countdown twice (a second ble
 // to the loop end before its decrement), which no natural form here produces; dx and dy also take each other's
@@ -179,6 +179,7 @@ void VaatiBoss_804A4958::fn_801E5754() {
     }
 }
 
+// FIXME: 93.78 %, missing/extra; behaviour drift.
 // FIXME(shotgun): written from asm
 void VaatiBoss_804A4958::fn_801E4D88() {
     ActorBase_804A5770* actors[ACTOR_MANAGER_MAX_ACTORS];
@@ -227,13 +228,12 @@ void VaatiBoss_804A4958::fn_801E4D88() {
                     cls_801D6A58* entry = &field_0x308[j];
                     entry->fn_801D7830();
                     JGeometry::TVec3f p = actor->mPos;
-                    JGeometry::TVec3f vel(entry->field_0x8, entry->field_0xc, entry->field_0x10);
-                    p += vel;
+                    p += entry->vel;
                     if (p.z < 0.0f) {
-                        entry->field_0x8 = 0.0f;
-                        entry->field_0xc = 0.0f;
+                        entry->vel.x = 0.0f;
+                        entry->vel.y = 0.0f;
                         p.z = 0.0f;
-                        entry->field_0x10 = 0.0f;
+                        entry->vel.z = 0.0f;
                     }
                     actor->mPos = p;
                     break;
