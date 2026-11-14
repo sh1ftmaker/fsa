@@ -148,7 +148,8 @@ void HammerShopMinigame_8049C858::update() {
                     field_0x230 = 2;
                     field_0x248 = 0;
                 } else {
-                    field_0x284 = (s32)(gGameRoot_8053AAF8->mRandom.get_ufloat_1() * (f32)gGameRoot_8053AAF8->fn_80138A30());
+                    s32 count = gGameRoot_8053AAF8->fn_80138A30();
+                    field_0x284 = (s32)((f32)count * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
                     if (field_0x284 == 4) {
                         field_0x284 = 3;
                     }
