@@ -59,7 +59,8 @@ CrystalBall_804AB308::~CrystalBall_804AB308() {
     releaseEmitter_801EE434(field_0x2c8);
 }
 
-// FIXME(shotgun): 98.4 %, missing/extra: one instruction
+// FIXME(shotgun): 98.77 %, missing/extra; behaviour drift.
+// one instruction
 void CrystalBall_804AB308::init() {
     field_0x94 = field_0x90 & 0xF;
     field_0x284 = (field_0x90 >> 8) & 0xF;
@@ -154,7 +155,8 @@ void CrystalBall_804AB308::init() {
     }
 }
 
-// FIXME(shotgun): 99.5 %, different: one opcode
+// FIXME(shotgun): 99.93 %, different; behaviour clean.
+// one opcode
 void CrystalBall_804AB308::vfunc_0x54() {
     mPos.z = 0.0f;
     field_0xb0 = 0;
@@ -182,7 +184,7 @@ void CrystalBall_804AB308::vfunc_0x54() {
     startSound_801F0E34(0x30001, 0);
 }
 
-// FIXME(shotgun): 99.6 %, regalloc-only
+// FIXME(shotgun): 99.73 %, regalloc-only; behaviour clean.
 void CrystalBall_804AB308::fn_80322F44() {
     if (field_0x284 == 0) {
         if (!gGameRoot_8053AAF8->field_0x7e) {
@@ -245,7 +247,8 @@ void CrystalBall_804AB308::fn_80322F44() {
     }
 }
 
-// FIXME(shotgun): 98.4 %, missing/extra: a couple of instructions in the player loop
+// FIXME(shotgun): 96.79 %, missing/extra; behaviour drift.
+// a couple of instructions in the player loop
 void CrystalBall_804AB308::fn_80322BC4() {
     s32 rank = 0;
     s32 n = 0;
@@ -323,7 +326,8 @@ void CrystalBall_804AB308::fn_80322BC4() {
     field_0x230 = 4;
 }
 
-// FIXME(shotgun): 96.6 %, missing/extra: the switch over rank is laid out differently
+// FIXME(shotgun): 98.68 %, missing/extra; behaviour near.
+// the switch over rank is laid out differently
 void CrystalBall_804AB308::fn_80322964() {
     mBox.i.x = -6.0f;
     mBox.i.y = -6.0f;
@@ -368,7 +372,6 @@ void CrystalBall_804AB308::fn_80322964() {
     mBox.f.y = 8.0f;
 }
 
-// FIXME(shotgun): 99.9 %, reloc-name only (rodata table pooling)
 void CrystalBall_804AB308::fn_803226EC() {
     if (field_0x230 == 0 || ((u32)(field_0x230 - 5) <= 3) || field_0x94 == 2) {
         if (field_0x248 <= 0) {
@@ -414,7 +417,8 @@ void CrystalBall_804AB308::fn_803226EC() {
     }
 }
 
-// FIXME(shotgun): 82.6 %, missing/extra: the code comparison chain and the doubled fn_80226850 test are laid out differently
+// FIXME(shotgun): 82.75 %, missing/extra; behaviour drift.
+// the code comparison chain and the doubled fn_80226850 test are laid out differently
 bool CrystalBall_804AB308::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     s32 code = fn_8022461C(pos, layer);
     s32 tile = fn_80226850(pos, layer);
@@ -498,7 +502,7 @@ bool CrystalBall_804AB308::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return false;
 }
 
-// FIXME(shotgun): 99.3 %, scheduling
+// FIXME(shotgun): 99.80 %, scheduling; behaviour clean.
 void CrystalBall_804AB308::vfunc_0x40() {
     field_0x3c.set(0.0f, 0.0f, 0.0f);
     if (field_0x278 <= 180) {
@@ -506,7 +510,8 @@ void CrystalBall_804AB308::vfunc_0x40() {
     }
 }
 
-// FIXME(shotgun): 54.18 %, missing/extra + reloc-name (partial)
+// FIXME(shotgun): 97.31 %, missing/extra; behaviour drift.
+// (partial)
 void CrystalBall_804AB308::update() {
     if (field_0x230 == 1 || field_0x230 == 3) {
         if (fn_8022F9E4(field_0x23c, mSerial, false, false) == true) {
@@ -846,7 +851,8 @@ void CrystalBall_804AB308::update() {
     fn_803226EC();
 }
 
-// FIXME(shotgun): 97.0 %, missing/extra: a few instructions
+// FIXME(shotgun): 97.02 %, missing/extra; behaviour near.
+// a few instructions
 void CrystalBall_804AB308::draw() {
     if (field_0x230 == 0 && field_0x278 <= 180 && (field_0x278 & 2) == 0) {
         return;
@@ -896,7 +902,8 @@ void CrystalBall_804AB308::draw() {
     fn_803075AC(mSerial, field_0x4, &mPos, frame + 0x90, 0, 2, -1, held, 0, 0);
 }
 
-// FIXME(shotgun): 82.2 %, missing/extra: item switch / spawn sequences are laid out differently
+// FIXME(shotgun): 84.19 %, missing/extra + reloc-name; behaviour drift.
+// item switch / spawn sequences are laid out differently
 void CrystalBall_804AB308::vfunc_0x24() {
     s32 code = fn_8022461C(&mPos, field_0x4);
     if (code == 3 && mPos.z < 0.1f) {
