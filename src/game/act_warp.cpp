@@ -9,6 +9,7 @@
 #include "game/ViewLayer.h"
 #include "game/GameRootSub20.h"
 #include "game/act/tu_801688AC.h"
+#include "game/VecEpsilon.h"
 #include <float.h>
 
 // The layer the warp's spawn parameter selects (0 stays 0, else 7 + n).
@@ -200,20 +201,25 @@ Warp_804A6DC8::~Warp_804A6DC8() {
 
 extern const u32 lbl_8046ABE8[28]; // 'NULL'-ended actor id lists: [0] pushed, [14] and [17] by kind
 
-// Whether |d| is within 32 * FLT_EPSILON.
-static inline bool nearZero(f32 d) {
+// Whether the bomb-flower rests: flagged, or its velocity is within 32 * FLT_EPSILON of field_0x364.
+static inline bool bomeAtRest(cls_804A0738* b) {
     f32 eps = 32.0f * FLT_EPSILON;
-    bool ok = false;
-    if (-eps <= d && d <= eps) {
-        ok = true;
+    bool rest = false;
+    if (b->field_0x230 == 1) {
+        rest = true;
+    } else {
+        JGeometry::TVec3f ref(b->field_0x364[0], b->field_0x364[1], b->field_0x364[2]);
+        if (epsilonEquals(b->field_0x3c, ref, eps)) {
+            rest = true;
+        }
     }
-    return ok;
+    return rest;
 }
 
 // 0x80227F50. Every frame: tracks whether a player is near (the sand shake), lets the kind-0x20 warp
 // swallow a player with a drawn box, then pushes the actors lying on the pad (per kind) to the
 // warp's destination (field_0x238) or nudges their velocity.
-// FIXME(shotgun): 87.43 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 87.86 %, missing/extra + reloc-name; behaviour drift.
 void Warp_804A6DC8::update() {
     for (s32 i = 0; i < 4; i++) {
         field_0x258[i] = fn_8022C76C(i);
@@ -350,30 +356,12 @@ void Warp_804A6DC8::update() {
     if (actor->mActorId == 'BOME') {
         cls_804A0738* bome = static_cast<cls_804A0738*>(actor);
         getPlayerLayer_8023DE58(bome->field_0x90 & 0xF);
-        bool at_rest = bome->field_0x230 == 1;
-        if (!at_rest) {
-            if (nearZero(bome->field_0x3c.x - bome->field_0x364[0]) &&
-                nearZero(bome->field_0x3c.y - bome->field_0x364[1]) &&
-                nearZero(bome->field_0x3c.z - bome->field_0x364[2]))
-            {
-                at_rest = true;
-            }
-        }
-        if (at_rest == 1) {
+        if (bomeAtRest(bome)) {
             return;
         }
         kind = field_0x90 & 0x7F;
         if (kind == 4 || kind == 0x20 || kind == 0x24) {
-            at_rest = bome->field_0x230 == 1;
-            if (!at_rest) {
-                if (nearZero(bome->field_0x3c.x - bome->field_0x364[0]) &&
-                    nearZero(bome->field_0x3c.y - bome->field_0x364[1]) &&
-                    nearZero(bome->field_0x3c.z - bome->field_0x364[2]))
-                {
-                    at_rest = true;
-                }
-            }
-            if (!at_rest) {
+            if (!bomeAtRest(bome)) {
                 return;
             }
         }
