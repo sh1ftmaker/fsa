@@ -555,27 +555,29 @@ void SeesawLift_804AD348::fn_80358F98() {
             JGeometry::TBox2f box;
             fn_801F317C(&box);
             f32 centerY = mPos.y;
-            f32 c = __fabs(JMath::sincosTable_.cosShort(field_0x230));
+            f32 c = __fabsf(JMath::sincosTable_.cosShort(field_0x230));
             box.i.y = (box.i.y - centerY) * c + centerY;
             box.f.y = (box.f.y - centerY) * c + centerY;
             JGeometry::TVec2f out;
+            s8 side;
             if (fn_8023AAF8(p, &box, field_0x4, &out)) {
                 f32 d = centerY - out.y;
                 if (field_0x24e && d == 0.0f) {
                     d = 0.1f;
                 }
-                if (!field_0x24e && __fabs(d) <= 8.0f) {
+                if (!field_0x24e && __fabsf(d) <= 8.0f) {
                     d = 0.0f;
                 }
                 field_0x240 += 20.0f * d;
                 if (d >= 0.0f) {
-                    field_0x24a[p] = 1;
+                    side = 1;
                 } else {
-                    field_0x24a[p] = -1;
+                    side = -1;
                 }
             } else {
-                field_0x24a[p] = 0;
+                side = 0;
             }
+            field_0x24a[p] = side;
         }
     }
     if ((field_0x24a[0] | field_0x24a[1] | field_0x24a[2] | field_0x24a[3]) != 0 && field_0x240 != 0.0f) {
@@ -627,7 +629,7 @@ void SeesawLift_804AD348::fn_80358F98() {
     field_0x238 += field_0x23a;
     s16 oldAngle = field_0x230;
     field_0x230 += field_0x238;
-    if (((field_0x90 >> 12) & 0x1F) == 2) {
+    if (((field_0x90 >> 7) & 0x1F) == 2) {
         if (field_0x230 <= -0x3E00) {
             field_0x230 = -0x3E00;
             field_0x238 = 0;
@@ -637,7 +639,7 @@ void SeesawLift_804AD348::fn_80358F98() {
             field_0x238 = 0;
             field_0x23a = 0;
             field_0x245 = 0;
-            fillTiles(this, 864, 0);
+            fillTiles(this, lbl_80542868[0], 0);
         }
     } else {
         if (field_0x230 >= 0x3E00) {
@@ -649,7 +651,7 @@ void SeesawLift_804AD348::fn_80358F98() {
             field_0x238 = 0;
             field_0x23a = 0;
             field_0x245 = 0;
-            fillTiles(this, 864, 0);
+            fillTiles(this, lbl_80542868[0], 0);
         }
     }
     if (oldAngle == 0 && field_0x230 != 0) {
@@ -658,7 +660,7 @@ void SeesawLift_804AD348::fn_80358F98() {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E0, 0, 0, NULL, NULL, true, 1.0f);
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3E1, 0, 0, NULL, NULL, true, 1.0f);
         field_0x245 = 1;
-        fillTiles(this, 12, 1);
+        fillTiles(this, lbl_80542868[1], 1);
     }
 }
 
