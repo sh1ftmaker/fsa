@@ -36,11 +36,11 @@ void FallingFloor_804A9078::init() {
 void FallingFloor_804A9078::update() {
     JGeometry::TVec2f pos2d;
     pos2d.set(mPos.x, mPos.y);
-    JGeometry::TBox2f box;
-    box.i.x = mBox.i.x + mPos.x;
-    box.i.y = mBox.i.y + mPos.y;
-    box.f.x = mBox.f.x + mPos.x;
-    box.f.y = mBox.f.y + mPos.y;
+    JGeometry::TBox2f box = mBox;
+    box.i.x += mPos.x;
+    box.i.y += mPos.y;
+    box.f.x += mPos.x;
+    box.f.y += mPos.y;
     s32 standing;
     if (field_0x238 == 3) {
         standing = fn_8023AF14(&box, field_0x4, false, 100.0f);
@@ -76,8 +76,14 @@ void FallingFloor_804A9078::update() {
             } else {
                 gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x91);
                 field_0x230 = 1;
-                spawnEmitter_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 0.3f);
-                spawnEmitter_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 0.3f);
+                {
+                    JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                    spawnEmitter_8013CC50(field_0x4, &e, 0x28B, 0, 0, NULL, NULL, true, 0.3f);
+                }
+                {
+                    JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                    spawnEmitter_8013CC50(field_0x4, &e, 0x28C, 0, 0, NULL, NULL, true, 0.3f);
+                }
                 startSound_801F0E34(0x50013, 0);
             }
         } else {
@@ -88,7 +94,11 @@ void FallingFloor_804A9078::update() {
                     f32 dist = std::sqrtf(dx * dx + dy * dy);
                     if (dist < 100.0f) {
                         field_0x23c = (s32)dist >> 3;
-                        field_0x230 = (field_0x238 == 3) ? 3 : 2;
+                        if (field_0x238 == 3) {
+                            field_0x230 = 3;
+                        } else {
+                            field_0x230 = 2;
+                        }
                         break;
                     }
                 } else if (near[i] >= 0) {
@@ -97,7 +107,11 @@ void FallingFloor_804A9078::update() {
                     f32 dist = std::sqrtf(dx * dx + dy * dy);
                     if (dist < 40.0f) {
                         field_0x23c = (s32)dist >> 3;
-                        field_0x230 = (field_0x238 == 3) ? 3 : 2;
+                        if (field_0x238 == 3) {
+                            field_0x230 = 3;
+                        } else {
+                            field_0x230 = 2;
+                        }
                         break;
                     }
                 }
@@ -115,8 +129,14 @@ void FallingFloor_804A9078::update() {
     case 2:
         if (field_0x23c == 0) {
             gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x91);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 0.3f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 0.3f);
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28B, 0, 0, NULL, NULL, true, 0.3f);
+            }
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28C, 0, 0, NULL, NULL, true, 0.3f);
+            }
             startSound_801F0E34(0x50013, 0);
             field_0x230 = 5;
         } else {
@@ -166,8 +186,14 @@ void FallingFloor_804A9078::update() {
     case 6:
         if (field_0x23c == 0) {
             gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x92);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 0.5f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 0.5f);
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28B, 0, 0, NULL, NULL, true, 0.5f);
+            }
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28C, 0, 0, NULL, NULL, true, 0.5f);
+            }
             startSound_801F0E34(0x50012, 0);
             mAlive = false;
         } else {
@@ -177,8 +203,14 @@ void FallingFloor_804A9078::update() {
     case 7:
         if (standing < 0) {
             gBgRewrite_8053AC98->fn_802A381C(&mPos, field_0x4, 0x92);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28B, 0, 0, NULL, NULL, true, 0.5f);
-            spawnEmitter_8013CC50(field_0x4, &mPos, 0x28C, 0, 0, NULL, NULL, true, 0.5f);
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28B, 0, 0, NULL, NULL, true, 0.5f);
+            }
+            {
+                JGeometry::TVec3f e(mPos.x, mPos.y, mPos.z);
+                spawnEmitter_8013CC50(field_0x4, &e, 0x28C, 0, 0, NULL, NULL, true, 0.5f);
+            }
             startSound_801F0E34(0x50012, 0);
             mAlive = false;
         }
@@ -188,7 +220,6 @@ void FallingFloor_804A9078::update() {
             JGeometry::TVec3f p;
             p.x = mPos.x;
             p.y = mPos.y;
-            p.z = 0.0f;
             if (fn_80226998(&p, field_0x4) == 1) {
                 gBgRewrite_8053AC98->fn_802A3948(&mPos, 0, field_0x4, 0x3E0);
                 startSound_801F0E34(0x50045, 0);
