@@ -61,6 +61,7 @@ static inline JUTTexture* loadTexture(JKRArchive* archive, const char* name, JKR
     return texture;
 }
 
+// FIXME: 97.41 %, scheduling+regalloc + reloc-name; behaviour clean.
 GameRootSub24_8016A3AC::GameRootSub24_8016A3AC(JKRHeap* heap) {
     field_0x0 = JKRSolidHeap::create(-1, heap, false);
     field_0x0->becomeCurrentHeap();
@@ -348,6 +349,7 @@ void fn_8016D398(Mtx view, s32 frame, bool arg2, bool arg3, cls_8016ED88* entrie
 #endif
 
 // Still differs: the stack slots of the first two zero vectors are swapped.
+// FIXME: 99.85 %, scheduling+regalloc + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016DE30() {
     if (isGameModeSet()) {
         if (field_0x1d2) {
@@ -616,7 +618,7 @@ void GameRootSub24_8016A3AC::fn_8016D284() {
     }
 }
 
-// FIXME: 80.49 %, missing/extra + reloc-name; behaviour clean.
+// FIXME: 80.50 %, missing/extra + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016CB14() {
     if (field_0x1c7) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
@@ -714,6 +716,7 @@ void GameRootSub24_8016A3AC::fn_8016CB14() {
     }
 }
 
+// FIXME: 60.83 %, scheduling+regalloc + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016C2FC() {
     if (field_0x1c8 && field_0x104 != NULL) {
         JGeometry::TVec3f center;
@@ -798,6 +801,7 @@ void GameRootSub24_8016A3AC::fn_8016C2FC() {
     }
 }
 
+// FIXME: 62.89 %, scheduling+regalloc + reloc-name; behaviour clean.
 void GameRootSub24_8016A3AC::fn_8016B910() {
     if ((field_0x1c9 && field_0x108 != NULL) || (field_0x1ca && field_0x10c != NULL)) {
         f32 width = (s32)JUTVideo::getManager()->getFbWidth();
