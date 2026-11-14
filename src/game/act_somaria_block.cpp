@@ -21,7 +21,7 @@ inline bool CaneOfSomariaBlock_804AA9F0::checkGround() {
     JGeometry::TVec3f centre;
     centre.x = box.f.x + 0.5f * (box.i.x - box.f.x);
     centre.y = box.f.y + 0.5f * (box.i.y - box.f.y);
-    u16 tile = fn_802265FC(&centre, field_0x4);
+    s32 tile = fn_802265FC(&centre, field_0x4);
     if (tile == 3 || tile == 0xD || tile == 0xE || tile == 0x3B) {
         field_0x3c.x = 0.0f;
         field_0x3c.y = 0.0f;
@@ -97,8 +97,11 @@ void CaneOfSomariaBlock_804AA9F0::update() {
             if (!overlap.intersect(liftBox)) {
                 continue;
             }
-            s32 serial = -1;
-            while ((serial = getActorManager_801F856C()->fn_801F78F4('SMRI', serial)) >= 0) {
+            for (s32 serial = -1;;) {
+                serial = getActorManager_801F856C()->fn_801F78F4('SMRI', serial);
+                if (serial < 0) {
+                    break;
+                }
                 CaneOfSomariaBlock_804AA9F0* other = static_cast<CaneOfSomariaBlock_804AA9F0*>(
                     getActorManager_801F856C()->findActorBySerial_801F666C(serial));
                 if (other->mState == 8 && other->field_0x110 == field_0x110) {
