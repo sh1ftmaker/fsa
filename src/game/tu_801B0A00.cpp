@@ -58,7 +58,6 @@ static inline void requestSpot() {
 }
 
 // 0x801B2394.
-// FIXME(shotgun): 99.89 %, reloc-name; behaviour clean.
 void cls_804A35AC::init() {
     mBox.set(-8.0f, -8.0f, 8.0f, 8.0f);
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
@@ -200,7 +199,7 @@ void cls_804A35AC::fn_801B2138(s32 arg) {
 // Not auto-inlined: update calls fn_801B2000 out of line in the original (docs/INLINING.md, pragma rule 1).
 #pragma auto_inline off
 // 0x801B2000.
-// FIXME: 84.33 %, missing/extra + reloc-name; behaviour near.
+// FIXME: 84.40 %, missing/extra; behaviour near.
 // FIXME: operands differ: fn_802303FC's original call passes 0xFF for its bool flag (we pass true); loop pointer and layer registers differ.
 void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
     f32 y = mPos.y - yOffset;
@@ -231,6 +230,7 @@ void cls_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
 #pragma auto_inline reset
 
 // 0x801B0A90.
+// FIXME: 98.70 %, scheduling+regalloc + reloc-name; behaviour near.
 void cls_804A35AC::update() {
     JGeometry::TBox2f box;
     JGeometry::TVec3f pos;
