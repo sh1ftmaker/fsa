@@ -161,7 +161,7 @@ void SmallKey_804A8CD8::fn_802C5284() {
 }
 
 // 0x802C4498.
-// FIXME(shotgun): 88.99 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.22 %, missing/extra + reloc-name; behaviour drift.
 void SmallKey_804A8CD8::update() {
     field_0x2ad = 0xFF;
     field_0x2ac = 0;
@@ -179,7 +179,7 @@ void SmallKey_804A8CD8::update() {
                    (!fn_802DE764(1, 1, 2) || field_0x4 != 10 || getPlayerLayer_8023DE58(field_0x23c) != 8)) {
             cont = false;
         } else {
-            mPos = *getPlayerPos_8023E724(field_0x23c);
+            mPos.set(*getPlayerPos_8023E724(field_0x23c));
             field_0x4 = getPlayerLayer_8023DE58(field_0x23c);
             field_0x240 = 5;
             field_0x3c.z = 0.0f;
@@ -276,7 +276,7 @@ void SmallKey_804A8CD8::update() {
         if (field_0xc4 != 0) {
             field_0xb0 = 0;
             field_0x294 = 0;
-            mPos = *fn_8023E7B0(field_0xc8);
+            mPos.set(*fn_8023E7B0(field_0xc8));
             field_0x4 = getPlayerLayer_8023DE58(field_0xc8);
             field_0x2ad = fn_8023BCD4(field_0xc8);
             field_0x290 = field_0xc8;
@@ -335,7 +335,7 @@ void SmallKey_804A8CD8::update() {
         if (field_0x28c >= 0) {
             field_0x244 = getActorManager_801F856C()->mActors[field_0x28c];
             if (field_0x244 != NULL) {
-                field_0x248 = field_0x244->mPos;
+                field_0x248.set(field_0x244->mPos);
                 s32 otherLayer = field_0x244->field_0x4;
                 if (otherLayer < 8 && field_0x4 == 8) {
                     JGeometry::TBox2f viewBox = (otherLayer < 8)
@@ -344,7 +344,7 @@ void SmallKey_804A8CD8::update() {
                     field_0x248.x = field_0x244->mPos.x - viewBox.i.x;
                     field_0x248.y = field_0x244->mPos.y - viewBox.i.y;
                 }
-                mPos = field_0x248;
+                mPos.set(field_0x248);
             } else {
                 fn_801F0D20(3);
                 field_0x28c = -1;
@@ -415,7 +415,7 @@ void SmallKey_804A8CD8::update() {
         field_0xb0 = 0;
         field_0x294 = 0;
         if (field_0xcc != 0) {
-            mPos = *getPlayerPos_8023E724(field_0xd0);
+            mPos.set(*getPlayerPos_8023E724(field_0xd0));
             field_0x4 = getPlayerLayer_8023DE58(field_0xd0);
             field_0x2ad = fn_8023BCD4(field_0xd0);
             if (gGameRoot_8053AAF8->fn_80138A30() == 1 && field_0x29c >= 1 &&
@@ -481,7 +481,7 @@ void SmallKey_804A8CD8::update() {
     }
 }
 
-// FIXME(shotgun): 90.81 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 91.14 %, missing/extra + reloc-name; behaviour drift.
 // The key on the floor: kind 6 slides with friction; a player touching it picks it up
 // (kinds 3-5 spawn a 'TKRA' instead), players walking into it push it (field_0x2ae the
 // direction), pits and water drop it; keeps its place registered with the view.
@@ -515,7 +515,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
         s32 kind = field_0x280;
         if (kind == 3 || kind == 4 || kind == 5) {
             getActorManager_801F856C()->spawnActor_801F9484('TKRA', field_0x4, &mPos,
-                                                            kind + (i << 12) + 0x210, -1, -1);
+                                                            0x210 + kind + (i << 12), -1, -1);
             JGeometry::TVec2f pos(field_0x230.x, field_0x230.y);
             s32 layer = field_0x238;
             getGameView_802D6A9C()->fn_802D6C10(pos, layer);
@@ -536,7 +536,11 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
     if (field_0x240 != 2) {
         return;
     }
-    u16 code = fn_80226850(&mPos, field_0x4 + (field_0x4 < 8 ? 1 : 8));
+    s32 step = 1;
+    if (field_0x4 >= 8) {
+        step = 8;
+    }
+    u16 code = fn_80226850(&mPos, field_0x4 + step);
     if (code != 0 && code != 0x39) {
         field_0x2ad = 0x80;
         field_0x2ac = 2;
@@ -684,7 +688,7 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
 }
 
 // 0x802C2C30.
-// FIXME(shotgun): 91.68 %, missing/extra + reloc-name; behaviour near.
+// FIXME(shotgun): 92.95 %, missing/extra + reloc-name; behaviour near.
 void SmallKey_804A8CD8::fn_802C2C30() {
     fn_802C24A8();
     if (getGameView_802D6A9C()->field_0x131df[field_0x4] != 0) {
@@ -781,7 +785,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
                 if (field_0x27c == 2) {
                     field_0x27c = 3;
                 }
-                mPos = field_0x248;
+                mPos.set(field_0x248);
                 u32 value = (field_0x23c << 30) | (field_0x2b5 << 29) | ((field_0x280 << 24) & 0x1F000000) |
                             (field_0x4 & 0xFF);
                 if (!getGameView_802D6A9C()->fn_802DCD0C()) {
@@ -801,7 +805,7 @@ void SmallKey_804A8CD8::fn_802C2C30() {
                 field_0x3c.x *= -0.5f;
                 if ((wall.x > 0.0f && mPos.x <= field_0x248.x) ||
                     (wall.x < 0.0f && mPos.x >= field_0x248.x)) {
-                    mPos = field_0x248;
+                    mPos.set(field_0x248);
                 }
             }
             return;
