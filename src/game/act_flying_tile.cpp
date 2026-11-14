@@ -172,6 +172,162 @@ bool FlyingTile_804AC100::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return true;
 }
 
+// Draws the 'SMP ' sprite `name` at pos with params, below layer 8.
+static inline void drawSmp(FlyingTile_804AC100* self, const JGeometry::TVec3f* pos, const char* name,
+                           SpriteParams_801F5AE0* params) {
+    if (self->field_0x4 < 8) {
+        void* res = gGameRoot_8053AAF8->field_0xa4->getResource('SMP ', name);
+        gGameRoot2_8053AB10->field_0x20->fn_802F6CF4(pos, res, params);
+    }
+}
+
+// Turns params into the tile's shadow: dark, fading with the height.
+static inline void setShadow(FlyingTile_804AC100* self, SpriteParams_801F5AE0* params) {
+    params->field_0x1d = 0;
+    params->field_0x14.r = 0;
+    params->field_0x10.r = 0x28;
+    params->field_0x10.g = 0x28;
+    params->field_0x10.b = 0x28;
+    f32 alpha = 223.0f - 0.5f * self->mPos.z;
+    params->field_0x10.a = 159.0f >= alpha ? 159.0f : alpha;
+}
+
+// Sets mtx to a rotation by angle about the view axis.
+static inline void rotZ(Mtx mtx, s16 angle) {
+    f32 s = JMath::sincosTable_.sinShort(angle);
+    f32 c = JMath::sincosTable_.cosShort(angle);
+    mtx[0][0] = c;
+    mtx[0][1] = -s;
+    mtx[1][0] = s;
+    mtx[1][1] = c;
+    mtx[2][2] = 1.0f;
+    mtx[2][1] = 0.0f;
+    mtx[1][2] = 0.0f;
+    mtx[2][0] = 0.0f;
+    mtx[0][2] = 0.0f;
+}
+
+// Sets mtx to a rotation by angle about the vertical axis.
+static inline void rotY(Mtx mtx, s16 angle) {
+    f32 s = JMath::sincosTable_.sinShort(angle);
+    f32 c = JMath::sincosTable_.cosShort(angle);
+    mtx[0][0] = c;
+    mtx[1][1] = 1.0f;
+    mtx[0][2] = s;
+    mtx[2][0] = -s;
+    mtx[2][2] = c;
+    mtx[2][1] = 0.0f;
+    mtx[1][2] = 0.0f;
+    mtx[1][0] = 0.0f;
+    mtx[0][1] = 0.0f;
+}
+
+void FlyingTile_804AC100::draw() {
+    SpriteParams_801F5AE0 params;
+    Mtx rot;
+    Mtx trans;
+    PSMTXIdentity(rot);
+    PSMTXIdentity(trans);
+    params.field_0x1c = 1;
+    params.field_0x1d = 1;
+    if (field_0x230 != 0 && field_0x230 != 4) {
+        if (field_0x254 == 1) {
+            params.field_0x14.r = 0x96;
+        }
+        switch (field_0x24c) {
+        case 0:
+        case 8: {
+            PSMTXTrans(trans, -8.0f, -8.0f, 0.0f);
+            rotZ(rot, field_0x25a);
+            PSMTXConcat(rot, trans, rot);
+            params.mMtx = rot;
+            JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+            drawSmp(this, &pos, "floor1_smp.bin", &params);
+            setShadow(this, &params);
+            JGeometry::TVec3f flat(mPos.x, mPos.y, 0.0f);
+            drawSmp(this, &flat, "floor1_smp.bin", &params);
+            break;
+        }
+        case 1:
+            rotY(rot, field_0x25a);
+            params.mMtx = rot;
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x27, &params, 7, 1.0f, 1.0f);
+            break;
+        case 2:
+            rotY(rot, field_0x25a);
+            params.mMtx = rot;
+            if (field_0x288[0] == 'r' || field_0x288[0] == 's' || field_0x288[0] == 'y') {
+                fn_801EFD34(gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "wood_ura.bti"), &params, 7, 0.0f,
+                            -16.0f, 0.0f);
+            } else if (field_0x288[0] == 'l' || field_0x288[0] == 'x' || field_0x288[0] == 'p') {
+                fn_801EFD34(gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "wood_yasi.bti"), &params, 7, 0.0f,
+                            -16.0f, 0.0f);
+            } else {
+                fn_801EFD34(gGameRoot_8053AAF8->field_0xa4->getResource('TIMG', "wood_omote.bti"), &params, 7, 0.0f,
+                            -16.0f, 0.0f);
+            }
+            break;
+        case 3: {
+            PSMTXTrans(trans, -48.0f, -48.0f, 0.0f);
+            rotZ(rot, field_0x25a);
+            PSMTXConcat(rot, trans, rot);
+            params.mMtx = rot;
+            JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+            drawSmp(this, &pos, "house_smp.bin", &params);
+            setShadow(this, &params);
+            JGeometry::TVec3f flat(mPos.x, mPos.y, 0.0f);
+            drawSmp(this, &flat, "house_smp.bin", &params);
+            break;
+        }
+        case 4:
+            rotY(rot, field_0x25a);
+            params.mMtx = rot;
+            drawSprite_801F06F0("enemy_gc_sob.bin", 0x16D, &params, 7, 1.0f, 1.0f);
+            break;
+        case 5:
+            rotY(rot, field_0x25a);
+            params.mMtx = rot;
+            drawSprite_801F06F0("enemy_both2_sob.bin", 0x21, &params, 7, 1.0f, 1.0f);
+            break;
+        case 6:
+        case 9: {
+            PSMTXTrans(trans, -16.0f, -16.0f, 0.0f);
+            rotZ(rot, field_0x25a);
+            PSMTXConcat(rot, trans, rot);
+            params.mMtx = rot;
+            JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+            drawSmp(this, &pos, "statue_smp.bin", &params);
+            setShadow(this, &params);
+            JGeometry::TVec3f flat(mPos.x, mPos.y, 0.0f);
+            drawSmp(this, &flat, "statue_smp.bin", &params);
+            break;
+        }
+        case 7: {
+            PSMTXTrans(trans, -8.0f, -8.0f, 0.0f);
+            rotZ(rot, field_0x25a);
+            PSMTXConcat(rot, trans, rot);
+            params.mMtx = rot;
+            if (field_0x258 != 0) {
+                JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+                drawSmp(this, &pos, "empty_smp.bin", &params);
+            } else {
+                JGeometry::TVec3f pos(mPos.x, mPos.y, mPos.z);
+                drawSmp(this, &pos, "treasure_smp.bin", &params);
+            }
+            setShadow(this, &params);
+            if (field_0x258 != 0) {
+                JGeometry::TVec3f flat(mPos.x, mPos.y, 0.0f);
+                drawSmp(this, &flat, "empty_smp.bin", &params);
+            } else {
+                JGeometry::TVec3f flat(mPos.x, mPos.y, 0.0f);
+                drawSmp(this, &flat, "treasure_smp.bin", &params);
+            }
+            break;
+        }
+        }
+    }
+}
+
 // FIXME(shotgun): 86 %, missing/extra
 void FlyingTile_804AC100::fn_80339820() {
     JGeometry::TVec3f pos = mPos;
