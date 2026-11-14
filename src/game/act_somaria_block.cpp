@@ -21,7 +21,7 @@ inline bool CaneOfSomariaBlock_804AA9F0::checkGround() {
     JGeometry::TVec3f centre;
     centre.x = box.f.x + 0.5f * (box.i.x - box.f.x);
     centre.y = box.f.y + 0.5f * (box.i.y - box.f.y);
-    u16 tile = fn_802265FC(&centre, field_0x4);
+    s32 tile = fn_802265FC(&centre, field_0x4);
     if (tile == 3 || tile == 0xD || tile == 0xE || tile == 0x3B) {
         field_0x3c.x = 0.0f;
         field_0x3c.y = 0.0f;
@@ -33,6 +33,7 @@ inline bool CaneOfSomariaBlock_804AA9F0::checkGround() {
     return true;
 }
 
+// FIXME: 99.94 %, reloc-name; behaviour clean.
 void CaneOfSomariaBlock_804AA9F0::init() {
     // FIXME: 99.59 %. Same instructions; the sdata2 literals are @486-@492 here
     // (lbl_ in the original, a literal-split issue).
@@ -69,7 +70,7 @@ void CaneOfSomariaBlock_804AA9F0::init() {
     field_0x80.set(-8.0f, -8.0f, 8.0f, 8.0f);
 }
 
-// FIXME(shotgun): 90.3 %, missing/extra + reloc-name
+// FIXME(shotgun): 93.39 %, missing/extra + reloc-name; behaviour drift.
 // Lands on an OBJLift in state 0xB (taking over its 'SMRI' passenger), then: 0 spawns (two
 // emitters), 1 waits 20 frames, 2 idles (tracks which players are clear of it, gets pushed by
 // fn_80238BC4's direction or picked up through fn_8022F9E4), 3 slides one push, 4 is carried,
@@ -97,8 +98,11 @@ void CaneOfSomariaBlock_804AA9F0::update() {
             if (!overlap.intersect(liftBox)) {
                 continue;
             }
-            s32 serial = -1;
-            while ((serial = getActorManager_801F856C()->fn_801F78F4('SMRI', serial)) >= 0) {
+            for (s32 serial = -1;;) {
+                serial = getActorManager_801F856C()->fn_801F78F4('SMRI', serial);
+                if (serial < 0) {
+                    break;
+                }
                 CaneOfSomariaBlock_804AA9F0* other = static_cast<CaneOfSomariaBlock_804AA9F0*>(
                     getActorManager_801F856C()->findActorBySerial_801F666C(serial));
                 if (other->mState == 8 && other->field_0x110 == field_0x110) {
@@ -309,6 +313,7 @@ void CaneOfSomariaBlock_804AA9F0::update() {
     }
 }
 
+// FIXME: 99.95 %, reloc-name; behaviour clean.
 void CaneOfSomariaBlock_804AA9F0::draw() {
     // FIXME: 99.86 %. Only the literal names differ: the 1.0f scales and the
     // "enemy_both2_sob.bin" string are @457 / @458 here, lbl_ in the original.
@@ -327,7 +332,8 @@ void CaneOfSomariaBlock_804AA9F0::draw() {
 
 // Same shape as act_bombchu's vfunc_0x4C (the blocking tile codes as a != chain, the 0x25 /
 // 0x26 results narrowed as bytes).
-// FIXME: 96.79. Scheduling and register allocation only: the target copies layer to r31
+// FIXME: 96.79 %, scheduling+regalloc; behaviour clean.
+// Scheduling and register allocation only: the target copies layer to r31
 // after the field_0x245 test (pos to r29 in the prologue), ours both in the prologue (pos
 // r30, layer r29, the tile code r31).
 bool CaneOfSomariaBlock_804AA9F0::vfunc_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
