@@ -273,7 +273,10 @@ void Warp_804A6DC8::update() {
     if (field_0x255 == 1) {
         GameRootSub20_801902C0* sand = fn_801902C0();
         if (sand->field_0x79c < 16) {
-            sand->mSandFalls[sand->field_0x79c].mPos = mPos;
+            GameRootSub20_801902C0::SandFall& fall = sand->mSandFalls[sand->field_0x79c];
+            fall.mPos.x = mPos.x;
+            fall.mPos.y = mPos.y;
+            fall.mPos.z = mPos.z;
             sand->mSandFalls[sand->field_0x79c].field_0xc[0] = 1;
             sand->field_0x79c++;
         }
@@ -398,22 +401,20 @@ void Warp_804A6DC8::update() {
             }
         }
         JGeometry::TVec3f dest = field_0x238;
-        dest.x += actor->mPos.x - mPos.x;
-        dest.y += actor->mPos.y - mPos.y;
-        dest.z += actor->mPos.z;
+        dest += JGeometry::TVec3f(actor->mPos.x - mPos.x, actor->mPos.y - mPos.y, actor->mPos.z);
         actor->fn_801F349C(warpLayer(field_0x90), &dest);
         return;
     }
     if (actor->mActorId == 'ESRY') {
         kind = field_0x90 & 0x7F;
         if (kind == 0 || kind == 3 || kind == 0x15 || kind == 0x23) {
-            actor->field_0x3c.set(0.0f, -1.8f, 0.0f);
+            actor->field_0x3c = JGeometry::TVec3f(0.0f, -1.8f, 0.0f);
         } else if (kind == 1 || kind == 2) {
-            actor->field_0x3c.set(0.0f, 1.8f, 0.0f);
+            actor->field_0x3c = JGeometry::TVec3f(0.0f, 1.8f, 0.0f);
         } else if (kind == 0x17) {
-            actor->field_0x3c.set(1.8f, 0.0f, 0.0f);
+            actor->field_0x3c = JGeometry::TVec3f(1.8f, 0.0f, 0.0f);
         } else if (kind == 0x18) {
-            actor->field_0x3c.set(-1.8f, 0.0f, 0.0f);
+            actor->field_0x3c = JGeometry::TVec3f(-1.8f, 0.0f, 0.0f);
         }
     }
     if (actor->mActorId == 'FIRE') {
