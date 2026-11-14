@@ -9,6 +9,7 @@
 #include "game/ActorManager.h"
 #include "game/Effect.h"
 #include "JSystem/JMath/JMath.h"
+#include "std/math.h"
 
 extern s32 lbl_804A0718[]; // per-variant angle (s16 units)
 
@@ -81,7 +82,7 @@ void cls_804A0738::init() {
 }
 
 // Turns d into a direction and sets the velocity: 9 per frame for the fast variant, else 6.
-static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f d, bool fast) {
+static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f& d, bool fast) {
     d.normalize();
     if (fast) {
         self->field_0x3c.x = 9.0f * d.x;
@@ -102,12 +103,12 @@ void cls_804A0738::update() {
         target = fn_8022F3DC(field_0x90);
     }
     if (field_0x23c == 0) {
-        if (fabs(field_0x3c.x - field_0x364[0]) > 0.01f) {
+        if (std::fabsf(field_0x3c.x - field_0x364[0]) > 0.01f) {
             addCalc2_801F71A4(&field_0x3c.x, field_0x364[0], 0.1f, 0.2f);
         } else {
             field_0x364[0] = field_0x3c.x;
         }
-        if (fabs(field_0x3c.y - field_0x364[1]) > 0.01f) {
+        if (std::fabsf(field_0x3c.y - field_0x364[1]) > 0.01f) {
             addCalc2_801F71A4(&field_0x3c.y, field_0x364[1], 0.1f, 0.2f);
         } else {
             field_0x364[1] = field_0x3c.y;
@@ -122,24 +123,27 @@ void cls_804A0738::update() {
         p.x = field_0x2ec[field_0x268].x1;
         p.y = field_0x2ec[field_0x268].y1;
         if (fn_8022BC38(target, field_0x2ec[field_0x268].layer1, &p) == 1) {
-            field_0x2ec[field_0x268].x1 = getPlayerPos_8023E724(target)->x;
-            field_0x2ec[field_0x268].y1 = getPlayerPos_8023E724(target)->y;
+            const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
+            field_0x2ec[field_0x268].x1 = pp->x;
+            field_0x2ec[field_0x268].y1 = pp->y;
         } else {
             field_0x2ec[field_0x268].layer0 = getPlayerLayer_8023DE58(target);
-            field_0x2ec[field_0x268].x0 = getPlayerPos_8023E724(target)->x;
-            field_0x2ec[field_0x268].y0 = getPlayerPos_8023E724(target)->y;
+            const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
+            field_0x2ec[field_0x268].x0 = pp->x;
+            field_0x2ec[field_0x268].y0 = pp->y;
             field_0x268++;
             if (field_0x268 < 5) {
                 field_0x2ec[field_0x268].layer1 = getPlayerLayer_8023DE58(target);
-                field_0x2ec[field_0x268].x1 = getPlayerPos_8023E724(target)->x;
-                field_0x2ec[field_0x268].y1 = getPlayerPos_8023E724(target)->y;
+                const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
+                field_0x2ec[field_0x268].x1 = pp->x;
+                field_0x2ec[field_0x268].y1 = pp->y;
             }
         }
     }
     mPos += field_0x3c;
     switch (field_0x230) {
     case 0:
-        if (fabs(field_0x3c.x - field_0x364[0]) <= 1.0f && fabs(field_0x3c.y - field_0x364[1]) <= 1.0f) {
+        if (std::fabsf(field_0x3c.x - field_0x364[0]) <= 1.0f && std::fabsf(field_0x3c.y - field_0x364[1]) <= 1.0f) {
             field_0x174 = field_0x180;
             field_0x3c.x = field_0x364[0];
             field_0x3c.y = field_0x364[1];
@@ -165,10 +169,12 @@ void cls_804A0738::update() {
                 break;
             }
             JGeometry::TVec2f d;
-            d.set(getPlayerPos_8023E724(field_0x90)->x - mPos.x, getPlayerPos_8023E724(field_0x90)->y - mPos.y);
+            const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
+            d.set(pp->x - mPos.x, pp->y - mPos.y);
             if (d.x * d.x + d.y * d.y < 240.0f) {
-                mPos.x = getPlayerPos_8023E724(field_0x90)->x;
-                mPos.y = getPlayerPos_8023E724(field_0x90)->y;
+                const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
+                mPos.x = pp->x;
+                mPos.y = pp->y;
                 mPos.z = 0.0f;
                 mAlive = false;
                 break;
@@ -248,12 +254,14 @@ void cls_804A0738::update() {
         if (fn_8022BC38(field_0x90, field_0x4, &mPos) == 1) {
             if (fn_8022D75C(target) == 1 || (fn_8022CAF8(field_0x90) == 4 && target != field_0x90)) {
                 JGeometry::TVec2f d;
-                d.set(getPlayerPos_8023E724(field_0x90)->x - mPos.x, getPlayerPos_8023E724(field_0x90)->y - mPos.y);
+                const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
+                d.set(pp->x - mPos.x, pp->y - mPos.y);
                 if (field_0x260 == 1) {
                     mAlive = false;
                 } else if (d.x * d.x + d.y * d.y < 240.0f) {
-                    mPos.x = getPlayerPos_8023E724(field_0x90)->x;
-                    mPos.y = getPlayerPos_8023E724(field_0x90)->y;
+                    const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
+                    mPos.x = pp->x;
+                    mPos.y = pp->y;
                     mPos.z = 0.0f;
                     field_0x260 = 1;
                 } else {
@@ -273,7 +281,8 @@ void cls_804A0738::update() {
                 if (field_0x4 != getPlayerLayer_8023DE58(target)) {
                     break;
                 }
-                d.set(getPlayerPos_8023E724(target)->x - mPos.x, getPlayerPos_8023E724(target)->y - mPos.y);
+                const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
+                d.set(pp->x - mPos.x, pp->y - mPos.y);
             }
             aimVelocity(this, d, field_0x25c > 0 && field_0x261 == 0);
             if ((field_0x264 > 0 && field_0x26c > 0) || (field_0x268 > 0 && field_0x270 < field_0x268)) {
@@ -286,7 +295,7 @@ void cls_804A0738::update() {
                     pt = &field_0x2ec[field_0x270];
                     fromFirst = false;
                 }
-                if (fabs(pt->x1 - mPos.x) <= 16.0f && fabs(pt->y1 - mPos.y) <= 16.0f) {
+                if (std::fabsf(pt->x1 - mPos.x) <= 16.0f && std::fabsf(pt->y1 - mPos.y) <= 16.0f) {
                     JGeometry::TVec3f p;
                     p.set(0.0f, 0.0f, 0.0f);
                     p.x = pt->x0;
