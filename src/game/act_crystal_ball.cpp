@@ -932,7 +932,7 @@ void CrystalBall_804AB308::vfunc_0x24() {
         fn_801F3668();
         return;
     }
-    if ((code == 0xD && mPos.z < 0.1f) || code == 0x3B) {
+    if ((code == 0xD || code == 0x3B) && ((code == 0xD && mPos.z < 0.1f) || code == 0x3B)) {
         spawnEmitter_8013CC50(field_0x4, &mPos, 0x3D0, 0, 1, NULL, NULL, true, 2.0f);
         fn_801F3668();
         return;
@@ -1058,16 +1058,14 @@ void CrystalBall_804AB308::vfunc_0x24() {
             break;
         }
         }
-        fn_801F3668();
         break;
     }
     case 2:
         mPos.z = 0.0f;
         getActorManager_801F856C()->spawnActor_801F9484(ACTOR_LSTI, field_0x4, &mPos, field_0x294 | 0x180 | ((field_0x298 & 3) << 22), -1, -1);
-        fn_801F3668();
         break;
     default:
-        fn_801F3668();
         break;
     }
+    fn_801F3668();
 }
