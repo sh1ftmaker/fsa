@@ -151,18 +151,17 @@ static inline void stopEmitter(JPABaseEmitter*& emitter) {
     }
 }
 
-// Whether the actor in slot `slot` of the manager is an SLR4.
-static inline bool isSlr4(s32 slot) {
+// Notifies the SLR4 actor in slot `slot`, if there is one.
+static inline void notifySlr4(s32 slot, u8 arg) {
     if (slot >= 0) {
         ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[slot];
         if (actor != NULL && actor->mActorId == ACTOR_SLR4) {
-            return true;
+            fn_802EEA24(arg);
         }
     }
-    return false;
 }
 
-// FIXME(shotgun): 79.88 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.31 %, missing/extra; behaviour drift.
 void cls_804AA350::update() {
     switch (field_0x24c) {
     case 0:
@@ -200,24 +199,16 @@ void cls_804AA350::update() {
         field_0x250--;
         if (field_0x250 <= 0) {
             getActorManager_801F856C()->fn_801F6884();
-            if (isSlr4(field_0x260[0])) {
-                fn_802EEA24(0);
-            }
-            if (isSlr4(field_0x260[1])) {
-                fn_802EEA24(0);
-            }
+            notifySlr4(field_0x260[0], 0);
+            notifySlr4(field_0x260[1], 0);
             field_0x24c++;
         }
         break;
     case 4:
         if (getGameView_802D6A9C()->fn_802D800C(field_0x258)) {
             if (getActorManager_801F856C()->fn_801F68E0() != 0) {
-                if (isSlr4(field_0x260[0])) {
-                    fn_802EEA24(1);
-                }
-                if (isSlr4(field_0x260[1])) {
-                    fn_802EEA24(1);
-                }
+                notifySlr4(field_0x260[0], 1);
+                notifySlr4(field_0x260[1], 1);
                 field_0x250 = 60;
                 field_0x24c = 5;
             }
@@ -248,12 +239,8 @@ void cls_804AA350::update() {
             for (s32 p = 0; p < 4; p++) {
                 fn_8022CA6C(p, 5, false);
             }
-            if (isSlr4(field_0x260[0])) {
-                fn_802EEA24(0);
-            }
-            if (isSlr4(field_0x260[1])) {
-                fn_802EEA24(0);
-            }
+            notifySlr4(field_0x260[0], 0);
+            notifySlr4(field_0x260[1], 0);
             field_0x24c++;
             startSound_801F0E34(0x5005B, 0);
         }
@@ -363,6 +350,8 @@ void cls_804AA350::update() {
             deleteEmitter(&mEmitter244);
             field_0x24c = 16;
         }
+        break;
+    case 16:
         break;
     }
 }
