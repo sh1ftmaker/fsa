@@ -5,6 +5,7 @@
 #include "game/GameGlobals.h"
 #include "game/GameView.h"
 #include "game/Player.h"
+#include "game/PlayerBit.h"
 #include "game/act/act_bgm_change_npc.h"
 
 // The music started for each BGM id (the spawn parameter & 0x7F), .rodata 0x8046F1C8 (38 words).
@@ -27,7 +28,7 @@ void BGMChangeNPC_804A9DA0::init() {
     field_0x24c = -1;
 }
 
-// FIXME(shotgun): 86.95 %, missing/extra + reloc-name
+// FIXME(shotgun): 91.68 %, different + reloc-name; behaviour near.
 void BGMChangeNPC_804A9DA0::update() {
     JGeometry::TBox2f box(mBox);
     box.addPos(mPos.x, mPos.y);
@@ -37,8 +38,7 @@ void BGMChangeNPC_804A9DA0::update() {
     if (field_0x240 != 2) {
         if (gGameRoot_8053AAF8->field_0x7e == 1) {
             for (s32 i = 0; i < 4; i++) {
-                bool present = (gGameRoot_8053AAF8->mPlayerMask & (1 << i)) != 0;
-                if (present && field_0x4 == getPlayerLayer_8023DE58(i)) {
+                if (isPlayerBitSet(gGameRoot_8053AAF8, i) == 1 && field_0x4 == getPlayerLayer_8023DE58(i)) {
                     JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
                     if (containsPoint(box, pos)) {
                         field_0x258 = i;
@@ -103,10 +103,9 @@ void BGMChangeNPC_804A9DA0::update() {
                         s32 layer = other->field_0x4;
                         u32 kind = (other->field_0x90 >> 12) & 0x1F;
                         JGeometry::TVec3f otherPos = other->mPos;
-                        mBox.set(-16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1),
-                                 -16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1),
-                                 16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1),
-                                 16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1));
+                        f32 halfW = 16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1);
+                        f32 halfH = 16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1);
+                        mBox.set(-halfW, -halfH, halfW, halfH);
                         JGeometry::TBox2f otherBox(mBox);
                         otherBox.addPos(otherPos.x, otherPos.y);
                         for (s32 p = 0; p < 4; p++) {
@@ -131,16 +130,16 @@ void BGMChangeNPC_804A9DA0::update() {
             field_0x258 = -1;
         }
     } else if (field_0x254 != field_0x4) {
-        bool free = true;
+        s32 free = 1;
         s32 end = getActorManager_801F856C()->mActorEnd;
         for (s32 i = 0; i < end; i++) {
             ActorBase_804A5770* other = getActorManager_801F856C()->mActors[i];
             if (other != NULL && i != mSerial && other->mActorId == ACTOR_BGMN &&
                 field_0x254 == other->field_0x4) {
-                if (other->fn_8018A590() != 0xFFFF) {
-                    free = false;
+                if (other->field_0x94 != 0xFFFF) {
+                    free = 0;
                 } else if ((u32)field_0x234 == (other->field_0x90 & 0x7F)) {
-                    free = false;
+                    free = 0;
                 }
             }
         }
@@ -160,10 +159,9 @@ void BGMChangeNPC_804A9DA0::update() {
                         return;
                     }
                     if ((other->field_0x90 & 0x7F) == (u32)field_0x234) {
-                        mBox.set(-16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1),
-                                 -16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1),
-                                 16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1),
-                                 16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1));
+                        f32 halfW = 16.0f * (s32)(((other->field_0x90 >> 22) & 0x1F) + 1);
+                        f32 halfH = 16.0f * (s32)(((other->field_0x90 >> 17) & 0x1F) + 1);
+                        mBox.set(-halfW, -halfH, halfW, halfH);
                         JGeometry::TVec3f otherPos = other->mPos;
                         JGeometry::TBox2f otherBox(mBox);
                         otherBox.addPos(otherPos.x, otherPos.y);
@@ -179,15 +177,15 @@ void BGMChangeNPC_804A9DA0::update() {
     u32 current = gAudioMgr_8053AF80->field_0x60;
     switch (field_0x230) {
     case 0: {
-        bool start = false;
+        u8 start = 0;
         if (field_0x240 == 0 || field_0x240 == 3 || field_0x240 == 4) {
             if (field_0x258 >= 0 || (field_0x90 >> 27) == 0 || vfunc_0x34()) {
-                start = true;
+                start = 1;
             }
         } else if (field_0x258 >= 0) {
-            start = true;
+            start = 1;
         }
-        if (start && getGameView_802D6A9C()->field_0x131f4 == 0) {
+        if (start == 1 && getGameView_802D6A9C()->field_0x131f4 == 0) {
             if (field_0x240 != 4 && (current - 0x1000000 == 0x21 || current - 0x1000000 == 0x19)) {
                 return;
             }
