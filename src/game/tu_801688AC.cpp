@@ -35,13 +35,13 @@ void cls_804A0738::init() {
     field_0x23c = 0;
     field_0x240 = 0;
     for (s32 i = 0; i < 5; i++) {
-        field_0x274[i].x0 = mPos.x;
-        field_0x274[i].y0 = mPos.y;
+        field_0x274[i].p0.x = mPos.x;
+        field_0x274[i].p0.y = mPos.y;
         field_0x274[i].layer0 = field_0x4;
     }
     for (s32 i = 0; i < 5; i++) {
-        field_0x2ec[i].x1 = getPlayerPos_8023E724(field_0x90)->x;
-        field_0x2ec[i].y1 = getPlayerPos_8023E724(field_0x90)->y;
+        field_0x2ec[i].p1.x = getPlayerPos_8023E724(field_0x90)->x;
+        field_0x2ec[i].p1.y = getPlayerPos_8023E724(field_0x90)->y;
         field_0x2ec[i].layer1 = getPlayerLayer_8023DE58(field_0x90);
     }
     field_0x264 = 0;
@@ -96,7 +96,7 @@ static inline void aimVelocity(cls_804A0738* self, JGeometry::TVec2f& d, bool fa
 // The |dx|, |dy| <= 16 tests and the other fabs conditions were re-checked against the full asm.
 // 0x80169030. A chaser: it follows the trail of positions the player recorded, then the
 // player, and is caught by the player (state 1) or lost when it leaves the room.
-// FIXME(shotgun): 80.63 %, missing/extra + reloc-name; behaviour drift.
+// FIXME(shotgun): 83.51 %, missing/extra + reloc-name; behaviour drift.
 void cls_804A0738::update() {
     s32 target = field_0x90;
     if (fn_8022F478(field_0x90) == 1 && fn_8022F514(field_0x90) == 1) {
@@ -120,23 +120,20 @@ void cls_804A0738::update() {
     if (field_0x268 < 5) {
         JGeometry::TVec3f p;
         p.set(0.0f, 0.0f, 0.0f);
-        p.x = field_0x2ec[field_0x268].x1;
-        p.y = field_0x2ec[field_0x268].y1;
+        p.x = field_0x2ec[field_0x268].p1.x;
+        p.y = field_0x2ec[field_0x268].p1.y;
         if (fn_8022BC38(target, field_0x2ec[field_0x268].layer1, &p) == 1) {
             const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
-            field_0x2ec[field_0x268].x1 = pp->x;
-            field_0x2ec[field_0x268].y1 = pp->y;
+            field_0x2ec[field_0x268].p1.set(pp->x, pp->y);
         } else {
             field_0x2ec[field_0x268].layer0 = getPlayerLayer_8023DE58(target);
             const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
-            field_0x2ec[field_0x268].x0 = pp->x;
-            field_0x2ec[field_0x268].y0 = pp->y;
+            field_0x2ec[field_0x268].p0.set(pp->x, pp->y);
             field_0x268++;
             if (field_0x268 < 5) {
                 field_0x2ec[field_0x268].layer1 = getPlayerLayer_8023DE58(target);
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
-                field_0x2ec[field_0x268].x1 = pp->x;
-                field_0x2ec[field_0x268].y1 = pp->y;
+                field_0x2ec[field_0x268].p1.set(pp->x, pp->y);
             }
         }
     }
@@ -155,14 +152,17 @@ void cls_804A0738::update() {
                 if (field_0x4 != getPlayerLayer_8023DE58(field_0x90)) {
                     JGeometry::TVec2f d;
                     if (field_0x264 > 0) {
-                        d.set(field_0x274[field_0x264 - 1].x1 - mPos.x, field_0x274[field_0x264 - 1].y1 - mPos.y);
+                        d.set(field_0x274[field_0x264 - 1].p1.x, field_0x274[field_0x264 - 1].p1.y);
+                        d.x -= mPos.x;
+                        d.y -= mPos.y;
                     } else if (field_0x268 > 0) {
-                        d.set(field_0x2ec[0].x1 - mPos.x, field_0x2ec[0].y1 - mPos.y);
+                        d.set(field_0x2ec[0].p1.x, field_0x2ec[0].p1.y);
+                        d.x -= mPos.x;
+                        d.y -= mPos.y;
                     } else {
                         field_0x26c = field_0x264;
                         field_0x230 = 1;
                         field_0x174 = 0;
-                        break;
                     }
                     aimVelocity(this, d, field_0x25c != 0);
                 }
@@ -170,7 +170,9 @@ void cls_804A0738::update() {
             }
             JGeometry::TVec2f d;
             const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-            d.set(pp->x - mPos.x, pp->y - mPos.y);
+            d.set(pp->x, pp->y);
+            d.x -= mPos.x;
+            d.y -= mPos.y;
             if (d.x * d.x + d.y * d.y < 240.0f) {
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
                 mPos = *pp;
@@ -180,17 +182,14 @@ void cls_804A0738::update() {
             }
         } else if (field_0x264 < 5) {
             if (!field_0x17d) {
-                field_0x274[field_0x264].x0 = mPos.x;
-                field_0x274[field_0x264].y0 = mPos.y;
+                field_0x274[field_0x264].p0.set(mPos.x, mPos.y);
             } else {
                 field_0x274[field_0x264].layer1 = field_0x4;
-                field_0x274[field_0x264].x1 = mPos.x;
-                field_0x274[field_0x264].y1 = mPos.y;
+                field_0x274[field_0x264].p1.set(mPos.x, mPos.y);
                 field_0x264++;
                 if (field_0x264 < 5) {
                     field_0x274[field_0x264].layer0 = field_0x4;
-                    field_0x274[field_0x264].x0 = mPos.x;
-                    field_0x274[field_0x264].y0 = mPos.y;
+                    field_0x274[field_0x264].p0.set(mPos.x, mPos.y);
                 }
                 fn_8016890C(&mPos, field_0x4, (JGeometry::TBox2f*)field_0x370);
             }
@@ -233,9 +232,13 @@ void cls_804A0738::update() {
             if (field_0x4 != getPlayerLayer_8023DE58(field_0x90)) {
                 JGeometry::TVec2f d;
                 if (field_0x264 > 0) {
-                    d.set(field_0x274[field_0x264 - 1].x1 - mPos.x, field_0x274[field_0x264 - 1].y1 - mPos.y);
+                    d.set(field_0x274[field_0x264 - 1].p1.x, field_0x274[field_0x264 - 1].p1.y);
+                    d.x -= mPos.x;
+                    d.y -= mPos.y;
                 } else if (field_0x268 > 0) {
-                    d.set(field_0x2ec[0].x1 - mPos.x, field_0x2ec[0].y1 - mPos.y);
+                    d.set(field_0x2ec[0].p1.x, field_0x2ec[0].p1.y);
+                    d.x -= mPos.x;
+                    d.y -= mPos.y;
                 } else {
                     field_0x174 = 0;
                     field_0x26c = field_0x264;
@@ -250,37 +253,41 @@ void cls_804A0738::update() {
         }
         break;
     case 1:
-        if (fn_8022BC38(field_0x90, field_0x4, &mPos) == 1) {
-            if (fn_8022D75C(target) == 1 || (fn_8022CAF8(field_0x90) == 4 && target != field_0x90)) {
-                JGeometry::TVec2f d;
+        if (fn_8022BC38(field_0x90, field_0x4, &mPos) == 1 &&
+            (fn_8022D75C(target) == 1 || (fn_8022CAF8(field_0x90) == 4 && target != field_0x90))) {
+            JGeometry::TVec2f d;
+            const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
+            d.set(pp->x, pp->y);
+            d.x -= mPos.x;
+            d.y -= mPos.y;
+            if (field_0x260 == 1) {
+                mAlive = false;
+            } else if (d.x * d.x + d.y * d.y < 240.0f) {
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                d.set(pp->x - mPos.x, pp->y - mPos.y);
-                if (field_0x260 == 1) {
-                    mAlive = false;
-                } else if (d.x * d.x + d.y * d.y < 240.0f) {
-                    const JGeometry::TVec3f* pp = getPlayerPos_8023E724(field_0x90);
-                    mPos = *pp;
-                    mPos.z = 0.0f;
-                    field_0x260 = 1;
-                } else {
-                    aimVelocity(this, d, field_0x25c != 0 && field_0x261 == 0);
-                }
-                fn_80168C38();
-                break;
+                mPos = *pp;
+                mPos.z = 0.0f;
+                field_0x260 = 1;
+            } else {
+                aimVelocity(this, d, field_0x25c != 0 && field_0x261 == 0);
             }
-        }
-        {
+        } else {
             JGeometry::TVec2f d;
             if (field_0x26c > 0) {
-                d.set(field_0x274[field_0x26c - 1].x1 - mPos.x, field_0x274[field_0x26c - 1].y1 - mPos.y);
+                d.set(field_0x274[field_0x26c - 1].p1.x, field_0x274[field_0x26c - 1].p1.y);
+                d.x -= mPos.x;
+                d.y -= mPos.y;
             } else if (field_0x270 < field_0x268) {
-                d.set(field_0x2ec[field_0x270].x1 - mPos.x, field_0x2ec[field_0x270].y1 - mPos.y);
+                d = field_0x2ec[field_0x270].p1;
+                d.x -= mPos.x;
+                d.y -= mPos.y;
             } else {
                 if (field_0x4 != getPlayerLayer_8023DE58(target)) {
                     break;
                 }
                 const JGeometry::TVec3f* pp = getPlayerPos_8023E724(target);
-                d.set(pp->x - mPos.x, pp->y - mPos.y);
+                d.set(pp->x, pp->y);
+                d.x -= mPos.x;
+                d.y -= mPos.y;
             }
             aimVelocity(this, d, field_0x25c > 0 && field_0x261 == 0);
             if ((field_0x264 > 0 && field_0x26c > 0) || (field_0x268 > 0 && field_0x270 < field_0x268)) {
@@ -293,11 +300,11 @@ void cls_804A0738::update() {
                     pt = &field_0x2ec[field_0x270];
                     fromFirst = false;
                 }
-                if (std::fabsf(pt->x1 - mPos.x) <= 16.0f && std::fabsf(pt->y1 - mPos.y) <= 16.0f) {
+                if (std::fabsf(pt->p1.x - mPos.x) <= 16.0f && std::fabsf(pt->p1.y - mPos.y) <= 16.0f) {
                     JGeometry::TVec3f p;
                     p.set(0.0f, 0.0f, 0.0f);
-                    p.x = pt->x0;
-                    p.y = pt->y0;
+                    p.x = pt->p0.x;
+                    p.y = pt->p0.y;
                     field_0x4 = pt->layer0;
                     mPos = p;
                     if (fromFirst) {
@@ -307,8 +314,8 @@ void cls_804A0738::update() {
                     }
                 }
             }
-            fn_80168C38();
         }
+        fn_80168C38();
         break;
     }
     {

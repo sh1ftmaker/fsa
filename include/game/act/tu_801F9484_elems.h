@@ -42,10 +42,8 @@ struct Elem_80200A84 {
 // A recorded chaser trail point (cls_804A0738): two (x, y) records and their layers.
 struct Elem_80203594 {
     Elem_80203594() {}
-    f32 x0;
-    f32 y0;
-    f32 x1;
-    f32 y1;
+    JGeometry::TVec2f p0;
+    JGeometry::TVec2f p1;
     s32 layer0;
     s32 layer1;
 };
