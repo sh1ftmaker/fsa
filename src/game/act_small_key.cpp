@@ -561,16 +561,10 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
         u16 tile = fn_8022461C(&mPos, field_0x4);
         if (tile == 0xD || tile == 0x3B) {
             s32 player;
-            if (players & 1) {
-                player = 0;
-            } else if (players & (bit <<= 1)) {
-                player = 1;
-            } else if (players & (bit <<= 1)) {
-                player = 2;
-            } else if (players & (bit <<= 1)) {
-                player = 3;
-            } else {
-                player = 4;
+            for (player = 0; player < 4; player++, bit <<= 1) {
+                if (players & bit) {
+                    break;
+                }
             }
             if (fn_8022F6E8(player, mSerial) == true) {
                 field_0x29c = player;
@@ -583,8 +577,8 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
                     continue;
                 }
                 JGeometry::TVec3f playerPos = *getPlayerPos_8023E724(i);
-                s32 dx = (s32)fabs(mPos.x - playerPos.x);
-                s32 dy = (s32)fabs(mPos.y - playerPos.y);
+                s32 dx = (s32)(f32)fabs(mPos.x - playerPos.x);
+                s32 dy = (s32)(f32)fabs(mPos.y - playerPos.y);
                 s32 dir = fn_80230CFC(i);
                 if ((dx >= 0 && dx <= 15 && dir == 0) || dir == 1) {
                     if (mPos.x > playerPos.x) {
@@ -617,8 +611,9 @@ void SmallKey_804A8CD8::fn_802C3AE4() {
             }
         }
     } else if (field_0x280 == 6 && field_0x2ae != 0) {
-        field_0x3c.x = lbl_8046D560[field_0x2ae - 1][0];
-        field_0x3c.y = lbl_8046D560[field_0x2ae - 1][1];
+        const f32* push = lbl_8046D560[field_0x2ae - 1];
+        field_0x3c.x = push[0];
+        field_0x3c.y = push[1];
         field_0x2ae = 0;
     }
     JGeometry::TVec3f wall(0.0f, 0.0f, 0.0f);
