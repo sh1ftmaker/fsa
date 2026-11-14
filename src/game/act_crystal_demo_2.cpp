@@ -255,6 +255,7 @@ static const u16 lbl_80474D60[6] = {0x53A, 0x53B, 0x53C, 0x53D, 0x53E, 0x53F};
 
 // differs: the original reads every table at an offset from one base (lbl_80474C38); the tables
 // here are copies of parts of lbl_80474C68.
+// FIXME: 92.41 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE088::vfunc_0x60(s32 arg) {
     JGeometry::TVec3f pos;
     switch (arg) {
@@ -708,6 +709,7 @@ static inline void setCameraBox(f32 x, f32 y0, f32 y1) {
 }
 
 // differs: register choice for the camera box and the message position.
+// FIXME: 98.59 %, scheduling+regalloc + reloc-name; behaviour drift.
 void cls_804AE088::fn_80369DDC() {
     if (field_0x258 != 0) {
         field_0x258--;
@@ -916,6 +918,7 @@ static const u8 lbl_80474E34[6][3] = {
 };
 
 // differs: the original reads every table at an offset from one base (lbl_80474C38).
+// FIXME: 96.38 %, missing/extra + reloc-name; behaviour drift.
 void cls_804AE088::fn_80368CD8() {
     if (field_0x258 != 0) {
         field_0x258--;
