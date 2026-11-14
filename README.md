@@ -48,9 +48,9 @@ game code in its eight categories, the bottom row the libraries. Click a block t
 <!-- progress:start -->
 As of 2026-11-14:
 
-- **Structural progress: 67.14 %** (2,982,191 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
+- **Structural progress: 67.20 %** (2,984,879 of 4,442,032 bytes): matched code plus, for each structurally matched or close function, its size times its match percent.
 - **Matched code: 46.99 %** (2,087,292 of 4,442,032 bytes), **9,528 / 11,557** functions fully matched.
-- **Structurally matched:** 10,295 / 11,557 functions (same instructions, register or order differences only), +329 close.
+- **Structurally matched:** 10,295 / 11,557 functions (same instructions, register or order differences only), +331 close.
 - **470 of 903** split units are Matching, and `main.dol` built from them links byte-identically (SHA-1 OK).
 <!-- progress:end -->
 
@@ -146,13 +146,13 @@ Dolphin); the progress site's *Group by* switch shows the game code that way
 too.
 
 <!-- game:start -->
-Of 3,573,784 bytes of game code: **59.5 %** structural progress, **34.7 %** matched code; **4,815 / 6,789** functions fully matched.
+Of 3,573,784 bytes of game code: **59.6 %** structural progress, **34.7 %** matched code; **4,815 / 6,789** functions fully matched.
 
 | Category | Structural | Code matched | Functions | Files Matching | Unconfirmed |
 |---|--:|--:|--:|--:|--:|
 | [Player](https://sh1ftmaker.github.io/fsa/#/game/game-player) | 94.6 % | 59.4 % of 407,528 bytes | 934 / 1,054 | 0 / 10 | – |
-| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 48.6 % | 29.2 % of 679,252 bytes | 873 / 1,339 | 29 / 139 | 54 |
-| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 52.6 % | 30.8 % of 291,360 bytes | 376 / 594 | 10 / 54 | 17 |
+| [Enemies & bosses](https://sh1ftmaker.github.io/fsa/#/game/game-enemies) | 48.7 % | 29.2 % of 679,252 bytes | 873 / 1,339 | 29 / 139 | 54 |
+| [NPCs](https://sh1ftmaker.github.io/fsa/#/game/game-npcs) | 53.2 % | 30.8 % of 291,360 bytes | 376 / 594 | 10 / 54 | 17 |
 | [Objects & gimmicks](https://sh1ftmaker.github.io/fsa/#/game/game-objects) | 52.3 % | 32.8 % of 900,452 bytes | 1,016 / 1,518 | 68 / 229 | 56 |
 | [Stage & world](https://sh1ftmaker.github.io/fsa/#/game/game-stage) | 43.8 % | 17.2 % of 182,272 bytes | 165 / 311 | 0 / 10 | 2 |
 | [Menus & screens](https://sh1ftmaker.github.io/fsa/#/game/game-menus) | 61.2 % | 27.7 % of 801,744 bytes | 523 / 872 | 8 / 47 | 11 |
