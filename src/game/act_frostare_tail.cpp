@@ -75,14 +75,11 @@ void cls_804A4F90::vfunc_0x9C(u8 mapHit) {
     }
 }
 
-// FIXME: 97.86 %, regalloc-only; behaviour clean.
-// Register swap only: the original loads lbl_8053EFB8 into f1 and
-// field_0x3c.y into f0 (fadds f0, f0, f1); ours uses f0 / f1.
 void cls_804A4F90::vfunc_0x88() {
     field_0x3c.x = 0.0f;
     field_0x3c.z = 0.0f;
     if (mState == 2) {
-        field_0x3c.y += __fabsf(lbl_8053EFB8);
+        field_0x3c.y += JMAAbs(lbl_8053EFB8);
     } else {
         field_0x3c.y = 0.0f;
     }
