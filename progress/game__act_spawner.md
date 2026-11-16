@@ -8,8 +8,13 @@ Matched:
 - SpawnerGenerator_804A9328::draw() (100 %)
 - SpawnerGenerator_804A9328::init() (100 %)
 
-Resistant:
-- SpawnerGenerator_804A9328::update() (99.96 %, regalloc-only). 1440 / 1444 bytes. Only 3 instructions differ: flag allocated to r29 instead of target's r28 at `li r28, -0x1`, `li r28, 0x1`, and `cmpwi r28, 0x0`.
+- SpawnerGenerator_804A9328::update() (100 %, 2026-11-15 pass: locals declared at function scope in the
+  order arg, serial, flag, i, actor, rand, t; flag r29 -> r28. Measured on `matching` d1808afe4: 9864 -> 9865 / 11557.)
+
+Matching: flipped in configure.py (full ninja SHA-1 OK, gate: ok, link_check: already linked).
+extab/extabindex show 47 % in the honest report (dtk lbl_ vs @NNN naming); SHA-1 is the evidence.
+
+Resistant: none.
 
 SHARED-EDITS
 - include/game/act/act_spawner.h: Declared typed members field_0x230 to field_0x674, matching sizeof(SpawnerGenerator_804A9328) == 0x678.

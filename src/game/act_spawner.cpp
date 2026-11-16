@@ -52,8 +52,15 @@ void SpawnerGenerator_804A9328::init() {
     field_0x258.z = mPos.z;
 }
 
-// FIXME: 99.96% regalloc-only: target->ours r28->r29 on flag
 void SpawnerGenerator_804A9328::update() {
+    s32 arg;
+    s32 serial;
+    s32 flag;
+    int i;
+    ActorBase_804A5770* actor;
+    s32 rand;
+    s32 t;
+
     switch (field_0x230) {
     case 0:
     case 1: {
@@ -91,7 +98,7 @@ void SpawnerGenerator_804A9328::update() {
                     case 13:
                     case 14:
                     case 18: {
-                        s32 arg = lbl_8046DFE0[field_0x234[field_0x254]];
+                        arg = lbl_8046DFE0[field_0x234[field_0x254]];
                         field_0x274[field_0x240] = getActorManager_801F856C()->spawnActor_801F9484('SLR1', field_0x4, &field_0x258, arg, -1, -1);
                         break;
                     }
@@ -99,19 +106,19 @@ void SpawnerGenerator_804A9328::update() {
                     case 7:
                     case 8:
                     case 9: {
-                        s32 arg = lbl_8046DFE0[field_0x234[field_0x254]];
+                        arg = lbl_8046DFE0[field_0x234[field_0x254]];
                         field_0x274[field_0x240] = getActorManager_801F856C()->spawnActor_801F9484('RUPY', field_0x4, &field_0x258, arg, -1, -1);
                         break;
                     }
                     case 12:
                     case 15:
                     case 17: {
-                        s32 arg = lbl_8046DFE0[field_0x234[field_0x254]];
+                        arg = lbl_8046DFE0[field_0x234[field_0x254]];
                         field_0x274[field_0x240] = getActorManager_801F856C()->spawnActor_801F9484('BMTY', field_0x4, &field_0x258, arg, -1, -1);
                         break;
                     }
                     case 19: {
-                        s32 arg = lbl_8046DFE0[field_0x234[field_0x254]];
+                        arg = lbl_8046DFE0[field_0x234[field_0x254]];
                         field_0x274[field_0x240] = getActorManager_801F856C()->spawnActor_801F9484('HNRY', field_0x4, &field_0x258, arg, -1, -1);
                         break;
                     }
@@ -129,8 +136,8 @@ void SpawnerGenerator_804A9328::update() {
                     field_0x230 = 2;
                 }
             } else if (field_0x248 == 29) {
-                s32 flag = -1;
-                s32 rand = fn_801CD664(100);
+                flag = -1;
+                rand = fn_801CD664(100);
                 if (rand < 10) {
                     field_0x254 = 2;
                 } else if (rand < 40) {
@@ -143,7 +150,7 @@ void SpawnerGenerator_804A9328::update() {
                         flag = 1;
                     }
                 }
-                s32 t = field_0x234[field_0x254];
+                t = field_0x234[field_0x254];
                 if (!((t == 10 || (u32)(t - 11) <= 4 || t == 17 || t == 19 || t == 16) && flag < 0)) {
                     JGeometry::TVec3f emitterPos1(field_0x258.x, field_0x258.y - 2.0f, field_0x258.z);
                     spawnEmitter_8013CC50(field_0x4, &emitterPos1, 0x1D3, 0, 0, NULL, NULL, true, 1.0f);
@@ -172,11 +179,10 @@ void SpawnerGenerator_804A9328::update() {
         break;
     }
     case 2: {
-        s32 serial;
-        for (int i = 0; i < field_0x244 + 1; i++) {
+        for (i = 0; i < field_0x244 + 1; i++) {
             serial = field_0x274[i];
             if (serial >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+                actor = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
                 if (actor == NULL) {
                     field_0x274[i] = -1;
                     field_0x674++;
