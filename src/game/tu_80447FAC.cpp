@@ -8,9 +8,25 @@
 
 // Per player, 0x70 bytes of J2DPane::search tags (as u64): the digit pictures are at 0x48 / 0x50 (tens),
 // 0x58 / 0x60 (ones), the frame panes at 0x30 and 0x68.
-extern const u64 lbl_804906A8[4][14];
-// The digit textures (kk_rupyNum_00.bti ...).
-extern const char* lbl_804B1C30[10];
+const u64 lbl_804906A8[4][14] = {
+    {'Pp1i01', 'Pp1i02', 'Pp1ib01', 'Pp1ib02', 'Pp1ib03', 'Pp1ib04', 'Ndata01', 'P1o01', 'P1o02', 'P1t01', 'P1tk01', 'P1t02', 'P1tk02', 'Ndata20'},
+    {'Pp2i01', 'Pp2i02', 'Pp2ib01', 'Pp2ib02', 'Pp2ib03', 'Pp2ib04', 'Ndata04', 'P2o01', 'P2o02', 'P2t01', 'P2tk01', 'P2t02', 'P2tk02', 'Ndata21'},
+    {'Pp3i01', 'Pp3i02', 'Pp3ib01', 'Pp3ib02', 'Pp3ib03', 'Pp3ib04', 'Ndata07', 'P3o01', 'P3o02', 'P3t01', 'P3tk01', 'P3t02', 'P3tk02', 'Ndata22'},
+    {'Pp4i01', 'Pp4i02', 'Pp4ib01', 'Pp4ib02', 'Pp4ib03', 'Pp4ib04', 'Ndata10', 'P4o01', 'P4o02', 'P4t01', 'P4tk01', 'P4t02', 'P4tk02', 'Ndata23'},
+};
+// The digit textures.
+const char* lbl_804B1C30[10] = {
+    "kk_rupyNum_00.bti",
+    "kk_rupyNum_01.bti",
+    "kk_rupyNum_02.bti",
+    "kk_rupyNum_03.bti",
+    "kk_rupyNum_04.bti",
+    "kk_rupyNum_05.bti",
+    "kk_rupyNum_06.bti",
+    "kk_rupyNum_07.bti",
+    "kk_rupyNum_08.bti",
+    "kk_rupyNum_09.bti",
+};
 
 // FIXME(shotgun): 99.77 %, reloc-name
 cls_804B1C58::cls_804B1C58() {
