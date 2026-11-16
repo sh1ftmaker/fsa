@@ -738,7 +738,6 @@ void cls_804A4C58::vfunc_0x80() {
     EnemyBase_804A4808::vfunc_0x80();
 }
 
-// FIXME: 99.65 %, regalloc-only; behaviour clean.
 void cls_804A4C58::vfunc_0x88() {
     switch (mState) {
     case 0xB: case 0xC: case 0xD: case 0xE: {
@@ -755,7 +754,7 @@ void cls_804A4C58::vfunc_0x88() {
         switch (mState) {
         case 0x10:
         case 8:
-            field_0x3c.y += __fabsf(lbl_8053EFB8);
+            field_0x3c.y += JMAAbs(lbl_8053EFB8);
             break;
         default:
             field_0x3c.y = 0.0f;
