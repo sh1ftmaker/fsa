@@ -182,7 +182,7 @@ void cls_804A03A8::fn_8015F9C0() {
                     pos[2] = 4.0f + (80.0f + p.x);
                     pos[3] = 4.0f + (80.0f + p.y);
                     q -= p;
-                    GXColor white = {0xFF, 0xFF, 0xFF, 0xFF};
+                    JUtility::TColor white;
                     fn_8015F454(field_0x294, pos, uv, white, NULL, NULL, 0, 0);
                     f32 uv2[4];
                     uv2[0] = p.x - q.x;
@@ -194,7 +194,7 @@ void cls_804A03A8::fn_8015F9C0() {
                     pos2[1] = p.y - 80.0f;
                     pos2[2] = 80.0f + p.x;
                     pos2[3] = 80.0f + p.y;
-                    GXColor white2 = {0xFF, 0xFF, 0xFF, 0xFF};
+                    JUtility::TColor white2;
                     fn_8015F454(gGameRoot2_8053AB10->field_0x34, pos2, uv2, white2, NULL, field_0x294, 1, 0);
                     break;
                 }
