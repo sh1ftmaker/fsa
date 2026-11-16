@@ -1186,7 +1186,7 @@ config.libs = [
         Object(NonMatching, "game/tu_8017C01C.cpp"),
         Object(NonMatching, "game/tu_8017EF40.cpp"),
         Object(NonMatching, "game/tu_80182914.cpp"),
-        Object(NonMatching, "game/tu_80183544.cpp"),
+        Object(Matching, "game/tu_80183544.cpp"),
         Object(NonMatching, "game/act_pengator.cpp"),
         Object(NonMatching, "game/tu_80184D64.cpp"),
         Object(NonMatching, "game/act_phantom_ganon_2.cpp"),
