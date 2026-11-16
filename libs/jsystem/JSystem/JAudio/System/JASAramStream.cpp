@@ -322,8 +322,6 @@ bool JASAramStream::headerLoad(u32 p1, int p2) {
     return true;
 }
 
-// FIXME: 98.79 %, register allocation only: FSA has this in r27, the channel loop index in r28 and
-// the ARAM base in r26; ours r28, r26 and r27.
 bool JASAramStream::load() {
     JAS_CS_START
     mFreeBlockCount--;
@@ -360,9 +358,9 @@ bool JASAramStream::load() {
 
     u32 uvar2 = _148 + mAramBlock * sBlockSize;
     for (int i = 0; i < mChannelNum; i++) {
-        if (!JKRMainRamToAram(sReadBuffer + bhead->_4 * i + sizeof(BlockHeader),
+        if (JKRMainRamToAram(sReadBuffer + bhead->_4 * i + sizeof(BlockHeader),
                                     uvar2 + sBlockSize * mBlockCount * i,
-                                    bhead->_4, EXPAND_SWITCH_DEFAULT, 0, NULL, -1, NULL)) {
+                                    bhead->_4, EXPAND_SWITCH_DEFAULT, 0, NULL, -1, NULL) == NULL) {
             JUT_WARNING_F2("%s", "JKRMainRamToAram Failed");
             sFatalErrorFlag = true;
             return false;
