@@ -1354,7 +1354,7 @@ config.libs = [
         Object(Matching, "game/act_spike_floor_check.cpp"),
         Object(NonMatching, "game/act_point_check_npc.cpp"),
         Object(NonMatching, "game/act_enemy_count_wipe_out_check.cpp"),
-        Object(NonMatching, "game/act_item_pedestal.cpp"),
+        Object(Matching, "game/act_item_pedestal.cpp"),
         Object(Matching, "game/act_player_start_position.cpp"),
         Object(Matching, "game/tu_802AC8AC.cpp"),
         Object(NonMatching, "game/act_trick_floor.cpp"),
