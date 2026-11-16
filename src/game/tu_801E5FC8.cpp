@@ -38,9 +38,6 @@ void cls_804A4C58::fn_801E61C4() {
     fn_801CB71C(&mEmitter2c[3], &pos, 0, 0);
 }
 
-// FIXME: 98.39%. Only register allocation of the three colour adds differs: the
-// target loads byte 0x4c into r7 and adds in place (add r7, r7, r3); this
-// loads it into r0 and adds into r7. (Declaring mtx before params changes the stack.)
 void cls_804A4C58::draw() {
     void* res = fn_804032E8('ICEB', mSeq2a8.fn_801DA938());
     if (res != NULL) {
