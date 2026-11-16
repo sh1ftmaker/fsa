@@ -79,19 +79,18 @@ void GiantBomb_804AC588::init() {
     mEmitter268 = NULL;
 }
 
-// FIXME: 99.67 %, regalloc-only; behaviour clean.
-// Only the register of the loop counter differs (r26 in the original) and the .sdata2 reloc names.
 void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
     getGameView_802D6A9C()->fn_802D79E8(layer, 16.0f, 0.0f, false);
     gGameRoot_8053AAF8->fn_80134DE4(3, 0);
 
     u8 unk[4];
+    s32 i; // declared at function scope: matching-only, a for-local i gives regalloc-only 99.67 % (as in act_four_person_pull_switch_pswk)
     unk[0] = 0;
     unk[1] = 0;
     unk[2] = 0;
     unk[3] = 0;
 
-    for (int i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) {
         if (fn_8022D75C(i) == true && !fn_80234ECC(i)) {
             unk[i] = 1;
             if (fn_8023ED8C(i) == true) {
@@ -100,7 +99,7 @@ void GiantBomb_804AC588::fn_8034335C(s32 layer, const JGeometry::TVec3f* pos) {
         }
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) {
         if (fn_8023F264(i) && !fn_8022F478(i) && getPlayerLayer_8023DE58(i) < 8 &&
             !fn_80230188(i) && !fn_8022B7C4(i) && !fn_802349EC(i) && !unk[i]) {
             // fn_80238548 reads pos+0/+4 (TVec2f) only
