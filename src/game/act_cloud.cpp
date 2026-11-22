@@ -20,6 +20,7 @@ static inline bool contains(const JGeometry::TBox2f& box, const JGeometry::TVec3
     return p.x >= box.i.x && p.y >= box.i.y && p.x < box.f.x && p.y < box.f.y;
 }
 
+// FIXME: 99.95 %, reloc-name (float literal pool order); behaviour clean.
 Cloud_8049CBE0::Cloud_8049CBE0()
     : field_0x344(0.0f), field_0x348(0.0f), field_0x34c(0.0f), field_0x350(0.0f), field_0x354(0),
       field_0x358(0), field_0x35c(-1), field_0x360(0), field_0x364(0), field_0x368(0),
@@ -30,6 +31,7 @@ Cloud_8049CBE0::Cloud_8049CBE0()
 }
 
 // 0x80105A34.
+// FIXME: 99.95 %, reloc-name (float literal pool order); behaviour clean.
 void Cloud_8049CBE0::init() {
     ActorBase_804A5770::init();
     field_0x354 = field_0x90 & 0xFF;
@@ -69,13 +71,11 @@ void Cloud_8049CBE0::init() {
     mSprite.fn_801D1F14(0.0f);
 }
 
-static bool isAirborne(s32 player);
-
 // 0x801056E4.
 // Remaining diffs: box offset scheduling/regalloc, case 0 ble target (field_0x360/field_0x370
 // assignment is inside `if (field_0x354 > 0)` in the original), and stack slot of `at`
 // (fn_800FDEA0 took pos by value in the original; RailBase.h declares it as a pointer).
-// FIXME: 94.02 %, scheduling+regalloc; behaviour clean.
+// FIXME: 93.95 %, scheduling+regalloc + reloc-name; behaviour clean.
 void Cloud_8049CBE0::update() {
     ActorBase_804A5770::update();
     if (viewLayerFlag(field_0x4) != 0) {
@@ -133,7 +133,7 @@ void Cloud_8049CBE0::update() {
         break;
     }
     for (s32 i = 0; i < 4; i++) {
-        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && !isAirborne(i)) {
+        if (fn_801053E8(i) && !fn_8022D75C(i) && !fn_80230188(i) && !(getPlayerPos_8023E724(i)->z > 0.0f)) {
             const JGeometry::TVec3f& d = mPos - mPrevPos;
             fn_8023DF68(i, &d);
         }
@@ -158,6 +158,7 @@ void Cloud_8049CBE0::draw() {
 // Whether `player` is in the cloud: on the cloud's layer, either its box
 // (moved to the cloud's position) overlaps the player's, or one of eight
 // points around the player falls in mBox.
+// FIXME: 99.90 %, reloc-name (float literal pool order); behaviour clean.
 bool Cloud_8049CBE0::fn_801053E8(s32 player) {
     if (player < 0) {
         return false;
@@ -197,12 +198,6 @@ bool Cloud_8049CBE0::fn_801053E8(s32 player) {
         }
     }
     return false;
-}
-
-// Not in the binary: a plain function that update inlines. The pool puts it below fn_801053E8:
-// its 0.0f is the unit's first literal.
-static bool isAirborne(s32 player) {
-    return getPlayerPos_8023E724(player)->z > 0.0f;
 }
 
 Cloud_8049CBE0::~Cloud_8049CBE0() {}
