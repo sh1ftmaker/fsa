@@ -37,13 +37,6 @@ public:
     void fn_80110210();
     void fn_80110E9C();
     // Not in the binary: plain functions that fn_80110E9C and fn_8010E7E8 inline.
-    void sinkToPlayer();
-    void lowerPlayers();
-    void showSceneMessage();
-    void shrinkAway();
-    void flyToGoal();
-    void standBelow(const JGeometry::TVec3f& target);
-    void flashAtFeet();
     void faceDir(s32 dir);
     s32 startTalk(u32 msg, bool talkFlag);
 

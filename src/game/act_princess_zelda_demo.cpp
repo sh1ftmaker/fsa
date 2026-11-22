@@ -13,6 +13,7 @@
 #include "game/RotMatrix.h"
 #include "JSystem/JMath/JMath.h"
 
+// FIXME: 99.81 %, reloc-name (float literal pool order); behaviour clean.
 PrincessZeldaDemo_8049D208::PrincessZeldaDemo_8049D208()
     : field_0x230(0),
       field_0x231(0),
@@ -117,6 +118,7 @@ static const s32 lbl_80464550[] = {
 };
 static const s32 lbl_8053C548[] = { 0x232, 0x4B0 };
 
+// FIXME: 99.87 %, reloc-name (float literal pool order); behaviour clean.
 void PrincessZeldaDemo_8049D208::init() {
     cls_8049D140::init();
     field_0x234 = field_0x90 & 0xFF;
@@ -218,7 +220,7 @@ static inline void camBox(f32 x0, f32 y0, f32 x1, f32 y1) {
 
 // The demo states of the first two scene sets (field_0x234 0 and 1): keeps the maiden's box
 // registered, steers the camera (fn_80110454) and runs the state's step.
-// FIXME: 98.01 %, missing/extra; behaviour drift.
+// FIXME: 97.79 %, missing/extra + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_80110E9C() {
     JGeometry::TBox2f box = mBox;
     box.i.x += mPos.x;
@@ -314,7 +316,12 @@ void PrincessZeldaDemo_8049D208::fn_80110E9C() {
         }
         break;
     case 4:
-        sinkToPlayer();
+        mAnim0.mFrameCtrl.setRate(1.0f);
+        if (fn_801CD950(&mPos.y, getPlayerPos_8023E724(0)->y - 24.0f, 0.7f) == 0) {
+            mAnim0.startAnim_801D22DC(2, 2, false);
+            mAnim0.fn_801D1F14(0.0f);
+            mAnim0.mFrameCtrl.setRate(1.0f);
+        }
         break;
     case 5:
         fn_8022FE80(0, field_0x4, mSerial, true, false);
@@ -471,15 +478,46 @@ void PrincessZeldaDemo_8049D208::fn_80110E9C() {
         field_0x260++;
         break;
     case 33: {
-        lowerPlayers();
+        f32 dz = 2.0f - 0.2f * (fn_8011921C()->field_0x8 - lbl_80464550[33]);
+        for (s32 i = 0; i < 4; i++) {
+            JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
+            pos.z += dz;
+            if (pos.z <= 0.0f) {
+                pos.z = 0.0f;
+            } else {
+                pos.y += 2.0f;
+            }
+            fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
+        }
         break;
     }
     case 35: {
-        flyToGoal();
+        field_0x268 += 0.04f;
+        fn_801CD950(&field_0x26c, 2.0f, 0.05f);
+        s16 angle = (s32)(JMath::atanTable_.atan2_(field_0x27c.x - mPos.x, field_0x27c.y - mPos.y) *
+                          10430.378f);
+        field_0x3c.x = field_0x26c * JMath::sincosTable_.sinShort(angle);
+        field_0x3c.y = field_0x26c * JMath::sincosTable_.cosShort(angle);
+        s32 doneX = fn_801CD950(&mPos.x, field_0x27c.x, field_0x3c.x);
+        s32 doneY = fn_801CD950(&mPos.y, field_0x27c.y, field_0x3c.y);
+        fn_801CD950(&field_0x270, 0.05f, -0.005f);
+        bool arrived = doneX == 0 && doneY == 0;
+        if (arrived) {
+            switch (field_0x234) {
+            case 0:
+            case 1:
+                fn_8010E7E8(0x24);
+                break;
+            case 2:
+                fn_8010E2D4(0x24);
+                break;
+            }
+            field_0x238 = 0x24;
+        }
         break;
     }
     case 36:
-        shrinkAway();
+        fn_801CD950(&field_0x270, 0.0f, -0.02f);
         break;
     case 62:
         mDrawEnabled = false;
@@ -489,7 +527,7 @@ void PrincessZeldaDemo_8049D208::fn_80110E9C() {
 
 // The idle states of the demo: keeps the maiden's box registered, steers the camera
 // (fn_80110210) and runs the state's step; a player standing at the maiden starts the talk (state 2).
-// FIXME: 98.66 %, scheduling; behaviour drift.
+// FIXME: 98.40 %, scheduling + reloc-name; behaviour drift.
 // Left: in startTalk the original stores the message position's z after loading mSerial and field_0x4.
 void PrincessZeldaDemo_8049D208::fn_8011093C() {
     JGeometry::TBox2f box = mBox;
@@ -606,6 +644,7 @@ void PrincessZeldaDemo_8049D208::fn_8011093C() {
 
 // The camera for the demo states 3-28: which part of the stage stays in view (player, spawn point
 // or the maiden), per state.
+// FIXME: 99.59 %, reloc-name (float literal pool order); behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_80110454() {
     switch (field_0x238) {
     case 3:
@@ -702,7 +741,7 @@ void PrincessZeldaDemo_8049D208::fn_80110454() {
 }
 
 // The camera for the demo states 0x26-0x3C (the second set of scenes).
-// FIXME(shotgun): 99.69 %, regalloc-only; behaviour drift.
+// FIXME(shotgun): 99.62 %, regalloc-only + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_80110210() {
     switch (field_0x238) {
     case 0x26:
@@ -948,6 +987,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F9F0() {
 // (docs/INLINING.md, pragma rule 1); fn_8010F4DC calls fn_8010F668 out of line twice.
 #pragma auto_inline off
 // Draws the maiden's sprite (frame `arg` of the current animation): bobbing in z while state 0x2F.
+// FIXME: 99.81 %, reloc-name (float literal pool order); behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
     SpriteParams_801F5AE0 params;
     Mtx mtx;
@@ -980,7 +1020,7 @@ void PrincessZeldaDemo_8049D208::fn_8010F7EC(s32 arg) {
 }
 
 // The rotation matrix about `axis` by `rad` (the 3x3 part), with its own normalisation.
-// FIXME: 98.87 %, regalloc-only; behaviour clean.
+// FIXME: 98.56 %, regalloc-only + reloc-name; behaviour clean.
 // FIXME(shotgun): register allocation and literal-pool names still differ.
 void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
     JGeometry::TVec3f n;
@@ -1003,6 +1043,7 @@ void fn_8010F668(Mtx m, const JGeometry::TVec3f* axis, f32 rad) {
 }
 
 // Spins the crystal ring: turns by 0.01 rad per frame and hands the shared crystal its matrix.
+// FIXME: 99.65 %, reloc-name (float literal pool order); behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010F4DC() {
     field_0x268 += 0.01f;
     Mtx mtx;
@@ -1055,10 +1096,15 @@ void PrincessZeldaDemo_8049D208::fn_8010F478(s32 arg) {
 }
 #pragma auto_inline reset
 
-void setCenter(JGeometry::TVec3f& pos, JGeometry::TBox2f box);
+// The centre of the camera's visible box, at z 0.
+static inline void setCenter(JGeometry::TVec3f& pos, JGeometry::TBox2f box) {
+    pos.x = box.f.x + 0.5f * (box.i.x - box.f.x);
+    pos.y = box.f.y + 0.5f * (box.i.y - box.f.y);
+    pos.z = 0.0f;
+}
 
 // Enters demo state `arg` (3-0x25) of the second scene set.
-// FIXME: 99.87 %, operands; behaviour drift.
+// FIXME: 99.45 %, operands + reloc-name; behaviour drift.
 void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
     switch (arg) {
     case 3:
@@ -1074,7 +1120,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
         mAnim0.fn_801D1F14(0.0f);
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         fn_8022FD8C(mSerial);
-        showSceneMessage();
+        fn_8038BD08(0, lbl_8053C548[field_0x234], field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
         fn_8011921C()->fn_80118454();
         break;
     case 6:
@@ -1129,7 +1175,9 @@ void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
         for (int i = 0; i < 4; i++) {
             fn_80230498(i, &target, fn_8023CBC0(i), 0xFF, -0x80, -0x80, true);
         }
-        standBelow(target);
+        JGeometry::TVec3f pos = target;
+        pos.y -= 16.0f;
+        mPos.set(pos);
         mAnim0.startAnim_801D22DC(3, 2, false);
         mAnim0.fn_801D1F14(0.0f);
         mAnim0.mFrameCtrl.setRate(0.5f);
@@ -1234,14 +1282,22 @@ void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
         fn_8038BD08(0, 0x239, field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
         fn_8011921C()->fn_80118454();
         break;
-    case 28:
-        flashAtFeet();
+    case 28: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
         mAnim0.startAnim_801D22DC(0xD, 0, false);
         mAnim0.fn_801D1F14(0.0f);
         break;
-    case 30:
-        flashAtFeet();
+    }
+    case 30: {
+        JGeometry::TVec3f pos = mPos;
+        pos.y += -16.0f;
+        spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
+        startSound_801F0E34(0x400B5, 0);
         break;
+    }
     case 31:
         fn_8022FE80(0, field_0x4, mSerial, true, false);
         fn_8022FD8C(mSerial);
@@ -1270,6 +1326,7 @@ void PrincessZeldaDemo_8049D208::fn_8010E7E8(s32 arg) {
 
 // Enters demo state `arg` (0x26-0x3D) of the first scene set: animation, camera objects, emitters
 // and the talk prompts of the states that need them.
+// FIXME: 99.54 %, reloc-name (float literal pool order); behaviour clean.
 void PrincessZeldaDemo_8049D208::fn_8010E2D4(s32 arg) {
     switch (arg) {
     case 0x26:
@@ -1440,86 +1497,4 @@ inline s32 PrincessZeldaDemo_8049D208::startTalk(u32 msg, bool talkFlag) {
         }
     }
     return player;
-}
-
-// Effect 0x33B and its sound, 16 above mPos.
-void PrincessZeldaDemo_8049D208::flashAtFeet() {
-    JGeometry::TVec3f pos = mPos;
-    pos.y += -16.0f;
-    spawnEmitter_8013CC50(field_0x4, &pos, 0x33B, 0, 0, NULL, NULL, true, 1.0f);
-    startSound_801F0E34(0x400B5, 0);
-}
-
-// The centre of the camera's visible box, at z 0.
-void setCenter(JGeometry::TVec3f& pos, JGeometry::TBox2f box) {
-    pos.x = box.f.x + 0.5f * (box.i.x - box.f.x);
-    pos.y = box.f.y + 0.5f * (box.i.y - box.f.y);
-    pos.z = 0.0f;
-}
-
-void PrincessZeldaDemo_8049D208::standBelow(const JGeometry::TVec3f& target) {
-    JGeometry::TVec3f pos = target;
-    pos.y -= 16.0f;
-    mPos.set(pos);
-}
-
-// State 35: accelerates towards field_0x27c while shrinking; state 36 on arrival.
-void PrincessZeldaDemo_8049D208::flyToGoal() {
-    field_0x268 += 0.04f;
-    fn_801CD950(&field_0x26c, 2.0f, 0.05f);
-    s16 angle = (s32)(JMath::atanTable_.atan2_(field_0x27c.x - mPos.x, field_0x27c.y - mPos.y) *
-                      10430.378f);
-    field_0x3c.x = field_0x26c * JMath::sincosTable_.sinShort(angle);
-    field_0x3c.y = field_0x26c * JMath::sincosTable_.cosShort(angle);
-    s32 doneX = fn_801CD950(&mPos.x, field_0x27c.x, field_0x3c.x);
-    s32 doneY = fn_801CD950(&mPos.y, field_0x27c.y, field_0x3c.y);
-    fn_801CD950(&field_0x270, 0.05f, -0.005f);
-    bool arrived = doneX == 0 && doneY == 0;
-    if (arrived) {
-        switch (field_0x234) {
-        case 0:
-        case 1:
-            fn_8010E7E8(0x24);
-            break;
-        case 2:
-            fn_8010E2D4(0x24);
-            break;
-        }
-        field_0x238 = 0x24;
-    }
-}
-
-// State 36: the draw scale (field_0x270) runs down to 0.
-void PrincessZeldaDemo_8049D208::shrinkAway() {
-    fn_801CD950(&field_0x270, 0.0f, -0.02f);
-}
-
-// Opens the scene set's message 10 above the maiden.
-void PrincessZeldaDemo_8049D208::showSceneMessage() {
-    fn_8038BD08(0, lbl_8053C548[field_0x234], field_0x4, JGeometry::TVec3f(0.0f, -10.0f, 0.0f), 0x4022);
-}
-
-// State 33: lowers the four players to the ground, 0.2 a frame faster.
-void PrincessZeldaDemo_8049D208::lowerPlayers() {
-    f32 dz = 2.0f - 0.2f * (fn_8011921C()->field_0x8 - lbl_80464550[33]);
-    for (s32 i = 0; i < 4; i++) {
-        JGeometry::TVec3f pos = *getPlayerPos_8023E724(i);
-        pos.z += dz;
-        if (pos.z <= 0.0f) {
-            pos.z = 0.0f;
-        } else {
-            pos.y += 2.0f;
-        }
-        fn_80230498(i, &pos, 0x3F, 0xFF, -0x80, -0x80, true);
-    }
-}
-
-// State 4: moves to 24 above player 0, then starts animation 2.
-void PrincessZeldaDemo_8049D208::sinkToPlayer() {
-    mAnim0.mFrameCtrl.setRate(1.0f);
-    if (fn_801CD950(&mPos.y, getPlayerPos_8023E724(0)->y - 24.0f, 0.7f) == 0) {
-        mAnim0.startAnim_801D22DC(2, 2, false);
-        mAnim0.fn_801D1F14(0.0f);
-        mAnim0.mFrameCtrl.setRate(1.0f);
-    }
 }
