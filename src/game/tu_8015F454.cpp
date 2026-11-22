@@ -64,6 +64,7 @@ void cls_804A03A8::fn_801601E0() {
 }
 
 // 0x8016005C
+// FIXME: 99.95 %, reloc-name (float literal pool order); behaviour clean.
 void cls_804A03A8::fn_8016005C() {
     for (s32 i = 0; i < 0x20; i++) {
         if (field_0x204[i] > 0) {
@@ -85,9 +86,7 @@ void cls_804A03A8::fn_8016005C() {
     }
 }
 
-static void drawLetterbox(f32 bar, JUtility::TColor color);
-
-// FIXME(shotgun): 97.94 %, different; behaviour clean.
+// FIXME(shotgun): 97.82 %, different + reloc-name; behaviour clean.
 // (stack slots of the arrays and colour copies are ordered differently; the white colour is not hoisted)
 // 0x8015F9C0
 void cls_804A03A8::fn_8015F9C0() {
@@ -190,7 +189,9 @@ void cls_804A03A8::fn_8015F9C0() {
         JUtility::TColor color(0, 0, 0, (u8)(255.0f * sq));
         gGameRoot2_8053AB10->fn_8013B460();
         f32 bar = 48.0f * sq;
-        drawLetterbox(bar, color);
+        J2DFillBox(0.0f, 0.0f, (f32)(s32)JUTVideo::sManager->getFbWidth(), bar, color);
+        J2DFillBox(0.0f, (f32)(s32)JUTVideo::sManager->getEfbHeight() - bar, (f32)(s32)JUTVideo::sManager->getFbWidth(),
+                   (f32)(s32)JUTVideo::sManager->getEfbHeight(), color);
     }
 }
 
@@ -226,6 +227,7 @@ u8 cls_804A03A8::fn_8015F8FC(s32 layer, const JGeometry::TVec3f* pos, s32 mode) 
     return placed;
 }
 
+// FIXME: 99.93 %, reloc-name (pool has the int->float bias ahead of -1.0f); behaviour clean.
 void fn_8015F454(JUTTexture* tex, const f32* pos, const f32* uv, GXColor color, const GXColorS10* color2,
                  JUTTexture* mask, u8 mirror, u8 blend) {
     f32 u0 = uv[0];
@@ -311,10 +313,3 @@ void fn_8015F454(JUTTexture* tex, const f32* pos, const f32* uv, GXColor color, 
     }
 }
 
-// Not in the binary (fn_8015F9C0 inlines it); the pool has its int->float bias ahead of fn_8015F454's
-// -1.0f. Black bars of height `bar` along the top and the bottom of the screen.
-static void drawLetterbox(f32 bar, JUtility::TColor color) {
-    J2DFillBox(0.0f, 0.0f, (f32)(s32)JUTVideo::sManager->getFbWidth(), bar, color);
-    J2DFillBox(0.0f, (f32)(s32)JUTVideo::sManager->getEfbHeight() - bar, (f32)(s32)JUTVideo::sManager->getFbWidth(),
-               (f32)(s32)JUTVideo::sManager->getEfbHeight(), color);
-}
