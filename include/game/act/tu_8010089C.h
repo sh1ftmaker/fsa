@@ -17,9 +17,6 @@ public:
     // 0x80100A90 (the sign's init), 0x80100D28 (the shop's per-frame work).
     void fn_80100A90();
     void fn_80100D28();
-    // Not in the binary: plain functions that draw, update and fn_80100A90 inline.
-    void showTimer();
-    void spawnSmoke();
 
     /* 0x230 */ s32 field_0x230; // state
     /* 0x234 */ s32 field_0x234; // frame counter

@@ -12,6 +12,7 @@
 #include "game/Player.h"
 #include "game/act/tu_8010089C.h"
 
+// FIXME: 99.94 %, reloc-name (float literal pool order); behaviour clean.
 void WhackAMoleShop_8049C8EC::init() {
     if (field_0x90 & 0x10000) {
         fn_80100A90();
@@ -54,6 +55,7 @@ void WhackAMoleShop_8049C8EC::init() {
     }
 }
 
+// FIXME: 99.87 %, reloc-name (float literal pool order); behaviour clean.
 void WhackAMoleShop_8049C8EC::update() {
     if (field_0x90 & 0x10000) {
         field_0x245++;
@@ -68,13 +70,13 @@ void WhackAMoleShop_8049C8EC::update() {
         field_0x234++;
         if (field_0x234 < 40) {
             if ((field_0x234 & 3) == 0) {
-                spawnSmoke();
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
             }
         } else {
             field_0x240 = 1;
             field_0xb0 = 0x1100;
             if (field_0x234 == 160) {
-                spawnSmoke();
+                spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
                 fn_801F3668();
             }
             fn_801F3D94(1);
@@ -128,6 +130,7 @@ static inline void spawnMole(WhackAMoleShop_8049C8EC* shop) {
     getActorManager_801F856C()->spawnActor_801F9484('MGYA', shop->field_0x4, &pos, shop->mSerial + 0x10000, -1, -1);
 }
 
+// FIXME: 98.68 %, regalloc-only + reloc-name (float literal pool order); behaviour clean.
 void WhackAMoleShop_8049C8EC::draw() {
     if (field_0x90 & 0x10000) {
         SpriteParams_801F5AE0 params;
@@ -143,12 +146,20 @@ void WhackAMoleShop_8049C8EC::draw() {
         mPos.y = field_0x250 + field_0x258;
         drawSprite_801F06F0("enemy_gc_sob.bin", 0x311 + field_0x247 * 2 + field_0x246, NULL, 0, 1.0f, 1.0f);
         if (field_0x230 == 5 || field_0x230 == 6 || field_0x230 == 7 || field_0x230 == 8) {
-            showTimer();
+            s32 timer = field_0x23c;
+            s32 seconds = timer / 60;
+            lbl_8053AF18->field_0x30 = seconds;
+            lbl_8053AF18->field_0x31 = (u8)((f32)(timer - seconds * 60) / 0.6f);
+            lbl_8053AF18->field_0x32 |= 0x10;
+            for (s32 i = 0; i < field_0x244; i++) {
+                lbl_8053AF18->field_0x32 |= (u8)(1 << i);
+                lbl_8053AF18->field_0x2c[i] = (u8)field_0x260[i];
+            }
         }
     }
 }
 
-// FIXME(shotgun): 97.89 %, scheduling+regalloc + reloc-name; behaviour near.
+// FIXME(shotgun): 97.78 %, scheduling+regalloc + reloc-name; behaviour near.
 void WhackAMoleShop_8049C8EC::fn_80100D28() {
     JGeometry::TVec3f msgPos = mPos;
     msgPos.y -= 50.0f;
@@ -382,19 +393,7 @@ void WhackAMoleShop_8049C8EC::fn_80100D28() {
     }
 }
 
-// A plain function that draw inlines; the linker dropped its own copy. Its literals stand in the
-// pool before fn_80100D28's.
-void WhackAMoleShop_8049C8EC::showTimer() {
-    s32 timer = field_0x23c;
-    lbl_8053AF18->field_0x30 = timer / 60;
-    lbl_8053AF18->field_0x31 = (u8)((f32)(timer - (timer / 60) * 60) / 0.6f);
-    lbl_8053AF18->field_0x32 |= 0x10;
-    for (s32 i = 0; i < field_0x244; i++) {
-        lbl_8053AF18->field_0x32 |= (u8)(1 << i);
-        lbl_8053AF18->field_0x2c[i] = (u8)field_0x260[i];
-    }
-}
-
+// FIXME: 99.94 %, reloc-name (float literal pool order); behaviour clean.
 void WhackAMoleShop_8049C8EC::fn_80100A90() {
     field_0x290 = static_cast<WhackAMoleShop_8049C8EC*>(getActorManager_801F856C()->findActorBySerial_801F666C(field_0x90 & 0xFFFF));
     mBox.i.x = -12.0f;
@@ -464,10 +463,10 @@ void WhackAMoleShop_8049C8EC::fn_80100A90() {
             field_0x244 = 5;
         }
     }
-    spawnSmoke();
+    spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
-// FIXME(shotgun): 99.80 %, regalloc-only; behaviour clean.
+// FIXME(shotgun): 99.60 %, regalloc-only + reloc-name; behaviour clean.
 void WhackAMoleShop_8049C8EC::vfunc_0x44() {
     s32 player = field_0x10c;
     if (player < 0) {
@@ -498,12 +497,6 @@ void WhackAMoleShop_8049C8EC::vfunc_0x44() {
         shop->field_0x260[player] += hits;
         shop->field_0x268[player] += total;
     }
-}
-
-// A plain function that update and fn_80100A90 inline; the linker dropped its own copy. Its 1.0f is
-// the first literal of the pool.
-void WhackAMoleShop_8049C8EC::spawnSmoke() {
-    spawnEmitter_8013CC50(field_0x4, &mPos, 0x1DA, 0, 1, NULL, NULL, true, 1.0f);
 }
 
 WhackAMoleShop_8049C8EC::~WhackAMoleShop_8049C8EC() {}
