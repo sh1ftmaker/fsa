@@ -2605,7 +2605,6 @@ void MapScreen_804B1288::fn_80408114() {
     }
 }
 
-// FIXME(shotgun): 99.99 %, regalloc-only; behaviour clean.
 // regalloc
 void MapScreen_804B1288::fn_8040732C() {
     s32 picked = -1;
@@ -2695,7 +2694,8 @@ void MapScreen_804B1288::fn_8040732C() {
         }
     }
     PaneCtrl_804AF86C* ctrl = mTinkPanes_0x208[mStage_0x340];
-    if (ctrl->mPane->getAlpha() != ctrl->field_0x28) {
+    u8 alpha = ctrl->mPane->getAlpha();
+    if (alpha != ctrl->field_0x28) {
         ctrl->animateAlpha_80402628(50, 0, ctrl->field_0x28);
     }
 }
