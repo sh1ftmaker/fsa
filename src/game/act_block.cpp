@@ -143,7 +143,6 @@ bool Block_804A7A10::isBlocked_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     return ActorBase_804A5770::isBlocked_0x4C(layer, pos);
 }
 
-// FIXME: 99.95 %, scheduling+regalloc; behaviour clean.
 // Same instructions; a few float registers and the order of some instructions still differ.
 void Block_804A7A10::update() {
     JGeometry::TBox2f box(mBox);

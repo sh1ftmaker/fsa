@@ -150,7 +150,6 @@ void GameRootSub20_801902C0::fn_801914C4() {
     field_0x4++;
 }
 
-// FIXME(shotgun): 99.93 %, regalloc-only; behaviour clean.
 void GameRootSub20_801902C0::fn_80190DC8() {
     s32 frame = field_0x4;
     for (s32 i = 0; i < 7; i++) {

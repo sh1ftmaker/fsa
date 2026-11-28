@@ -96,7 +96,6 @@ inline s32 cls_80204638::getNearest(const JGeometry::TVec3f* pos) const {
     return nearest;
 }
 
-// FIXME(shotgun): 99.17 %, regalloc-only; behaviour clean.
 bool cls_80204638::fn_802046FC(JGeometry::TVec3f* vel, JGeometry::TVec3f* pos) {
     if (mCount >= 10) {
         return false;

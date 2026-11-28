@@ -199,7 +199,6 @@ void ChiefSoldier_804A0B90::fn_80175024() {
     }
 }
 
-// FIXME(shotgun): 99.95 %, regalloc-only; behaviour clean.
 void ChiefSoldier_804A0B90::init() {
     s32 serial;
     mBox.i.x = -12.0f;

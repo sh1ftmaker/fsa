@@ -149,7 +149,6 @@ void IronPot_804A5418::updateState_0x90(u8 mapHit) {
     }
 }
 
-// FIXME(shotgun): 99.78 %, regalloc-only; behaviour clean.
 u8 IronPot_804A5418::checkHitByActor_0x60() {
     s32 serial;
     s32 skip = -1;

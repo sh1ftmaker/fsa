@@ -791,7 +791,6 @@ inline void ResultScreen_804AF9A0::spawnEffect(u16 id, f32 scale) {
     }
 }
 
-// FIXME: 99.98 %, scheduling; behaviour clean.
 void ResultScreen_804AF9A0::fn_803B236C() {
     if (field_0x458 <= 0) {
         s32 list[4];

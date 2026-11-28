@@ -201,7 +201,6 @@ void TinglesTowerTingleAndSign_804AAD60::draw() {
     }
 }
 
-// FIXME: 99.94 %, regalloc-only; behaviour clean.
 // FIXME: regalloc-only (f1/f2 swapped in box check).
 void TinglesTowerTingleAndSign_804AAD60::fn_80315EE8() {
     updateFacing();
@@ -217,7 +216,8 @@ void TinglesTowerTingleAndSign_804AAD60::fn_80315EE8() {
             if (!fn_8023EA28(i) && !fn_8022F478(i) && fn_802300EC(i) && getPlayerFacing_80230CFC(i) == 2) {
                 const JGeometry::TVec3f* pPos = getPlayerPos_8023E724(i);
                 bool inBox = false;
-                if (pPos->x >= box.i.x && pPos->y >= box.i.y && pPos->x < box.f.x && pPos->y < box.f.y) {
+                f32 px = pPos->x;
+                if (px >= box.i.x && pPos->y >= box.i.y && px < box.f.x && pPos->y < box.f.y) {
                     inBox = true;
                 }
                 if (inBox) {
@@ -364,7 +364,19 @@ static inline s32 getRank(s32 p) {
     return rank;
 }
 
-// FIXME(shotgun): 99.83 %, regalloc-only; behaviour clean.
+static inline void sortPlayersDescending(TinglesTowerTingleAndSign_804AAD60* self) {
+    for (s32 n = gGameRoot_8053AAF8->getPlayerCount_80138A30() - 1; n > 0; n--) {
+        for (s32 i = 0; i < n; i++) {
+            s32 vNext = fn_80236228(self->field_0x244[i + 1]);
+            if (fn_80236228(self->field_0x244[i]) < vNext) {
+                s32 tmp = self->field_0x244[i];
+                self->field_0x244[i] = self->field_0x244[i + 1];
+                self->field_0x244[i + 1] = tmp;
+            }
+        }
+    }
+}
+
 void TinglesTowerTingleAndSign_804AAD60::fn_80315864() {
     JGeometry::TBox2f box(field_0x258);
     box.i.x += mPos.x;
@@ -376,16 +388,7 @@ void TinglesTowerTingleAndSign_804AAD60::fn_80315864() {
         switch (field_0x238) {
         case 0: {
             if (nextMessage(0x486)) {
-                for (s32 n = gGameRoot_8053AAF8->getPlayerCount_80138A30() - 1; n > 0; n--) {
-                    for (s32 i = 0; i < n; i++) {
-                        s32 vNext = fn_80236228(field_0x244[i + 1]);
-                        if (fn_80236228(field_0x244[i]) < vNext) {
-                            s32 tmp = field_0x244[i];
-                            field_0x244[i] = field_0x244[i + 1];
-                            field_0x244[i + 1] = tmp;
-                        }
-                    }
-                }
+                sortPlayersDescending(this);
             }
             break;
         }

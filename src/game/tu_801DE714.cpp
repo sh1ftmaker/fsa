@@ -536,7 +536,6 @@ void cls_804A51E4::fn_801E1AB4(bool arg) {
     }
 }
 
-// FIXME(shotgun): 99.91 %, regalloc-only; behaviour drift.
 void cls_804A51E4::setState_801E1594(s32 newState) {
     switch (newState) {
     case 0:

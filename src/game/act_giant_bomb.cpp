@@ -380,7 +380,6 @@ void GiantBomb_804AC588::draw() {
     }
 }
 
-// FIXME(shotgun): 99.42 %, scheduling+regalloc; behaviour clean.
 // (params is a pointer to const: the copies load every field before storing; registers and order of the fade differ)
 void GiantBomb_804AC588::vfunc_0x54(void* res, const SpriteParams_801F5AE0* params, s32 flags, f32 offsetX, f32 offsetY,
                                     f32 offsetZ) {

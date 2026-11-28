@@ -129,7 +129,6 @@ void MgHorseRaceScreen_804B1BB0::fn_80445CDC() {
 }
 
 // Registers only: the loop counter and two digit values sit in rotated callee-saved registers (r25/r26/r27).
-// FIXME: 99.69 %, regalloc-only; behaviour clean.
 void MgHorseRaceScreen_804B1BB0::fn_804455E0() {
     s32 secTens;
     const ResTIMG* res;

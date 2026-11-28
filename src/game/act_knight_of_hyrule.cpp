@@ -71,9 +71,9 @@ void KnightOfHyrule_804AABA8::vfunc_0x10() {
     field_0x268.z = 0.0f;
 }
 
-// FIXME: 99.87 %, regalloc-only; behaviour near.
 // slot uses r29 instead of r30.
 void KnightOfHyrule_804AABA8::update() {
+    s32 slot2;
     JGeometry::TVec3f pos;
     switch (mState) {
     case 0:
@@ -112,9 +112,8 @@ void KnightOfHyrule_804AABA8::update() {
             pos.x += 16.0f;
         }
         if (field_0x27e == 0 && allLayer0 == true) {
-            s32 slot = field_0x278;
-            if (slot >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+            if (field_0x278 >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
                 if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<GiantGeneratorEffect_804AA350*>(actor)->field_0x276 = 1;
                 }
@@ -213,9 +212,8 @@ void KnightOfHyrule_804AABA8::update() {
     case 12:
         mTimer--;
         if (mTimer <= 0) {
-            s32 slot = field_0x278;
-            if (slot >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+            if (field_0x278 >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
                 if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<GiantGeneratorEffect_804AA350*>(actor)->field_0x277 = 1;
                 }
@@ -233,9 +231,8 @@ void KnightOfHyrule_804AABA8::update() {
             mTimer = 90;
             mVel_0x3c.z = 0.0f;
         }
-        s32 slot = field_0x278;
-        if (slot >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+        if (field_0x278 >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
             if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 if (static_cast<GiantGeneratorEffect_804AA350*>(actor)->fn_802ED7F0(mPos.z)) {
                     mPos.z += mVel_0x3c.z;
@@ -249,9 +246,8 @@ void KnightOfHyrule_804AABA8::update() {
     case 14:
         mTimer--;
         if (mTimer <= 0) {
-            s32 slot = field_0x278;
-            if (slot >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+            if (field_0x278 >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
                 if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<GiantGeneratorEffect_804AA350*>(actor)->field_0x278 = 1;
                 }
@@ -279,9 +275,8 @@ void KnightOfHyrule_804AABA8::update() {
         if (mTimer < 60) {
             addCalc2_801F71A4(&mVel_0x3c.z, -0.2f, 0.02f, 0.01f);
             mPos.z += mVel_0x3c.z;
-            s32 slot = field_0x278;
-            if (slot >= 0) {
-                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+            if (field_0x278 >= 0) {
+                ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
                 if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                     static_cast<GiantGeneratorEffect_804AA350*>(actor)->fn_802ED7F0(mPos.z);
                 }
@@ -295,9 +290,8 @@ void KnightOfHyrule_804AABA8::update() {
     }
     case 18: {
         mPos.z += mVel_0x3c.z;
-        s32 slot = field_0x278;
-        if (slot >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+        if (field_0x278 >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
             if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 static_cast<GiantGeneratorEffect_804AA350*>(actor)->fn_802ED7F0(mPos.z);
             }
@@ -306,7 +300,7 @@ void KnightOfHyrule_804AABA8::update() {
             mState = 19;
             mTimer = 30;
         } else if (mPos.z <= 10.0f && field_0x27d == 0) {
-            s32 slot2 = field_0x278;
+            slot2 = field_0x278;
             if (slot2 >= 0) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot2);
                 if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
@@ -378,9 +372,8 @@ void KnightOfHyrule_804AABA8::update() {
         break;
     case 17: {
         mPos.z += mVel_0x3c.z;
-        s32 slot = field_0x278;
-        if (slot >= 0) {
-            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(slot);
+        if (field_0x278 >= 0) {
+            ActorBase_804A5770* actor = getActorManager_801F856C()->getActor(field_0x278);
             if (actor != NULL && actor->mActorId == ACTOR_GNEF) {
                 static_cast<GiantGeneratorEffect_804AA350*>(actor)->fn_802ED7F0(mPos.z);
             }

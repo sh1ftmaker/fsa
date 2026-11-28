@@ -33,9 +33,14 @@ void EnemyGenerator3_804AA1D0::init() {
     mState = 0;
 }
 
+static inline void spawnEnemy(EnemyGenerator3_804AA1D0* self) {
+    u32 param = lbl_8046F450[self->mTypeIndex];
+    getActorManager_801F856C()->spawnActor_801F9484(self->mActorId, self->mLayer_0x4, &self->mPos, param, -1, -1);
+}
+
 // The mLayer_0x4 register differs (r29 here, r30 in the original).
-// FIXME: 99.81 %, regalloc-only; behaviour clean.
 void EnemyGenerator3_804AA1D0::update() {
+    s32 layer;
     switch (mState) {
     case 0:
         if (isScreenFlagSet_0x34()) {
@@ -63,7 +68,7 @@ void EnemyGenerator3_804AA1D0::update() {
                     }
                 }
             }
-            s32 layer = mLayer_0x4;
+            layer = mLayer_0x4;
             if (layer >= 8) {
                 getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &mPos, 3, -1, -1);
             } else {
@@ -76,8 +81,7 @@ void EnemyGenerator3_804AA1D0::update() {
     case 2:
         mTimer--;
         if (mTimer == 0) {
-            u32 param = lbl_8046F450[mTypeIndex];
-            getActorManager_801F856C()->spawnActor_801F9484(mActorId, mLayer_0x4, &mPos, param, -1, -1);
+            spawnEnemy(this);
             if (gAudioMgr_8053AF80->field_0x58 != 0x1000021 && gGameRoot_8053AAF8->field_0x7f == 1 &&
                 mFlag == 0) {
                 gAudioMgr_8053AF80->startBgm_80458FF0(0x1000021, 1, false);

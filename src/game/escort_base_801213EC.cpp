@@ -743,7 +743,6 @@ void EscortBase_8049E0C8::fn_80122548() {
     }
 }
 
-// FIXME(shotgun): 99.96 %, regalloc-only; behaviour clean.
 void EscortBase_8049E0C8::fn_80122148() {
     if (fn_8012285C() >= 0) {
         if (isPlayerHidden(fn_8012285C()) || !fn_8023BCD4(fn_8012285C())) {
@@ -774,8 +773,7 @@ void EscortBase_8049E0C8::fn_80122148() {
         }
         field_0x37c = 0.5f;
         s32 player = fn_8012285C();
-        s32 layer = getPlayerDestLayer_8023E10C(fn_8012285C());
-        if (getPlayerLayer_8023DE58(player) == layer) {
+        if (getPlayerLayer_8023DE58(player) == getPlayerDestLayer_8023E10C(fn_8012285C())) {
             mPos.x = pos.x;
             mPos.y = pos.y;
             mPos.z = pos.z;

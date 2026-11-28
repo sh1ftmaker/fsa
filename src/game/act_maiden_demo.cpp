@@ -205,7 +205,6 @@ u8 MaidenCutscene_8049D740::vfunc_0x5C() {
 
 // Not auto-inlined: update() calls fn_80112AE8 out of line in the original.
 #pragma auto_inline off
-// FIXME: 99.89 %, scheduling; behaviour clean.
 // FIXME: lwz of field_0x244 and mMode are swapped.
 void MaidenCutscene_8049D740::fn_80112AE8() {
     s32 mode;

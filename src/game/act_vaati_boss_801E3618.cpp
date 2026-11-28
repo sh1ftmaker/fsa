@@ -188,10 +188,35 @@ bool VaatiBoss_804A4958::fn_801E4094() {
     return result;
 }
 
+static inline void checkPlayersInBox(VaatiBoss_804A4958* self, JGeometry::TBox2f& box) {
+    for (s32 i = 0; i < 4; i++) {
+        if (isPlayerActive_8023F264(i) && !isPlayerDead_80236B50(i) && !fn_80230188(i) && !fn_8022D75C(i) &&
+            getPlayerLayer_8023DE58(i) == self->getField_0x4() && fn_80235448(i) &&
+            getPlayerPos_8023E724(i)->z <= 40.0f) {
+            f32 limit = fn_8023E578(i)->z;
+            if (getPlayerPos_8023E724(i)->z < limit) {
+                const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
+                bool inside = p->x >= box.i.x && p->y >= box.i.y && p->x < box.f.x &&
+                              p->y < box.f.y;
+                if (inside) {
+                    const JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(i);
+                    f32 dy = self->mPos.y - playerPos->y;
+                    f32 dx = self->mPos.x - playerPos->x;
+                    self->field_0x5d1 = lbl_8053F0C4;
+                    self->field_0x5d2 = (s16)(JMath::atanTable_.atan2_(dx, dy) *
+                                        (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+                    self->field_0x448.fn_80217A74();
+                    self->startSound_801F0E34(0x40062, 0);
+                    break;
+                }
+            }
+        }
+    }
+}
+
 // vtable slot 0x5C. The bomb/player hit test: a player on the boss's layer that is inside its
 // area (and below its head) turns it towards that player; otherwise each player that hit it
 // this frame is run through takeHit_801F37AC.
-// FIXME(shotgun): 99.75 %, regalloc-only; behaviour clean.
 u8 VaatiBoss_804A4958::checkHitByPlayer_0x5C() {
     u8 result = 0;
     s32 state = mState;
@@ -225,29 +250,7 @@ u8 VaatiBoss_804A4958::checkHitByPlayer_0x5C() {
             box.i.y -= 8.0f;
             box.f.x += 8.0f;
             box.f.y += 8.0f;
-            for (s32 i = 0; i < 4; i++) {
-                if (isPlayerActive_8023F264(i) && !isPlayerDead_80236B50(i) && !fn_80230188(i) && !fn_8022D75C(i) &&
-                    getPlayerLayer_8023DE58(i) == getField_0x4() && fn_80235448(i) &&
-                    getPlayerPos_8023E724(i)->z <= 40.0f) {
-                    f32 limit = fn_8023E578(i)->z;
-                    if (getPlayerPos_8023E724(i)->z < limit) {
-                        const JGeometry::TVec3f* p = getPlayerPos_8023E724(i);
-                        bool inside = p->x >= box.i.x && p->y >= box.i.y && p->x < box.f.x &&
-                                      p->y < box.f.y;
-                        if (inside) {
-                            const JGeometry::TVec3f* playerPos = getPlayerPos_8023E724(i);
-                            f32 dy = mPos.y - playerPos->y;
-                            f32 dx = mPos.x - playerPos->x;
-                            field_0x5d1 = lbl_8053F0C4;
-                            field_0x5d2 = (s16)(JMath::atanTable_.atan2_(dx, dy) *
-                                                (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
-                            field_0x448.fn_80217A74();
-                            startSound_801F0E34(0x40062, 0);
-                            break;
-                        }
-                    }
-                }
-            }
+            checkPlayersInBox(this, box);
         }
         if (isUpperLayer_801CD2F8(mLayer_0x4)) {
             for (s32 i = 0; i < 4; i++) {

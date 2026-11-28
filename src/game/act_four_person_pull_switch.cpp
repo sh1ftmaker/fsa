@@ -11,23 +11,25 @@ static const s32 lbl_80474E70[15] = {
     30, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1,
 };
 
-// FIXME: 99.17 %, regalloc-only; behaviour clean.
+static inline void linkChild(FourPersonPullSwitch_804AE230* self, s32 i) {
+    s32 serial = self->field_0x234[i];
+    if (serial >= 0) {
+        FourPersonPullSwitch_804AE230* child =
+            (FourPersonPullSwitch_804AE230*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
+        child->field_0x230 = self->mSerial;
+    } else {
+        self->markDead_801F3668();
+    }
+}
+
 void FourPersonPullSwitch_804AE230::init() {
     if (((mSpawnParam_0x90 >> 4) & 3) == 0) {
         for (s32 i = 0; i < 3; i++) {
             field_0x234[i] = -1;
-            s32 idx = i + 1;
-            u32 param = (mSpawnParam_0x90 & 0xF800000F) | (idx << 4);
+            u32 param = (mSpawnParam_0x90 & 0xF800000F) | ((i + 1) << 4);
             field_0x234[i] = getActorManager_801F856C()->spawnActor_801F9484(
-                ACTOR_PSW2, mLayer_0x4, &(mPos + JGeometry::TVec3f((f32)idx * 16.0f, 0.0f, 0.0f)), param, -1, -1);
-            s32 serial = field_0x234[i];
-            if (serial >= 0) {
-                FourPersonPullSwitch_804AE230* child =
-                    (FourPersonPullSwitch_804AE230*)getActorManager_801F856C()->findActorBySerial_801F666C(serial);
-                child->field_0x230 = mSerial;
-            } else {
-                markDead_801F3668();
-            }
+                ACTOR_PSW2, mLayer_0x4, &(mPos + JGeometry::TVec3f((f32)(i + 1) * 16.0f, 0.0f, 0.0f)), param, -1, -1);
+            linkChild(this, i);
         }
     }
     mBox.i.x = -8.0f;

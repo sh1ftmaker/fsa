@@ -278,7 +278,6 @@ void Frostare_804A4C58::setState_801D9C58(int state) {
     mState = state;
 }
 
-// FIXME(shotgun): 99.84 %, regalloc-only; behaviour clean.
 void Frostare_804A4C58::fn_801D9960() {
     s32 target;
     s32 player;

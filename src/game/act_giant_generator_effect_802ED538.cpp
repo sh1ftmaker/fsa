@@ -76,17 +76,20 @@ void GiantGeneratorEffect_804AA350::init() {
     mUpdateWhilePaused_0x11f = 1;
 }
 
-// FIXME(shotgun): 98.87 %, regalloc-only; behaviour clean.
+static inline void moveWarpAbove(GiantGeneratorEffect_804AA350* self, s32 i) {
+    ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
+    if (actor != NULL && actor->mActorId == ACTOR_WARP && self->field_0x25c == actor->getScreenFlagBit_0x3C()) {
+        JGeometry::TVec3f pos = actor->mPos;
+        pos.x = self->mPos.x;
+        pos.y = 32.0f + self->mPos.y;
+        actor->mPos = pos;
+    }
+}
+
 void GiantGeneratorEffect_804AA350::vfunc_0x10() {
     s32 count = getActorManager_801F856C()->getActorEnd();
     for (s32 i = 0; i < count; i++) {
-        ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
-        if (actor != NULL && actor->mActorId == ACTOR_WARP && field_0x25c == actor->getScreenFlagBit_0x3C()) {
-            JGeometry::TVec3f pos = actor->mPos;
-            pos.x = mPos.x;
-            pos.y = 32.0f + mPos.y;
-            actor->mPos = pos;
-        }
+        moveWarpAbove(this, i);
     }
     s32 found = 0;
     for (s32 i = 0; i < count; i++) {

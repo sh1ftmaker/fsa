@@ -621,7 +621,6 @@ s32 EnemyBase_804A4808::fn_801CF6B8() {
     return dir;
 }
 
-// FIXME: 99.84 %, regalloc-only; behaviour clean.
 // Float registers of the second directionTo differ.
 // A direction toward the nearest player within `range` (fn_801CF6B8's random
 // one when there is none): on the dominant axis, or the other one with
@@ -668,7 +667,6 @@ s32 EnemyBase_804A4808::fn_801CF0F4() const {
     return angleToDir_801F681C(angle);
 }
 
-// FIXME: 99.90 %, regalloc-only; behaviour clean.
 // regalloc only (the two bools of canTargetPlayer swap r28 /
 // r29, and the player-pointer induction register).
 // Spawns `actorId` (a cls_804A48B0 shot) at mPos aimed at the nearest player

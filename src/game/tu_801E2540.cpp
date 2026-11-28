@@ -105,7 +105,6 @@ void cls_804A51E4::fn_801E2D88() {
 }
 
 // Whether a player-side object (arrow, bomb, sword, ...) hits the actor's box.
-// FIXME: 99.52 %, regalloc-only; behaviour clean.
 bool cls_804A51E4::vfunc_0x58() {
     s32 player;
     JGeometry::TVec3f bombVel;

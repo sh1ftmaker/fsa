@@ -73,7 +73,6 @@ bool cls_804A46F4::fn_801D183C(f32 range) {
 
 // 0x801D12CC.
 // dx/dy of the arrival check sit in swapped float registers (f3/f4).
-// FIXME: 99.91 %, regalloc-only; behaviour clean.
 bool cls_804A46F4::fn_801D12CC() {
     f32 dy;
     bool result = false;
@@ -164,7 +163,6 @@ bool cls_804A46F4::fn_801D12CC() {
 
 // 0x801D11FC: turns field_0x33c by 0x5B0 whichever way is nearer the angle
 // of mMapHitDir.
-// FIXME: 98.08 %, regalloc-only; behaviour clean.
 // regalloc only: the original keeps field_0x33c in r5 and
 // the left angle in r5 (lis r3 0x4330 for the int-to-float constant, f0 for
 // the 1/32768 scale); ours uses r3/r4/r5 and r0 for the constant.

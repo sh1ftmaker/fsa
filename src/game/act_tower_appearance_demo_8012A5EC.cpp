@@ -35,7 +35,6 @@ inline bool TowerAppearanceDemo_8049E770::talk(s32 layer, const JGeometry::TVec3
     return fn_8038BD08(0, lbl_804650C8[field_0x254], layer, pos, 0x22);
 }
 
-// FIXME(shotgun): 99.54 %, scheduling+regalloc; behaviour clean.
 void TowerAppearanceDemo_8049E770::init() {
     lbl_8053AD70->fn_8037AE00();
     field_0x3f4 = (s32)(mPos.y / 384.0f) * 384.0f;
@@ -51,8 +50,7 @@ void TowerAppearanceDemo_8049E770::init() {
     field_0x400 = 0.0f;
     field_0x3fc = 0.0f;
     for (s32 i = 0; i < 6; i++) {
-        s16 angle = lbl_804650D4[i];
-        field_0x25c[i] = mPos + JGeometry::TVec3f(JMACosShort(angle) * 55.0f, JMASinShort(angle) * 35.0f, 0.0f);
+        field_0x25c[i] = mPos + JGeometry::TVec3f(JMACosShort(lbl_804650D4[i]) * 55.0f, JMASinShort(lbl_804650D4[i]) * 35.0f, 0.0f);
         field_0x2a4[i] = lbl_804650B0[i];
     }
     field_0x2bc = 0;
@@ -76,9 +74,8 @@ void TowerAppearanceDemo_8049E770::init() {
     field_0x250 = 60;
     f32 posX = field_0x238.x;
     f32 posY = field_0x238.y;
-    f32 halfH = field_0x248;
-    f32 y0 = posY - halfH;
-    f32 y1 = posY + halfH;
+    f32 y0 = posY - field_0x248;
+    f32 y1 = posY + field_0x248;
     gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
     Camera_804AA9E4* cam = gGameRoot2_8053AB10->field_0x24;
     if (cam->mBlendBoxOn_0x840 == 0) {
@@ -607,7 +604,6 @@ void TowerAppearanceDemo_8049E770::fn_8012A8C0() {
     }
 }
 
-// FIXME(shotgun): 99.61 %, regalloc-only; behaviour drift.
 bool TowerAppearanceDemo_8049E770::fn_8012A5EC() {
     f32 posY;
     f32 halfH;

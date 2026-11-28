@@ -439,7 +439,6 @@ static inline s32 pickTarget(VaatiBoss_804A4958* boss) {
     return chosen;
 }
 
-// FIXME(shotgun): 99.72 %, regalloc-only; behaviour drift.
 void VaatiBoss_804A4958::updateState_0x90(u8 mapHit) {
     switch (mState) {
     case 0:
@@ -710,16 +709,14 @@ void VaatiBoss_804A4958::updateBehavior_0x9C(u8 mapHit) {
 
 // The step of the vtable slot 0x98 (0x801D4ED4, a plain `fn_801D4ED4` symbol in the original).
 // The sin/cos products sit in other float registers (f1/f0 and the cos in f3 in the original).
-// FIXME: 99.82 %, regalloc-only; behaviour drift.
 void VaatiBoss_804A4958::move_0x98() {
     bool step = false;
     if (field_0x5d1 != 0) {
         field_0x5d1--;
         if (field_0x5d1 == 0) {
             field_0x448.fn_80217CD8();
-            s16 angle = field_0x5d2;
-            JGeometry::TVec2<f32> vel(1.4f * JMath::sincosTable_.sinShort(angle),
-                                      1.4f * JMath::sincosTable_.cosShort(angle));
+            JGeometry::TVec2<f32> vel(1.4f * JMath::sincosTable_.sinShort(field_0x5d2),
+                                      1.4f * JMath::sincosTable_.cosShort(field_0x5d2));
             mVel_0x3c.x = vel.x;
             mVel_0x3c.y = vel.y;
         }

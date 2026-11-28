@@ -162,7 +162,6 @@ static inline bool isFrozenRoom() {
     return false;
 }
 
-// FIXME(shotgun): 99.79 %, regalloc-only; behaviour clean.
 // 0x80139D9C
 void GameRootSub04_801F856C::fn_80139D9C() {
     s32 mode = gGameRoot_8053AAF8->field_0x4c;

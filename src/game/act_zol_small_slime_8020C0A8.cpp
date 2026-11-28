@@ -213,7 +213,6 @@ void ZolSmallSlime_804A5F40::move_0x98() {
     }
 }
 
-// FIXME(shotgun): 98.75 %, regalloc-only; behaviour clean.
 bool ZolSmallSlime_804A5F40::isBlocked_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
     bool result;
     s32 serial;

@@ -37,8 +37,13 @@ u8 fn_801B7550(void) {
 }
 #pragma auto_inline reset
 
+static inline void callForAllPlayers_8023EE28() {
+    for (s32 i = 0; i < 4; i++) {
+        fn_8023EE28(i);
+    }
+}
+
 // 0x801B73B8.
-// FIXME(shotgun): 99.75 %, regalloc-only; behaviour clean.
 void GoalWarp_804A39DC::init() {
     mBox.set(-128.0f, -128.0f, 128.0f, 128.0f);
     field_0x25c = fn_801B7550();
@@ -73,9 +78,7 @@ void GoalWarp_804A39DC::init() {
         field_0x230 = 0;
     } else {
         fn_80119DD0()->fn_80119468(0, 0);
-        for (s32 i = 0; i < 4; i++) {
-            fn_8023EE28(i);
-        }
+        callForAllPlayers_8023EE28();
         field_0x230 = 6;
     }
 }

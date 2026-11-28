@@ -151,9 +151,37 @@ TotalScreen_804B03D8::~TotalScreen_804B03D8() {
     lbl_8053ADC0 = NULL;
 }
 
+static inline void showPlayerRow(TotalScreen_804B03D8* self, s32 k) {
+    u8 mask = 1 << k;
+    s32 count = lbl_80529DEC.field_0x140[k];
+    if (lbl_80529DEC.isField0x243(mask)) {
+        self->field_0x68 = k;
+        self->field_0x4->search(lbl_804773E8[k])->show();
+        self->field_0x4->search(lbl_80477380[k])->show();
+    } else {
+        self->field_0x4->search(lbl_804773E8[k])->hide();
+        self->field_0x4->search(lbl_80477380[k])->hide();
+    }
+    for (s32 j = 0; j < 16; j++) {
+        if (j < count && (gGameRoot_8053AAF8->mPlayerMask & mask) != 0) {
+            if ((lbl_80529DEC.field_0x243[0] & mask) != 0 && j == count - 1) {
+                self->field_0x6a = j;
+                self->field_0x4->search(lbl_80476F80[k][j])->hide();
+                self->field_0x4->search(lbl_80477180[k][j])->hide();
+            } else {
+                self->field_0x4->search(lbl_80476F80[k][j])->show();
+                self->field_0x4->search(lbl_80477180[k][j])->show();
+                self->field_0x4->search(lbl_80477180[k][j])->setAlpha(0);
+            }
+        } else {
+            self->field_0x4->search(lbl_80476F80[k][j])->hide();
+            self->field_0x4->search(lbl_80477180[k][j])->hide();
+        }
+    }
+}
+
 // Resets the screen for a new round: shows the rows of the players that take part and slides the
 // remaining panes out of view.
-// FIXME(shotgun): 98.71 %, regalloc-only; behaviour clean.
 void TotalScreen_804B03D8::fn_803D87C0() {
     lbl_8053AEC0->fn_804310CC();
     for (s32 i = 0; i < 3; i++) {
@@ -168,32 +196,7 @@ void TotalScreen_804B03D8::fn_803D87C0() {
         }
     }
     for (s32 k = 0; k < 4; k++) {
-        u8 mask = 1 << k;
-        s32 count = lbl_80529DEC.field_0x140[k];
-        if (lbl_80529DEC.isField0x243(mask)) {
-            field_0x68 = k;
-            field_0x4->search(lbl_804773E8[k])->show();
-            field_0x4->search(lbl_80477380[k])->show();
-        } else {
-            field_0x4->search(lbl_804773E8[k])->hide();
-            field_0x4->search(lbl_80477380[k])->hide();
-        }
-        for (s32 j = 0; j < 16; j++) {
-            if (j < count && (gGameRoot_8053AAF8->mPlayerMask & mask) != 0) {
-                if ((lbl_80529DEC.field_0x243[0] & mask) != 0 && j == count - 1) {
-                    field_0x6a = j;
-                    field_0x4->search(lbl_80476F80[k][j])->hide();
-                    field_0x4->search(lbl_80477180[k][j])->hide();
-                } else {
-                    field_0x4->search(lbl_80476F80[k][j])->show();
-                    field_0x4->search(lbl_80477180[k][j])->show();
-                    field_0x4->search(lbl_80477180[k][j])->setAlpha(0);
-                }
-            } else {
-                field_0x4->search(lbl_80476F80[k][j])->hide();
-                field_0x4->search(lbl_80477180[k][j])->hide();
-            }
-        }
+        showPlayerRow(this, k);
     }
     field_0x8->search('P0kak00')->setAlpha(0);
     field_0x8->search('P0ka00')->setAlpha(0);

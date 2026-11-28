@@ -55,7 +55,6 @@ MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
     }
 }
 
-// FIXME: 98.65 %, regalloc-only; behaviour clean.
 // FIXME: regalloc-only (r28-r31 permuted).
 void MagicCircleGenerator_804A9FB0::update() {
     u32 param;

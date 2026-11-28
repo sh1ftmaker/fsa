@@ -66,7 +66,32 @@ void Switch_804A7F38::init() {
     field_0x260 = -1;
 }
 
-// FIXME: 99.82 %, regalloc-only; behaviour clean.
+static inline void checkLinkedActor(Switch_804A7F38* self, ActorBase_804A5770 *actor) {
+    u32 param = actor->mSpawnParam_0x90;
+    if ((param & 0x1F) == 1 || (param & 0x1F) == 2) {
+        for (int j = 0; j < 4; j++) {
+            if (self->field_0x25c == ((param >> lbl_8046C828[j]) & 0x1F)) {
+                self->field_0x260 = param >> 27;
+                if (getGameView_802D6A9C()->isScreenFlagSet_802D800C(self->field_0x260)) {
+                    self->vfunc_0x54(-1);
+                    self->mAlive = false;
+                } else {
+                    if (self->field_0x258 == 0x13 || self->field_0x258 == 0x51) {
+                        if (self->field_0x258 == 0x13) {
+                            self->field_0x258 = 0x12;
+                        } else {
+                            self->field_0x258 = 0x51;
+                        }
+                        self->setScreenFlag_0x30(0xFF, false);
+                        gBgRewrite_8053AC98->writeTileMarkView_802A3884(&self->mPos, -1, self->mLayer_0x4, self->field_0x258);
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
+
 // Regalloc only: target->ours r30->r31, r4->r5, r5->r4, r31->r30.
 void Switch_804A7F38::vfunc_0x10() {
     if (mState == 1) {
@@ -90,29 +115,7 @@ void Switch_804A7F38::vfunc_0x10() {
                         if (!actor) continue;
                         if (actor->mActorId != 'SWT4' && actor->mActorId != 'LOSW') continue;
                         if (field_0x170 != actor->field_0x170) continue;
-                        u32 param = actor->mSpawnParam_0x90;
-                        if ((param & 0x1F) == 1 || (param & 0x1F) == 2) {
-                            for (int j = 0; j < 4; j++) {
-                                if (field_0x25c == ((param >> lbl_8046C828[j]) & 0x1F)) {
-                                    field_0x260 = param >> 27;
-                                    if (getGameView_802D6A9C()->isScreenFlagSet_802D800C(field_0x260)) {
-                                        vfunc_0x54(-1);
-                                        mAlive = false;
-                                    } else {
-                                        if (field_0x258 == 0x13 || field_0x258 == 0x51) {
-                                            if (field_0x258 == 0x13) {
-                                                field_0x258 = 0x12;
-                                            } else {
-                                                field_0x258 = 0x51;
-                                            }
-                                            setScreenFlag_0x30(0xFF, false);
-                                            gBgRewrite_8053AC98->writeTileMarkView_802A3884(&mPos, -1, mLayer_0x4, field_0x258);
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                        }
+                        checkLinkedActor(this, actor);
                     }
                     if (field_0x258 == 0x43 || field_0x258 == 0x68 || field_0x258 == 0x6a || field_0x258 == 0x41) {
                         if (isScreenFlagSet_0x34()) {

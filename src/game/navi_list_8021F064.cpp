@@ -37,7 +37,6 @@ void NaviList_8021F064::fn_8021F1F0(s32 serial) {
     }
 }
 
-// FIXME: 99.38 %, regalloc-only; behaviour clean.
 void NaviList_8021F064::fn_8021F130() {
     Navi_804A6708* navi;
     if (mCount > 0 && (mFlags & 3) != 0) {

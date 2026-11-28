@@ -221,7 +221,6 @@ void ReaperShinigami_804A886C::die_0x24() {
 }
 
 // 0x802B8078 is a plain `fn_802B8078` symbol in the original; ours is the mangled member.
-// FIXME(shotgun): 99.87 %, regalloc-only; behaviour clean.
 void ReaperShinigami_804A886C::fn_802B8078() {
     field_0x29c = getPlayerLayer_8023DE58(field_0x298);
     if (8 > field_0x29c) {

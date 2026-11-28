@@ -416,7 +416,6 @@ static inline s32 getPushDir(const Log_804ACD70* self) {
     return -1;
 }
 
-// FIXME: 98.85 %, scheduling+regalloc; behaviour clean.
 void Log_804ACD70::fn_80354FE8() {
     if (isMotionless()) {
         if (field_0x2cc == 1) {
