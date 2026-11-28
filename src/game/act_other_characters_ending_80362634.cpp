@@ -914,18 +914,17 @@ void OtherCharactersEnding_804ADF28::fn_80364900() {
     }
 }
 
-// FIXME(shotgun): 99.79 %, regalloc-only; behaviour clean.
 void OtherCharactersEnding_804ADF28::fn_803645B4() {
     JGeometry::TVec3f target;
     if (field_0x248 == 0 || field_0x238 != 0) {
         if (field_0x238 == 0) {
-            if (field_0x24c >= 0) {
+            if (0 <= field_0x24c) {
                 ActorBase_804A5770* owl = getActorManager_801F856C()->getActor(field_0x24c);
                 if (owl != NULL) {
                     owl->mAlive = false;
                 }
             }
-            s32 end = getActorManager_801F856C()->mActorEnd;
+            s32 end = getActorManager_801F856C()->getActorEnd();
             for (s32 i = 0; i < end; i++) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
                 if (actor != NULL && actor->mActorId == 'RUPY') {

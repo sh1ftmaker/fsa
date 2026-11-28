@@ -163,10 +163,12 @@ void HorseRaceMan_804A5630::setState_801ECB08(s32 state) {
     mState = state;
 }
 
-// FIXME: 98.28% (regalloc-only: target r26/r27/r23 vs ours r27/r28/r24 for this, loop counter, and mLayer_0x4)
 void HorseRaceMan_804A5630::fn_801EC7B8() {
+    f32 f1;
+    s32 j;
     u8 crossed[4];
     f32 times[4];
+    f32 cur_x;
     for (s32 i = 0; i < 4; i++) {
         crossed[i] = 0;
         times[i] = 1.0f;
@@ -182,16 +184,17 @@ void HorseRaceMan_804A5630::fn_801EC7B8() {
     for (s32 i = 0; i < field_0x2a8; i++) {
         bool finished = mTable.fn_80215E48(i) >= 0;
         if (!finished) {
-            layer = mLayer_0x4;
-            if (getPlayerLayer_8023DE58(i) == layer) {
+            layer = getField_0x4();
+            s32 playerLayer = getPlayerLayer_8023DE58(i);
+            if (playerLayer == layer) {
                 if (getPlayerPos_8023E724(i)->y > finish_y && getPlayerPos_8023E724(i)->x < finish_x) {
                     crossed[i] = 1;
-                    f32 cur_x = getPlayerPos_8023E724(i)->x;
+                    cur_x = getPlayerPos_8023E724(i)->x;
                     f32 prev_x = fn_8023E578(i)->x;
                     f32 step = 0.6f;
                     f32 dx = step * (cur_x - prev_x);
                     f32 f4 = 1.0f;
-                    f32 f1 = cur_x - dx;
+                    f1 = cur_x - dx;
                     while (f1 < finish_x) {
                         f4 -= step;
                         f1 -= dx;
@@ -217,7 +220,7 @@ void HorseRaceMan_804A5630::fn_801EC7B8() {
         while (count > 0) {
             f32 minTime = FLT_MAX;
             s32 bestPlayer = -1;
-            for (s32 j = 0; j < field_0x2a8; j++) {
+            for (j = 0; j < field_0x2a8; j++) {
                 if (crossed[j] && times[j] <= minTime) {
                     bestPlayer = j;
                     minTime = times[j];

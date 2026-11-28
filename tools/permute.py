@@ -129,7 +129,7 @@ TYPE_FAMILY = {b"s32": INT_TYPES, b"u32": INT_TYPES, b"s16": INT_TYPES, b"u16": 
                b"f32": FLOAT_TYPES, b"f64": FLOAT_TYPES, b"float": FLOAT_TYPES, b"double": FLOAT_TYPES}
 TIER = {"decl": "a", "commute": "a", "scope": "a", "compound": "a", "if": "a", "boolret": "a", "andif": "a", "early": "a",
         "ternary": "a", "stmt": "a", "const": "a", "loop": "a", "incr": "a", "cond": "a", "untemp": "a", "intlong": "a",
-        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b", "callfirst": "b", "getter": "a"}
+        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b", "callfirst": "b", "getter": "a", "setter": "a"}
 # results a person or a session has to finish before they go into the source: a local that needs a
 # real name, or a value written out twice that was probably a macro or an inline in the original
 NEEDS_HAND = {"callfirst", "temp", "inline", "retvar", "nest", "outline", "outblock", "outrun"}
@@ -2003,6 +2003,63 @@ def gen_getter(c):
                    [(e0 - len(name), e0, g.encode() + b"()")], n.extent.start.line)
 
 
+_SETTERS = {}
+
+
+def class_setters(cls):
+    """{field name: setter name} for the one-line inline setters of `cls` (`void setX(T v) { mX = v; }`)."""
+    key = cls.hash
+    if key in _SETTERS:
+        return _SETTERS[key]
+    got = {}
+    for m in cls.get_children():
+        if m.kind != K.CXX_METHOD or len(list(m.get_arguments())) != 1 or m.is_static_method():
+            continue
+        f = m.extent.start.file
+        if f is None:
+            continue
+        try:
+            with open(f.name, "rb") as fh:
+                fh.seek(m.extent.start.offset)
+                body = fh.read(m.extent.end.offset - m.extent.start.offset)
+        except OSError:
+            continue
+        arg = list(m.get_arguments())[0].spelling.encode()
+        mm = re.search(rb"\{\s*(?:this->)?(\w+)\s*=\s*" + re.escape(arg) + rb"\s*;\s*\}\s*$", body)
+        if mm and arg:
+            got.setdefault(mm.group(1).decode(), m.spelling)
+    _SETTERS[key] = got
+    return got
+
+
+def gen_setter(c):
+    """`mX = e;` as a statement written through the class's one-line inline setter `setX(e);`."""
+    p, d = c.p, c.data
+    for n in c.nodes:
+        if n.kind != K.BINARY_OPERATOR or not good(p, n):
+            continue
+        b = binop(p, n)
+        if not b or b[1] != b"=" or b[0].kind != K.MEMBER_REF_EXPR:
+            continue
+        par = c.parent.get(n.hash)
+        if par is None or par.kind != K.COMPOUND_STMT:
+            continue  # only a whole statement
+        ref = b[0].referenced
+        if ref is None or ref.kind != K.FIELD_DECL or ref.semantic_parent is None:
+            continue
+        g = class_setters(ref.semantic_parent).get(ref.spelling)
+        if not g:
+            continue
+        lhs = txt(p, b[0])
+        name = ref.spelling.encode()
+        if not lhs.endswith(name):
+            continue
+        s0, e0 = ext(n)
+        new = lhs[:-len(name)] + g.encode() + b"(" + txt(p, b[2]) + b")"
+        yield Edit("setter", f"line {n.extent.start.line}: `{D(txt(p, n), 36)}` through `{g}()`", [(s0, e0, new)],
+                   n.extent.start.line)
+
+
 def gen_swap(c):
     p, d = c.p, c.data
     for comp in c.compounds():
@@ -2034,7 +2091,7 @@ GENERATORS = {"decl": gen_decl, "commute": gen_commute, "scope": gen_scope, "com
               "const": gen_const, "loop": gen_loop, "incr": gen_incr, "cond": gen_cond, "untemp": gen_untemp,
               "type": gen_type, "temp": gen_temp, "inline": gen_inline, "swap": gen_swap, "cast": gen_cast,
               "loopform": gen_loopform, "retvar": gen_retvar, "nest": gen_nest, "outline": gen_outline, "outblock": gen_outblock, "outrun": gen_outrun,
-              "intlong": gen_intlong, "callfirst": gen_callfirst, "getter": gen_getter}
+              "intlong": gen_intlong, "callfirst": gen_callfirst, "getter": gen_getter, "setter": gen_setter}
 
 
 # ---------------------------------------------------------------- the slice of the file a function needs
