@@ -129,10 +129,10 @@ TYPE_FAMILY = {b"s32": INT_TYPES, b"u32": INT_TYPES, b"s16": INT_TYPES, b"u16": 
                b"f32": FLOAT_TYPES, b"f64": FLOAT_TYPES, b"float": FLOAT_TYPES, b"double": FLOAT_TYPES}
 TIER = {"decl": "a", "commute": "a", "scope": "a", "compound": "a", "if": "a", "boolret": "a", "andif": "a", "early": "a",
         "ternary": "a", "stmt": "a", "const": "a", "loop": "a", "incr": "a", "cond": "a", "untemp": "a", "intlong": "a",
-        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b"}
+        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b", "callfirst": "b"}
 # results a person or a session has to finish before they go into the source: a local that needs a
 # real name, or a value written out twice that was probably a macro or an inline in the original
-NEEDS_HAND = {"temp", "inline", "retvar", "nest", "outline", "outblock", "outrun"}
+NEEDS_HAND = {"callfirst", "temp", "inline", "retvar", "nest", "outline", "outblock", "outrun"}
 ABOVE_FN = ("nest", "outline", "outblock", "outrun")  # kinds that also write a helper above the function
 KINDS_A = [k for k, t in TIER.items() if t == "a"]
 KINDS_B = [k for k, t in TIER.items() if t == "b"]
@@ -1881,6 +1881,58 @@ def gen_temp(c):
                    n.extent.start.line)
 
 
+CMP_OPS = (b"==", b"!=", b"<", b">", b"<=", b">=")
+
+
+def gen_callfirst(c):
+    """A call compared with another value named first: `T v = f(...); if (v == x)` (docs/RULES_CARD.md:
+    `cmpw` operands swapped against a call result). MWCC puts a named call result first in the compare."""
+    p, d = c.p, c.data
+    calls = {ext(n): n for n in c.nodes if n.kind == K.CALL_EXPR and good(p, n)}
+    seen = set()
+    for n in c.nodes:
+        if n.kind != K.BINARY_OPERATOR or not good(p, n):
+            continue
+        b = binop(p, n)
+        if not b or b[1] not in CMP_OPS:
+            continue
+        for side in (b[0], b[2]):
+            call = calls.get(ext(side))
+            if call is None:
+                # an implicit cast or parentheses around the call
+                inner = [k for k in side.get_children()]
+                while len(inner) == 1 and ext(inner[0]) not in calls and inner[0].kind in (K.UNEXPOSED_EXPR, K.PAREN_EXPR):
+                    inner = list(inner[0].get_children())
+                call = calls.get(ext(inner[0])) if len(inner) == 1 else None
+            if call is None or ext(call) in seen:
+                continue
+            ty = call.type
+            if ty.get_canonical().kind not in SCALAR:
+                continue
+            spelling = ty.spelling
+            if not spelling or "(" in spelling or "<dependent" in spelling or "[" in spelling:
+                continue
+            if ty.get_canonical().kind != TK.POINTER:
+                spelling = re.sub(r"^const\s+", "", spelling)
+            st, par = n, c.parent.get(n.hash)
+            while par is not None and par.kind != K.COMPOUND_STMT:
+                st, par = par, c.parent.get(par.hash)
+            if par is None:
+                continue
+            ls = d.rfind(b"\n", 0, ext(st)[0]) + 1
+            if d[ls:ext(st)[0]].strip():
+                continue  # the statement does not start its line
+            sp = (ls, ls)
+            seen.add(ext(call))
+            t = txt(p, call).strip()
+            name = c.fresh(temp_name(t))
+            ind = indent_of(d, ext(st)[0])
+            tyb = spelling.encode()
+            decl = ind + tyb + (b"" if tyb.endswith(b"*") else b" ") + name.encode() + b" = " + t + b";\n"
+            yield Edit("callfirst", f"line {n.extent.start.line}: `{D(t, 36)}` named before the compare (`{name}`)",
+                       [(sp[0], sp[0], decl), (*ext(call), name.encode())], n.extent.start.line)
+
+
 def gen_swap(c):
     p, d = c.p, c.data
     for comp in c.compounds():
@@ -1912,7 +1964,7 @@ GENERATORS = {"decl": gen_decl, "commute": gen_commute, "scope": gen_scope, "com
               "const": gen_const, "loop": gen_loop, "incr": gen_incr, "cond": gen_cond, "untemp": gen_untemp,
               "type": gen_type, "temp": gen_temp, "inline": gen_inline, "swap": gen_swap, "cast": gen_cast,
               "loopform": gen_loopform, "retvar": gen_retvar, "nest": gen_nest, "outline": gen_outline, "outblock": gen_outblock, "outrun": gen_outrun,
-              "intlong": gen_intlong}
+              "intlong": gen_intlong, "callfirst": gen_callfirst}
 
 
 # ---------------------------------------------------------------- the slice of the file a function needs

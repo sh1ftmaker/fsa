@@ -104,7 +104,6 @@ void PlayerEffect_804A6E20::init() {
 }
 
 // 0x80229F1C.
-// FIXME: 99.98 %, regalloc-only; behaviour drift.
 void PlayerEffect_804A6E20::update() {
     field_0x230++;
     switch (getKind()) {
@@ -125,7 +124,8 @@ void PlayerEffect_804A6E20::update() {
         mPos = *getPlayerPos_8023E724(mSpawnParam_0x90 & 3);
         field_0x234 = ((field_0x230 >> 1) & 7) + 0x7D;
         s32 player = mSpawnParam_0x90 & 3;
-        if (getPlayerLife_80237774(player) == lbl_80529DEC.field_0xd8[player]) {
+        s32 life = getPlayerLife_80237774(player);
+        if (life == lbl_80529DEC.field_0xd8[player]) {
             mAlive = false;
         }
         break;
