@@ -1160,12 +1160,13 @@ void KaeporaGaeboraEnding_804ADAC8::fn_8035FF70() {
     }
 }
 
-// FIXME(shotgun): 99.96 %, reloc-name; behaviour clean.
+void pool_80542A14(KaeporaGaeboraEnding_804ADAC8* self);
+
 void KaeporaGaeboraEnding_804ADAC8::fn_8035FD6C() {
     if (advanceStep() == true) {
         mPtmfIndex = 0;
         field_0x27C = 0;
-        field_0x254 = (s32)(JMath::atanTable_.atan2_(field_0x288.y - mPos.y, field_0x288.x - mPos.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
+        pool_80542A14(this);
         mVel_0x3c.x = field_0x268 * JMath::sincosTable_.cosShort(field_0x254);
         mVel_0x3c.y = field_0x268 * JMath::sincosTable_.sinShort(field_0x254);
         u16 a = field_0x254;
@@ -1271,6 +1272,12 @@ void KaeporaGaeboraEnding_804ADAC8::fn_8035F9C8() {
         fn_803613D0();
         mAlive = false;
     }
+}
+
+// Pool helper (R2: one-statement body): a plain function its caller inlined and whose own copy
+// the linker dropped; it stands where the original's .sdata2 order puts it, its literal at 0x80542A14 (tools/pool.py).
+void pool_80542A14(KaeporaGaeboraEnding_804ADAC8* self) {
+    self->field_0x254 = (s32)(JMath::atanTable_.atan2_(self->field_0x288.y - self->mPos.y, self->field_0x288.x - self->mPos.x) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180()));
 }
 
 u8 KaeporaGaeboraEnding_804ADAC8::fn_8035F3C0() {

@@ -912,6 +912,8 @@ void CrystalCutscene5464_804AE088::fn_80369DDC() {
     }
 }
 
+void pool_80542C58(CrystalCutscene5464_804AE088* self);
+
 // FIXME: 96.85 %, different + reloc-name; behaviour near.
 void CrystalCutscene5464_804AE088::fn_80368CD8() {
     if (field_0x258 != 0) {
@@ -954,7 +956,7 @@ void CrystalCutscene5464_804AE088::fn_80368CD8() {
         }
     }
     if (field_0x240 <= 0x18 && fn_8016A3AC()->field_0x1ef == 0 && field_0x398 == NULL) {
-        field_0x398 = spawnEmitter_8013CC50(mLayer_0x4, &mPos, 0x54C, 0, 1, NULL, NULL, true, 1.0f);
+        pool_80542C58(this);
     }
     JGeometry::TVec3f pos;
     if (field_0x240 >= 0x15 && field_0x240 != 0x26) {
@@ -1405,4 +1407,10 @@ void CrystalCutscene5464_804AE088::fn_80368198() {
             fn_8011921C()->fn_801183BC();
         }
     }
+}
+
+// Pool helper (R2: one-statement body): a plain function its caller inlined and whose own copy
+// the linker dropped; it stands where the original's .sdata2 order puts it, its literal at 0x80542C58 (tools/pool.py).
+void pool_80542C58(CrystalCutscene5464_804AE088* self) {
+    self->field_0x398 = spawnEmitter_8013CC50(self->mLayer_0x4, &self->mPos, 0x54C, 0, 1, NULL, NULL, true, 1.0f);
 }

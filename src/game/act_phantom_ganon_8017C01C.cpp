@@ -62,8 +62,8 @@ u8 fn_8017ECC0() {
     return result;
 }
 
-// FIXME: 99.75 %, reloc-name; behaviour clean.
-// The original keeps the constant 1 of mBlendBoxOn_0x840 in the result's register (ours loads it twice).
+void pool_8053DDC8(Camera_804AA9E4 *camera);
+
 // Fixes the camera on pos (both corners of its box) with `value`, once.
 u8 fn_8017EC70(const JGeometry::TVec3f* pos, f32 value) {
     s32 result = 0;
@@ -73,7 +73,7 @@ u8 fn_8017EC70(const JGeometry::TVec3f* pos, f32 value) {
         camera->mBlendBox_0x844.i.x = camera->mBlendBox_0x844.f.x = pos->x;
         camera->mBlendBox_0x844.i.y = camera->mBlendBox_0x844.f.y = pos->y;
         camera->mBlendWeight_0x854 = value;
-        camera->mMargin_0x1d4 = -1.0f;
+        pool_8053DDC8(camera);
         camera->mMinHalfWidth_0x1d8 = -1.0f;
     }
     return result;
@@ -277,6 +277,12 @@ void PhantomGanon_804A1318::init() {
         mState = 0x1B;
         break;
     }
+}
+
+// Pool helper (R2: one-statement body): a plain function its caller inlined and whose own copy
+// the linker dropped; it stands where the original's .sdata2 order puts it, its literal at 0x8053DDC8 (tools/pool.py).
+void pool_8053DDC8(Camera_804AA9E4 *camera) {
+    camera->mMargin_0x1d4 = -1.0f;
 }
 
 PhantomGanon_804A1318::~PhantomGanon_804A1318() {
