@@ -116,11 +116,36 @@ void cls_804A5B28::fn_80207830(u16 slot, s32 player, s32 arg3, const JGeometry::
     }
 }
 
+static inline void pushSpawnedTowardPlayer(cls_804A5B28* self, u16 slot, JGeometry::TVec3f& v) {
+    s32 layer;
+    JGeometry::TVec3f pos(self->mPos);
+    ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(self->mSlots[slot].mSerial);
+    if (a) {
+        pos.set(a->mPos);
+    }
+    s32 handle = fn_801CB434(self->mLayer_0x4, &pos, true);
+    int player = self->mSlots[slot].mPlayer;
+    if (player >= 0 && player < 4) {
+        layer = self->mLayer_0x4;
+        if (layer == getPlayerLayer_8023DE58(player)) {
+            if (self->isBlocked_0x4C(self->mLayer_0x4, &pos)) {
+                ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(handle);
+                if (b) {
+                    JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - pos.x, getPlayerPos_8023E724(player)->y - pos.y);
+                    normalize(d);
+                    d.scale(2.0f);
+                    v.set(d.x, d.y, b->mVel_0x3c.z);
+                    b->mVel_0x3c = v;
+                }
+            }
+        }
+    }
+}
+
 // Marks `slot` done; once its player's slot is active and picked in mMask,
 // aims the actor found by the slot's serial at that player when the player is
 // on the actor's layer and isBlocked_0x4C accepts the position. Reports the actor
 // (markDead_801F3668) when every other slot was already done.
-// FIXME: 99.60 %, regalloc-only; behaviour clean.
 // Only the registers differ: the original keeps the slot
 // offset (mulli) and the layer in r28, the player in r27 (ours: offset r29,
 // player r28, layer r27); f-registers and the code are identical.
@@ -134,28 +159,7 @@ void cls_804A5B28::fn_802075D8(u16 slot) {
     }
     if (mActive && (mMask & (1 << slot))) {
         JGeometry::TVec3f v;
-        JGeometry::TVec3f pos(mPos);
-        ActorBase_804A5770* a = getActorManager_801F856C()->findActorBySerial_801F666C(mSlots[slot].mSerial);
-        if (a) {
-            pos.set(a->mPos);
-        }
-        s32 handle = fn_801CB434(mLayer_0x4, &pos, true);
-        s32 player = mSlots[slot].mPlayer;
-        if (player >= 0 && player < 4) {
-            s32 layer = mLayer_0x4;
-            if (layer == getPlayerLayer_8023DE58(player)) {
-                if (isBlocked_0x4C(mLayer_0x4, &pos)) {
-                    ActorBase_804A5770* b = getActorManager_801F856C()->findActorBySerial_801F666C(handle);
-                    if (b) {
-                        JGeometry::TVec2f d(getPlayerPos_8023E724(player)->x - pos.x, getPlayerPos_8023E724(player)->y - pos.y);
-                        normalize(d);
-                        d.scale(2.0f);
-                        v.set(d.x, d.y, b->mVel_0x3c.z);
-                        b->mVel_0x3c = v;
-                    }
-                }
-            }
-        }
+        pushSpawnedTowardPlayer(this, slot, v);
     }
     if (all) {
         markDead_801F3668();

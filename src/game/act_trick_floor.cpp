@@ -21,7 +21,42 @@ static const f32 lbl_8046C924[7] = {32.0f, 32.0f, 40.0f, 40.0f, 64.0f, 64.0f, 32
 static const f32 lbl_8046C940[7] = {1.0f, 1.0f, 1.5f, 1.0f, 1.0f, 1.0f, 1.0f};
 static const f32 lbl_8046C95C[7] = {1.0f, 1.0f, 1.3f, 1.3f, 1.0f, 1.0f, 1.0f};
 
-// FIXME(shotgun): 98.58 %, regalloc-only; behaviour clean.
+static inline void markTiles(TrickFloor_804A83A0* self) {
+    f32 py;
+    s32 j;
+    s32 tx;
+    if (self->field_0x234 >= 2) {
+        f32 px = self->mPos.x;
+        s32 layer = self->mLayer_0x4;
+        GameView_804A9950* gameView = getGameView_802D6A9C();
+        const JGeometry::TBox2f* src = (layer < 8) ? &gameView->mVisibleBox : &gameView->field_0xdc;
+        JGeometry::TBox2f view;
+        view = *src;
+        for (s32 i = 0; i < lbl_8046C8B0[self->field_0x234]; i++) {
+            py = self->mPos.y;
+            tx = (s32)(px - view.i.x);
+            for (j = 0; j < lbl_8046C8CC[self->field_0x234]; j++) {
+                s32 y = (s32)(py - view.i.y);
+                s32 x = tx;
+                if (x < 0) {
+                    x = 0;
+                } else if (x >= 0x200) {
+                    x = 0x1FF;
+                }
+                if (y < 0) {
+                    y = 0;
+                } else if (y >= 0x200) {
+                    y = 0x1FF;
+                }
+                s32 idx = ((y << 1) & 0x200) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF);
+                gGameRoot2_8053AB10->field_0x20->setTile_802F9974(self->mLayer_0x4, idx, 6);
+                py += 16.0f;
+            }
+            px += 16.0f;
+        }
+    }
+}
+
 void TrickFloor_804A83A0::init() {
     field_0x234 = mSpawnParam_0x90 & 0x7F;
     field_0x238 = (mSpawnParam_0x90 >> 7) & 0x1F;
@@ -64,36 +99,7 @@ void TrickFloor_804A83A0::init() {
     } else {
         field_0x252 = 13;
     }
-    if (field_0x234 >= 2) {
-        f32 px = mPos.x;
-        s32 layer = mLayer_0x4;
-        GameView_804A9950* gameView = getGameView_802D6A9C();
-        const JGeometry::TBox2f* src = (layer < 8) ? &gameView->mVisibleBox : &gameView->field_0xdc;
-        JGeometry::TBox2f view;
-        view = *src;
-        for (s32 i = 0; i < lbl_8046C8B0[field_0x234]; i++) {
-            f32 py = mPos.y;
-            s32 tx = (s32)(px - view.i.x);
-            for (s32 j = 0; j < lbl_8046C8CC[field_0x234]; j++) {
-                s32 x = tx;
-                s32 y = (s32)(py - view.i.y);
-                if (x < 0) {
-                    x = 0;
-                } else if (x >= 0x200) {
-                    x = 0x1FF;
-                }
-                if (y < 0) {
-                    y = 0;
-                } else if (y >= 0x200) {
-                    y = 0x1FF;
-                }
-                s32 idx = ((y << 1) & 0x200) | (x & 0x100) | (y & 0xF0) | ((x >> 4) & 0xF);
-                gGameRoot2_8053AB10->field_0x20->setTile_802F9974(mLayer_0x4, idx, 6);
-                py += 16.0f;
-            }
-            px += 16.0f;
-        }
-    }
+    markTiles(this);
     field_0x230 = 0;
 }
 

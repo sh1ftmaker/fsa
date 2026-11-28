@@ -426,14 +426,18 @@ void* fn_80300E1C(void* arg) {
 // The client's message callback: syncs the client's packet with the port's
 // shared one (lbl_804D6AB8[port]), posts 5 (new), 4 or 3 (changed) to the
 // client's queue, and exchanges a tick word with the GBA.
-// FIXME(shotgun): 99.47 %, regalloc-only; behaviour clean.
 void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
+    OSTick sent;
     BOOL changed = TRUE;
+    OSTick received;
+    u8 savedField2;
+    u32 savedFieldC;
+    OSTick tick;
     BOOL resent = FALSE;
     client->field_0xd8 = 0;
     client->field_0xd9 = 1;
     client->field_0xd3 = 3;
-    OSTick tick = client->mPacket.field_0x8;
+    tick = client->mPacket.field_0x8;
     client->mPacket.field_0x8 = lbl_804D6AB8[client->mPort].field_0x8;
     if (client->mPacket.field_0x0 == 0) {
         if (client->mPacket.field_0x3 == 0) {
@@ -462,9 +466,9 @@ void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
             }
         }
     } else {
-        u8 savedField2 = client->mPacket.field_0x2;
+        savedField2 = client->mPacket.field_0x2;
         client->mPacket.field_0x2 = lbl_804D6AB8[client->mPort].field_0x2;
-        u32 savedFieldC = client->mPacket.field_0xc;
+        savedFieldC = client->mPacket.field_0xc;
         client->mPacket.field_0xc = lbl_804D6AB8[client->mPort].field_0xc;
         if (memcmp(&client->mPacket, &lbl_804D6AB8[client->mPort], 0x20) == 0 && client->field_0xdd == 0) {
             if (tick == lbl_804D6AB8[client->mPort].field_0x8 || tick == client->field_0x48) {
@@ -487,8 +491,6 @@ void fn_80300A8C(GbaClient_803007D0* client, OSMessage msg) {
         if (client->mStatus != 0x30) {
             return;
         }
-        OSTick sent;
-        OSTick received;
         if (resent) {
             sent = tick;
         } else {
