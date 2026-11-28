@@ -39,10 +39,11 @@ void NaviList_8021F064::fn_8021F1F0(s32 serial) {
 
 // FIXME: 99.38 %, regalloc-only; behaviour clean.
 void NaviList_8021F064::fn_8021F130() {
+    Navi_804A6708* navi;
     if (mCount > 0 && (mFlags & 3) != 0) {
         for (s32 i = 0; i < mCount; i++) {
             ActorBase_804A5770* actor = getActorManager_801F856C()->findActorBySerial_801F666C(mSerials[i]);
-            Navi_804A6708* navi = static_cast<Navi_804A6708*>(actor);
+            navi = static_cast<Navi_804A6708*>(actor);
             if (navi) {
                 if (mFlags & 1) {
                     navi->fn_8021D764();

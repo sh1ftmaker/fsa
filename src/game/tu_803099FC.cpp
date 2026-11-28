@@ -118,7 +118,7 @@ void cls_804AA8C8::pollInputs_8030A43C() {
                     memcpy(client.mTransfer, &lbl_80506DE8[i], lbl_80541618[lbl_8053AD08] * 4);
                     OSSendMessage(&client.mQueue, (OSMessage)10, 1);
                     if (lbl_8053AD34[i] != 0 && (keys & 0xFF) == fn_803006E8(((keys & 0xFF0000) >> 16) | (keys & 0xFF00))) {
-                        field_0x4[i] = (((keys >> 20) & 1) ? 2 : 0) | ((keys >> 21) & 1) | (((keys >> 22) & 1) ? 8 : 0) |
+                        field_0x4[i] = (((keys >> 22) & 1) ? 8 : 0) | ((((keys >> 20) & 1) ? 2 : 0) | ((keys >> 21) & 1)) |
                                        (((keys >> 23) & 1) ? 4 : 0) | (((keys >> 9) & 1) ? 0x40 : 0) |
                                        (((keys >> 8) & 1) ? 0x20 : 0) | (((keys >> 19) & 1) ? 0x1000 : 0) |
                                        (((keys >> 18) & 1) ? 0x400 : 0) | (((keys >> 16) & 1) ? 0x100 : 0) |

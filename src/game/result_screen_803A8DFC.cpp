@@ -846,7 +846,7 @@ void ResultScreen_804AF9A0::fn_803B236C() {
     }
     if (field_0x45a <= 0) {
         field_0x458 = lbl_8050DB0C.field_0x4c[(0x50 - 0x4C) / 2];
-        field_0x45a = (s32)((f32)lbl_8050DB0C.field_0x4c[(0x52 - 0x4C) / 2] * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
+        field_0x45a = ((f32)lbl_8050DB0C.field_0x4c[(0x52 - 0x4C) / 2] * gGameRoot_8053AAF8->mRandom.get_ufloat_1());
     } else {
         field_0x458 = 20;
         field_0x45a--;

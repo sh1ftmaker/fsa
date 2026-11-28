@@ -404,7 +404,7 @@ void GiantBomb_804AC588::vfunc_0x54(void* res, const SpriteParams_801F5AE0* para
             } else {
                 delta = (mHitTimer_0xd8 - excess) * 150 / 25;
             }
-            sp.field_0x14.r += delta;
+            sp.field_0x14.r = sp.field_0x14.r + delta;
         }
         if (mVel_0x3c.squared() > 1.0f) {
             sp.field_0x30 = 8;

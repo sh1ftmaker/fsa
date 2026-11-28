@@ -424,9 +424,9 @@ void VaatiBoss_804A4958::fn_801D5B70() {
 // Collects the players (other than the current target) that are in play and not
 // flagged in field_0x2a8, and picks one at random; -1 when there is none.
 static inline s32 pickTarget(VaatiBoss_804A4958* boss) {
+    s32 chosen = -1;
     s32 found[4];
     s32 count = 0;
-    s32 chosen = -1;
     for (s32 i = 0; i < 4; i++) {
         if (i != boss->field_0x5b0 && !boss->field_0x2a8[i].isSet() && boss->canTargetPlayer_801D0B44(i)) {
             found[count] = i;

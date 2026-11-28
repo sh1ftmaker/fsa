@@ -280,11 +280,13 @@ void Frostare_804A4C58::setState_801D9C58(int state) {
 
 // FIXME(shotgun): 99.84 %, regalloc-only; behaviour clean.
 void Frostare_804A4C58::fn_801D9960() {
+    s32 target;
+    s32 player;
     if (field_0x33c != 0) {
         field_0x33c--;
     }
     if (field_0x33c == 0) {
-        s32 target = -1;
+        target = -1;
         JGeometry::TVec3f from;
         if (mFlags & 0x2000) {
             from.set(mPos.x - -30.0f, -6.0f + mPos.y, 0.0f);
@@ -292,7 +294,7 @@ void Frostare_804A4C58::fn_801D9960() {
             from.set(-30.0f + mPos.x, -6.0f + mPos.y, 0.0f);
         }
         s16 angle = (mFlags & 0x2000) ? 0x2000 : -0x2000;
-        s32 player = fn_801D0338(&from, angle);
+        player = fn_801D0338(&from, angle);
         if (player >= 0) {
             f32 dy = getPlayerPos_8023E724(player)->y - from.y;
             f32 dx = getPlayerPos_8023E724(player)->x - from.x;

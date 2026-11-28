@@ -201,6 +201,7 @@ void ChiefSoldier_804A0B90::fn_80175024() {
 
 // FIXME(shotgun): 99.95 %, regalloc-only; behaviour clean.
 void ChiefSoldier_804A0B90::init() {
+    s32 serial;
     mBox.i.x = -12.0f;
     mBox.i.y = -20.0f;
     mBox.f.x = 12.0f;
@@ -260,7 +261,7 @@ void ChiefSoldier_804A0B90::init() {
             spawnLayer = 0;
         }
         field_0x238 = getActorManager_801F856C()->spawnActor_801F9484('SLR4', spawnLayer, &mPos, type, -1, -1);
-        s32 serial = field_0x238;
+        serial = field_0x238;
         if (serial >= 0) {
             BowSoldier_804A00C8* partner = static_cast<BowSoldier_804A00C8*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));
             if (partner != NULL) {

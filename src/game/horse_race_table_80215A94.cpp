@@ -248,7 +248,7 @@ void HorseRaceTable_80215E48::fn_80215B6C(s32 index) {
 // FIXME: 98.80 %, regalloc-only; behaviour clean.
 s32 HorseRaceTable_80215E48::fn_80215A94() const {
     s32 result = -1;
-    if (mCount >= 2 && mCount - 1 == fn_80215E98()) {
+    if (2 <= mCount && mCount - 1 == fn_80215E98()) {
         for (s32 i = 0; i < mCount; i++) {
             if (!hasKey(i) && isUpperLayer_801CD2F8(getPlayerLayer_8023DE58(i))) {
                 result = i;

@@ -151,6 +151,7 @@ void IronPot_804A5418::updateState_0x90(u8 mapHit) {
 
 // FIXME(shotgun): 99.78 %, regalloc-only; behaviour clean.
 u8 IronPot_804A5418::checkHitByActor_0x60() {
+    s32 serial;
     s32 skip = -1;
     if (mState == 0 && field_0x2ac == -1) {
         f32 savedIx = mBox.i.x;
@@ -179,7 +180,7 @@ u8 IronPot_804A5418::checkHitByActor_0x60() {
         mBox.f.y = savedFy;
     }
     if (mBox.f.x - mBox.i.x > 0.0f && mBox.f.y - mBox.i.y > 0.0f) {
-        s32 serial = getActorManager_801F856C()->findOverlappingActor_801F82CC(this, field_0x195, 32.0f);
+        serial = getActorManager_801F856C()->findOverlappingActor_801F82CC(this, field_0x195, 32.0f);
         if (serial >= 0 && serial != mSerial && serial != skip) {
             ActorBase_804A5770* other = getActorManager_801F856C()->findActorBySerial_801F666C(serial);
             if (other != NULL) {

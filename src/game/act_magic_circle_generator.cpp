@@ -58,6 +58,8 @@ MagicCircleGenerator_804A9FB0::~MagicCircleGenerator_804A9FB0() {
 // FIXME: 98.65 %, regalloc-only; behaviour clean.
 // FIXME: regalloc-only (r28-r31 permuted).
 void MagicCircleGenerator_804A9FB0::update() {
+    u32 param;
+    s32 layer;
     switch (field_0x244) {
     case 0: {
         mMapBox_0x80.i.x = -9.0f;
@@ -114,7 +116,7 @@ void MagicCircleGenerator_804A9FB0::update() {
                         keyPos = key->mPos;
                         field_0x244 = 1;
                         field_0x24c = 0x14;
-                        s32 layer = mLayer_0x4;
+                        layer = mLayer_0x4;
                         if (layer >= 8) {
                             getActorManager_801F856C()->spawnActor_801F9484(ACTOR_KMRI, layer, &keyPos, 0, -1, -1);
                         } else {
@@ -167,7 +169,7 @@ void MagicCircleGenerator_804A9FB0::update() {
     case 2:
         field_0x24c--;
         if (field_0x24c == 0) {
-            u32 param = (mSpawnParam_0x90 & ~0xFF) | lbl_8046F270[field_0x248];
+            param = (mSpawnParam_0x90 & ~0xFF) | lbl_8046F270[field_0x248];
             getActorManager_801F856C()->spawnActor_801F9484(ACTOR_CIRC, mLayer_0x4, &mPos, param, -1, -1);
             field_0x244 = 3;
             field_0x24c = 0x3C;

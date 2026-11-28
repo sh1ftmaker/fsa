@@ -215,7 +215,7 @@ void GameRootSub04_801F856C::fn_80139D9C() {
     if (!isFrozenRoom()) {
         lbl_80529DEC.field_0x1b0 = word;
     }
-    u8 byte = gGameRoot_8053AAF8->field_0xfc;
+    const u8 byte = gGameRoot_8053AAF8->field_0xfc;
     if (!isFrozenRoom()) {
         lbl_80529DEC.field_0x214 = byte;
     }

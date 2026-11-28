@@ -224,7 +224,7 @@ void ReaperShinigami_804A886C::die_0x24() {
 // FIXME(shotgun): 99.87 %, regalloc-only; behaviour clean.
 void ReaperShinigami_804A886C::fn_802B8078() {
     field_0x29c = getPlayerLayer_8023DE58(field_0x298);
-    if (field_0x29c < 8) {
+    if (8 > field_0x29c) {
         if (mLayer_0x4 >= 8) {
             mPos = field_0x28c;
             mLayer_0x4 = field_0x29c;

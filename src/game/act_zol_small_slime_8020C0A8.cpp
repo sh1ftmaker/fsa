@@ -215,13 +215,15 @@ void ZolSmallSlime_804A5F40::move_0x98() {
 
 // FIXME(shotgun): 98.75 %, regalloc-only; behaviour clean.
 bool ZolSmallSlime_804A5F40::isBlocked_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
+    bool result;
+    s32 serial;
     const u32* ignoreIds = NULL;
     if (mFlags & 7) {
         ignoreIds = lbl_8053F9E0;
     }
-    bool result = true;
+    result = true;
     if (!fn_802265DC(pos, layer, false)) {
-        s32 serial = mSerial;
+        serial = mSerial;
         CollisionBoxes_8020D58C* boxes = fn_8020D58C();
         if (!boxes->mLists[boxes->field_0x1].containsPointOfOther_8020D6AC(layer, pos, serial, ignoreIds)) {
             result = false;

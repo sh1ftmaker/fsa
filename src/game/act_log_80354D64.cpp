@@ -385,8 +385,8 @@ bool Log_804ACD70::isBlocked_0x4C(s32 layer, const JGeometry::TVec3f* pos) {
 static inline s32 getPullDir(const Log_804ACD70* self) {
     JGeometry::TBox2f box = self->mMapBox_0x80;
     box.i.x += self->mPos.x;
-    box.f.x += self->mPos.x;
     box.i.y += self->mPos.y;
+    box.f.x += self->mPos.x;
     box.f.y += self->mPos.y;
     if (fn_80239470(&box, self->mLayer_0x4, self->mSerial) >= 0 && fn_80238A68(self->mSerial) >= 4) {
         s32 d = fn_8023885C(self->mSerial);

@@ -70,8 +70,8 @@ inline bool Icicle_8049CFC8::checkAttack() {
 inline bool Icicle_8049CFC8::checkPlayer() {
     JGeometry::TBox2f box(mBox);
     box.i.x += mPos.x;
-    box.f.x += mPos.x;
     box.i.y += mPos.y;
+    box.f.x += mPos.x;
     box.f.y += mPos.y;
     JGeometry::TVec2f out;
     if (fn_8023AB94(&box, mLayer_0x4, &out) >= 0) {

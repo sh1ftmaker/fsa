@@ -75,6 +75,7 @@ bool cls_804A46F4::fn_801D183C(f32 range) {
 // dx/dy of the arrival check sit in swapped float registers (f3/f4).
 // FIXME: 99.91 %, regalloc-only; behaviour clean.
 bool cls_804A46F4::fn_801D12CC() {
+    f32 dy;
     bool result = false;
     if (field_0x338 >= 0 && canTargetPlayer_801D0B44(field_0x338)) {
         s32 player = field_0x338;
@@ -105,7 +106,7 @@ bool cls_804A46F4::fn_801D12CC() {
         } else {
             if (mPath.mCount >= 1) {
                 f32 dx = field_0x32c.x - mPos.x;
-                f32 dy = field_0x32c.y - mPos.y;
+                dy = field_0x32c.y - mPos.y;
                 if (square(dx) + square(dy) <= square(0.001f + mTargetSpeed)) {
                     mPath.popFront();
                 }
@@ -170,7 +171,7 @@ bool cls_804A46F4::fn_801D12CC() {
 void cls_804A46F4::fn_801D11FC() {
     s16 target = JMath::atanTable_.atan2_(mMapHitDir.x, mMapHitDir.y) * (32768.0f / JMath::TAngleConstant_<f32>::RADIAN_DEG180());
     s16 left = field_0x33c + 0x5B0;
-    s16 right = field_0x33c - 0x5B0;
+    const s16 right = field_0x33c - 0x5B0;
     f32 distLeft = angleDist(target, left);
     f32 distRight = angleDist(target, right);
     if (distLeft < distRight) {

@@ -131,7 +131,9 @@ void MgHorseRaceScreen_804B1BB0::fn_80445CDC() {
 // Registers only: the loop counter and two digit values sit in rotated callee-saved registers (r25/r26/r27).
 // FIXME: 99.69 %, regalloc-only; behaviour clean.
 void MgHorseRaceScreen_804B1BB0::fn_804455E0() {
+    s32 secTens;
     const ResTIMG* res;
+    s32 centiTens;
     for (s32 i = 0; i < 4; i++) {
         if (i < 2) {
             field_0x8[i]->moveFromCentre_80402E08(0.0f, lbl_8053AED0->fn_8043D514());
@@ -158,9 +160,9 @@ void MgHorseRaceScreen_804B1BB0::fn_804455E0() {
                 field_0x38[i] = 99;
             }
             s32 minutes = field_0x3c[i] / 60;
-            s32 secTens = (field_0x3c[i] % 60) / 10;
+            secTens = (field_0x3c[i] % 60) / 10;
             s32 secOnes = (field_0x3c[i] % 60) % 10;
-            s32 centiTens = field_0x38[i] / 10;
+            centiTens = field_0x38[i] / 10;
             s32 centiOnes = field_0x38[i] % 10;
             res = static_cast<const ResTIMG*>(getMain2DResource_804030C4('TIMG', lbl_804B1B78[minutes]));
             static_cast<J2DPicture*>(mScreen->search(lbl_8048FC08[i][13]))->changeTexture(res, 0);

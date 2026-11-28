@@ -235,7 +235,7 @@ void GameRootSub20_801902C0::fn_80190DC8() {
         }
     }
     if (field_0x7c8 != NULL) {
-        if (field_0x7c0 != 0 || (field_0x7bc > 0 && field_0x7bc < field_0x7c8->mTotalFrameCount)) {
+        if (field_0x7c0 != 0 || (0 < field_0x7bc && field_0x7bc < field_0x7c8->mTotalFrameCount)) {
             field_0x7bc++;
         }
         field_0x7c8->mCurrentFrame = (f32)field_0x7bc;

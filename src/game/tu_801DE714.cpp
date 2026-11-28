@@ -546,8 +546,8 @@ void cls_804A51E4::setState_801E1594(s32 newState) {
     case 2:
     case 4:
         if (mState == 0 && newState == 1) {
-            f32 tx;
             f32 ty;
+            f32 tx;
             if (mFlags & 0x20000) {
                 tx = getPlayerPos_8023E724(field_0x2a8)->x;
                 ty = getPlayerPos_8023E724(field_0x2a8)->y;

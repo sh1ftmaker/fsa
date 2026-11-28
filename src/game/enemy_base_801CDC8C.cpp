@@ -201,9 +201,9 @@ inline s32 EnemyBase_804A4808::nearestPlayer(const JGeometry::TVec3f* pos, f32 r
 inline s32 EnemyBase_804A4808::directionTo(const JGeometry::TVec3f* pos, s32 player, bool axis) {
     JGeometry::TVec3f* playerPos = &mPlayerPos_0x1ac[player];
     f32 dx = playerPos->x - pos->x;
+    f32 absX = __fabsf(dx);
     f32 dy = playerPos->y - pos->y;
     f32 absY = __fabsf(dy);
-    f32 absX = __fabsf(dx);
     if ((absX > absY && !axis) || (absX <= absY && axis == true)) {
         if (pos->x < playerPos->x) {
             return 0;
@@ -675,12 +675,13 @@ s32 EnemyBase_804A4808::fn_801CF0F4() const {
 // within `range`, moving at `speed` (straight down +y when the player is on
 // top of us). Returns whether it was spawned.
 bool EnemyBase_804A4808::fn_801CECF4(u32 actorId, f32 speed, f32 range) {
+    s32 serial;
     s32 player = nearestPlayer(&mPos, range);
     if (player < 0) {
         return false;
     }
     bool spawned = false;
-    s32 serial = getActorManager_801F856C()->spawnActor_801F9484(actorId, mLayer_0x4, &mPos, 0, -1, -1);
+    serial = getActorManager_801F856C()->spawnActor_801F9484(actorId, mLayer_0x4, &mPos, 0, -1, -1);
     if (serial >= 0) {
         cls_804A48B0* shot =
             static_cast<cls_804A48B0*>(getActorManager_801F856C()->findActorBySerial_801F666C(serial));

@@ -81,7 +81,7 @@ void cls_80204638::fn_80204834() {
 
 inline s32 cls_80204638::getNearest(const JGeometry::TVec3f* pos) const {
     s32 nearest = 0;
-    if (mCount > 1) {
+    if (1 < mCount) {
         f32 best = FLT_MAX;
         for (s32 i = 0; i < mCount; i++) {
             f32 dy = mPositions[i].y - pos->y;

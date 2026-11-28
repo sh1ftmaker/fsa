@@ -609,6 +609,8 @@ void TowerAppearanceDemo_8049E770::fn_8012A8C0() {
 
 // FIXME(shotgun): 99.61 %, regalloc-only; behaviour drift.
 bool TowerAppearanceDemo_8049E770::fn_8012A5EC() {
+    f32 posY;
+    f32 halfH;
     switch (field_0x230) {
     case 0:
     case 1:
@@ -677,8 +679,8 @@ bool TowerAppearanceDemo_8049E770::fn_8012A5EC() {
     }
     }
     f32 posX = field_0x238.x + field_0x3fc;
-    f32 posY = field_0x238.y + field_0x400;
-    f32 halfH = field_0x248;
+    posY = field_0x238.y + field_0x400;
+    halfH = field_0x248;
     gGameRoot2_8053AB10->field_0x24->field_0x179 = 1;
     f32 y0 = posY - halfH;
     f32 y1 = halfH + posY;

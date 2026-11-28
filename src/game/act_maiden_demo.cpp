@@ -208,6 +208,7 @@ u8 MaidenCutscene_8049D740::vfunc_0x5C() {
 // FIXME: 99.89 %, scheduling; behaviour clean.
 // FIXME: lwz of field_0x244 and mMode are swapped.
 void MaidenCutscene_8049D740::fn_80112AE8() {
+    s32 mode;
     field_0x248 += 0.01f;
 
     Mtx mtx1;
@@ -228,8 +229,8 @@ void MaidenCutscene_8049D740::fn_80112AE8() {
         field_0x244 = 0;
     }
 
-    s32 mode = mMode;
     s32 frame = field_0x244;
+    mode = mMode;
     f32 scale = field_0x250;
     GameRootSub20_801902C0::Crystal& crystal = fn_801902C0()->mCrystals[mode];
     if (crystal.mModel != NULL && !crystal.mActive) {

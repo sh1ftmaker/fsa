@@ -152,8 +152,8 @@ void Block_804A7A10::update() {
     box.f.x += mPos.x;
     box.f.y += mPos.y;
     box.i.x -= 1.0f;
-    box.f.x += 1.0f;
     box.i.y -= 1.0f;
+    box.f.x += 1.0f;
     box.f.y += 1.0f;
     fn_80239914(&box, mLayer_0x4, mSerial);
     box.i.x -= -1.0f;
@@ -296,7 +296,7 @@ void Block_804A7A10::update() {
                             if (field_0x24c == 1) {
                                 if (field_0x248 == 0) {
                                     field_0x248 = dir + 1;
-                                } else if (field_0x248 != dir + 1) {
+                                } else if (dir + 1 != field_0x248) {
                                     return;
                                 }
                             }
