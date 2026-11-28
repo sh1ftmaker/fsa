@@ -331,7 +331,6 @@ void MovingHouse_804A7AE0::vfunc_0x10() {
 }
 
 // Remaining: one loop pointer copy in `bakeTiles`.
-// FIXME: 99.36 %, missing/extra; behaviour clean.
 void MovingHouse_804A7AE0::fn_8029A974() {
     if (!field_0x250.isZero()) {
         return;
@@ -364,7 +363,7 @@ void MovingHouse_804A7AE0::fn_8029A974() {
     p.z = 0.0f;
     u8 ok = 1;
     for (int k = 0; k < 6; k++) {
-        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, mSerial, NULL) == 1) {
+        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, getSerial(), NULL) == 1) {
             ok = 0;
             break;
         }
@@ -391,7 +390,6 @@ void MovingHouse_804A7AE0::fn_8029A974() {
 }
 
 // Remaining: one loop pointer copy in `bakeTiles`.
-// FIXME: 99.36 %, missing/extra; behaviour clean.
 void MovingHouse_804A7AE0::fn_8029A494() {
     if (!field_0x250.isZero()) {
         return;
@@ -424,7 +422,7 @@ void MovingHouse_804A7AE0::fn_8029A494() {
     p.z = 0.0f;
     u8 ok = 1;
     for (int k = 0; k < 6; k++) {
-        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, mSerial, NULL) == 1) {
+        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, getSerial(), NULL) == 1) {
             ok = 0;
             break;
         }
@@ -451,7 +449,6 @@ void MovingHouse_804A7AE0::fn_8029A494() {
 }
 
 // Remaining: one loop pointer copy in `bakeTiles`.
-// FIXME: 99.36 %, missing/extra; behaviour clean.
 void MovingHouse_804A7AE0::fn_80299FB0() {
     if (!field_0x250.isZero()) {
         return;
@@ -484,7 +481,7 @@ void MovingHouse_804A7AE0::fn_80299FB0() {
     p.z = 0.0f;
     u8 ok = 1;
     for (int k = 0; k < 6; k++) {
-        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, mSerial, NULL) == 1) {
+        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, getSerial(), NULL) == 1) {
             ok = 0;
             break;
         }
@@ -511,7 +508,6 @@ void MovingHouse_804A7AE0::fn_80299FB0() {
 }
 
 // Remaining: one loop pointer copy in `bakeTiles`.
-// FIXME: 99.36 %, missing/extra; behaviour clean.
 void MovingHouse_804A7AE0::fn_80299AD0() {
     if (!field_0x250.isZero()) {
         return;
@@ -544,7 +540,7 @@ void MovingHouse_804A7AE0::fn_80299AD0() {
     p.z = 0.0f;
     bool ok = true;
     for (int k = 0; k < 6; k++) {
-        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, mSerial, NULL) == 1) {
+        if (!gBgRewrite_8053AC98->fn_802A1554(&p) || testBox(mLayer_0x4, &p, getSerial(), NULL) == 1) {
             ok = false;
             break;
         }

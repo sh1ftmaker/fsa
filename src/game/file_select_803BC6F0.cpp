@@ -527,39 +527,39 @@ FileSelect_804AFF60::FileSelect_804AFF60() {
         mScreenHuuin->search('Pbli14')->hide();
     }
 
-    JUTResFont* font = lbl_8053AD78->mFont;
+    JUTResFont* font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreen->search('Tdb01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreen->search('Tbat01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tadv01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tbac01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tdel01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tcop01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tstr01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf3date'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf3lv'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf3fir'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf2date'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf2lv'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf2fir'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf1date'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf1lv'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tf1fir'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     ((J2DTextBox*)mScreenHuuin->search('Tft01'))->setFont(font);
     // The colours of the file 1 pictures stand for all three files.
     field_0xe4 = ((J2DPicture*)mScreenHuuin->search('Pcopb01'))->getBlack();
@@ -2169,7 +2169,6 @@ void FileSelect_804AFF60::fn_803C8B80() {
     }
 }
 
-// FIXME: 99.90 %, regalloc-only; behaviour clean.
 // Scheduling and registers only, the timing sums as in
 // fn_803C6798 (`buttonStep * 1` forms change nothing).
 // State 26 (copy, from fn_803C05D8): the destination's board (or the copy
@@ -2236,14 +2235,14 @@ void FileSelect_804AFF60::fn_803C7F7C() {
                     setTabAlphas(this, i);
                 }
             } else if (field_0xd8 > rowDelay) {
-                field_0x38[i]->animateMoveY_80402940(rowFrames, 0, field_0x70[i], field_0x38[1]->field_0xc - field_0x38[i]->field_0xc);
-                field_0x44[i]->animateMoveY_80402940(rowFrames, 0, field_0x64[i], field_0x44[1]->field_0xc - field_0x44[i]->field_0xc);
+                field_0x38[i]->animateMoveY_80402940(rowFrames, 0, field_0x70[i], field_0x38[1]->field_0xc - field_0x38[i]->getY());
+                field_0x44[i]->animateMoveY_80402940(rowFrames, 0, field_0x64[i], field_0x44[1]->field_0xc - field_0x44[i]->getY());
             }
         }
     }
     if (field_0xd8 > end) {
-        field_0x70[field_0xa0] = field_0x38[1]->field_0xc - field_0x38[field_0xa0]->field_0xc;
-        field_0x64[field_0xa0] = field_0x44[1]->field_0xc - field_0x44[field_0xa0]->field_0xc;
+        field_0x70[field_0xa0] = field_0x38[1]->field_0xc - field_0x38[field_0xa0]->getY();
+        field_0x64[field_0xa0] = field_0x44[1]->field_0xc - field_0x44[field_0xa0]->getY();
         setState(27);
     }
 }

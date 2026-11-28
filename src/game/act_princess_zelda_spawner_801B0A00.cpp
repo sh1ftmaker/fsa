@@ -229,7 +229,6 @@ void PrincessZeldaSpawner_804A35AC::fn_801B2000(f32 yOffset, s32 mode) {
 #pragma auto_inline reset
 
 // 0x801B0A90.
-// FIXME: 98.71 %, scheduling+regalloc; behaviour near.
 void PrincessZeldaSpawner_804A35AC::update() {
     JGeometry::TBox2f box;
     JGeometry::TVec3f pos;
@@ -252,7 +251,7 @@ void PrincessZeldaSpawner_804A35AC::update() {
         if (getActorManager_801F856C()->fn_801F68E0()) {
             for (s32 i = 0; i < 4; i++) {
                 if (isPlayerActive_8023F264(i)) {
-                    if (mLayer_0x4 == getPlayerLayer_8023DE58(i)) {
+                    if (getField_0x4() == getPlayerLayer_8023DE58(i)) {
                         pos.set(*getPlayerPos_8023E724(i));
                         pos.x = 16.0f * i + 4840.0f;
                         fn_80230498(i, &pos, 0x3E, 0xFF, -128, -128, true);
@@ -321,7 +320,7 @@ void PrincessZeldaSpawner_804A35AC::update() {
         pos.zero();
         pos.y = -10.0f;
         fn_8022FE80(0, mLayer_0x4, mSerial, false, false);
-        if (openMessage_8038AD24(0, 0x2D6, mSerial, mLayer_0x4, pos, 0x4102)) {
+        if (openMessage_8038AD24(0, 0x2D6, getSerial(), getField_0x4(), pos, 0x4102)) {
             field_0x230 = 4;
         }
         break;
@@ -381,7 +380,7 @@ void PrincessZeldaSpawner_804A35AC::update() {
         pos.zero();
         pos.y = -10.0f;
         fn_8022FE80(0, mLayer_0x4, mSerial, false, false);
-        if (openMessage_8038AD24(0, 0x2D7, mSerial, mLayer_0x4, pos, 0x4102)) {
+        if (openMessage_8038AD24(0, 0x2D7, getSerial(), getField_0x4(), pos, 0x4102)) {
             field_0x244 = 0;
             field_0x230 = 9;
         }
@@ -473,7 +472,7 @@ void PrincessZeldaSpawner_804A35AC::update() {
         pos.zero();
         pos.y = -10.0f;
         fn_8022FE80(0, mLayer_0x4, mSerial, false, false);
-        if (openMessage_8038AD24(0, 0x2E1, mSerial, mLayer_0x4, pos, 0x4102)) {
+        if (openMessage_8038AD24(0, 0x2E1, getSerial(), getField_0x4(), pos, 0x4102)) {
             field_0x230 = 18;
         }
         break;

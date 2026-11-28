@@ -191,7 +191,7 @@ inline s32 PrincessZelda_8049CEE0::findTalker() {
     if (!fn_8022C5EC(player, 0x120)) {
         return -1;
     }
-    if (!openMessage_8038AD24(player, 0x170, mSerial, mLayer_0x4, mPos, 0x20)) {
+    if (!openMessage_8038AD24(player, 0x170, getSerial(), getField_0x4(), mPos, 0x20)) {
         return -1;
     }
     return player;
@@ -204,7 +204,7 @@ inline void PrincessZelda_8049CEE0::talkToFirstPlayer() {
     }
     fn_8022FE80(0, mLayer_0x4, mSerial, false, false);
     if (fn_8022FD8C(mSerial) >= 0) {
-        if (openMessage_8038AD24(0, 0x170, mSerial, mLayer_0x4, mPos, 0x28)) {
+        if (openMessage_8038AD24(0, 0x170, getSerial(), getField_0x4(), mPos, 0x28)) {
             lbl_8053AA81 = 0;
             setState_801096C8(4);
         }
@@ -235,7 +235,6 @@ inline bool PrincessZelda_8049CEE0::stepRail() {
 }
 
 // The position copies for openMessage_8038AD24 are made before serial and layer are loaded (after, in the original).
-// FIXME: 97.75 %, scheduling; behaviour near.
 void PrincessZelda_8049CEE0::update() {
     ActorBase_804A5770::update();
     field_0x330 = 1.0f;
@@ -304,7 +303,7 @@ void PrincessZelda_8049CEE0::update() {
                 fn_8022FEB8(&box, mLayer_0x4, mSerial, true, false);
                 s32 player = fn_8022FD8C(mSerial);
                 if (player >= 0 && !hasPlayerLeader_8022F514(player)) {
-                    if (openMessage_8038AD24(player, 0x230, mSerial, mLayer_0x4, mPos, 0x28)) {
+                    if (openMessage_8038AD24(player, 0x230, getSerial(), getField_0x4(), mPos, 0x28)) {
                         field_0x300 = player;
                         setState_801096C8(2);
                     }
@@ -482,7 +481,7 @@ void PrincessZelda_8049CEE0::update() {
         fn_8022FEB8(&box, mLayer_0x4, mSerial, true, false);
         field_0x31c = fn_8022FD8C(mSerial);
         if (field_0x31c >= 0 && (gGameRoot_8053AAF8->mPlayerMask & (u8)(1 << field_0x31c))) {
-            if (openMessage_8038AD24(field_0x31c, 0x16E, mSerial, mLayer_0x4, mPos, 0x28)) {
+            if (openMessage_8038AD24(field_0x31c, 0x16E, getSerial(), getField_0x4(), mPos, 0x28)) {
                 setState_801096C8(17);
             }
         }

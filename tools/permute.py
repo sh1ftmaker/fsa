@@ -129,7 +129,7 @@ TYPE_FAMILY = {b"s32": INT_TYPES, b"u32": INT_TYPES, b"s16": INT_TYPES, b"u16": 
                b"f32": FLOAT_TYPES, b"f64": FLOAT_TYPES, b"float": FLOAT_TYPES, b"double": FLOAT_TYPES}
 TIER = {"decl": "a", "commute": "a", "scope": "a", "compound": "a", "if": "a", "boolret": "a", "andif": "a", "early": "a",
         "ternary": "a", "stmt": "a", "const": "a", "loop": "a", "incr": "a", "cond": "a", "untemp": "a", "intlong": "a",
-        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b", "callfirst": "b"}
+        "type": "b", "temp": "b", "inline": "b", "swap": "b", "cast": "b", "loopform": "b", "retvar": "b", "nest": "b", "outline": "b", "outblock": "b", "outrun": "b", "callfirst": "b", "getter": "a"}
 # results a person or a session has to finish before they go into the source: a local that needs a
 # real name, or a value written out twice that was probably a macro or an inline in the original
 NEEDS_HAND = {"callfirst", "temp", "inline", "retvar", "nest", "outline", "outblock", "outrun"}
@@ -1933,6 +1933,76 @@ def gen_callfirst(c):
                        [(sp[0], sp[0], decl), (*ext(call), name.encode())], n.extent.start.line)
 
 
+_GETTERS = {}
+
+
+def class_getters(p, cls):
+    """{field name: getter name} for the one-line inline getters of `cls` (`T name() const { return mX; }`)."""
+    key = cls.hash
+    if key in _GETTERS:
+        return _GETTERS[key]
+    got = {}
+    for m in cls.get_children():
+        if m.kind != K.CXX_METHOD or list(m.get_arguments()) or m.is_static_method():
+            continue
+        f = m.extent.start.file
+        if f is None:
+            continue
+        try:
+            with open(f.name, "rb") as fh:
+                fh.seek(m.extent.start.offset)
+                body = fh.read(m.extent.end.offset - m.extent.start.offset)
+        except OSError:
+            continue
+        mm = re.search(rb"\{\s*return\s+(?:this->)?(\w+)\s*;\s*\}\s*$", body)
+        if mm:
+            got.setdefault(mm.group(1).decode(), m.spelling)
+    _GETTERS[key] = got
+    return got
+
+
+def gen_getter(c):
+    """A member read through the class's own one-line inline getter (`mLayer_0x3b4` -> `getLayer()`):
+    MWCC orders an inlined call with the other calls of the expression, a plain member read after
+    them (docs/RULES_CARD.md, "A member loaded into a saved register BEFORE the calls")."""
+    p, d = c.p, c.data
+    writes = set()
+    for n in c.nodes:
+        if n.kind in (K.BINARY_OPERATOR, K.COMPOUND_ASSIGNMENT_OPERATOR):
+            b = binop(p, n)
+            if b and (n.kind == K.COMPOUND_ASSIGNMENT_OPERATOR or b[1] == b"="):
+                writes.add(ext(b[0]))
+        elif n.kind == K.UNARY_OPERATOR:
+            t = txt(p, n).strip()
+            ch = list(n.get_children())
+            if ch and (t.startswith((b"++", b"--", b"&")) or t.endswith((b"++", b"--"))):
+                writes.add(ext(ch[0]))
+    for n in c.nodes:
+        if n.kind != K.MEMBER_REF_EXPR or not good(p, n) or ext(n) in writes:
+            continue
+        ref = n.referenced
+        if ref is None or ref.kind != K.FIELD_DECL:
+            continue
+        if n.type.get_canonical().kind not in SCALAR:
+            continue
+        par = c.parent.get(n.hash)
+        if par is not None and par.kind == K.CALL_EXPR and ext(par)[0] == ext(n)[0]:
+            continue  # the callee of a method call
+        cls = ref.semantic_parent
+        if cls is None:
+            continue
+        g = class_getters(p, cls).get(ref.spelling)
+        if not g:
+            continue
+        s0, e0 = ext(n)
+        t = p.data[s0:e0]
+        name = ref.spelling.encode()
+        if not t.endswith(name):
+            continue
+        yield Edit("getter", f"line {n.extent.start.line}: `{D(t, 36)}` read through `{g}()`",
+                   [(e0 - len(name), e0, g.encode() + b"()")], n.extent.start.line)
+
+
 def gen_swap(c):
     p, d = c.p, c.data
     for comp in c.compounds():
@@ -1964,7 +2034,7 @@ GENERATORS = {"decl": gen_decl, "commute": gen_commute, "scope": gen_scope, "com
               "const": gen_const, "loop": gen_loop, "incr": gen_incr, "cond": gen_cond, "untemp": gen_untemp,
               "type": gen_type, "temp": gen_temp, "inline": gen_inline, "swap": gen_swap, "cast": gen_cast,
               "loopform": gen_loopform, "retvar": gen_retvar, "nest": gen_nest, "outline": gen_outline, "outblock": gen_outblock, "outrun": gen_outrun,
-              "intlong": gen_intlong, "callfirst": gen_callfirst}
+              "intlong": gen_intlong, "callfirst": gen_callfirst, "getter": gen_getter}
 
 
 # ---------------------------------------------------------------- the slice of the file a function needs

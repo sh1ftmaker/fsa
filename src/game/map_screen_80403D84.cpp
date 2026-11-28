@@ -1866,7 +1866,6 @@ void MapScreen_804B1288::fn_8040BC1C() {
     }
 }
 
-// FIXME: 99.89 %, regalloc-only; behaviour clean.
 // regalloc-only: the original loads field_0x3b8 into f0 and the pane's
 // field_0xc into f2 for `offset`; ours swaps them. 0.5f / 400.0f are pooled by unwritten
 // functions.
@@ -1880,7 +1879,7 @@ void MapScreen_804B1288::fn_8040B93C() {
         mTinkPanes_0x208[mStage_0x340]->mPane->show();
         mTinkPanes_0x208[mStage_0x340]->mPane->setAlpha(mTinkPanes_0x208[mStage_0x340]->field_0x28);
         field_0x3b8 = mTinkPanes_0x208[mStage_0x340]->field_0xc - 400.0f;
-        f32 offset = field_0x3b8 - mTinkPanes_0x208[mStage_0x340]->field_0xc;
+        f32 offset = field_0x3b8 - mTinkPanes_0x208[mStage_0x340]->getY();
         mTinkPanes_0x208[mStage_0x340]->moveFromCentre_80402E08(0.0f, offset);
         field_0x3ac = mTinkPanes_0x208[mStage_0x340]->mPane->mGlobalBounds.i.x +
                       mTinkPanes_0x208[mStage_0x340]->mPane->getWidth() / 2;

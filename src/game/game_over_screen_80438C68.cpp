@@ -352,7 +352,6 @@ static inline s32 spawnActor(u32 id, s32 layer, const JGeometry::TVec3f* pos, u3
     return getActorManager_801F856C()->spawnActor_801F9484(id, layer, pos, param, arg_0x16c, arg_0x110);
 }
 
-// FIXME(shotgun): 99.72 %, regalloc-only; behaviour clean.
 // 0x80438C68
 void GameOverScreen_804B17A0::fn_80438C68() {
     switch (field_0x58) {
@@ -382,7 +381,7 @@ void GameOverScreen_804B17A0::fn_80438C68() {
             field_0x58 = 3;
             field_0x40 = 5;
             gAudioMgr_8053AF80->stopBgm_80458F9C(0x14);
-            s32 end = getActorManager_801F856C()->mActorEnd;
+            s32 end = getActorManager_801F856C()->getActorEnd();
             for (s32 i = 0; i < end; i++) {
                 ActorBase_804A5770* actor = getActorManager_801F856C()->mActors[i];
                 if (actor != NULL && actor->mActorId == ACTOR_DETH) {

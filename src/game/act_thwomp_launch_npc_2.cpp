@@ -166,7 +166,6 @@ void NPCLaunchedByThwomp2_804AD1C8::init() {
 }
 
 // Scheduling of lwz r5/r6 vs psq_l/lfs around openMessageById_8038C678 by-value TVec3f copy.
-// FIXME: 98.06 %, scheduling; behaviour clean.
 void NPCLaunchedByThwomp2_804AD1C8::update() {
     JGeometry::TBox2f box = mBox;
     box.i.x -= 2.0f;
@@ -201,7 +200,7 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
         if (field_0x24c >= 0) {
             if (getPlayerPos_8023E724(field_0x24c)->z == 0.0f) {
                 if (fn_802300EC(field_0x24c)) {
-                    if (openMessageById_8038C678(field_0x24c, field_0x264, mSerial, mLayer_0x4, mPos, 0)) {
+                    if (openMessageById_8038C678(field_0x24c, field_0x264, getSerial(), getField_0x4(), mPos, 0)) {
                         field_0x230 = 4;
                     }
                 }
@@ -219,7 +218,7 @@ void NPCLaunchedByThwomp2_804AD1C8::update() {
             if (!fn_802300EC(field_0x24c)) {
                 break;
             }
-            if (openMessageById_8038C678(field_0x24c, field_0x264, mSerial, mLayer_0x4, mPos, 0)) {
+            if (openMessageById_8038C678(field_0x24c, field_0x264, getSerial(), getField_0x4(), mPos, 0)) {
                 field_0x230 = 4;
                 break;
             }

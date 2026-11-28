@@ -492,7 +492,6 @@ void FourGirlsControl_804AE4B0::fn_8037100C() {
     }
 }
 
-// FIXME(shotgun): 98.29 %, scheduling; behaviour clean.
 void FourGirlsControl_804AE4B0::fn_80370C84() {
     for (s32 i = 0; i < 4; i++) {
         if (!fn_80230188(i) && fn_802300EC(i)) {
@@ -530,7 +529,7 @@ void FourGirlsControl_804AE4B0::fn_80370C84() {
         JGeometry::TVec3f pos((s32)JUTVideo::sManager->getFbWidth() / 2.0f,
                               (s32)JUTVideo::sManager->getEfbHeight() / 2.0f, 0.0f);
         fn_8022FE80(0, mLayer_0x4, mSerial, true, false);
-        if (fn_8038BD08(0, 0x502, mLayer_0x4, pos, 0x22)) {
+        if (fn_8038BD08(0, 0x502, getField_0x4(), pos, 0x22)) {
             mState = 5;
             lbl_8053AD70->fn_8037AE30();
         }
@@ -783,7 +782,6 @@ s32 FourGirlsControl_804AE4B0::fn_80370200() {
 
 // Not auto-inlined: fn_8037100C calls it with a plain bl.
 #pragma auto_inline off
-// FIXME(shotgun): 96.17 %, scheduling; behaviour clean.
 void FourGirlsControl_804AE4B0::fn_80370020() {
     JGeometry::TBox2f box;
     if (field_0x3a8 == 0) {
@@ -798,7 +796,7 @@ void FourGirlsControl_804AE4B0::fn_80370020() {
             if (player >= 0) {
                 if (fn_802300EC(player)) {
                     if (PSVECDistance(&field_0x264[player], &field_0x324) <= 20.0f) {
-                        if (fn_8038BD08(player, 0x510, mLayer_0x4, field_0x324, 0x22)) {
+                        if (fn_8038BD08(player, 0x510, getField_0x4(), field_0x324, 0x22)) {
                             field_0x3a4 = player;
                             field_0x3a8 = 1;
                             field_0x3a0 = 4;

@@ -36,7 +36,6 @@ void Merchant_8049CD48::init() {
     mAnim.setFrame_801D1F14(0.0f);
 }
 
-// FIXME: 92.13%, scheduling only. In the openMessage_8038AD24 call the original loads mSerial, the
 // mPos copy address, mLayer_0x4 and the player before the psq_l copy of mPos and the
 // clrlwi of msg; ours copies mPos (psq_l/lfs) first and loads the serial and layer last.
 void Merchant_8049CD48::update() {
@@ -58,7 +57,7 @@ void Merchant_8049CD48::update() {
                 if (!found) {
                     msg = 0x2AA;
                 }
-                if (openMessage_8038AD24(player, msg, mSerial, mLayer_0x4, mPos, 0x28)) {
+                if (openMessage_8038AD24(player, msg, getSerial(), getField_0x4(), mPos, 0x28)) {
                     mPlayer = player;
                     mState = 1;
                 }

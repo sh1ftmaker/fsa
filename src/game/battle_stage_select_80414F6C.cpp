@@ -168,13 +168,13 @@ BattleStageSelect_804B1378::BattleStageSelect_804B1378() {
     field_0xe4[0] = 0;
     mScreen = new J2DScreen;
     mScreen->setPriority("bat_stage_select.blo", 0x1100000, lbl_80529DEC.mMapArchive_0x34);
-    JUTResFont* font = lbl_8053AD78->mFont;
+    JUTResFont* font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(mScreen->search('Tom01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(mScreen->search('Tom02'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(mScreen->search('Tsn01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(mScreen->search('Tsn02'))->setFont(font);
     getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom01'))->getStringPtr(), 0x100, 0, NULL, NULL);
     getMessageText_803832BC(static_cast<J2DTextBox*>(mScreen->search('Tom02'))->getStringPtr(), 0x100, 0, NULL, NULL);

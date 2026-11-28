@@ -3486,21 +3486,21 @@ cls_804AF5A0::cls_804AF5A0(MessageWindow_804AF490* window, s32 index, const char
     field_0x114 = field_0x20[3]->search('P1ar')->getHeight();
     field_0x1a3 = field_0x20[3]->search('P1ar')->getAlpha();
 
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[0]->search('Tm01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[1]->search('Tm01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[2]->search('Tm01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[3]->search('Tm01'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[3]->search('Tm02'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[1]->search('Tm02'))->setFont(font);
-    font = lbl_8053AD78->mFont;
+    font = lbl_8053AD78->getFont();
     static_cast<J2DTextBox*>(field_0x20[2]->search('Tm02'))->setFont(font);
     static_cast<J2DTextBox*>(field_0x20[0]->search('Tm02'))->setBlackWhite(
         JUtility::TColor(lbl_8050DB0C.field_0x304[3], lbl_8050DB0C.field_0x304[4], lbl_8050DB0C.field_0x304[5], 0),
